@@ -11,6 +11,10 @@
   "dependencies": {
     "@globalise/design": "*",
     "@globalise/document": "*",
-    "@globalise/search": "*"
+    "@globalise/search": "*",
+    "@tanstack/react-router": "^1.170.4"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.168.6"
   }
 }
