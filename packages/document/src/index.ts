@@ -1,1 +1,2 @@
-export {Document} from './Document'
+export {DocumentView} from './DocumentView.tsx'
+export {SplitPaneView} from './SplitPaneView.tsx'
