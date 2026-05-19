@@ -12,7 +12,8 @@
     "@globalise/design": "*",
     "@globalise/document": "*",
     "@globalise/search": "*",
-    "@tanstack/react-router": "^1.170.4"
+    "@tanstack/react-router": "^1.170.4",
+    "openseadragon": "^5.0.1"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.168.6"

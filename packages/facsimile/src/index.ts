@@ -7,3 +7,7 @@ export {CanvasControls} from './CanvasControls.tsx';
 export {FacsimileOverlay} from './FacsimileOverlay.tsx';
 export type {TooltipProps} from './Tooltip';
 export {ManifestLoader} from './ManifestLoader';
+
+export {BlockHighlight} from './BlockHighlight.tsx';
+export {WordHighlight} from './WordHighlight.tsx';
+export {Tooltip} from './Tooltip';
