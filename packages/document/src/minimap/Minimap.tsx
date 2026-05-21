@@ -1,7 +1,7 @@
 import {Rnd} from 'react-rnd';
 import {Viewer} from '@knaw-huc/osd-iiif-viewer';
-import {usePartOf} from '@globalise/common/document';
-import {PartOf} from '@globalise/common/annotation';
+import {CanvasId, usePartOf} from '@globalise/common/document';
+import {Id, PartOf} from '@globalise/common/annotation';
 import {MinimapOverlay} from './MinimapOverlay';
 
 const osdOptions = {
@@ -9,11 +9,11 @@ const osdOptions = {
   homeFillsViewer: true,
 };
 
-export function Minimap() {
+export function Minimap({canvasId}: {canvasId: CanvasId}) {
   const minimapScreenRatio = 0.2;
   const margin = 10;
 
-  const pageSize = usePartOf();
+  const pageSize = usePartOf(canvasId);
   const {width, height} = calcMinimapSize(pageSize, minimapScreenRatio, margin);
 
   return (
@@ -38,7 +38,7 @@ export function Minimap() {
           <div className="handle" />
           <div style={{flex: 1, overflow: 'hidden'}}>
             <Viewer options={osdOptions} />
-            <MinimapOverlay />
+            <MinimapOverlay canvasId={canvasId} />
           </div>
         </div>
       </Rnd>

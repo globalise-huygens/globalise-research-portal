@@ -2,8 +2,7 @@ import {useEffect} from 'react';
 import {useViewer} from '@knaw-huc/osd-iiif-viewer';
 import {
   useAnnotations,
-  useTextGranularity,
-  useDocumentStore, usePartOf,
+  useDocumentStore, usePartOf, CanvasId,
 } from '@globalise/common/document';
 import {
   isWord,
@@ -15,12 +14,11 @@ import {
 import {calcBoundingBox, createPoints} from '@knaw-huc/original-layout';
 import { orThrow } from '@globalise/common';
 
-export function useZoomToClicked() {
-  const pageSize = usePartOf();
+export function useZoomToClicked(canvasId: CanvasId) {
+  const pageSize = usePartOf(canvasId);
   const viewer = useViewer();
-  const annotations = useAnnotations();
-  const {wordsToLine} = useTextGranularity();
-  const {entityToWords} = useDocumentStore(s => s.entityOverlap);
+  const annotations = useAnnotations(canvasId);
+  const {wordToLine, entityToWords} = useDocumentStore(s => s.indexes);
   const clickedId = useDocumentStore(s => s.clickedId);
 
   useEffect(() => {
@@ -47,7 +45,7 @@ export function useZoomToClicked() {
       bbox.height + padding * 2,
     );
     viewer.viewport.fitBounds(zoomViewport);
-    }, [clickedId, annotations, viewer, wordsToLine, entityToWords, pageSize]
+    }, [clickedId, annotations, viewer, wordToLine, entityToWords, pageSize]
   );
 }
 

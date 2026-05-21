@@ -4,7 +4,7 @@ import {
   findTextPositionSelector,
   getEntityType,
   getPageText,
-  indexTextGranularity,
+  indexAnnotations,
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
@@ -91,7 +91,7 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const {blockToLines, wordToBlock} = indexTextGranularity(annotations);
+  const {blockToLines, wordToBlock} = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {

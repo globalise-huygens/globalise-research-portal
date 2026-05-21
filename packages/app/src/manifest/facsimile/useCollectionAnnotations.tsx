@@ -1,11 +1,11 @@
 import {useEffect} from 'react';
 import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {useLoadPages} from '@globalise/common/document';
+import {useLoadCanvas} from '@globalise/common/document';
 import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
 
 export function useCollectionAnnotations() {
   const {vault, isReady} = useManifest();
-  const loadPages = useLoadPages();
+  const loadPages = useLoadCanvas();
   const context = useLazyCollectionViewerContext();
   const lazyCanvases = context?.lazyCanvases.current ?? [];
   const visibleIndex = context?.selectedCanvas ?? 0;

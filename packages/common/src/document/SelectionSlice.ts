@@ -35,7 +35,7 @@ export function clearSelection() {
 function isSelectedInTranscription(
   currentId: Id,
   selectedId: Id | null,
-  s: DocumentState,
+  state: DocumentState,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -43,10 +43,11 @@ function isSelectedInTranscription(
   if (currentId === selectedId) {
     return true;
   }
-  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
+  const {entityToBlock, wordToBlock} = state.indexes;
+  if (currentId === wordToBlock[selectedId]) {
     return true;
   }
-  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
+  if (currentId === entityToBlock[selectedId]) {
     return true;
   }
   return false;
@@ -62,7 +63,7 @@ function isSelectedInTranscription(
 function isSelectedInFacsimile(
   currentId: Id,
   selectedId: Id | null,
-  s: DocumentState,
+  state: DocumentState,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -70,17 +71,18 @@ function isSelectedInFacsimile(
   if (currentId === selectedId) {
     return true;
   }
-  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
+  const {entityToBlock, entityToWords, wordToBlock} = state.indexes;
+  if (currentId === wordToBlock[selectedId]) {
     return true;
   }
   /**
    * Highlight related words when current is entity:
    */
-  const wordIds = s.entityOverlap.entityToWords[selectedId];
+  const wordIds = entityToWords[selectedId];
   if (wordIds && wordIds.includes(currentId)) {
     return true;
   }
-  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
+  if (currentId === entityToBlock[selectedId]) {
     return true;
   }
   return false;

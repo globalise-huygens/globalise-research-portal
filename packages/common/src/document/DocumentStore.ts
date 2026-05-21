@@ -1,10 +1,12 @@
 import {create} from 'zustand';
-import {PagesSlice, defaultPagesSlice} from './PagesSlice';
+import {ManifestViewerSlice, defaultManifestViewerSlice} from './ManifestViewerSlice';
 import {SelectionSlice, defaultSelectionSlice} from './SelectionSlice';
 
-export type DocumentState = PagesSlice & SelectionSlice;
+export type DocumentState = ManifestViewerSlice & SelectionSlice;
 
 export const useDocumentStore = create<DocumentState>(() => ({
-  ...defaultPagesSlice,
+  ...defaultManifestViewerSlice,
   ...defaultSelectionSlice,
 }));
+
+export const setState = useDocumentStore.setState;

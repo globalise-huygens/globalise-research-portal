@@ -1,16 +1,16 @@
 import {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {Id} from '@globalise/common/annotation';
-import {useLoadPages} from '@globalise/common/document';
+import {useLoadCanvas, setSelectedCanvas} from '@globalise/common/document';
 
 export function useCanvasPages(
   canvasId: string | undefined,
   onPageChange: (id: Id) => void,
 ) {
-  const {current, goTo} = useCanvas();
+  const {current, goTo, currentIndex} = useCanvas();
   const [isInit, setInit] = useState(false);
   const {vault, url, isReady} = useManifest();
-  const loadPages = useLoadPages();
+  const loadPages = useLoadCanvas();
 
   useEffect(() => {
     if (!isReady) {
@@ -33,6 +33,7 @@ export function useCanvasPages(
     if (!current) {
       return;
     }
+    setSelectedCanvas(currentIndex);
     const urls = current.annotations
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);

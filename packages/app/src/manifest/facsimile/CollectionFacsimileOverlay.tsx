@@ -18,13 +18,14 @@ export function CollectionFacsimileOverlay() {
   useCollectionAnnotations();
 
   const {vault} = useManifest();
-  const annotations = useAnnotations();
   const context = useLazyCollectionViewerContext();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
-  const lazyCanvases = context?.lazyCanvases.current ?? [];
-  const visibleIndex = context?.selectedCanvas;
-  const lazyCanvas = visibleIndex ? lazyCanvases[visibleIndex] : undefined;
+  const lazyCanvases = context.lazyCanvases.current;
+  const visibleIndex = context.selectedCanvas;
+  const lazyCanvas = lazyCanvases[visibleIndex];
+  const canvasId = lazyCanvas.canvasId;
+  const annotations = useAnnotations(canvasId);
 
   const canvasSize = useMemo(() => {
     if (!vault || !lazyCanvas) {

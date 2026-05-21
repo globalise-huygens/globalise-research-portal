@@ -10,6 +10,7 @@ import './DocumentView.css';
 import {HeaderCanvasControls} from "./HeaderCanvasControls";
 import {MinimapView} from "./minimap/MinimapView";
 import {useSettings} from "./SettingsStore";
+import {useCanvas} from "@knaw-huc/osd-iiif-viewer";
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -22,8 +23,9 @@ export function DocumentView(
 ) {
   const {documentMode: mode} = useSettings()
   const isPageInit = useCanvasPages(canvasId, onPageChange);
+  const {current} = useCanvas()
 
-  if (!isPageInit) {
+  if (!isPageInit || !canvasId) {
     return <div>Loading...</div>;
   }
 
@@ -31,25 +33,33 @@ export function DocumentView(
     <div className="document-view" style={{height: '100%'}}>
       <HeaderCanvasControls />
       <DocumentModeControls />
-      {mode === 'split' && (
+      {current && mode === 'split' && (
         <SplitPaneLayout>
-          <FacsimileView showNavigation={false} style={{height: '100%'}} />
-          <TranscriptionView />
+          <FacsimileView
+            canvasId={canvasId}
+            showNavigation={false}
+            style={{height: '100%'}}
+          />
+          <TranscriptionView canvasId={current.id}/>
         </SplitPaneLayout>
       )}
       {mode === 'facsimile' && (
         <SinglePaneLayout>
-          <FacsimileView showNavigation={false} style={{height: '100%'}} />
+          <FacsimileView
+            canvasId={canvasId}
+            showNavigation={false}
+            style={{height: '100%'}}
+          />
         </SinglePaneLayout>
       )}
-      {mode === 'transcription' && (
+      {current && mode === 'transcription' && (
         <SinglePaneLayout>
-          <TranscriptionView />
+          <TranscriptionView canvasId={current.id}/>
         </SinglePaneLayout>
       )}
-      {mode === 'minimap' && (
+      {current && mode === 'minimap' && (
         <SinglePaneLayout>
-          <MinimapView />
+          <MinimapView canvasId={current.id}/>
         </SinglePaneLayout>
       )}
     </div>

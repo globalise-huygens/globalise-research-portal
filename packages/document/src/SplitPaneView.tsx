@@ -8,7 +8,7 @@ import './SplitPaneView.css';
 
 type SplitPaneViewProps = {
   manifestUrl: string;
-  canvasId?: string;
+  canvasId: string;
   onPageChange: (id: Id) => void;
 };
 
@@ -23,8 +23,8 @@ export function SplitPaneView(
 
   return (
     <SplitPaneLayout>
-      <FacsimileView style={{height: '100%'}} />
-      <TranscriptionView />
+      <FacsimileView canvasId={canvasId} style={{height: '100%'}} />
+      <TranscriptionView canvasId={canvasId}/>
     </SplitPaneLayout>
   );
 }

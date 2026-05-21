@@ -2,12 +2,13 @@ import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
 import {useMemo, useState} from 'react';
 import {
   findSvgPath,
-  findTextualBodyValue,
+  findTextualBodyValue, Id,
   isBlock,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
+  CanvasId,
   useAnnotations,
 } from '@globalise/common/document';
 import {Tooltip, TooltipProps} from './Tooltip';
@@ -15,9 +16,9 @@ import {BlockHighlight} from './BlockHighlight.tsx';
 import {WordHighlight} from './WordHighlight.tsx';
 import { orThrow } from '@globalise/common';
 
-export function FacsimileOverlay() {
+export function FacsimileOverlay({canvasId}: {canvasId: CanvasId}) {
   const imageInfo = useImageInfo();
-  const annotations = useAnnotations();
+  const annotations = useAnnotations(canvasId);
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
   const words = useMemo(() => {

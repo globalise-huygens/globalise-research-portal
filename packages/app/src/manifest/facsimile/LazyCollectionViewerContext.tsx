@@ -6,9 +6,13 @@ type LazyCollectionViewerContextState = {
   selectedCanvas: number;
 };
 
+export const defaultContext: LazyCollectionViewerContextState = {
+  lazyCanvases: {current: []},
+  selectedCanvas: 0
+}
 export const LazyCollectionViewerContext = createContext<
-  LazyCollectionViewerContextState | null
->(null)
+  LazyCollectionViewerContextState
+>(defaultContext)
 
 export function useLazyCollectionViewerContext() {
   return useContext(LazyCollectionViewerContext);

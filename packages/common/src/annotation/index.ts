@@ -1,4 +1,4 @@
-export {indexTextGranularity} from './indexTextGranularity.ts';
+export {indexAnnotations} from './indexAnnotations.ts'
 export {filterAnnotationsWithSelector} from './filterAnnotationsWithSelector.ts';
 
 export * from './AnnoModel';

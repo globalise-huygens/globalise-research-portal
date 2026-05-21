@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef} from 'react';
+import React, {useCallback, useLayoutEffect, useRef} from 'react';
 import type {Id} from '@knaw-huc/original-layout';
 import {ViewFit} from '@knaw-huc/original-layout';
 import {renderDiplomaticView} from './renderDiplomaticView';
@@ -8,6 +8,7 @@ import {Annotation} from '@globalise/common/annotation';
 import {setHovered, toggleClicked} from '@globalise/common/document';
 
 export type DiplomaticViewProps = {
+  id?: string
   annotations: Record<Id, Annotation>;
   page: {width: number; height: number};
   fit?: ViewFit;
@@ -16,6 +17,7 @@ export type DiplomaticViewProps = {
   selected?: Id[];
   style?: React.CSSProperties;
 };
+
 
 export function DiplomaticView(props: DiplomaticViewProps) {
   const {
@@ -48,7 +50,10 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     view.setSelected(...selected);
     viewRef.current = view;
   }, [annotations, page, fit, showBlocks]);
-
+  useLayoutEffect(() => {
+    (window as any).__diplomaticBenchData = {annotations, page, fit, showBlocks, showScanMargin};
+  }, [annotations]);
+  
   useLayoutEffect(() => {
     viewRef.current?.setSelected(...selected);
   }, [selected]);

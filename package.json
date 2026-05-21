@@ -9,7 +9,7 @@
     "start": "npm -w @globalise/app run dev",
     "build": "npm t && npm -w @globalise/app run build",
     "preview": "npm -w @globalise/app run preview",
-    "typecheck": "tsc -b",
+    "typecheck": "tsc -b --clean && tsc -b",
     "test": "vitest run"
   },
   "dependencies": {

@@ -6,7 +6,6 @@ import {
   useAnnotations,
   usePages,
   usePartOf,
-  useTextGranularity,
 } from '@globalise/common/document';
 import {useDocumentStore} from '@globalise/common/document';
 import {DiplomaticView} from '@globalise/diplomatic';
@@ -28,10 +27,17 @@ import './TranscriptionView.css';
 
 const emptyPageThreshold = 10;
 
-export function TranscriptionView() {
-  const annotations = useAnnotations();
-  const page = usePartOf();
-  const {isReady, pages, error} = usePages();
+type TranscriptionViewProps = {
+  canvasId: string;
+  showControls?: boolean;
+};
+
+export function TranscriptionView(
+  {canvasId, showControls = true}: TranscriptionViewProps
+) {
+  const annotations = useAnnotations(canvasId);
+  const page = usePartOf(canvasId);
+  const {isReady, hasAnnotations, error} = usePages(canvasId);
   const {transcriptionMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
   const showDiplomatic = transcriptionMode === 'diplomatic';
@@ -42,8 +48,7 @@ export function TranscriptionView() {
 
   const hoveredId = useDocumentStore(s => s.hoveredId);
   const clickedId = useDocumentStore(s => s.clickedId);
-  const {wordToBlock} = useTextGranularity();
-  const {entityToBlock} = useDocumentStore(s => s.entityOverlap);
+  const {wordToBlock, entityToBlock} = useDocumentStore(s => s.indexes);
 
   const selectedIds = useMemo(() => {
     const selected = new Set<Id>();
@@ -102,7 +107,7 @@ export function TranscriptionView() {
     return <div className="message">Loading...</div>;
   }
 
-  if (!pages.length) {
+  if (!hasAnnotations) {
     return <div className="message">No transcription</div>;
   }
 
@@ -116,7 +121,7 @@ export function TranscriptionView() {
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
-  const controls = (
+  const controls = showControls ? (
     <>
       {showDiplomatic && (
         <span className="zoom-slider">
@@ -152,11 +157,11 @@ export function TranscriptionView() {
         Line by line
       </button>
     </>
-  );
+  ) : null;
 
   return (
     <div className="transcription-view">
-      <ControlBar>{controls}</ControlBar>
+      {controls && <ControlBar>{controls}</ControlBar>}
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}

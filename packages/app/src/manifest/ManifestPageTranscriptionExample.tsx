@@ -5,7 +5,9 @@ import {ManifestDropdown} from "./dropdown/ManifestDropdown.tsx";
 import {useCollectionManifests} from "./dropdown/useCollectionManifests.tsx";
 import {ManifestLoader} from "./ManifestLoader.tsx";
 import {HeaderBar} from "@globalise/document";
-import {ManifestFacsimileViewer} from "./facsimile/ManifestFacsimileViewer.tsx";
+import {
+  ManifestTranscriptionViewer
+} from "./transcription/ManifestTranscriptionViewer.tsx";
 
 import './ManifestPage.css';
 
@@ -45,23 +47,26 @@ export function ManifestTranscriptionExample() {
     <HeaderProvider>
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
-          <HeaderBar/>
+          <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
+            <HeaderBar/>
 
-          <HeaderRegion region="center">
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
-          </HeaderRegion>
+            <HeaderRegion region="center">
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+            </HeaderRegion>
 
-          <div className="manifest-page">
-            Manifest transcription viewer
+            <div style={{flex: 1, overflow: 'hidden'}}>
+              <ManifestTranscriptionViewer
+                initialCanvas={initialCanvas}
+                onCanvasChange={handleCanvasChange}
+              />
+            </div>
           </div>
-
         </ManifestLoader>
       </ViewerProvider>
     </HeaderProvider>
   );
 }
-
