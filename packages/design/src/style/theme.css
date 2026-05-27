@@ -1,0 +1,81 @@
+@theme inline {
+  --font-sans: 'Noto Sans', sans-serif;
+  --font-serif: 'Noto Serif', serif;
+
+  --color-brand-black: #0c0a09;
+  --color-brand-white: #ffffff;
+  --color-brand-parchment: #b99b7f;
+  --color-brand-vermilion: #ff543d;
+  --color-brand-turquoise: #29bfcc;
+  --color-brand-mint: #36c6a7;
+
+  --color-neutral-50: #f2f2f2;
+  --color-neutral-100: #e6e6e6;
+  --color-neutral-200: #cccccc;
+  --color-neutral-300: #b3b3b3;
+  --color-neutral-400: #999999;
+  --color-neutral-500: #808080;
+  --color-neutral-600: #666666;
+  --color-neutral-700: #4d4d4d;
+  --color-neutral-800: #363636;
+  --color-neutral-900: #262626;
+
+  --color-parchment-50: #f8f5f2;
+  --color-parchment-100: #f0ebe5;
+  --color-parchment-200: #e1d6cb;
+  --color-parchment-300: #d2c1b1;
+  --color-parchment-400: #c3ac98;
+  --color-parchment-500: #b99b7f;
+  --color-parchment-600: #a07b5f;
+  --color-parchment-700: #7e6149;
+  --color-parchment-800: #5d4736;
+  --color-parchment-900: #4e4135;
+
+  --color-vermilion-50: #ffeeec;
+  --color-vermilion-100: #ffddd8;
+  --color-vermilion-200: #ffbab1;
+  --color-vermilion-300: #ff988b;
+  --color-vermilion-400: #ff7664;
+  --color-vermilion-500: #ff543d;
+  --color-vermilion-600: #e63b26;
+  --color-vermilion-700: #b32d1d;
+  --color-vermilion-800: #802013;
+  --color-vermilion-900: #6b231a;
+
+  --color-turquoise-50: #eaf9fa;
+  --color-turquoise-100: #d5f3f6;
+  --color-turquoise-200: #abe7ec;
+  --color-turquoise-300: #80dbe3;
+  --color-turquoise-400: #56cfd9;
+  --color-turquoise-500: #29bfcc;
+  --color-turquoise-600: #21a0ab;
+  --color-turquoise-700: #197f87;
+  --color-turquoise-800: #125e64;
+  --color-turquoise-900: #115056;
+
+  --color-mint-50: #ebf9f6;
+  --color-mint-100: #d6f4ec;
+  --color-mint-200: #ade8d9;
+  --color-mint-300: #84ddc7;
+  --color-mint-400: #5bd1b4;
+  --color-mint-500: #36c6a7;
+  --color-mint-600: #2ba586;
+  --color-mint-700: #218068;
+  --color-mint-800: #185c4b;
+  --color-mint-900: #175346;
+
+  --color-background: var(--color-brand-black);
+  --color-foreground: var(--color-brand-white);
+  --color-surface-dark: var(--color-brand-black);
+  --color-surface-light: var(--color-brand-white);
+  --color-text-on-dark: var(--color-brand-white);
+  --color-text-on-light: var(--color-brand-black);
+  --color-card: var(--color-surface-dark);
+  --color-card-foreground: var(--color-text-on-dark);
+  --color-muted: #333333;
+  --color-muted-foreground: #a3a3a3;
+  --color-ring: #ffffff;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+}

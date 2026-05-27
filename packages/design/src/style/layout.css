@@ -1,0 +1,79 @@
+@layer base {
+  :root {
+    /* 8px rhythm + agreed shell settings. */
+    --s4: 4px;
+    --s8: 8px;
+    --s12: 12px;
+    --s16: 16px;
+    --s24: 24px;
+    --s32: 32px;
+    --s48: 48px;
+    --s56: 56px;
+    --s64: 64px;
+
+    --control: 40px;
+    --rail: 48px;
+    --toolbar: 56px;
+    --nav: 56px;
+    --header-footer: 64px;
+
+    --shell-cols: 4;
+    --shell-max: 1440px;
+    --shell-margin: 16px;
+    --shell-gutter: 16px;
+
+    --sidebar-cols: 4;
+    --sidebar-margin: 24px;
+    --sidebar-gutter: 12px;
+
+    --card-cols: 8;
+    --card-margin: 24px;
+    --card-gutter: 16px;
+
+    --panel-pad: 24px;
+    --viewer-pad: 16px;
+    --section-gap: 24px;
+    --row-gap: 12px;
+    --overlay-inset: 16px;
+
+    --shell-inner: calc(var(--shell-max) - (var(--shell-margin) * 2));
+    --shell-track: calc(
+      (var(--shell-inner) - (var(--shell-gutter) * (var(--shell-cols) - 1))) /
+        var(--shell-cols)
+    );
+    --sidebar-width: calc(
+      (var(--shell-track) * var(--sidebar-cols)) +
+        (var(--shell-gutter) * (var(--sidebar-cols) - 1))
+    );
+    --card-max: calc(
+      (var(--shell-track) * var(--card-cols)) +
+        (var(--shell-gutter) * (var(--card-cols) - 1))
+    );
+
+    /* Minimal compatibility bridge while other files migrate. */
+    --size-rail: var(--rail);
+    --grid-page-gutter: var(--shell-gutter);
+  }
+}
+
+@media (min-width: 768px) {
+  @layer base {
+    :root {
+      --shell-cols: 8;
+      --shell-margin: 24px;
+      --shell-gutter: 16px;
+      --overlay-inset: 24px;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  @layer base {
+    :root {
+      --shell-cols: 16;
+      --shell-margin: 32px;
+      --shell-gutter: 16px;
+      --overlay-inset: 32px;
+    }
+  }
+}
