@@ -1,13 +1,8 @@
 import {CSSProperties, useEffect, useMemo, useRef, useState} from 'react';
 import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {HeaderRegion} from '@globalise/common/header';
 import {
   useSettings,
-  setTranscriptionMode,
-  setDiplomaticViewScale,
 } from '@globalise/document';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {LazyCanvasTranscription} from './LazyCanvasTranscription';
 import {initCanvases, setSelectedCanvas} from "@globalise/common/document";
 import {getAnnotationPageUrls} from "../getAnnotationPageUrls.ts";
@@ -28,8 +23,7 @@ export function ManifestTranscriptionViewer(
   {initialCanvas = 0, onCanvasChange}: Props
 ) {
   const {vault, id: manifestId, isReady: isManifestReady} = useManifest();
-  const {transcriptionMode, diplomaticViewScale} = useSettings();
-  const showDiplomatic = transcriptionMode === 'diplomatic';
+  const {diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
@@ -52,21 +46,22 @@ export function ManifestTranscriptionViewer(
   const canvasListRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  useEffect(() => {
+  useEffect(updateCanvasOnScaleOrScroll, [onCanvasChange, canvasInfos.length]);
+  function updateCanvasOnScaleOrScroll() {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
     if (!scrollContainer || !canvasList || !onCanvasChange) {
       return;
     }
 
-    const handleScroll = () => {
+    const setSelectedCanvasToCenterElement = () => {
       const scrollTop = scrollContainer.scrollTop;
       const clientHeight = scrollContainer.clientHeight;
       const scrollCenter = scrollTop + clientHeight / 2;
       const canvasElements = canvasList.children;
       for (let i = 0; i < canvasElements.length; i++) {
-        const canvasElement = canvasElements[i] as HTMLElement;
-        const canvasBottom = canvasElement.offsetTop + canvasElement.offsetHeight;
+        const element = canvasElements[i] as HTMLElement;
+        const canvasBottom = element.offsetTop + element.offsetHeight;
         if (canvasBottom > scrollCenter) {
           setSelectedCanvas(i);
           onCanvasChange(i);
@@ -75,11 +70,34 @@ export function ManifestTranscriptionViewer(
       }
     };
 
-    scrollContainer.addEventListener('scroll', handleScroll, {passive: true});
-    return () => scrollContainer.removeEventListener('scroll', handleScroll);
-  }, [onCanvasChange, canvasInfos.length, containerWidth]);
+    let hasScrolled = false;
+    const onScroll = () => {
+      hasScrolled = true;
+      setSelectedCanvasToCenterElement();
+    };
+    scrollContainer.addEventListener('scroll', onScroll);
 
-  useEffect(() => {
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width);
+      /**
+       * Wait for {@link initCanvasScroll} to prevent canvas=0 flicker:
+       */
+      if (!hasScrolled) {
+        return;
+      }
+      setSelectedCanvasToCenterElement();
+    });
+
+    resizeObserver.observe(canvasList);
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', onScroll);
+      resizeObserver.disconnect();
+    };
+  }
+
+  useEffect(initCanvasScroll, [canvasInfos.length, initialCanvas, containerWidth]);
+  function initCanvasScroll() {
     if (!initialCanvas
       || !scrollRef.current
       || !containerWidth
@@ -93,19 +111,7 @@ export function ManifestTranscriptionViewer(
     const viewportHeight = scrollRef.current.clientHeight;
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
     child.scrollIntoView({block});
-  }, [canvasInfos.length, initialCanvas, containerWidth]);
-
-  useEffect(() => {
-    const container = canvasListRef.current;
-    if (!container) {
-      return;
-    }
-    const observer = new ResizeObserver(([containerEvent]) => {
-      setContainerWidth(containerEvent.contentRect.width);
-    });
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
+  }
 
   const containerStyle: CSSProperties = {
     maxWidth: 800,
@@ -115,66 +121,29 @@ export function ManifestTranscriptionViewer(
     gap: '1rem'
   };
 
-  useEffect(() => {
+  useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
+  function initCanvasesOnInfosLoaded() {
     if (canvasInfos.length) {
       initCanvases(canvasInfos.map(c => c.canvasId));
     }
-  }, [canvasInfos]);
+  }
 
   return (
-    <>
-      <HeaderRegion region="right">
-        {showDiplomatic && (
-          <span className="zoom-slider">
-          <ZoomOutIcon
-            className="icon"
-            fontSize="small"
-            onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
+    <div ref={scrollRef} style={{overflow: 'auto', height: '100%'}}>
+      <div ref={canvasListRef} style={{...containerStyle}}>
+        {containerWidth && canvasInfos.map((info, i) => (
+          <LazyCanvasTranscription
+            scaleFactor={scale / 100}
+            key={info.canvasId}
+            canvasId={info.canvasId}
+            canvasWidth={info.width}
+            canvasHeight={info.height}
+            containerWidth={containerWidth}
+            annotationUrls={info.annotationUrls}
+            index={i}
           />
-          <input
-            type="range"
-            min={30}
-            max={200}
-            value={scale}
-            onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
-          />
-          <ZoomInIcon
-            className="icon"
-            fontSize="small"
-            onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
-          />
-        </span>
-        )}
-        <button
-          className={showDiplomatic ? 'active' : ''}
-          onClick={() => setTranscriptionMode('diplomatic')}
-        >
-          Diplomatic
-        </button>
-        <button
-          className={!showDiplomatic ? 'active' : ''}
-          onClick={() => setTranscriptionMode('line-by-line')}
-        >
-          Line by line
-        </button>
-      </HeaderRegion>
-
-      <div ref={scrollRef} style={{overflow: 'auto', height: '100%'}}>
-        <div ref={canvasListRef} style={{...containerStyle}}>
-          {containerWidth && canvasInfos.map((info, i) => (
-            <LazyCanvasTranscription
-              scaleFactor={scale / 100}
-              key={info.canvasId}
-              canvasId={info.canvasId}
-              canvasWidth={info.width}
-              canvasHeight={info.height}
-              containerWidth={containerWidth}
-              annotationUrls={info.annotationUrls}
-              index={i}
-            />
-          ))}
-        </div>
+        ))}
       </div>
-    </>
+    </div>
   );
 }

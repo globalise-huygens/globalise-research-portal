@@ -1,15 +1,17 @@
 import {useState} from 'react';
 import {ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
-import {HeaderProvider, HeaderRegion} from '@globalise/common/header';
 import {ManifestDropdown} from "./dropdown/ManifestDropdown.tsx";
 import {useCollectionManifests} from "./dropdown/useCollectionManifests.tsx";
 import {ManifestLoader} from "./ManifestLoader.tsx";
-import {HeaderBar} from "@globalise/document";
 import {
   ManifestTranscriptionViewer
 } from "./transcription/ManifestTranscriptionViewer.tsx";
 
 import './ManifestPage.css';
+import {Page} from "./Page.tsx";
+import {
+  ManifestTranscriptionControls
+} from "./transcription/ManifestTranscriptionControls";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -44,29 +46,43 @@ export function ManifestTranscriptionExample() {
   }
 
   return (
-    <HeaderProvider>
-      <ViewerProvider>
-        <ManifestLoader url={manifestUrl}>
-          <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
-            <HeaderBar/>
-
-            <HeaderRegion region="center">
-              <ManifestDropdown
-                manifests={allManifests}
-                selected={manifestUrl}
-                onChange={handleManifestChange}
-              />
-            </HeaderRegion>
-
+    <ViewerProvider>
+      <ManifestLoader url={manifestUrl}>
+        <Page
+          header={
+            <>
+              <div style={{flex: 1, minWidth: 0}}>
+                <ManifestDropdown
+                  manifests={allManifests}
+                  selected={manifestUrl}
+                  onChange={handleManifestChange}
+                />
+              </div>
+              <div style={{
+                flex: '0 0 auto',
+                display: 'flex',
+                gap: '0.25rem',
+                alignItems: 'center'
+              }}>
+                <ManifestTranscriptionControls/>
+              </div>
+            </>
+          }
+        >
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            overflow: 'hidden'
+          }}>
             <div style={{flex: 1, overflow: 'hidden'}}>
               <ManifestTranscriptionViewer
                 initialCanvas={initialCanvas}
                 onCanvasChange={handleCanvasChange}
-              />
-            </div>
+              /></div>
           </div>
-        </ManifestLoader>
-      </ViewerProvider>
-    </HeaderProvider>
+        </Page>
+      </ManifestLoader>
+    </ViewerProvider>
   );
 }

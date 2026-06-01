@@ -1,5 +1,4 @@
 import {useMemo, useState} from "react";
-import {HeaderRegion} from "@globalise/common/header";
 import {ManifestEntry} from "./ManifestEntry.tsx";
 
 import './ManifestDropdown.css';

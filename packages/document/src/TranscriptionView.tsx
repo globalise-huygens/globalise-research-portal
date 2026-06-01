@@ -1,13 +1,9 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {
-  Id,
-} from '@globalise/common/annotation';
-import {
   useAnnotations,
   usePages,
-  usePartOf,
+  usePartOf, useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import {useDocumentStore} from '@globalise/common/document';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineView} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -46,32 +42,7 @@ export function TranscriptionView(
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
 
-  const hoveredId = useDocumentStore(s => s.hoveredId);
-  const clickedId = useDocumentStore(s => s.clickedId);
-  const {wordToBlock, entityToBlock} = useDocumentStore(s => s.indexes);
-
-  const selectedIds = useMemo(() => {
-    const selected = new Set<Id>();
-    if (hoveredId) {
-      select(hoveredId);
-    }
-    if (clickedId) {
-      select(clickedId);
-    }
-    return [...selected];
-
-    function select(id: Id) {
-      selected.add(id);
-      const blockFromWord = wordToBlock[id];
-      if (blockFromWord) {
-        selected.add(blockFromWord);
-      }
-      const blockFromEntity = entityToBlock[id];
-      if (blockFromEntity) {
-        selected.add(blockFromEntity);
-      }
-    }
-  }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
+  const selectedIds = useSelectedIdsForCanvas(canvasId);
 
   const showScanMargin = useMemo(() => {
     if (!annotations) {

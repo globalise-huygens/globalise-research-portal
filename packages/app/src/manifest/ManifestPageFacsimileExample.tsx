@@ -1,13 +1,13 @@
 import {useState} from 'react';
-import {ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
-import {HeaderProvider, HeaderRegion} from '@globalise/common/header';
-import {ManifestDropdown} from "./dropdown/ManifestDropdown.tsx";
-import {useCollectionManifests} from "./dropdown/useCollectionManifests.tsx";
-import {ManifestLoader} from "./ManifestLoader.tsx";
-import {HeaderBar} from "@globalise/document";
-import {ManifestFacsimileViewer} from "./facsimile/ManifestFacsimileViewer.tsx";
-
-import './ManifestPage.css';
+import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
+import {ManifestDropdown} from './dropdown/ManifestDropdown';
+import {useCollectionManifests} from './dropdown/useCollectionManifests';
+import {ManifestLoader} from './ManifestLoader';
+import {ManifestFacsimileViewer} from './facsimile/ManifestFacsimileViewer';
+import {Page} from "./Page.tsx";
+import {
+  ManifestFacsimileControls
+} from "./facsimile/ManifestFacsimileControls.tsx";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -42,29 +42,27 @@ export function ManifestPageFacsimileExample() {
   }
 
   return (
-    <HeaderProvider>
-      <ViewerProvider>
-        <ManifestLoader url={manifestUrl}>
-          <HeaderBar/>
-
-          <HeaderRegion region="center">
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
-          </HeaderRegion>
-
-          <div className="manifest-page">
-            <ManifestFacsimileViewer
-              initialCanvas={initialCanvas}
-              onCanvasChange={handleCanvasChange}
-            />
-          </div>
-
-        </ManifestLoader>
-      </ViewerProvider>
-    </HeaderProvider>
+    <ViewerProvider>
+      <ManifestLoader url={manifestUrl}>
+        <Page
+          header={
+            <>
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+              <ManifestFacsimileControls/>
+            </>
+          }
+        >
+          <ManifestFacsimileViewer
+            initialCanvas={initialCanvas}
+            onCanvasChange={handleCanvasChange}
+          />
+        </Page>
+      </ManifestLoader>
+    </ViewerProvider>
   );
 }
 

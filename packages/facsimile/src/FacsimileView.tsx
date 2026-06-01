@@ -6,7 +6,7 @@ import {CanvasControls} from './CanvasControls.tsx';
 import {FacsimileOverlay} from './FacsimileOverlay.tsx';
 
 import './FacsimileView.css';
-import { CanvasId } from '@globalise/common/document';
+import {CanvasId} from '@globalise/common/document';
 
 export type FacsimileViewerProps = {
   style?: React.CSSProperties;
@@ -27,7 +27,7 @@ export function FacsimileView(
       <Viewer options={{
         showNavigationControl: false,
         gestureSettingsMouse: {clickToZoom: false},
-      }} />
+      }}/>
       <FacsimileOverlay canvasId={canvasId}/>
       <ControlBar>
         <FacsimileControls fullscreenRef={fullscreenRef}/>

@@ -9,7 +9,7 @@ import {
   PartOf
 } from '../annotation';
 import {FetchError, fetchJson} from '../util/fetchJson';
-import {setState, useDocumentStore} from './DocumentStore';
+import {type DocumentState, setState, useDocumentStore} from './DocumentStore';
 import {orThrow} from "../util/orThrow.ts";
 import {
   AnnotationIndexes,
@@ -22,6 +22,7 @@ export type CanvasState = {
   annotations: Record<Id, Annotation> | null;
   partOf: PartOf | null;
   isLoading: boolean;
+  isReady: boolean;
   error: string | null;
 };
 
@@ -33,7 +34,7 @@ export type ManifestViewerSlice = {
    * Canvas record
    * Note: Object.keys/values(canvases) returns canvases in manifest order
    */
-  canvases: Record<Id, CanvasState | null>;
+  canvases: Record<Id, CanvasState>;
 };
 
 export const emptyAnnotationIndex: AnnotationIndexes = {
@@ -49,6 +50,7 @@ const emptyCanvasState: CanvasState = {
   annotations: {},
   partOf: null,
   isLoading: false,
+  isReady: false,
   error: null,
 };
 
@@ -58,7 +60,7 @@ export const defaultManifestViewerSlice: ManifestViewerSlice = {
   indexes: emptyAnnotationIndex,
 };
 
-function createCanvasState(
+function createReadyCanvas(
   pages: AnnotationPage[]
 ) {
   const mapped: Record<Id, Annotation> = {};
@@ -85,6 +87,7 @@ function createCanvasState(
     annotations: mapped,
     partOf,
     isLoading: false,
+    isReady: true,
     error: null,
     pageId,
   };
@@ -112,9 +115,9 @@ function mergeIndexes(
  * and selectedCanvas index can be used.
  */
 export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
-  const canvases: Record<Id, CanvasState | null> = {};
+  const canvases: Record<Id, CanvasState> = {};
   for (const id of canvasIds) {
-    canvases[id] = null;
+    canvases[id] = {...emptyCanvasState};
   }
   setState({canvases, selectedCanvas, indexes: emptyAnnotationIndex});
 }
@@ -122,11 +125,12 @@ export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
 export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
   const state = useDocumentStore.getState();
   const existing = state.canvases[canvasId];
-
-  if (existing?.annotations || existing?.isLoading || existing?.error) {
+  if (!existing) {
     return;
   }
-
+  if (existing.isReady || existing.isLoading || existing.error) {
+    return;
+  }
   if (!urls.length) {
     setState(s => ({
       canvases: {
@@ -172,7 +176,7 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     }
 
     setState(s => {
-      const {pageId, ...canvasState} = createCanvasState(success);
+      const {pageId, ...canvasState} = createReadyCanvas(success);
 
       const canvases = {
         ...s.canvases,
@@ -187,7 +191,7 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     setState(s => ({
       canvases: {
         ...s.canvases,
-        [canvasId]: {...emptyCanvasState, error},
+        [canvasId]: {...emptyCanvasState, error, isLoading: false, isReady: false},
       },
     }));
   }
@@ -217,11 +221,15 @@ export function useLoadCanvas() {
   return loadCanvas;
 }
 
+const emptyAnnotations = {}
+
 export function useAnnotations(
   canvasId: CanvasId
 ): Record<Id, Annotation> {
   return useDocumentStore(s => {
-    return s.canvases[canvasId]?.annotations || orThrow('No canvas');
+    const canvas = s.canvases[canvasId];
+    const annotations = canvas?.annotations
+    return annotations || emptyAnnotations;
   });
 }
 
@@ -232,28 +240,29 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
   });
 }
 
-export function useSelectedCanvas(): number {
-  return useDocumentStore(s => s.selectedCanvas);
-}
+type CanvasStatus =
+  | {isInit: false, id: null} & CanvasState
+  | {isInit: true, id: CanvasId} & CanvasState
 
-export function useSelectedCanvasId(): Id | undefined {
-  return useDocumentStore(s => Object.keys(s.canvases)[s.selectedCanvas]);
-}
+const emptyCanvasStatus: CanvasStatus = {
+  ...emptyCanvasState,
+  isInit: false,
+  id: null
+};
 
-export function useSelectedCanvasStatus():
-  | {canvasId: Id; isReady: true}
-  | {isReady: false}
-{
-  return useDocumentStore(useShallow(s => {
-    const canvasId = Object.keys(s.canvases)[s.selectedCanvas];
-    if (!canvasId) {
-      return {isReady: false};
+export function useSelectedCanvas(): CanvasStatus {
+  return useDocumentStore(useShallow((s: DocumentState) => {
+    const index = s.selectedCanvas;
+    const id = Object.keys(s.canvases)[index];
+    if (!id) {
+      return emptyCanvasStatus;
     }
-    const canvas = s.canvases[canvasId];
-    const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
-    if (!isReady) {
-      return {isReady: false};
-    }
-    return {canvasId, isReady: true};
+    return {isInit: true, id, ...s.canvases[id]};
   }));
+}
+
+export function useIsCanvasInit(id?: CanvasId): boolean {
+  return useDocumentStore(s => {
+    return !!(id && s.canvases[id])
+  });
 }

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@globalise/design": "*",
-    "@globalise/document": "*",
     "@globalise/search": "*",
     "@tanstack/react-router": "^1.170.4",
     "openseadragon": "^5.0.1"

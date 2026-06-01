@@ -83,7 +83,7 @@ export function LazyCanvasTranscription(
   }
 
   return (
-    <div style={{position: 'relative', width}}>
+    <div style={{position: 'relative', width, minHeight: height}}>
       <PageLabel label={index} />
       <CanvasTranscription canvasId={canvasId} />
     </div>

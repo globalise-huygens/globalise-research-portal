@@ -1,9 +1,13 @@
 import {useCanvas, useViewerReady} from '@knaw-huc/osd-iiif-viewer';
+import {useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {getValue} from '@iiif/helpers/i18n';
 
 export function useCanvasNavigation() {
-  const ready = useViewerReady();
+  const {isReady: isManifestReady} = useManifest();
+  const isViewerReady = useViewerReady();
   const {currentIndex, current, total, next, prev, goTo} = useCanvas();
+
+  const isReady = isManifestReady && !!current;
 
   const goToRandom = () => goTo(Math.floor(Math.random() * total));
 
@@ -13,7 +17,9 @@ export function useCanvasNavigation() {
   const position = `(${currentIndex + 1}/${total})`;
 
   return {
-    ready,
+    isReady,
+    isViewerReady,
+    isManifestReady,
     prev,
     next,
     goToRandom,

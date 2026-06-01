@@ -1,7 +1,6 @@
 import {useManifest, useViewerReady} from "@knaw-huc/osd-iiif-viewer";
 import {useScrollTo} from "./useScrollTo.tsx";
 import {getValue} from "@iiif/helpers/i18n";
-import {HeaderRegion} from "@globalise/common/header";
 import {useLazyCollectionViewerContext} from "./LazyCollectionViewerContext.tsx";
 import {useSelectedCanvas} from "@globalise/common/document";
 
@@ -12,12 +11,12 @@ export function ManifestFacsimileControls() {
   const scrollTo = useScrollTo();
 
   const lazyCanvases = context.lazyCanvases.current;
-  const selectedIndex = useSelectedCanvas();
+  const {index: selectedIndex} = useSelectedCanvas();
 
   if (!ready || !lazyCanvases.length) {
     return null;
   }
-  
+
   const lazyCanvas = lazyCanvases[selectedIndex];
   const canvas = lazyCanvas && vault
     ? vault.get({id: lazyCanvas.canvasId, type: 'Canvas'})
@@ -29,7 +28,8 @@ export function ManifestFacsimileControls() {
   const hasPrev = selectedIndex > 0;
   const hasNext = selectedIndex < lazyCanvases.length - 1;
 
-  return (<HeaderRegion region="right">
+  return (
+    <>
       <button
         onClick={() => scrollTo(selectedIndex - 1)}
         disabled={!hasPrev}
@@ -48,6 +48,6 @@ export function ManifestFacsimileControls() {
       >
         Next
       </button>
-    </HeaderRegion>
+    </>
   );
 }

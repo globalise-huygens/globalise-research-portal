@@ -3,9 +3,18 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {useCanvasNavigation} from './useCanvasNavigation';
 
 export function CanvasControls() {
-  const {ready, prev, next, goToRandom, label, position, hasPrev, hasNext} = useCanvasNavigation();
+  const {
+    isReady,
+    prev,
+    next,
+    goToRandom,
+    label,
+    position,
+    hasPrev,
+    hasNext
+  } = useCanvasNavigation();
 
-  if (!ready) {
+  if (!isReady) {
     return null;
   }
 
@@ -14,13 +23,13 @@ export function CanvasControls() {
       <span className="info">{label}&nbsp;{position}</span>
       <div className="control-bar">
         <button onClick={prev} disabled={!hasPrev}>
-          <NavigateBeforeIcon />
+          <NavigateBeforeIcon/>
         </button>
         <button onClick={goToRandom}>
           I'm Feeling Lucky
         </button>
         <button onClick={next} disabled={!hasNext}>
-          <NavigateNextIcon />
+          <NavigateNextIcon/>
         </button>
       </div>
     </div>

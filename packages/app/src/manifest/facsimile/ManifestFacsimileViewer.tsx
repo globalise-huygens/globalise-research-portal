@@ -1,12 +1,10 @@
 import {useEffect} from 'react';
 import {useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {
-  useSelectedCanvasStatus,
+  useSelectedCanvas,
   useLoadCanvas,
-  useSelectedCanvasId,
 } from '@globalise/common/document';
 import {LazyCollectionViewer} from "./LazyCollectionViewer.tsx";
-import {ManifestFacsimileControls} from "./ManifestFacsimileControls.tsx";
 import {CollectionFacsimileOverlay} from "./CollectionFacsimileOverlay.tsx";
 import {getAnnotationPageUrls} from "../getAnnotationPageUrls.ts";
 
@@ -18,13 +16,13 @@ type Props = {
 export function ManifestFacsimileViewer(
   {initialCanvas, onCanvasChange}: Props
 ) {
-  const {vault, isReady} = useManifest();
+  const {isReady: isManifestReady, vault} = useManifest();
+  const {isInit: isCanvasInit, isReady: isCanvasReady, id: canvasId} = useSelectedCanvas();
   const loadPages = useLoadCanvas();
-  const canvasId = useSelectedCanvasId();
 
-  useEffect(loadAnnotationPages, [vault, isReady, canvasId, loadPages]);
+  useEffect(loadAnnotationPages, [vault, isCanvasReady, canvasId, loadPages]);
   function loadAnnotationPages() {
-    if (!vault || !isReady || !canvasId) {
+    if (!vault || !isManifestReady || !canvasId) {
       return;
     }
     const canvas = vault.get({id: canvasId, type: 'Canvas'});
@@ -34,17 +32,11 @@ export function ManifestFacsimileViewer(
     }
   }
 
-  const canvasStatus = useSelectedCanvasStatus();
-
   return <LazyCollectionViewer
     scanHeight={0.25}
     initialCanvas={initialCanvas}
     onCanvasChange={onCanvasChange}
   >
-    <ManifestFacsimileControls/>
-    {canvasStatus.isReady
-      ? <CollectionFacsimileOverlay canvasId={canvasStatus.canvasId}/>
-      : <>Loading</>
-    }
+    {isCanvasInit && <CollectionFacsimileOverlay canvasId={canvasId}/>}
   </LazyCollectionViewer>;
 }

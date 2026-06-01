@@ -7,9 +7,9 @@ import {useSettings} from "@globalise/document";
 import {DiplomaticView} from "@globalise/diplomatic";
 import {LineByLineView} from "@globalise/line-by-line";
 
-type CanvasTranscriptionProps = { canvasId: string, scaleFactor: number };
+type CanvasTranscriptionProps = { canvasId: string };
 
-export function CanvasTranscription({canvasId}: { canvasId: string }) {
+export function CanvasTranscription({canvasId}: CanvasTranscriptionProps) {
   const annotations = useAnnotations(canvasId);
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
