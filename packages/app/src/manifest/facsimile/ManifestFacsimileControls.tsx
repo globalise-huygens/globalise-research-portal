@@ -3,6 +3,7 @@ import {useScrollTo} from "./useScrollTo.tsx";
 import {getValue} from "@iiif/helpers/i18n";
 import {HeaderRegion} from "@globalise/common/header";
 import {useLazyCollectionViewerContext} from "./LazyCollectionViewerContext.tsx";
+import {useSelectedCanvas} from "@globalise/common/document";
 
 export function ManifestFacsimileControls() {
   const ready = useViewerReady();
@@ -10,13 +11,13 @@ export function ManifestFacsimileControls() {
   const context = useLazyCollectionViewerContext();
   const scrollTo = useScrollTo();
 
-  const lazyCanvases = context?.lazyCanvases.current ?? [];
-  const selectedIndex = context?.selectedCanvas ?? 0;
+  const lazyCanvases = context.lazyCanvases.current;
+  const selectedIndex = useSelectedCanvas();
 
   if (!ready || !lazyCanvases.length) {
     return null;
   }
-
+  
   const lazyCanvas = lazyCanvases[selectedIndex];
   const canvas = lazyCanvas && vault
     ? vault.get({id: lazyCanvas.canvasId, type: 'Canvas'})

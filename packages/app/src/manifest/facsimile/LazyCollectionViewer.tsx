@@ -10,10 +10,11 @@ import {observeResize} from "./util/observeResize.tsx";
 import {useLazyCanvasLoader} from "./useLazyCanvasLoader.tsx";
 import {createLazyTiledImages} from "./util/createLazyTiledImages.ts";
 import {LazyCollectionViewerContext} from './LazyCollectionViewerContext.tsx';
+import {initCanvases} from "@globalise/common/document";
 
 type Props = PropsWithChildren<{
   gap?: number;
-  scanHeight?: number;
+  scanHeight: number;
   initialCanvas?: number;
   onCanvasChange?: (index: number) => void;
   preloadScreens?: number;
@@ -30,8 +31,8 @@ type Props = PropsWithChildren<{
 export function LazyCollectionViewer(
   {
     children,
+    scanHeight,
     gap = 0.02,
-    scanHeight = 0.5,
     initialCanvas = 0,
     onCanvasChange
   }: Props
@@ -50,13 +51,21 @@ export function LazyCollectionViewer(
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
 
-  const visibleIndex = useLazyCanvasLoader({
+  useLazyCanvasLoader({
     viewer,
     lazyCanvases,
     initialCanvas,
     onCanvasChange,
     canvasHeight: scanHeight,
   });
+
+  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvas]);
+  function initCanvasesLazily() {
+    if (!lazyCanvases.length) {
+      return;
+    }
+    initCanvases(lazyCanvases.map(c => c.canvasId), initialCanvas);
+  }
 
   useEffect(createViewer, [isContainerReady, store]);
   function createViewer() {
@@ -122,7 +131,6 @@ export function LazyCollectionViewer(
   return (
     <LazyCollectionViewerContext.Provider value={{
       lazyCanvases: {current: lazyCanvases},
-      selectedCanvas: visibleIndex,
     }}>
       <div
         ref={containerRef}

@@ -4,6 +4,7 @@ import {Overlay, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
+  Id,
   isBlock,
   isWord,
   parseSvgPath,
@@ -12,28 +13,20 @@ import {useAnnotations} from '@globalise/common/document';
 import {orThrow} from '@globalise/common';
 import {BlockHighlight, Tooltip, TooltipProps, WordHighlight} from '@globalise/facsimile';
 import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
-import {useCollectionAnnotations} from './useCollectionAnnotations';
 
-export function CollectionFacsimileOverlay() {
-  useCollectionAnnotations();
-
+export function CollectionFacsimileOverlay({canvasId}: {canvasId: Id}) {
   const {vault} = useManifest();
-  const context = useLazyCollectionViewerContext();
+  const {lazyCanvases} = useLazyCollectionViewerContext();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
-
-  const lazyCanvases = context.lazyCanvases.current;
-  const visibleIndex = context.selectedCanvas;
-  const lazyCanvas = lazyCanvases[visibleIndex];
-  const canvasId = lazyCanvas.canvasId;
   const annotations = useAnnotations(canvasId);
 
-  const canvasSize = useMemo(() => {
-    if (!vault || !lazyCanvas) {
-      return null;
-    }
+  const lazyCanvas = lazyCanvases.current.find(c => c.canvasId === canvasId);
+
+  let canvasSize: {width: number; height: number} | null = null;
+  if (vault && lazyCanvas) {
     const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
-    return {width: canvas.width, height: canvas.height};
-  }, [vault, lazyCanvas?.canvasId]);
+    canvasSize = {width: canvas.width, height: canvas.height};
+  }
 
   const location = useMemo(() => {
     if (!lazyCanvas) {
@@ -43,9 +36,6 @@ export function CollectionFacsimileOverlay() {
   }, [lazyCanvas?.y, lazyCanvas?.height]);
 
   const words = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
     return Object.values(annotations)
       .filter(isWord)
       .map((a) => ({
@@ -56,9 +46,6 @@ export function CollectionFacsimileOverlay() {
   }, [annotations]);
 
   const blocks = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
     return Object.values(annotations)
       .filter(isBlock)
       .map((a) => ({
@@ -72,7 +59,6 @@ export function CollectionFacsimileOverlay() {
   }
 
   const canvasBorderColor = 'rgb(144 187 195)';
-
   return (
     <>
       <Overlay location={location}>

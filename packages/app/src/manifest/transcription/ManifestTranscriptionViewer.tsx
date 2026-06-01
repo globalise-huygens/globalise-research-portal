@@ -10,6 +10,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {LazyCanvasTranscription} from './LazyCanvasTranscription';
 import {initCanvases, setSelectedCanvas} from "@globalise/common/document";
+import {getAnnotationPageUrls} from "../getAnnotationPageUrls.ts";
 
 type CanvasInfo = {
   canvasId: string;
@@ -38,14 +39,11 @@ export function ManifestTranscriptionViewer(
     const manifest = vault.get({id: manifestId, type: 'Manifest'});
     return manifest.items.map((item: { id: string; type: string }) => {
       const canvas = vault.get(item);
-      const annotationUrls = (canvas.annotations ?? [])
-        .filter((a: { type: string }) => a.type === 'AnnotationPage')
-        .map((a: { id: string }) => a.id);
       return {
         canvasId: canvas.id,
         width: canvas.width,
         height: canvas.height,
-        annotationUrls,
+        annotationUrls: getAnnotationPageUrls(canvas),
       };
     });
   }, [vault, manifestId, isManifestReady]);

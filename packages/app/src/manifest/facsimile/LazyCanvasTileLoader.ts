@@ -11,8 +11,8 @@ export type LazyCanvasTileLoaderOptions = {
   initialCanvas?: number;
 
   /**
-   * Callback when selected canvas changes
-   * Selected scan is the scan at the center of the viewport
+   * Callback when selected canvas changes.
+   * Selected scan is the scan at the center of the viewport.
    */
   onCanvasChange?: (index: number) => void;
 
@@ -37,7 +37,7 @@ const defaultOptions = {
 };
 
 /**
- * Load and unload tile images on openseadragon viewport scrolling
+ * Load and unload tile images on openseadragon viewport scrolling.
  */
 export class LazyCanvasTileLoader {
   private viewer: Viewer;
@@ -114,7 +114,7 @@ export class LazyCanvasTileLoader {
   }
 
   /**
-   * Clear active tile images, loaded images, and pending requests
+   * Clear active tile images, loaded images, and pending requests.
    */
   public destroy(): void {
     this.viewer.removeHandler('viewport-change', this.onViewportChangeThrottled);
@@ -143,7 +143,7 @@ export class LazyCanvasTileLoader {
   }
 
   /**
-   * Fetch iiif info endpoint and position tile images vertically
+   * Fetch iiif info endpoint and position tile images vertically.
    */
   private async addCanvas(canvas: LazyTiledImage): Promise<void> {
     this.pending.add(canvas.canvasId);

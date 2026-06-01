@@ -1,9 +1,9 @@
 import {useLoadManifest, useManifest} from "@knaw-huc/osd-iiif-viewer";
-import {useEffect} from "react";
+import {ReactNode, useEffect} from "react";
 
 export function ManifestLoader(props: {
   url: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const loadManifest = useLoadManifest();
   const {isReady, isLoading, error} = useManifest();

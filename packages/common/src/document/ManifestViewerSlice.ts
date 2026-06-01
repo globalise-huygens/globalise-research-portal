@@ -111,12 +111,12 @@ function mergeIndexes(
  * so Object.values(canvases) returns the correct order
  * and selectedCanvas index can be used.
  */
-export function initCanvases(canvasIds: Id[]) {
+export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
   const canvases: Record<Id, CanvasState | null> = {};
   for (const id of canvasIds) {
     canvases[id] = null;
   }
-  setState({canvases, selectedCanvas: 0, indexes: emptyAnnotationIndex});
+  setState({canvases, selectedCanvas, indexes: emptyAnnotationIndex});
 }
 
 export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
@@ -230,4 +230,30 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
     const canvas = s.canvases[canvasId] || orThrow('No canvas');
     return canvas.partOf;
   });
+}
+
+export function useSelectedCanvas(): number {
+  return useDocumentStore(s => s.selectedCanvas);
+}
+
+export function useSelectedCanvasId(): Id | undefined {
+  return useDocumentStore(s => Object.keys(s.canvases)[s.selectedCanvas]);
+}
+
+export function useSelectedCanvasStatus():
+  | {canvasId: Id; isReady: true}
+  | {isReady: false}
+{
+  return useDocumentStore(useShallow(s => {
+    const canvasId = Object.keys(s.canvases)[s.selectedCanvas];
+    if (!canvasId) {
+      return {isReady: false};
+    }
+    const canvas = s.canvases[canvasId];
+    const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
+    if (!isReady) {
+      return {isReady: false};
+    }
+    return {canvasId, isReady: true};
+  }));
 }

@@ -1,5 +1,6 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Viewer} from "openseadragon";
+import {setSelectedCanvas} from "@globalise/common/document";
 import {LazyTiledImage} from "./LazyCollectionViewerModel.ts";
 import {LazyCanvasTileLoader} from "./LazyCanvasTileLoader.ts";
 
@@ -20,15 +21,10 @@ export function useLazyCanvasLoader(
     onCanvasChange
   }: Props
 ) {
-  const [visibleIndex, setVisibleIndex] = useState<number>(
-    initialCanvas < lazyCanvases.length ? initialCanvas : 0
-  );
-
   useEffect(() => {
     if (!viewer || !lazyCanvases.length) {
       return;
     }
-
     const loader = new LazyCanvasTileLoader(
       viewer,
       lazyCanvases,
@@ -36,12 +32,11 @@ export function useLazyCanvasLoader(
         initialCanvas,
         canvasHeight,
         onCanvasChange: (index) => {
-          setVisibleIndex(index);
+          setSelectedCanvas(index);
           onCanvasChange?.(index);
         }
       }
     );
-
     return () => {
       loader.destroy();
     };
@@ -51,6 +46,4 @@ export function useLazyCanvasLoader(
     initialCanvas,
     canvasHeight
   ]);
-
-  return visibleIndex;
 }
