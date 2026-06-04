@@ -24,6 +24,8 @@ export type LineSegments = {
 export function useLineSegments(
   annotations: Record<Id, Annotation>,
 ): LineSegments {
+  const indexes = useDocumentStore(s => s.indexes);
+
   return useMemo(() => {
     const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
@@ -41,7 +43,7 @@ export function useLineSegments(
       wordToLine,
       lineToBlock,
       blockToLines
-    } = useDocumentStore(s => s.indexes);
+    } = indexes;
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
     let lastLineId: Id | null = null;
@@ -62,5 +64,5 @@ export function useLineSegments(
     const lineIds = Object.keys(segmentsByLine);
 
     return {pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines};
-  }, [annotations]);
+  }, [annotations, indexes]);
 }
