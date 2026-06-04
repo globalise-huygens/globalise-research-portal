@@ -1,17 +1,13 @@
 import {useState} from 'react';
 import {ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
-import {ManifestDropdown} from "./dropdown/ManifestDropdown.tsx";
-import {useCollectionManifests} from "./dropdown/useCollectionManifests.tsx";
-import {ManifestLoader} from "./ManifestLoader.tsx";
-import {
-  ManifestTranscriptionViewer
-} from "./transcription/ManifestTranscriptionViewer.tsx";
-
-import './ManifestPage.css';
+import {ManifestLoader} from "@globalise/facsimile";
 import {Page} from "./Page.tsx";
 import {
-  ManifestTranscriptionControls
-} from "./transcription/ManifestTranscriptionControls";
+  useCollectionManifests,
+  ManifestDropdown,
+  ManifestTranscriptionControls,
+  ManifestTranscriptionViewer
+} from "./manifest";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -22,7 +18,7 @@ const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function ManifestTranscriptionExample() {
+export function ManifestTranscriptionPage() {
   const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(

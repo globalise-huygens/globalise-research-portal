@@ -1,13 +1,13 @@
 import {useState} from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {ManifestDropdown} from './dropdown/ManifestDropdown';
-import {useCollectionManifests} from './dropdown/useCollectionManifests';
-import {ManifestLoader} from './ManifestLoader';
+import {ManifestLoader} from "@globalise/facsimile";
 import {Page} from "./Page.tsx";
 import {
+  useCollectionManifests,
+  ManifestDropdown,
   ManifestFacsimileControls,
   ManifestFacsimileViewer
-} from "./facsimile";
+} from "./manifest";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -18,7 +18,7 @@ const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function ManifestPageFacsimileExample() {
+export function ManifestPageFacsimilePage() {
   const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
