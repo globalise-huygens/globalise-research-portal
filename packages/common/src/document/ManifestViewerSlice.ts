@@ -241,12 +241,13 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
 }
 
 type CanvasStatus =
-  | {isInit: false, id: null} & CanvasState
-  | {isInit: true, id: CanvasId} & CanvasState
+  | {isInit: false, index: number, id: null} & CanvasState
+  | {isInit: true, index: number, id: CanvasId} & CanvasState
 
 const emptyCanvasStatus: CanvasStatus = {
   ...emptyCanvasState,
   isInit: false,
+  index: 0,
   id: null
 };
 
@@ -257,7 +258,7 @@ export function useSelectedCanvas(): CanvasStatus {
     if (!id) {
       return emptyCanvasStatus;
     }
-    return {isInit: true, id, ...s.canvases[id]};
+    return {isInit: true, id, index, ...s.canvases[id]};
   }));
 }
 

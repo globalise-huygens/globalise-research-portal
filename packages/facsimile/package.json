@@ -13,7 +13,7 @@
   "dependencies": {
     "@globalise/common": "*",
     "@iiif/helpers": "^1.5.9",
-    "@knaw-huc/osd-iiif-viewer": "^0.2.5"
+    "@knaw-huc/osd-iiif-viewer": "^0.3.0"
   },
   "peerDependencies": {
     "react": ">=18",
