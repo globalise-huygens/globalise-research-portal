@@ -3,10 +3,13 @@
   "compilerOptions": {
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "paths": {
-      "@globalise/common": ["../annotation/src/index.ts"]
-    },
     "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    { "path": "../common" },
+    { "path": "../diplomatic" },
+    { "path": "../facsimile" },
+    { "path": "../line-by-line" }
+  ]
 }

@@ -7,7 +7,7 @@ import {
   ManifestDropdown,
   ManifestFacsimileControls,
   ManifestFacsimileViewer
-} from "./manifest";
+} from "@globalise/manifest";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';

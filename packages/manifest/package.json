@@ -8,6 +8,9 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
     "openseadragon": "^5.0.1",
     "@globalise/common": "*",

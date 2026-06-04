@@ -5,10 +5,10 @@ import {useManifest} from "@knaw-huc/osd-iiif-viewer";
 import {useDocumentStore} from "@globalise/common/document";
 import {useEffect, useState} from "react";
 import {DocumentView, HeaderProvider, HeaderRegion} from "@globalise/document";
-import {ManifestDropdown} from "./manifest/dropdown/ManifestDropdown.tsx";
 import {
+  ManifestDropdown,
   useCollectionManifests
-} from "./manifest/dropdown/useCollectionManifests.tsx";
+} from "@globalise/manifest";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
