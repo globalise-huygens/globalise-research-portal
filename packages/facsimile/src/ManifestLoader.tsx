@@ -8,17 +8,18 @@ import {
 type ManifestLoaderProps = {
   children: React.ReactNode,
   url: string,
+  canvasId?: string,
 };
 
 export function ManifestLoader(
-  {children, url}: ManifestLoaderProps
+  {children, url, canvasId}: ManifestLoaderProps
 ) {
   const loadManifest = useLoadManifest();
 
   const manifest = useManifest();
 
   useEffect(() => {
-    loadManifest(url);
+    loadManifest(url, canvasId);
   }, [loadManifest, url]);
 
   if (manifest.isLoading) {

@@ -24,8 +24,8 @@ export function DocumentPage() {
   const [manifestUrl, setManifestUrl] = useState(
     initialParams.get(MANIFEST) ?? defaultManifest
   );
-  const [canvasId, setCanvasId] = useState<string | null>(
-    initialParams.get(CANVAS) ?? null
+  const [canvasId, setCanvasId] = useState(
+    initialParams.get(CANVAS) ?? undefined
   );
 
   function handlePageChange(pageId: Id) {
@@ -37,7 +37,7 @@ export function DocumentPage() {
 
   function handleManifestChange(url: string) {
     setManifestUrl(url);
-    setCanvasId(null);
+    setCanvasId(undefined);
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set(MANIFEST, url);
     newUrl.searchParams.delete(CANVAS);
@@ -47,7 +47,7 @@ export function DocumentPage() {
   return (
     <HeaderProvider>
       <ViewerProvider>
-        <ManifestLoader url={manifestUrl}>
+        <ManifestLoader url={manifestUrl} canvasId={canvasId}>
           <DocumentManifestDropdown
             manifestUrl={manifestUrl}
             onChange={handleManifestChange}

@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {Id} from '@globalise/common/annotation';
 import {
@@ -7,11 +7,6 @@ import {
   useIsCanvasInit,
 } from '@globalise/common/document';
 
-/**
- * WIP. TODO: Remove refs
- * @param canvasId
- * @param onPageChange
- */
 export function useCanvasPages(
   canvasId: string | undefined,
   onPageChange: (id: Id) => void,
@@ -21,14 +16,6 @@ export function useCanvasPages(
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadCanvas();
   const isCanvasInit = useIsCanvasInit(current?.id);
-
-  const currentCanvasId = useRef(canvasId);
-
-  useEffect(() => {
-    currentCanvasId.current = canvasId;
-  }, [canvasId]);
-
-  const isCanvasShown = useRef(false);
 
   useEffect(() => {
     if (!isReady) {
@@ -60,19 +47,10 @@ export function useCanvasPages(
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);
     loadPages(current.id, urls);
-    if (current.id === currentCanvasId.current) {
-      isCanvasShown.current = true;
-      return;
-    }
-    if (!currentCanvasId.current) {
-      isCanvasShown.current = true;
-      onPageChange(current.id);
-      return;
-    }
-    if (isCanvasShown.current) {
+    if (current.id !== canvasId) {
       onPageChange(current.id);
     }
-  }, [current, isCanvasInit]);
+  }, [current, isCanvasInit, canvasId]);
 
   return isInit;
 }
