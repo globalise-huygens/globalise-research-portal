@@ -1,7 +1,7 @@
 import {TiledImage, Viewer} from "openseadragon";
 import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
 import {fitLayout} from "./util/fitLayout.ts";
-import {fetchJson} from "@globalise/common";
+import {fetchJson, noop} from "@globalise/common";
 import { throttle } from "lodash";
 
 export type LazyCanvasTileLoaderOptions = {
@@ -14,7 +14,12 @@ export type LazyCanvasTileLoaderOptions = {
    * Callback when selected canvas changes.
    * Selected scan is the scan at the center of the viewport.
    */
-  onCanvasChange?: (index: number) => void;
+  onChangeCanvas?: (index: number) => void;
+
+  /**
+   * Callback when loaded canvases change.
+   */
+  onChangeLoaded?: (loadedIds: Set<CanvasId>) => void;
 
   /**
    * How many viewport heights outside of the viewport should canvasses start loading?
@@ -46,7 +51,8 @@ export class LazyCanvasTileLoader {
   private loaded = new Map<CanvasId, TiledImage>();
   private pending = new Set<CanvasId>();
 
-  private onViewportChangeThrottled: () => void;
+  private onChangeLoaded: (loadedIds: Set<CanvasId>) => void;
+  private onChangeViewportThrottled: () => void;
 
   constructor(
     viewer: Viewer,
@@ -60,9 +66,11 @@ export class LazyCanvasTileLoader {
       loadingBuffer,
       canvasHeight,
       initialCanvas,
-      onCanvasChange
+      onChangeCanvas,
+      onChangeLoaded
     } = { ...defaultOptions, ...options };
     this.loadingBuffer = loadingBuffer;
+    this.onChangeLoaded = onChangeLoaded ?? noop;
 
     const startIndex = initialCanvas < canvases.length
       ? initialCanvas
@@ -70,15 +78,15 @@ export class LazyCanvasTileLoader {
     fitLayout(viewer, canvases[startIndex], canvasHeight);
     this.update();
 
-    this.onViewportChangeThrottled = throttle(() => {
+    this.onChangeViewportThrottled = throttle(() => {
       this.update();
-      if (onCanvasChange) {
-        onCanvasChange(this.findCenterScan());
+      if (onChangeCanvas) {
+        onChangeCanvas(this.findCenterScan());
       }
     }, 150);
 
-    this.viewer.addHandler('viewport-change', this.onViewportChangeThrottled);
-    this.viewer.addHandler('animation', this.onViewportChangeThrottled);
+    this.viewer.addHandler('viewport-change', this.onChangeViewportThrottled);
+    this.viewer.addHandler('animation', this.onChangeViewportThrottled);
   }
 
   /**
@@ -105,11 +113,16 @@ export class LazyCanvasTileLoader {
       }
     }
 
+    let changed = false;
     for (const [canvasId, item] of this.loaded) {
       if (!shouldBeVisible.has(canvasId)) {
         this.viewer.world.removeItem(item);
         this.loaded.delete(canvasId);
+        changed = true;
       }
+    }
+    if (changed) {
+      this.handleLoadedUpdate();
     }
   }
 
@@ -117,12 +130,16 @@ export class LazyCanvasTileLoader {
    * Clear active tile images, loaded images, and pending requests.
    */
   public destroy(): void {
-    this.viewer.removeHandler('viewport-change', this.onViewportChangeThrottled);
-    this.viewer.removeHandler('animation', this.onViewportChangeThrottled);
+    this.viewer.removeHandler('viewport-change', this.onChangeViewportThrottled);
+    this.viewer.removeHandler('animation', this.onChangeViewportThrottled);
 
     this.viewer.world.removeAll();
     this.loaded.clear();
     this.pending.clear();
+  }
+
+  private handleLoadedUpdate(): void {
+      this.onChangeLoaded(new Set(this.loaded.keys()));
   }
 
   private findCenterScan(): number {
@@ -161,6 +178,7 @@ export class LazyCanvasTileLoader {
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
           this.loaded.set(canvas.canvasId, event.item);
+          this.handleLoadedUpdate();
         },
         error: () => {
           this.pending.delete(canvas.canvasId);

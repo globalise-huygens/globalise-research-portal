@@ -1,39 +1,58 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Rect} from 'openseadragon';
 import {Overlay, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
-  Id,
   isBlock,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
-import {useAnnotations} from '@globalise/common/document';
+import {
+  loadCanvas,
+  useAnnotations,
+  usePages,
+} from '@globalise/common/document';
 import {orThrow} from '@globalise/common';
 import {BlockHighlight, Tooltip, TooltipProps, WordHighlight} from '@globalise/facsimile';
 import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
+import {LazyTiledImage} from './LazyCollectionViewerModel.ts';
+import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
 
-export function CollectionFacsimileOverlay({canvasId}: {canvasId: Id}) {
+export function HighlightsOverlay(
+  {lazyCanvas}: {lazyCanvas: LazyTiledImage}
+) {
   const {vault} = useManifest();
-  const {lazyCanvases} = useLazyCollectionViewerContext();
+  const {loadedCanvases} = useLazyCollectionViewerContext();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
-  const annotations = useAnnotations(canvasId);
+  const annotations = useAnnotations(lazyCanvas.canvasId);
+  const {isReady, hasAnnotations} = usePages(lazyCanvas.canvasId);
 
-  const lazyCanvas = lazyCanvases.current.find(c => c.canvasId === canvasId);
+  const isTileLoaded = loadedCanvases.has(lazyCanvas.canvasId);
+
+  const annotationUrls = useMemo(() => {
+    if (!vault) {
+      return [];
+    }
+    const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
+    return getAnnotationPageUrls(canvas);
+  }, [vault, lazyCanvas.canvasId]);
+
+  useEffect(() => {
+    if (isTileLoaded && annotationUrls.length) {
+      loadCanvas(lazyCanvas.canvasId, annotationUrls);
+    }
+  }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
 
   let canvasSize: {width: number; height: number} | null = null;
-  if (vault && lazyCanvas) {
+  if (vault) {
     const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
     canvasSize = {width: canvas.width, height: canvas.height};
   }
 
   const location = useMemo(() => {
-    if (!lazyCanvas) {
-      return null;
-    }
     return new Rect(0, lazyCanvas.y, 1, lazyCanvas.height);
-  }, [lazyCanvas?.y, lazyCanvas?.height]);
+  }, [lazyCanvas.y, lazyCanvas.height]);
 
   const words = useMemo(() => {
     return Object.values(annotations)
@@ -54,22 +73,12 @@ export function CollectionFacsimileOverlay({canvasId}: {canvasId: Id}) {
       }));
   }, [annotations]);
 
-  if (!location || !canvasSize) {
+  if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
   }
 
-  const canvasBorderColor = 'rgb(144 187 195)';
   return (
     <>
-      <Overlay location={location}>
-        <div style={{
-          width: '100%',
-          height: '100%',
-          boxSizing: 'border-box',
-          border: '0.33em solid ' + canvasBorderColor,
-          pointerEvents: 'none',
-        }}/>
-      </Overlay>
       <Overlay location={location}>
         <svg
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}

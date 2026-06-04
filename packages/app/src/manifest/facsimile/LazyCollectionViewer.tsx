@@ -1,5 +1,5 @@
 import {Point, Viewer as OsdViewer} from 'openseadragon';
-import {PropsWithChildren, useEffect, useMemo, useRef} from "react";
+import {PropsWithChildren, useEffect, useMemo, useRef, useState} from "react";
 import {
   useManifest,
   useViewer,
@@ -11,6 +11,7 @@ import {useLazyCanvasLoader} from "./useLazyCanvasLoader.tsx";
 import {createLazyTiledImages} from "./util/createLazyTiledImages.ts";
 import {LazyCollectionViewerContext} from './LazyCollectionViewerContext.tsx';
 import {initCanvases} from "@globalise/common/document";
+import {CanvasId} from "./LazyCollectionViewerModel.ts";
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -43,6 +44,7 @@ export function LazyCollectionViewer(
   const {vault, id: manifestId, isReady} = useManifest();
   const size = useContainerSize(containerRef);
   const isContainerReady = size.width && size.height;
+  const [loadedCanvases, setLoadedCanvases] = useState<Set<CanvasId>>(new Set());
 
   const lazyCanvases = useMemo(() => {
     if (!vault || !manifestId || !isReady) {
@@ -57,6 +59,7 @@ export function LazyCollectionViewer(
     initialCanvas,
     onCanvasChange,
     canvasHeight: scanHeight,
+    onLoadedChange: setLoadedCanvases,
   });
 
   useEffect(initCanvasesLazily, [lazyCanvases, initialCanvas]);
@@ -131,6 +134,7 @@ export function LazyCollectionViewer(
   return (
     <LazyCollectionViewerContext.Provider value={{
       lazyCanvases: {current: lazyCanvases},
+      loadedCanvases,
     }}>
       <div
         ref={containerRef}

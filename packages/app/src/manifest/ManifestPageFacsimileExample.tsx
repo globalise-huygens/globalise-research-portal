@@ -3,11 +3,11 @@ import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestDropdown} from './dropdown/ManifestDropdown';
 import {useCollectionManifests} from './dropdown/useCollectionManifests';
 import {ManifestLoader} from './ManifestLoader';
-import {ManifestFacsimileViewer} from './facsimile/ManifestFacsimileViewer';
 import {Page} from "./Page.tsx";
 import {
-  ManifestFacsimileControls
-} from "./facsimile/ManifestFacsimileControls.tsx";
+  ManifestFacsimileControls,
+  ManifestFacsimileViewer
+} from "./facsimile";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
