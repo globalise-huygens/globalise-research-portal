@@ -12,21 +12,29 @@ import {
   loadCanvas,
   useAnnotations,
   usePages,
+  useSelectedIdsForCanvas,
 } from '@globalise/common/document';
 import {orThrow} from '@globalise/common';
 import {BlockHighlight, Tooltip, TooltipProps, WordHighlight} from '@globalise/facsimile';
 import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
 import {LazyTiledImage} from './LazyCollectionViewerModel.ts';
 import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
+import {useIsViewerScrolling} from './useIsViewerScrolling.tsx';
+
+type HighlightsOverlayProps = {
+  lazyCanvas: LazyTiledImage,
+  canvasIndex: number
+};
 
 export function HighlightsOverlay(
-  {lazyCanvas}: {lazyCanvas: LazyTiledImage}
+  {lazyCanvas, canvasIndex}: HighlightsOverlayProps
 ) {
   const {vault} = useManifest();
   const {loadedCanvases} = useLazyCollectionViewerContext();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
   const {isReady, hasAnnotations} = usePages(lazyCanvas.canvasId);
+  const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
 
   const isTileLoaded = loadedCanvases.has(lazyCanvas.canvasId);
 
@@ -44,7 +52,7 @@ export function HighlightsOverlay(
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
 
-  let canvasSize: {width: number; height: number} | null = null;
+  let canvasSize: { width: number; height: number } | null = null;
   if (vault) {
     const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
     canvasSize = {width: canvas.width, height: canvas.height};
@@ -73,7 +81,31 @@ export function HighlightsOverlay(
       }));
   }, [annotations]);
 
+  const isIdSelected = (id: string) => {
+    if (!selectedIds) {
+      return false;
+    }
+    return selectedIds.includes(id);
+  };
+
+  const isScrolling = useIsViewerScrolling();
+  const visibleWords = useMemo(() => {
+    return isScrolling
+      ? words.filter(w => isIdSelected(w.id))
+      : words;
+  }, [!isScrolling, words, selectedIds]);
+
+  const visibleBlocks = useMemo(() => {
+    return isScrolling
+      ? blocks.filter(b => isIdSelected(b.id))
+      : blocks;
+  }, [!isScrolling, blocks, selectedIds]);
+
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
+    return null;
+  }
+
+  if (!visibleWords.length && !visibleBlocks.length) {
     return null;
   }
 
@@ -84,10 +116,10 @@ export function HighlightsOverlay(
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{width: '100%', height: '100%', pointerEvents: 'none'}}
         >
-          {blocks.map(({id, path}) => (
+          {visibleBlocks.map(({id, path}) => (
             <BlockHighlight key={id} id={id} points={path}/>
           ))}
-          {words.map(({id, path, text}) => (
+          {visibleWords.map(({id, path, text}) => (
             <WordHighlight
               key={id}
               id={id}
