@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+@plugin "tailwindcss-react-aria-components";
+
+@import './style/theme.css';
+@import './style/layout.css';
+@import './style/overlay-document-viewer.css';
