@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
-import {useAnnotations} from '@globalise/common/document';
+import {CanvasId, useAnnotations} from '@globalise/common/document';
 import {
   toggleClicked,
   setHovered,
@@ -14,9 +14,9 @@ import {
 } from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
 
-export function MinimapOverlay() {
+export function MinimapOverlay({canvasId}: {canvasId: CanvasId}) {
   const viewImage = useImageInfo();
-  const annotations = useAnnotations();
+  const annotations = useAnnotations(canvasId);
 
   const words = useMemo(() => {
     if (!annotations) {

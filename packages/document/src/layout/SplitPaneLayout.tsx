@@ -38,7 +38,6 @@ export function SplitPaneLayout({children}: DocumentLayoutProps) {
 
   return (
     <div className="split-pane-layout">
-      <HeaderBar />
       <SplitPane
         direction={direction}
         dividerSize={direction === 'horizontal'

@@ -10,7 +10,6 @@ type SinglePaneLayoutProps = {
 export function SinglePaneLayout({children}: SinglePaneLayoutProps) {
   return (
     <div className="single-pane-layout">
-      <HeaderBar />
       <div className="single-pane-content">
         {children}
       </div>

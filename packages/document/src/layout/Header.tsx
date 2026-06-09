@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import {HeaderContext} from '@globalise/common/header';
+import {HeaderContext} from "../header";
 
 import './Header.css';
 

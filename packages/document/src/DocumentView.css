@@ -1,12 +1,29 @@
-.document-view .facsimile-view {
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+.facsimile-view {
     overflow: hidden;
 }
 
 .document-view {
-    .single-pane-layout {
-        .normalized-view {
-            max-width: 100%;
-            margin-inline: auto;
-        }
-    }
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.document-view .split-pane-layout,
+.document-view .single-pane-layout {
+    flex: 1;
+    min-height: 0;
+}
+
+.document-view .facsimile-view {
+    overflow: hidden;
+}
+
+.document-view .single-pane-layout .normalized-view {
+    max-width: 100%;
+    margin-inline: auto;
 }

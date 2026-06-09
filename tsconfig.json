@@ -5,9 +5,10 @@
     { "path": "packages/common" },
     { "path": "packages/design" },
     { "path": "packages/diplomatic" },
-    { "path": "packages/facsimile" },
     { "path": "packages/document" },
+    { "path": "packages/facsimile" },
     { "path": "packages/line-by-line" },
+    { "path": "packages/manifest" },
     { "path": "packages/search" },
   ]
 }

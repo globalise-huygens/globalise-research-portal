@@ -1,9 +1,9 @@
-import {HeaderRegion} from '@globalise/common/header';
 import SplitscreenRounded from '@mui/icons-material/SplitscreenRounded';
 import ImageIcon from '@mui/icons-material/Image';
 import SubjectIcon from '@mui/icons-material/Subject';
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermarkOutlined';
 import {setDocumentMode, useSettings} from './SettingsStore';
+import {HeaderRegion} from "./header";
 
 export type DocumentMode =
   | 'split'

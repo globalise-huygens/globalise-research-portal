@@ -6,14 +6,16 @@ import {CanvasControls} from './CanvasControls.tsx';
 import {FacsimileOverlay} from './FacsimileOverlay.tsx';
 
 import './FacsimileView.css';
+import {CanvasId} from '@globalise/common/document';
 
 export type FacsimileViewerProps = {
   style?: React.CSSProperties;
   showNavigation?: boolean;
+  canvasId: CanvasId
 };
 
 export function FacsimileView(
-  {style, showNavigation = true}: FacsimileViewerProps
+  {canvasId, style, showNavigation = true}: FacsimileViewerProps
 ) {
   const fullscreenRef = useRef<HTMLDivElement>(null);
   return (
@@ -25,8 +27,8 @@ export function FacsimileView(
       <Viewer options={{
         showNavigationControl: false,
         gestureSettingsMouse: {clickToZoom: false},
-      }} />
-      <FacsimileOverlay/>
+      }}/>
+      <FacsimileOverlay canvasId={canvasId}/>
       <ControlBar>
         <FacsimileControls fullscreenRef={fullscreenRef}/>
       </ControlBar>

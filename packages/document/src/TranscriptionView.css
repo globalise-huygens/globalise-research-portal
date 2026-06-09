@@ -1,7 +1,7 @@
 .message {
     margin: 2rem;
     color: grey;
-
+    text-align: center;
     &.error {
         color: indianred;
     }

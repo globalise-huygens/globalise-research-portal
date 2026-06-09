@@ -1,6 +1,5 @@
 import React, {useMemo} from 'react';
 import {Id} from '@globalise/common/annotation';
-import {useTextGranularity} from '@globalise/common/document';
 import {useIsSelectedInTranscription} from '@globalise/common/document';
 import {SegmentedLine} from './SegmentedLine';
 import {LineSegments} from './useLineSegments';
@@ -14,8 +13,7 @@ type Props = {
 export const NormalizedLayout = React.memo(function NormalizedLayout(
   {lineSegments}: Props,
 ) {
-  const {segmentsByLine} = lineSegments;
-  const {blockToLines} = useTextGranularity();
+  const {segmentsByLine, blockToLines} = lineSegments;
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
 

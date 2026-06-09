@@ -1,14 +1,9 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {
-  Id,
-} from '@globalise/common/annotation';
-import {
   useAnnotations,
   usePages,
-  usePartOf,
-  useTextGranularity,
+  usePartOf, useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import {useDocumentStore} from '@globalise/common/document';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineView} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -28,10 +23,17 @@ import './TranscriptionView.css';
 
 const emptyPageThreshold = 10;
 
-export function TranscriptionView() {
-  const annotations = useAnnotations();
-  const page = usePartOf();
-  const {isReady, pages, error} = usePages();
+type TranscriptionViewProps = {
+  canvasId: string;
+  showControls?: boolean;
+};
+
+export function TranscriptionView(
+  {canvasId, showControls = true}: TranscriptionViewProps
+) {
+  const annotations = useAnnotations(canvasId);
+  const page = usePartOf(canvasId);
+  const {isReady, hasAnnotations, error} = usePages(canvasId);
   const {transcriptionMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
   const showDiplomatic = transcriptionMode === 'diplomatic';
@@ -40,33 +42,7 @@ export function TranscriptionView() {
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
 
-  const hoveredId = useDocumentStore(s => s.hoveredId);
-  const clickedId = useDocumentStore(s => s.clickedId);
-  const {wordToBlock} = useTextGranularity();
-  const {entityToBlock} = useDocumentStore(s => s.entityOverlap);
-
-  const selectedIds = useMemo(() => {
-    const selected = new Set<Id>();
-    if (hoveredId) {
-      select(hoveredId);
-    }
-    if (clickedId) {
-      select(clickedId);
-    }
-    return [...selected];
-
-    function select(id: Id) {
-      selected.add(id);
-      const blockFromWord = wordToBlock[id];
-      if (blockFromWord) {
-        selected.add(blockFromWord);
-      }
-      const blockFromEntity = entityToBlock[id];
-      if (blockFromEntity) {
-        selected.add(blockFromEntity);
-      }
-    }
-  }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
+  const selectedIds = useSelectedIdsForCanvas(canvasId);
 
   const showScanMargin = useMemo(() => {
     if (!annotations) {
@@ -102,7 +78,7 @@ export function TranscriptionView() {
     return <div className="message">Loading...</div>;
   }
 
-  if (!pages.length) {
+  if (!hasAnnotations) {
     return <div className="message">No transcription</div>;
   }
 
@@ -116,7 +92,7 @@ export function TranscriptionView() {
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
-  const controls = (
+  const controls = showControls ? (
     <>
       {showDiplomatic && (
         <span className="zoom-slider">
@@ -152,11 +128,11 @@ export function TranscriptionView() {
         Line by line
       </button>
     </>
-  );
+  ) : null;
 
   return (
     <div className="transcription-view">
-      <ControlBar>{controls}</ControlBar>
+      {controls && <ControlBar>{controls}</ControlBar>}
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}

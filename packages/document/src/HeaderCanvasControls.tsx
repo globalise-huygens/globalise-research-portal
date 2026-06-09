@@ -1,13 +1,13 @@
-import {HeaderRegion} from '@globalise/common/header';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {useCanvasNavigation} from '@globalise/facsimile';
 
 import './HeaderCanvasControls.css';
+import {HeaderRegion} from "./header";
 
 export function HeaderCanvasControls() {
   const {
-    ready,
+    isReady,
     prev,
     next,
     goToRandom,
@@ -16,8 +16,7 @@ export function HeaderCanvasControls() {
     hasPrev,
     hasNext
   } = useCanvasNavigation();
-
-  if (!ready) {
+  if (!isReady) {
     return null;
   }
 

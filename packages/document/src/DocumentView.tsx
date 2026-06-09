@@ -4,12 +4,13 @@ import {DocumentModeControls} from './DocumentModeControls';
 import {SplitPaneLayout} from './layout/SplitPaneLayout';
 import {TranscriptionView} from './TranscriptionView';
 import {SinglePaneLayout} from './layout/SinglePaneLayout';
-import {useCanvasPages} from './useCanvasPages';
+import {HeaderCanvasControls} from './HeaderCanvasControls';
+import {MinimapView} from './minimap/MinimapView';
+import {useSettings} from './SettingsStore';
 
 import './DocumentView.css';
-import {HeaderCanvasControls} from "./HeaderCanvasControls";
-import {MinimapView} from "./minimap/MinimapView";
-import {useSettings} from "./SettingsStore";
+import {HeaderBar} from "./layout/Header.tsx";
+import {useDocumentLifecycle} from "@globalise/common/document";
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -18,41 +19,53 @@ type DocumentViewProps = {
 };
 
 export function DocumentView(
-  {canvasId, onPageChange}: DocumentViewProps
+  {manifestUrl, canvasId, onPageChange}: DocumentViewProps
 ) {
-  const {documentMode: mode} = useSettings()
-  const isPageInit = useCanvasPages(canvasId, onPageChange);
+  const {documentMode: mode} = useSettings();
+  const lifecycle = useDocumentLifecycle(manifestUrl, canvasId, onPageChange);
 
-  if (!isPageInit) {
+  if (lifecycle.phase === 'loading-manifest') {
     return <div>Loading...</div>;
   }
 
+  const annotationsReady = lifecycle.phase === 'annotations-ready';
+
   return (
     <div className="document-view" style={{height: '100%'}}>
-      <HeaderCanvasControls />
-      <DocumentModeControls />
+      <HeaderBar/>
+      <HeaderCanvasControls/>
+      <DocumentModeControls/>
       {mode === 'split' && (
         <SplitPaneLayout>
-          <FacsimileView showNavigation={false} style={{height: '100%'}} />
-          <TranscriptionView />
+          <FacsimileView
+            canvasId={lifecycle.canvasId}
+            showNavigation={false}
+            style={{height: '100%'}}
+          />
+          {annotationsReady && (
+            <TranscriptionView canvasId={lifecycle.canvasId}/>
+          )}
         </SplitPaneLayout>
       )}
       {mode === 'facsimile' && (
         <SinglePaneLayout>
-          <FacsimileView showNavigation={false} style={{height: '100%'}} />
+          <FacsimileView
+            canvasId={lifecycle.canvasId}
+            showNavigation={false}
+            style={{height: '100%'}}
+          />
         </SinglePaneLayout>
       )}
-      {mode === 'transcription' && (
+      {mode === 'transcription' && annotationsReady && (
         <SinglePaneLayout>
-          <TranscriptionView />
+          <TranscriptionView canvasId={lifecycle.canvasId}/>
         </SinglePaneLayout>
       )}
       {mode === 'minimap' && (
         <SinglePaneLayout>
-          <MinimapView />
+          <MinimapView canvasId={lifecycle.canvasId}/>
         </SinglePaneLayout>
       )}
     </div>
   );
 }
-

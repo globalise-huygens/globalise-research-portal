@@ -3,7 +3,6 @@ import {persist} from 'zustand/middleware';
 import {DocumentMode} from "./DocumentModeControls";
 
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
-
 export type SettingsState = {
   documentMode: DocumentMode
   paneRatio: number;
