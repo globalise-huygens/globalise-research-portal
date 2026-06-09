@@ -4,3 +4,4 @@ export {ManifestTranscriptionViewer} from './transcription/ManifestTranscription
 export {ManifestTranscriptionControls} from './transcription/ManifestTranscriptionControls'
 export {ManifestDropdown} from './dropdown/ManifestDropdown'
 export {useCollectionManifests} from './dropdown/useCollectionManifests'
+export {ManifestDocumentViewer} from './ManifestDocumentViewer'

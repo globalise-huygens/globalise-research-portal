@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DocumentRouteImport } from './routes/document'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
 import { Route as ManifestTranscriptionRouteImport } from './routes/manifest/transcription'
 import { Route as ManifestFacsimileRouteImport } from './routes/manifest/facsimile'
 
@@ -22,6 +23,11 @@ const DocumentRoute = DocumentRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManifestIndexRoute = ManifestIndexRouteImport.update({
+  id: '/manifest/',
+  path: '/manifest/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManifestTranscriptionRoute = ManifestTranscriptionRouteImport.update({
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/document': typeof DocumentRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
+  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/document': typeof DocumentRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
+  '/manifest': typeof ManifestIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,6 +61,7 @@ export interface FileRoutesById {
   '/document': typeof DocumentRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
+  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -61,14 +70,21 @@ export interface FileRouteTypes {
     | '/document'
     | '/manifest/facsimile'
     | '/manifest/transcription'
+    | '/manifest/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/document' | '/manifest/facsimile' | '/manifest/transcription'
+  to:
+    | '/'
+    | '/document'
+    | '/manifest/facsimile'
+    | '/manifest/transcription'
+    | '/manifest'
   id:
     | '__root__'
     | '/'
     | '/document'
     | '/manifest/facsimile'
     | '/manifest/transcription'
+    | '/manifest/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +92,7 @@ export interface RootRouteChildren {
   DocumentRoute: typeof DocumentRoute
   ManifestFacsimileRoute: typeof ManifestFacsimileRoute
   ManifestTranscriptionRoute: typeof ManifestTranscriptionRoute
+  ManifestIndexRoute: typeof ManifestIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manifest/': {
+      id: '/manifest/'
+      path: '/manifest'
+      fullPath: '/manifest/'
+      preLoaderRoute: typeof ManifestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manifest/transcription': {
@@ -116,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentRoute: DocumentRoute,
   ManifestFacsimileRoute: ManifestFacsimileRoute,
   ManifestTranscriptionRoute: ManifestTranscriptionRoute,
+  ManifestIndexRoute: ManifestIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

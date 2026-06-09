@@ -3,7 +3,6 @@ import {DividerProps, Pane, SplitPane} from 'react-split-pane';
 import {Splitter} from './Splitter';
 import {useLayoutDirection} from './useLayoutDirection';
 import {resetScaling, setPaneRatio, useSettings} from '../SettingsStore';
-import {HeaderBar} from './Header';
 import './SplitPaneLayout.css'
 
 type DocumentLayoutProps = {
