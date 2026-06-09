@@ -3,11 +3,13 @@ import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from "@globalise/facsimile";
 import {Page} from "./Page.tsx";
 import {
-  ManifestDocumentViewer,
   ManifestDropdown,
-  ManifestFacsimileControls,
+  ManifestFacsimileViewer,
+  ManifestTranscriptionControls,
+  ManifestTranscriptionViewer,
   useCollectionManifests
 } from "@globalise/manifest";
+import {SplitPaneLayout} from "@globalise/document";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -47,16 +49,42 @@ export function ManifestDocumentPage() {
         <Page
           header={
             <>
-              <ManifestDropdown
-                manifests={allManifests}
-                selected={manifestUrl}
-                onChange={handleManifestChange}
-              />
-              <ManifestFacsimileControls/>
+              <div style={{flex: 1, minWidth: 0}}>
+                <ManifestDropdown
+                  manifests={allManifests}
+                  selected={manifestUrl}
+                  onChange={handleManifestChange}
+                />
+              </div>
+              <div style={{
+                flex: '0 0 auto',
+                display: 'flex',
+                gap: '0.25rem',
+                alignItems: 'center'
+              }}>
+                <ManifestTranscriptionControls/>
+              </div>
             </>
           }
         >
-          <ManifestDocumentViewer/>
+          <SplitPaneLayout>
+            <ManifestFacsimileViewer
+              initialCanvas={initialCanvas}
+              onCanvasChange={handleCanvasChange}
+            />
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100vh',
+              overflow: 'hidden'
+            }}>
+              <div style={{flex: 1, overflow: 'hidden'}}>
+                <ManifestTranscriptionViewer
+                  initialCanvas={initialCanvas}
+                  onCanvasChange={handleCanvasChange}
+                /></div>
+            </div>
+          </SplitPaneLayout>
         </Page>
       </ManifestLoader>
     </ViewerProvider>

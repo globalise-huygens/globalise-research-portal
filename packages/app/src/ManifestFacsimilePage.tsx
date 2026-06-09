@@ -3,7 +3,6 @@ import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from "@globalise/facsimile";
 import {Page} from "./Page.tsx";
 import {
-  ManifestDocumentViewer,
   ManifestDropdown,
   ManifestFacsimileControls, ManifestFacsimileViewer,
   useCollectionManifests
