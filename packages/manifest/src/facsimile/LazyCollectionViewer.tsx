@@ -115,8 +115,20 @@ export function LazyCollectionViewer(
     store.getState().setViewer(viewer);
     store.getState().setViewerReady(true);
 
+    const onAnimationStart = () => {
+      lazyCollectionViewerStore.getState().setScrolling(true);
+    };
+    const onAnimationFinish = () => {
+      lazyCollectionViewerStore.getState().setScrolling(false);
+    };
+    viewer.addHandler('animation-start', onAnimationStart);
+    viewer.addHandler('animation-finish', onAnimationFinish);
+
     return () => {
       container.removeEventListener('wheel', handleWheel);
+      viewer.removeHandler('animation-start', onAnimationStart);
+      viewer.removeHandler('animation-finish', onAnimationFinish);
+      lazyCollectionViewerStore.getState().setScrolling(false);
       viewer.destroy();
       store.getState().resetViewer();
     };
