@@ -2,7 +2,7 @@ import {TiledImage, Viewer} from "openseadragon";
 import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
 import {fitLayout} from "./util/fitLayout.ts";
 import {fetchJson, noop} from "@globalise/common";
-import { throttle } from "lodash";
+import {throttle} from "lodash";
 
 export type LazyCanvasTileLoaderOptions = {
   /**
@@ -55,11 +55,6 @@ export class LazyCanvasTileLoader {
   private onChangeViewportThrottled: () => void;
 
   private frameId: number | null = null;
-
-  private onChangeLoadedBatched = () => {
-    this.frameId = null;
-    this.onChangeLoaded(new Set(this.loaded.keys()));
-  };
 
   constructor(
     viewer: Viewer,
@@ -129,7 +124,7 @@ export class LazyCanvasTileLoader {
       }
     }
     if (changed) {
-      this.scheduleOnChangeLoaded();
+      this.onChangeLoadedBatched();
     }
   }
 
@@ -151,14 +146,17 @@ export class LazyCanvasTileLoader {
   }
 
   /**
-   * Collect load/unload events into a single notification per frame
+   * Collect load/unload canvas events into a single callback per frame
    * to render smoothly when scrolling fast
    */
-  private scheduleOnChangeLoaded(): void {
+  private onChangeLoadedBatched(): void {
     if (this.frameId !== null) {
       return;
     }
-    this.frameId = requestAnimationFrame(this.onChangeLoadedBatched);
+    this.frameId = requestAnimationFrame(() => {
+      this.frameId = null;
+      this.onChangeLoaded(new Set(this.loaded.keys()));
+    });
   }
 
   private findCenterScan(): number {
@@ -197,7 +195,7 @@ export class LazyCanvasTileLoader {
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
           this.loaded.set(canvas.canvasId, event.item);
-          this.scheduleOnChangeLoaded();
+          this.onChangeLoadedBatched();
         },
         error: () => {
           this.pending.delete(canvas.canvasId);
