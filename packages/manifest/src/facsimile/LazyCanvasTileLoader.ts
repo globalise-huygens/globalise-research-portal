@@ -54,6 +54,13 @@ export class LazyCanvasTileLoader {
   private onChangeLoaded: (loadedIds: Set<CanvasId>) => void;
   private onChangeViewportThrottled: () => void;
 
+  private frameId: number | null = null;
+
+  private onChangeLoadedBatched = () => {
+    this.frameId = null;
+    this.onChangeLoaded(new Set(this.loaded.keys()));
+  };
+
   constructor(
     viewer: Viewer,
     canvases: LazyTiledImage[],
@@ -122,7 +129,7 @@ export class LazyCanvasTileLoader {
       }
     }
     if (changed) {
-      this.handleLoadedUpdate();
+      this.scheduleOnChangeLoaded();
     }
   }
 
@@ -133,13 +140,25 @@ export class LazyCanvasTileLoader {
     this.viewer.removeHandler('viewport-change', this.onChangeViewportThrottled);
     this.viewer.removeHandler('animation', this.onChangeViewportThrottled);
 
+    if (this.frameId !== null) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = null;
+    }
+
     this.viewer.world.removeAll();
     this.loaded.clear();
     this.pending.clear();
   }
 
-  private handleLoadedUpdate(): void {
-      this.onChangeLoaded(new Set(this.loaded.keys()));
+  /**
+   * Collect load/unload events into a single notification per frame
+   * to render smoothly when scrolling fast
+   */
+  private scheduleOnChangeLoaded(): void {
+    if (this.frameId !== null) {
+      return;
+    }
+    this.frameId = requestAnimationFrame(this.onChangeLoadedBatched);
   }
 
   private findCenterScan(): number {
@@ -178,7 +197,7 @@ export class LazyCanvasTileLoader {
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
           this.loaded.set(canvas.canvasId, event.item);
-          this.handleLoadedUpdate();
+          this.scheduleOnChangeLoaded();
         },
         error: () => {
           this.pending.delete(canvas.canvasId);
