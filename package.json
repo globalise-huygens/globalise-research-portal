@@ -8,7 +8,7 @@
   "scripts": {
     "start": "npm -w @globalise/app run dev",
     "build": "npm t && npm -w @globalise/app run build",
-    "preview": "npm -w @globalise/app run preview",
+    "preview": "npm -w @globalise/app run build && npm -w @globalise/app run preview",
     "typecheck": "tsc -b --clean && tsc -b",
     "test": "vitest run"
   },
