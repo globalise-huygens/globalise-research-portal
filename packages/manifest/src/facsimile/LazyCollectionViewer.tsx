@@ -1,17 +1,16 @@
 import {Point, Viewer as OsdViewer} from 'openseadragon';
-import {PropsWithChildren, useEffect, useMemo, useRef, useState} from "react";
+import {PropsWithChildren, useEffect, useMemo, useRef} from 'react';
 import {
   useManifest,
   useViewer,
   useViewerStore
-} from "@knaw-huc/osd-iiif-viewer";
-import {useContainerSize} from "./useContainerSize.tsx";
-import {observeResize} from "./util/observeResize.tsx";
-import {useLazyCanvasLoader} from "./useLazyCanvasLoader.tsx";
-import {createLazyTiledImages} from "./util/createLazyTiledImages.ts";
-import {LazyCollectionViewerContext} from './LazyCollectionViewerContext.tsx';
-import {initCanvases} from "@globalise/common/document";
-import {CanvasId} from "./LazyCollectionViewerModel.ts";
+} from '@knaw-huc/osd-iiif-viewer';
+import {useContainerSize} from './useContainerSize.tsx';
+import {observeResize} from './util/observeResize.tsx';
+import {useLazyCanvasLoader} from './useLazyCanvasLoader.tsx';
+import {createLazyTiledImages} from './util/createLazyTiledImages.ts';
+import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
+import {initCanvases} from '@globalise/common/document';
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -38,13 +37,12 @@ export function LazyCollectionViewer(
     onCanvasChange
   }: Props
 ) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
   const {vault, id: manifestId, isReady} = useManifest();
-  const size = useContainerSize(containerRef);
-  const isContainerReady = size.width && size.height;
-  const [loadedCanvases, setLoadedCanvases] = useState<Set<CanvasId>>(new Set());
+  const size = useContainerSize(scrollRef);
+  const isScrollReady = size.width && size.height;
 
   const lazyCanvases = useMemo(() => {
     if (!vault || !manifestId || !isReady) {
@@ -53,13 +51,20 @@ export function LazyCollectionViewer(
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
 
+  useEffect(syncLazyCanvases, [lazyCanvases]);
+  function syncLazyCanvases() {
+    lazyCollectionViewerStore.getState().setLazyCanvases(lazyCanvases);
+  }
+
   useLazyCanvasLoader({
     viewer,
     lazyCanvases,
     initialCanvas,
     onCanvasChange,
     canvasHeight: scanHeight,
-    onLoadedChange: setLoadedCanvases,
+    onLoadedChange: (loaded) => {
+      lazyCollectionViewerStore.getState().setLoaded(loaded);
+    },
   });
 
   useEffect(initCanvasesLazily, [lazyCanvases, initialCanvas]);
@@ -70,13 +75,13 @@ export function LazyCollectionViewer(
     initCanvases(lazyCanvases.map(c => c.canvasId), initialCanvas);
   }
 
-  useEffect(createViewer, [isContainerReady, store]);
+  useEffect(createViewer, [isScrollReady, store]);
   function createViewer() {
-    if (!containerRef.current || !isContainerReady) {
+    if (!scrollRef.current || !isScrollReady) {
       return;
     }
     const viewer = new OsdViewer({
-      element: containerRef.current,
+      element: scrollRef.current,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
       crossOriginPolicy: 'Anonymous',
       showNavigationControl: true,
@@ -91,7 +96,7 @@ export function LazyCollectionViewer(
       tileRetryDelay: 3000,
     });
 
-    const container = containerRef.current;
+    const container = scrollRef.current;
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
@@ -119,7 +124,7 @@ export function LazyCollectionViewer(
 
   useEffect(handleResize, [store]);
   function handleResize() {
-    const container = containerRef.current;
+    const container = scrollRef.current;
     if (!container) {
       return;
     }
@@ -132,15 +137,12 @@ export function LazyCollectionViewer(
   }
 
   return (
-    <LazyCollectionViewerContext.Provider value={{
-      lazyCanvases: {current: lazyCanvases},
-      loadedCanvases,
-    }}>
+    <>
       <div
-        ref={containerRef}
+        ref={scrollRef}
         style={{width: '100%', height: '100%'}}
       />
       {children}
-    </LazyCollectionViewerContext.Provider>
+    </>
   );
 }

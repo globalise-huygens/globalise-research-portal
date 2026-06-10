@@ -1,14 +1,14 @@
-import {useMemo} from 'react';
+import {useMemo, useRef} from 'react';
 import {Rect} from 'openseadragon';
 import {Overlay} from '@knaw-huc/osd-iiif-viewer';
 import {useSelectedCanvas} from '@globalise/common/document';
-import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
+import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
 
 export function CurrentCanvasOverlay() {
-  const {lazyCanvases} = useLazyCollectionViewerContext();
+  const lazyCanvases = lazyCollectionViewerStore(s => s.lazyCanvases);
   const {isInit, id} = useSelectedCanvas();
 
-  const lazyCanvas = lazyCanvases.current.find(c => c.canvasId === id);
+  const lazyCanvas = lazyCanvases.find(c => c.canvasId === id);
 
   const location = useMemo(() => {
     if (!lazyCanvas) {
