@@ -1,6 +1,8 @@
-# Globalise Webapp
+# Globalise Research Portal
 
-Integrate design with search and document components.
+Integrate globalise design with search and document components.
+
+Demo: https://dev.globalise.nl/
 
 ## Development
 
