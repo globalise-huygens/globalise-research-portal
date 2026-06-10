@@ -9,7 +9,9 @@ import {useContainerSize} from './useContainerSize.tsx';
 import {observeResize} from './util/observeResize.tsx';
 import {useLazyCanvasLoader} from './useLazyCanvasLoader.tsx';
 import {createLazyTiledImages} from './util/createLazyTiledImages.ts';
-import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
+import {
+  setLazyCanvases, setLoaded, setScrolling
+} from './LazyCollectionViewerStore.ts';
 import {initCanvases} from '@globalise/common/document';
 
 type Props = PropsWithChildren<{
@@ -53,7 +55,7 @@ export function LazyCollectionViewer(
 
   useEffect(syncLazyCanvases, [lazyCanvases]);
   function syncLazyCanvases() {
-    lazyCollectionViewerStore.getState().setLazyCanvases(lazyCanvases);
+    setLazyCanvases(lazyCanvases);
   }
 
   useLazyCanvasLoader({
@@ -63,7 +65,7 @@ export function LazyCollectionViewer(
     onCanvasChange,
     canvasHeight: scanHeight,
     onLoadedChange: (loaded) => {
-      lazyCollectionViewerStore.getState().setLoaded(loaded);
+      setLoaded(loaded);
     },
   });
 
@@ -116,10 +118,10 @@ export function LazyCollectionViewer(
     store.getState().setViewerReady(true);
 
     const onAnimationStart = () => {
-      lazyCollectionViewerStore.getState().setScrolling(true);
+      setScrolling(true);
     };
     const onAnimationFinish = () => {
-      lazyCollectionViewerStore.getState().setScrolling(false);
+      setScrolling(false);
     };
     viewer.addHandler('animation-start', onAnimationStart);
     viewer.addHandler('animation-finish', onAnimationFinish);
@@ -128,7 +130,7 @@ export function LazyCollectionViewer(
       container.removeEventListener('wheel', handleWheel);
       viewer.removeHandler('animation-start', onAnimationStart);
       viewer.removeHandler('animation-finish', onAnimationFinish);
-      lazyCollectionViewerStore.getState().setScrolling(false);
+      setScrolling(false);
       viewer.destroy();
       store.getState().resetViewer();
     };

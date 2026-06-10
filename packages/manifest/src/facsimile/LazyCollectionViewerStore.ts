@@ -5,18 +5,28 @@ export type LazyCollectionViewerState = {
   lazyCanvases: LazyTiledImage[];
   loaded: Set<CanvasId>;
   isScrolling: boolean;
-  setLazyCanvases: (lazyCanvases: LazyTiledImage[]) => void;
-  setLoaded: (loaded: Set<CanvasId>) => void;
-  setScrolling: (isScrolling: boolean) => void;
 };
 
 export const lazyCollectionViewerStore = create<LazyCollectionViewerState>(
-  (set) => ({
+  () => ({
     lazyCanvases: [],
     loaded: new Set(),
     isScrolling: false,
-    setLazyCanvases: (lazyCanvases) => set({lazyCanvases, loaded: new Set()}),
-    setLoaded: (loaded) => set({loaded}),
-    setScrolling: (isScrolling) => set({isScrolling}),
   })
 );
+
+export function setLazyCanvases(lazyCanvases: LazyTiledImage[]) {
+  lazyCollectionViewerStore.setState({
+    lazyCanvases,
+    // Reset loaded when initializing lazy canvases:
+    loaded: new Set()
+  });
+}
+
+export function setLoaded(loaded: Set<CanvasId>) {
+  lazyCollectionViewerStore.setState({loaded});
+}
+
+export function setScrolling(isScrolling: boolean) {
+  lazyCollectionViewerStore.setState({isScrolling});
+}
