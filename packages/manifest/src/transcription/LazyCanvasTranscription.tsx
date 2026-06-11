@@ -29,6 +29,8 @@ export function LazyCanvasTranscription(
     scaleFactor,
   }: Props,
 ) {
+  console.log(LazyCanvasTranscription.name, 'render', index);
+
   const { isLoadable, isNearViewport } = useIsLoadableWithDistanceDelay(index);
 
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -106,15 +108,19 @@ function useIsLoadableWithDistanceDelay(
   delay = 25,
   maxDistance = 2,
 ) {
-  const distance = useDocumentStore((s) => Math.abs(index - s.selectedCanvas));
+  const isNearViewport = useDocumentStore(
+    (s) => Math.abs(index - s.selectedCanvas) <= maxDistance,
+  );
 
   const [isLoadable, setIsLoadable] = useState(false);
-  const isNear = distance <= maxDistance;
 
   useEffect(() => {
-    if (isLoadable || !isNear) {
+    if (isLoadable || !isNearViewport) {
       return;
     }
+
+    const currentSelected = useDocumentStore.getState().selectedCanvas;
+    const distance = Math.abs(index - currentSelected);
 
     if (distance === 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -128,7 +134,7 @@ function useIsLoadableWithDistanceDelay(
     }, distance * delay);
 
     return () => clearTimeout(timer);
-  }, [distance, isNear, isLoadable, delay]);
+  }, [isNearViewport, isLoadable, delay, index]);
 
-  return { isLoadable, isNearViewport: isNear };
+  return { isLoadable, isNearViewport };
 }
