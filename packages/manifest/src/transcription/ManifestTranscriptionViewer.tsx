@@ -47,53 +47,50 @@ export function ManifestTranscriptionViewer(
   const canvasListRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  useEffect(updateCanvasOnScaleOrScroll, [onCanvasChange, canvasInfos.length]);
+  const lastScrolledCanvas = useRef<number | null>(initialCanvas);
+
+  useEffect(updateCanvasOnScaleOrScroll, [onCanvasChange, canvasInfos.length, containerWidth]);
   function updateCanvasOnScaleOrScroll() {
+    console.log('updateCanvasOnScaleOrScroll');
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
     if (!scrollContainer || !canvasList) {
       return;
     }
 
-    const setSelectedCanvasToCenterElement = () => {
-      const scrollTop = scrollContainer.scrollTop;
-      const clientHeight = scrollContainer.clientHeight;
-      const scrollCenter = scrollTop + clientHeight / 2;
-      const canvasElements = canvasList.children;
-      for (let i = 0; i < canvasElements.length; i++) {
-        const element = canvasElements[i] as HTMLElement;
-        const canvasBottom = element.offsetTop + element.offsetHeight;
-        if (canvasBottom > scrollCenter) {
-          setSelectedCanvas(i);
-          onCanvasChange(i);
-          return;
-        }
-      }
-    };
-
-    let hasScrolled = false;
-    const onScroll = () => {
-      hasScrolled = true;
-      setSelectedCanvasToCenterElement();
-    };
-    scrollContainer.addEventListener('scroll', onScroll);
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      setContainerWidth(entry.contentRect.width);
-      /**
-       * Wait for {@link initCanvasScroll} to prevent canvas=0 flicker:
-       */
-      if (!hasScrolled) {
-        return;
-      }
-      setSelectedCanvasToCenterElement();
+    const resizeObserver = new ResizeObserver(([canvasEvent]) => {
+      setContainerWidth(canvasEvent.contentRect.width);
     });
-
     resizeObserver.observe(canvasList);
 
+    const intersectionObserver = new IntersectionObserver((canvasEvents) => {
+      for (const event of canvasEvents) {
+        if (!event.isIntersecting) {
+          continue;
+        }
+        const index = Array.from(canvasList.children).indexOf(event.target);
+        if (index === -1 || index === lastScrolledCanvas.current) {
+          continue;
+        }
+        console.log('new selected canvas:', index);
+        lastScrolledCanvas.current = index;
+        setSelectedCanvas(index);
+        onCanvasChange(index);
+      }
+    }, {
+      root: scrollContainer,
+      // Only switch to a new canvas when that canvas enters screen center:
+      rootMargin: '-49% 0px -49% 0px',
+      threshold: 0,
+    });
+
+    Array.from(canvasList.children).forEach((child) => {
+      intersectionObserver.observe(child);
+    });
+
     return () => {
-      scrollContainer.removeEventListener('scroll', onScroll);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
     };
   }
 
@@ -112,6 +109,7 @@ export function ManifestTranscriptionViewer(
     const viewportHeight = scrollRef.current.clientHeight;
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
     child.scrollIntoView({ block });
+    lastScrolledCanvas.current = initialCanvas;
   }
 
   const containerStyle: CSSProperties = {
