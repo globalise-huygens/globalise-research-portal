@@ -1,6 +1,6 @@
-import {useMemo} from 'react';
-import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
-import {CanvasId, useAnnotations} from '@globalise/common/document';
+import { useMemo } from 'react';
+import { Overlay, useImageInfo } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasId, useAnnotations } from '@globalise/common/document';
 import {
   toggleClicked,
   setHovered,
@@ -14,7 +14,7 @@ import {
 } from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
 
-export function MinimapOverlay({canvasId}: {canvasId: CanvasId}) {
+export function MinimapOverlay({ canvasId }: { canvasId: CanvasId }) {
   const viewImage = useImageInfo();
   const annotations = useAnnotations(canvasId);
 
@@ -24,9 +24,9 @@ export function MinimapOverlay({canvasId}: {canvasId: CanvasId}) {
     }
     return Object.values(annotations)
       .filter(isWord)
-      .map(a => {
+      .map((a) => {
         const svgPath = findSvgPath(a) ?? orThrow('No svg path');
-        return ({id: a.id, path: parseSvgPath(svgPath)});});
+        return ({ id: a.id, path: parseSvgPath(svgPath) });});
   }, [annotations]);
 
   if (!viewImage || !words.length) {
@@ -37,9 +37,9 @@ export function MinimapOverlay({canvasId}: {canvasId: CanvasId}) {
     <Overlay location={viewImage.location}>
       <svg
         viewBox={`0 0 ${viewImage.size.x} ${viewImage.size.y}`}
-        style={{width: '100%', height: '100%', pointerEvents: 'none'}}
+        style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
       >
-        {words.map(({id, path}) => (
+        {words.map(({ id, path }) => (
           <WordPolygon key={id} id={id} path={path} />
         ))}
       </svg>
@@ -47,14 +47,14 @@ export function MinimapOverlay({canvasId}: {canvasId: CanvasId}) {
   );
 }
 
-function WordPolygon({id, path}: {id: Id; path: string}) {
+function WordPolygon({ id, path }: { id: Id; path: string }) {
   const isSelected = useIsSelectedInFacsimile(id);
 
   return (
     <polygon
       points={path}
       fill={isSelected ? 'rgba(0,255,0,0.3)' : 'transparent'}
-      style={{pointerEvents: 'all', cursor: 'pointer'}}
+      style={{ pointerEvents: 'all', cursor: 'pointer' }}
       onClick={() => toggleClicked(id)}
       onMouseEnter={() => setHovered(id)}
       onMouseLeave={() => setHovered(null)}

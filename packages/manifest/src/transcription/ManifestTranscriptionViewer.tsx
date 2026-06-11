@@ -1,11 +1,12 @@
-import {CSSProperties, useEffect, useMemo, useRef, useState} from 'react';
-import {useManifest} from '@knaw-huc/osd-iiif-viewer';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   useSettings,
 } from '@globalise/document';
-import {LazyCanvasTranscription} from './LazyCanvasTranscription';
-import {initCanvases, setSelectedCanvas} from "@globalise/common/document";
-import {getAnnotationPageUrls} from "../getAnnotationPageUrls.ts";
+import { LazyCanvasTranscription } from './LazyCanvasTranscription';
+import { initCanvases, setSelectedCanvas } from '@globalise/common/document';
+import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
+import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 
 type CanvasInfo = {
   canvasId: string;
@@ -20,19 +21,19 @@ type Props = {
 };
 
 export function ManifestTranscriptionViewer(
-  {initialCanvas = 0, onCanvasChange}: Props
+  { initialCanvas = 0, onCanvasChange }: Props,
 ) {
-  const {vault, id: manifestId, isReady: isManifestReady} = useManifest();
-  const {diplomaticViewScale} = useSettings();
+  const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const { diplomaticViewScale } = useSettings();
   const scale = diplomaticViewScale;
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
-    if (!vault || !manifestId || !isManifestReady) {
+    if (!manifestId || !isManifestReady) {
       return [];
     }
-    const manifest = vault.get({id: manifestId, type: 'Manifest'});
+    const manifest = vault.get({ id: manifestId, type: 'Manifest' });
     return manifest.items.map((item: { id: string; type: string }) => {
-      const canvas = vault.get(item);
+      const canvas: CanvasNormalized = vault.get(item);
       return {
         canvasId: canvas.id,
         width: canvas.width,
@@ -50,7 +51,7 @@ export function ManifestTranscriptionViewer(
   function updateCanvasOnScaleOrScroll() {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
-    if (!scrollContainer || !canvasList || !onCanvasChange) {
+    if (!scrollContainer || !canvasList) {
       return;
     }
 
@@ -110,7 +111,7 @@ export function ManifestTranscriptionViewer(
     }
     const viewportHeight = scrollRef.current.clientHeight;
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
-    child.scrollIntoView({block});
+    child.scrollIntoView({ block });
   }
 
   const containerStyle: CSSProperties = {
@@ -118,19 +119,19 @@ export function ManifestTranscriptionViewer(
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem'
+    gap: '1rem',
   };
 
   useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
   function initCanvasesOnInfosLoaded() {
     if (canvasInfos.length) {
-      initCanvases(canvasInfos.map(c => c.canvasId));
+      initCanvases(canvasInfos.map((c) => c.canvasId));
     }
   }
 
   return (
-    <div ref={scrollRef} style={{overflow: 'auto', height: '100%'}}>
-      <div ref={canvasListRef} style={{...containerStyle}}>
+    <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
+      <div ref={canvasListRef} style={{ ...containerStyle }}>
         {containerWidth && canvasInfos.map((info, i) => (
           <LazyCanvasTranscription
             scaleFactor={scale / 100}

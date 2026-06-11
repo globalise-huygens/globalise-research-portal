@@ -1,1 +1,1 @@
-export {Design} from './Design'
+export { Design } from './Design';

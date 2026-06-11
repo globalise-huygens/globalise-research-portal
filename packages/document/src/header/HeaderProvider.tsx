@@ -1,7 +1,7 @@
-import {ReactNode, useState} from 'react';
-import {HeaderContext} from './HeaderContext';
+import { ReactNode, useState } from 'react';
+import { HeaderContext } from './HeaderContext';
 
-export function HeaderProvider({children}: {children: ReactNode}) {
+export function HeaderProvider({ children }: { children: ReactNode }) {
   const [left, setLeft] = useState<HTMLDivElement | null>(null);
   const [center, setCenter] = useState<HTMLDivElement | null>(null);
   const [right, setRight] = useState<HTMLDivElement | null>(null);

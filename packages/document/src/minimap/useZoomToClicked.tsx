@@ -1,5 +1,5 @@
-import {useEffect} from 'react';
-import {useViewer} from '@knaw-huc/osd-iiif-viewer';
+import { useEffect } from 'react';
+import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 import {
   useAnnotations,
   useDocumentStore, usePartOf, CanvasId,
@@ -9,17 +9,17 @@ import {
   findSvgPath,
   parseSvgPath,
   Id,
-  Annotation
+  Annotation,
 } from '@globalise/common/annotation';
-import {calcBoundingBox, createPoints} from '@knaw-huc/original-layout';
+import { calcBoundingBox, createPoints } from '@knaw-huc/original-layout';
 import { orThrow } from '@globalise/common';
 
 export function useZoomToClicked(canvasId: CanvasId) {
   const pageSize = usePartOf(canvasId);
   const viewer = useViewer();
   const annotations = useAnnotations(canvasId);
-  const {wordToLine, entityToWords} = useDocumentStore(s => s.indexes);
-  const clickedId = useDocumentStore(s => s.clickedId);
+  const { wordToLine, entityToWords } = useDocumentStore((s) => s.indexes);
+  const clickedId = useDocumentStore((s) => s.clickedId);
 
   useEffect(() => {
     if (!clickedId || !annotations || !viewer) {
@@ -32,9 +32,9 @@ export function useZoomToClicked(canvasId: CanvasId) {
       return;
     }
 
-    const allPoints = ids.flatMap(id => {
+    const allPoints = ids.flatMap((id) => {
       const svgPath = findSvgPath(annotations[id]) ?? orThrow('No svg path');
-      return createPoints(parseSvgPath(svgPath),);
+      return createPoints(parseSvgPath(svgPath));
     });
     const bbox = calcBoundingBox(allPoints);
     const padding = pageSize ? pageSize.width * 0.05 : 100;
@@ -45,14 +45,14 @@ export function useZoomToClicked(canvasId: CanvasId) {
       bbox.height + padding * 2,
     );
     viewer.viewport.fitBounds(zoomViewport);
-    }, [clickedId, annotations, viewer, wordToLine, entityToWords, pageSize]
+  }, [clickedId, annotations, viewer, wordToLine, entityToWords, pageSize],
   );
 }
 
 function findSelectedWords(
   clicked: Id,
   annotations: Record<Id, Annotation>,
-  entityToWords: Record<Id, Id[]>
+  entityToWords: Record<Id, Id[]>,
 ): Id[] {
   const annotation = annotations[clicked];
   if (!annotation) {

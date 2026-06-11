@@ -1,14 +1,13 @@
-import {CanvasId, useAnnotations, usePages} from '@globalise/common/document';
-import {LineByLineView} from '@globalise/line-by-line';
-import {Minimap} from './Minimap';
-import {useZoomToClicked} from './useZoomToClicked';
+import { CanvasId, useAnnotations, usePages } from '@globalise/common/document';
+import { LineByLineView } from '@globalise/line-by-line';
+import { Minimap } from './Minimap';
+import { useZoomToClicked } from './useZoomToClicked';
 
 import './MinimapView.css';
-import {Id} from "@globalise/common/annotation";
 
-export function MinimapView({canvasId}: {canvasId: CanvasId}) {
+export function MinimapView({ canvasId }: { canvasId: CanvasId }) {
   const annotations = useAnnotations(canvasId);
-  const {isReady, hasAnnotations, error} = usePages(canvasId);
+  const { isReady, hasAnnotations, error } = usePages(canvasId);
 
   useZoomToClicked(canvasId);
 

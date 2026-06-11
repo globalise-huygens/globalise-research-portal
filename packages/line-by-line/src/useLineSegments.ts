@@ -1,5 +1,5 @@
-import {useMemo} from 'react';
-import {segment, TextSegment} from '@knaw-huc/text-annotation-segmenter';
+import { useMemo } from 'react';
+import { segment, TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
   findTextPositionSelector,
@@ -8,10 +8,10 @@ import {
   isEntity,
 } from '@globalise/common/annotation';
 import {
-  filterAnnotationsWithSelector
-} from "@globalise/common/annotation";
-import {orThrow} from '@globalise/common';
-import {useDocumentStore} from "@globalise/common/document";
+  filterAnnotationsWithSelector,
+} from '@globalise/common/annotation';
+import { orThrow } from '@globalise/common';
+import { useDocumentStore } from '@globalise/common/document';
 
 export type LineSegments = {
   pageText: string;
@@ -24,10 +24,10 @@ export type LineSegments = {
 export function useLineSegments(
   annotations: Record<Id, Annotation>,
 ): LineSegments {
-  const indexes = useDocumentStore(s => s.indexes);
+  const indexes = useDocumentStore((s) => s.indexes);
 
   return useMemo(() => {
-    const {id: pageAnnoId, text: pageText} = getPageText(annotations);
+    const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
     const wordAnnos = Object.values(annotations).filter(
       (a) => a.textGranularity === 'word',
@@ -37,12 +37,12 @@ export function useLineSegments(
     const segments = segment(pageText, annos, (a) => {
       const selector = findTextPositionSelector(a, pageAnnoId)
         ?? orThrow('No selector');
-      return {start: selector.start, end: selector.end};
+      return { start: selector.start, end: selector.end };
     });
     const {
       wordToLine,
       lineToBlock,
-      blockToLines
+      blockToLines,
     } = indexes;
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
@@ -63,6 +63,6 @@ export function useLineSegments(
 
     const lineIds = Object.keys(segmentsByLine);
 
-    return {pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines};
+    return { pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines };
   }, [annotations, indexes]);
 }

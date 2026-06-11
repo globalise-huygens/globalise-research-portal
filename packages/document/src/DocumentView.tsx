@@ -1,16 +1,16 @@
-import {FacsimileView} from '@globalise/facsimile';
-import {Id} from '@globalise/common/annotation';
-import {DocumentModeControls} from './DocumentModeControls';
-import {SplitPaneLayout} from './layout/SplitPaneLayout';
-import {TranscriptionView} from './TranscriptionView';
-import {SinglePaneLayout} from './layout/SinglePaneLayout';
-import {HeaderCanvasControls} from './HeaderCanvasControls';
-import {MinimapView} from './minimap/MinimapView';
-import {useSettings} from './SettingsStore';
+import { FacsimileView } from '@globalise/facsimile';
+import { Id } from '@globalise/common/annotation';
+import { DocumentModeControls } from './DocumentModeControls';
+import { SplitPaneLayout } from './layout/SplitPaneLayout';
+import { TranscriptionView } from './TranscriptionView';
+import { SinglePaneLayout } from './layout/SinglePaneLayout';
+import { HeaderCanvasControls } from './HeaderCanvasControls';
+import { MinimapView } from './minimap/MinimapView';
+import { useSettings } from './SettingsStore';
 
 import './DocumentView.css';
-import {HeaderBar} from "./layout/Header.tsx";
-import {useDocumentLifecycle} from "@globalise/common/document";
+import { HeaderBar } from './layout/Header.tsx';
+import { useDocumentLifecycle } from '@globalise/common/document';
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -19,9 +19,9 @@ type DocumentViewProps = {
 };
 
 export function DocumentView(
-  {manifestUrl, canvasId, onPageChange}: DocumentViewProps
+  { manifestUrl, canvasId, onPageChange }: DocumentViewProps,
 ) {
-  const {documentMode: mode} = useSettings();
+  const { documentMode: mode } = useSettings();
   const lifecycle = useDocumentLifecycle(manifestUrl, canvasId, onPageChange);
 
   if (lifecycle.phase === 'loading-manifest') {
@@ -31,7 +31,7 @@ export function DocumentView(
   const annotationsReady = lifecycle.phase === 'annotations-ready';
 
   return (
-    <div className="document-view" style={{height: '100%'}}>
+    <div className="document-view" style={{ height: '100%' }}>
       <HeaderBar/>
       <HeaderCanvasControls/>
       <DocumentModeControls/>
@@ -40,7 +40,7 @@ export function DocumentView(
           <FacsimileView
             canvasId={lifecycle.canvasId}
             showNavigation={false}
-            style={{height: '100%'}}
+            style={{ height: '100%' }}
           />
           {annotationsReady && (
             <TranscriptionView canvasId={lifecycle.canvasId}/>
@@ -52,7 +52,7 @@ export function DocumentView(
           <FacsimileView
             canvasId={lifecycle.canvasId}
             showNavigation={false}
-            style={{height: '100%'}}
+            style={{ height: '100%' }}
           />
         </SinglePaneLayout>
       )}

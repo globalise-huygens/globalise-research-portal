@@ -1,11 +1,11 @@
-import {useCanvas, useViewerReady} from '@knaw-huc/osd-iiif-viewer';
-import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {getValue} from '@iiif/helpers/i18n';
+import { useCanvas, useViewerReady } from '@knaw-huc/osd-iiif-viewer';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { getValue } from '@iiif/helpers/i18n';
 
 export function useCanvasNavigation() {
-  const {isReady: isManifestReady} = useManifest();
+  const { isReady: isManifestReady } = useManifest();
   const isViewerReady = useViewerReady();
-  const {currentIndex, current, total, next, prev, goTo} = useCanvas();
+  const { currentIndex, current, total, next, prev, goTo } = useCanvas();
 
   const isReady = isManifestReady && !!current;
 

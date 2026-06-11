@@ -1,10 +1,10 @@
-import {useContext} from 'react';
-import {HeaderContext} from "../header";
+import { useContext } from 'react';
+import { HeaderContext } from '../header';
 
 import './Header.css';
 
 export function HeaderBar() {
-  const {setLeft, setCenter, setRight} = useContext(HeaderContext);
+  const { setLeft, setCenter, setRight } = useContext(HeaderContext);
   return (
     <div className="header">
       <div ref={setLeft} className="region" />

@@ -1,5 +1,5 @@
-import {useDocumentStore, DocumentState} from './DocumentStore';
-import {Id} from "../annotation";
+import { useDocumentStore, DocumentState } from './DocumentStore';
+import { Id } from '../annotation';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
@@ -12,18 +12,18 @@ export const defaultSelectionSlice: SelectionSlice = {
 };
 
 export function setHovered(id: Id | null) {
-  useDocumentStore.setState({hoveredId: id});
+  useDocumentStore.setState({ hoveredId: id });
 }
 
 export function toggleClicked(id: Id) {
-  const {clickedId} = useDocumentStore.getState();
+  const { clickedId } = useDocumentStore.getState();
   useDocumentStore.setState({
     clickedId: id === clickedId ? null : id,
   });
 }
 
 export function clearSelection() {
-  useDocumentStore.setState({hoveredId: null, clickedId: null});
+  useDocumentStore.setState({ hoveredId: null, clickedId: null });
 }
 
 /**
@@ -43,7 +43,7 @@ function isSelectedInTranscription(
   if (currentId === selectedId) {
     return true;
   }
-  const {entityToBlock, wordToBlock} = state.indexes;
+  const { entityToBlock, wordToBlock } = state.indexes;
   if (currentId === wordToBlock[selectedId]) {
     return true;
   }
@@ -71,7 +71,7 @@ function isSelectedInFacsimile(
   if (currentId === selectedId) {
     return true;
   }
-  const {entityToBlock, entityToWords, wordToBlock} = state.indexes;
+  const { entityToBlock, entityToWords, wordToBlock } = state.indexes;
   if (currentId === wordToBlock[selectedId]) {
     return true;
   }
@@ -79,7 +79,7 @@ function isSelectedInFacsimile(
    * Highlight related words when current is entity:
    */
   const wordIds = entityToWords[selectedId];
-  if (wordIds && wordIds.includes(currentId)) {
+  if (wordIds?.includes(currentId)) {
     return true;
   }
   if (currentId === entityToBlock[selectedId]) {
@@ -89,19 +89,19 @@ function isSelectedInFacsimile(
 }
 
 export function useIsSelectedInTranscription(
-  id: Id
+  id: Id,
 ): boolean {
-  return useDocumentStore(s =>
+  return useDocumentStore((s) =>
     isSelectedInTranscription(id, s.hoveredId, s)
-    || isSelectedInTranscription(id, s.clickedId, s)
+    || isSelectedInTranscription(id, s.clickedId, s),
   );
 }
 
 export function useIsSelectedInFacsimile(
-  id: Id
+  id: Id,
 ): boolean {
-  return useDocumentStore(s =>
+  return useDocumentStore((s) =>
     isSelectedInFacsimile(id, s.hoveredId, s)
-    || isSelectedInFacsimile(id, s.clickedId, s)
+    || isSelectedInFacsimile(id, s.clickedId, s),
   );
 }

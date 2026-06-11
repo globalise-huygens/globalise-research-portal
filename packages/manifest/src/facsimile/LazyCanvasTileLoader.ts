@@ -1,8 +1,8 @@
-import {TiledImage, Viewer} from "openseadragon";
-import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
-import {fitLayout} from "./util/fitLayout.ts";
-import {fetchJson, noop} from "@globalise/common";
-import {throttle} from "lodash";
+import { TiledImage, Viewer } from 'openseadragon';
+import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
+import { fitLayout } from './util/fitLayout.ts';
+import { fetchJson, noop } from '@globalise/common';
+import { throttle } from 'lodash';
 
 export type LazyCanvasTileLoaderOptions = {
   /**
@@ -59,7 +59,7 @@ export class LazyCanvasTileLoader {
   constructor(
     viewer: Viewer,
     canvases: LazyTiledImage[],
-    options?: LazyCanvasTileLoaderOptions
+    options?: LazyCanvasTileLoaderOptions,
   ) {
     this.viewer = viewer;
     this.canvases = canvases;
@@ -69,7 +69,7 @@ export class LazyCanvasTileLoader {
       canvasHeight,
       initialCanvas,
       onChangeCanvas,
-      onChangeLoaded
+      onChangeLoaded,
     } = { ...defaultOptions, ...options };
     this.loadingBuffer = loadingBuffer;
     this.onChangeLoaded = onChangeLoaded ?? noop;
@@ -110,7 +110,7 @@ export class LazyCanvasTileLoader {
         const canvasId = canvas.canvasId;
         shouldBeVisible.add(canvasId);
         if (!this.loaded.has(canvasId) && !this.pending.has(canvasId)) {
-          this.addCanvas(canvas);
+          void this.addCanvas(canvas);
         }
       }
     }
@@ -166,7 +166,7 @@ export class LazyCanvasTileLoader {
     let closestDistance = Infinity;
 
     for (let i = 0; i < this.canvases.length; i++) {
-      const {y, height} = this.canvases[i];
+      const { y, height } = this.canvases[i];
       const distance = Math.abs(y + height / 2 - center);
       if (distance < closestDistance) {
         closestDistance = distance;
@@ -207,7 +207,7 @@ export class LazyCanvasTileLoader {
   }
 
   private async fetchInfo(
-    imageServiceUrl: string
+    imageServiceUrl: string,
   ): Promise<object> {
     const url = `${imageServiceUrl}/info.json`;
     return fetchJson(url);

@@ -1,5 +1,5 @@
-import {createContext, useContext} from 'react';
-import {noop} from "@globalise/common";
+import { createContext, useContext } from 'react';
+import { noop } from '@globalise/common';
 
 type HeaderBarRegions = {
   left: HTMLDivElement | null;

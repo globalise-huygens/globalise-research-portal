@@ -1,5 +1,5 @@
-import {useMemo, useState} from "react";
-import {ManifestEntry} from "./ManifestEntry.tsx";
+import { useMemo, useState } from 'react';
+import { ManifestEntry } from './ManifestEntry.tsx';
 
 import './ManifestDropdown.css';
 
@@ -10,7 +10,7 @@ type ManifestDropdownProps = {
 };
 
 export function ManifestDropdown(
-  {manifests, selected, onChange}: ManifestDropdownProps
+  { manifests, selected, onChange }: ManifestDropdownProps,
 ) {
   const sliceLength = 20;
   const [search, setSearch] = useState('');
@@ -20,16 +20,16 @@ export function ManifestDropdown(
     const terms = search
       .toLowerCase()
       .split(/\s+/)
-      .filter(term => !!term);
-    const matches = manifests.filter(m => {
+      .filter((term) => !!term);
+    const matches = manifests.filter((m) => {
       const label = m.label.toLowerCase();
-      return terms.every(t => label.includes(t));
+      return terms.every((t) => label.includes(t));
     });
     return [matches.slice(0, sliceLength), matches.length];
   }, [manifests, search]);
 
   const selectedLabel = manifests
-    .find(m => m.id === selected)?.label ?? selected;
+    .find((m) => m.id === selected)?.label ?? selected;
 
   return (
     <div className="manifest-dropdown">
@@ -49,7 +49,7 @@ export function ManifestDropdown(
       />
       {open && (
         <ul>
-          {filtered.map(m => (
+          {filtered.map((m) => (
             <li
               key={m.id}
               className={m.id === selected ? 'selected' : ''}

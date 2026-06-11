@@ -1,9 +1,9 @@
-import {ReactNode, useCallback} from 'react';
-import {DividerProps, Pane, SplitPane} from 'react-split-pane';
-import {Splitter} from './Splitter';
-import {useLayoutDirection} from './useLayoutDirection';
-import {resetScaling, setPaneRatio, useSettings} from '../SettingsStore';
-import './SplitPaneLayout.css'
+import { ReactNode, useCallback } from 'react';
+import { DividerProps, Pane, SplitPane } from 'react-split-pane';
+import { Splitter } from './Splitter';
+import { useLayoutDirection } from './useLayoutDirection';
+import { resetScaling, setPaneRatio, useSettings } from '../SettingsStore';
+import './SplitPaneLayout.css';
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
@@ -16,9 +16,9 @@ const splitterThickness = {
 const defaultMinSize = '20%';
 export const layoutBreakpoint = 1024;
 
-export function SplitPaneLayout({children}: DocumentLayoutProps) {
+export function SplitPaneLayout({ children }: DocumentLayoutProps) {
   const direction = useLayoutDirection(layoutBreakpoint);
-  const {paneRatio} = useSettings();
+  const { paneRatio } = useSettings();
   const paneSizes = [`${paneRatio * 100}%`, `${(1 - paneRatio) * 100}%`];
 
   const divider = useCallback(
@@ -26,13 +26,13 @@ export function SplitPaneLayout({children}: DocumentLayoutProps) {
       <Splitter
         {...props}
         direction={direction}
-        onDoubleClick={() => resetScaling()}
+        onDoubleClick={() => { resetScaling(); }}
         style={direction === 'horizontal'
-          ? {width: splitterThickness.horizontalLayout, height: '100%'}
-          : {width: '100%', height: splitterThickness.verticalLayout}
+          ? { width: splitterThickness.horizontalLayout, height: '100%' }
+          : { width: '100%', height: splitterThickness.verticalLayout }
         }
       />,
-    [direction]
+    [direction],
   );
 
   return (

@@ -1,23 +1,23 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useAnnotations,
   usePages,
   usePartOf, useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import {DiplomaticView} from '@globalise/diplomatic';
-import {LineByLineView} from '@globalise/line-by-line';
-import {Size} from './Size';
-import {ViewFit} from '@knaw-huc/original-layout';
+import { DiplomaticView } from '@globalise/diplomatic';
+import { LineByLineView } from '@globalise/line-by-line';
+import { Size } from './Size';
+import { ViewFit } from '@knaw-huc/original-layout';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import {ControlBar} from '@globalise/facsimile';
+import { ControlBar } from '@globalise/facsimile';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
-  useSettings
+  useSettings,
 } from './SettingsStore';
-import {useLayoutDirection} from './layout/useLayoutDirection';
-import {layoutBreakpoint} from './layout/SplitPaneLayout';
+import { useLayoutDirection } from './layout/useLayoutDirection';
+import { layoutBreakpoint } from './layout/SplitPaneLayout';
 
 import './TranscriptionView.css';
 
@@ -29,16 +29,16 @@ type TranscriptionViewProps = {
 };
 
 export function TranscriptionView(
-  {canvasId, showControls = true}: TranscriptionViewProps
+  { canvasId, showControls = true }: TranscriptionViewProps,
 ) {
   const annotations = useAnnotations(canvasId);
   const page = usePartOf(canvasId);
-  const {isReady, hasAnnotations, error} = usePages(canvasId);
-  const {transcriptionMode, diplomaticViewScale} = useSettings();
+  const { isReady, hasAnnotations, error } = usePages(canvasId);
+  const { transcriptionMode, diplomaticViewScale } = useSettings();
   const scale = diplomaticViewScale;
   const showDiplomatic = transcriptionMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
 
@@ -49,7 +49,7 @@ export function TranscriptionView(
       return false;
     }
     const words = Object.values(annotations)
-      .filter(a => a.textGranularity === 'word');
+      .filter((a) => a.textGranularity === 'word');
     return words.length < emptyPageThreshold;
   }, [annotations]);
 
@@ -63,11 +63,11 @@ export function TranscriptionView(
       return;
     }
     const observer = new ResizeObserver(([change]) => {
-      const {width, height} = change.contentRect;
-      setViewportSize({width, height});
+      const { width, height } = change.contentRect;
+      setViewportSize({ width, height });
     });
     observer.observe(viewport);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); };
   }
 
   if (error) {
@@ -148,7 +148,7 @@ export function TranscriptionView(
                 showBlocks={true}
                 showScanMargin={showScanMargin}
                 fit={fit}
-                style={{height: '100%'}}
+                style={{ height: '100%' }}
               />
             </div>
           )}
@@ -167,7 +167,7 @@ function calcRatioBox(
   page: Size,
   viewport: Size,
   scaleFactor: number,
-  fit: ViewFit
+  fit: ViewFit,
 ): Size {
   const pageRatio = page.width / page.height;
   let width: number;
@@ -192,6 +192,6 @@ function calcRatioBox(
 
   return {
     width: width * scaleFactor,
-    height: height * scaleFactor
+    height: height * scaleFactor,
   };
 }

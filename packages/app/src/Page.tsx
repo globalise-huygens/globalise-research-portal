@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import { ReactNode } from 'react';
 import './Page.css';
 
 type PageProps = {
@@ -6,7 +6,7 @@ type PageProps = {
   children: ReactNode;
 };
 
-export function Page({header, children}: PageProps) {
+export function Page({ header, children }: PageProps) {
   return (
     <div className="page">
       <header>{header}</header>

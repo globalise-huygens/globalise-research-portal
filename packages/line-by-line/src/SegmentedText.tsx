@@ -1,8 +1,8 @@
-import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
-import {Annotation, Id, isEntity, isWord} from '@globalise/common/annotation';
-import {setHovered, toggleClicked} from '@globalise/common/document';
-import {AnnotationSegment} from './AnnotationSegment';
-import {NestedSegment} from './NestedSegment';
+import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
+import { Annotation, Id, isEntity, isWord } from '@globalise/common/annotation';
+import { setHovered, toggleClicked } from '@globalise/common/document';
+import { AnnotationSegment } from './AnnotationSegment';
+import { NestedSegment } from './NestedSegment';
 
 type TextProps = {
   blockId: Id | null;
@@ -10,10 +10,10 @@ type TextProps = {
 };
 
 export function SegmentedText(
-  {blockId, segments}: TextProps
+  { blockId, segments }: TextProps,
 ) {
   return <>
-    {segments.map(segment => {
+    {segments.map((segment) => {
       const body = segment.value;
       const hoverId = selectAnnotation(segment.annotations)
         ?? blockId
@@ -56,11 +56,11 @@ export function SegmentedText(
 }
 
 function selectAnnotation(annotations: Annotation[]): Id | undefined {
-  const entity = annotations.find(a => isEntity(a));
+  const entity = annotations.find((a) => isEntity(a));
   if (entity) {
     return entity.id;
   }
-  const word = annotations.find(a => isWord(a));
+  const word = annotations.find((a) => isWord(a));
   if (word) {
     return word.id;
   }

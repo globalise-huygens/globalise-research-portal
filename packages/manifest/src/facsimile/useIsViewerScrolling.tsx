@@ -1,5 +1,5 @@
-import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
+import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
 export function useIsViewerScrolling(): boolean {
-  return lazyCollectionViewerStore(s => s.isScrolling);
+  return lazyCollectionViewerStore((s) => s.isScrolling);
 }

@@ -1,14 +1,14 @@
-import {Id} from "@globalise/common/annotation";
-import {useDocumentStore} from "@globalise/common/document";
-import {useShallow} from "zustand/react/shallow";
+import { Id } from '@globalise/common/annotation';
+import { useDocumentStore } from '@globalise/common/document';
+import { useShallow } from 'zustand/react/shallow';
 
 export function useSelectedIdsForCanvas(canvasId: string): Id[] {
-  return useDocumentStore(useShallow(s => {
+  return useDocumentStore(useShallow((s) => {
     const annotations = s.canvases[canvasId]?.annotations;
     if (!annotations) {
       return emptySelection;
     }
-    const {wordToBlock, entityToBlock} = s.indexes;
+    const { wordToBlock, entityToBlock } = s.indexes;
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {

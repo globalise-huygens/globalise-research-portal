@@ -1,5 +1,5 @@
-import {Annotation, Body} from "./AnnoModel.ts";
-import {getBody} from "./getBody.ts";
+import { Annotation, Body } from './AnnoModel.ts';
+import { getBody } from './getBody.ts';
 
 export type EntityBody = {
   type: EntityType;
@@ -34,6 +34,4 @@ export const isEntityBody = (body: Body): body is EntityBody => {
 
 export const isEntity = (
   annotation: Annotation,
-): annotation is Annotation<EntityBody> => {
-  return isEntityBody(getBody(annotation));
-};
+): annotation is Annotation<EntityBody> => isEntityBody(getBody(annotation));

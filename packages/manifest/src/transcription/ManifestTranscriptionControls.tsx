@@ -1,19 +1,19 @@
-import ZoomOutIcon from "@mui/icons-material/ZoomOut";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
-  useSettings
-} from "@globalise/document";
+  useSettings,
+} from '@globalise/document';
 
 export function ManifestTranscriptionControls() {
-  const {transcriptionMode, diplomaticViewScale} = useSettings();
+  const { transcriptionMode, diplomaticViewScale } = useSettings();
   const showDiplomatic = transcriptionMode === 'diplomatic';
 
   return (
-      <>
-        {showDiplomatic && (
-          <span className="zoom-slider">
+    <>
+      {showDiplomatic && (
+        <span className="zoom-slider">
           <ZoomOutIcon
             className="icon"
             fontSize="small"
@@ -32,19 +32,19 @@ export function ManifestTranscriptionControls() {
             onClick={() => setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))}
           />
         </span>
-        )}
-        <button
-          className={showDiplomatic ? 'active' : ''}
-          onClick={() => setTranscriptionMode('diplomatic')}
-        >
-          Diplomatic
-        </button>
-        <button
-          className={!showDiplomatic ? 'active' : ''}
-          onClick={() => setTranscriptionMode('line-by-line')}
-        >
-          Line by line
-        </button>
-      </>
-  )
+      )}
+      <button
+        className={showDiplomatic ? 'active' : ''}
+        onClick={() => setTranscriptionMode('diplomatic')}
+      >
+        Diplomatic
+      </button>
+      <button
+        className={!showDiplomatic ? 'active' : ''}
+        onClick={() => setTranscriptionMode('line-by-line')}
+      >
+        Line by line
+      </button>
+    </>
+  );
 }

@@ -7,7 +7,7 @@ export type PlaceholderProps = {
 };
 
 export function TranscriptionPlaceholder(
-  {width, height, color, background, children}: PlaceholderProps
+  { width, height, color, background, children }: PlaceholderProps,
 ) {
   return (
     <div style={{

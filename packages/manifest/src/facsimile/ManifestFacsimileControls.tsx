@@ -1,16 +1,16 @@
-import {useManifest, useViewerReady} from "@knaw-huc/osd-iiif-viewer";
-import {useScrollTo} from "./useScrollTo.tsx";
-import {getValue} from "@iiif/helpers/i18n";
-import {useSelectedCanvas} from "@globalise/common/document";
-import {lazyCollectionViewerStore} from "./LazyCollectionViewerStore.ts";
+import { useManifest, useViewerReady } from '@knaw-huc/osd-iiif-viewer';
+import { useScrollTo } from './useScrollTo.tsx';
+import { getValue } from '@iiif/helpers/i18n';
+import { useSelectedCanvas } from '@globalise/common/document';
+import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
 export function ManifestFacsimileControls() {
   const ready = useViewerReady();
-  const {vault} = useManifest();
+  const { vault } = useManifest();
   const scrollTo = useScrollTo();
 
-  const lazyCanvases = lazyCollectionViewerStore(s => s.lazyCanvases);
-  const {index: selectedIndex} = useSelectedCanvas();
+  const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
+  const { index: selectedIndex } = useSelectedCanvas();
 
   if (!ready || !lazyCanvases.length) {
     return null;
@@ -18,7 +18,7 @@ export function ManifestFacsimileControls() {
 
   const lazyCanvas = lazyCanvases[selectedIndex];
   const canvas = lazyCanvas && vault
-    ? vault.get({id: lazyCanvas.canvasId, type: 'Canvas'})
+    ? vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' })
     : null;
   const label = canvas
     ? getValue(canvas.label)

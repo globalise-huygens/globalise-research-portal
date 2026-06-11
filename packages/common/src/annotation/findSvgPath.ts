@@ -6,7 +6,7 @@ import { isSvgSelector } from './isSvgSelector.ts';
 export type SvgPath = string;
 
 export function findSvgPath(annotation: Annotation): SvgPath | undefined {
-  if (!annotation.target || !annotation.target.length) {
+  if (!annotation.target?.length) {
     return undefined;
   }
   const targets = asArray(annotation.target);
