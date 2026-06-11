@@ -265,3 +265,14 @@ export function useSelectedCanvas(): CanvasStatus {
 export function useIsCanvasInit(id?: CanvasId): boolean {
   return useDocumentStore((s) => !!(id && s.canvases[id]));
 }
+
+export const setStateLogged = (
+  partial: Partial<DocumentState> | ((state: DocumentState) => Partial<DocumentState>),
+) => {
+  const state = useDocumentStore.getState();
+  const update = typeof partial === 'function'
+    ? partial(state)
+    : partial;
+  console.trace(update);
+  setState(partial);
+};
