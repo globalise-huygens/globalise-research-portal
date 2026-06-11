@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Viewer } from 'openseadragon';
-import { setSelectedCanvas } from '@globalise/common/document';
 import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { LazyCanvasTileLoader } from './LazyCanvasTileLoader.ts';
 
@@ -34,7 +33,6 @@ export function useLazyCanvasLoader(
         initialCanvas,
         canvasHeight,
         onChangeCanvas: (index) => {
-          setSelectedCanvas(index);
           onCanvasChange?.(index);
         },
         onChangeLoaded: onLoadedChange,

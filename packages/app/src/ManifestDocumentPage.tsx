@@ -10,6 +10,9 @@ import {
   useCollectionManifests,
 } from '@globalise/manifest';
 import { SplitPaneLayout } from '@globalise/document';
+import { noop } from '@globalise/common';
+import { setSelectedCanvas } from '@globalise/common/document';
+import { debounce } from '@mui/material';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -37,11 +40,16 @@ export function ManifestDocumentPage() {
     history.pushState({}, '', newUrl);
   }
 
-  function handleCanvasChange(index: number) {
+  function updateCanvasUrlParam(index: number) {
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set(CANVAS, String(index));
     history.replaceState({}, '', newUrl);
   }
+
+  const handleFacsimileCanvasChangeDebounced = debounce((index: number) => {
+    setSelectedCanvas(index);
+    updateCanvasUrlParam(index);
+  }, 1000);
 
   return (
     <ViewerProvider>
@@ -70,7 +78,7 @@ export function ManifestDocumentPage() {
           <SplitPaneLayout>
             <ManifestFacsimileViewer
               initialCanvas={initialCanvas}
-              onCanvasChange={handleCanvasChange}
+              onCanvasChange={handleFacsimileCanvasChangeDebounced}
             />
             <div style={{
               display: 'flex',
@@ -81,7 +89,7 @@ export function ManifestDocumentPage() {
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <ManifestTranscriptionViewer
                   initialCanvas={initialCanvas}
-                  onCanvasChange={handleCanvasChange}
+                  onCanvasChange={noop}
                 /></div>
             </div>
           </SplitPaneLayout>
