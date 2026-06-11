@@ -2,7 +2,7 @@ import {TiledImage, Viewer} from "openseadragon";
 import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
 import {fitLayout} from "./util/fitLayout.ts";
 import {fetchJson, noop} from "@globalise/common";
-import { throttle } from "lodash";
+import {throttle} from "lodash";
 
 export type LazyCanvasTileLoaderOptions = {
   /**
@@ -53,6 +53,8 @@ export class LazyCanvasTileLoader {
 
   private onChangeLoaded: (loadedIds: Set<CanvasId>) => void;
   private onChangeViewportThrottled: () => void;
+
+  private frameId: number | null = null;
 
   constructor(
     viewer: Viewer,
@@ -122,7 +124,7 @@ export class LazyCanvasTileLoader {
       }
     }
     if (changed) {
-      this.handleLoadedUpdate();
+      this.onChangeLoadedBatched();
     }
   }
 
@@ -133,13 +135,28 @@ export class LazyCanvasTileLoader {
     this.viewer.removeHandler('viewport-change', this.onChangeViewportThrottled);
     this.viewer.removeHandler('animation', this.onChangeViewportThrottled);
 
+    if (this.frameId !== null) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = null;
+    }
+
     this.viewer.world.removeAll();
     this.loaded.clear();
     this.pending.clear();
   }
 
-  private handleLoadedUpdate(): void {
+  /**
+   * Collect load/unload canvas events into a single callback per frame
+   * to render smoothly when scrolling fast
+   */
+  private onChangeLoadedBatched(): void {
+    if (this.frameId !== null) {
+      return;
+    }
+    this.frameId = requestAnimationFrame(() => {
+      this.frameId = null;
       this.onChangeLoaded(new Set(this.loaded.keys()));
+    });
   }
 
   private findCenterScan(): number {
@@ -178,7 +195,7 @@ export class LazyCanvasTileLoader {
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
           this.loaded.set(canvas.canvasId, event.item);
-          this.handleLoadedUpdate();
+          this.onChangeLoadedBatched();
         },
         error: () => {
           this.pending.delete(canvas.canvasId);

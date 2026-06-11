@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {memo, useEffect, useMemo, useRef, useState} from 'react';
 import {Rect} from 'openseadragon';
 import {Overlay, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {
@@ -16,27 +16,27 @@ import {
 } from '@globalise/common/document';
 import {orThrow} from '@globalise/common';
 import {BlockHighlight, Tooltip, TooltipProps, WordHighlight} from '@globalise/facsimile';
-import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
 import {LazyTiledImage} from './LazyCollectionViewerModel.ts';
 import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
 import {useIsViewerScrolling} from './useIsViewerScrolling.tsx';
+import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
 
 type HighlightsOverlayProps = {
   lazyCanvas: LazyTiledImage,
   canvasIndex: number
 };
 
-export function HighlightsOverlay(
+export const HighlightsOverlay = memo(function HighlightsOverlay(
   {lazyCanvas, canvasIndex}: HighlightsOverlayProps
 ) {
   const {vault} = useManifest();
-  const {loadedCanvases} = useLazyCollectionViewerContext();
+  const isTileLoaded = lazyCollectionViewerStore(
+    s => s.loaded.has(lazyCanvas.canvasId)
+  );
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
   const {isReady, hasAnnotations} = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
-
-  const isTileLoaded = loadedCanvases.has(lazyCanvas.canvasId);
 
   const annotationUrls = useMemo(() => {
     if (!vault) {
@@ -51,6 +51,7 @@ export function HighlightsOverlay(
       loadCanvas(lazyCanvas.canvasId, annotationUrls);
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
+
 
   let canvasSize: { width: number; height: number } | null = null;
   if (vault) {
@@ -133,4 +134,4 @@ export function HighlightsOverlay(
       {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
-}
+});

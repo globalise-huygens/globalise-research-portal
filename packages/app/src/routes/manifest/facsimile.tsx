@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import {
-  ManifestPageFacsimilePage
-} from "../../ManifestPageFacsimilePage.tsx";
+  ManifestFacsimilePage
+} from "../../ManifestFacsimilePage.tsx";
 
 export const Route = createFileRoute('/manifest/facsimile')({
-  component: ManifestPageFacsimilePage,
+  component: ManifestFacsimilePage,
 })

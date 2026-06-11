@@ -28,7 +28,7 @@ export function useZoomToClicked(canvasId: CanvasId) {
 
     const ids = findSelectedWords(clickedId, annotations, entityToWords);
     if (!ids.length) {
-      console.log('Could not resolve to words', clickedId);
+      console.debug('Could not resolve to words', clickedId);
       return;
     }
 

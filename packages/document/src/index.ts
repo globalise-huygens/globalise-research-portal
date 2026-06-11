@@ -6,3 +6,4 @@ export type {TranscriptionMode} from './SettingsStore'
 export {
   useSettings, setTranscriptionMode, setDiplomaticViewScale
 } from './SettingsStore'
+export {SplitPaneLayout} from './layout/SplitPaneLayout'

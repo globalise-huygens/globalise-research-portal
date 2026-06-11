@@ -3,13 +3,12 @@ import {useDocumentStore} from "@globalise/common/document";
 import {useShallow} from "zustand/react/shallow";
 
 export function useSelectedIdsForCanvas(canvasId: string): Id[] {
-  const {wordToBlock, entityToBlock} = useDocumentStore(s => s.indexes);
-
   return useDocumentStore(useShallow(s => {
     const annotations = s.canvases[canvasId]?.annotations;
     if (!annotations) {
       return emptySelection;
     }
+    const {wordToBlock, entityToBlock} = s.indexes;
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {
@@ -30,6 +29,5 @@ export function useSelectedIdsForCanvas(canvasId: string): Id[] {
     return ids.length ? ids : emptySelection;
   }));
 }
-
 
 const emptySelection: Id[] = [];

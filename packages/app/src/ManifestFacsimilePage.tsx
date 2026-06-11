@@ -3,10 +3,9 @@ import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from "@globalise/facsimile";
 import {Page} from "./Page.tsx";
 import {
-  useCollectionManifests,
   ManifestDropdown,
-  ManifestFacsimileControls,
-  ManifestFacsimileViewer
+  ManifestFacsimileControls, ManifestFacsimileViewer,
+  useCollectionManifests
 } from "@globalise/manifest";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
@@ -18,7 +17,7 @@ const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function ManifestPageFacsimilePage() {
+export function ManifestFacsimilePage() {
   const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
@@ -65,4 +64,3 @@ export function ManifestPageFacsimilePage() {
     </ViewerProvider>
   );
 }
-
