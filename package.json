@@ -9,6 +9,7 @@
     "start": "npm -w @globalise/app run dev",
     "build": "npm t && npm run typecheck && npm run lint && npm -w @globalise/app run build",
     "preview": "npm -w @globalise/app run build && npm -w @globalise/app run preview",
+    "prepare": "git config core.hooksPath .githooks",
     "typecheck": "tsc -b --clean && tsc -b",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
