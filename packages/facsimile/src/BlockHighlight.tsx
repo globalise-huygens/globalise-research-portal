@@ -1,8 +1,8 @@
-import {useState} from 'react';
-import {setHovered, useIsSelectedInFacsimile} from '@globalise/common/document';
-import {Highlight} from './Highlight.tsx';
-import {Id} from '@globalise/common/annotation';
-import {HighlightStyle} from './HighlightStyle.tsx';
+import { useState } from 'react';
+import { setHovered, useIsSelectedInFacsimile } from '@globalise/common/document';
+import { Highlight } from './Highlight.tsx';
+import { Id } from '@globalise/common/annotation';
+import { HighlightStyle } from './HighlightStyle.tsx';
 
 type BlockHighlightProps = {
   id: Id;
@@ -10,7 +10,7 @@ type BlockHighlightProps = {
 };
 
 export function BlockHighlight(
-  {id, points}: BlockHighlightProps
+  { id, points }: BlockHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(id);
   const [hovered, setHoveredLocal] = useState(false);

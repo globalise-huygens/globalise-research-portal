@@ -1,6 +1,6 @@
-import {useEffect, useMemo, useState} from 'react';
-import {Rect} from 'openseadragon';
-import {Overlay, useManifest} from '@knaw-huc/osd-iiif-viewer';
+import { useEffect, useMemo, useState } from 'react';
+import { Rect } from 'openseadragon';
+import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
@@ -14,26 +14,25 @@ import {
   usePages,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import {orThrow} from '@globalise/common';
-import {BlockHighlight, Tooltip, TooltipProps, WordHighlight} from '@globalise/facsimile';
-import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
-import {LazyTiledImage} from './LazyCollectionViewerModel.ts';
-import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
-import {useIsViewerScrolling} from './useIsViewerScrolling.tsx';
+import { orThrow } from '@globalise/common';
+import { BlockHighlight, Tooltip, TooltipProps, WordHighlight } from '@globalise/facsimile';
+import { useLazyCollectionViewerContext } from './LazyCollectionViewerContext';
+import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
+import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
+import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
 
 type HighlightsOverlayProps = {
   lazyCanvas: LazyTiledImage,
-  canvasIndex: number
 };
 
 export function HighlightsOverlay(
-  {lazyCanvas, canvasIndex}: HighlightsOverlayProps
+  { lazyCanvas }: HighlightsOverlayProps,
 ) {
-  const {vault} = useManifest();
-  const {loadedCanvases} = useLazyCollectionViewerContext();
+  const { vault } = useManifest();
+  const { loadedCanvases } = useLazyCollectionViewerContext();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
-  const {isReady, hasAnnotations} = usePages(lazyCanvas.canvasId);
+  const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
 
   const isTileLoaded = loadedCanvases.has(lazyCanvas.canvasId);
@@ -42,20 +41,20 @@ export function HighlightsOverlay(
     if (!vault) {
       return [];
     }
-    const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
+    const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
     return getAnnotationPageUrls(canvas);
   }, [vault, lazyCanvas.canvasId]);
 
   useEffect(() => {
     if (isTileLoaded && annotationUrls.length) {
-      loadCanvas(lazyCanvas.canvasId, annotationUrls);
+      void loadCanvas(lazyCanvas.canvasId, annotationUrls);
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
 
   let canvasSize: { width: number; height: number } | null = null;
   if (vault) {
-    const canvas = vault.get({id: lazyCanvas.canvasId, type: 'Canvas'});
-    canvasSize = {width: canvas.width, height: canvas.height};
+    const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
+    canvasSize = { width: canvas.width, height: canvas.height };
   }
 
   const location = useMemo(() => {
@@ -67,8 +66,8 @@ export function HighlightsOverlay(
       .filter(isWord)
       .map((a) => ({
         id: a.id,
-        path: parseSvgPath(findSvgPath(a) || orThrow('No svg path')),
-        text: findTextualBodyValue(a) || orThrow('No body value'),
+        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
+        text: findTextualBodyValue(a) ?? orThrow('No body value'),
       }));
   }, [annotations]);
 
@@ -77,29 +76,32 @@ export function HighlightsOverlay(
       .filter(isBlock)
       .map((a) => ({
         id: a.id,
-        path: parseSvgPath(findSvgPath(a) || orThrow('No svg path')),
+        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       }));
   }, [annotations]);
 
   const isIdSelected = (id: string) => {
-    if (!selectedIds) {
+    if (!selectedIds.length) {
       return false;
     }
     return selectedIds.includes(id);
   };
 
   const isScrolling = useIsViewerScrolling();
+  const isNotScrolling = !isScrolling;
   const visibleWords = useMemo(() => {
     return isScrolling
-      ? words.filter(w => isIdSelected(w.id))
+      ? words.filter((w) => isIdSelected(w.id))
       : words;
-  }, [!isScrolling, words, selectedIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNotScrolling, words, selectedIds]);
 
   const visibleBlocks = useMemo(() => {
     return isScrolling
-      ? blocks.filter(b => isIdSelected(b.id))
+      ? blocks.filter((b) => isIdSelected(b.id))
       : blocks;
-  }, [!isScrolling, blocks, selectedIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNotScrolling, blocks, selectedIds]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
@@ -114,12 +116,12 @@ export function HighlightsOverlay(
       <Overlay location={location}>
         <svg
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
-          style={{width: '100%', height: '100%', pointerEvents: 'none'}}
+          style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
-          {visibleBlocks.map(({id, path}) => (
+          {visibleBlocks.map(({ id, path }) => (
             <BlockHighlight key={id} id={id} points={path}/>
           ))}
-          {visibleWords.map(({id, path, text}) => (
+          {visibleWords.map(({ id, path, text }) => (
             <WordHighlight
               key={id}
               id={id}

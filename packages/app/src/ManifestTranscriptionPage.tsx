@@ -1,13 +1,13 @@
-import {useState} from 'react';
-import {ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
-import {ManifestLoader} from "@globalise/facsimile";
-import {Page} from "./Page.tsx";
+import { useState } from 'react';
+import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import { ManifestLoader } from '@globalise/facsimile';
+import { Page } from './Page.tsx';
 import {
   useCollectionManifests,
   ManifestDropdown,
   ManifestTranscriptionControls,
-  ManifestTranscriptionViewer
-} from "@globalise/manifest";
+  ManifestTranscriptionViewer,
+} from '@globalise/manifest';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -22,7 +22,7 @@ export function ManifestTranscriptionPage() {
   const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
-    params.get(MANIFEST) ?? defaultManifest
+    params.get(MANIFEST) ?? defaultManifest,
   );
   const initialCanvas = Number(params.get(CANVAS)) || 0;
   const allManifests = useCollectionManifests(collectionUrl);
@@ -47,7 +47,7 @@ export function ManifestTranscriptionPage() {
         <Page
           header={
             <>
-              <div style={{flex: 1, minWidth: 0}}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <ManifestDropdown
                   manifests={allManifests}
                   selected={manifestUrl}
@@ -58,7 +58,7 @@ export function ManifestTranscriptionPage() {
                 flex: '0 0 auto',
                 display: 'flex',
                 gap: '0.25rem',
-                alignItems: 'center'
+                alignItems: 'center',
               }}>
                 <ManifestTranscriptionControls/>
               </div>
@@ -69,9 +69,9 @@ export function ManifestTranscriptionPage() {
             display: 'flex',
             flexDirection: 'column',
             height: '100vh',
-            overflow: 'hidden'
+            overflow: 'hidden',
           }}>
-            <div style={{flex: 1, overflow: 'hidden'}}>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
               <ManifestTranscriptionViewer
                 initialCanvas={initialCanvas}
                 onCanvasChange={handleCanvasChange}

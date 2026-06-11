@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { orThrow } from "./orThrow";
+import { describe, it, expect } from 'vitest';
+import { orThrow } from './orThrow';
 
-describe("orThrow", () => {
-  it("throws an error with the specified message", () => {
-    expect(() => orThrow("test error")).toThrowError("test error");
+describe('orThrow', () => {
+  it('throws an error with the specified message', () => {
+    expect(() => orThrow('test error')).toThrow('test error');
   });
 });

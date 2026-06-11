@@ -2,8 +2,8 @@ import SplitscreenRounded from '@mui/icons-material/SplitscreenRounded';
 import ImageIcon from '@mui/icons-material/Image';
 import SubjectIcon from '@mui/icons-material/Subject';
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermarkOutlined';
-import {setDocumentMode, useSettings} from './SettingsStore';
-import {HeaderRegion} from "./header";
+import { setDocumentMode, useSettings } from './SettingsStore';
+import { HeaderRegion } from './header';
 
 export type DocumentMode =
   | 'split'
@@ -19,17 +19,17 @@ type ViewMode = {
 };
 
 const modes: ViewMode[] = [
-  {value: 'transcription', icon: SubjectIcon, title: 'Text-only view'},
-  {value: 'facsimile', icon: ImageIcon, title: 'Scan-only view'},
-  {value: 'split', icon: SplitscreenRounded, title: 'Scan + text view', sx: {transform: 'rotate(90deg)'}},
-  {value: 'minimap', icon: BrandingWatermarkIcon, title: 'Minimap view'},
+  { value: 'transcription', icon: SubjectIcon, title: 'Text-only view' },
+  { value: 'facsimile', icon: ImageIcon, title: 'Scan-only view' },
+  { value: 'split', icon: SplitscreenRounded, title: 'Scan + text view', sx: { transform: 'rotate(90deg)' } },
+  { value: 'minimap', icon: BrandingWatermarkIcon, title: 'Minimap view' },
 ];
 
 export function DocumentModeControls() {
-  const {documentMode: mode} = useSettings();
+  const { documentMode: mode } = useSettings();
   return (
     <HeaderRegion region="right">
-      {modes.map(({value, icon: Icon, title, sx}) => (
+      {modes.map(({ value, icon: Icon, title, sx }) => (
         <button
           key={value}
           className={value === mode ? 'active' : ''}

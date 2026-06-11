@@ -5,8 +5,8 @@ import type {
   Body as IiifBody,
   TextPositionSelector,
 } from '@iiif/presentation-3';
-import {EntityBody} from "./EntityModel.ts";
-import {Id} from "./Id.ts";
+import { EntityBody } from './EntityModel.ts';
+import { Id } from './Id.ts';
 
 export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
   partOf: PartOf;
@@ -30,8 +30,8 @@ type BlockWithLabel = {
 
 export type Body = IiifBody | BlockWithLabel | TextualBody | EntityBody;
 
-export const isBlockWithLabel = (toTest: Body): toTest is BlockWithLabel => {
-  return !!(toTest as BlockWithLabel)?.source?.label;
+export const isBlockWithLabel = (toTest?: Body): toTest is BlockWithLabel => {
+  return !!(toTest as BlockWithLabel)?.source.label;
 };
 
 export type TextualBody = {

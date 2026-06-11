@@ -1,5 +1,5 @@
-import {createContext, RefObject, useContext} from "react";
-import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
+import { createContext, RefObject, useContext } from 'react';
+import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 
 type LazyCollectionViewerContextState = {
   lazyCanvases: RefObject<LazyTiledImage[]>;
@@ -7,13 +7,13 @@ type LazyCollectionViewerContextState = {
 };
 
 export const defaultContext: LazyCollectionViewerContextState = {
-  lazyCanvases: {current: []},
+  lazyCanvases: { current: [] },
   loadedCanvases: new Set(),
-}
+};
 
 export const LazyCollectionViewerContext = createContext<
   LazyCollectionViewerContextState
->(defaultContext)
+>(defaultContext);
 
 export function useLazyCollectionViewerContext() {
   return useContext(LazyCollectionViewerContext);

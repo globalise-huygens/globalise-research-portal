@@ -3,21 +3,21 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
-import type {Id} from '@knaw-huc/original-layout';
-import {ViewFit} from '@knaw-huc/original-layout';
-import {renderDiplomaticView} from './renderDiplomaticView';
+import type { Id } from '@knaw-huc/original-layout';
+import { ViewFit } from '@knaw-huc/original-layout';
+import { renderDiplomaticView } from './renderDiplomaticView';
 
 import '@knaw-huc/original-layout/style.css';
-import {Annotation} from '@globalise/common/annotation';
-import {setHovered, toggleClicked} from '@globalise/common/document';
+import { Annotation } from '@globalise/common/annotation';
+import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
 
 export type DiplomaticViewProps = {
   id?: string
   annotations: Record<Id, Annotation>;
-  page: {width: number; height: number};
+  page: { width: number; height: number };
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
@@ -43,7 +43,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
 
   const setWidthDebounced = useMemo(
     () => debounce(setWidth, 50),
-    []
+    [],
   );
 
   useEffect(setWidthOnObservedResize, []);

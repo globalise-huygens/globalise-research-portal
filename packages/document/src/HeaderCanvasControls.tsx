@@ -1,9 +1,9 @@
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import {useCanvasNavigation} from '@globalise/facsimile';
+import { useCanvasNavigation } from '@globalise/facsimile';
 
 import './HeaderCanvasControls.css';
-import {HeaderRegion} from "./header";
+import { HeaderRegion } from './header';
 
 export function HeaderCanvasControls() {
   const {
@@ -14,7 +14,7 @@ export function HeaderCanvasControls() {
     label,
     position,
     hasPrev,
-    hasNext
+    hasNext,
   } = useCanvasNavigation();
   if (!isReady) {
     return null;

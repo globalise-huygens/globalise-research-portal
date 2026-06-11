@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
-import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {Id} from '@globalise/common/annotation';
+import { useEffect, useState } from 'react';
+import { useCanvas, useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { Id } from '@globalise/common/annotation';
 import {
   useLoadCanvas,
   setSelectedCanvas,
@@ -11,9 +11,9 @@ export function useCanvasPages(
   canvasId: string | undefined,
   onPageChange: (id: Id) => void,
 ) {
-  const {current, goTo, currentIndex} = useCanvas();
+  const { current, goTo, currentIndex } = useCanvas();
   const [isInit, setInit] = useState(false);
-  const {vault, url, isReady} = useManifest();
+  const { vault, url, isReady } = useManifest();
   const loadPages = useLoadCanvas();
   const isCanvasInit = useIsCanvasInit(current?.id);
 
@@ -21,11 +21,11 @@ export function useCanvasPages(
     if (!isReady) {
       return;
     }
-    const manifest = vault.get({id: url, type: 'Manifest'});
+    const manifest = vault.get({ id: url, type: 'Manifest' });
     const canvases = vault.get(manifest.items);
     let targetIndex = -1;
     if (canvasId) {
-      targetIndex = canvases.findIndex(c => c.id === canvasId);
+      targetIndex = canvases.findIndex((c) => c.id === canvasId);
     } else if (canvases.length > 0) {
       targetIndex = 0;
     }
@@ -44,9 +44,9 @@ export function useCanvasPages(
     }
     setSelectedCanvas(currentIndex);
     const urls = current.annotations
-      .filter(a => a.type === 'AnnotationPage')
-      .map(a => a.id);
-    loadPages(current.id, urls);
+      .filter((a) => a.type === 'AnnotationPage')
+      .map((a) => a.id);
+    void loadPages(current.id, urls);
     if (current.id !== canvasId) {
       onPageChange(current.id);
     }

@@ -1,14 +1,14 @@
-import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {Id} from '@globalise/common/annotation';
-import {ManifestLoader} from '@globalise/facsimile';
-import {useManifest} from "@knaw-huc/osd-iiif-viewer";
-import {useDocumentStore} from "@globalise/common/document";
-import {useEffect, useState} from "react";
-import {DocumentView, HeaderProvider, HeaderRegion} from "@globalise/document";
+import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import { Id } from '@globalise/common/annotation';
+import { ManifestLoader } from '@globalise/facsimile';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useDocumentStore } from '@globalise/common/document';
+import { useEffect, useState } from 'react';
+import { DocumentView, HeaderProvider, HeaderRegion } from '@globalise/document';
 import {
   ManifestDropdown,
-  useCollectionManifests
-} from "@globalise/manifest";
+  useCollectionManifests,
+} from '@globalise/manifest';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -22,10 +22,10 @@ export function DocumentPage() {
   const initialParams = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
-    initialParams.get(MANIFEST) ?? defaultManifest
+    initialParams.get(MANIFEST) ?? defaultManifest,
   );
   const [canvasId, setCanvasId] = useState(
-    initialParams.get(CANVAS) ?? undefined
+    initialParams.get(CANVAS) ?? undefined,
   );
 
   function handlePageChange(pageId: Id) {
@@ -55,7 +55,7 @@ export function DocumentPage() {
           <StateDebug/>
           <DocumentView
             manifestUrl={manifestUrl}
-            canvasId={canvasId || undefined}
+            canvasId={canvasId ?? undefined}
             onPageChange={handlePageChange}
           />
         </ManifestLoader>
@@ -64,13 +64,13 @@ export function DocumentPage() {
   );
 }
 
-interface DocumentManifestDropdownProps {
+type DocumentManifestDropdownProps = {
   manifestUrl: string,
   onChange: (url: string) => void
-}
+};
 
 function DocumentManifestDropdown(
-  {manifestUrl, onChange}: DocumentManifestDropdownProps
+  { manifestUrl, onChange }: DocumentManifestDropdownProps,
 ) {
 
   const allManifests = useCollectionManifests(collectionUrl);
@@ -81,7 +81,7 @@ function DocumentManifestDropdown(
       selected={manifestUrl}
       onChange={onChange}
     />
-  </HeaderRegion>
+  </HeaderRegion>;
 }
 
 export function StateDebug() {

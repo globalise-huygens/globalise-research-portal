@@ -1,6 +1,6 @@
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import {DividerProps} from 'react-split-pane';
-import {Direction} from './useLayoutDirection';
+import { DividerProps } from 'react-split-pane';
+import { Direction } from './useLayoutDirection';
 
 import './Splitter.css';
 
@@ -12,11 +12,11 @@ type SplitterProps = DividerProps & {
 export function Splitter(
   {
     onDoubleClick,
-    direction = 'horizontal',
+    direction,
     isDragging,
     className,
     ...props
-  }: SplitterProps
+  }: SplitterProps,
 ) {
   const classNames = [
     'splitter',
@@ -28,7 +28,12 @@ export function Splitter(
     classNames.push('active');
   }
 
-  const {currentSize, minSize, maxSize, ...divProps} = props;
+  const {
+    currentSize: _currentSize,
+    minSize: _minSize,
+    maxSize: _maxSize,
+    ...divProps
+  } = props;
 
   return (
     <div
@@ -37,7 +42,7 @@ export function Splitter(
       {...divProps}
     >
       <div className="splitter-grip">
-        <DragIndicatorIcon className="grip-icon" />
+        <DragIndicatorIcon className="grip-icon"/>
       </div>
     </div>
   );

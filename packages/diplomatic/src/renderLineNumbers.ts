@@ -1,18 +1,18 @@
-import {Annotation, findSvgPath, findResourceTarget, parseSvgPath} from '@globalise/common/annotation';
-import {Id} from '@knaw-huc/original-layout';
-import {Point} from '@knaw-huc/original-layout';
-import {Rect} from '@knaw-huc/original-layout';
+import { Annotation, findSvgPath, findResourceTarget, parseSvgPath } from '@globalise/common/annotation';
+import { Id } from '@knaw-huc/original-layout';
+import { Point } from '@knaw-huc/original-layout';
+import { Rect } from '@knaw-huc/original-layout';
 import {
   calcBoundingBox,
   calcBoundingCorners,
   padCorners,
 } from '@knaw-huc/original-layout';
-import {createPoints} from '@knaw-huc/original-layout';
-import {orThrow} from '@knaw-huc/original-layout';
-import {px} from '@knaw-huc/original-layout';
-import {Scale} from '@knaw-huc/original-layout';
-import {createBlockBoundaries} from './createBlockBoundaries.ts';
-import {Offset} from '@knaw-huc/original-layout';
+import { createPoints } from '@knaw-huc/original-layout';
+import { orThrow } from '@knaw-huc/original-layout';
+import { px } from '@knaw-huc/original-layout';
+import { Scale } from '@knaw-huc/original-layout';
+import { createBlockBoundaries } from './createBlockBoundaries.ts';
+import { Offset } from '@knaw-huc/original-layout';
 
 export type LineNumbersConfig = {
   scale: Scale;
@@ -23,7 +23,7 @@ export type LineNumbersConfig = {
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLElement,
-  {scale, offset, gap}: LineNumbersConfig,
+  { scale, offset, gap }: LineNumbersConfig,
 ) {
   const $container = document.createElement('div');
   $view.appendChild($container);
@@ -38,17 +38,17 @@ export function renderLineNumbers(
     (a) => a.textGranularity === 'word',
   );
 
-  const wordsByLine: Map<Id, Annotation[]> = new Map();
+  const wordsByLine = new Map<Id, Annotation[]>();
   for (const wordAnno of wordAnnos) {
-    const target = findResourceTarget(wordAnno) || orThrow('No target');
+    const target = findResourceTarget(wordAnno) ?? orThrow('No target');
     if (!wordsByLine.has(target.id)) {
       wordsByLine.set(target.id, []);
     }
-    wordsByLine.get(target.id)!.push(wordAnno);
+    wordsByLine.get(target.id)?.push(wordAnno);
   }
   const lineToBlock: Record<Id, Id> = {};
   for (const line of lineAnnos) {
-    const block = findResourceTarget(line) || orThrow('No target');
+    const block = findResourceTarget(line) ?? orThrow('No target');
     lineToBlock[line.id] = block.id;
   }
 
@@ -111,16 +111,16 @@ export function renderLineNumbers(
     }
   }
 
-  return {showLine, hideLine};
+  return { showLine, hideLine };
 }
 
 function findLeftMostWord(
   words: Annotation[],
-  scale: Scale
+  scale: Scale,
 ): Rect {
   let leftMost: Rect | null = null;
   for (const word of words) {
-    const svgPath = findSvgPath(word) || orThrow('No svg path');
+    const svgPath = findSvgPath(word) ?? orThrow('No svg path');
     const bbox = calcBoundingBox(
       scale.path(createPoints(parseSvgPath(svgPath))),
     );

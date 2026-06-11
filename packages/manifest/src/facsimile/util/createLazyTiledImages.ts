@@ -1,13 +1,13 @@
-import {Vault} from "@iiif/helpers/vault";
-import {LazyTiledImage} from "../LazyCollectionViewerModel.ts";
-import {getImageServiceId} from "@knaw-huc/osd-iiif-viewer";
+import { Vault } from '@iiif/helpers/vault';
+import { LazyTiledImage } from '../LazyCollectionViewerModel.ts';
+import { getImageServiceId } from '@knaw-huc/osd-iiif-viewer';
 
 export function createLazyTiledImages(
   vault: Vault,
   manifestId: string,
   gap = 0.02,
 ): LazyTiledImage[] {
-  const manifest = vault.get({id: manifestId, type: 'Manifest'});
+  const manifest = vault.get({ id: manifestId, type: 'Manifest' });
   const images: LazyTiledImage[] = [];
   let y = 0;
   for (const item of manifest.items) {
@@ -21,7 +21,7 @@ export function createLazyTiledImages(
       y,
       height,
       canvasId: canvas.id,
-      imageServiceUrl
+      imageServiceUrl,
     });
     y += height + gap;
   }

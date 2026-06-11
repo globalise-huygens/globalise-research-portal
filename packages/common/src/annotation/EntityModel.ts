@@ -1,5 +1,5 @@
-import {Annotation, Body} from "./AnnoModel.ts";
-import {getBody} from "./getBody.ts";
+import { Annotation, Body } from './AnnoModel.ts';
+import { getBody } from './getBody.ts';
 
 export type EntityBody = {
   type: EntityType;

@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {Collection, Manifest} from "@iiif/presentation-3";
-import {ManifestEntry} from "./ManifestEntry.tsx";
-import {fetchJson} from "@globalise/common";
+import { useEffect, useState } from 'react';
+import { Collection, Manifest } from '@iiif/presentation-3';
+import { ManifestEntry } from './ManifestEntry.tsx';
+import { fetchJson } from '@globalise/common';
 
 export function useCollectionManifests(url: string): ManifestEntry[] {
   const [manifests, setManifests] = useState<ManifestEntry[]>([]);
@@ -11,7 +11,7 @@ export function useCollectionManifests(url: string): ManifestEntry[] {
       .then((collection) => {
         const items = (collection.items ?? [])
           .filter((item): item is Manifest => item.type === 'Manifest')
-          .map(item => ({
+          .map((item) => ({
             id: item.id,
             label: getLabel(item.label),
           }));

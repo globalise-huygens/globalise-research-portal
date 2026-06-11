@@ -1,6 +1,6 @@
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
-import {DocumentMode} from "./DocumentModeControls";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { DocumentMode } from './DocumentModeControls';
 
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 export type SettingsState = {
@@ -23,9 +23,9 @@ export const useSettingsStore = create<SettingsState>()(
    * Increment version to overwrite previous versions:
    */
   persist(
-    () => ({...defaultSettings}),
-    {name: 'settings', version: 0}
-  )
+    () => ({ ...defaultSettings }),
+    { name: 'settings', version: 0 },
+  ),
 );
 
 export function useSettings() {
@@ -33,21 +33,21 @@ export function useSettings() {
 }
 
 export function setDocumentMode(documentMode: DocumentMode) {
-  useSettingsStore.setState({documentMode});
+  useSettingsStore.setState({ documentMode });
 }
 export function setPaneRatio(paneRatio: number) {
-  useSettingsStore.setState({paneRatio});
+  useSettingsStore.setState({ paneRatio });
 }
 
 export function setDiplomaticViewScale(diplomaticScale: number) {
-  useSettingsStore.setState({diplomaticViewScale: diplomaticScale});
+  useSettingsStore.setState({ diplomaticViewScale: diplomaticScale });
 }
 
 export function setTranscriptionMode(transcriptionMode: TranscriptionMode) {
-  useSettingsStore.setState({transcriptionMode});
+  useSettingsStore.setState({ transcriptionMode });
 }
 
 export function resetScaling() {
-  const {diplomaticViewScale, paneRatio} = defaultSettings;
-  useSettingsStore.setState({diplomaticViewScale, paneRatio});
+  const { diplomaticViewScale, paneRatio } = defaultSettings;
+  useSettingsStore.setState({ diplomaticViewScale, paneRatio });
 }

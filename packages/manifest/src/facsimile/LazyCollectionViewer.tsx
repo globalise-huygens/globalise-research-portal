@@ -1,17 +1,17 @@
-import {Point, Viewer as OsdViewer} from 'openseadragon';
-import {PropsWithChildren, useEffect, useMemo, useRef, useState} from "react";
+import { Point, Viewer as OsdViewer } from 'openseadragon';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import {
   useManifest,
   useViewer,
-  useViewerStore
-} from "@knaw-huc/osd-iiif-viewer";
-import {useContainerSize} from "./useContainerSize.tsx";
-import {observeResize} from "./util/observeResize.tsx";
-import {useLazyCanvasLoader} from "./useLazyCanvasLoader.tsx";
-import {createLazyTiledImages} from "./util/createLazyTiledImages.ts";
-import {LazyCollectionViewerContext} from './LazyCollectionViewerContext.tsx';
-import {initCanvases} from "@globalise/common/document";
-import {CanvasId} from "./LazyCollectionViewerModel.ts";
+  useViewerStore,
+} from '@knaw-huc/osd-iiif-viewer';
+import { useContainerSize } from './useContainerSize.tsx';
+import { observeResize } from './util/observeResize.tsx';
+import { useLazyCanvasLoader } from './useLazyCanvasLoader.tsx';
+import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
+import { LazyCollectionViewerContext } from './LazyCollectionViewerContext.tsx';
+import { initCanvases } from '@globalise/common/document';
+import { CanvasId } from './LazyCollectionViewerModel.ts';
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -35,13 +35,13 @@ export function LazyCollectionViewer(
     scanHeight,
     gap = 0.02,
     initialCanvas = 0,
-    onCanvasChange
-  }: Props
+    onCanvasChange,
+  }: Props,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
-  const {vault, id: manifestId, isReady} = useManifest();
+  const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
   const isContainerReady = size.width && size.height;
   const [loadedCanvases, setLoadedCanvases] = useState<Set<CanvasId>>(new Set());
@@ -67,7 +67,7 @@ export function LazyCollectionViewer(
     if (!lazyCanvases.length) {
       return;
     }
-    initCanvases(lazyCanvases.map(c => c.canvasId), initialCanvas);
+    initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvas);
   }
 
   useEffect(createViewer, [isContainerReady, store]);
@@ -105,7 +105,7 @@ export function LazyCollectionViewer(
         viewer.viewport.panBy(panDistance);
       }
     };
-    container.addEventListener('wheel', handleWheel, {passive: false});
+    container.addEventListener('wheel', handleWheel, { passive: false });
 
     store.getState().setViewer(viewer);
     store.getState().setViewerReady(true);
@@ -124,7 +124,7 @@ export function LazyCollectionViewer(
       return;
     }
     return observeResize(container, () => {
-      const {viewer, viewerReady} = store.getState();
+      const { viewer, viewerReady } = store.getState();
       if (viewer && viewerReady) {
         viewer.forceResize();
       }
@@ -133,12 +133,12 @@ export function LazyCollectionViewer(
 
   return (
     <LazyCollectionViewerContext.Provider value={{
-      lazyCanvases: {current: lazyCanvases},
+      lazyCanvases: { current: lazyCanvases },
       loadedCanvases,
     }}>
       <div
         ref={containerRef}
-        style={{width: '100%', height: '100%'}}
+        style={{ width: '100%', height: '100%' }}
       />
       {children}
     </LazyCollectionViewerContext.Provider>

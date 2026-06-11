@@ -1,9 +1,9 @@
-import {useViewer} from "@knaw-huc/osd-iiif-viewer";
-import {useCallback} from "react";
+import { useViewer } from '@knaw-huc/osd-iiif-viewer';
+import { useCallback } from 'react';
 import {
-  useLazyCollectionViewerContext
-} from "./LazyCollectionViewerContext.tsx";
-import {Point} from "openseadragon";
+  useLazyCollectionViewerContext,
+} from './LazyCollectionViewerContext.tsx';
+import { Point } from 'openseadragon';
 
 export function useScrollTo() {
   const viewer = useViewer();
@@ -18,7 +18,7 @@ export function useScrollTo() {
       return;
     }
     viewer.viewport.panTo(
-      new Point(0.5, scan.y + scan.height / 2)
+      new Point(0.5, scan.y + scan.height / 2),
     );
   }, [viewer, context]);
 }

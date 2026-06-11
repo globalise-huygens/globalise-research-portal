@@ -1,20 +1,20 @@
-import {Rnd} from 'react-rnd';
-import {Viewer} from '@knaw-huc/osd-iiif-viewer';
-import {CanvasId, usePartOf} from '@globalise/common/document';
-import {Id, PartOf} from '@globalise/common/annotation';
-import {MinimapOverlay} from './MinimapOverlay';
+import { Rnd } from 'react-rnd';
+import { Viewer } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasId, usePartOf } from '@globalise/common/document';
+import { PartOf } from '@globalise/common/annotation';
+import { MinimapOverlay } from './MinimapOverlay';
 
 const osdOptions = {
   showNavigationControl: false,
   homeFillsViewer: true,
 };
 
-export function Minimap({canvasId}: {canvasId: CanvasId}) {
+export function Minimap({ canvasId }: { canvasId: CanvasId }) {
   const minimapScreenRatio = 0.2;
   const margin = 10;
 
   const pageSize = usePartOf(canvasId);
-  const {width, height} = calcMinimapSize(pageSize, minimapScreenRatio, margin);
+  const { width, height } = calcMinimapSize(pageSize, minimapScreenRatio, margin);
 
   return (
     <div style={{
@@ -36,7 +36,7 @@ export function Minimap({canvasId}: {canvasId: CanvasId}) {
       >
         <div className="viewport">
           <div className="handle" />
-          <div style={{flex: 1, overflow: 'hidden'}}>
+          <div style={{ flex: 1, overflow: 'hidden' }}>
             <Viewer options={osdOptions} />
             <MinimapOverlay canvasId={canvasId} />
           </div>
@@ -49,7 +49,7 @@ export function Minimap({canvasId}: {canvasId: CanvasId}) {
 function calcMinimapSize(
   pageSize: PartOf | null,
   minimapScreenRatio: number,
-  margin: number
+  margin: number,
 ) {
   const maxWidth = window.innerWidth - margin;
   const maxHeight = window.innerHeight - margin;
@@ -74,5 +74,5 @@ function calcMinimapSize(
     height = width * pageRatio;
   }
 
-  return {width, height};
+  return { width, height };
 }

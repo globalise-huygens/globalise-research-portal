@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {useViewer} from '@knaw-huc/osd-iiif-viewer';
+import { useEffect, useState } from 'react';
+import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 
 export function useIsViewerScrolling() {
   const viewer = useViewer();

@@ -1,7 +1,7 @@
 import React from 'react';
-import {Id, Annotation} from '@globalise/common/annotation';
-import {NormalizedLayout} from './NormalizedLayout';
-import {useLineSegments} from './useLineSegments';
+import { Id, Annotation } from '@globalise/common/annotation';
+import { NormalizedLayout } from './NormalizedLayout';
+import { useLineSegments } from './useLineSegments';
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;
@@ -9,7 +9,7 @@ export type LineByLineLayoutProps = {
 };
 
 export const LineByLineView = React.memo(function LineByLineView(
-  {annotations}: LineByLineLayoutProps
+  { annotations }: LineByLineLayoutProps,
 ) {
   const lineSegments = useLineSegments(annotations);
 

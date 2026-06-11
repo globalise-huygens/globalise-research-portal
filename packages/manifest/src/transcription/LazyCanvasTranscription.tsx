@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   loadCanvas,
   useDocumentStore,
   usePages,
 } from '@globalise/common/document';
-import {TranscriptionPlaceholder} from "./TranscriptionPlaceholder.tsx";
-import {PageLabel} from "./PageLabel.tsx";
-import {CanvasTranscription} from "./CanvasTranscription.tsx";
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import { PageLabel } from './PageLabel.tsx';
+import { CanvasTranscription } from './CanvasTranscription.tsx';
 
 type Props = {
   canvasId: string;
@@ -27,15 +27,15 @@ export function LazyCanvasTranscription(
     containerWidth,
     index,
     scaleFactor,
-  }: Props
+  }: Props,
 ) {
-  const {isLoadable, isNearViewport} = useIsLoadableWithDistanceDelay(index);
+  const { isLoadable, isNearViewport } = useIsLoadableWithDistanceDelay(index);
 
-  const {isReady: isCanvasReady, error, hasAnnotations} = usePages(canvasId);
+  const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(() => {
     if (isLoadable && annotationUrls.length) {
-      loadCanvas(canvasId, annotationUrls);
+      void loadCanvas(canvasId, annotationUrls);
     }
   }, [isLoadable, canvasId, annotationUrls]);
 
@@ -48,13 +48,13 @@ export function LazyCanvasTranscription(
     return <TranscriptionPlaceholder
       width={width}
       height={height}
-    />
+    />;
   }
 
   if (!annotationUrls.length) {
     return (
       <TranscriptionPlaceholder width={width} height={height}>
-        <PageLabel label={index} />
+        <PageLabel label={index}/>
         No transcription
       </TranscriptionPlaceholder>
     );
@@ -68,7 +68,7 @@ export function LazyCanvasTranscription(
         color="indianred"
         background="rgb(248 243 243)"
       >
-        <PageLabel label={index} />
+        <PageLabel label={index}/>
         Error: {error}
       </TranscriptionPlaceholder>
     );
@@ -83,9 +83,9 @@ export function LazyCanvasTranscription(
   }
 
   return (
-    <div style={{position: 'relative', width, minHeight: height}}>
-      <PageLabel label={index} />
-      <CanvasTranscription canvasId={canvasId} />
+    <div style={{ position: 'relative', width, minHeight: height }}>
+      <PageLabel label={index}/>
+      <CanvasTranscription canvasId={canvasId}/>
     </div>
   );
 }
@@ -103,28 +103,34 @@ export function LazyCanvasTranscription(
  */
 function useIsLoadableWithDistanceDelay(
   index: number,
-  delay: number = 25,
-  maxDistance: number = 2
+  delay = 25,
+  maxDistance = 2,
 ) {
-  const distance = useDocumentStore(s => Math.abs(index - s.selectedCanvas));
+  const distance = useDocumentStore((s) => Math.abs(index - s.selectedCanvas));
 
   const [isLoadable, setIsLoadable] = useState(false);
   const isNear = distance <= maxDistance;
 
   useEffect(() => {
-    if (isLoadable || !isNear) return;
+    if (isLoadable || !isNear) {
+      return;
+    }
 
     if (distance === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoadable(true);
       return;
     }
 
     const timer = setTimeout(() => {
+       
       setIsLoadable(true);
     }, distance * delay);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [distance, isNear, isLoadable, delay]);
 
-  return {isLoadable, isNearViewport: isNear};
+  return { isLoadable, isNearViewport: isNear };
 }

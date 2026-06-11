@@ -1,13 +1,13 @@
-import {Annotation, findSourceLabel} from '@globalise/common/annotation';
-import {Point} from '@knaw-huc/original-layout';
-import {calcBoundingCorners, padCorners} from '@knaw-huc/original-layout';
-import {createPath} from '@knaw-huc/original-layout';
-import {Scale} from '@knaw-huc/original-layout';
-import {select} from 'd3-selection';
-import {px} from '@knaw-huc/original-layout';
-import {D3El} from '@knaw-huc/original-layout';
-import {createBlockBoundaries} from './createBlockBoundaries.ts';
-import {Offset} from '@knaw-huc/original-layout';
+import { Annotation, findSourceLabel } from '@globalise/common/annotation';
+import { Point } from '@knaw-huc/original-layout';
+import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
+import { createPath } from '@knaw-huc/original-layout';
+import { Scale } from '@knaw-huc/original-layout';
+import { select } from 'd3-selection';
+import { px } from '@knaw-huc/original-layout';
+import { D3El } from '@knaw-huc/original-layout';
+import { createBlockBoundaries } from './createBlockBoundaries.ts';
+import { Offset } from '@knaw-huc/original-layout';
 
 type BlockColors = {
   text: string;
@@ -34,7 +34,7 @@ export function renderBlocks(
     },
   }: BlocksConfig,
 ) {
-  const {width, height} = $view.getBoundingClientRect();
+  const { width, height } = $view.getBoundingClientRect();
   const $svg = select($view)
     .append('svg')
     .attr('class', 'blocks')
@@ -85,5 +85,5 @@ export function renderBlocks(
     }),
   );
 
-  return {$blocks};
+  return { $blocks };
 }

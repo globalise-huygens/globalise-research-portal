@@ -8,22 +8,22 @@ export function findTextPositionSelector(
   annotation: Annotation,
   targetId: Id,
 ): TextPositionSelector | undefined {
-  if (!annotation.target) {
-    return;
-  }
   const targets = asArray(annotation.target);
   const resourceTarget = targets.find((t) => {
     return isSpecificResourceTarget(t) && t.source.id === targetId;
-  }) as SpecificResourceTarget;
+  }) as SpecificResourceTarget | undefined;
   if(!resourceTarget) {
     return;
   }
-  const selectors = asArray(resourceTarget.selector)
+  const selectors = asArray(resourceTarget.selector);
   return selectors.find(isTextPositionSelector);
 }
 
 export function isTextPositionSelector(
   toTest: unknown,
 ): toTest is TextPositionSelector {
-  return (toTest as TextPositionSelector).type === 'TextPositionSelector';
+  return !!toTest
+    && typeof toTest === 'object'
+    && 'type' in toTest
+    && toTest.type === 'TextPositionSelector';
 }

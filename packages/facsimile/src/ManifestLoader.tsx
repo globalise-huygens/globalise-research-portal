@@ -1,8 +1,8 @@
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import {
   useLoadManifest,
-  useManifest
-} from "@knaw-huc/osd-iiif-viewer";
+  useManifest,
+} from '@knaw-huc/osd-iiif-viewer';
 
 
 type ManifestLoaderProps = {
@@ -12,14 +12,15 @@ type ManifestLoaderProps = {
 };
 
 export function ManifestLoader(
-  {children, url, canvasId}: ManifestLoaderProps
+  { children, url, canvasId }: ManifestLoaderProps,
 ) {
   const loadManifest = useLoadManifest();
 
   const manifest = useManifest();
 
   useEffect(() => {
-    loadManifest(url, canvasId);
+    void loadManifest(url, canvasId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadManifest, url]);
 
   if (manifest.isLoading) {

@@ -1,6 +1,6 @@
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import {useCanvasNavigation} from './useCanvasNavigation';
+import { useCanvasNavigation } from './useCanvasNavigation';
 
 export function CanvasControls() {
   const {
@@ -11,7 +11,7 @@ export function CanvasControls() {
     label,
     position,
     hasPrev,
-    hasNext
+    hasNext,
   } = useCanvasNavigation();
 
   if (!isReady) {

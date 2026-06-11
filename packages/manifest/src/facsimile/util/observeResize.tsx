@@ -6,5 +6,5 @@ export function observeResize(
     callback(entries[0].contentRect);
   });
   observer.observe(element);
-  return () => observer.disconnect();
+  return () => { observer.disconnect(); };
 }

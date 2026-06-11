@@ -1,6 +1,6 @@
 type Props = { label: string | number };
 
-export function PageLabel({label}: Props) {
+export function PageLabel({ label }: Props) {
   return <span style={{
     position: 'absolute',
     top: '0.5rem',
@@ -9,5 +9,5 @@ export function PageLabel({label}: Props) {
     fontSize: '0.8rem',
   }}>
     {label}
-  </span>
+  </span>;
 }

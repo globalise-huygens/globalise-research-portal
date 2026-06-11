@@ -1,9 +1,9 @@
-import {useState} from 'react';
-import {HighlightStyle} from './HighlightStyle.tsx';
-import {setHovered, toggleClicked, useIsSelectedInFacsimile} from '@globalise/common/document';
-import {Highlight} from './Highlight.tsx';
-import {Id} from '@globalise/common/annotation';
-import {TooltipProps} from './Tooltip.tsx';
+import { useState } from 'react';
+import { HighlightStyle } from './HighlightStyle.tsx';
+import { setHovered, toggleClicked, useIsSelectedInFacsimile } from '@globalise/common/document';
+import { Highlight } from './Highlight.tsx';
+import { Id } from '@globalise/common/annotation';
+import { TooltipProps } from './Tooltip.tsx';
 
 type WordHighlightProps = {
   id: Id;
@@ -13,7 +13,7 @@ type WordHighlightProps = {
 };
 
 export function WordHighlight(
-  {id, points, text, setTooltip}: WordHighlightProps
+  { id, points, text, setTooltip }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(id);
   const [hovered, setHoveredLocal] = useState(false);
@@ -22,21 +22,21 @@ export function WordHighlight(
     fill: selected ? 'rgba(0,255,0,0.35)'
       : hovered ? 'rgba(0,0,0,0.1)'
         : 'transparent',
-    cursor: 'pointer'
+    cursor: 'pointer',
   };
 
   return (
     <Highlight
       points={points}
       highlightStyle={highlightStyle}
-      onClick={() => toggleClicked(id)}
+      onClick={() => { toggleClicked(id); }}
       onHover={(hovering, e) => {
         setHoveredLocal(hovering);
         setHovered(hovering ? id : null);
         if (!hovering) {
           setTooltip(null);
         } else {
-          setTooltip({text, x: e.clientX, y: e.clientY});
+          setTooltip({ text, x: e.clientX, y: e.clientY });
         }
       }}
     />

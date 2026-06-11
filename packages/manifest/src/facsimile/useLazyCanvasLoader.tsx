@@ -1,8 +1,8 @@
-import {useEffect} from "react";
-import {Viewer} from "openseadragon";
-import {setSelectedCanvas} from "@globalise/common/document";
-import {CanvasId, LazyTiledImage} from "./LazyCollectionViewerModel.ts";
-import {LazyCanvasTileLoader} from "./LazyCanvasTileLoader.ts";
+import { useEffect } from 'react';
+import { Viewer } from 'openseadragon';
+import { setSelectedCanvas } from '@globalise/common/document';
+import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
+import { LazyCanvasTileLoader } from './LazyCanvasTileLoader.ts';
 
 type Props = {
   viewer: Viewer | null;
@@ -11,7 +11,7 @@ type Props = {
   canvasHeight: number;
   onCanvasChange?: (index: number) => void;
   onLoadedChange?: (loadedIds: Set<CanvasId>) => void;
-}
+};
 
 export function useLazyCanvasLoader(
   {
@@ -20,8 +20,8 @@ export function useLazyCanvasLoader(
     initialCanvas,
     canvasHeight,
     onCanvasChange,
-    onLoadedChange
-  }: Props
+    onLoadedChange,
+  }: Props,
 ) {
   useEffect(() => {
     if (!viewer || !lazyCanvases.length) {
@@ -38,15 +38,17 @@ export function useLazyCanvasLoader(
           onCanvasChange?.(index);
         },
         onChangeLoaded: onLoadedChange,
-      }
+      },
     );
     return () => {
       loader.destroy();
     };
-  }, [
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [
     viewer,
     lazyCanvases,
     initialCanvas,
-    canvasHeight
+    canvasHeight,
   ]);
 }

@@ -1,3 +1,3 @@
-export {HeaderRegion} from './HeaderRegion.tsx'
-export {HeaderProvider} from './HeaderProvider.tsx'
-export {HeaderContext} from './HeaderContext.tsx'
+export { HeaderRegion } from './HeaderRegion.tsx';
+export { HeaderProvider } from './HeaderProvider.tsx';
+export { HeaderContext } from './HeaderContext.tsx';

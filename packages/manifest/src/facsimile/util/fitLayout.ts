@@ -1,5 +1,5 @@
-import {Rect, Viewer} from "openseadragon";
-import {LazyTiledImage} from "../LazyCollectionViewerModel.ts";
+import { Rect, Viewer } from 'openseadragon';
+import { LazyTiledImage } from '../LazyCollectionViewerModel.ts';
 
 export function fitLayout(
   viewer: Viewer,

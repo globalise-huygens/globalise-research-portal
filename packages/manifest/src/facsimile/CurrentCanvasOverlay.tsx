@@ -1,20 +1,21 @@
-import {useMemo} from 'react';
-import {Rect} from 'openseadragon';
-import {Overlay} from '@knaw-huc/osd-iiif-viewer';
-import {useSelectedCanvas} from '@globalise/common/document';
-import {useLazyCollectionViewerContext} from './LazyCollectionViewerContext';
+import { useMemo } from 'react';
+import { Rect } from 'openseadragon';
+import { Overlay } from '@knaw-huc/osd-iiif-viewer';
+import { useSelectedCanvas } from '@globalise/common/document';
+import { useLazyCollectionViewerContext } from './LazyCollectionViewerContext';
 
 export function CurrentCanvasOverlay() {
-  const {lazyCanvases} = useLazyCollectionViewerContext();
-  const {isInit, id} = useSelectedCanvas();
+  const { lazyCanvases } = useLazyCollectionViewerContext();
+  const { isInit, id } = useSelectedCanvas();
 
-  const lazyCanvas = lazyCanvases.current.find(c => c.canvasId === id);
+  const lazyCanvas = lazyCanvases.current.find((c) => c.canvasId === id);
 
   const location = useMemo(() => {
     if (!lazyCanvas) {
       return null;
     }
     return new Rect(0, lazyCanvas.y, 1, lazyCanvas.height);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lazyCanvas?.y, lazyCanvas?.height]);
 
   if (!isInit || !location) {

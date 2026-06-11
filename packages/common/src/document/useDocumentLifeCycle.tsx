@@ -1,11 +1,11 @@
-import {useEffect, useRef} from 'react';
-import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {Id} from '@globalise/common/annotation';
+import { useEffect, useRef } from 'react';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { Id } from '@globalise/common/annotation';
 import {
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import {useCanvasPages} from "./useCanvasPages.tsx";
+import { useCanvasPages } from './useCanvasPages.tsx';
 
 export type DocumentLifecycle =
   | { phase: 'loading-manifest' }
@@ -17,9 +17,9 @@ export function useDocumentLifecycle(
   requestedCanvasId: string | undefined,
   onPageChange: (id: Id) => void,
 ): DocumentLifecycle {
-  const {isReady: isManifestReady, vault} = useManifest();
+  const { isReady: isManifestReady, vault } = useManifest();
   const isPageInit = useCanvasPages(requestedCanvasId, onPageChange);
-  const {isInit: isCanvasInit, isReady: isCanvasReady, id: canvasId} = useSelectedCanvas();
+  const { isInit: isCanvasInit, isReady: isCanvasReady, id: canvasId } = useSelectedCanvas();
 
   const seededRef = useRef<string | null>(null);
   useEffect(() => {
@@ -29,19 +29,19 @@ export function useDocumentLifecycle(
     if (seededRef.current === manifestUrl) {
       return;
     }
-    const manifest = vault.get({id: manifestUrl, type: 'Manifest'});
+    const manifest = vault.get({ id: manifestUrl, type: 'Manifest' });
     if (!manifest) {
       return;
     }
-    initCanvases(manifest.items.map(i => i.id));
+    initCanvases(manifest.items.map((i) => i.id));
     seededRef.current = manifestUrl;
   }, [isManifestReady, manifestUrl, vault]);
 
   if (!isManifestReady || !isPageInit || !requestedCanvasId) {
-    return {phase: 'loading-manifest'};
+    return { phase: 'loading-manifest' };
   }
   if (!isCanvasInit || !isCanvasReady) {
-    return {phase: 'manifest-ready', canvasId: requestedCanvasId};
+    return { phase: 'manifest-ready', canvasId: requestedCanvasId };
   }
-  return {phase: 'annotations-ready', canvasId};
+  return { phase: 'annotations-ready', canvasId };
 }
