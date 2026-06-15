@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   loadCanvas,
   useDocumentStore,
@@ -18,18 +18,17 @@ type Props = {
   scaleFactor: number;
 };
 
-export function LazyCanvasTranscription(
-  {
-    canvasId,
-    canvasWidth,
-    canvasHeight,
-    annotationUrls,
-    containerWidth,
-    index,
-    scaleFactor,
-  }: Props,
+export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
+  canvasId,
+  canvasWidth,
+  canvasHeight,
+  annotationUrls,
+  containerWidth,
+  index,
+  scaleFactor,
+}: Props,
 ) {
-  console.log(LazyCanvasTranscription.name, 'render', index);
+  console.log('LazyCanvasTranscription render', index);
 
   const { isLoadable, isNearViewport } = useIsLoadableWithDistanceDelay(index);
 
@@ -90,7 +89,7 @@ export function LazyCanvasTranscription(
       <CanvasTranscription canvasId={canvasId}/>
     </div>
   );
-}
+});
 
 /**
  * Load nearst images first, increase delay according to distance
@@ -113,6 +112,7 @@ function useIsLoadableWithDistanceDelay(
   );
 
   const [isLoadable, setIsLoadable] = useState(false);
+  console.log('useIsLoadableWithDistanceDelay', index);
 
   useEffect(() => {
     if (isLoadable || !isNearViewport) {
