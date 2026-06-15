@@ -1,16 +1,11 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import {
-  useSettings,
-} from '@globalise/document';
+import { useSettings } from '@globalise/document';
 import { LazyCanvasTranscription } from './LazyCanvasTranscription';
-import {
-  initCanvases,
-  setSelectedCanvas,
-  useDocumentStore,
-} from '@globalise/common/document';
+import { initCanvases, setSelectedCanvas } from '@globalise/common/document';
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -50,27 +45,9 @@ export function ManifestTranscriptionViewer(
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasListRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
-
   const lastScrolledCanvas = useRef<number | null>(initialCanvas);
 
-  const selectedCanvas = useDocumentStore((s) => s.selectedCanvas);
-
-  useEffect(scrollToSelectedCanvas, [selectedCanvas, containerWidth, canvasInfos.length]);
-  function scrollToSelectedCanvas() {
-    const scrollContainer = scrollRef.current;
-    const canvasList = canvasListRef.current;
-    if (!scrollContainer || !canvasList || !containerWidth) {
-      return;
-    }
-    const child = canvasList.children[selectedCanvas];
-    if (!(child instanceof HTMLElement)) {
-      return;
-    }
-    if (isCentered(scrollContainer, child)) {
-      return;
-    }
-    child.scrollIntoView({ block: 'center', behavior: 'auto' });
-  }
+  useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
 
   useEffect(updateCanvasOnScaleOrScroll, [onCanvasChange, canvasInfos.length, containerWidth]);
   function updateCanvasOnScaleOrScroll() {
@@ -135,6 +112,13 @@ export function ManifestTranscriptionViewer(
     lastScrolledCanvas.current = initialCanvas;
   }
 
+  useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
+  function initCanvasesOnInfosLoaded() {
+    if (canvasInfos.length) {
+      initCanvases(canvasInfos.map((c) => c.canvasId));
+    }
+  }
+
   const containerStyle: CSSProperties = {
     maxWidth: 800,
     margin: '0 auto',
@@ -142,13 +126,6 @@ export function ManifestTranscriptionViewer(
     flexDirection: 'column',
     gap: '1rem',
   };
-
-  useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
-  function initCanvasesOnInfosLoaded() {
-    if (canvasInfos.length) {
-      initCanvases(canvasInfos.map((c) => c.canvasId));
-    }
-  }
 
   return (
     <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
@@ -170,13 +147,3 @@ export function ManifestTranscriptionViewer(
   );
 }
 
-function isCentered(container: HTMLElement, element: HTMLElement): boolean {
-  const scrollTop = container.scrollTop;
-  const clientHeight = container.clientHeight;
-  const scrollCenter = scrollTop + clientHeight / 2;
-
-  const elementTop = element.offsetTop;
-  const elementBottom = element.offsetTop + element.offsetHeight;
-
-  return elementTop < scrollCenter && elementBottom > scrollCenter;
-}
