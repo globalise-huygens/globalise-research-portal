@@ -13,12 +13,13 @@ import {
   setLazyCanvases, setLoaded, setScrolling,
 } from './LazyCollectionViewerStore.ts';
 import { initCanvases } from '@globalise/common/document';
+import {debounce} from "lodash";
 
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
   initialCanvas?: number;
-  onCanvasChange?: (index: number) => void;
+  onCanvasChange: (index: number) => void;
   preloadScreens?: number;
 }>;
 
@@ -63,7 +64,7 @@ export function LazyCollectionViewer(
     viewer,
     lazyCanvases,
     initialCanvas,
-    onCanvasChange,
+    onCanvasChange: debounce(onCanvasChange, 200),
     canvasHeight: scanHeight,
     onLoadedChange: (loaded) => {
       setLoaded(loaded);
