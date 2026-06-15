@@ -47,3 +47,32 @@ export function useIsLoadableWithDistanceDelay(
 
   return { isLoadable, isNearViewport };
 }
+
+export function useIsRenderableWithDistanceDelay(
+  index: number,
+  delay = 100,
+  maxDistance = 2,
+): { isRenderable: boolean; isNearViewport: boolean } {
+  const isNearViewport = useDocumentStore(
+    (s) => Math.abs(index - s.selectedCanvas) <= maxDistance,
+  );
+
+  const [isRenderable, setIsRenderable] = useState(false);
+
+  useEffect(() => {
+    if (isRenderable || !isNearViewport) {
+      return;
+    }
+    const currentSelected = useDocumentStore.getState().selectedCanvas;
+    const distance = Math.abs(index - currentSelected);
+    if (distance === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsRenderable(true);
+      return;
+    }
+    const timer = setTimeout(() => setIsRenderable(true), distance * delay);
+    return () => clearTimeout(timer);
+  }, [isNearViewport, isRenderable, delay, index]);
+
+  return { isRenderable, isNearViewport };
+}

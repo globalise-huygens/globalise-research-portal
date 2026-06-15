@@ -64,7 +64,7 @@ export function LazyCollectionViewer(
     viewer,
     lazyCanvases,
     initialCanvas,
-    onCanvasChange: debounce(onCanvasChange, 200),
+    onCanvasChange: debounce(onCanvasChange, 150),
     canvasHeight: scanHeight,
     onLoadedChange: (loaded) => {
       setLoaded(loaded);
@@ -100,6 +100,8 @@ export function LazyCollectionViewer(
       },
       tileRetryMax: 3,
       tileRetryDelay: 3000,
+      springStiffness: 25,
+      // animationTime: 0.2
     });
 
     const container = scrollRef.current;

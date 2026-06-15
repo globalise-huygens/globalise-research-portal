@@ -81,6 +81,7 @@ export class LazyCanvasTileLoader {
     this.update();
 
     this.onChangeViewportThrottled = throttle(() => {
+      console.log('onChangeViewportThrottled', Date.now())
       this.update();
       onCanvasChange(this.findCenterScan());
     }, 100);

@@ -1,12 +1,12 @@
 import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
-  AnnotationPage,
+  AnnotationPage, canvasName,
   findTextPositionSelector,
   getPageText,
   Id,
   isEntity,
-  PartOf,
+  PartOf, traceCanvas,
 } from '../annotation';
 import { FetchError, fetchJson } from '../util/fetchJson';
 import { type DocumentState, setState, useDocumentStore } from './DocumentStore';
@@ -122,16 +122,21 @@ export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
   setState({ canvases, selectedCanvas, indexes: emptyAnnotationIndex });
 }
 
-export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
+export async function loadCanvasAnnotationPages(
+  canvasId: CanvasId,
+  urls: string[]
+) {
   const state = useDocumentStore.getState();
   const existing = state.canvases[canvasId];
   if (!existing) {
     return;
   }
   if (existing.isReady || existing.isLoading || existing.error) {
+    traceCanvas(canvasName(canvasId), 'exists')
     return;
   }
   if (!urls.length) {
+    traceCanvas(canvasName(canvasId), 'no-urls')
     setState((s) => ({
       canvases: {
         ...s.canvases,
@@ -140,7 +145,7 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     }));
     return;
   }
-
+  traceCanvas(canvasName(canvasId), 'isLoading')
   setState((s) => ({
     canvases: {
       ...s.canvases,
@@ -165,6 +170,7 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     }
 
     if (errors.length) {
+      traceCanvas(canvasName(canvasId), 'erred')
       const isEntities403 = errors.every((e) =>
         e instanceof FetchError
         && e.status === 403
@@ -176,6 +182,7 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     }
 
     setState((s) => {
+      traceCanvas(canvasName(canvasId), 'isReady')
       const { pageId, ...canvasState } = createReadyCanvas(success);
 
       const canvases = {
@@ -198,7 +205,11 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
 }
 
 export function setSelectedCanvas(index: number) {
-  setState({ selectedCanvas: index });
+  setState(s => {
+    const id = Object.keys(s.canvases)[index]
+    console.log('! --> SELECT', canvasName(id), Date.now())
+    return ({...s, selectedCanvas: index});
+  });
 }
 
 export function usePages(canvasId: CanvasId) {
@@ -218,7 +229,7 @@ export function usePages(canvasId: CanvasId) {
 }
 
 export function useLoadCanvas() {
-  return loadCanvas;
+  return loadCanvasAnnotationPages;
 }
 
 const emptyAnnotations = {};

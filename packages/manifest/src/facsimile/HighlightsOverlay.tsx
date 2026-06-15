@@ -9,7 +9,7 @@ import {
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
-  loadCanvas,
+  loadCanvasAnnotationPages,
   useAnnotations,
   usePages,
   useSelectedIdsForCanvas,
@@ -47,7 +47,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 
   useEffect(() => {
     if (isTileLoaded && annotationUrls.length) {
-      void loadCanvas(lazyCanvas.canvasId, annotationUrls);
+      void loadCanvasAnnotationPages(lazyCanvas.canvasId, annotationUrls);
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
 

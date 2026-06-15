@@ -1,10 +1,10 @@
 import { memo, useEffect } from 'react';
-import { loadCanvas, usePages } from '@globalise/common/document';
+import { loadCanvasAnnotationPages, usePages } from '@globalise/common/document';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
 import { CanvasTranscription } from './CanvasTranscription.tsx';
 import {
-  useIsLoadableWithDistanceDelay,
+  useIsLoadableWithDistanceDelay, useIsRenderableWithDistanceDelay,
 } from './useIsLoadableWithDistanceDelay.tsx';
 
 type Props = {
@@ -27,22 +27,22 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
   scaleFactor,
 }: Props,
 ) {
-  console.log('LazyCanvasTranscription render', index);
 
   const { isLoadable, isNearViewport } = useIsLoadableWithDistanceDelay(index);
+  const { isRenderable } = useIsRenderableWithDistanceDelay(index);
 
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(() => {
     if (isLoadable && annotationUrls.length) {
-      void loadCanvas(canvasId, annotationUrls);
+      void loadCanvasAnnotationPages(canvasId, annotationUrls);
     }
   }, [isLoadable, canvasId, annotationUrls]);
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
 
-  const isReady = isCanvasReady && hasAnnotations;
+  const isReady = isCanvasReady && hasAnnotations && isRenderable;
 
   if (!isNearViewport) {
     return <TranscriptionPlaceholder
@@ -84,7 +84,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
 
   return (
     <div style={{ position: 'relative', width, minHeight: height }}>
-      <PageLabel label={index}/>
+      <PageLabel label={canvasId.split('/').pop() ?? index}/>
       <CanvasTranscription canvasId={canvasId}/>
     </div>
   );
