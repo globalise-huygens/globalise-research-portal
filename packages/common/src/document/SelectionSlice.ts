@@ -1,5 +1,5 @@
-import {useDocumentStore, DocumentState} from './DocumentStore';
-import {Id} from "../annotation";
+import { useDocumentStore, DocumentState } from './DocumentStore';
+import { Id } from '../annotation';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
@@ -12,18 +12,18 @@ export const defaultSelectionSlice: SelectionSlice = {
 };
 
 export function setHovered(id: Id | null) {
-  useDocumentStore.setState({hoveredId: id});
+  useDocumentStore.setState({ hoveredId: id });
 }
 
 export function toggleClicked(id: Id) {
-  const {clickedId} = useDocumentStore.getState();
+  const { clickedId } = useDocumentStore.getState();
   useDocumentStore.setState({
     clickedId: id === clickedId ? null : id,
   });
 }
 
 export function clearSelection() {
-  useDocumentStore.setState({hoveredId: null, clickedId: null});
+  useDocumentStore.setState({ hoveredId: null, clickedId: null });
 }
 
 /**
@@ -35,7 +35,7 @@ export function clearSelection() {
 function isSelectedInTranscription(
   currentId: Id,
   selectedId: Id | null,
-  s: DocumentState,
+  state: DocumentState,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -43,10 +43,11 @@ function isSelectedInTranscription(
   if (currentId === selectedId) {
     return true;
   }
-  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
+  const { entityToBlock, wordToBlock } = state.indexes;
+  if (currentId === wordToBlock[selectedId]) {
     return true;
   }
-  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
+  if (currentId === entityToBlock[selectedId]) {
     return true;
   }
   return false;
@@ -62,7 +63,7 @@ function isSelectedInTranscription(
 function isSelectedInFacsimile(
   currentId: Id,
   selectedId: Id | null,
-  s: DocumentState,
+  state: DocumentState,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -70,36 +71,37 @@ function isSelectedInFacsimile(
   if (currentId === selectedId) {
     return true;
   }
-  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
+  const { entityToBlock, entityToWords, wordToBlock } = state.indexes;
+  if (currentId === wordToBlock[selectedId]) {
     return true;
   }
   /**
    * Highlight related words when current is entity:
    */
-  const wordIds = s.entityOverlap.entityToWords[selectedId];
-  if (wordIds && wordIds.includes(currentId)) {
+  const wordIds = entityToWords[selectedId];
+  if (wordIds?.includes(currentId)) {
     return true;
   }
-  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
+  if (currentId === entityToBlock[selectedId]) {
     return true;
   }
   return false;
 }
 
 export function useIsSelectedInTranscription(
-  id: Id
+  id: Id,
 ): boolean {
-  return useDocumentStore(s =>
+  return useDocumentStore((s) =>
     isSelectedInTranscription(id, s.hoveredId, s)
-    || isSelectedInTranscription(id, s.clickedId, s)
+    || isSelectedInTranscription(id, s.clickedId, s),
   );
 }
 
 export function useIsSelectedInFacsimile(
-  id: Id
+  id: Id,
 ): boolean {
-  return useDocumentStore(s =>
+  return useDocumentStore((s) =>
     isSelectedInFacsimile(id, s.hoveredId, s)
-    || isSelectedInFacsimile(id, s.clickedId, s)
+    || isSelectedInFacsimile(id, s.clickedId, s),
   );
 }

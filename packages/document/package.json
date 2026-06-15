@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@globalise/common": "*",
-    "react-rnd": "^10.5.3"
+    "react-rnd": "^10.5.3",
+    "zustand": "^5.0.14"
   },
   "peerDependencies": {
     "react": ">=18",

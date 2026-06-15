@@ -1,79 +1,55 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
-import {
-  Id,
-} from '@globalise/common/annotation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useAnnotations,
   usePages,
-  usePartOf,
-  useTextGranularity,
+  usePartOf, useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import {useDocumentStore} from '@globalise/common/document';
-import {DiplomaticView} from '@globalise/diplomatic';
-import {LineByLineView} from '@globalise/line-by-line';
-import {Size} from './Size';
-import {ViewFit} from '@knaw-huc/original-layout';
+import { DiplomaticView } from '@globalise/diplomatic';
+import { LineByLineView } from '@globalise/line-by-line';
+import { Size } from './Size';
+import { ViewFit } from '@knaw-huc/original-layout';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import {ControlBar} from '@globalise/facsimile';
+import { ControlBar } from '@globalise/facsimile';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
-  useSettings
+  useSettings,
 } from './SettingsStore';
-import {useLayoutDirection} from './layout/useLayoutDirection';
-import {layoutBreakpoint} from './layout/SplitPaneLayout';
+import { useLayoutDirection } from './layout/useLayoutDirection';
+import { layoutBreakpoint } from './layout/SplitPaneLayout';
 
 import './TranscriptionView.css';
 
 const emptyPageThreshold = 10;
 
-export function TranscriptionView() {
-  const annotations = useAnnotations();
-  const page = usePartOf();
-  const {isReady, pages, error} = usePages();
-  const {transcriptionMode, diplomaticViewScale} = useSettings();
+type TranscriptionViewProps = {
+  canvasId: string;
+  showControls?: boolean;
+};
+
+export function TranscriptionView(
+  { canvasId, showControls = true }: TranscriptionViewProps,
+) {
+  const annotations = useAnnotations(canvasId);
+  const page = usePartOf(canvasId);
+  const { isReady, hasAnnotations, error } = usePages(canvasId);
+  const { transcriptionMode, diplomaticViewScale } = useSettings();
   const scale = diplomaticViewScale;
   const showDiplomatic = transcriptionMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
 
-  const hoveredId = useDocumentStore(s => s.hoveredId);
-  const clickedId = useDocumentStore(s => s.clickedId);
-  const {wordToBlock} = useTextGranularity();
-  const {entityToBlock} = useDocumentStore(s => s.entityOverlap);
-
-  const selectedIds = useMemo(() => {
-    const selected = new Set<Id>();
-    if (hoveredId) {
-      select(hoveredId);
-    }
-    if (clickedId) {
-      select(clickedId);
-    }
-    return [...selected];
-
-    function select(id: Id) {
-      selected.add(id);
-      const blockFromWord = wordToBlock[id];
-      if (blockFromWord) {
-        selected.add(blockFromWord);
-      }
-      const blockFromEntity = entityToBlock[id];
-      if (blockFromEntity) {
-        selected.add(blockFromEntity);
-      }
-    }
-  }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
+  const selectedIds = useSelectedIdsForCanvas(canvasId);
 
   const showScanMargin = useMemo(() => {
     if (!annotations) {
       return false;
     }
     const words = Object.values(annotations)
-      .filter(a => a.textGranularity === 'word');
+      .filter((a) => a.textGranularity === 'word');
     return words.length < emptyPageThreshold;
   }, [annotations]);
 
@@ -87,11 +63,11 @@ export function TranscriptionView() {
       return;
     }
     const observer = new ResizeObserver(([change]) => {
-      const {width, height} = change.contentRect;
-      setViewportSize({width, height});
+      const { width, height } = change.contentRect;
+      setViewportSize({ width, height });
     });
     observer.observe(viewport);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); };
   }
 
   if (error) {
@@ -102,7 +78,7 @@ export function TranscriptionView() {
     return <div className="message">Loading...</div>;
   }
 
-  if (!pages.length) {
+  if (!hasAnnotations) {
     return <div className="message">No transcription</div>;
   }
 
@@ -116,7 +92,7 @@ export function TranscriptionView() {
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
-  const controls = (
+  const controls = showControls ? (
     <>
       {showDiplomatic && (
         <span className="zoom-slider">
@@ -152,11 +128,11 @@ export function TranscriptionView() {
         Line by line
       </button>
     </>
-  );
+  ) : null;
 
   return (
     <div className="transcription-view">
-      <ControlBar>{controls}</ControlBar>
+      {controls && <ControlBar>{controls}</ControlBar>}
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
@@ -172,7 +148,7 @@ export function TranscriptionView() {
                 showBlocks={true}
                 showScanMargin={showScanMargin}
                 fit={fit}
-                style={{height: '100%'}}
+                style={{ height: '100%' }}
               />
             </div>
           )}
@@ -191,7 +167,7 @@ function calcRatioBox(
   page: Size,
   viewport: Size,
   scaleFactor: number,
-  fit: ViewFit
+  fit: ViewFit,
 ): Size {
   const pageRatio = page.width / page.height;
   let width: number;
@@ -216,6 +192,6 @@ function calcRatioBox(
 
   return {
     width: width * scaleFactor,
-    height: height * scaleFactor
+    height: height * scaleFactor,
   };
 }

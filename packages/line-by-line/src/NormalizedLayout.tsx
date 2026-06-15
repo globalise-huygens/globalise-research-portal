@@ -1,9 +1,8 @@
-import React, {useMemo} from 'react';
-import {Id} from '@globalise/common/annotation';
-import {useTextGranularity} from '@globalise/common/document';
-import {useIsSelectedInTranscription} from '@globalise/common/document';
-import {SegmentedLine} from './SegmentedLine';
-import {LineSegments} from './useLineSegments';
+import React, { useMemo } from 'react';
+import { Id } from '@globalise/common/annotation';
+import { useIsSelectedInTranscription } from '@globalise/common/document';
+import { SegmentedLine } from './SegmentedLine';
+import { LineSegments } from './useLineSegments';
 
 import './NormalizedLayout.css';
 
@@ -12,10 +11,9 @@ type Props = {
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  {lineSegments}: Props,
+  { lineSegments }: Props,
 ) {
-  const {segmentsByLine} = lineSegments;
-  const {blockToLines} = useTextGranularity();
+  const { segmentsByLine, blockToLines } = lineSegments;
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
 
@@ -54,7 +52,7 @@ type BlockGroupProps = {
 };
 
 function BlockGroup(
-  {blockId, lineIds, segmentsByLine, lineNumberStart}: BlockGroupProps,
+  { blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInTranscription(blockId);
 

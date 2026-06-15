@@ -5,24 +5,27 @@ import {
   findTextPositionSelector,
   getPageText,
   Id,
-  indexTextGranularity,
   isEntity,
 } from '@globalise/common/annotation';
 import {
-  filterAnnotationsWithSelector
-} from "@globalise/common/annotation";
+  filterAnnotationsWithSelector,
+} from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
+import { useDocumentStore } from '@globalise/common/document';
 
 export type LineSegments = {
   pageText: string;
   lineIds: Id[];
   segmentsByLine: Record<Id, TextSegment<Annotation>[]>;
   linesToBlock: Record<Id, Id>;
+  blockToLines: Record<Id, Id[]>;
 };
 
 export function useLineSegments(
   annotations: Record<Id, Annotation>,
 ): LineSegments {
+  const indexes = useDocumentStore((s) => s.indexes);
+
   return useMemo(() => {
     const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
@@ -36,14 +39,18 @@ export function useLineSegments(
         ?? orThrow('No selector');
       return { start: selector.start, end: selector.end };
     });
-    const { wordsToLine, linesToBlock } = indexTextGranularity(annotations);
+    const {
+      wordToLine,
+      lineToBlock,
+      blockToLines,
+    } = indexes;
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
     let lastLineId: Id | null = null;
 
     for (const segment of segments) {
-      const word = segment.annotations.find((a) => a.id in wordsToLine);
-      const lineId: Id | null = word ? wordsToLine[word.id] : lastLineId;
+      const word = segment.annotations.find((a) => a.id in wordToLine);
+      const lineId: Id | null = word ? wordToLine[word.id] : lastLineId;
       if (!lineId) {
         continue;
       }
@@ -56,6 +63,6 @@ export function useLineSegments(
 
     const lineIds = Object.keys(segmentsByLine);
 
-    return { pageText, lineIds, segmentsByLine, linesToBlock };
-  }, [annotations]);
+    return { pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines };
+  }, [annotations, indexes]);
 }

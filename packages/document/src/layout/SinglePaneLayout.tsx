@@ -1,5 +1,4 @@
-import {ReactNode} from 'react';
-import {HeaderBar} from './Header';
+import { ReactNode } from 'react';
 
 import './SinglePaneLayout.css';
 
@@ -7,10 +6,9 @@ type SinglePaneLayoutProps = {
   children: ReactNode;
 };
 
-export function SinglePaneLayout({children}: SinglePaneLayoutProps) {
+export function SinglePaneLayout({ children }: SinglePaneLayoutProps) {
   return (
     <div className="single-pane-layout">
-      <HeaderBar />
       <div className="single-pane-content">
         {children}
       </div>

@@ -1,0 +1,25 @@
+{
+  "name": "@globalise/manifest",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "openseadragon": "^5.0.1",
+    "@globalise/common": "*",
+    "@globalise/diplomatic": "*",
+    "@globalise/document": "*",
+    "@globalise/facsimile": "*",
+    "@globalise/line-by-line": "*"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.168.6"
+  }
+}

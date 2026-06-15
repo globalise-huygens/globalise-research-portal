@@ -1,6 +1,6 @@
-import React from "react";
-import {noop} from "@globalise/common";
-import {HighlightStyle} from "./HighlightStyle.tsx";
+import React from 'react';
+import { noop } from '@globalise/common';
+import { HighlightStyle } from './HighlightStyle.tsx';
 
 type HighlightProps = {
   points: string;
@@ -14,9 +14,9 @@ export function Highlight(
     points,
     highlightStyle,
     onClick = noop,
-    onHover = noop
+    onHover = noop,
   }: HighlightProps) {
-  const {fill, stroke, strokeWidth, cursor} = highlightStyle;
+  const { fill, stroke, strokeWidth, cursor } = highlightStyle;
 
   return (
     <polygon
@@ -24,11 +24,11 @@ export function Highlight(
       fill={fill}
       stroke={stroke ?? 'none'}
       strokeWidth={strokeWidth ?? 0}
-      style={{pointerEvents: 'auto', cursor: cursor ?? 'default'}}
-      onClick={() => onClick()}
-      onMouseEnter={(e) => onHover(true, e)}
-      onMouseMove={(e) => onHover(true, e)}
-      onMouseLeave={(e) => onHover(false, e)}
+      style={{ pointerEvents: 'auto', cursor: cursor ?? 'default' }}
+      onClick={() => { onClick(); }}
+      onMouseEnter={(e) => { onHover(true, e); }}
+      onMouseMove={(e) => { onHover(true, e); }}
+      onMouseLeave={(e) => { onHover(false, e); }}
     />
   );
 }

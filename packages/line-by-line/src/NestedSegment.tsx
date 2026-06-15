@@ -1,5 +1,5 @@
-import {ReactNode} from "react";
-import {Annotation} from "@globalise/common/annotation";
+import { ReactNode } from 'react';
+import { Annotation } from '@globalise/common/annotation';
 
 /**
  * Nest the annotations of a segment, so that each next annotation component wraps the previous, the last wrapping all.
@@ -34,7 +34,7 @@ export function NestedSegment(
      */
     annotation: (annotation: Annotation, children: ReactNode) => ReactNode;
     children: ReactNode;
-  }
+  },
 ) {
   return annotations.reduce<ReactNode>(
     (nested, annotation) => annotationComponent(annotation, nested),

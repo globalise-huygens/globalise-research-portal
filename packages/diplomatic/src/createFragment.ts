@@ -3,9 +3,9 @@ import {
   getBody,
   assertTextualBody,
   findSvgPath,
-  parseSvgPath
+  parseSvgPath,
 } from '@globalise/common/annotation';
-import {Fragment} from '@knaw-huc/original-layout';
+import { Fragment } from '@knaw-huc/original-layout';
 import { orThrow } from '@globalise/common';
 
 export function createFragment(word: Annotation): Fragment {
@@ -13,7 +13,7 @@ export function createFragment(word: Annotation): Fragment {
   const body = getBody(word);
   assertTextualBody(body);
   const text = body.value;
-  const svgPath = findSvgPath(word) || orThrow('No Path');
+  const svgPath = findSvgPath(word) ?? orThrow('No Path');
   const path = parseSvgPath(svgPath);
-  return {id, text, path};
+  return { id, text, path };
 }

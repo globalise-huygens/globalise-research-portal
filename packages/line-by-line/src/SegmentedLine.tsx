@@ -1,8 +1,8 @@
-import {memo} from 'react';
-import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
-import {Annotation, Id} from '@globalise/common/annotation';
-import {setHovered} from '@globalise/common/document';
-import {SegmentedText} from './SegmentedText';
+import { memo } from 'react';
+import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
+import { Annotation, Id } from '@globalise/common/annotation';
+import { setHovered } from '@globalise/common/document';
+import { SegmentedText } from './SegmentedText';
 
 type LineProps = {
   lineId: Id;
@@ -12,7 +12,7 @@ type LineProps = {
 };
 
 export const SegmentedLine = memo(function SegmentedLine(
-  {lineId, lineNumber, blockId, segments}: LineProps,
+  { lineId, lineNumber, blockId, segments }: LineProps,
 ) {
   return (
     <span
@@ -23,7 +23,7 @@ export const SegmentedLine = memo(function SegmentedLine(
           setHovered(blockId);
         }
       }}
-      onMouseLeave={() => setHovered(null)}
+      onMouseLeave={() => { setHovered(null); }}
     >
       <span className="line-number">
         {`${lineNumber}`.padStart(2, ' ')}

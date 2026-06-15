@@ -1,9 +1,9 @@
-import {AnnotationResourceTarget, AnnotationTarget} from './AnnoModel';
+import { AnnotationResourceTarget, AnnotationTarget } from './AnnoModel';
 
 export function isAnnotationResourceTarget(
   toTest: AnnotationTarget,
 ): toTest is AnnotationResourceTarget {
-  const typed = toTest as AnnotationResourceTarget;
+  const typed = toTest as Partial<AnnotationResourceTarget>;
   if (typed.type !== 'Annotation') {
     return false;
   }

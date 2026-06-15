@@ -1,4 +1,4 @@
-import {Annotation, findTextPositionSelector} from "@globalise/common/annotation";
+import { Annotation, findTextPositionSelector } from '@globalise/common/annotation';
 
 /**
  * Filter annotations with a valid text position selector linking to {@link pageAnnoId}.
@@ -9,12 +9,12 @@ export function filterAnnotationsWithSelector(
   pageAnnoId: string,
 ): Annotation[] {
   return annotations.filter((annotation) => {
-      const found = findTextPositionSelector(annotation, pageAnnoId);
-      if(!found) {
-        const context = { annotation, pageAnnoId };
-        console.debug('Skipping: no text position selector', context);
-        return false;
-      }
-      return true;
+    const found = findTextPositionSelector(annotation, pageAnnoId);
+    if(!found) {
+      const context = { annotation, pageAnnoId };
+      console.debug('Skipping: no text position selector', context);
+      return false;
+    }
+    return true;
   });
 }

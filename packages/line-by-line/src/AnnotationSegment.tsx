@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useRef} from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
   getEntityType,
@@ -8,7 +8,7 @@ import {
 } from '@globalise/common/annotation';
 import {
   useDocumentStore,
-  useIsSelectedInTranscription
+  useIsSelectedInTranscription,
 } from '@globalise/common/document';
 
 type AnnotationProps = {
@@ -17,7 +17,7 @@ type AnnotationProps = {
 };
 
 export function AnnotationSegment(
-  {annotation, children}: AnnotationProps
+  { annotation, children }: AnnotationProps,
 ) {
   if (isEntity(annotation)) {
     return <EntitySegment annotation={annotation}>
@@ -34,13 +34,13 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({annotation, children}: AnnotationProps) {
-  const isSelected = useDocumentStore(s => s.clickedId === annotation.id);
+function WordSegment({ annotation, children }: AnnotationProps) {
+  const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (isSelected && ref.current) {
-      ref.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [isSelected]);
 
@@ -54,7 +54,7 @@ function WordSegment({annotation, children}: AnnotationProps) {
   );
 }
 
-function EntitySegment({annotation, children}: AnnotationProps) {
+function EntitySegment({ annotation, children }: AnnotationProps) {
   const entityType = getEntityType(annotation);
   const isSelected = useIsSelectedInTranscription(annotation.id);
   return (

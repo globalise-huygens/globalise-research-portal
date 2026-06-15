@@ -1,5 +1,5 @@
-import {useViewerControls} from '@knaw-huc/osd-iiif-viewer';
-import {type RefObject} from 'react';
+import { useViewerControls } from '@knaw-huc/osd-iiif-viewer';
+import { type RefObject } from 'react';
 
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
@@ -11,7 +11,7 @@ type FacsimileControlBarProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>
 };
 
-export function FacsimileControls({fullscreenRef}: FacsimileControlBarProps) {
+export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const {
     zoomIn,
     zoomOut,
@@ -28,7 +28,7 @@ export function FacsimileControls({fullscreenRef}: FacsimileControlBarProps) {
       <button onClick={zoomOut}>
         <ZoomOutIcon/>
       </button>
-      <button onClick={() => rotate(90)}>
+      <button onClick={() => { rotate(90); }}>
         <RotateRightIcon/>
       </button>
       <button onClick={toggleFullPage}>
