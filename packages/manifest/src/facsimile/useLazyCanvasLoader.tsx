@@ -8,8 +8,8 @@ type Props = {
   lazyCanvases: LazyTiledImage[];
   initialCanvas: number;
   canvasHeight: number;
-  onCanvasChange?: (index: number) => void;
-  onLoadedChange?: (loadedIds: Set<CanvasId>) => void;
+  onCanvasChange: (index: number) => void;
+  onLoadedChange: (loadedIds: Set<CanvasId>) => void;
 };
 
 export function useLazyCanvasLoader(
@@ -32,10 +32,8 @@ export function useLazyCanvasLoader(
       {
         initialCanvas,
         canvasHeight,
-        onChangeCanvas: (index) => {
-          onCanvasChange?.(index);
-        },
-        onChangeLoaded: onLoadedChange,
+        onCanvasChange,
+        onLoadedChange,
       },
     );
     return () => {

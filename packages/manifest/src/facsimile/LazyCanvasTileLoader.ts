@@ -14,12 +14,12 @@ export type LazyCanvasTileLoaderOptions = {
    * Callback when selected canvas changes.
    * Selected scan is the scan at the center of the viewport.
    */
-  onChangeCanvas?: (index: number) => void;
+  onCanvasChange: (index: number) => void;
 
   /**
    * Callback when loaded canvases change.
    */
-  onChangeLoaded?: (loadedIds: Set<CanvasId>) => void;
+  onLoadedChange?: (loadedIds: Set<CanvasId>) => void;
 
   /**
    * How many viewport heights outside of the viewport should canvasses start loading?
@@ -51,7 +51,7 @@ export class LazyCanvasTileLoader {
   private loaded = new Map<CanvasId, TiledImage>();
   private pending = new Set<CanvasId>();
 
-  private onChangeLoaded: (loadedIds: Set<CanvasId>) => void;
+  private onLoadedChange: (loadedIds: Set<CanvasId>) => void;
   private onChangeViewportThrottled: () => void;
 
   private frameId: number | null = null;
@@ -59,7 +59,7 @@ export class LazyCanvasTileLoader {
   constructor(
     viewer: Viewer,
     canvases: LazyTiledImage[],
-    options?: LazyCanvasTileLoaderOptions,
+    options: LazyCanvasTileLoaderOptions,
   ) {
     this.viewer = viewer;
     this.canvases = canvases;
@@ -68,11 +68,11 @@ export class LazyCanvasTileLoader {
       loadingBuffer,
       canvasHeight,
       initialCanvas,
-      onChangeCanvas,
-      onChangeLoaded,
+      onCanvasChange,
+      onLoadedChange,
     } = { ...defaultOptions, ...options };
     this.loadingBuffer = loadingBuffer;
-    this.onChangeLoaded = onChangeLoaded ?? noop;
+    this.onLoadedChange = onLoadedChange ?? noop;
 
     const startIndex = initialCanvas < canvases.length
       ? initialCanvas
@@ -82,10 +82,8 @@ export class LazyCanvasTileLoader {
 
     this.onChangeViewportThrottled = throttle(() => {
       this.update();
-      if (onChangeCanvas) {
-        onChangeCanvas(this.findCenterScan());
-      }
-    }, 150);
+      onCanvasChange(this.findCenterScan());
+    }, 100);
 
     this.viewer.addHandler('viewport-change', this.onChangeViewportThrottled);
     this.viewer.addHandler('animation', this.onChangeViewportThrottled);
@@ -155,7 +153,7 @@ export class LazyCanvasTileLoader {
     }
     this.frameId = requestAnimationFrame(() => {
       this.frameId = null;
-      this.onChangeLoaded(new Set(this.loaded.keys()));
+      this.onLoadedChange(new Set(this.loaded.keys()));
     });
   }
 
