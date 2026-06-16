@@ -46,10 +46,10 @@ export function ManifestDocumentPage() {
     history.replaceState({}, '', newUrl);
   }
 
-  const handleFacsimileCanvasChange = (index: number) => {
+  const handleFacsimileCanvasChangeDebounced = debounce((index: number) => {
     setSelectedCanvas(index);
     updateCanvasUrlParam(index);
-  };
+  }, 100);
 
   return (
     <ViewerProvider>
@@ -78,7 +78,7 @@ export function ManifestDocumentPage() {
           <SplitPaneLayout>
             <ManifestFacsimileViewer
               initialCanvas={initialCanvas}
-              onCanvasChange={handleFacsimileCanvasChange}
+              onCanvasChange={handleFacsimileCanvasChangeDebounced}
             />
             <div style={{
               display: 'flex',
