@@ -24,4 +24,4 @@ export { isSpecificResourceTarget } from './isSpecificResourceTarget';
 export { isSvgSelector } from './isSvgSelector';
 export { getPageText } from './getPageText';
 export { toClassName } from './toClassName';
-export {canvasName, traceCanvas} from './canvasName'
+export {canvasName, traceCanvas, nameAction} from './canvasName'

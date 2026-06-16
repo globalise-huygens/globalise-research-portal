@@ -81,7 +81,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       onHover: setHovered,
       onClick: toggleClicked,
     });
-    traceCanvas(canvasName(props.id), 'renderDiplomaticView finished')
+    traceCanvas(canvasName(props.id), 'renderDiplomaticView>finished')
     view.setSelected(...selected);
     viewRef.current = view;
   }
