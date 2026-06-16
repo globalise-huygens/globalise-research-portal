@@ -1,12 +1,9 @@
-import { memo, useEffect } from 'react';
-import { loadCanvasAnnotationPages, usePages } from '@globalise/common/document';
-import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
-import { PageLabel } from './PageLabel.tsx';
-import { CanvasTranscription } from './CanvasTranscription.tsx';
-import {
-  useCanvasVisibility,
-  useIsLoadableWithDistanceDelay, useIsRenderableWithDistanceDelay,
-} from './useIsLoadableWithDistanceDelay.tsx';
+import {memo, useEffect} from 'react';
+import {loadCanvasAnnotationPages, usePages} from '@globalise/common/document';
+import {TranscriptionPlaceholder} from './TranscriptionPlaceholder.tsx';
+import {PageLabel} from './PageLabel.tsx';
+import {CanvasTranscription} from './CanvasTranscription.tsx';
+import {useLazyCanvasLifecycle,} from './useLazyCanvasLifecycle.tsx';
 
 type Props = {
   canvasId: string;
@@ -28,23 +25,21 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
   scaleFactor,
 }: Props,
 ) {
-  const { shouldRender, isVisible } = useCanvasVisibility(index);
-  const { isLoadable } = useIsLoadableWithDistanceDelay(index);
-  const { isRenderable } = useIsRenderableWithDistanceDelay(index);
-
+  const { canLoad, canRender, isRendered, isVisible } = useLazyCanvasLifecycle(index);
+  
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(() => {
-    if (isLoadable && annotationUrls.length) {
+    if (canLoad && annotationUrls.length) {
       void loadCanvasAnnotationPages(canvasId, annotationUrls);
     }
-  }, [isLoadable, canvasId, annotationUrls]);
+  }, [canLoad, canvasId, annotationUrls]);
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
-  const isDataReady = isCanvasReady && hasAnnotations && isRenderable;
+  const isDataReady = isCanvasReady && hasAnnotations && canRender;
 
-  if (!shouldRender) {
+  if (!isRendered) {
     return <TranscriptionPlaceholder width={width} height={height} />;
   }
 
@@ -86,7 +81,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
         width,
         minHeight: height,
         // Prevent expensive rerenders by hiding rendered components NOT near the viewport:
-        display: isVisible ? 'block' : 'none',
+        visibility: isVisible ? 'visible' : 'hidden',
       }}
     >
       <PageLabel label={canvasId.split('/').pop() ?? index}/>
