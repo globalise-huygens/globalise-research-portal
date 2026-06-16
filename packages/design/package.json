@@ -3,8 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "dependencies": {
+    "react-aria-components": "^1.13.0"
+  },
+  "devDependencies": {
+    "@globalise/document": "*"
+  },
   "exports": {
     ".": "./src/index.ts",
+    "./preview": "./src/DesignTopbarPreview.tsx",
     "./globals.css": "./src/globals.css"
   }
 }
