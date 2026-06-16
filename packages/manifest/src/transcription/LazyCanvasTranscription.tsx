@@ -43,6 +43,8 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
     return <TranscriptionPlaceholder width={width} height={height} />;
   }
 
+  const canvasLabel = canvasId.split('/').pop() ?? index;
+
   if (error) {
     return (
       <TranscriptionPlaceholder
@@ -51,16 +53,8 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
         color="indianred"
         background="rgb(248 243 243)"
       >
-        <PageLabel label={index}/>
+        <PageLabel label={canvasLabel}/>
         Error: {error}
-      </TranscriptionPlaceholder>
-    );
-  }
-
-  if (!isDataReady) {
-    return (
-      <TranscriptionPlaceholder width={width} height={height}>
-        {'Loading...'}
       </TranscriptionPlaceholder>
     );
   }
@@ -68,8 +62,17 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
   if (!annotationUrls.length) {
     return (
       <TranscriptionPlaceholder width={width} height={height}>
-        <PageLabel label={index}/>
+        <PageLabel label={canvasLabel}/>
         No transcription
+      </TranscriptionPlaceholder>
+    );
+  }
+
+  if (!isDataReady) {
+    return (
+      <TranscriptionPlaceholder width={width} height={height}>
+        <PageLabel label={canvasLabel}/>
+        Loading...
       </TranscriptionPlaceholder>
     );
   }
@@ -84,7 +87,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
         visibility: isVisible ? 'visible' : 'hidden',
       }}
     >
-      <PageLabel label={canvasId.split('/').pop() ?? index}/>
+      <PageLabel label={canvasLabel}/>
       <CanvasTranscription canvasId={canvasId}/>
     </div>
   );
