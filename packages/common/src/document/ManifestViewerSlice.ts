@@ -1,4 +1,4 @@
-import { useShallow } from 'zustand/react/shallow';
+import {useShallow} from 'zustand/react/shallow';
 import {
   Annotation,
   AnnotationPage, canvasName,
@@ -8,9 +8,9 @@ import {
   isEntity,
   PartOf, traceCanvas,
 } from '../annotation';
-import { FetchError, fetchJson } from '../util/fetchJson';
-import { type DocumentState, setState, useDocumentStore } from './DocumentStore';
-import { orThrow } from '../util/orThrow.ts';
+import {FetchError, fetchJson} from '../util/fetchJson';
+import {type DocumentState, setState, useDocumentStore} from './DocumentStore';
+import {orThrow} from '../util/orThrow.ts';
 import {
   AnnotationIndexes,
   indexAnnotations,
@@ -70,7 +70,7 @@ function createReadyCanvas(
     }
   }
 
-  const { id: pageId } = getPageText(mapped);
+  const {id: pageId} = getPageText(mapped);
   for (const id in mapped) {
     const item = mapped[id];
     if (!isEntity(item)) {
@@ -97,13 +97,13 @@ function mergeIndexes(
   prev: AnnotationIndexes,
   update: AnnotationIndexes,
 ) {
-  const nextIndexes = { ...prev };
+  const nextIndexes = {...prev};
   for (const key in prev) {
     const k = key as keyof AnnotationIndexes;
     if (k === 'blockToLines' || k === 'entityToWords') {
-      nextIndexes[k] = { ...prev[k], ...update[k] };
+      nextIndexes[k] = {...prev[k], ...update[k]};
     } else {
-      nextIndexes[k] = { ...prev[k], ...update[k] };
+      nextIndexes[k] = {...prev[k], ...update[k]};
     }
   }
   return nextIndexes;
@@ -117,9 +117,9 @@ function mergeIndexes(
 export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
   const canvases: Record<Id, CanvasState> = {};
   for (const id of canvasIds) {
-    canvases[id] = { ...emptyCanvasState };
+    canvases[id] = {...emptyCanvasState};
   }
-  setState({ canvases, selectedCanvas, indexes: emptyAnnotationIndex });
+  setState({canvases, selectedCanvas, indexes: emptyAnnotationIndex});
 }
 
 export async function loadCanvasAnnotationPages(
@@ -132,15 +132,13 @@ export async function loadCanvasAnnotationPages(
     return;
   }
   if (existing.isReady || existing.isLoading || existing.error) {
-    traceCanvas(canvasName(canvasId), 'exists')
     return;
   }
   if (!urls.length) {
-    traceCanvas(canvasName(canvasId), 'no-urls')
     setState((s) => ({
       canvases: {
         ...s.canvases,
-        [canvasId]: { ...emptyCanvasState },
+        [canvasId]: {...emptyCanvasState, isReady: true},
       },
     }));
     return;
@@ -149,7 +147,7 @@ export async function loadCanvasAnnotationPages(
   setState((s) => ({
     canvases: {
       ...s.canvases,
-      [canvasId]: { ...emptyCanvasState, isLoading: true },
+      [canvasId]: {...emptyCanvasState, isLoading: true},
     },
   }));
 
@@ -183,7 +181,7 @@ export async function loadCanvasAnnotationPages(
 
     setState((s) => {
       traceCanvas(canvasName(canvasId), 'isReady')
-      const { pageId, ...canvasState } = createReadyCanvas(success);
+      const {pageId, ...canvasState} = createReadyCanvas(success);
 
       const canvases = {
         ...s.canvases,
@@ -191,14 +189,19 @@ export async function loadCanvasAnnotationPages(
       };
       const canvasIndexes = indexAnnotations(canvasState.annotations, pageId);
       const indexes = mergeIndexes(s.indexes, canvasIndexes);
-      return { canvases, indexes };
+      return {canvases, indexes};
     });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
     setState((s) => ({
       canvases: {
         ...s.canvases,
-        [canvasId]: { ...emptyCanvasState, error, isLoading: false, isReady: false },
+        [canvasId]: {
+          ...emptyCanvasState,
+          error,
+          isLoading: false,
+          isReady: false
+        },
       },
     }));
   }
@@ -207,7 +210,7 @@ export async function loadCanvasAnnotationPages(
 export function setSelectedCanvas(index: number) {
   setState(s => {
     const id = Object.keys(s.canvases)[index]
-    console.log('! --> SELECT', canvasName(id), Date.now())
+    console.log(`! --> setSelectedCanvas ${canvasName(id)}`)
     return ({...s, selectedCanvas: index});
   });
 }
@@ -269,7 +272,7 @@ export function useSelectedCanvas(): CanvasStatus {
     if (!id) {
       return emptyCanvasStatus;
     }
-    return { isInit: true, id, index, ...s.canvases[id] };
+    return {isInit: true, id, index, ...s.canvases[id]};
   }));
 }
 
@@ -287,3 +290,9 @@ export const setStateLogged = (
   console.trace(update);
   setState(partial);
 };
+
+export function useCanvasId(index: number): CanvasId | undefined {
+  return useDocumentStore(s => {
+    return Object.keys(s.canvases)[index];
+  })
+}

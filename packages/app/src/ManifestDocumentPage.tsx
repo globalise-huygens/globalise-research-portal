@@ -49,7 +49,7 @@ export function ManifestDocumentPage() {
   const handleFacsimileCanvasChangeDebounced = debounce((index: number) => {
     setSelectedCanvas(index);
     updateCanvasUrlParam(index);
-  }, 100);
+  }, 200);
 
   return (
     <ViewerProvider>

@@ -5,7 +5,7 @@ export const canvasName = (id?: CanvasId) => id?.split('/').pop() ?? 'unknown-ca
 type Log = { id: string, name: string, action: string, time: number };
 const lastLogs: Map<CanvasId, Log> = new Map()
 
-const showLogs = false;
+const showLogs = true;
 
 export function traceCanvas(id: CanvasId | undefined, action: string) {
   if(!showLogs) {
@@ -26,14 +26,14 @@ export function traceCanvas(id: CanvasId | undefined, action: string) {
   lastLogs.set(id, newLog)
 
   if(!lastLog) {
-    console.log(`Canvas ${name} ${action} at ${now}`)
+    console.log(dateNameAction(now, name, action))
     return;
   }
 
   const diff = lastLog ? now - lastLog.time : 0
-  console.log(`${nameAction(name, action)} happened ${diff}ms after ${lastLog.action} (${now})`)
+  console.log(`${dateNameAction(now, name, action)}; ${diff}ms after ${lastLog.action}`)
 }
 
-export function nameAction(name: string, action: string) {
-  return `Canvas ${name} ${action}`;
+export function dateNameAction(at: number, name: string, action: string) {
+  return `${new Date(at).toISOString()} Canvas ${name} ${action}`;
 }

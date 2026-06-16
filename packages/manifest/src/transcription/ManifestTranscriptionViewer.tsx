@@ -72,7 +72,6 @@ export function ManifestTranscriptionViewer(
         if (index === -1 || index === lastScrolledCanvas.current) {
           continue;
         }
-        console.log('new selected canvas:', index);
         lastScrolledCanvas.current = index;
         setSelectedCanvas(index);
         onCanvasChange(index);

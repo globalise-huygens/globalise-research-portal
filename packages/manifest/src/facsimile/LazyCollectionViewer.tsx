@@ -100,7 +100,7 @@ export function LazyCollectionViewer(
       tileRetryMax: 3,
       tileRetryDelay: 3000,
       // springStiffness: 25,
-      animationTime: 0.2
+      // animationTime: 0.2
     });
 
     const container = scrollRef.current;

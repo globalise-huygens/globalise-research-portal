@@ -15,32 +15,39 @@ type Props = {
   scaleFactor: number;
 };
 
-export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
-  canvasId,
-  canvasWidth,
-  canvasHeight,
-  annotationUrls,
-  containerWidth,
-  index,
-  scaleFactor,
-}: Props,
+export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
+  {
+    canvasId,
+    canvasWidth,
+    canvasHeight,
+    annotationUrls,
+    containerWidth,
+    index,
+    scaleFactor,
+  }: Props,
 ) {
-  const { canLoad, canRender, isRendered, isVisible } = useLazyCanvasLifecycle(index);
-  
-  const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
+
+  const {
+    canLoadNow,
+    canRenderNow,
+    isInRenderRange,
+    isInVisibleRange
+  } = useLazyCanvasLifecycle(index);
+
+  const {isReady: isCanvasReady, error, hasAnnotations} = usePages(canvasId);
 
   useEffect(() => {
-    if (canLoad && annotationUrls.length) {
+    if (canLoadNow && annotationUrls.length) {
       void loadCanvasAnnotationPages(canvasId, annotationUrls);
     }
-  }, [canLoad, canvasId, annotationUrls]);
+  }, [canLoadNow, canvasId, annotationUrls]);
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
-  const isDataReady = isCanvasReady && hasAnnotations && canRender;
+  const isDataReady = isCanvasReady && hasAnnotations && canRenderNow;
 
-  if (!isRendered) {
-    return <TranscriptionPlaceholder width={width} height={height} />;
+  if (!isInRenderRange) {
+    return <TranscriptionPlaceholder width={width} height={height}/>;
   }
 
   const canvasLabel = canvasId.split('/').pop() ?? index;
@@ -84,7 +91,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
         width,
         minHeight: height,
         // Prevent expensive rerenders by hiding rendered components NOT near the viewport:
-        visibility: isVisible ? 'visible' : 'hidden',
+        visibility: isInVisibleRange ? 'visible' : 'hidden',
       }}
     >
       <PageLabel label={canvasLabel}/>
@@ -92,4 +99,3 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
     </div>
   );
 });
-
