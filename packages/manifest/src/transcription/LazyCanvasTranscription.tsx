@@ -4,6 +4,7 @@ import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
 import { CanvasTranscription } from './CanvasTranscription.tsx';
 import {
+  useCanvasVisibility,
   useIsLoadableWithDistanceDelay, useIsRenderableWithDistanceDelay,
 } from './useIsLoadableWithDistanceDelay.tsx';
 
@@ -27,8 +28,8 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
   scaleFactor,
 }: Props,
 ) {
-
-  const { isLoadable, isNearViewport } = useIsLoadableWithDistanceDelay(index);
+  const { shouldRender, isVisible } = useCanvasVisibility(index);
+  const { isLoadable } = useIsLoadableWithDistanceDelay(index);
   const { isRenderable } = useIsRenderableWithDistanceDelay(index);
 
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -41,23 +42,10 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
+  const isDataReady = isCanvasReady && hasAnnotations && isRenderable;
 
-  const isReady = isCanvasReady && hasAnnotations && isRenderable;
-
-  if (!isNearViewport) {
-    return <TranscriptionPlaceholder
-      width={width}
-      height={height}
-    />;
-  }
-
-  if (!annotationUrls.length) {
-    return (
-      <TranscriptionPlaceholder width={width} height={height}>
-        <PageLabel label={index}/>
-        No transcription
-      </TranscriptionPlaceholder>
-    );
+  if (!shouldRender) {
+    return <TranscriptionPlaceholder width={width} height={height} />;
   }
 
   if (error) {
@@ -74,16 +62,33 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription({
     );
   }
 
-  if (!isReady) {
+  if (!isDataReady) {
     return (
       <TranscriptionPlaceholder width={width} height={height}>
-        Loading...
+        {'Loading...'}
+      </TranscriptionPlaceholder>
+    );
+  }
+
+  if (!annotationUrls.length) {
+    return (
+      <TranscriptionPlaceholder width={width} height={height}>
+        <PageLabel label={index}/>
+        No transcription
       </TranscriptionPlaceholder>
     );
   }
 
   return (
-    <div style={{ position: 'relative', width, minHeight: height }}>
+    <div
+      style={{
+        position: 'relative',
+        width,
+        minHeight: height,
+        // Prevent expensive rerenders by hiding rendered components NOT near the viewport:
+        display: isVisible ? 'block' : 'none',
+      }}
+    >
       <PageLabel label={canvasId.split('/').pop() ?? index}/>
       <CanvasTranscription canvasId={canvasId}/>
     </div>

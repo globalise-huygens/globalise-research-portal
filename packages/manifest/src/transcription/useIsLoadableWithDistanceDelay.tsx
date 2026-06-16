@@ -1,5 +1,5 @@
-import { useDocumentStore } from '@globalise/common/document';
-import { useEffect, useState } from 'react';
+import {useDocumentStore} from '@globalise/common/document';
+import {useEffect, useRef, useState} from 'react';
 
 /**
  * Load nearst images first, increase delay according to distance
@@ -75,4 +75,26 @@ export function useIsRenderableWithDistanceDelay(
   }, [isNearViewport, isRenderable, delay, index]);
 
   return { isRenderable, isNearViewport };
+}
+
+
+export function useCanvasVisibility(
+  index: number,
+  renderDistance = 2,
+  preserveDistance = 8,
+) {
+  const distance = useDocumentStore(
+    (s) => Math.abs(index - s.selectedCanvas),
+  );
+
+  // Sticky: once mounted, stay mounted until we leave preserveDistance.
+  const hasMountedRef = useRef(false);
+  const inPreserveRange = distance <= preserveDistance;
+  if (inPreserveRange) hasMountedRef.current = true;
+  if (!inPreserveRange) hasMountedRef.current = false;
+
+  return {
+    shouldRender: hasMountedRef.current,
+    isVisible: distance <= renderDistance,
+  };
 }
