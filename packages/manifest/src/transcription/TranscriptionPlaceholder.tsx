@@ -17,7 +17,7 @@ export function TranscriptionPlaceholder(
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      padding: '5rem',
+      padding: '5rem 1rem',
       color: color ?? 'grey',
       position: 'relative',
     }}>
