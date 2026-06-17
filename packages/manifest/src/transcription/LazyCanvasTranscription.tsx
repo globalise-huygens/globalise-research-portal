@@ -1,9 +1,13 @@
 import {memo, useEffect} from 'react';
-import {loadCanvasAnnotationPages, usePages} from '@globalise/common/document';
+import {
+  loadCanvasAnnotationPages,
+  usePages,
+  useDocumentStore,
+} from '@globalise/common/document';
+import {traceCanvas} from '@globalise/common/annotation';
 import {TranscriptionPlaceholder} from './TranscriptionPlaceholder.tsx';
 import {PageLabel} from './PageLabel.tsx';
 import {CanvasTranscription} from './CanvasTranscription.tsx';
-import {useLazyCanvasLifecycle,} from './useLazyCanvasLifecycle.tsx';
 
 type Props = {
   canvasId: string;
@@ -13,6 +17,8 @@ type Props = {
   annotationUrls: string[];
   index: number;
   scaleFactor: number;
+  isVisible: boolean;
+  renderDistance: number;
 };
 
 export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
@@ -24,78 +30,82 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
     containerWidth,
     index,
     scaleFactor,
+    isVisible,
+    renderDistance,
   }: Props,
 ) {
-
-  const {
-    canLoadNow,
-    canRenderNow,
-    isInRenderRange,
-    isInVisibleRange
-  } = useLazyCanvasLifecycle(index);
-
   const {isReady: isCanvasReady, error, hasAnnotations} = usePages(canvasId);
+  const isInRenderRangeByDistance = useDocumentStore(
+    (s) => Math.abs(index - s.selectedCanvas) <= renderDistance,
+  );
+  const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
-  useEffect(() => {
-    if (canLoadNow && annotationUrls.length) {
-      void loadCanvasAnnotationPages(canvasId, annotationUrls);
-    }
-  }, [canLoadNow, canvasId, annotationUrls]);
+  useEffect(
+    () => {
+      if (isVisible && annotationUrls.length) {
+        void loadCanvasAnnotationPages(canvasId, annotationUrls);
+      }
+    },
+    [isVisible, canvasId, annotationUrls]
+  );
+  useEffect(
+    () => traceCanvas(canvasId, `isVisible=${isVisible}`),
+    [canvasId, isVisible]
+  );
+  useEffect(
+    () => traceCanvas(canvasId, `isInRenderRange=${isInRenderRange}`),
+    [canvasId, isInRenderRange]
+  );
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
-  const isDataReady = isCanvasReady && hasAnnotations && canRenderNow;
-
-  if (!isInRenderRange) {
-    return <TranscriptionPlaceholder width={width} height={height}/>;
-  }
-
   const canvasLabel = canvasId.split('/').pop() ?? index;
-
-  if (error) {
-    return (
-      <TranscriptionPlaceholder
-        width={width}
-        height={height}
-        color="indianred"
-        background="rgb(248 243 243)"
-      >
-        <PageLabel label={canvasLabel}/>
-        Error: {error}
-      </TranscriptionPlaceholder>
-    );
-  }
-
-  if (!annotationUrls.length) {
-    return (
-      <TranscriptionPlaceholder width={width} height={height}>
-        <PageLabel label={canvasLabel}/>
-        No transcription
-      </TranscriptionPlaceholder>
-    );
-  }
-
-  if (!isDataReady) {
-    return (
-      <TranscriptionPlaceholder width={width} height={height}>
-        <PageLabel label={canvasLabel}/>
-        Loading...
-      </TranscriptionPlaceholder>
-    );
-  }
+  const isDataReady = isCanvasReady && hasAnnotations;
+  const hasNoAnnotations = !annotationUrls.length;
+  const isLoading = !error && annotationUrls.length && !isDataReady;
+  const isContentReady = !error && !hasNoAnnotations && isDataReady;
 
   return (
     <div
+      data-canvas-index={index}
       style={{
         position: 'relative',
         width,
-        minHeight: height,
-        // Prevent expensive rerenders by hiding rendered components NOT near the viewport:
-        visibility: isInVisibleRange ? 'visible' : 'hidden',
+        height,
+
+        /**
+         * Prevent browser painting calculation outside of window:
+         */
+        visibility: isVisible ? 'visible' : 'hidden',
       }}
     >
-      <PageLabel label={canvasLabel}/>
-      <CanvasTranscription canvasId={canvasId}/>
+      {isInRenderRange && error && (
+        <TranscriptionPlaceholder
+          color='indianred'
+          background='rgb(248 243 243)'
+        >
+          <PageLabel label={canvasLabel}/>
+          Error: {error}
+        </TranscriptionPlaceholder>
+      )}
+      {isInRenderRange && hasNoAnnotations && (
+        <TranscriptionPlaceholder>
+          <PageLabel label={canvasLabel}/>
+          No transcription
+        </TranscriptionPlaceholder>
+      )}
+      {isInRenderRange && isLoading && (
+        <TranscriptionPlaceholder>
+          <PageLabel label={canvasLabel}/>
+          Loading...
+        </TranscriptionPlaceholder>
+      )}
+      {isInRenderRange && isContentReady && (
+        <>
+          <PageLabel label={canvasLabel}/>
+          <CanvasTranscription canvasId={canvasId}/>
+        </>
+      )}
     </div>
   );
 });
