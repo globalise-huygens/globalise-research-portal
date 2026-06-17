@@ -223,7 +223,7 @@ export async function loadCanvasAnnotationPages(
 export function setSelectedCanvas(index: number, source: CanvasSource) {
   setState(s => {
     const id = Object.keys(s.canvases)[index]
-    console.trace(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source}`)
+    console.log(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source}`)
     return ({...s, selectedCanvas: index, selectedCanvasSource: source});
   });
 }

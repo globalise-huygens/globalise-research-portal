@@ -31,9 +31,9 @@ export function traceCanvas(id: CanvasId | null | undefined, action: string) {
   }
 
   const diff = lastLog ? now - lastLog.time : 0
-  console.log(`${dateNameAction(now, name, action)}; ${diff}ms after ${lastLog.action}`)
+  console.log(`${dateNameAction(now, name, action)} (${diff}ms after #${lastLog.action})`)
 }
 
 export function dateNameAction(at: number, name: string, action: string) {
-  return `${new Date(at).toISOString()} Canvas ${name} ${action}`;
+  return `${new Date(at).toISOString()} Canvas ${name}:${action}`;
 }

@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from '@globalise/facsimile';
 import {Page} from './Page.tsx';
@@ -25,13 +25,28 @@ const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
+/**
+ * Sync selectedCanvas with url
+ */
+const params = new URLSearchParams(location.search);
+const initialCanvas = Number(params.get(CANVAS)) || 0;
+setSelectedCanvas(initialCanvas, 'external')
+useDocumentStore.subscribe((state, prev) => {
+  const selectedCanvas = state.selectedCanvas;
+  if (selectedCanvas === prev.selectedCanvas) {
+    return;
+  }
+  const newUrl = new URL(window.location.href);
+  newUrl.searchParams.set(CANVAS, String(selectedCanvas));
+  history.replaceState({}, '', newUrl);
+});
+
 export function ManifestDocumentPage() {
-  const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
-  const initialCanvas = Number(params.get(CANVAS)) || 0;
+
   const allManifests = useCollectionManifests(collectionUrl);
 
   function handleManifestChange(url: string) {
@@ -42,28 +57,15 @@ export function ManifestDocumentPage() {
     history.pushState({}, '', newUrl);
   }
 
-  useEffect(syncCanvasToUrl, []);
+  const handleFacsimileCanvasChangeDebounced = useMemo(
+    () => debounce((index: number) => setSelectedCanvas(index, 'facsimile'), 200),
+    [],
+  );
 
-  function syncCanvasToUrl() {
-    setSelectedCanvas(initialCanvas, 'external')
-    useDocumentStore.subscribe((state, prev) => {
-      const selectedCanvas = state.selectedCanvas;
-      if (selectedCanvas === prev.selectedCanvas) {
-        return;
-      }
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set(CANVAS, String(selectedCanvas));
-      history.replaceState({}, '', newUrl);
-    });
-  }
-
-  const handleFacsimileCanvasChangeDebounced = debounce((index: number) => {
-    setSelectedCanvas(index, 'facsimile');
-  }, 200);
-
-  const handleTranscriptionCanvasChangeDebounced = debounce((index: number) => {
-    setSelectedCanvas(index, 'transcription');
-  }, 200);
+  const handleTranscriptionCanvasChangeDebounced = useMemo(
+    () => debounce((index: number) => setSelectedCanvas(index, 'transcription'), 200),
+    [],
+  );
 
   return (
     <ViewerProvider>

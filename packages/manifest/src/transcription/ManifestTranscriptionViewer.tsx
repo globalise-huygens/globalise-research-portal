@@ -113,7 +113,7 @@ export function ManifestTranscriptionViewer(
   useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
   function initCanvasesOnInfosLoaded() {
     if (canvasInfos.length) {
-      initCanvases(canvasInfos.map((c) => c.canvasId));
+      initCanvases(canvasInfos.map((c) => c.canvasId), initialCanvas);
     }
   }
 
