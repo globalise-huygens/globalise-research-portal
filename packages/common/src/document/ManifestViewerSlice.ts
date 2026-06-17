@@ -1,12 +1,14 @@
 import {useShallow} from 'zustand/react/shallow';
 import {
   Annotation,
-  AnnotationPage, canvasName,
+  AnnotationPage,
+  canvasName,
   findTextPositionSelector,
   getPageText,
   Id,
   isEntity,
-  PartOf, traceCanvas,
+  PartOf,
+  traceCanvas,
 } from '../annotation';
 import {FetchError, fetchJson} from '../util/fetchJson';
 import {type DocumentState, setState, useDocumentStore} from './DocumentStore';
@@ -26,10 +28,20 @@ export type CanvasState = {
   error: string | null;
 };
 
+/**
+ * Who updated the selected canvas?
+ * Prevents accidental rewrites and update loops from the opposite pane
+ */
+export type CanvasSource =
+  | 'facsimile'
+  | 'transcription'
+  // init, url or menu:
+  | 'external';
+
 export type ManifestViewerSlice = {
   indexes: AnnotationIndexes;
   selectedCanvas: number;
-
+  selectedCanvasSource: CanvasSource;
   /**
    * Canvas record
    * Note: Object.keys/values(canvases) returns canvases in manifest order
@@ -56,6 +68,7 @@ const emptyCanvasState: CanvasState = {
 
 export const defaultManifestViewerSlice: ManifestViewerSlice = {
   selectedCanvas: 0,
+  selectedCanvasSource: "external",
   canvases: {},
   indexes: emptyAnnotationIndex,
 };
@@ -207,11 +220,11 @@ export async function loadCanvasAnnotationPages(
   }
 }
 
-export function setSelectedCanvas(index: number) {
+export function setSelectedCanvas(index: number, source: CanvasSource) {
   setState(s => {
     const id = Object.keys(s.canvases)[index]
-    console.log(`! --> setSelectedCanvas ${canvasName(id)}`)
-    return ({...s, selectedCanvas: index});
+    console.trace(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source}`)
+    return ({...s, selectedCanvas: index, selectedCanvasSource: source});
   });
 }
 
@@ -254,25 +267,30 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
   });
 }
 
-type CanvasStatus =
-  | { isInit: false, index: number, id: null } & CanvasState
-  | { isInit: true, index: number, id: CanvasId } & CanvasState;
+type CanvasStatus = {
+  index: number,
+  selectedCanvasSource: CanvasSource
+} & (
+  | { isInit: false, id: null } & CanvasState
+  | { isInit: true, id: CanvasId } & CanvasState
+  )
 
 const emptyCanvasStatus: CanvasStatus = {
   ...emptyCanvasState,
   isInit: false,
   index: 0,
   id: null,
+  selectedCanvasSource: 'external'
 };
 
 export function useSelectedCanvas(): CanvasStatus {
   return useDocumentStore(useShallow((s: DocumentState) => {
-    const index = s.selectedCanvas;
-    const id = Object.keys(s.canvases)[index];
+    const {selectedCanvas: index, selectedCanvasSource, canvases} = s;
+    const id = Object.keys(canvases)[index];
     if (!id) {
       return emptyCanvasStatus;
     }
-    return {isInit: true, id, index, ...s.canvases[id]};
+    return {isInit: true, id, index, ...canvases[id], selectedCanvasSource};
   }));
 }
 

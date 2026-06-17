@@ -7,7 +7,7 @@ const lastLogs: Map<CanvasId, Log> = new Map()
 
 const showLogs = true;
 
-export function traceCanvas(id: CanvasId | undefined, action: string) {
+export function traceCanvas(id: CanvasId | null | undefined, action: string) {
   if(!showLogs) {
     return;
   }

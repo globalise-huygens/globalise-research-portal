@@ -1,18 +1,22 @@
-import { Point, Viewer as OsdViewer } from 'openseadragon';
-import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
+import {Point, Viewer as OsdViewer} from 'openseadragon';
+import {PropsWithChildren, useEffect, useMemo, useRef} from 'react';
 import {
   useManifest,
   useViewer,
   useViewerStore,
 } from '@knaw-huc/osd-iiif-viewer';
-import { useContainerSize } from './useContainerSize.tsx';
-import { observeResize } from './util/observeResize.tsx';
-import { useLazyCanvasLoader } from './useLazyCanvasLoader.tsx';
-import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
+import {useContainerSize} from './useContainerSize.tsx';
+import {observeResize} from './util/observeResize.tsx';
+import {useLazyCanvasLoader} from './useLazyCanvasLoader.tsx';
+import {createLazyTiledImages} from './util/createLazyTiledImages.ts';
 import {
   setLazyCanvases, setLoaded, setScrolling,
 } from './LazyCollectionViewerStore.ts';
-import { initCanvases } from '@globalise/common/document';
+import {
+  initCanvases,
+  useSelectedCanvas
+} from '@globalise/common/document';
+import {traceCanvas} from "@globalise/common/annotation";
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -42,7 +46,7 @@ export function LazyCollectionViewer(
   const scrollRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
-  const { vault, id: manifestId, isReady } = useManifest();
+  const {vault, id: manifestId, isReady} = useManifest();
   const size = useContainerSize(scrollRef);
   const isScrollReady = size.width && size.height;
 
@@ -77,6 +81,28 @@ export function LazyCollectionViewer(
       return;
     }
     initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvas);
+  }
+
+  const {index: selectedCanvas, selectedCanvasSource, id} = useSelectedCanvas()
+
+  useEffect(
+    subscribeToExternalCanvasChange,
+    [viewer, lazyCanvases, selectedCanvas, selectedCanvasSource]
+  );
+  function subscribeToExternalCanvasChange() {
+    if (!viewer || !lazyCanvases.length) {
+      return;
+    }
+    if (selectedCanvasSource === 'facsimile') {
+      return;
+    }
+    const canvas = lazyCanvases[selectedCanvas];
+    if (!canvas) {
+      return;
+    }
+    const verticalCenter = canvas.y + canvas.height / 2;
+    traceCanvas(id, `syncScan (${selectedCanvasSource})`)
+    viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
   }
 
   useEffect(createViewer, [isScrollReady, store]);
@@ -117,7 +143,7 @@ export function LazyCollectionViewer(
         viewer.viewport.panBy(panDistance);
       }
     };
-    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('wheel', handleWheel, {passive: false});
 
     store.getState().setViewer(viewer);
     store.getState().setViewerReady(true);
@@ -149,7 +175,7 @@ export function LazyCollectionViewer(
       return;
     }
     return observeResize(container, () => {
-      const { viewer, viewerReady } = store.getState();
+      const {viewer, viewerReady} = store.getState();
       if (viewer && viewerReady) {
         viewer.forceResize();
       }
@@ -160,7 +186,7 @@ export function LazyCollectionViewer(
     <>
       <div
         ref={scrollRef}
-        style={{ width: '100%', height: '100%' }}
+        style={{width: '100%', height: '100%'}}
       />
       {children}
     </>

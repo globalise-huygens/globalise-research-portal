@@ -82,13 +82,13 @@ export class LazyCanvasTileLoader {
     fitLayout(viewer, canvases[startIndex], canvasHeight);
     this.updateCanvasTilesThrottled();
 
-    this.onChangeViewport = () => {
-      this.onCanvasChange(this.findCenterScan())
-      this.updateCanvasTilesThrottled();
-    };
+      this.onChangeViewport = () => {
+        this.onCanvasChange(this.findCenterScan())
+        this.updateCanvasTilesThrottled();
+      };
 
-    this.viewer.addHandler('viewport-change', this.onChangeViewport);
-    this.viewer.addHandler('animation', this.onChangeViewport);
+      this.viewer.addHandler('viewport-change', this.onChangeViewport);
+      this.viewer.addHandler('animation', this.onChangeViewport);
   }
 
   /**

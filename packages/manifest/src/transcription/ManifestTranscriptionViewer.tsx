@@ -1,11 +1,11 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { useSettings } from '@globalise/document';
-import { LazyCanvasTranscription } from './LazyCanvasTranscription';
-import { initCanvases, setSelectedCanvas } from '@globalise/common/document';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
-import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
+import {CSSProperties, useEffect, useMemo, useRef, useState} from 'react';
+import {useManifest} from '@knaw-huc/osd-iiif-viewer';
+import {useSettings} from '@globalise/document';
+import {LazyCanvasTranscription} from './LazyCanvasTranscription';
+import {initCanvases} from '@globalise/common/document';
+import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
+import {CanvasNormalized} from '@iiif/presentation-3-normalized';
+import {useScrollToSelectedCanvas} from './useScrollToSelectedCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -73,7 +73,6 @@ export function ManifestTranscriptionViewer(
           continue;
         }
         lastScrolledCanvas.current = index;
-        setSelectedCanvas(index);
         onCanvasChange(index);
       }
     }, {
@@ -145,4 +144,3 @@ export function ManifestTranscriptionViewer(
     </div>
   );
 }
-

@@ -1,18 +1,22 @@
 import { RefObject, useEffect } from 'react';
-import { useDocumentStore } from '@globalise/common/document';
+import {useDocumentStore, useSelectedCanvas} from '@globalise/common/document';
 
 export function useScrollToSelectedCanvas(
   scrollRef: RefObject<HTMLDivElement | null>,
   canvasListRef: RefObject<HTMLDivElement | null>,
   containerWidth: number,
 ) {
-  const selectedCanvas = useDocumentStore((s) => s.selectedCanvas);
+  const {index: selectedCanvas, selectedCanvasSource} = useSelectedCanvas();
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
 
     if (!scrollContainer || !canvasList || !containerWidth) {
+      return;
+    }
+
+    if (selectedCanvasSource === 'transcription') {
       return;
     }
 

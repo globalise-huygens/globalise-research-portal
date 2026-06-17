@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { ManifestLoader } from '@globalise/facsimile';
-import { Page } from './Page.tsx';
+import {useEffect, useState} from 'react';
+import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
+import {ManifestLoader} from '@globalise/facsimile';
+import {Page} from './Page.tsx';
 import {
   ManifestDropdown,
   ManifestFacsimileViewer,
@@ -9,10 +9,12 @@ import {
   ManifestTranscriptionViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
-import { SplitPaneLayout } from '@globalise/document';
-import { noop } from '@globalise/common';
-import { setSelectedCanvas } from '@globalise/common/document';
-import { debounce } from '@mui/material';
+import {SplitPaneLayout} from '@globalise/document';
+import {debounce} from "lodash";
+import {
+  setSelectedCanvas,
+  useDocumentStore
+} from "@globalise/common/document";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -40,15 +42,27 @@ export function ManifestDocumentPage() {
     history.pushState({}, '', newUrl);
   }
 
-  function updateCanvasUrlParam(index: number) {
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(CANVAS, String(index));
-    history.replaceState({}, '', newUrl);
+  useEffect(syncCanvasToUrl, []);
+
+  function syncCanvasToUrl() {
+    setSelectedCanvas(initialCanvas, 'external')
+    useDocumentStore.subscribe((state, prev) => {
+      const selectedCanvas = state.selectedCanvas;
+      if (selectedCanvas === prev.selectedCanvas) {
+        return;
+      }
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set(CANVAS, String(selectedCanvas));
+      history.replaceState({}, '', newUrl);
+    });
   }
 
   const handleFacsimileCanvasChangeDebounced = debounce((index: number) => {
-    setSelectedCanvas(index);
-    updateCanvasUrlParam(index);
+    setSelectedCanvas(index, 'facsimile');
+  }, 200);
+
+  const handleTranscriptionCanvasChangeDebounced = debounce((index: number) => {
+    setSelectedCanvas(index, 'transcription');
   }, 200);
 
   return (
@@ -57,7 +71,7 @@ export function ManifestDocumentPage() {
         <Page
           header={
             <>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{flex: 1, minWidth: 0}}>
                 <ManifestDropdown
                   manifests={allManifests}
                   selected={manifestUrl}
@@ -86,11 +100,12 @@ export function ManifestDocumentPage() {
               height: '100vh',
               overflow: 'hidden',
             }}>
-              <div style={{ flex: 1, overflow: 'hidden' }}>
+              <div style={{flex: 1, overflow: 'hidden'}}>
                 <ManifestTranscriptionViewer
                   initialCanvas={initialCanvas}
-                  onCanvasChange={noop}
-                /></div>
+                  onCanvasChange={handleTranscriptionCanvasChangeDebounced}
+                />
+              </div>
             </div>
           </SplitPaneLayout>
         </Page>
@@ -98,4 +113,3 @@ export function ManifestDocumentPage() {
     </ViewerProvider>
   );
 }
-
