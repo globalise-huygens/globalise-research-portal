@@ -60,7 +60,7 @@ export function ManifestDocumentPage() {
   );
 
   const handleTranscriptionCanvasChangeDebounced = useMemo(
-    () => debounce((index: number) => setSelectedCanvas(index, 'transcription'), 200),
+    () => debounce((index: number) => setSelectedCanvas(index, 'transcription'), 500),
     [],
   );
 
