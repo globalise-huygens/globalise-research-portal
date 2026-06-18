@@ -5,6 +5,7 @@ import {Rect} from "openseadragon";
 import {Overlay} from "@knaw-huc/osd-iiif-viewer";
 import {useIsViewerScrolling} from "./useIsViewerScrolling.tsx";
 import {usePages} from "@globalise/common/document";
+import {lazyCollectionViewerStore} from "./LazyCollectionViewerStore.ts";
 
 export type DebugOverlayProps = {
   lazyCanvas: LazyTiledImage
@@ -13,11 +14,16 @@ export type DebugOverlayProps = {
 export function DebugOverlay({lazyCanvas}: DebugOverlayProps) {
   const isScrolling = useIsViewerScrolling();
   const {isReady, hasAnnotations} = usePages(lazyCanvas.canvasId);
-
+  const isTileLoaded = lazyCollectionViewerStore(
+    (s) => s.loaded.has(lazyCanvas.canvasId),
+  );
   const location = useMemo(() => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), [lazyCanvas.y, lazyCanvas.height]);
   let color: string
   const stats = []
-  if (!isReady) {
+  stats.push('isTileLoaded')
+  if (!isTileLoaded) {
+    color = `rgba(255, 0, 255, 0.5)`
+  } else if (!isReady) {
     color = `rgba(255,0,0,0.5)`
     stats.push('!isReady')
   } else if (!hasAnnotations) {
@@ -25,7 +31,7 @@ export function DebugOverlay({lazyCanvas}: DebugOverlayProps) {
     color = `rgba(0,0,255,0.5)`
   } else if (isScrolling) {
     stats.push('isScrolling')
-    color = `rgba(0,255,255,0.5)`
+    color = `transparent`
   } else {
     color = `transparent`
   }

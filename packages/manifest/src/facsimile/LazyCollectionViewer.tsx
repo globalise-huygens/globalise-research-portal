@@ -102,7 +102,7 @@ export function LazyCollectionViewer(
       return;
     }
     const verticalCenter = canvas.y + canvas.height / 2;
-    traceCanvas(id, `syncScan (${selectedCanvasSource})`)
+    traceCanvas(id, `subscribeToExternalCanvasChange->panTo (${selectedCanvasSource})`)
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
   }
 
