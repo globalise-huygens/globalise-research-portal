@@ -1,12 +1,12 @@
 import { RefObject, useEffect } from 'react';
-import {useSelectedCanvas} from '@globalise/common/document';
+import { useSelectedCanvas } from '@globalise/common/document';
 
 export function useScrollToSelectedCanvas(
   scrollRef: RefObject<HTMLDivElement | null>,
   canvasListRef: RefObject<HTMLDivElement | null>,
   containerWidth: number,
 ) {
-  const {index: selectedCanvas, selectedCanvasSource} = useSelectedCanvas();
+  const { index: selectedCanvas, selectedCanvasSource } = useSelectedCanvas();
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;

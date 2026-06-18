@@ -1,9 +1,9 @@
-import {Viewer} from "openseadragon";
-import {LazyTiledImage} from "./LazyCollectionViewerModel.ts";
+import { Viewer } from 'openseadragon';
+import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 
 export function findCenterScan(
   viewer: Viewer,
-  canvases: LazyTiledImage[]
+  canvases: LazyTiledImage[],
 ): number {
   const bounds = viewer.viewport.getBounds(true);
   const center = bounds.y + bounds.height / 2;
@@ -11,7 +11,7 @@ export function findCenterScan(
   let closestDistance = Infinity;
 
   for (let i = 0; i < canvases.length; i++) {
-    const {y, height} = canvases[i];
+    const { y, height } = canvases[i];
     const distance = Math.abs(y + height / 2 - center);
     if (distance < closestDistance) {
       closestDistance = distance;

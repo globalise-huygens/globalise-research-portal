@@ -1,13 +1,13 @@
-import {memo, useEffect} from 'react';
+import { memo, useEffect } from 'react';
 import {
   loadCanvasAnnotationPages,
   usePages,
   useDocumentStore,
 } from '@globalise/common/document';
-import {traceCanvas} from '@globalise/common/annotation';
-import {TranscriptionPlaceholder} from './TranscriptionPlaceholder.tsx';
-import {PageLabel} from './PageLabel.tsx';
-import {CanvasTranscription} from './CanvasTranscription.tsx';
+import { traceCanvas } from '@globalise/common/annotation';
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import { PageLabel } from './PageLabel.tsx';
+import { CanvasTranscription } from './CanvasTranscription.tsx';
 
 type Props = {
   canvasId: string;
@@ -34,7 +34,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
     renderDistance,
   }: Props,
 ) {
-  const {isReady: isCanvasReady, error, hasAnnotations} = usePages(canvasId);
+  const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const isInRenderRangeByDistance = useDocumentStore(
     (s) => Math.abs(index - s.selectedCanvas) <= renderDistance,
   );
@@ -46,15 +46,15 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
         void loadCanvasAnnotationPages(canvasId, annotationUrls);
       }
     },
-    [isVisible, canvasId, annotationUrls]
+    [isVisible, canvasId, annotationUrls],
   );
   useEffect(
     () => traceCanvas(canvasId, `isVisible=${isVisible}`),
-    [canvasId, isVisible]
+    [canvasId, isVisible],
   );
   useEffect(
     () => traceCanvas(canvasId, `isInRenderRange=${isInRenderRange}`),
-    [canvasId, isInRenderRange]
+    [canvasId, isInRenderRange],
   );
 
   const width = containerWidth * scaleFactor;

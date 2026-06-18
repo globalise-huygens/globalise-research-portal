@@ -2,7 +2,6 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import {
   setDiplomaticViewScale,
-  setTranscriptionMode,
   useSettings,
 } from '@globalise/document';
 

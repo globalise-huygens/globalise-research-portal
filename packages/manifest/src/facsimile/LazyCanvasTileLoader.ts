@@ -1,9 +1,9 @@
-import {TiledImage, Viewer} from 'openseadragon';
-import {CanvasId, LazyTiledImage} from './LazyCollectionViewerModel.ts';
-import {fitLayout} from './util/fitLayout.ts';
-import {fetchJson} from '@globalise/common';
-import {throttle} from 'lodash';
-import {traceCanvas} from "@globalise/common/annotation";
+import { TiledImage, Viewer } from 'openseadragon';
+import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
+import { fitLayout } from './util/fitLayout.ts';
+import { fetchJson } from '@globalise/common';
+import { throttle } from 'lodash';
+import { traceCanvas } from '@globalise/common/annotation';
 
 export type LazyCanvasTileLoaderOptions = {
   /**
@@ -64,7 +64,7 @@ export class LazyCanvasTileLoader {
       canvasHeight,
       initialCanvas,
       onLoadedChange,
-    } = {...defaultOptions, ...options};
+    } = { ...defaultOptions, ...options };
     this.loadingBuffer = loadingBuffer;
     this.onLoadedChange = onLoadedChange;
 
@@ -80,20 +80,6 @@ export class LazyCanvasTileLoader {
 
     this.viewer.addHandler('viewport-change', this.onChangeViewport);
     this.viewer.addHandler('animation', this.onChangeViewport);
-    viewer.addHandler('add-item-failed', e => console.log('add-item-failed', e));
-    viewer.world.addHandler('add-item', e => {
-      const ti = e.item;
-      // @ts-ignore
-      console.log('added', ti.source['@id'], 'preload=', ti.getPreload?.());
-      ti.addHandler('fully-loaded-change', ev =>
-        // @ts-ignore
-        console.log('fully-loaded', ti.source['@id'], ev.fullyLoaded));
-    });
-    viewer.addHandler('tile-load-failed', e => console.log('tile-load-failed', e));
-    // Optional, very chatty — turn on briefly:
-    viewer.addHandler('tile-loaded', e =>
-      // @ts-ignore
-      console.log('tile-loaded', e.tiledImage.source['@id'], e.tile.level));
   }
 
   /**
@@ -131,7 +117,7 @@ export class LazyCanvasTileLoader {
     if (canvasesChanged) {
       this.onLoadedChangeBatched();
     }
-  }, 150)
+  }, 150);
 
   /**
    * Clear active tile images, loaded images, and pending requests.
@@ -170,12 +156,12 @@ export class LazyCanvasTileLoader {
   private async addCanvas(canvas: LazyTiledImage): Promise<void> {
     this.pending.add(canvas.canvasId);
     try {
-      traceCanvas(canvas.canvasId, 'fetchInfo')
+      traceCanvas(canvas.canvasId, 'fetchInfo');
       const tileSource = await this.fetchInfo(canvas.imageServiceUrl);
       if (!this.pending.has(canvas.canvasId)) {
         return;
       }
-      traceCanvas(canvas.canvasId, 'addTiledImage(with-preload)')
+      traceCanvas(canvas.canvasId, 'addTiledImage(with-preload)');
       this.viewer.addTiledImage({
         preload: true,
         tileSource,
@@ -192,7 +178,7 @@ export class LazyCanvasTileLoader {
           this.pending.delete(canvas.canvasId);
         },
       });
-      traceCanvas(canvas.canvasId, 'addTiledImage=finished')
+      traceCanvas(canvas.canvasId, 'addTiledImage=finished');
     } catch {
       this.pending.delete(canvas.canvasId);
     }

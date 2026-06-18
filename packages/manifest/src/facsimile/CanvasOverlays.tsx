@@ -1,8 +1,8 @@
-import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
-import {HighlightsOverlay} from './HighlightsOverlay.tsx';
-import {CurrentCanvasOverlay} from './CurrentCanvasOverlay.tsx';
-import {DebugOverlay} from "./DebugOverlay.tsx";
-import {Fragment} from "react";
+import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
+import { HighlightsOverlay } from './HighlightsOverlay.tsx';
+import { CurrentCanvasOverlay } from './CurrentCanvasOverlay.tsx';
+import { DebugOverlay } from './DebugOverlay.tsx';
+import { Fragment } from 'react';
 
 export function CanvasOverlays() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);

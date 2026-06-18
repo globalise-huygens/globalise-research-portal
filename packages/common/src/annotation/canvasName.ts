@@ -1,9 +1,9 @@
-import {CanvasId} from "../document";
+import { CanvasId } from '../document';
 
-export const canvasName = (id?: CanvasId) => id?.split('/').pop() ?? 'unknown-canvas'
+export const canvasName = (id?: CanvasId) => id?.split('/').pop() ?? 'unknown-canvas';
 
 type Log = { id: string, name: string, action: string, time: number };
-const lastLogs: Map<CanvasId, Log> = new Map()
+const lastLogs = new Map<CanvasId, Log>();
 
 const showLogs = true;
 
@@ -15,23 +15,23 @@ export function traceCanvas(id: CanvasId | null | undefined, action: string) {
     return;
   }
   const now = Date.now();
-  const lastLog = lastLogs.get(id)
-  const name = lastLog?.name ?? canvasName(id)
+  const lastLog = lastLogs.get(id);
+  const name = lastLog?.name ?? canvasName(id);
   const newLog: Log = {
     id,
     name,
     action,
-    time: now
-  }
-  lastLogs.set(id, newLog)
+    time: now,
+  };
+  lastLogs.set(id, newLog);
 
   if(!lastLog) {
-    console.log(dateNameAction(now, name, action))
+    console.log(dateNameAction(now, name, action));
     return;
   }
 
-  const diff = lastLog ? now - lastLog.time : 0
-  console.log(`${dateNameAction(now, name, action)} (${diff}ms after #${lastLog.action})`)
+  const diff = lastLog ? now - lastLog.time : 0;
+  console.log(`${dateNameAction(now, name, action)} (${diff}ms after #${lastLog.action})`);
 }
 
 export function dateNameAction(at: number, name: string, action: string) {

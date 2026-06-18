@@ -1,7 +1,7 @@
-import {useMemo, useState} from 'react';
-import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {ManifestLoader} from '@globalise/facsimile';
-import {Page} from './Page.tsx';
+import { useMemo, useState } from 'react';
+import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import { ManifestLoader } from '@globalise/facsimile';
+import { Page } from './Page.tsx';
 import {
   ManifestDropdown,
   ManifestFacsimileViewer,
@@ -9,9 +9,9 @@ import {
   ManifestTranscriptionViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
-import {SplitPaneLayout} from '@globalise/document';
-import {debounce} from "lodash";
-import {setSelectedCanvas, useDocumentStore} from "@globalise/common/document";
+import { SplitPaneLayout } from '@globalise/document';
+import { debounce } from 'lodash';
+import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -27,7 +27,7 @@ const CANVAS = 'canvas';
  */
 const params = new URLSearchParams(location.search);
 const initialCanvas = Number(params.get(CANVAS)) || 0;
-setSelectedCanvas(initialCanvas, 'external')
+setSelectedCanvas(initialCanvas, 'external');
 useDocumentStore.subscribe((state, prev) => {
   const selectedCanvas = state.selectedCanvas;
   if (selectedCanvas === prev.selectedCanvas) {
@@ -70,7 +70,7 @@ export function ManifestDocumentPage() {
         <Page
           header={
             <>
-              <div style={{flex: 1, minWidth: 0}}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <ManifestDropdown
                   manifests={allManifests}
                   selected={manifestUrl}
@@ -99,7 +99,7 @@ export function ManifestDocumentPage() {
               height: '100vh',
               overflow: 'hidden',
             }}>
-              <div style={{flex: 1, overflow: 'hidden'}}>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
                 <ManifestTranscriptionViewer
                   initialCanvas={initialCanvas}
                   onCanvasChange={handleTranscriptionCanvasChangeDebounced}

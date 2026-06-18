@@ -1,11 +1,11 @@
-import {CSSProperties, useEffect, useMemo, useRef, useState} from 'react';
-import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {useSettings} from '@globalise/document';
-import {LazyCanvasTranscription} from './LazyCanvasTranscription';
-import {initCanvases} from '@globalise/common/document';
-import {getAnnotationPageUrls} from '../getAnnotationPageUrls.ts';
-import {CanvasNormalized} from '@iiif/presentation-3-normalized';
-import {useScrollToSelectedCanvas} from './useScrollToSelectedCanvas.tsx';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useSettings } from '@globalise/document';
+import { LazyCanvasTranscription } from './LazyCanvasTranscription';
+import { initCanvases } from '@globalise/common/document';
+import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
+import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -23,18 +23,18 @@ const MIN_RENDER_DISTANCE = 4;
 const RENDER_VIEWPORTS = 2;
 
 export function ManifestTranscriptionViewer(
-  {initialCanvas = 0, onCanvasChange}: Props,
+  { initialCanvas = 0, onCanvasChange }: Props,
 ) {
-  const {vault, id: manifestId, isReady: isManifestReady} = useManifest();
-  const {diplomaticViewScale} = useSettings();
+  const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const { diplomaticViewScale } = useSettings();
   const scale = diplomaticViewScale;
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
     if (!manifestId || !isManifestReady) {
       return [];
     }
-    const manifest = vault.get({id: manifestId, type: 'Manifest'});
-    return manifest.items.map((item: {id: string; type: string}) => {
+    const manifest = vault.get({ id: manifestId, type: 'Manifest' });
+    return manifest.items.map((item: { id: string; type: string }) => {
       const canvas: CanvasNormalized = vault.get(item);
       return {
         canvasId: canvas.id,
@@ -144,7 +144,7 @@ export function ManifestTranscriptionViewer(
     }
     const viewportHeight = scrollRef.current.clientHeight;
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
-    child.scrollIntoView({block});
+    child.scrollIntoView({ block });
     lastScrolledCanvas.current = initialCanvas;
   }
 
@@ -180,8 +180,8 @@ export function ManifestTranscriptionViewer(
   };
 
   return (
-    <div ref={scrollRef} style={{overflow: 'auto', height: '100%'}}>
-      <div ref={canvasListRef} style={{...containerStyle}}>
+    <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
+      <div ref={canvasListRef} style={{ ...containerStyle }}>
         {containerWidth && canvasInfos.map((info, i) => (
           <LazyCanvasTranscription
             scaleFactor={scale / 100}
