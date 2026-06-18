@@ -1,6 +1,6 @@
 import {canvasName} from "@globalise/common/annotation";
 import {LazyTiledImage} from "./LazyCollectionViewerModel.ts";
-import {useMemo} from "react";
+import {Fragment, useMemo} from "react";
 import {Rect} from "openseadragon";
 import {Overlay} from "@knaw-huc/osd-iiif-viewer";
 import {useIsViewerScrolling} from "./useIsViewerScrolling.tsx";
@@ -55,6 +55,6 @@ export function InfoOverlay({lazyCanvas, stats, color}: InfoOverlayProps) {
   }}>
     {name}
     <br />
-    {stats.map(s => <>{s}<br/></>)}
+    {stats.map(s => <Fragment key={s}>{s}<br/></Fragment>)}
   </div>
 }
