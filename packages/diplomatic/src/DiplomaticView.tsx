@@ -12,8 +12,6 @@ import { renderDiplomaticView } from './renderDiplomaticView';
 import '@knaw-huc/original-layout/style.css';
 import {
   Annotation,
-  canvasName,
-  traceCanvas,
 } from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
@@ -72,7 +70,6 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       return;
     }
     $view.innerHTML = '';
-    traceCanvas(canvasName(props.id), 'renderDiplomaticView');
     const view = renderDiplomaticView($view, annotations, {
       page,
       fit,
@@ -81,7 +78,6 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       onHover: setHovered,
       onClick: toggleClicked,
     });
-    traceCanvas(canvasName(props.id), 'renderDiplomaticView:finished');
     view.setSelected(...selected);
     viewRef.current = view;
   }

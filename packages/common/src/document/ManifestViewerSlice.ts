@@ -8,7 +8,6 @@ import {
   Id,
   isEntity,
   PartOf,
-  traceCanvas,
 } from '../annotation';
 import { FetchError, fetchJson } from '../util/fetchJson';
 import { type DocumentState, setState, useDocumentStore } from './DocumentStore';
@@ -158,7 +157,6 @@ export async function loadCanvasAnnotationPages(
     }));
     return;
   }
-  traceCanvas(canvasName(canvasId), 'isLoading');
   setState((s) => ({
     canvases: {
       ...s.canvases,
@@ -183,7 +181,6 @@ export async function loadCanvasAnnotationPages(
     }
 
     if (errors.length) {
-      traceCanvas(canvasName(canvasId), 'erred');
       const isEntities403 = errors.every((e) =>
         e instanceof FetchError
         && e.status === 403
@@ -195,7 +192,6 @@ export async function loadCanvasAnnotationPages(
     }
 
     setState((s) => {
-      traceCanvas(canvasName(canvasId), 'isReady');
       const { pageId, ...canvasState } = createReadyCanvas(success);
 
       const canvases = {
@@ -230,7 +226,6 @@ export function setSelectedCanvas(index: number, source: CanvasSource) {
       return s;
     }
     const id = Object.keys(s.canvases)[index];
-    console.log(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source} at ${new Date(now).toISOString()}`);
     return ({ ...s, selectedCanvas: index, selectedCanvasSource: source, selectedCanvasAt: now });
   });
 }

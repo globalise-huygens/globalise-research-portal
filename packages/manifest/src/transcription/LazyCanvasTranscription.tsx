@@ -4,7 +4,6 @@ import {
   usePages,
   useDocumentStore,
 } from '@globalise/common/document';
-import { traceCanvas } from '@globalise/common/annotation';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
 import { CanvasTranscription } from './CanvasTranscription.tsx';
@@ -47,14 +46,6 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
       }
     },
     [isVisible, canvasId, annotationUrls],
-  );
-  useEffect(
-    () => traceCanvas(canvasId, `isVisible=${isVisible}`),
-    [canvasId, isVisible],
-  );
-  useEffect(
-    () => traceCanvas(canvasId, `isInRenderRange=${isInRenderRange}`),
-    [canvasId, isInRenderRange],
   );
 
   const width = containerWidth * scaleFactor;

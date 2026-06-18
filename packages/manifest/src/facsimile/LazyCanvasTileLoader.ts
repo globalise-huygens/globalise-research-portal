@@ -3,7 +3,6 @@ import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { fitLayout } from './util/fitLayout.ts';
 import { fetchJson } from '@globalise/common';
 import { throttle } from 'lodash';
-import { traceCanvas } from '@globalise/common/annotation';
 
 export type LazyCanvasTileLoaderOptions = {
   /**
@@ -156,12 +155,10 @@ export class LazyCanvasTileLoader {
   private async addCanvas(canvas: LazyTiledImage): Promise<void> {
     this.pending.add(canvas.canvasId);
     try {
-      traceCanvas(canvas.canvasId, 'fetchInfo');
       const tileSource = await this.fetchInfo(canvas.imageServiceUrl);
       if (!this.pending.has(canvas.canvasId)) {
         return;
       }
-      traceCanvas(canvas.canvasId, 'addTiledImage(with-preload)');
       this.viewer.addTiledImage({
         preload: true,
         tileSource,
@@ -178,7 +175,6 @@ export class LazyCanvasTileLoader {
           this.pending.delete(canvas.canvasId);
         },
       });
-      traceCanvas(canvas.canvasId, 'addTiledImage=finished');
     } catch {
       this.pending.delete(canvas.canvasId);
     }

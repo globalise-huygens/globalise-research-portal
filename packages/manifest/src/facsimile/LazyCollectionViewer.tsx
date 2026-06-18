@@ -16,7 +16,6 @@ import {
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { traceCanvas } from '@globalise/common/annotation';
 import { findCenterScan } from './findCenterScan.ts';
 
 type Props = PropsWithChildren<{
@@ -102,7 +101,6 @@ export function LazyCollectionViewer(
       return;
     }
     const verticalCenter = canvas.y + canvas.height / 2;
-    traceCanvas(id, `subscribeToExternalCanvasChange->panTo (${selectedCanvasSource})`);
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
   }
 
