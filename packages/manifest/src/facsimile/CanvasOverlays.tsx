@@ -1,6 +1,8 @@
 import {lazyCollectionViewerStore} from './LazyCollectionViewerStore.ts';
 import {HighlightsOverlay} from './HighlightsOverlay.tsx';
 import {CurrentCanvasOverlay} from './CurrentCanvasOverlay.tsx';
+import {DebugOverlay} from "./DebugOverlay.tsx";
+import {Fragment} from "react";
 
 export function CanvasOverlays() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
@@ -10,10 +12,11 @@ export function CanvasOverlays() {
     <>
       {lazyCanvases
         .filter((c) => loaded.has(c.canvasId))
-        .map((canvas) => <HighlightsOverlay
-          key={canvas.canvasId}
-          lazyCanvas={canvas}
-        />)}
+        .map((canvas) => <Fragment key={canvas.canvasId}>
+          <DebugOverlay lazyCanvas={canvas}/>
+          <HighlightsOverlay lazyCanvas={canvas}/>
+        </Fragment>)
+      }
       <CurrentCanvasOverlay/>
     </>
   );
