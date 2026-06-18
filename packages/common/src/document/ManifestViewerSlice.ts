@@ -2,7 +2,6 @@ import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
   AnnotationPage,
-  canvasName,
   findTextPositionSelector,
   getPageText,
   Id,
@@ -225,7 +224,6 @@ export function setSelectedCanvas(index: number, source: CanvasSource) {
       console.warn('Prevent update loop between panes due to scroll syncing:', source);
       return s;
     }
-    const id = Object.keys(s.canvases)[index];
     return ({ ...s, selectedCanvas: index, selectedCanvasSource: source, selectedCanvasAt: now });
   });
 }

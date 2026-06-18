@@ -82,7 +82,7 @@ export function LazyCollectionViewer(
     initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvas);
   }
 
-  const { index: selectedCanvas, selectedCanvasSource, id } = useSelectedCanvas();
+  const { index: selectedCanvas, selectedCanvasSource } = useSelectedCanvas();
 
   useEffect(
     subscribeToExternalCanvasChange,
