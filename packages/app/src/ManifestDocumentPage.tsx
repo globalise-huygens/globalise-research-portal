@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { ManifestLoader } from '@globalise/facsimile';
 import { Page } from './Page.tsx';
@@ -10,7 +10,6 @@ import {
   useCollectionManifests,
 } from '@globalise/manifest';
 import { SplitPaneLayout } from '@globalise/document';
-import { debounce } from 'lodash';
 import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
@@ -54,16 +53,6 @@ export function ManifestDocumentPage() {
     history.pushState({}, '', newUrl);
   }
 
-  const handleFacsimileCanvasChangeDebounced = useMemo(
-    () => debounce((index: number) => setSelectedCanvas(index, 'facsimile'), 200),
-    [],
-  );
-
-  const handleTranscriptionCanvasChangeDebounced = useMemo(
-    () => debounce((index: number) => setSelectedCanvas(index, 'transcription'), 500),
-    [],
-  );
-
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
@@ -91,7 +80,7 @@ export function ManifestDocumentPage() {
           <SplitPaneLayout>
             <ManifestFacsimileViewer
               initialCanvas={initialCanvas}
-              onCanvasChange={handleFacsimileCanvasChangeDebounced}
+              onCanvasChange={(index) => setSelectedCanvas(index, 'facsimile')}
             />
             <div style={{
               display: 'flex',
@@ -102,7 +91,7 @@ export function ManifestDocumentPage() {
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <ManifestTranscriptionViewer
                   initialCanvas={initialCanvas}
-                  onCanvasChange={handleTranscriptionCanvasChangeDebounced}
+                  onCanvasChange={(index) => setSelectedCanvas(index, 'transcription')}
                 />
               </div>
             </div>

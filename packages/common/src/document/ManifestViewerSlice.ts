@@ -15,6 +15,7 @@ import {
   AnnotationIndexes,
   indexAnnotations,
 } from '../annotation/indexAnnotations.ts';
+import { debounce } from 'lodash';
 
 export type CanvasId = string;
 
@@ -218,15 +219,42 @@ export async function loadCanvasAnnotationPages(
 }
 
 export function setSelectedCanvas(index: number, source: CanvasSource) {
+  if (source === 'external') {
+    setAfterPaneSyncThreshold(index, source);
+  } else if (source === 'facsimile') {
+    setSelectedFacsimileCanvas(index);
+  } else if (source === 'transcription') {
+    setSelectedTranscriptionCanvas(index);
+  }
+}
+
+/**
+ * Set selected canvas unless another pane wrote within the {@link paneSyncThreshold}.
+ * This prevents a feedback loop between the transcription and facsimile panes
+ * when a pane's sync scroll event triggers its own selection call.
+ */
+function setAfterPaneSyncThreshold(
+  index: number,
+  source: CanvasSource,
+) {
   setState((s) => {
     const now = Date.now();
-    if(now - s.selectedCanvasAt < 500 && s.selectedCanvasSource !== source) {
-      console.warn('Prevent update loop between panes due to scroll syncing:', source);
+    if (now - s.selectedCanvasAt < paneSyncThreshold && s.selectedCanvasSource !== source) {
+      console.debug('Prevent update loop between panes due to scroll syncing:', source);
       return s;
     }
-    return ({ ...s, selectedCanvas: index, selectedCanvasSource: source, selectedCanvasAt: now });
+    return {
+      ...s,
+      selectedCanvas: index,
+      selectedCanvasSource: source,
+      selectedCanvasAt: now,
+    };
   });
 }
+
+const paneSyncThreshold = 1000; // ms
+const setSelectedTranscriptionCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'transcription'), 500);
+const setSelectedFacsimileCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'facsimile'), 200);
 
 export function usePages(canvasId: CanvasId) {
   return useDocumentStore(useShallow((s) => {
@@ -308,7 +336,3 @@ export const setStateLogged = (
   console.trace(update);
   setState(partial);
 };
-
-export function useCanvasId(index: number): CanvasId | undefined {
-  return useDocumentStore((s) => Object.keys(s.canvases)[index]);
-}
