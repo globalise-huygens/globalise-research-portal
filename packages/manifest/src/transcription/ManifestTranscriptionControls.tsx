@@ -33,18 +33,7 @@ export function ManifestTranscriptionControls() {
           />
         </span>
       )}
-      <button
-        className={showDiplomatic ? 'active' : ''}
-        onClick={() => setTranscriptionMode('diplomatic')}
-      >
-        Diplomatic
-      </button>
-      <button
-        className={!showDiplomatic ? 'active' : ''}
-        onClick={() => setTranscriptionMode('line-by-line')}
-      >
-        Line by line
-      </button>
+      {/*  TODO: Reinstate line-by-line view */}
     </>
   );
 }
