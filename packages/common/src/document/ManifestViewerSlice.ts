@@ -42,6 +42,7 @@ export type ManifestViewerSlice = {
   indexes: AnnotationIndexes;
   selectedCanvas: number;
   selectedCanvasSource: CanvasSource;
+  selectedCanvasAt: number;
   /**
    * Canvas record
    * Note: Object.keys/values(canvases) returns canvases in manifest order
@@ -69,6 +70,7 @@ const emptyCanvasState: CanvasState = {
 export const defaultManifestViewerSlice: ManifestViewerSlice = {
   selectedCanvas: 0,
   selectedCanvasSource: "external",
+  selectedCanvasAt: 0,
   canvases: {},
   indexes: emptyAnnotationIndex,
 };
@@ -222,9 +224,14 @@ export async function loadCanvasAnnotationPages(
 
 export function setSelectedCanvas(index: number, source: CanvasSource) {
   setState(s => {
+    const now = Date.now()
+    if(now - s.selectedCanvasAt < 500 && s.selectedCanvasSource !== source) {
+      console.warn('Prevent update loop between panes due to scroll syncing:', source)
+      return s;
+    }
     const id = Object.keys(s.canvases)[index]
-    console.log(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source}`)
-    return ({...s, selectedCanvas: index, selectedCanvasSource: source});
+    console.log(`${new Date().toISOString()} setSelectedCanvas [${index}] (${canvasName(id)}) by ${source} at ${new Date(now).toISOString()}`)
+    return ({...s, selectedCanvas: index, selectedCanvasSource: source, selectedCanvasAt: now});
   });
 }
 

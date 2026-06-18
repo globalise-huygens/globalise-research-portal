@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useMemo, useState} from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from '@globalise/facsimile';
 import {Page} from './Page.tsx';
@@ -11,10 +11,7 @@ import {
 } from '@globalise/manifest';
 import {SplitPaneLayout} from '@globalise/document';
 import {debounce} from "lodash";
-import {
-  setSelectedCanvas,
-  useDocumentStore
-} from "@globalise/common/document";
+import {setSelectedCanvas, useDocumentStore} from "@globalise/common/document";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';

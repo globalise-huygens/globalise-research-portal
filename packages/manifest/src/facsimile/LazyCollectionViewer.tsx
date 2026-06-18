@@ -89,6 +89,7 @@ export function LazyCollectionViewer(
     subscribeToExternalCanvasChange,
     [viewer, lazyCanvases, selectedCanvas, selectedCanvasSource]
   );
+
   function subscribeToExternalCanvasChange() {
     if (!viewer || !lazyCanvases.length) {
       return;
@@ -102,12 +103,9 @@ export function LazyCollectionViewer(
     }
     const verticalCenter = canvas.y + canvas.height / 2;
     traceCanvas(id, `syncScan (${selectedCanvasSource})`)
-    isPanningAfterExternalChange.current = true
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
-    setTimeout(() => isPanningAfterExternalChange.current = false, 500)
   }
 
-  const isPanningAfterExternalChange = useRef(false)
 
   useEffect(createViewer, [isScrollReady, store]);
 
@@ -161,9 +159,7 @@ export function LazyCollectionViewer(
     };
 
     const onViewportChange = () => {
-      if (!isPanningAfterExternalChange.current) {
-        onCanvasChange(findCenterScan(viewer, lazyCanvases));
-      }
+      onCanvasChange(findCenterScan(viewer, lazyCanvases));
     }
 
     viewer.addHandler('animation-start', onAnimationStart);

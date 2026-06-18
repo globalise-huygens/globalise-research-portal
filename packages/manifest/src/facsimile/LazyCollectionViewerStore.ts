@@ -28,5 +28,6 @@ export function setLoaded(loaded: Set<CanvasId>) {
 }
 
 export function setScrolling(isScrolling: boolean) {
+  console.log('setScrolling', isScrolling)
   lazyCollectionViewerStore.setState({ isScrolling });
 }

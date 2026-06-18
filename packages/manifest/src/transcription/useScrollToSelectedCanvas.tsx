@@ -1,5 +1,5 @@
 import { RefObject, useEffect } from 'react';
-import {useDocumentStore, useSelectedCanvas} from '@globalise/common/document';
+import {useSelectedCanvas} from '@globalise/common/document';
 
 export function useScrollToSelectedCanvas(
   scrollRef: RefObject<HTMLDivElement | null>,
