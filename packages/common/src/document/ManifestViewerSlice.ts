@@ -232,7 +232,7 @@ export function usePages(canvasId: CanvasId) {
   return useDocumentStore(useShallow((s) => {
     const canvas = s.canvases[canvasId];
     const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
-    const hasAnnotations = isReady && Object.keys(canvas.annotations ?? {}).length;
+    const hasAnnotations = isReady && !!Object.keys(canvas.annotations ?? {}).length;
 
     return {
       canvasId,

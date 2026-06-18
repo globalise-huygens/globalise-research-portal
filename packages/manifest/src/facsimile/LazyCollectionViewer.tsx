@@ -17,6 +17,7 @@ import {
   useSelectedCanvas
 } from '@globalise/common/document';
 import {traceCanvas} from "@globalise/common/annotation";
+import {findCenterScan} from "./findCenterScan.ts";
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -67,7 +68,6 @@ export function LazyCollectionViewer(
     viewer,
     lazyCanvases,
     initialCanvas,
-    onCanvasChange,
     canvasHeight: scanHeight,
     onLoadedChange: (loaded) => {
       setLoaded(loaded);
@@ -102,8 +102,12 @@ export function LazyCollectionViewer(
     }
     const verticalCenter = canvas.y + canvas.height / 2;
     traceCanvas(id, `syncScan (${selectedCanvasSource})`)
+    isPanningAfterExternalChange.current = true
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
+    setTimeout(() => isPanningAfterExternalChange.current = false, 500)
   }
+
+  const isPanningAfterExternalChange = useRef(false)
 
   useEffect(createViewer, [isScrollReady, store]);
 
@@ -151,16 +155,26 @@ export function LazyCollectionViewer(
     const onAnimationStart = () => {
       setScrolling(true);
     };
+
     const onAnimationFinish = () => {
       setScrolling(false);
     };
+
+    const onViewportChange = () => {
+      if (!isPanningAfterExternalChange.current) {
+        onCanvasChange(findCenterScan(viewer, lazyCanvases));
+      }
+    }
+
     viewer.addHandler('animation-start', onAnimationStart);
     viewer.addHandler('animation-finish', onAnimationFinish);
+    viewer.addHandler('viewport-change', onViewportChange);
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
       viewer.removeHandler('animation-start', onAnimationStart);
       viewer.removeHandler('animation-finish', onAnimationFinish);
+      viewer.removeHandler('viewport-change', onViewportChange);
       setScrolling(false);
       viewer.destroy();
       store.getState().resetViewer();

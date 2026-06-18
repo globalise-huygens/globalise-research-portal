@@ -1,20 +1,15 @@
-import { TiledImage, Viewer } from 'openseadragon';
-import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { fitLayout } from './util/fitLayout.ts';
-import { fetchJson, noop } from '@globalise/common';
-import { throttle } from 'lodash';
+import {TiledImage, Viewer} from 'openseadragon';
+import {CanvasId, LazyTiledImage} from './LazyCollectionViewerModel.ts';
+import {fitLayout} from './util/fitLayout.ts';
+import {fetchJson} from '@globalise/common';
+import {throttle} from 'lodash';
+import {traceCanvas} from "@globalise/common/annotation";
 
 export type LazyCanvasTileLoaderOptions = {
   /**
    * Index of initial canvas to display
    */
   initialCanvas?: number;
-
-  /**
-   * Callback when selected canvas changes.
-   * Selected scan is the scan at the center of the viewport.
-   */
-  onCanvasChange: (index: number) => void;
 
   /**
    * Callback when loaded canvases change.
@@ -52,7 +47,6 @@ export class LazyCanvasTileLoader {
   private pending = new Set<CanvasId>();
 
   private onLoadedChange: (loadedIds: Set<CanvasId>) => void;
-  private onCanvasChange: (index: number) => void;
   private onChangeViewport: () => void;
 
   private frameId: number | null = null;
@@ -69,12 +63,10 @@ export class LazyCanvasTileLoader {
       loadingBuffer,
       canvasHeight,
       initialCanvas,
-      onCanvasChange,
       onLoadedChange,
-    } = { ...defaultOptions, ...options };
+    } = {...defaultOptions, ...options};
     this.loadingBuffer = loadingBuffer;
     this.onLoadedChange = onLoadedChange;
-    this.onCanvasChange = onCanvasChange;
 
     const startIndex = initialCanvas < canvases.length
       ? initialCanvas
@@ -82,19 +74,18 @@ export class LazyCanvasTileLoader {
     fitLayout(viewer, canvases[startIndex], canvasHeight);
     this.updateCanvasTilesThrottled();
 
-      this.onChangeViewport = () => {
-        this.onCanvasChange(this.findCenterScan())
-        this.updateCanvasTilesThrottled();
-      };
+    this.onChangeViewport = () => {
+      this.updateCanvasTilesThrottled();
+    };
 
-      this.viewer.addHandler('viewport-change', this.onChangeViewport);
-      this.viewer.addHandler('animation', this.onChangeViewport);
+    this.viewer.addHandler('viewport-change', this.onChangeViewport);
+    this.viewer.addHandler('animation', this.onChangeViewport);
   }
 
   /**
-   * Check viewport bounds, mounts visible canvases, and drops hidden ones.
+   * Check viewport bounds, mounts visible canvases, and remove hidden ones.
    */
-  public updateCanvasTilesThrottled = throttle(() => {
+  private updateCanvasTilesThrottled = throttle((): void => {
     if (!this.viewer.viewport) {
       return;
     }
@@ -159,27 +150,11 @@ export class LazyCanvasTileLoader {
     });
   }
 
-  private findCenterScan(): number {
-    const bounds = this.viewer.viewport.getBounds(true);
-    const center = bounds.y + bounds.height / 2;
-    let closest = 0;
-    let closestDistance = Infinity;
-
-    for (let i = 0; i < this.canvases.length; i++) {
-      const { y, height } = this.canvases[i];
-      const distance = Math.abs(y + height / 2 - center);
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closest = i;
-      }
-    }
-    return closest;
-  }
-
   /**
    * Fetch iiif info endpoint and position tile images vertically.
    */
   private async addCanvas(canvas: LazyTiledImage): Promise<void> {
+    traceCanvas(canvas.canvasId, 'addCanvas')
     this.pending.add(canvas.canvasId);
     try {
       const tileSource = await this.fetchInfo(canvas.imageServiceUrl);
