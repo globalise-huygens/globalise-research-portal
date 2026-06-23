@@ -17,6 +17,7 @@ import {
   useSelectedCanvas,
 } from '@globalise/common/document';
 import { findCenterScan } from './findCenterScan.ts';
+import { ControlBar, FacsimileControls } from '@globalise/facsimile';
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -43,11 +44,11 @@ export function LazyCollectionViewer(
     onCanvasChange,
   }: Props,
 ) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
   const { vault, id: manifestId, isReady } = useManifest();
-  const size = useContainerSize(scrollRef);
+  const size = useContainerSize(containerRef);
   const isScrollReady = size.width && size.height;
 
   const lazyCanvases = useMemo(() => {
@@ -108,14 +109,14 @@ export function LazyCollectionViewer(
   useEffect(createViewer, [isScrollReady, store]);
 
   function createViewer() {
-    if (!scrollRef.current || !isScrollReady) {
+    if (!containerRef.current || !isScrollReady) {
       return;
     }
     const viewer = new OsdViewer({
-      element: scrollRef.current,
+      element: containerRef.current,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
       crossOriginPolicy: 'Anonymous',
-      showNavigationControl: true,
+      showNavigationControl: false,
       constrainDuringPan: false,
       visibilityRatio: 0,
       minZoomLevel: 0.001,
@@ -129,7 +130,7 @@ export function LazyCollectionViewer(
       // animationTime: 0.2
     });
 
-    const container = scrollRef.current;
+    const container = containerRef.current;
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
@@ -178,7 +179,7 @@ export function LazyCollectionViewer(
   useEffect(handleResize, [store]);
 
   function handleResize() {
-    const container = scrollRef.current;
+    const container = containerRef.current;
     if (!container) {
       return;
     }
@@ -192,8 +193,11 @@ export function LazyCollectionViewer(
 
   return (
     <>
+      <ControlBar>
+        <FacsimileControls fullscreenRef={containerRef}/>
+      </ControlBar>
       <div
-        ref={scrollRef}
+        ref={containerRef}
         style={{ width: '100%', height: '100%' }}
       />
       {children}
