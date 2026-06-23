@@ -2,7 +2,7 @@ import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 import { HighlightsOverlay } from './HighlightsOverlay.tsx';
 import { CurrentCanvasOverlay } from './CurrentCanvasOverlay.tsx';
 
-export function Overlay() {
+export function CanvasOverlays() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const loaded = lazyCollectionViewerStore((s) => s.loaded);
 
@@ -12,8 +12,9 @@ export function Overlay() {
         .filter((c) => loaded.has(c.canvasId))
         .map((canvas) => <HighlightsOverlay
           key={canvas.canvasId}
-          lazyCanvas={canvas}
-        />)}
+          lazyCanvas={canvas}/>,
+        )
+      }
       <CurrentCanvasOverlay/>
     </>
   );

@@ -15,6 +15,7 @@ import {
   AnnotationIndexes,
   indexAnnotations,
 } from '../annotation/indexAnnotations.ts';
+import { debounce } from 'lodash';
 
 export type CanvasId = string;
 
@@ -26,10 +27,21 @@ export type CanvasState = {
   error: string | null;
 };
 
+/**
+ * Who updated the selected canvas?
+ * Prevents accidental rewrites and update loops from the opposite pane
+ */
+export type CanvasSource =
+  | 'facsimile'
+  | 'transcription'
+  // init, url or menu:
+  | 'external';
+
 export type ManifestViewerSlice = {
   indexes: AnnotationIndexes;
   selectedCanvas: number;
-
+  selectedCanvasSource: CanvasSource;
+  selectedCanvasAt: number;
   /**
    * Canvas record
    * Note: Object.keys/values(canvases) returns canvases in manifest order
@@ -56,6 +68,8 @@ const emptyCanvasState: CanvasState = {
 
 export const defaultManifestViewerSlice: ManifestViewerSlice = {
   selectedCanvas: 0,
+  selectedCanvasSource: 'external',
+  selectedCanvasAt: 0,
   canvases: {},
   indexes: emptyAnnotationIndex,
 };
@@ -122,7 +136,10 @@ export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
   setState({ canvases, selectedCanvas, indexes: emptyAnnotationIndex });
 }
 
-export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
+export async function loadCanvasAnnotationPages(
+  canvasId: CanvasId,
+  urls: string[],
+) {
   const state = useDocumentStore.getState();
   const existing = state.canvases[canvasId];
   if (!existing) {
@@ -135,12 +152,11 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     setState((s) => ({
       canvases: {
         ...s.canvases,
-        [canvasId]: { ...emptyCanvasState },
+        [canvasId]: { ...emptyCanvasState, isReady: true },
       },
     }));
     return;
   }
-
   setState((s) => ({
     canvases: {
       ...s.canvases,
@@ -191,21 +207,60 @@ export async function loadCanvas(canvasId: CanvasId, urls: string[]) {
     setState((s) => ({
       canvases: {
         ...s.canvases,
-        [canvasId]: { ...emptyCanvasState, error, isLoading: false, isReady: false },
+        [canvasId]: {
+          ...emptyCanvasState,
+          error,
+          isLoading: false,
+          isReady: false,
+        },
       },
     }));
   }
 }
 
-export function setSelectedCanvas(index: number) {
-  setState({ selectedCanvas: index });
+export function setSelectedCanvas(index: number, source: CanvasSource) {
+  if (source === 'external') {
+    setAfterPaneSyncThreshold(index, source);
+  } else if (source === 'facsimile') {
+    setSelectedFacsimileCanvas(index);
+  } else if (source === 'transcription') {
+    setSelectedTranscriptionCanvas(index);
+  }
 }
+
+/**
+ * Set selected canvas unless another pane wrote within the {@link paneSyncThreshold}.
+ * This prevents a feedback loop between the transcription and facsimile panes
+ * when a pane's sync scroll event triggers its own selection call.
+ */
+function setAfterPaneSyncThreshold(
+  index: number,
+  source: CanvasSource,
+) {
+  setState((s) => {
+    const now = Date.now();
+    if (now - s.selectedCanvasAt < paneSyncThreshold && s.selectedCanvasSource !== source) {
+      console.debug('Prevent update loop between panes due to scroll syncing:', source);
+      return s;
+    }
+    return {
+      ...s,
+      selectedCanvas: index,
+      selectedCanvasSource: source,
+      selectedCanvasAt: now,
+    };
+  });
+}
+
+const paneSyncThreshold = 1000; // ms
+const setSelectedTranscriptionCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'transcription'), 500);
+const setSelectedFacsimileCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'facsimile'), 200);
 
 export function usePages(canvasId: CanvasId) {
   return useDocumentStore(useShallow((s) => {
     const canvas = s.canvases[canvasId];
     const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
-    const hasAnnotations = isReady && Object.keys(canvas.annotations ?? {}).length;
+    const hasAnnotations = isReady && !!Object.keys(canvas.annotations ?? {}).length;
 
     return {
       canvasId,
@@ -218,7 +273,7 @@ export function usePages(canvasId: CanvasId) {
 }
 
 export function useLoadCanvas() {
-  return loadCanvas;
+  return loadCanvasAnnotationPages;
 }
 
 const emptyAnnotations = {};
@@ -240,28 +295,44 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
   });
 }
 
-type CanvasStatus =
-  | { isInit: false, index: number, id: null } & CanvasState
-  | { isInit: true, index: number, id: CanvasId } & CanvasState;
+type CanvasStatus = {
+  index: number,
+  selectedCanvasSource: CanvasSource
+} & (
+  | { isInit: false, id: null } & CanvasState
+  | { isInit: true, id: CanvasId } & CanvasState
+  );
 
 const emptyCanvasStatus: CanvasStatus = {
   ...emptyCanvasState,
   isInit: false,
   index: 0,
   id: null,
+  selectedCanvasSource: 'external',
 };
 
 export function useSelectedCanvas(): CanvasStatus {
   return useDocumentStore(useShallow((s: DocumentState) => {
-    const index = s.selectedCanvas;
-    const id = Object.keys(s.canvases)[index];
+    const { selectedCanvas: index, selectedCanvasSource, canvases } = s;
+    const id = Object.keys(canvases)[index];
     if (!id) {
       return emptyCanvasStatus;
     }
-    return { isInit: true, id, index, ...s.canvases[id] };
+    return { isInit: true, id, index, ...canvases[id], selectedCanvasSource };
   }));
 }
 
 export function useIsCanvasInit(id?: CanvasId): boolean {
   return useDocumentStore((s) => !!(id && s.canvases[id]));
 }
+
+export const setStateLogged = (
+  partial: Partial<DocumentState> | ((state: DocumentState) => Partial<DocumentState>),
+) => {
+  const state = useDocumentStore.getState();
+  const update = typeof partial === 'function'
+    ? partial(state)
+    : partial;
+  console.trace(update);
+  setState(partial);
+};

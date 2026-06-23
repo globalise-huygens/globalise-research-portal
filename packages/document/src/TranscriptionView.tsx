@@ -142,6 +142,7 @@ export function TranscriptionView(
             <div className="ratio-box" style={ratioBoxSize}>
               <DiplomaticView
                 key={rerenderKey}
+                id={canvasId}
                 annotations={annotations}
                 selected={selectedIds}
                 page={page}

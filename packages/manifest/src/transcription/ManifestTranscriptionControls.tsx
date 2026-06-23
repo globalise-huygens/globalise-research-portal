@@ -2,7 +2,6 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import {
   setDiplomaticViewScale,
-  setTranscriptionMode,
   useSettings,
 } from '@globalise/document';
 
@@ -33,18 +32,7 @@ export function ManifestTranscriptionControls() {
           />
         </span>
       )}
-      <button
-        className={showDiplomatic ? 'active' : ''}
-        onClick={() => setTranscriptionMode('diplomatic')}
-      >
-        Diplomatic
-      </button>
-      <button
-        className={!showDiplomatic ? 'active' : ''}
-        onClick={() => setTranscriptionMode('line-by-line')}
-      >
-        Line by line
-      </button>
+      {/*  TODO: Reinstate line-by-line view */}
     </>
   );
 }

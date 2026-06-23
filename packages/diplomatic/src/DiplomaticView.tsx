@@ -10,7 +10,9 @@ import { ViewFit } from '@knaw-huc/original-layout';
 import { renderDiplomaticView } from './renderDiplomaticView';
 
 import '@knaw-huc/original-layout/style.css';
-import { Annotation } from '@globalise/common/annotation';
+import {
+  Annotation,
+} from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
 
@@ -41,11 +43,9 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const viewRef = useRef<ReturnType<typeof renderDiplomaticView>>(null);
   const [width, setWidth] = useState(0);
 
-  const setWidthDebounced = useMemo(
-    () => debounce(setWidth, 50),
-    [],
-  );
+  const setWidthDebounced = useMemo(() => debounce(setWidth, 50), []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(setWidthOnObservedResize, []);
   function setWidthOnObservedResize() {
     const $view = containerRef.current;
@@ -62,6 +62,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     return () => resizeObserver.disconnect();
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(createDiplomaticView, [annotations, page, fit, showBlocks, width]);
   function createDiplomaticView() {
     const $view = containerRef.current;

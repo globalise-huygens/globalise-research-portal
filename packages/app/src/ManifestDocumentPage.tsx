@@ -10,6 +10,7 @@ import {
   useCollectionManifests,
 } from '@globalise/manifest';
 import { SplitPaneLayout } from '@globalise/document';
+import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -20,13 +21,28 @@ const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
+/**
+ * Sync selectedCanvas with url
+ */
+const params = new URLSearchParams(location.search);
+const initialCanvas = Number(params.get(CANVAS)) || 0;
+setSelectedCanvas(initialCanvas, 'external');
+useDocumentStore.subscribe((state, prev) => {
+  const selectedCanvas = state.selectedCanvas;
+  if (selectedCanvas === prev.selectedCanvas) {
+    return;
+  }
+  const newUrl = new URL(window.location.href);
+  newUrl.searchParams.set(CANVAS, String(selectedCanvas));
+  history.replaceState({}, '', newUrl);
+});
+
 export function ManifestDocumentPage() {
-  const params = new URLSearchParams(location.search);
 
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
-  const initialCanvas = Number(params.get(CANVAS)) || 0;
+
   const allManifests = useCollectionManifests(collectionUrl);
 
   function handleManifestChange(url: string) {
@@ -35,12 +51,6 @@ export function ManifestDocumentPage() {
     newUrl.searchParams.set(MANIFEST, url);
     newUrl.searchParams.delete(CANVAS);
     history.pushState({}, '', newUrl);
-  }
-
-  function handleCanvasChange(index: number) {
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(CANVAS, String(index));
-    history.replaceState({}, '', newUrl);
   }
 
   return (
@@ -70,7 +80,7 @@ export function ManifestDocumentPage() {
           <SplitPaneLayout>
             <ManifestFacsimileViewer
               initialCanvas={initialCanvas}
-              onCanvasChange={handleCanvasChange}
+              onCanvasChange={(index) => setSelectedCanvas(index, 'facsimile')}
             />
             <div style={{
               display: 'flex',
@@ -81,8 +91,9 @@ export function ManifestDocumentPage() {
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <ManifestTranscriptionViewer
                   initialCanvas={initialCanvas}
-                  onCanvasChange={handleCanvasChange}
-                /></div>
+                  onCanvasChange={(index) => setSelectedCanvas(index, 'transcription')}
+                />
+              </div>
             </div>
           </SplitPaneLayout>
         </Page>
@@ -90,4 +101,3 @@ export function ManifestDocumentPage() {
     </ViewerProvider>
   );
 }
-

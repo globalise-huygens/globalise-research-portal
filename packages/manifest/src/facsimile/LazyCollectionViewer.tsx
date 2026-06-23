@@ -12,13 +12,17 @@ import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
 import {
   setLazyCanvases, setLoaded, setScrolling,
 } from './LazyCollectionViewerStore.ts';
-import { initCanvases } from '@globalise/common/document';
+import {
+  initCanvases,
+  useSelectedCanvas,
+} from '@globalise/common/document';
+import { findCenterScan } from './findCenterScan.ts';
 
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
   initialCanvas?: number;
-  onCanvasChange?: (index: number) => void;
+  onCanvasChange: (index: number) => void;
   preloadScreens?: number;
 }>;
 
@@ -63,7 +67,6 @@ export function LazyCollectionViewer(
     viewer,
     lazyCanvases,
     initialCanvas,
-    onCanvasChange,
     canvasHeight: scanHeight,
     onLoadedChange: (loaded) => {
       setLoaded(loaded);
@@ -78,6 +81,29 @@ export function LazyCollectionViewer(
     }
     initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvas);
   }
+
+  const { index: selectedCanvas, selectedCanvasSource } = useSelectedCanvas();
+
+  useEffect(
+    subscribeToExternalCanvasChange,
+    [viewer, lazyCanvases, selectedCanvas, selectedCanvasSource],
+  );
+
+  function subscribeToExternalCanvasChange() {
+    if (!viewer || !lazyCanvases.length) {
+      return;
+    }
+    if (selectedCanvasSource === 'facsimile') {
+      return;
+    }
+    const canvas = lazyCanvases[selectedCanvas];
+    if (!canvas) {
+      return;
+    }
+    const verticalCenter = canvas.y + canvas.height / 2;
+    viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
+  }
+
 
   useEffect(createViewer, [isScrollReady, store]);
 
@@ -99,6 +125,8 @@ export function LazyCollectionViewer(
       },
       tileRetryMax: 3,
       tileRetryDelay: 3000,
+      // springStiffness: 25,
+      // animationTime: 0.2
     });
 
     const container = scrollRef.current;
@@ -123,16 +151,24 @@ export function LazyCollectionViewer(
     const onAnimationStart = () => {
       setScrolling(true);
     };
+
     const onAnimationFinish = () => {
       setScrolling(false);
     };
+
+    const onViewportChange = () => {
+      onCanvasChange(findCenterScan(viewer, lazyCanvases));
+    };
+
     viewer.addHandler('animation-start', onAnimationStart);
     viewer.addHandler('animation-finish', onAnimationFinish);
+    viewer.addHandler('viewport-change', onViewportChange);
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
       viewer.removeHandler('animation-start', onAnimationStart);
       viewer.removeHandler('animation-finish', onAnimationFinish);
+      viewer.removeHandler('viewport-change', onViewportChange);
       setScrolling(false);
       viewer.destroy();
       store.getState().resetViewer();

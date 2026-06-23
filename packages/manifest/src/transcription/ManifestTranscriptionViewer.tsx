@@ -1,12 +1,11 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import {
-  useSettings,
-} from '@globalise/document';
+import { useSettings } from '@globalise/document';
 import { LazyCanvasTranscription } from './LazyCanvasTranscription';
-import { initCanvases, setSelectedCanvas } from '@globalise/common/document';
+import { initCanvases } from '@globalise/common/document';
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -19,6 +18,9 @@ type Props = {
   initialCanvas?: number;
   onCanvasChange: (index: number) => void;
 };
+
+const MIN_RENDER_DISTANCE = 4;
+const RENDER_VIEWPORTS = 2;
 
 export function ManifestTranscriptionViewer(
   { initialCanvas = 0, onCanvasChange }: Props,
@@ -46,63 +48,94 @@ export function ManifestTranscriptionViewer(
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasListRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(new Set());
+  const lastScrolledCanvas = useRef<number | null>(initialCanvas);
 
-  useEffect(updateCanvasOnScaleOrScroll, [onCanvasChange, canvasInfos.length]);
-  function updateCanvasOnScaleOrScroll() {
+  useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
+
+  useEffect(observeCanvases, [onCanvasChange, canvasInfos.length, containerWidth]);
+  function observeCanvases() {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
     if (!scrollContainer || !canvasList) {
       return;
     }
 
-    const setSelectedCanvasToCenterElement = () => {
-      const scrollTop = scrollContainer.scrollTop;
-      const clientHeight = scrollContainer.clientHeight;
-      const scrollCenter = scrollTop + clientHeight / 2;
-      const canvasElements = canvasList.children;
-      for (let i = 0; i < canvasElements.length; i++) {
-        const element = canvasElements[i] as HTMLElement;
-        const canvasBottom = element.offsetTop + element.offsetHeight;
-        if (canvasBottom > scrollCenter) {
-          setSelectedCanvas(i);
-          onCanvasChange(i);
-          return;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === canvasList) {
+          setContainerWidth(entry.contentRect.width);
+        } else if (entry.target === scrollContainer) {
+          setViewportHeight(entry.contentRect.height);
         }
       }
-    };
+    });
+    resizeObserver.observe(canvasList);
+    resizeObserver.observe(scrollContainer);
 
-    let hasScrolled = false;
-    const onScroll = () => {
-      hasScrolled = true;
-      setSelectedCanvasToCenterElement();
-    };
-    scrollContainer.addEventListener('scroll', onScroll);
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      setContainerWidth(entry.contentRect.width);
-      /**
-       * Wait for {@link initCanvasScroll} to prevent canvas=0 flicker:
-       */
-      if (!hasScrolled) {
-        return;
+    const selectedCanvasObserver = new IntersectionObserver((canvasEvents) => {
+      for (const event of canvasEvents) {
+        if (!event.isIntersecting) {
+          continue;
+        }
+        const target = event.target as HTMLElement;
+        const index = Number(target.dataset.canvasIndex);
+        if (Number.isNaN(index) || index === lastScrolledCanvas.current) {
+          continue;
+        }
+        lastScrolledCanvas.current = index;
+        onCanvasChange(index);
       }
-      setSelectedCanvasToCenterElement();
+    }, {
+      root: scrollContainer,
+      // Only switch to a new canvas when that canvas enters screen center:
+      rootMargin: '-49% 0px -49% 0px',
+      threshold: 0,
     });
 
-    resizeObserver.observe(canvasList);
+    const visibleCanvasesObserver = new IntersectionObserver((canvasEvents) => {
+      setVisibleCanvases((prev) => {
+        const next = new Set(prev);
+        let changed = false;
+        for (const event of canvasEvents) {
+          const target = event.target as HTMLElement;
+          const index = Number(target.dataset.canvasIndex);
+          if (Number.isNaN(index)) {
+            continue;
+          }
+          if (event.isIntersecting) {
+            if (!next.has(index)) {
+              next.add(index);
+              changed = true;
+            }
+          } else if (next.has(index)) {
+            next.delete(index);
+            changed = true;
+          }
+        }
+        return changed ? next : prev;
+      });
+    }, {
+      root: scrollContainer,
+      threshold: 0,
+    });
+
+    Array.from(canvasList.children).forEach((child) => {
+      selectedCanvasObserver.observe(child);
+      visibleCanvasesObserver.observe(child);
+    });
 
     return () => {
-      scrollContainer.removeEventListener('scroll', onScroll);
       resizeObserver.disconnect();
+      selectedCanvasObserver.disconnect();
+      visibleCanvasesObserver.disconnect();
     };
   }
 
   useEffect(initCanvasScroll, [canvasInfos.length, initialCanvas, containerWidth]);
   function initCanvasScroll() {
-    if (!initialCanvas
-      || !scrollRef.current
-      || !containerWidth
-    ) {
+    if (!initialCanvas || !scrollRef.current || !containerWidth) {
       return;
     }
     const child = scrollRef.current.children[0]?.children[initialCanvas];
@@ -112,7 +145,31 @@ export function ManifestTranscriptionViewer(
     const viewportHeight = scrollRef.current.clientHeight;
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
     child.scrollIntoView({ block });
+    lastScrolledCanvas.current = initialCanvas;
   }
+
+  useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
+  function initCanvasesOnInfosLoaded() {
+    if (canvasInfos.length) {
+      initCanvases(canvasInfos.map((c) => c.canvasId), initialCanvas);
+    }
+  }
+
+  const renderDistance = useMemo(() => {
+    if (!viewportHeight || !canvasInfos.length || !containerWidth) {
+      return MIN_RENDER_DISTANCE;
+    }
+    const sample = canvasInfos[0];
+    const displayedHeight = (sample.height / sample.width) * containerWidth * (scale / 100);
+    if (!displayedHeight) {
+      return MIN_RENDER_DISTANCE;
+    }
+    const canvasesPerViewport = viewportHeight / displayedHeight;
+    return Math.max(
+      MIN_RENDER_DISTANCE,
+      Math.ceil(RENDER_VIEWPORTS * canvasesPerViewport),
+    );
+  }, [viewportHeight, canvasInfos, containerWidth, scale]);
 
   const containerStyle: CSSProperties = {
     maxWidth: 800,
@@ -121,13 +178,6 @@ export function ManifestTranscriptionViewer(
     flexDirection: 'column',
     gap: '1rem',
   };
-
-  useEffect(initCanvasesOnInfosLoaded, [canvasInfos]);
-  function initCanvasesOnInfosLoaded() {
-    if (canvasInfos.length) {
-      initCanvases(canvasInfos.map((c) => c.canvasId));
-    }
-  }
 
   return (
     <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
@@ -142,6 +192,8 @@ export function ManifestTranscriptionViewer(
             containerWidth={containerWidth}
             annotationUrls={info.annotationUrls}
             index={i}
+            isVisible={visibleCanvases.has(i)}
+            renderDistance={renderDistance}
           />
         ))}
       </div>

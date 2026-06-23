@@ -1,23 +1,21 @@
 export type PlaceholderProps = {
-  width: number;
-  height: number;
   color?: string;
   background?: string;
   children?: React.ReactNode;
 };
 
 export function TranscriptionPlaceholder(
-  { width, height, color, background, children }: PlaceholderProps,
+  { color, background, children }: PlaceholderProps,
 ) {
   return (
     <div style={{
-      width,
-      height,
+      width: '100%',
+      height: '100%',
       background: background ?? '#f8f8f8',
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      padding: '5rem',
+      padding: '5rem 1rem',
       color: color ?? 'grey',
       position: 'relative',
     }}>

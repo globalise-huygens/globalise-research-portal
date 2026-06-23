@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Viewer } from 'openseadragon';
-import { setSelectedCanvas } from '@globalise/common/document';
 import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { LazyCanvasTileLoader } from './LazyCanvasTileLoader.ts';
 
@@ -9,8 +8,7 @@ type Props = {
   lazyCanvases: LazyTiledImage[];
   initialCanvas: number;
   canvasHeight: number;
-  onCanvasChange?: (index: number) => void;
-  onLoadedChange?: (loadedIds: Set<CanvasId>) => void;
+  onLoadedChange: (loadedIds: Set<CanvasId>) => void;
 };
 
 export function useLazyCanvasLoader(
@@ -19,7 +17,6 @@ export function useLazyCanvasLoader(
     lazyCanvases,
     initialCanvas,
     canvasHeight,
-    onCanvasChange,
     onLoadedChange,
   }: Props,
 ) {
@@ -33,11 +30,7 @@ export function useLazyCanvasLoader(
       {
         initialCanvas,
         canvasHeight,
-        onChangeCanvas: (index) => {
-          setSelectedCanvas(index);
-          onCanvasChange?.(index);
-        },
-        onChangeLoaded: onLoadedChange,
+        onLoadedChange,
       },
     );
     return () => {

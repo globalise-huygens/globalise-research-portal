@@ -19,6 +19,7 @@ export function CanvasTranscription({ canvasId }: CanvasTranscriptionProps) {
   if (showDiplomatic && partOf) {
     return (
       <DiplomaticView
+        id={canvasId}
         annotations={annotations}
         selected={selectedIds}
         page={partOf}
