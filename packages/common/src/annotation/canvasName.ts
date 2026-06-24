@@ -1,4 +1,4 @@
-import {CanvasId} from '../document';
+import { CanvasId } from '../document';
 
 export const canvasName = (id?: CanvasId) => {
   if (!id) {
