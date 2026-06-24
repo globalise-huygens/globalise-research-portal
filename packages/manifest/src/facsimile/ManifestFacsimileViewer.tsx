@@ -10,8 +10,6 @@ type Props = {
 export function ManifestFacsimileViewer(
   { initialCanvas, onCanvasChange }: Props,
 ) {
-  console.log(new Date().toISOString(), 'render', ManifestFacsimileViewer.name);
-
   return <>
     <LazyCollectionViewer
       scanHeight={0.25}

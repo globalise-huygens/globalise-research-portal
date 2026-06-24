@@ -7,7 +7,7 @@ import {
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
 import { CanvasTranscription } from './CanvasTranscription.tsx';
-import {canvasName} from "@globalise/common/annotation";
+import { canvasName } from '@globalise/common/annotation';
 
 type Props = {
   canvasId: string;
@@ -34,7 +34,6 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
     renderDistance,
   }: Props,
 ) {
-  console.log(new Date().toISOString(), 'render', LazyCanvasTranscription.name);
 
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const isInRenderRangeByDistance = useDocumentStore(

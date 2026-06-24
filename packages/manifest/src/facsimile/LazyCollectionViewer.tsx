@@ -44,8 +44,6 @@ export function LazyCollectionViewer(
     onCanvasChange,
   }: Props,
 ) {
-  console.log(new Date().toISOString(), 'render', LazyCollectionViewer.name);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
