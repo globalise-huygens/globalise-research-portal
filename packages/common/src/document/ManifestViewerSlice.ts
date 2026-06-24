@@ -234,7 +234,7 @@ function setAfterPaneSyncThreshold(
 
 const paneSyncThreshold = 1000; // ms
 const setSelectedTranscriptionCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'transcription'), 500);
-const setSelectedFacsimileCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'facsimile'), 200);
+const setSelectedFacsimileCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'facsimile'), 100);
 
 export function usePages(canvasId: CanvasId) {
   return useDocumentStore(useShallow((s) => {
