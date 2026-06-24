@@ -12,15 +12,16 @@ import {
 } from '@globalise/common/document';
 
 type AnnotationProps = {
+  canvasId: string;
   annotation: Annotation;
   children: ReactNode;
 };
 
 export function AnnotationSegment(
-  { annotation, children }: AnnotationProps,
+  { canvasId, annotation, children }: AnnotationProps,
 ) {
   if (isEntity(annotation)) {
-    return <EntitySegment annotation={annotation}>
+    return <EntitySegment canvasId={canvasId} annotation={annotation}>
       {children}
     </EntitySegment>;
   }
@@ -34,7 +35,7 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({ annotation, children }: AnnotationProps) {
+function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>) {
   const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -54,9 +55,9 @@ function WordSegment({ annotation, children }: AnnotationProps) {
   );
 }
 
-function EntitySegment({ annotation, children }: AnnotationProps) {
+function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const entityType = getEntityType(annotation);
-  const isSelected = useIsSelectedInTranscription(annotation.id);
+  const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
   return (
     <span
       className={`entity ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}

@@ -60,6 +60,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
           {blocks.map(({ id, path }) => (
             <BlockHighlight
               key={id}
+              canvasId={canvasId}
               id={id}
               points={path}
             />
@@ -67,6 +68,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
           {words.map(({ id, path, text }) => (
             <WordHighlight
               key={id}
+              canvasId={canvasId}
               id={id}
               points={path}
               text={text}

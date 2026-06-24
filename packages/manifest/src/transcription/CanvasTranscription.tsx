@@ -31,8 +31,8 @@ export function CanvasTranscription({ canvasId }: CanvasTranscriptionProps) {
   }
 
   return (
-    <div style={{ height: '100%', overflow: 'scroll' }}>
-      <LineByLineView annotations={annotations} canvasId={canvasId}/>
+    <div style={{ height: '100%', overflow: 'auto', paddingTop: '1em', borderTop: '1px solid #ddd' }}>
+      <LineByLineView canvasId={canvasId} annotations={annotations} />;
     </div>
   );
 }

@@ -26,7 +26,7 @@ export function MinimapView({ canvasId }: { canvasId: CanvasId }) {
 
   return (
     <div className="minimap-view">
-      <LineByLineView annotations={annotations}/>
+      <LineByLineView canvasId={canvasId} annotations={annotations}/>
       <Minimap canvasId={canvasId} />
     </div>
   );

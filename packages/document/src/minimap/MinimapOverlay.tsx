@@ -40,15 +40,17 @@ export function MinimapOverlay({ canvasId }: { canvasId: CanvasId }) {
         style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
       >
         {words.map(({ id, path }) => (
-          <WordPolygon key={id} id={id} path={path} />
+          <WordPolygon key={id} canvasId={canvasId} id={id} path={path} />
         ))}
       </svg>
     </Overlay>
   );
 }
 
-function WordPolygon({ id, path }: { id: Id; path: string }) {
-  const isSelected = useIsSelectedInFacsimile(id);
+function WordPolygon(
+  { canvasId, id, path }: { canvasId: CanvasId; id: Id; path: string },
+) {
+  const isSelected = useIsSelectedInFacsimile(canvasId, id);
 
   return (
     <polygon

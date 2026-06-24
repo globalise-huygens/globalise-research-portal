@@ -5,6 +5,7 @@ import { setHovered } from '@globalise/common/document';
 import { SegmentedText } from './SegmentedText';
 
 type LineProps = {
+  canvasId: string;
   lineId: Id;
   lineNumber: number;
   blockId: Id | null;
@@ -12,7 +13,7 @@ type LineProps = {
 };
 
 export const SegmentedLine = memo(function SegmentedLine(
-  { lineId, lineNumber, blockId, segments }: LineProps,
+  { canvasId, lineId, lineNumber, blockId, segments }: LineProps,
 ) {
   return (
     <span
@@ -30,6 +31,7 @@ export const SegmentedLine = memo(function SegmentedLine(
       </span>
       <span className="line-content">
         <SegmentedText
+          canvasId={canvasId}
           blockId={blockId}
           segments={segments}
         />

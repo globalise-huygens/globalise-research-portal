@@ -21,6 +21,7 @@ export type CanvasId = string;
 
 export type CanvasState = {
   annotations: Record<Id, Annotation> | null;
+  indexes: AnnotationIndexes;
   partOf: PartOf | null;
   isLoading: boolean;
   isReady: boolean;
@@ -38,7 +39,6 @@ export type CanvasSource =
   | 'external';
 
 export type ManifestViewerSlice = {
-  indexes: AnnotationIndexes;
   selectedCanvas: number;
   selectedCanvasSource: CanvasSource;
   selectedCanvasAt: number;
@@ -60,6 +60,7 @@ export const emptyAnnotationIndex: AnnotationIndexes = {
 
 const emptyCanvasState: CanvasState = {
   annotations: {},
+  indexes: emptyAnnotationIndex,
   partOf: null,
   isLoading: false,
   isReady: false,
@@ -71,7 +72,6 @@ export const defaultManifestViewerSlice: ManifestViewerSlice = {
   selectedCanvasSource: 'external',
   selectedCanvasAt: 0,
   canvases: {},
-  indexes: emptyAnnotationIndex,
 };
 
 function createReadyCanvas(
@@ -96,31 +96,16 @@ function createReadyCanvas(
     }
   }
   const partOf = pages[0]?.partOf ?? null;
+  const indexes = indexAnnotations(mapped, pageId);
 
   return {
     annotations: mapped,
+    indexes,
     partOf,
     isLoading: false,
     isReady: true,
     error: null,
-    pageId,
   };
-}
-
-function mergeIndexes(
-  prev: AnnotationIndexes,
-  update: AnnotationIndexes,
-) {
-  const nextIndexes = { ...prev };
-  for (const key in prev) {
-    const k = key as keyof AnnotationIndexes;
-    if (k === 'blockToLines' || k === 'entityToWords') {
-      nextIndexes[k] = { ...prev[k], ...update[k] };
-    } else {
-      nextIndexes[k] = { ...prev[k], ...update[k] };
-    }
-  }
-  return nextIndexes;
 }
 
 /**
@@ -133,7 +118,7 @@ export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
   for (const id of canvasIds) {
     canvases[id] = { ...emptyCanvasState };
   }
-  setState({ canvases, selectedCanvas, indexes: emptyAnnotationIndex });
+  setState({ canvases, selectedCanvas });
 }
 
 export async function loadCanvasAnnotationPages(
@@ -191,17 +176,12 @@ export async function loadCanvasAnnotationPages(
       }
     }
 
-    setState((s) => {
-      const { pageId, ...canvasState } = createReadyCanvas(success);
-
-      const canvases = {
+    setState((s) => ({
+      canvases: {
         ...s.canvases,
-        [canvasId]: canvasState,
-      };
-      const canvasIndexes = indexAnnotations(canvasState.annotations, pageId);
-      const indexes = mergeIndexes(s.indexes, canvasIndexes);
-      return { canvases, indexes };
-    });
+        [canvasId]: createReadyCanvas(success),
+      },
+    }));
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
     setState((s) => ({
@@ -286,6 +266,12 @@ export function useAnnotations(
     const annotations = canvas?.annotations;
     return annotations ?? emptyAnnotations;
   });
+}
+
+export function useCanvasIndexes(canvasId: CanvasId): AnnotationIndexes {
+  return useDocumentStore(
+    (s) => s.canvases[canvasId]?.indexes ?? emptyAnnotationIndex,
+  );
 }
 
 export function usePartOf(canvasId: CanvasId): PartOf | null {

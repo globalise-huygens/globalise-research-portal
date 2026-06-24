@@ -1,6 +1,6 @@
-import {createRoot} from 'react-dom/client';
-import {router} from './router.tsx';
-import {RouterProvider} from '@tanstack/react-router';
+import { createRoot } from 'react-dom/client';
+import { router } from './router.tsx';
+import { RouterProvider } from '@tanstack/react-router';
 
 const root = document.getElementById('root');
 if(!root) {

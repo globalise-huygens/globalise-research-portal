@@ -5,12 +5,13 @@ import { AnnotationSegment } from './AnnotationSegment';
 import { NestedSegment } from './NestedSegment';
 
 type TextProps = {
+  canvasId: string;
   blockId: Id | null;
   segments: TextSegment<Annotation>[];
 };
 
 export function SegmentedText(
-  { blockId, segments }: TextProps,
+  { canvasId, blockId, segments }: TextProps,
 ) {
   return <>
     {segments.map((segment) => {
@@ -41,6 +42,7 @@ export function SegmentedText(
             annotations={segment.annotations}
             annotation={(annotation, children) => (
               <AnnotationSegment
+                canvasId={canvasId}
                 annotation={annotation}
               >
                 {children}

@@ -157,7 +157,7 @@ export function TranscriptionView(
         <div
           className={`viewport line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
-          <LineByLineView annotations={annotations} />
+          <LineByLineView canvasId={canvasId} annotations={annotations} />
         </div>
       </div>
     </div>

@@ -7,11 +7,12 @@ import { LineSegments } from './useLineSegments';
 import './NormalizedLayout.css';
 
 type Props = {
+  canvasId: string;
   lineSegments: LineSegments;
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  { lineSegments }: Props,
+  { canvasId, lineSegments }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
 
@@ -33,6 +34,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
         {blockEntries.map(([blockId, lineIds], i) => (
           <BlockGroup
             key={blockId}
+            canvasId={canvasId}
             blockId={blockId}
             lineIds={lineIds}
             segmentsByLine={segmentsByLine}
@@ -45,6 +47,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 });
 
 type BlockGroupProps = {
+  canvasId: string;
   blockId: Id;
   lineIds: Id[];
   segmentsByLine: LineSegments['segmentsByLine'];
@@ -52,9 +55,9 @@ type BlockGroupProps = {
 };
 
 function BlockGroup(
-  { blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
+  { canvasId, blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
 ) {
-  const isSelected = useIsSelectedInTranscription(blockId);
+  const isSelected = useIsSelectedInTranscription(canvasId, blockId);
 
   let count = 0;
 
@@ -69,6 +72,7 @@ function BlockGroup(
         return (
           <SegmentedLine
             key={lineId}
+            canvasId={canvasId}
             lineId={lineId}
             lineNumber={lineNumberStart + count - 1}
             blockId={blockId}
