@@ -7,6 +7,7 @@ import {
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
 import { CanvasTranscription } from './CanvasTranscription.tsx';
+import {canvasName} from "@globalise/common/annotation";
 
 type Props = {
   canvasId: string;
@@ -52,7 +53,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
-  const canvasLabel = canvasId.split('/').pop() ?? index;
+  const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
   const isLoading = !error && annotationUrls.length && !isDataReady;
