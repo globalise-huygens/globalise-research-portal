@@ -63,7 +63,6 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
       data-canvas-index={index}
       style={{
         position: 'relative',
-        width,
         height,
 
         /**
@@ -96,7 +95,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
       {isInRenderRange && isContentReady && (
         <>
           <PageLabel label={canvasLabel}/>
-          <CanvasTranscription canvasId={canvasId}/>
+          <CanvasTranscription width={width} canvasId={canvasId}/>
         </>
       )}
     </div>
