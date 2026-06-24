@@ -1,5 +1,6 @@
 import { LazyCollectionViewer } from './LazyCollectionViewer.tsx';
 import { CanvasOverlays } from './CanvasOverlays.tsx';
+import React from 'react';
 
 type Props = {
   initialCanvas: number
@@ -9,11 +10,13 @@ type Props = {
 export function ManifestFacsimileViewer(
   { initialCanvas, onCanvasChange }: Props,
 ) {
-  return <LazyCollectionViewer
-    scanHeight={0.25}
-    initialCanvas={initialCanvas}
-    onCanvasChange={onCanvasChange}
-  >
-    <CanvasOverlays/>
-  </LazyCollectionViewer>;
+  return <>
+    <LazyCollectionViewer
+      scanHeight={0.25}
+      initialCanvas={initialCanvas}
+      onCanvasChange={onCanvasChange}
+    >
+      <CanvasOverlays/>
+    </LazyCollectionViewer>
+  </>;
 }
