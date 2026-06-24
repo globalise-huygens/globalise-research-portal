@@ -25,7 +25,6 @@ export function CurrentCanvasOverlay() {
   const name = canvasName(id);
 
   const canvasBorderColor = 'rgb(144 187 195)';
-  const canvasColor = 'rgb(57 92 99)';
   return (
     <Overlay location={location}>
       <div style={{
@@ -35,7 +34,8 @@ export function CurrentCanvasOverlay() {
         border: '0.33em solid ' + canvasBorderColor,
         pointerEvents: 'none',
         textAlign: 'right',
-        color: canvasColor,
+        color: 'white',
+        textShadow: '0px 0px 5px rgba(0, 0, 0, 0.6)',
         padding: '0.25rem',
         fontSize: '0.8rem',
       }}>
