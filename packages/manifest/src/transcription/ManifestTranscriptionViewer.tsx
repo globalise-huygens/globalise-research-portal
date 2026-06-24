@@ -114,6 +114,7 @@ export function ManifestTranscriptionViewer(
             changed = true;
           }
         }
+        console.log('setVisibleCanvases', { prev:[...prev.values()].join(','), next:[...prev.keys()].join(',') });
         return changed ? next : prev;
       });
     }, {

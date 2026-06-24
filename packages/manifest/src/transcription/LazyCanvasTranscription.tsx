@@ -33,6 +33,8 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
     renderDistance,
   }: Props,
 ) {
+  console.log(new Date().toISOString(), 'render', LazyCanvasTranscription.name);
+
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const isInRenderRangeByDistance = useDocumentStore(
     (s) => Math.abs(index - s.selectedCanvas) <= renderDistance,

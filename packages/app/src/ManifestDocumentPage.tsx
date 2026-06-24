@@ -38,6 +38,7 @@ useDocumentStore.subscribe((state, prev) => {
 });
 
 export function ManifestDocumentPage() {
+  console.log(new Date().toISOString(), 'render', ManifestDocumentPage.name);
 
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,

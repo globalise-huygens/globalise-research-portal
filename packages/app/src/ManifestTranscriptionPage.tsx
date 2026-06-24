@@ -40,7 +40,7 @@ export function ManifestTranscriptionPage() {
     newUrl.searchParams.set(CANVAS, String(index));
     history.replaceState({}, '', newUrl);
   }
-
+  console.log(new Date().toISOString(), 'render', ManifestTranscriptionPage.name);
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>

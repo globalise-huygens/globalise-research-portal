@@ -30,5 +30,9 @@ export function CanvasTranscription({ canvasId }: CanvasTranscriptionProps) {
     );
   }
 
-  return <LineByLineView annotations={annotations} />;
+  return (
+    <div style={{ height: '100%', overflow: 'scroll' }}>
+      <LineByLineView annotations={annotations} canvasId={canvasId}/>
+    </div>
+  );
 }
