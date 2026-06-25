@@ -2,13 +2,15 @@ import { Id } from '@globalise/common/annotation';
 import { useDocumentStore } from '@globalise/common/document';
 import { useShallow } from 'zustand/react/shallow';
 
-export function useSelectedIdsForCanvas(canvasId: string): Id[] {
+export function useSelectedIdsForCanvas(
+  canvasId: string,
+): Id[] {
   return useDocumentStore(useShallow((s) => {
     const canvas = s.canvases[canvasId];
     if (!canvas?.annotations) {
       return emptySelection;
     }
-    const { wordToBlock, entityToBlock } = canvas.indexes;
+    const { entityToWords, wordToBlock, entityToBlock } = canvas.indexes;
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {
@@ -17,12 +19,16 @@ export function useSelectedIdsForCanvas(canvasId: string): Id[] {
       if (selectedId in canvas.annotations) {
         ids.push(selectedId);
       }
+      const wordsFromEntity = entityToWords[selectedId];
+      if(wordsFromEntity) {
+        ids.push(...wordsFromEntity);
+      }
       const blockFromWord = wordToBlock[selectedId];
-      if (blockFromWord && blockFromWord in canvas.annotations) {
+      if (blockFromWord) {
         ids.push(blockFromWord);
       }
       const blockFromEntity = entityToBlock[selectedId];
-      if (blockFromEntity && blockFromEntity in canvas.annotations) {
+      if (blockFromEntity) {
         ids.push(blockFromEntity);
       }
     }
