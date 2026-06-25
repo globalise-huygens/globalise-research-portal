@@ -1,3 +1,13 @@
 import { CanvasId } from '../document';
 
-export const canvasName = (id?: CanvasId) => id?.split('/').pop() ?? 'unknown-canvas';
+export const canvasName = (id?: CanvasId) => {
+  if (!id) {
+    return 'unknown-canvas';
+  }
+  return id
+    ?.split('/')
+    .pop()
+    ?.split('_')
+    .pop()
+    ?? id;
+};

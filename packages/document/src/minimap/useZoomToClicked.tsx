@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
 import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 import {
+  CanvasId,
   useAnnotations,
-  useDocumentStore, usePartOf, CanvasId,
+  useCanvasIndexes,
+  useDocumentStore,
+  usePartOf,
 } from '@globalise/common/document';
 import {
-  isWord,
-  findSvgPath,
-  parseSvgPath,
-  Id,
   Annotation,
+  findSvgPath,
+  Id,
+  isWord,
+  parseSvgPath,
 } from '@globalise/common/annotation';
 import { calcBoundingBox, createPoints } from '@knaw-huc/original-layout';
 import { orThrow } from '@globalise/common';
@@ -18,7 +21,7 @@ export function useZoomToClicked(canvasId: CanvasId) {
   const pageSize = usePartOf(canvasId);
   const viewer = useViewer();
   const annotations = useAnnotations(canvasId);
-  const { wordToLine, entityToWords } = useDocumentStore((s) => s.indexes);
+  const { wordToLine, entityToWords } = useCanvasIndexes(canvasId);
   const clickedId = useDocumentStore((s) => s.clickedId);
 
   useEffect(() => {

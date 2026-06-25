@@ -11,7 +11,7 @@ import {
   filterAnnotationsWithSelector,
 } from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
-import { useDocumentStore } from '@globalise/common/document';
+import { useCanvasIndexes } from '@globalise/common/document';
 
 export type LineSegments = {
   pageText: string;
@@ -22,9 +22,10 @@ export type LineSegments = {
 };
 
 export function useLineSegments(
+  canvasId: string,
   annotations: Record<Id, Annotation>,
 ): LineSegments {
-  const indexes = useDocumentStore((s) => s.indexes);
+  const indexes = useCanvasIndexes(canvasId);
 
   return useMemo(() => {
     const { id: pageAnnoId, text: pageText } = getPageText(annotations);

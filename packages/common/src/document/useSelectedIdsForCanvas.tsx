@@ -4,25 +4,25 @@ import { useShallow } from 'zustand/react/shallow';
 
 export function useSelectedIdsForCanvas(canvasId: string): Id[] {
   return useDocumentStore(useShallow((s) => {
-    const annotations = s.canvases[canvasId]?.annotations;
-    if (!annotations) {
+    const canvas = s.canvases[canvasId];
+    if (!canvas?.annotations) {
       return emptySelection;
     }
-    const { wordToBlock, entityToBlock } = s.indexes;
+    const { wordToBlock, entityToBlock } = canvas.indexes;
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {
         continue;
       }
-      if (selectedId in annotations) {
+      if (selectedId in canvas.annotations) {
         ids.push(selectedId);
       }
       const blockFromWord = wordToBlock[selectedId];
-      if (blockFromWord && blockFromWord in annotations) {
+      if (blockFromWord && blockFromWord in canvas.annotations) {
         ids.push(blockFromWord);
       }
       const blockFromEntity = entityToBlock[selectedId];
-      if (blockFromEntity && blockFromEntity in annotations) {
+      if (blockFromEntity && blockFromEntity in canvas.annotations) {
         ids.push(blockFromEntity);
       }
     }

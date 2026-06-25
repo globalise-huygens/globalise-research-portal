@@ -3,6 +3,7 @@ import { Rect } from 'openseadragon';
 import { Overlay } from '@knaw-huc/osd-iiif-viewer';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
+import { canvasName } from '@globalise/common/annotation';
 
 export function CurrentCanvasOverlay() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
@@ -21,6 +22,7 @@ export function CurrentCanvasOverlay() {
   if (!isInit || !location) {
     return null;
   }
+  const name = canvasName(id);
 
   const canvasBorderColor = 'rgb(144 187 195)';
   return (
@@ -31,7 +33,14 @@ export function CurrentCanvasOverlay() {
         boxSizing: 'border-box',
         border: '0.33em solid ' + canvasBorderColor,
         pointerEvents: 'none',
-      }}/>
+        textAlign: 'right',
+        color: 'white',
+        textShadow: '0px 0px 5px rgba(0, 0, 0, 0.6)',
+        padding: '0.25rem',
+        fontSize: '0.8rem',
+      }}>
+        {name}
+      </div>
     </Overlay>
   );
 }

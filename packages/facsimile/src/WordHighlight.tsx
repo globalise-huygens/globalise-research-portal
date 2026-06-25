@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { HighlightStyle } from './HighlightStyle.tsx';
-import { setHovered, toggleClicked, useIsSelectedInFacsimile } from '@globalise/common/document';
+import {
+  CanvasId,
+  setHovered,
+  toggleClicked,
+  useIsSelectedInFacsimile,
+} from '@globalise/common/document';
 import { Highlight } from './Highlight.tsx';
-import { Id } from '@globalise/common/annotation';
 import { TooltipProps } from './Tooltip.tsx';
+import { Id } from '@globalise/common/annotation';
 
 type WordHighlightProps = {
+  canvasId: CanvasId;
   id: Id;
   points: string;
   text: string;
@@ -13,9 +19,9 @@ type WordHighlightProps = {
 };
 
 export function WordHighlight(
-  { id, points, text, setTooltip }: WordHighlightProps,
+  { canvasId, id, points, text, setTooltip }: WordHighlightProps,
 ) {
-  const selected = useIsSelectedInFacsimile(id);
+  const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
 
   const highlightStyle: HighlightStyle = {

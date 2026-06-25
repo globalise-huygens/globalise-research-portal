@@ -1,5 +1,7 @@
 import { useDocumentStore, DocumentState } from './DocumentStore';
 import { Id } from '../annotation';
+import { AnnotationIndexes } from '../annotation/indexAnnotations.ts';
+import { CanvasId, emptyAnnotationIndex } from './ManifestViewerSlice';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
@@ -35,7 +37,7 @@ export function clearSelection() {
 function isSelectedInTranscription(
   currentId: Id,
   selectedId: Id | null,
-  state: DocumentState,
+  indexes: AnnotationIndexes,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -43,7 +45,7 @@ function isSelectedInTranscription(
   if (currentId === selectedId) {
     return true;
   }
-  const { entityToBlock, wordToBlock } = state.indexes;
+  const { entityToBlock, wordToBlock } = indexes;
   if (currentId === wordToBlock[selectedId]) {
     return true;
   }
@@ -63,7 +65,7 @@ function isSelectedInTranscription(
 function isSelectedInFacsimile(
   currentId: Id,
   selectedId: Id | null,
-  state: DocumentState,
+  indexes: AnnotationIndexes,
 ): boolean {
   if (!selectedId) {
     return false;
@@ -71,7 +73,7 @@ function isSelectedInFacsimile(
   if (currentId === selectedId) {
     return true;
   }
-  const { entityToBlock, entityToWords, wordToBlock } = state.indexes;
+  const { entityToBlock, entityToWords, wordToBlock } = indexes;
   if (currentId === wordToBlock[selectedId]) {
     return true;
   }
@@ -88,20 +90,28 @@ function isSelectedInFacsimile(
   return false;
 }
 
+function getCanvasIndexes(s: DocumentState, canvasId: CanvasId): AnnotationIndexes {
+  return s.canvases[canvasId]?.indexes ?? emptyAnnotationIndex;
+}
+
 export function useIsSelectedInTranscription(
+  canvasId: CanvasId,
   id: Id,
 ): boolean {
-  return useDocumentStore((s) =>
-    isSelectedInTranscription(id, s.hoveredId, s)
-    || isSelectedInTranscription(id, s.clickedId, s),
-  );
+  return useDocumentStore((s) => {
+    const indexes = getCanvasIndexes(s, canvasId);
+    return isSelectedInTranscription(id, s.hoveredId, indexes)
+      || isSelectedInTranscription(id, s.clickedId, indexes);
+  });
 }
 
 export function useIsSelectedInFacsimile(
+  canvasId: CanvasId,
   id: Id,
 ): boolean {
-  return useDocumentStore((s) =>
-    isSelectedInFacsimile(id, s.hoveredId, s)
-    || isSelectedInFacsimile(id, s.clickedId, s),
-  );
+  return useDocumentStore((s) => {
+    const indexes = getCanvasIndexes(s, canvasId);
+    return isSelectedInFacsimile(id, s.hoveredId, indexes)
+      || isSelectedInFacsimile(id, s.clickedId, indexes);
+  });
 }

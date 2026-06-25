@@ -1,12 +1,17 @@
 import { memo, useEffect } from 'react';
 import {
   loadCanvasAnnotationPages,
-  usePages,
+  useAnnotations,
   useDocumentStore,
+  usePages,
+  usePartOf,
+  useSelectedIdsForCanvas,
 } from '@globalise/common/document';
+import { canvasName } from '@globalise/common/annotation';
+import { DiplomaticView } from '@globalise/diplomatic';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { PageLabel } from './PageLabel.tsx';
-import { CanvasTranscription } from './CanvasTranscription.tsx';
+import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 
 type Props = {
   canvasId: string;
@@ -20,7 +25,7 @@ type Props = {
   renderDistance: number;
 };
 
-export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
+export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
   {
     canvasId,
     canvasWidth,
@@ -33,6 +38,10 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
     renderDistance,
   }: Props,
 ) {
+
+  const annotations = useAnnotations(canvasId);
+  const partOf = usePartOf(canvasId);
+  const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const isInRenderRangeByDistance = useDocumentStore(
     (s) => Math.abs(index - s.selectedCanvas) <= renderDistance,
@@ -50,7 +59,7 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
-  const canvasLabel = canvasId.split('/').pop() ?? index;
+  const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
   const isLoading = !error && annotationUrls.length && !isDataReady;
@@ -58,10 +67,9 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
 
   return (
     <div
-      data-canvas-index={index}
+      {...{ [canvasIndexAttribute]: index }}
       style={{
         position: 'relative',
-        width,
         height,
 
         /**
@@ -91,10 +99,20 @@ export const LazyCanvasTranscription = memo(function LazyCanvasTranscription(
           Loading...
         </TranscriptionPlaceholder>
       )}
-      {isInRenderRange && isContentReady && (
+      {isInRenderRange && isContentReady && partOf && (
         <>
           <PageLabel label={canvasLabel}/>
-          <CanvasTranscription canvasId={canvasId}/>
+          <div style={{ height: '100%', width }}>
+            <DiplomaticView
+              id={canvasId}
+              annotations={annotations}
+              selected={selectedIds}
+              page={partOf}
+              fit="width"
+              showBlocks={true}
+              showScanMargin={true}
+            />
+          </div>
         </>
       )}
     </div>

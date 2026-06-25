@@ -12,12 +12,12 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "openseadragon": "^5.0.1",
     "@globalise/common": "*",
     "@globalise/diplomatic": "*",
     "@globalise/document": "*",
     "@globalise/facsimile": "*",
-    "@globalise/line-by-line": "*"
+    "@globalise/line-by-line": "*",
+    "openseadragon": "^5.0.1"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.168.6"

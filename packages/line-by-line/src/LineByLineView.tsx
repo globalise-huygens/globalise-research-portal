@@ -4,14 +4,15 @@ import { NormalizedLayout } from './NormalizedLayout';
 import { useLineSegments } from './useLineSegments';
 
 export type LineByLineLayoutProps = {
+  canvasId: string;
   annotations: Record<Id, Annotation>;
   style?: React.CSSProperties;
 };
 
 export const LineByLineView = React.memo(function LineByLineView(
-  { annotations }: LineByLineLayoutProps,
+  { canvasId, annotations }: LineByLineLayoutProps,
 ) {
-  const lineSegments = useLineSegments(annotations);
+  const lineSegments = useLineSegments(canvasId, annotations);
 
-  return <NormalizedLayout lineSegments={lineSegments}/>;
+  return <NormalizedLayout canvasId={canvasId} lineSegments={lineSegments}/>;
 });

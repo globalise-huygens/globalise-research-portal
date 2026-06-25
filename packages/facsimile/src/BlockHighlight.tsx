@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { setHovered, useIsSelectedInFacsimile } from '@globalise/common/document';
+import { CanvasId, setHovered, useIsSelectedInFacsimile } from '@globalise/common/document';
 import { Highlight } from './Highlight.tsx';
 import { Id } from '@globalise/common/annotation';
 import { HighlightStyle } from './HighlightStyle.tsx';
 
 type BlockHighlightProps = {
+  canvasId: CanvasId;
   id: Id;
   points: string;
 };
 
 export function BlockHighlight(
-  { id, points }: BlockHighlightProps,
+  { canvasId, id, points }: BlockHighlightProps,
 ) {
-  const selected = useIsSelectedInFacsimile(id);
+  const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
 
   const highlightStyle: HighlightStyle = {

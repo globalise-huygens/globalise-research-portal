@@ -114,11 +114,12 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
           {visibleBlocks.map(({ id, path }) => (
-            <BlockHighlight key={id} id={id} points={path}/>
+            <BlockHighlight key={id} canvasId={lazyCanvas.canvasId} id={id} points={path}/>
           ))}
           {visibleWords.map(({ id, path, text }) => (
             <WordHighlight
               key={id}
+              canvasId={lazyCanvas.canvasId}
               id={id}
               points={path}
               text={text}
