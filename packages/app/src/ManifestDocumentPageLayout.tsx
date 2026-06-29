@@ -321,11 +321,7 @@ export function ManifestDocumentPageLayout() {
           </DocumentDetailSegmentedToggleGroup>
         </DocumentDetailBarGroup>
 
-        {/* Centre slot */}
-        <div />
 
-        {/* Right slot */}
-        <div />
       </DocumentDetailTopBar>
 
       {/* Body */}

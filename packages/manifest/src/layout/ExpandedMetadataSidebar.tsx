@@ -46,7 +46,7 @@ export function ExpandedMetadataSidebar({
                 aria-label={`${item.label} details`}
                 className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden border-b border-brand-white/10 bg-neutral-800 text-brand-white [scrollbar-color:var(--neutral-600)_transparent] [scrollbar-width:thin]"
               >
-                {/* Panel content goes here */}
+                TODO: {panelId} content
               </div>
             )}
           </React.Fragment>

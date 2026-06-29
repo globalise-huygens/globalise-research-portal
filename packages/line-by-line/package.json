@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@globalise/common": "*",
-    "@knaw-huc/original-layout": "^0.2.0",
-    "d3-selection": "^3.0.0",
-    "@knaw-huc/text-annotation-segmenter": "^0.8.0"
+    "@knaw-huc/original-layout": "^0.2.1",
+    "@knaw-huc/text-annotation-segmenter": "^0.8.0",
+    "d3-selection": "^3.0.0"
   },
   "peerDependencies": {
     "react": ">=18",

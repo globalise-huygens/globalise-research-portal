@@ -65,7 +65,7 @@ export function ManifestDocumentPageLayout() {
       key="scan"
       className={cn('relative', isTextVisible ? 'border-r border-brand-black' : 'border-r-0')}
     >
-      Scan viewer content
+      TODO: Viewer content
     </DocumentDetailViewerPane>
   ) : null;
 
@@ -77,14 +77,15 @@ export function ManifestDocumentPageLayout() {
     selectedKeys.push('text');
   }
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden">
-      {/* Sidebar */}
+    <div className="gds-document-detail-dialog relative flex h-screen flex-col overflow-hidden">
       <div
         id="document-detail-sidebar"
-        className={cn(
+        className={[
           'absolute bottom-0 left-0 top-0 z-10 overflow-hidden transition-[width] duration-150 ease-out motion-reduce:transition-none',
-        )}
-        style={{ width: sidebarWidth }}
+          isSidebarExpanded
+            ? 'w-overlay-document-viewer-sidebar-width'
+            : 'w-overlay-document-viewer-rail-width',
+        ].join(' ')}
       >
         {isSidebarExpanded ? (
           <ExpandedMetadataSidebar
@@ -92,14 +93,17 @@ export function ManifestDocumentPageLayout() {
             onToggleSection={toggleSidebarSection}
           />
         ) : (
-          <CollapsedMetadataRail onExpandSection={expandSidebarSection}/>
+          <CollapsedMetadataRail onExpandSection={expandSidebarSection} />
         )}
       </div>
-
-      {/* Top bar */}
+      
       <DocumentDetailTopBar
-        className="border-b-0 pr-s24 transition-[padding-left] duration-150 ease-out"
-        style={{ paddingLeft: `calc(${sidebarWidth} + var(--s16))` }}
+        className={[
+          'relative grid h-s64 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center border-b-0 bg-neutral-900 pr-s24 transition-[padding-left] duration-150 ease-out motion-reduce:transition-none',
+          isSidebarExpanded
+            ? 'pl-[calc(var(--overlay-document-viewer-sidebar-width)+var(--s16))]'
+            : 'pl-[calc(var(--overlay-document-viewer-rail-width)+var(--s16))]',
+        ].join(' ')}
       >
         <DocumentDetailBarGroup className="min-w-0 justify-self-start gap-s8">
           <TooltipIconButton
@@ -153,12 +157,12 @@ export function ManifestDocumentPageLayout() {
           </DocumentDetailSegmentedToggleGroup>
         </DocumentDetailBarGroup>
 
-        <div>
-          Centre content
+        <div className="relative z-40 justify-self-center">
+          TODO: Centre content
         </div>
 
-        <div>
-          Right content
+        <div className="gds-document-detail-bar-group min-w-0 justify-self-end gap-s8">
+          TODO: Right content
         </div>
       </DocumentDetailTopBar>
 
@@ -180,7 +184,6 @@ export function ManifestDocumentPageLayout() {
         </DocumentDetailSplitViewer>
       </DocumentDetailBody>
 
-      {/* TODO: Bottom bar */}
       <DocumentDetailBottomBar
         className="border-t-0 justify-center gap-s8 transition-[padding-left] duration-150 ease-out"
         style={{ paddingLeft: sidebarWidth }}
