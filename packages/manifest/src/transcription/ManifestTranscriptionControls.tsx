@@ -5,6 +5,7 @@ import {
   setTranscriptionMode,
   useSettings,
 } from '@globalise/document';
+import { Button } from '@globalise/design-system';
 
 export function ManifestTranscriptionControls() {
   const { transcriptionMode, diplomaticViewScale } = useSettings();
@@ -33,18 +34,20 @@ export function ManifestTranscriptionControls() {
           />
         </span>
       )}
-      <button
+      <Button
+        size="sm"
         className={showDiplomatic ? 'active' : ''}
         onClick={() => setTranscriptionMode('diplomatic')}
       >
         Diplomatic
-      </button>
-      <button
+      </Button>
+      <Button
+        size="sm"
         className={!showDiplomatic ? 'active' : ''}
         onClick={() => setTranscriptionMode('line-by-line')}
       >
         Line by line
-      </button>
+      </Button>
     </>
   );
 }

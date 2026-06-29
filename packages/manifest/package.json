@@ -12,6 +12,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@globalise/design-system": "file:../../../globalise-design-system/packages/ui",
     "@globalise/common": "*",
     "@globalise/diplomatic": "*",
     "@globalise/document": "*",
