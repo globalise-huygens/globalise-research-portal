@@ -30,7 +30,7 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 
   const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
-  const hasAnnotationPages = annotationUrls.length;
+  const hasAnnotationPages = !!annotationUrls.length;
   const isLoading = !error && hasAnnotationPages && !isDataReady;
   const isContentReady = !error && hasAnnotationPages && isDataReady;
 

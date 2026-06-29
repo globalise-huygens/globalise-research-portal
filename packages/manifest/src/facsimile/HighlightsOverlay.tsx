@@ -58,7 +58,10 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     canvasSize = { width: canvas.width, height: canvas.height };
   }
 
-  const location = useMemo(() => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), [lazyCanvas.y, lazyCanvas.height]);
+  const location = useMemo(
+    () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
+    [lazyCanvas.y, lazyCanvas.height],
+  );
 
   const words = useMemo(() => Object.values(annotations)
     .filter(isWord)
@@ -75,28 +78,28 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
     })), [annotations]);
 
-  const isIdSelected = (id: string) => {
-    if (!selectedIds.length) {
-      return false;
-    }
-    return selectedIds.includes(id);
-  };
-
   const isScrolling = useIsViewerScrolling();
-  const isNotScrolling = !isScrolling;
-  const visibleWords = useMemo(() => 
-    isScrolling
-      ? words.filter((w) => isIdSelected(w.id))
-      : words
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  , [isNotScrolling, words, selectedIds]);
+  const visibleWords = useMemo(() => {
+    if(!isScrolling) {
+      return words;
+    }
+    if(!selectedIds.length) {
+      return [];
+    }
+    return words.filter((w) => selectedIds.includes(w.id));
+  },
+  [isScrolling, words, selectedIds]);
 
-  const visibleBlocks = useMemo(() => 
-    isScrolling
-      ? blocks.filter((b) => isIdSelected(b.id))
-      : blocks
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  , [isNotScrolling, blocks, selectedIds]);
+  const visibleBlocks = useMemo(() => {
+    if(!isScrolling) {
+      return blocks;
+    }
+    if(!selectedIds.length) {
+      return [];
+    }
+    return blocks.filter((b) => selectedIds.includes(b.id));
+  },
+  [isScrolling, blocks, selectedIds]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
