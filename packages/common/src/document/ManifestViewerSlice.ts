@@ -123,7 +123,7 @@ export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
 
 export async function loadCanvasAnnotationPages(
   canvasId: CanvasId,
-  urls: string[],
+  annotationPageUrls: string[],
 ) {
   const state = useDocumentStore.getState();
   const existing = state.canvases[canvasId];
@@ -133,7 +133,7 @@ export async function loadCanvasAnnotationPages(
   if (existing.isReady || existing.isLoading || existing.error) {
     return;
   }
-  if (!urls.length) {
+  if (!annotationPageUrls.length) {
     setState((s) => ({
       canvases: {
         ...s.canvases,
@@ -151,7 +151,7 @@ export async function loadCanvasAnnotationPages(
 
   try {
     const results = await Promise.allSettled(
-      urls.map((url) => fetchJson<AnnotationPage>(url)),
+      annotationPageUrls.map((url) => fetchJson<AnnotationPage>(url)),
     );
 
     const success: AnnotationPage[] = [];
