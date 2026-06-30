@@ -1,7 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap");
-@import "tailwindcss";
 @import "@globalise/design-system/styles.css";
 @import "theme.css";
+
+/* TODO: replace with plain css: */
+@import "tailwindcss";
+@source "../../../packages/manifest/src/**/*.{ts,tsx}";
 
 body {
     margin: 0;
