@@ -44,7 +44,7 @@ export function ExpandedMetadataSidebar({
                 id={panelId}
                 role="region"
                 aria-label={`${item.label} details`}
-                className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden border-b border-brand-white/10 bg-neutral-800 text-brand-white [scrollbar-color:var(--neutral-600)_transparent] [scrollbar-width:thin]"
+                className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden border-b border-brand-white/10 bg-neutral-800 text-brand-white [scrollbar-color:var(--neutral-600)_transparent] scrollbar-thin"
               >
                 TODO: {panelId} content
               </div>
