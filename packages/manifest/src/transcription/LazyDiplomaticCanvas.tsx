@@ -62,7 +62,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
   const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
-  const isLoading = !error && annotationUrls.length && !isDataReady;
+  const isLoading = !error && !!annotationUrls.length && !isDataReady;
   const isContentReady = !error && !hasNoAnnotations && isDataReady;
 
   return (
