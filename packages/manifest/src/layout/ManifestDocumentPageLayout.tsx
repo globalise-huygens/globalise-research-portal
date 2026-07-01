@@ -28,6 +28,8 @@ import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { TooltipIconButton } from './TooltipIconButton';
 import { TOP_BAR_BUTTON, BOTTOM_BAR_BUTTON } from './buttonClasses';
 
+import './ManifestDocumentPageLayout.css';
+
 export function ManifestDocumentPageLayout() {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
@@ -77,7 +79,7 @@ export function ManifestDocumentPageLayout() {
     selectedKeys.push('text');
   }
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden">
+    <div className="gds relative flex h-screen flex-col overflow-hidden">
       <div
         id="document-detail-sidebar"
         className={cn(

@@ -4,7 +4,7 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [tailwindcss(), tanstackRouter(), react()],
+  plugins: [tailwindcss(), tanstackRouter({ autoCodeSplitting: true }), react()],
   resolve: {
     dedupe: ["react", "react-dom"],
   },

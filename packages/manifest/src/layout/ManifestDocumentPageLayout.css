@@ -1,0 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap");
+@import "@globalise/design-system/styles.css";
+@import "./theme.css";
+
+@import "tailwindcss";
+@source "../";
