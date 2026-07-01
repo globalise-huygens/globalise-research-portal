@@ -13,7 +13,7 @@ export function ManifestFacsimileControls() {
   const { id: selectedCanvasId } = useSelectedCanvas();
   const selectedIndex = lazyCanvases.findIndex((c) => c.canvasId === selectedCanvasId);
 
-  if (!ready || !lazyCanvases.length || selectedIndex < 0) {
+  if (!ready || !lazyCanvases.length || selectedIndex === -1) {
     return null;
   }
 

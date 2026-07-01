@@ -13,7 +13,7 @@ export function useScrollToSelectedCanvas(
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
 
-    if (!scrollContainer || !canvasList || !containerWidth || selectedCanvas < 0) {
+    if (!scrollContainer || !canvasList || !containerWidth || selectedCanvas === -1) {
       return;
     }
     if (selectedCanvasSource === 'transcription') {

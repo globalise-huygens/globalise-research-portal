@@ -65,7 +65,7 @@ export function ManifestLineByLineViewer(
       return;
     }
     const index = canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId);
-    if (index < 0) {
+    if (index === -1) {
       return;
     }
     virtuosoRef.current?.scrollToIndex({
