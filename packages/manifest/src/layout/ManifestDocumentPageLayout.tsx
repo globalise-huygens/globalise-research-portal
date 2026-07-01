@@ -6,11 +6,13 @@ import {
   DocumentDetailBarGroup,
   DocumentDetailBody,
   DocumentDetailBottomBar,
+  DocumentDetailCanvas,
   DocumentDetailSegmentedToggleGroup,
   DocumentDetailSegmentedToggleItem,
   DocumentDetailSplitViewer,
   DocumentDetailTooltip,
   DocumentDetailTopBar,
+  DocumentDetailTranscriptCanvas,
   DocumentDetailViewerPane,
   IconLeft,
   IconLeftFirst,
@@ -61,7 +63,9 @@ export function ManifestDocumentPageLayout() {
       key="scan"
       className={cn('relative', isTextVisible ? 'border-r border-brand-black' : 'border-r-0')}
     >
-      TODO: Viewer content
+      <DocumentDetailCanvas className="bg-neutral-500">
+        TODO: Viewer content
+      </DocumentDetailCanvas>
     </DocumentDetailViewerPane>
   ) : null;
 
@@ -175,7 +179,9 @@ export function ManifestDocumentPageLayout() {
             {scanPane}
             {isTextVisible && (
               <DocumentDetailViewerPane key="text" className="relative border-r-0">
-                TODO: inventory-panel content
+                <DocumentDetailTranscriptCanvas className="bg-neutral-500">
+                  TODO: Transcript content
+                </DocumentDetailTranscriptCanvas>
               </DocumentDetailViewerPane>
             )}
           </DocumentDetailSplitViewer>
