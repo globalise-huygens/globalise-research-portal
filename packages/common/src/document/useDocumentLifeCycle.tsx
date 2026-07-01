@@ -33,7 +33,7 @@ export function useDocumentLifecycle(
     if (!manifest) {
       return;
     }
-    initCanvases(manifest.items.map((i) => i.id));
+    initCanvases(manifest.items.map((i) => i.id), requestedCanvasId);
     seededRef.current = manifestUrl;
   }, [isManifestReady, manifestUrl, vault]);
 

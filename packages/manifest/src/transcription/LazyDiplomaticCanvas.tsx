@@ -2,9 +2,8 @@ import { memo, useEffect } from 'react';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
-  useDocumentStore,
   usePages,
-  usePartOf,
+  usePartOf, useSelectedCanvasIndex,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
 import { canvasName } from '@globalise/common/annotation';
@@ -43,9 +42,10 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
-  const isInRenderRangeByDistance = useDocumentStore(
-    (s) => Math.abs(index - s.selectedCanvas) <= renderDistance,
-  );
+  const selectedIndex = useSelectedCanvasIndex();
+  const isInRenderRangeByDistance =
+    selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
+
   const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
   useEffect(

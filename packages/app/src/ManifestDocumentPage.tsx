@@ -25,15 +25,15 @@ const CANVAS = 'canvas';
  * Sync selectedCanvas with url
  */
 const params = new URLSearchParams(location.search);
-const initialCanvas = Number(params.get(CANVAS)) || 0;
-setSelectedCanvas(initialCanvas, 'external');
+const initialCanvasId = params.get(CANVAS) ?? undefined;
+
 useDocumentStore.subscribe((state, prev) => {
-  const selectedCanvas = state.selectedCanvas;
-  if (selectedCanvas === prev.selectedCanvas) {
+  const { selectedCanvasId } = state;
+  if (selectedCanvasId === prev.selectedCanvasId || !selectedCanvasId) {
     return;
   }
   const newUrl = new URL(window.location.href);
-  newUrl.searchParams.set(CANVAS, String(selectedCanvas));
+  newUrl.searchParams.set(CANVAS, selectedCanvasId);
   history.replaceState({}, '', newUrl);
 });
 
@@ -78,8 +78,8 @@ export function ManifestDocumentPage() {
         >
           <SplitPaneLayout>
             <ManifestFacsimileViewer
-              initialCanvas={initialCanvas}
-              onCanvasChange={(index) => setSelectedCanvas(index, 'facsimile')}
+              initialCanvasId={initialCanvasId}
+              onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
             />
             <div style={{
               display: 'flex',
@@ -89,8 +89,8 @@ export function ManifestDocumentPage() {
             }}>
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <ManifestTranscriptionViewer
-                  initialCanvas={initialCanvas}
-                  onCanvasChange={(index) => setSelectedCanvas(index, 'transcription')}
+                  initialCanvasId={initialCanvasId}
+                  onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
                 />
               </div>
             </div>

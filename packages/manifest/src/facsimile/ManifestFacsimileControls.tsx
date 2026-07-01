@@ -10,9 +10,10 @@ export function ManifestFacsimileControls() {
   const scrollTo = useScrollTo();
 
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
-  const { index: selectedIndex } = useSelectedCanvas();
+  const { id: selectedCanvasId } = useSelectedCanvas();
+  const selectedIndex = lazyCanvases.findIndex((c) => c.canvasId === selectedCanvasId);
 
-  if (!ready || !lazyCanvases.length) {
+  if (!ready || !lazyCanvases.length || selectedIndex < 0) {
     return null;
   }
 
@@ -27,22 +28,29 @@ export function ManifestFacsimileControls() {
   const hasPrev = selectedIndex > 0;
   const hasNext = selectedIndex < lazyCanvases.length - 1;
 
+  const prevId = hasPrev && lazyCanvases[selectedIndex - 1].canvasId;
+  const nextId = hasNext && lazyCanvases[selectedIndex + 1]?.canvasId;
+
   return (
     <>
       <button
-        onClick={() => scrollTo(selectedIndex - 1)}
+        onClick={() => prevId && scrollTo(prevId)}
         disabled={!hasPrev}
       >
         Prev
       </button>
       <span>{label}&nbsp;({selectedIndex + 1}/{lazyCanvases.length})</span>
       <button
-        onClick={() => scrollTo(Math.floor(Math.random() * lazyCanvases.length))}
+        onClick={() => {
+          const randomIndex = Math.floor(Math.random() * lazyCanvases.length);
+          const randomId = lazyCanvases[randomIndex].canvasId;
+          scrollTo(randomId);
+        }}
       >
         I'm Feeling Lucky
       </button>
       <button
-        onClick={() => scrollTo(selectedIndex + 1)}
+        onClick={() => nextId && scrollTo(nextId)}
         disabled={!hasNext}
       >
         Next
