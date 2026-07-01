@@ -4,19 +4,21 @@ import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 export function findCenterScan(
   viewer: Viewer,
   canvases: LazyTiledImage[],
-): number {
+): string | null {
+  if (!canvases.length) {
+    return null;
+  }
   const bounds = viewer.viewport.getBounds(true);
   const center = bounds.y + bounds.height / 2;
-  let closest = 0;
+  let closest = canvases[0];
   let closestDistance = Infinity;
 
-  for (let i = 0; i < canvases.length; i++) {
-    const { y, height } = canvases[i];
-    const distance = Math.abs(y + height / 2 - center);
+  for (const canvas of canvases) {
+    const distance = Math.abs(canvas.y + canvas.height / 2 - center);
     if (distance < closestDistance) {
       closestDistance = distance;
-      closest = i;
+      closest = canvas;
     }
   }
-  return closest;
+  return closest.canvasId;
 }

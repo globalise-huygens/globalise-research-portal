@@ -24,7 +24,7 @@ export function ManifestTranscriptionPage() {
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
-  const initialCanvas = Number(params.get(CANVAS)) || 0;
+  const initialCanvasId = params.get(CANVAS) ?? undefined;
   const allManifests = useCollectionManifests(collectionUrl);
 
   function handleManifestChange(url: string) {
@@ -35,11 +35,12 @@ export function ManifestTranscriptionPage() {
     history.pushState({}, '', newUrl);
   }
 
-  function handleCanvasChange(index: number) {
+  function handleCanvasChange(canvasId: string) {
     const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(CANVAS, String(index));
+    newUrl.searchParams.set(CANVAS, canvasId);
     history.replaceState({}, '', newUrl);
   }
+
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
@@ -67,14 +68,15 @@ export function ManifestTranscriptionPage() {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            height: '100vh',
+            height: '100%',
             overflow: 'hidden',
           }}>
             <div style={{ flex: 1, overflow: 'hidden' }}>
               <ManifestTranscriptionViewer
-                initialCanvas={initialCanvas}
+                initialCanvasId={initialCanvasId}
                 onCanvasChange={handleCanvasChange}
-              /></div>
+              />
+            </div>
           </div>
         </Page>
       </ManifestLoader>

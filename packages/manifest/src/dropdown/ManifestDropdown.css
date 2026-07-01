@@ -1,5 +1,6 @@
 .manifest-dropdown {
     position: relative;
+    display: flex;
     width: 100%;
     height: 2rem;
 

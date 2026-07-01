@@ -42,7 +42,7 @@ export function useCanvasPages(
     if (!isCanvasInit) {
       return;
     }
-    setSelectedCanvas(currentIndex, 'external');
+    setSelectedCanvas(current.id, 'external');
     const urls = current.annotations
       .filter((a) => a.type === 'AnnotationPage')
       .map((a) => a.id);

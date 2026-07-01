@@ -28,18 +28,13 @@ export type CanvasState = {
   error: string | null;
 };
 
-/**
- * Who updated the selected canvas?
- * Prevents accidental rewrites and update loops from the opposite pane
- */
 export type CanvasSource =
   | 'facsimile'
   | 'transcription'
-  // init, url or menu:
   | 'external';
 
 export type ManifestViewerSlice = {
-  selectedCanvas: number;
+  selectedCanvasId: CanvasId | null;
   selectedCanvasSource: CanvasSource;
   selectedCanvasAt: number;
   /**
@@ -68,15 +63,13 @@ const emptyCanvasState: CanvasState = {
 };
 
 export const defaultManifestViewerSlice: ManifestViewerSlice = {
-  selectedCanvas: 0,
+  selectedCanvasId: null,
   selectedCanvasSource: 'external',
   selectedCanvasAt: 0,
   canvases: {},
 };
 
-function createReadyCanvas(
-  pages: AnnotationPage[],
-) {
+function createReadyCanvas(pages: AnnotationPage[]) {
   const mapped: Record<Id, Annotation> = {};
   for (const page of pages) {
     for (const item of page.items) {
@@ -109,16 +102,19 @@ function createReadyCanvas(
 }
 
 /**
- * Initialize canvases record using manifest canvas order
- * so Object.values(canvases) returns the correct order
- * and selectedCanvas index can be used.
+ * Initialize canvases record using manifest canvas order.
+ * If selectedCanvasId exists, select it.
+ * Otherwise, pick first canvas.
  */
-export function initCanvases(canvasIds: Id[], selectedCanvas = 0) {
+export function initCanvases(canvasIds: Id[], selectedCanvasId?: CanvasId) {
   const canvases: Record<Id, CanvasState> = {};
   for (const id of canvasIds) {
     canvases[id] = { ...emptyCanvasState };
   }
-  setState({ canvases, selectedCanvas });
+  const nextSelected = selectedCanvasId && canvases[selectedCanvasId]
+    ? selectedCanvasId
+    : canvasIds[0] ?? null;
+  setState({ canvases, selectedCanvasId: nextSelected });
 }
 
 export async function loadCanvasAnnotationPages(
@@ -198,13 +194,13 @@ export async function loadCanvasAnnotationPages(
   }
 }
 
-export function setSelectedCanvas(index: number, source: CanvasSource) {
+export function setSelectedCanvas(canvasId: CanvasId, source: CanvasSource) {
   if (source === 'external') {
-    setAfterPaneSyncThreshold(index, source);
+    setAfterPaneSyncThreshold(canvasId, source);
   } else if (source === 'facsimile') {
-    setSelectedFacsimileCanvas(index);
+    setSelectedFacsimileCanvas(canvasId);
   } else if (source === 'transcription') {
-    setSelectedTranscriptionCanvas(index);
+    setSelectedTranscriptionCanvas(canvasId);
   }
 }
 
@@ -213,10 +209,7 @@ export function setSelectedCanvas(index: number, source: CanvasSource) {
  * This prevents a feedback loop between the transcription and facsimile panes
  * when a pane's sync scroll event triggers its own selection call.
  */
-function setAfterPaneSyncThreshold(
-  index: number,
-  source: CanvasSource,
-) {
+function setAfterPaneSyncThreshold(canvasId: CanvasId, source: CanvasSource) {
   setState((s) => {
     const now = Date.now();
     if (now - s.selectedCanvasAt < paneSyncThreshold && s.selectedCanvasSource !== source) {
@@ -225,7 +218,7 @@ function setAfterPaneSyncThreshold(
     }
     return {
       ...s,
-      selectedCanvas: index,
+      selectedCanvasId: canvasId,
       selectedCanvasSource: source,
       selectedCanvasAt: now,
     };
@@ -233,8 +226,10 @@ function setAfterPaneSyncThreshold(
 }
 
 const paneSyncThreshold = 1000; // ms
-const setSelectedTranscriptionCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'transcription'), 500);
-const setSelectedFacsimileCanvas = debounce((index) => setAfterPaneSyncThreshold(index, 'facsimile'), 100);
+const setSelectedTranscriptionCanvas = debounce(
+  (canvasId: CanvasId) => setAfterPaneSyncThreshold(canvasId, 'transcription'), 500);
+const setSelectedFacsimileCanvas = debounce(
+  (canvasId: CanvasId) => setAfterPaneSyncThreshold(canvasId, 'facsimile'), 100);
 
 export function usePages(canvasId: CanvasId) {
   return useDocumentStore(useShallow((s) => {
@@ -258,9 +253,7 @@ export function useLoadCanvas() {
 
 const emptyAnnotations = {};
 
-export function useAnnotations(
-  canvasId: CanvasId,
-): Record<Id, Annotation> {
+export function useAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
   return useDocumentStore((s) => {
     const canvas = s.canvases[canvasId];
     const annotations = canvas?.annotations;
@@ -282,7 +275,6 @@ export function usePartOf(canvasId: CanvasId): PartOf | null {
 }
 
 type CanvasStatus = {
-  index: number,
   selectedCanvasSource: CanvasSource
 } & (
   | { isInit: false, id: null } & CanvasState
@@ -292,20 +284,30 @@ type CanvasStatus = {
 const emptyCanvasStatus: CanvasStatus = {
   ...emptyCanvasState,
   isInit: false,
-  index: 0,
   id: null,
   selectedCanvasSource: 'external',
 };
 
 export function useSelectedCanvas(): CanvasStatus {
   return useDocumentStore(useShallow((s: DocumentState) => {
-    const { selectedCanvas: index, selectedCanvasSource, canvases } = s;
-    const id = Object.keys(canvases)[index];
-    if (!id) {
+    const { selectedCanvasId, selectedCanvasSource, canvases } = s;
+    const canvas = selectedCanvasId ? canvases[selectedCanvasId] : null;
+    if (!selectedCanvasId || !canvas) {
       return emptyCanvasStatus;
     }
-    return { isInit: true, id, index, ...canvases[id], selectedCanvasSource };
+    return { isInit: true, id: selectedCanvasId, ...canvas, selectedCanvasSource };
   }));
+}
+
+/**
+ * @returns index of selected canvas in manifest, or -1 if no canvas is selected
+ */
+export function useSelectedCanvasIndex(): number {
+  return useDocumentStore((s) =>
+    s.selectedCanvasId
+      ? Object.keys(s.canvases).indexOf(s.selectedCanvasId)
+      : -1,
+  );
 }
 
 export function useIsCanvasInit(id?: CanvasId): boolean {

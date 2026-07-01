@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useSettings } from '@globalise/document';
-import { initCanvases } from '@globalise/common/document';
+import { initCanvases, useDocumentStore } from '@globalise/common/document';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 
 type Props = {
-  initialCanvas?: number;
-  onCanvasChange: (index: number) => void;
+  initialCanvasId?: string;
+  onCanvasChange: (canvasId: string) => void;
 };
 
 export function ManifestTranscriptionViewer(
-  { initialCanvas = 0, onCanvasChange }: Props,
+  { initialCanvasId, onCanvasChange }: Props,
 ) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
   const { transcriptionMode } = useSettings();
@@ -26,10 +26,10 @@ export function ManifestTranscriptionViewer(
     return manifest.items.map((item) => vault.get<CanvasNormalized>(item).id);
   }, [vault, manifestId, isManifestReady]);
 
-  useEffect(initCanvasesOnLoad, [canvasIds, initialCanvas]);
+  useEffect(initCanvasesOnLoad, [canvasIds, initialCanvasId]);
   function initCanvasesOnLoad() {
     if (canvasIds.length) {
-      initCanvases(canvasIds, initialCanvas);
+      initCanvases(canvasIds, initialCanvasId);
       setStoreReady(true);
     }
   }
@@ -38,17 +38,19 @@ export function ManifestTranscriptionViewer(
     return null;
   }
 
+  const currentCanvasId = useDocumentStore.getState().selectedCanvasId ?? undefined;
+
   if (transcriptionMode === 'line-by-line') {
     return (
       <ManifestLineByLineViewer
-        initialCanvas={initialCanvas}
+        initialCanvasId={currentCanvasId}
         onCanvasChange={onCanvasChange}
       />
     );
   }
   return (
     <ManifestDiplomaticViewer
-      initialCanvas={initialCanvas}
+      initialCanvasId={currentCanvasId}
       onCanvasChange={onCanvasChange}
     />
   );

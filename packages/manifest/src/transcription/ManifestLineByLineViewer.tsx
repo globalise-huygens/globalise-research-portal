@@ -20,8 +20,8 @@ type CanvasInfo = {
 };
 
 type Props = {
-  initialCanvas?: number;
-  onCanvasChange: (index: number) => void;
+  initialCanvasId?: string;
+  onCanvasChange: (canvasId: string) => void;
 };
 
 const CANVAS_BUFFER_RANGE = 7;
@@ -29,7 +29,7 @@ const DEFAULT_ITEM_HEIGHT = 600;
 const INCREASE_VIEWPORT_BY = 0;
 
 export function ManifestLineByLineViewer(
-  { initialCanvas = 0, onCanvasChange }: Props,
+  { initialCanvasId, onCanvasChange }: Props,
 ) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
 
@@ -47,25 +47,29 @@ export function ManifestLineByLineViewer(
     });
   }, [vault, manifestId, isManifestReady]);
 
-  const { index: selectedCanvas, selectedCanvasSource } = useSelectedCanvas();
+  const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
 
-  const lastSelectedCanvas = useRef(selectedCanvas);
+  const lastSelectedCanvasId = useRef(selectedCanvasId);
 
-  useEffect(scrollToSelectedCanvas, [selectedCanvas, selectedCanvasSource]);
+  useEffect(scrollToSelectedCanvas, [selectedCanvasId, selectedCanvasSource]);
 
   function scrollToSelectedCanvas() {
-    if (selectedCanvas === lastSelectedCanvas.current) {
+    if (selectedCanvasId === lastSelectedCanvasId.current) {
       return;
     }
-    lastSelectedCanvas.current = selectedCanvas;
-    if (selectedCanvasSource === 'transcription') {
+    lastSelectedCanvasId.current = selectedCanvasId;
+    if (selectedCanvasSource === 'transcription' || !selectedCanvasId) {
+      return;
+    }
+    const index = canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId);
+    if (index === -1) {
       return;
     }
     virtuosoRef.current?.scrollToIndex({
-      index: selectedCanvas,
+      index,
       align: 'start',
       behavior: 'auto',
     });
@@ -84,13 +88,13 @@ export function ManifestLineByLineViewer(
     }
   }
 
-  useEffect(observeScroll, [onCanvasChange]);
+  useEffect(observeScroll, [onCanvasChange, canvasInfos]);
   function observeScroll() {
     const scroller = scrollerRef.current;
     if (!scroller) {
       return;
     }
-    let prevCanvasIndex = -1;
+    let prevCanvasId: string | null = null;
     const onScroll = () => {
       const scrollerRect = scroller.getBoundingClientRect();
       const topQuarter = scrollerRect.top + scrollerRect.height * 0.25;
@@ -101,9 +105,13 @@ export function ManifestLineByLineViewer(
           continue;
         }
         const index = getCanvasIndex(element);
-        if (index !== null && index !== prevCanvasIndex) {
-          prevCanvasIndex = index;
-          onCanvasChange(index);
+        if (index === null) {
+          return;
+        }
+        const info = canvasInfos[index];
+        if (info && info.canvasId !== prevCanvasId) {
+          prevCanvasId = info.canvasId;
+          onCanvasChange(info.canvasId);
         }
         return;
       }
@@ -120,13 +128,17 @@ export function ManifestLineByLineViewer(
     return null;
   }
 
+  const initialIndex = initialCanvasId
+    ? canvasInfos.findIndex((c) => c.canvasId === initialCanvasId)
+    : 0;
+
   return (
     <Virtuoso
       ref={virtuosoRef}
       style={{ height: '100%' }}
       totalCount={canvasInfos.length}
       defaultItemHeight={DEFAULT_ITEM_HEIGHT}
-      initialTopMostItemIndex={initialCanvas}
+      initialTopMostItemIndex={Math.max(0, initialIndex)}
       // Scroll smoother by start loading and rendering outside of viewport:
       increaseViewportBy={INCREASE_VIEWPORT_BY}
       skipAnimationFrameInResizeObserver

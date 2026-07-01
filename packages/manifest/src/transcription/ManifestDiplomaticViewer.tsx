@@ -15,15 +15,15 @@ type CanvasInfo = {
 };
 
 type Props = {
-  initialCanvas?: number;
-  onCanvasChange: (index: number) => void;
+  initialCanvasId?: string;
+  onCanvasChange: (canvasId: string) => void;
 };
 
 const MIN_CANVASES_TO_RENDER = 4;
 const MAX_VIEWPORTS_TO_RENDER = 2;
 
 export function ManifestDiplomaticViewer(
-  { initialCanvas = 0, onCanvasChange }: Props,
+  { initialCanvasId, onCanvasChange }: Props,
 ) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
   const { diplomaticViewScale } = useSettings();
@@ -33,7 +33,6 @@ export function ManifestDiplomaticViewer(
   const [containerWidth, setContainerWidth] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(new Set());
-  const lastScrolledCanvas = useRef<number | null>(initialCanvas);
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
     if (!manifestId || !isManifestReady) {
@@ -51,9 +50,17 @@ export function ManifestDiplomaticViewer(
     });
   }, [vault, manifestId, isManifestReady]);
 
+  const initialCanvas = useMemo(
+    () => initialCanvasId
+      ? Math.max(0, canvasInfos.findIndex((c) => c.canvasId === initialCanvasId))
+      : 0,
+    [initialCanvasId, canvasInfos],
+  );
+  const lastScrolledCanvas = useRef<number | null>(initialCanvas);
+
   useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
 
-  useEffect(observeCanvases, [onCanvasChange, canvasInfos.length, containerWidth]);
+  useEffect(observeCanvases, [onCanvasChange, canvasInfos, containerWidth]);
   function observeCanvases() {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
@@ -82,8 +89,12 @@ export function ManifestDiplomaticViewer(
         if (index === null || index === lastScrolledCanvas.current) {
           continue;
         }
+        const info = canvasInfos[index];
+        if (!info) {
+          continue;
+        }
         lastScrolledCanvas.current = index;
-        onCanvasChange(index);
+        onCanvasChange(info.canvasId);
       }
     }, {
       root: scrollContainer,

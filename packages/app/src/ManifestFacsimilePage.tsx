@@ -23,7 +23,7 @@ export function ManifestFacsimilePage() {
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
-  const initialCanvas = Number(params.get(CANVAS)) || 0;
+  const initialCanvasId = params.get(CANVAS) ?? undefined;
   const allManifests = useCollectionManifests(collectionUrl);
 
   function handleManifestChange(url: string) {
@@ -34,9 +34,9 @@ export function ManifestFacsimilePage() {
     history.pushState({}, '', newUrl);
   }
 
-  function handleCanvasChange(index: number) {
+  function handleCanvasChange(canvasId: string) {
     const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(CANVAS, String(index));
+    newUrl.searchParams.set(CANVAS, canvasId);
     history.replaceState({}, '', newUrl);
   }
 
@@ -56,7 +56,7 @@ export function ManifestFacsimilePage() {
           }
         >
           <ManifestFacsimileViewer
-            initialCanvas={initialCanvas}
+            initialCanvasId={initialCanvasId}
             onCanvasChange={handleCanvasChange}
           />
         </Page>

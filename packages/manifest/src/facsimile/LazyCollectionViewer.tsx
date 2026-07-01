@@ -13,6 +13,7 @@ import {
   setLazyCanvases, setLoaded, setScrolling,
 } from './LazyCollectionViewerStore.ts';
 import {
+  CanvasId,
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
@@ -22,8 +23,8 @@ import { ControlBar, FacsimileControls } from '@globalise/facsimile';
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
-  initialCanvas?: number;
-  onCanvasChange: (index: number) => void;
+  initialCanvasId?: CanvasId;
+  onCanvasChange: (canvasId: CanvasId) => void;
   preloadScreens?: number;
 }>;
 
@@ -40,7 +41,7 @@ export function LazyCollectionViewer(
     children,
     scanHeight,
     gap = 0.02,
-    initialCanvas = 0,
+    initialCanvasId,
     onCanvasChange,
   }: Props,
 ) {
@@ -64,30 +65,32 @@ export function LazyCollectionViewer(
     setLazyCanvases(lazyCanvases);
   }
 
+  const initialIndex = initialCanvasId
+    ? lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId)
+    : 0;
+
   useLazyCanvasLoader({
     viewer,
     lazyCanvases,
-    initialCanvas,
+    initialCanvas: initialIndex >= 0 ? initialIndex : 0,
     canvasHeight: scanHeight,
-    onLoadedChange: (loaded) => {
-      setLoaded(loaded);
-    },
+    onLoadedChange: setLoaded,
   });
 
-  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvas]);
+  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvasId]);
 
   function initCanvasesLazily() {
     if (!lazyCanvases.length) {
       return;
     }
-    initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvas);
+    initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvasId);
   }
 
-  const { index: selectedCanvas, selectedCanvasSource } = useSelectedCanvas();
+  const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
 
   useEffect(
     subscribeToExternalCanvasChange,
-    [viewer, lazyCanvases, selectedCanvas, selectedCanvasSource],
+    [viewer, lazyCanvases, selectedCanvasId, selectedCanvasSource],
   );
 
   function subscribeToExternalCanvasChange() {
@@ -97,14 +100,13 @@ export function LazyCollectionViewer(
     if (selectedCanvasSource === 'facsimile') {
       return;
     }
-    const canvas = lazyCanvases[selectedCanvas];
+    const canvas = lazyCanvases.find((c) => c.canvasId === selectedCanvasId);
     if (!canvas) {
       return;
     }
     const verticalCenter = canvas.y + canvas.height / 2;
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
   }
-
 
   useEffect(createViewer, [isScrollReady, store]);
 
@@ -158,7 +160,10 @@ export function LazyCollectionViewer(
     };
 
     const onViewportChange = () => {
-      onCanvasChange(findCenterScan(viewer, lazyCanvases));
+      const centerId = findCenterScan(viewer, lazyCanvases);
+      if (centerId) {
+        onCanvasChange(centerId);
+      }
     };
 
     viewer.addHandler('animation-start', onAnimationStart);

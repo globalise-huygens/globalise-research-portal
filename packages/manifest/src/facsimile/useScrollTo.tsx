@@ -4,16 +4,17 @@ import {
   useLazyCollectionViewerContext,
 } from './LazyCollectionViewerContext.tsx';
 import { Point } from 'openseadragon';
+import type { CanvasId } from '@globalise/common/document';
 
 export function useScrollTo() {
   const viewer = useViewer();
   const context = useLazyCollectionViewerContext();
 
-  return useCallback((index: number) => {
+  return useCallback((canvasId: CanvasId) => {
     if (!viewer || !context) {
       return;
     }
-    const scan = context.lazyCanvases.current[index];
+    const scan = context.lazyCanvases.current.find((c) => c.canvasId === canvasId);
     if (!scan) {
       return;
     }
