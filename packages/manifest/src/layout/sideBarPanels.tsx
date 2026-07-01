@@ -20,7 +20,7 @@ export const sideBarPanels = [
     icon: <IconTableOfContent className="h-s20 w-s20" />,
   },
   {
-    id: 'identified',
+    id: 'entity-tags',
     label: 'Entity tags',
     count: '(376)',
     railLabel: '376',

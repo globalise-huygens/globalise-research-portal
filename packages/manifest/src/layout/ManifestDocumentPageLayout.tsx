@@ -165,7 +165,7 @@ export function ManifestDocumentPageLayout() {
             TODO: Centre content
           </div>
 
-          <DocumentDetailBarGroup className="min-w-0 ml-auto gap-s8">
+          <DocumentDetailBarGroup className="flex-1 min-w-0 ml-auto gap-s8 justify-end">
             TODO: Right content
           </DocumentDetailBarGroup>
         </DocumentDetailTopBar>
