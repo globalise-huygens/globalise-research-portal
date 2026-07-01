@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./layout": "./src/layout/ManifestDocumentPageLayout.tsx"
   },
   "dependencies": {
     "@globalise/design-system": "file:../../../globalise-design-system/packages/ui",
