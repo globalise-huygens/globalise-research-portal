@@ -1,0 +1,92 @@
+@layer components {
+  .gds-document-detail-reference-card {
+    position: relative;
+    border-bottom: 1px solid rgb(255 255 255 / 0.2);
+    padding: var(--s12);
+    transition: background-color 75ms ease-out;
+  }
+
+  .gds-document-detail-reference-card::before {
+    position: absolute;
+    top: var(--s12);
+    bottom: var(--s12);
+    left: 0;
+    width: 1px;
+    content: "";
+    background: transparent;
+  }
+
+  .gds-document-detail-reference-card:hover::before {
+    background: rgb(255 255 255 / 0.3);
+  }
+
+  .gds-document-detail-reference-card[aria-current="true"]::before {
+    width: 2px;
+    background: var(--color-brand-white);
+  }
+
+  .gds-document-detail-reference-card__layout {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s16);
+  }
+
+  .gds-document-detail-reference-card__thumbnail {
+    position: relative;
+    display: flex;
+    width: var(--s96);
+    height: var(--s80);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .gds-document-detail-reference-card__body {
+    min-width: 0;
+  }
+
+  .gds-document-detail-reference-card__header {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--s6, 6px);
+    white-space: nowrap;
+  }
+
+  .gds-document-detail-reference-card__heading {
+    min-width: 0;
+    flex: 1 1 0%;
+  }
+
+  .gds-document-detail-reference-card__snippet {
+    margin-top: var(--s4);
+    background: var(--color-neutral-700);
+    padding: var(--s4) var(--s8);
+  }
+
+  .gds-document-detail-reference-card__meta,
+  .gds-document-detail-reference-card__footer {
+    min-width: 0;
+    margin-top: var(--s4);
+  }
+
+  @media (max-width: 767px) {
+    .gds-document-detail-reference-card__layout {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: var(--s12);
+    }
+
+    .gds-document-detail-reference-card__thumbnail {
+      width: 100%;
+      height: var(--s96);
+    }
+
+    .gds-document-detail-reference-card__header {
+      align-items: start;
+      white-space: normal;
+    }
+  }
+}

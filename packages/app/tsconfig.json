@@ -9,6 +9,7 @@
   "references": [
     { "path": "../common" },
     { "path": "../design" },
+    { "path": "../design-system" },
     { "path": "../document" },
     { "path": "../facsimile" },
     { "path": "../manifest" },

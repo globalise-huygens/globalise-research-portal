@@ -16,7 +16,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@globalise/design-system": "file:../globalise-design-system/packages/ui",
+    "@globalise/design-system": "*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.8",

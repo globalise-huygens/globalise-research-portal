@@ -1,0 +1,409 @@
+@layer components {
+  .gds-document-detail-control,
+  .gds-document-detail-tool-button,
+  .gds-document-detail-segment,
+  .gds-document-detail-rail-button {
+    display: inline-flex;
+    border: 0;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: var(--font-sans);
+    transition:
+      background-color 75ms ease-out,
+      border-color 75ms ease-out,
+      color 75ms ease-out;
+  }
+
+  .gds-document-detail-rail-button {
+    width: 100%;
+    height: var(--s64);
+    flex-direction: column;
+    gap: var(--s4);
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    color: var(--color-brand-white);
+    font-size: 10px;
+  }
+
+  .gds-document-detail-rail-button .gds-document-detail-icon {
+    display: flex;
+    width: var(--s24);
+    height: var(--s24);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gds-document-detail-rail-button .gds-document-detail-icon svg {
+    width: var(--s20);
+    height: var(--s20);
+  }
+
+  .gds-document-detail-rail-button[data-hovered],
+  .gds-document-detail-rail-button[data-active="true"] {
+    background: var(--color-neutral-800);
+  }
+
+  .gds-document-detail-rail-button[data-variant="accent"] {
+    background: var(--color-vermilion-500);
+    color: var(--color-brand-black);
+  }
+
+  .gds-document-detail-control[data-focus-visible],
+  .gds-document-detail-tool-button[data-focus-visible],
+  .gds-document-detail-segment[data-focus-visible],
+  .gds-document-detail-segmented-toggle-item[data-focus-visible],
+  .gds-document-detail-checkbox[data-focus-visible],
+  .gds-document-detail-rail-button[data-focus-visible],
+  .gds-document-detail-control:focus-visible,
+  .gds-document-detail-tool-button:focus-visible,
+  .gds-document-detail-segment:focus-visible,
+  .gds-document-detail-segmented-toggle-item:focus-visible,
+  .gds-document-detail-checkbox:focus-visible,
+  .gds-document-detail-rail-button:focus-visible {
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+
+  .gds-document-detail-control {
+    height: var(--control);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    color: var(--color-brand-white);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .gds-document-detail-control[data-icon-only="true"] {
+    width: var(--control);
+    padding-inline: 0;
+  }
+
+  .gds-document-detail-control[data-icon-only="false"] {
+    gap: var(--s8);
+    padding-inline: var(--s12);
+  }
+
+  .gds-document-detail-control[data-hovered] {
+    border-color: rgb(255 255 255 / 0.4);
+  }
+
+  .gds-document-detail-control[data-active="true"] {
+    border-color: var(--color-vermilion-500);
+    background: var(--color-vermilion-500);
+    color: var(--color-brand-black);
+  }
+
+  .gds-document-detail-tool-button {
+    min-width: var(--s32);
+    height: var(--s36);
+    gap: var(--s4);
+    border-radius: 4px;
+    padding-inline: var(--s8);
+    color: var(--color-brand-white);
+    font-size: 0.75rem;
+  }
+
+  .gds-document-detail-tool-button[data-size="compact"] {
+    min-width: var(--s28);
+    height: var(--s32);
+    padding-inline: var(--s6);
+  }
+
+  .gds-document-detail-tool-button[data-size="regular"] {
+    min-width: var(--s32);
+    height: var(--s36);
+    padding-inline: var(--s8);
+  }
+
+  .gds-document-detail-tool-button[data-size="touch"] {
+    min-width: var(--s44);
+    min-height: var(--s44);
+    padding-inline: var(--s12);
+  }
+
+  .gds-document-detail-tool-button[data-hovered] {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .gds-document-detail-tool-button[data-active="false"] {
+    background: transparent;
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-tool-button[data-pressed] {
+    background: rgb(255 255 255 / 0.15);
+  }
+
+  .gds-document-detail-tool-button[data-active="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+    box-shadow: none;
+  }
+
+  .gds-document-detail-tool-button[data-disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gds-document-detail-segmented-control,
+  .gds-document-detail-segmented-toggle-group {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.1);
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-segmented-control {
+    height: var(--s36);
+    gap: var(--s4);
+    border-radius: 4px;
+    padding: var(--s4);
+  }
+
+  .gds-document-detail-segmented-toggle-group {
+    gap: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .gds-document-detail-segmented-toggle-group[data-size="compact"] {
+    height: var(--s32);
+    border-radius: 4px;
+  }
+
+  .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+    height: var(--s40);
+    border-radius: 4px;
+  }
+
+  .gds-document-detail-segment,
+  .gds-document-detail-segmented-toggle-item {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+  }
+
+  .gds-document-detail-segment {
+    height: var(--s28);
+    gap: var(--s4);
+    border-radius: 4px;
+    padding-inline: var(--s8);
+    color: var(--color-brand-black);
+    font-size: 0.75rem;
+  }
+
+  .gds-document-detail-segment[data-active="false"] {
+    background: transparent;
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-segment[data-active="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 0.12);
+  }
+
+  .gds-document-detail-segmented-toggle-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-right: 0;
+    background: rgb(255 255 255 / 0.12);
+    color: rgb(255 255 255 / 0.82);
+    outline: none;
+    box-shadow: none;
+    transition:
+      background-color 100ms ease-out,
+      color 100ms ease-out;
+  }
+
+  .gds-document-detail-segmented-toggle-item > svg {
+    width: var(--s16);
+    height: var(--s16);
+    flex-shrink: 0;
+  }
+
+  .gds-document-detail-segmented-toggle-item:last-child {
+    border-right: 1px solid rgb(255 255 255 / 0.7);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  .gds-document-detail-segmented-toggle-item:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .gds-document-detail-segmented-toggle-item[data-size="compact"] {
+    min-width: var(--s56);
+    height: var(--s32);
+    gap: var(--s4);
+    padding-inline: var(--s8);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+    min-width: var(--s72);
+    height: var(--s40);
+    gap: var(--s8);
+    padding-inline: var(--s12);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-segmented-toggle-item[data-focus-visible],
+  .gds-document-detail-segmented-toggle-item:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .gds-document-detail-segmented-toggle-item[data-selected],
+  .gds-document-detail-segmented-toggle-item[aria-pressed="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+  }
+
+  .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
+      [aria-pressed="true"]
+    ) {
+    color: rgb(255 255 255 / 0.65);
+  }
+
+  .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
+      [aria-pressed="true"]
+    )[data-hovered] {
+    background: rgb(255 255 255 / 0.18);
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-checkbox {
+    display: inline-flex;
+    min-width: 0;
+    height: var(--s28);
+    cursor: pointer;
+    align-items: center;
+    gap: var(--s8);
+    padding-inline: 2px;
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+    transition: color 75ms ease-out;
+  }
+
+  .gds-document-detail-checkbox[data-hovered] {
+    color: rgb(255 255 255 / 0.75);
+  }
+
+  .gds-document-detail-checkbox[data-disabled] {
+    cursor: not-allowed;
+    color: rgb(255 255 255 / 0.3);
+  }
+
+  .gds-document-detail-checkbox__indicator {
+    display: flex;
+    width: var(--s12);
+    height: var(--s12);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-neutral-700);
+  }
+
+  .gds-document-detail-checkbox[data-selected]
+    .gds-document-detail-checkbox__indicator,
+  .gds-document-detail-checkbox[data-indeterminate]
+    .gds-document-detail-checkbox__indicator {
+    background: var(--color-brand-white);
+    box-shadow: inset 0 0 0 2px var(--color-neutral-800);
+  }
+
+  .gds-document-detail-number-field {
+    display: inline-flex;
+    height: var(--s16);
+    align-items: baseline;
+    justify-content: center;
+    color: var(--color-parchment-500);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .gds-document-detail-number-field__input {
+    display: inline-block;
+    height: var(--s16);
+    appearance: textfield;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: var(--color-parchment-500);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    margin-inline: 2px;
+    outline: none;
+    padding: 0 2px;
+    text-align: center;
+    transition: background-color 75ms ease-out;
+  }
+
+  .gds-document-detail-number-field__input::-webkit-inner-spin-button,
+  .gds-document-detail-number-field__input::-webkit-outer-spin-button {
+    appearance: none;
+  }
+
+  .gds-document-detail-number-field__input[data-hovered] {
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .gds-document-detail-number-field__input[data-focused] {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .gds-document-detail-number-field__input[data-focus-visible] {
+    box-shadow: 0 0 0 1px rgb(185 155 127 / 0.5);
+  }
+
+  .gds-document-detail-number-field__suffix {
+    margin-left: 1px;
+    color: var(--color-parchment-500);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .gds-document-detail-rail-button__label {
+    line-height: 1;
+  }
+
+  @media (max-width: 767px) {
+    .gds-document-detail-rail-button {
+      height: var(--s56);
+      padding-inline: var(--s16);
+    }
+
+    .gds-document-detail-tool-button {
+      min-width: var(--s40);
+      min-height: var(--s40);
+    }
+
+    .gds-document-detail-tool-button[data-size="touch"] {
+      min-width: var(--s44);
+      min-height: var(--s44);
+    }
+
+    .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+      height: var(--s40);
+    }
+
+    .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+      height: var(--s40);
+      padding-inline: var(--s10);
+    }
+  }
+}

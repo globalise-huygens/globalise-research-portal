@@ -4,6 +4,7 @@
     { "path": "packages/app" },
     { "path": "packages/common" },
     { "path": "packages/design" },
+    { "path": "packages/design-system" },
     { "path": "packages/diplomatic" },
     { "path": "packages/document" },
     { "path": "packages/facsimile" },

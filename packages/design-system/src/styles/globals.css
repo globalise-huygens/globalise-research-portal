@@ -1,0 +1,547 @@
+/*
+ * Globalise Design System — Design Tokens
+ *
+ * Extracted from Figma: GLOBALISE-collection
+ * Fonts: Noto Sans (UI/body), Noto Serif (headers/editorial)
+ *
+ * Brand Colours (Figma source):
+ *   Archive Black: #0C0A09
+ *   Paper White: #FFFFFF
+ *   Parchment: #B99B7F
+ *   Vermilion: #FF543D
+ *   Turquoise: #29BFCC
+ *   Mint: #36C6A7
+ *
+ * Typography:
+ *   Headers     — Noto Serif Medium, tracking -0.03em
+ *   Body        — Noto Sans Regular, tracking -0.02em
+ */
+
+@layer base {
+  :root {
+    /* ── Brand colours (hex) ───────────────────────── */
+    --brand-black: #0c0a09; /* text: white */
+    --brand-white: #ffffff; /* text: black */
+    --brand-parchment: #b99b7f; /* text: black */
+    --brand-vermilion: #ff543d; /* text: black */
+    --brand-turquoise: #29bfcc; /* text: black */
+    --brand-mint: #36c6a7; /* text: black */
+
+    /* ── Supporting colour scales ──────────────────── */
+
+    /* Neutral */
+    --neutral-50: #f2f2f2; /* text: black */
+    --neutral-100: #e6e6e6; /* text: black */
+    --neutral-200: #cccccc; /* text: black */
+    --neutral-300: #b3b3b3; /* text: black */
+    --neutral-400: #999999; /* text: black */
+    --neutral-500: #808080; /* text: white */
+    --neutral-600: #666666; /* text: white */
+    --neutral-700: #4d4d4d; /* text: white */
+    --neutral-800: #363636; /* text: white */
+    --neutral-900: #262626; /* text: white */
+
+    /* Parchment */
+    --parchment-50: #f8f5f2; /* text: black */
+    --parchment-100: #f0ebe5; /* text: black */
+    --parchment-200: #e1d6cb; /* text: black */
+    --parchment-300: #d2c1b1; /* text: black */
+    --parchment-400: #c3ac98; /* text: black */
+    --parchment-500: #b99b7f; /* text: black */
+    --parchment-600: #a07b5f; /* text: white */
+    --parchment-700: #7e6149; /* text: white */
+    --parchment-800: #5d4736; /* text: white */
+    --parchment-900: #4e4135; /* text: white */
+
+    /* Vermilion */
+    --vermilion-50: #ffeeec; /* text: black */
+    --vermilion-100: #ffddd8; /* text: black */
+    --vermilion-200: #ffbab1; /* text: black */
+    --vermilion-300: #ff988b; /* text: black */
+    --vermilion-400: #ff7664; /* text: black */
+    --vermilion-500: #ff543d; /* text: white */
+    --vermilion-600: #e63b26; /* text: white */
+    --vermilion-700: #b32d1d; /* text: white */
+    --vermilion-800: #802013; /* text: white */
+    --vermilion-900: #6b231a; /* text: white */
+
+    /* Turquoise */
+    --turquoise-50: #eaf9fa; /* text: black */
+    --turquoise-100: #d5f3f6; /* text: black */
+    --turquoise-200: #abe7ec; /* text: black */
+    --turquoise-300: #80dbe3; /* text: black */
+    --turquoise-400: #56cfd9; /* text: black */
+    --turquoise-500: #29bfcc; /* text: black */
+    --turquoise-600: #21a0ab; /* text: white */
+    --turquoise-700: #197f87; /* text: white */
+    --turquoise-800: #125e64; /* text: white */
+    --turquoise-900: #115056; /* text: white */
+
+    /* Mint */
+    --mint-50: #ebf9f6; /* text: black */
+    --mint-100: #d6f4ec; /* text: black */
+    --mint-200: #ade8d9; /* text: black */
+    --mint-300: #84ddc7; /* text: black */
+    --mint-400: #5bd1b4; /* text: black */
+    --mint-500: #36c6a7; /* text: black */
+    --mint-600: #2ba586; /* text: white */
+    --mint-700: #218068; /* text: white */
+    --mint-800: #185c4b; /* text: white */
+    --mint-900: #175346; /* text: white */
+
+    /* ── Semantic tokens ───────────────────────────── */
+    --surface-dark: var(--brand-black);
+    --surface-light: var(--brand-white);
+    --background-fixed-card: #2b2c30;
+    --text-on-dark: var(--brand-white);
+    --text-on-light: var(--brand-black);
+    --card: var(--surface-dark);
+    --card-foreground: var(--text-on-dark);
+    --muted: #333333;
+    --muted-foreground: #a3a3a3;
+    --ring: #ffffff;
+    --radius: 0;
+
+    /* ── Runtime aliases used by component CSS ───────────────────── */
+    --color-background: var(--brand-black);
+    --color-foreground: var(--brand-white);
+    --color-brand-black: var(--brand-black);
+    --color-brand-white: var(--brand-white);
+    --color-brand-parchment: var(--brand-parchment);
+    --color-brand-vermilion: var(--brand-vermilion);
+    --color-brand-turquoise: var(--brand-turquoise);
+    --color-brand-mint: var(--brand-mint);
+    --color-neutral-50: var(--neutral-50);
+    --color-neutral-100: var(--neutral-100);
+    --color-neutral-200: var(--neutral-200);
+    --color-neutral-300: var(--neutral-300);
+    --color-neutral-400: var(--neutral-400);
+    --color-neutral-500: var(--neutral-500);
+    --color-neutral-600: var(--neutral-600);
+    --color-neutral-700: var(--neutral-700);
+    --color-neutral-800: var(--neutral-800);
+    --color-neutral-900: var(--neutral-900);
+    --color-parchment-50: var(--parchment-50);
+    --color-parchment-100: var(--parchment-100);
+    --color-parchment-200: var(--parchment-200);
+    --color-parchment-300: var(--parchment-300);
+    --color-parchment-400: var(--parchment-400);
+    --color-parchment-500: var(--parchment-500);
+    --color-parchment-600: var(--parchment-600);
+    --color-parchment-700: var(--parchment-700);
+    --color-parchment-800: var(--parchment-800);
+    --color-parchment-900: var(--parchment-900);
+    --color-vermilion-50: var(--vermilion-50);
+    --color-vermilion-100: var(--vermilion-100);
+    --color-vermilion-200: var(--vermilion-200);
+    --color-vermilion-300: var(--vermilion-300);
+    --color-vermilion-400: var(--vermilion-400);
+    --color-vermilion-500: var(--vermilion-500);
+    --color-vermilion-600: var(--vermilion-600);
+    --color-vermilion-700: var(--vermilion-700);
+    --color-vermilion-800: var(--vermilion-800);
+    --color-vermilion-900: var(--vermilion-900);
+    --color-turquoise-50: var(--turquoise-50);
+    --color-turquoise-100: var(--turquoise-100);
+    --color-turquoise-200: var(--turquoise-200);
+    --color-turquoise-300: var(--turquoise-300);
+    --color-turquoise-400: var(--turquoise-400);
+    --color-turquoise-500: var(--turquoise-500);
+    --color-turquoise-600: var(--turquoise-600);
+    --color-turquoise-700: var(--turquoise-700);
+    --color-turquoise-800: var(--turquoise-800);
+    --color-turquoise-900: var(--turquoise-900);
+    --color-mint-50: var(--mint-50);
+    --color-mint-100: var(--mint-100);
+    --color-mint-200: var(--mint-200);
+    --color-mint-300: var(--mint-300);
+    --color-mint-400: var(--mint-400);
+    --color-mint-500: var(--mint-500);
+    --color-mint-600: var(--mint-600);
+    --color-mint-700: var(--mint-700);
+    --color-mint-800: var(--mint-800);
+    --color-mint-900: var(--mint-900);
+    --color-surface-dark: var(--surface-dark);
+    --color-surface-light: var(--surface-light);
+    --color-background-fixed-card: var(--background-fixed-card);
+    --color-text-on-dark: var(--text-on-dark);
+    --color-text-on-light: var(--text-on-light);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-ring: var(--ring);
+
+    --font-sans: "Noto Sans", sans-serif;
+    --font-serif: "Noto Serif", serif;
+    --font-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 3.75rem;
+    --text-7xl: 4.5rem;
+
+    /* ── Layout system (4px base, 8px major rhythm) ───────────────── */
+    --s4: 4px;
+    --s6: 6px;
+    --s8: 8px;
+    --s10: 10px;
+    --s12: 12px;
+    --s16: 16px;
+    --s20: 20px;
+    --s24: 24px;
+    --s28: 28px;
+    --s32: 32px;
+    --s36: 36px;
+    --s40: 40px;
+    --s44: 44px;
+    --s48: 48px;
+    --s56: 56px;
+    --s64: 64px;
+    --s72: 72px;
+    --s80: 80px;
+    --s88: 88px;
+    --s96: 96px;
+    --s112: 112px;
+    --s120: 120px;
+    --s136: 136px;
+    --s152: 152px;
+    --s176: 176px;
+
+    --control: var(--s40);
+    --rail: var(--s64);
+    --toolbar: var(--s56);
+    --nav: var(--s56);
+    --header-footer: var(--s64);
+
+    --shell-cols: 4;
+    --shell-max: 1440px;
+    --shell-margin: var(--s16);
+    --shell-gutter: var(--s16);
+
+    --sidebar-cols: 4;
+    --sidebar-margin: var(--s24);
+    --sidebar-gutter: var(--s12);
+
+    --card-cols: 8;
+    --card-margin: var(--s24);
+    --card-gutter: var(--s16);
+
+    --panel-pad: var(--s24);
+    --viewer-pad: var(--s16);
+    --section-gap: var(--s24);
+    --row-gap: var(--s12);
+    --overlay-inset: var(--s16);
+
+    --shell-inner: calc(var(--shell-max) - (var(--shell-margin) * 2));
+    --shell-track: calc(
+      (var(--shell-inner) - (var(--shell-gutter) * (var(--shell-cols) - 1))) /
+        var(--shell-cols)
+    );
+    --sidebar-width: calc(
+      (var(--shell-track) * var(--sidebar-cols)) +
+        (var(--shell-gutter) * (var(--sidebar-cols) - 1))
+    );
+    --card-max: calc(
+      (var(--shell-track) * var(--card-cols)) +
+        (var(--shell-gutter) * (var(--card-cols) - 1))
+    );
+
+    --overlay-document-viewer-inset-x: var(--s24);
+    --overlay-document-viewer-inset-top: var(--s40);
+    --overlay-document-viewer-inset-bottom: var(--s24);
+    --overlay-document-viewer-frame-max-width: 100vw;
+    --overlay-document-viewer-top-bar-height: var(--s72);
+    --overlay-document-viewer-bottom-bar-height: var(--s56);
+    --overlay-document-viewer-rail-width: var(--rail);
+    --overlay-document-viewer-sidebar-width: clamp(
+      17rem,
+      var(--sidebar-width),
+      22rem
+    );
+    --overlay-document-viewer-pane-gap: var(--shell-gutter);
+    --overlay-document-viewer-side-panel-width: clamp(19rem, 31vw, 34rem);
+
+    --overlay-document-viewer-frame-height: calc(
+      100vh - var(--overlay-document-viewer-inset-top) -
+        var(--overlay-document-viewer-inset-bottom)
+    );
+    --overlay-document-viewer-frame-width: min(
+      calc(100vw - (var(--overlay-document-viewer-inset-x) * 2)),
+      var(--overlay-document-viewer-frame-max-width)
+    );
+    --overlay-document-viewer-main-height: calc(
+      var(--overlay-document-viewer-frame-height) -
+        var(--overlay-document-viewer-top-bar-height) -
+        var(--overlay-document-viewer-bottom-bar-height)
+    );
+    --overlay-document-viewer-pane-width: var(
+      --overlay-document-viewer-side-panel-width
+    );
+    --overlay-object-card-inset-x: var(--s32);
+    --overlay-object-card-inset-top: var(--s32);
+    --overlay-object-card-inset-bottom: var(--s32);
+    --overlay-object-card-frame-max-width: var(--shell-inner);
+    --overlay-object-card-frame-width: min(
+      calc(100vw - (var(--overlay-object-card-inset-x) * 2)),
+      var(--overlay-object-card-frame-max-width)
+    );
+    --overlay-object-card-frame-height: calc(
+      100vh - var(--overlay-object-card-inset-top) -
+        var(--overlay-object-card-inset-bottom)
+    );
+
+    /* ── Font families ─────────────────────────────── */
+    --font-sans: "Noto Sans", sans-serif;
+    --font-serif: "Noto Serif", serif;
+  }
+}
+
+@media (min-width: 768px) {
+  @layer base {
+    :root {
+      --shell-cols: 8;
+      --shell-margin: var(--s24);
+      --shell-gutter: var(--s16);
+      --overlay-inset: var(--s24);
+
+      --overlay-object-card-inset-x: var(--s40);
+      --overlay-object-card-inset-top: var(--s40);
+      --overlay-object-card-inset-bottom: var(--s40);
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  @layer base {
+    :root {
+      --overlay-document-viewer-inset-x: 0px;
+      --overlay-document-viewer-inset-top: 0px;
+      --overlay-document-viewer-inset-bottom: 0px;
+      --overlay-document-viewer-top-bar-height: var(--s56);
+      --overlay-document-viewer-bottom-bar-height: var(--s48);
+      --overlay-document-viewer-rail-width: 0px;
+      --overlay-document-viewer-sidebar-width: 100vw;
+      --overlay-document-viewer-frame-max-width: 100vw;
+      --overlay-document-viewer-side-panel-width: 100vw;
+      --overlay-document-viewer-pane-gap: var(--s8);
+      --overlay-document-viewer-frame-height: 100vh;
+      --overlay-document-viewer-frame-width: 100vw;
+      --overlay-document-viewer-main-height: calc(
+        100vh - var(--overlay-document-viewer-top-bar-height) -
+          var(--overlay-document-viewer-bottom-bar-height)
+      );
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  @layer base {
+    :root {
+      --shell-cols: 16;
+      --shell-margin: var(--s32);
+      --shell-gutter: var(--s16);
+      --overlay-inset: var(--s32);
+
+      --overlay-document-viewer-inset-x: var(--s24);
+      --overlay-document-viewer-inset-top: var(--s40);
+      --overlay-document-viewer-inset-bottom: var(--s24);
+      --overlay-document-viewer-top-bar-height: var(--s72);
+      --overlay-document-viewer-bottom-bar-height: var(--s56);
+      --overlay-document-viewer-rail-width: var(--rail);
+      --overlay-document-viewer-sidebar-width: clamp(
+        17rem,
+        var(--sidebar-width),
+        22rem
+      );
+      --overlay-document-viewer-frame-max-width: 100vw;
+
+      --overlay-object-card-inset-x: var(--s48);
+      --overlay-object-card-inset-top: var(--s48);
+      --overlay-object-card-inset-bottom: var(--s48);
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  @layer base {
+    :root {
+      --overlay-document-viewer-inset-x: var(--s32);
+      --overlay-document-viewer-inset-top: var(--s48);
+      --overlay-document-viewer-inset-bottom: var(--s32);
+      --overlay-document-viewer-top-bar-height: var(--s72);
+      --overlay-document-viewer-bottom-bar-height: var(--s56);
+      --overlay-document-viewer-rail-width: var(--rail);
+      --overlay-document-viewer-sidebar-width: clamp(
+        17rem,
+        var(--sidebar-width),
+        22rem
+      );
+      --overlay-document-viewer-frame-max-width: 100vw;
+
+      --overlay-object-card-inset-x: var(--s64);
+      --overlay-object-card-inset-top: var(--s56);
+      --overlay-object-card-inset-bottom: var(--s56);
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  @layer base {
+    :root {
+      --overlay-document-viewer-inset-x: var(--s48);
+      --overlay-document-viewer-inset-top: var(--s64);
+      --overlay-document-viewer-inset-bottom: var(--s48);
+      --overlay-document-viewer-top-bar-height: var(--s72);
+      --overlay-document-viewer-bottom-bar-height: var(--s56);
+      --overlay-document-viewer-rail-width: var(--rail);
+      --overlay-document-viewer-sidebar-width: clamp(
+        17rem,
+        var(--sidebar-width),
+        22rem
+      );
+      --overlay-document-viewer-frame-max-width: 100vw;
+
+      --overlay-object-card-inset-x: var(--s96);
+      --overlay-object-card-inset-top: var(--s88);
+      --overlay-object-card-inset-bottom: var(--s88);
+    }
+  }
+}
+
+@media (min-width: 2560px) {
+  @layer base {
+    :root {
+      --overlay-document-viewer-inset-x: var(--s48);
+      --overlay-document-viewer-inset-top: var(--s80);
+      --overlay-document-viewer-inset-bottom: var(--s64);
+      --overlay-document-viewer-top-bar-height: var(--s72);
+      --overlay-document-viewer-bottom-bar-height: var(--s56);
+      --overlay-document-viewer-rail-width: var(--rail);
+      --overlay-document-viewer-sidebar-width: clamp(
+        17rem,
+        var(--sidebar-width),
+        22rem
+      );
+      --overlay-document-viewer-frame-max-width: 1920px;
+
+      --overlay-object-card-inset-x: var(--s136);
+      --overlay-object-card-inset-top: var(--s112);
+      --overlay-object-card-inset-bottom: var(--s112);
+    }
+  }
+}
+
+/*
+ * Semantic grid slots.
+ * These keep page and composite placement consistent across app views.
+ */
+@layer utilities {
+  .slot-full-bleed {
+    grid-column: 1 / -1;
+  }
+
+  .slot-content-band {
+    grid-column: 1 / -1;
+  }
+
+  .slot-content-narrow {
+    grid-column: 1 / -1;
+  }
+
+  .slot-content-left {
+    grid-column: 1 / -1;
+  }
+
+  .slot-content-right {
+    grid-column: 1 / -1;
+  }
+
+  .slot-left-rail {
+    grid-column: 1 / -1;
+  }
+
+  .slot-right-rail {
+    grid-column: 1 / -1;
+  }
+
+  .slot-hero-centered {
+    grid-column: 1 / -1;
+  }
+
+  .slot-mobile-pad {
+    padding-inline: var(--s16);
+  }
+
+  @media (min-width: 768px) {
+    .slot-content-band {
+      grid-column: 2 / span 6;
+    }
+
+    .slot-content-narrow {
+      grid-column: 2 / span 6;
+    }
+
+    .slot-content-left {
+      grid-column: 1 / span 4;
+    }
+
+    .slot-content-right {
+      grid-column: 5 / span 4;
+    }
+
+    .slot-left-rail {
+      grid-column: 1 / span 3;
+    }
+
+    .slot-right-rail {
+      grid-column: 4 / span 5;
+    }
+
+    .slot-hero-centered {
+      grid-column: 2 / span 6;
+    }
+
+    .slot-mobile-pad {
+      padding-inline: 0;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .slot-content-band {
+      grid-column: 3 / span 12;
+    }
+
+    .slot-content-narrow {
+      grid-column: 3 / span 7;
+    }
+
+    .slot-content-left {
+      grid-column: 2 / span 5;
+    }
+
+    .slot-content-right {
+      grid-column: 8 / span 4;
+    }
+
+    .slot-left-rail {
+      grid-column: 1 / span 4;
+    }
+
+    .slot-right-rail {
+      grid-column: 5 / span 12;
+    }
+
+    .slot-hero-centered {
+      grid-column: 4 / span 6;
+    }
+  }
+}

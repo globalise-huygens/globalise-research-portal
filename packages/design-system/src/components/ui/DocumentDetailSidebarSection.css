@@ -1,0 +1,72 @@
+@layer components {
+  .gds-document-detail-sidebar-section {
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .gds-document-detail-sidebar-section__button {
+    display: flex;
+    width: 100%;
+    height: var(--s64);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s16);
+    border: 0;
+    background: transparent;
+    padding-inline: var(--s24);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    transition: background-color 75ms ease-out;
+  }
+
+  .gds-document-detail-sidebar-section__button[data-hovered] {
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .gds-document-detail-sidebar-section__button[data-focus-visible] {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-ring);
+  }
+
+  .gds-document-detail-sidebar-section__button-content {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--s8);
+  }
+
+  .gds-document-detail-sidebar-section__title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-sidebar-section__count {
+    flex-shrink: 0;
+    color: rgb(255 255 255 / 0.45);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-sidebar-section__panel {
+    padding-inline: var(--panel-pad);
+    padding-bottom: var(--panel-pad);
+  }
+
+  @media (max-width: 767px) {
+    .gds-document-detail-sidebar-section__button {
+      height: var(--s56);
+      padding-inline: var(--s16);
+    }
+
+    .gds-document-detail-sidebar-section__title,
+    .gds-document-detail-sidebar-section__count {
+      font-size: 0.875rem;
+      line-height: 1.125rem;
+    }
+  }
+}

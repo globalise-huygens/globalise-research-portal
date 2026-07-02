@@ -1,0 +1,17 @@
+{
+  "name": "@globalise/design-system",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "react-aria-components": "^1.19.0"
+  }
+}

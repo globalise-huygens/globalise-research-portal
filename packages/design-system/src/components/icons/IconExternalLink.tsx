@@ -1,0 +1,14 @@
+import { SVGProps } from 'react';
+
+export function IconExternalLink(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 -960 960 960"
+      fill="currentColor"
+      {...props}
+    >
+      <path d="M120-120v-720h360v80H200v560h560v-280h80v360H120Zm268-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+    </svg>
+  );
+}
