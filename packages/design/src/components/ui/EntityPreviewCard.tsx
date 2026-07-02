@@ -314,7 +314,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               'gds-entity-preview-card__icon-action--disabled',
           )}
         >
-          <IconArrowTopRight className="h-s16 w-s16" />
+          <IconArrowTopRight className="gds-entity-preview-card__icon-action-icon" />
         </a>
       </div>
 

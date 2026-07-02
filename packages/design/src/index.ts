@@ -1,6 +1,3 @@
-// Components
-export { Design } from './Design';
-
 export { Button, ButtonLink, buttonVariants } from './components/ui/Button';
 export type { ButtonLinkProps, ButtonProps } from './components/ui/Button';
 

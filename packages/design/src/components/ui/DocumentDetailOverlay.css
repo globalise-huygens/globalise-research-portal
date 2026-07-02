@@ -451,6 +451,11 @@
     color: var(--color-brand-mint);
   }
 
+  .gds-entity-preview-card__icon-action-icon {
+    width: var(--s16);
+    height: var(--s16);
+  }
+
   .gds-entity-preview-card__icon-action--disabled {
     opacity: 0.5;
   }

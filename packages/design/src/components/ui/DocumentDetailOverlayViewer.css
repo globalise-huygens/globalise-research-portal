@@ -1103,6 +1103,13 @@
   min-width: fit-content;
 }
 
+.document-detail-overlay-identified-sort-item {
+  min-width: 0;
+  padding-inline: var(--s8);
+  font-size: 10px;
+  line-height: var(--s12);
+}
+
 .document-detail-overlay-identified-options {
   display: flex;
   align-items: center;

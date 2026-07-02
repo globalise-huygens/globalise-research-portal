@@ -1025,21 +1025,21 @@ export function MetadataSidebar({
                       <DocumentDetailSegmentedToggleItem
                         id="sequential"
                         size="compact"
-                        className="min-w-0 px-s8 text-[10px] leading-3"
+                        className="document-detail-overlay-identified-sort-item"
                       >
                         Sequential
                       </DocumentDetailSegmentedToggleItem>
                       <DocumentDetailSegmentedToggleItem
                         id="alphabet"
                         size="compact"
-                        className="min-w-0 px-s8 text-[10px] leading-3"
+                        className="document-detail-overlay-identified-sort-item"
                       >
                         Alphabet
                       </DocumentDetailSegmentedToggleItem>
                       <DocumentDetailSegmentedToggleItem
                         id="amount"
                         size="compact"
-                        className="min-w-0 px-s8 text-[10px] leading-3"
+                        className="document-detail-overlay-identified-sort-item"
                       >
                         Amount
                       </DocumentDetailSegmentedToggleItem>
