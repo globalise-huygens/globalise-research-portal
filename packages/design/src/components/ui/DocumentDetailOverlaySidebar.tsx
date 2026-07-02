@@ -1,5 +1,4 @@
 import {
-  EntityTag,
   IconCopy,
   IconEntities,
   IconEntityCommodity,
@@ -16,7 +15,7 @@ import {
   IconScan,
   IconSwap,
   IconTableOfContent,
-} from '@/index';
+} from '../icons';
 import * as React from 'react';
 import {
   DocumentDetailCheckbox,
@@ -39,6 +38,7 @@ import type {
   DocumentDetailOverlayScanRenderer,
   DocumentDetailOverlayTagGroup,
 } from './DocumentDetailOverlayTypes';
+import { EntityTag } from './EntityTag.tsx';
 
 type SidebarSectionId = 'inventory' | 'contents' | 'entities' | 'events';
 

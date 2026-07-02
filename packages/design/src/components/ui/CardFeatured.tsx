@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib';
 import * as React from 'react';
 import { Button as AriaButton, Link as AriaLink } from 'react-aria-components';
 import { IconArrowRight } from '../icons/IconArrowRight';

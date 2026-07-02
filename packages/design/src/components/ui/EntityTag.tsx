@@ -1,17 +1,17 @@
-import { IconEntityCommodity } from '@/components/icons/IconEntityCommodity';
-import { IconEntityDate } from '@/components/icons/IconEntityDate';
-import { IconEntityDimensions } from '@/components/icons/IconEntityDimensions';
-import { IconEntityDocument } from '@/components/icons/IconEntityDocument';
-import { IconEntityOrganisation } from '@/components/icons/IconEntityOrganisation';
-import { IconEntityPerson } from '@/components/icons/IconEntityPerson';
-import { IconEntityPlace } from '@/components/icons/IconEntityPlace';
-import { IconEntityShip } from '@/components/icons/IconEntityShip';
-import { cn } from '@/lib/utils';
+import { IconEntityDate } from '../icons';
+import { IconEntityDimensions } from '../icons';
+import { IconEntityDocument } from '../icons';
+import { IconEntityOrganisation } from '../icons';
+import { IconEntityPerson } from '../icons';
+import { IconEntityPlace } from '../icons';
+import { IconEntityShip } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Link as AriaLink,
   type LinkProps as AriaLinkProps,
 } from 'react-aria-components';
+import { IconEntityCommodity } from '../icons';
 
 export type EntityTagType =
   | 'ship'

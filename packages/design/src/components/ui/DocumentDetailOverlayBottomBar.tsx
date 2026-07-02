@@ -9,7 +9,7 @@ import {
   IconLeftFirst,
   IconRight,
   IconRightLast,
-} from '@/index';
+} from '../icons';
 import type { DocumentDetailOverlayScan } from './DocumentDetailOverlayTypes';
 
 export function DocumentDetailBottomBar({

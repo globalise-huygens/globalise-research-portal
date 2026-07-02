@@ -1,5 +1,5 @@
-import { getShellGridModel, useShellColumnCount } from '@/lib/shellGrid';
-import { cn } from '@/lib/utils';
+import { getShellGridModel, useShellColumnCount } from '../../lib';
+import { cn } from '../../lib';
 import * as React from 'react';
 
 export type GridGuideProps = {

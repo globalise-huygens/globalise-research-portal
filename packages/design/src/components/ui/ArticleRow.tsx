@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib';
 import * as React from 'react';
 import { Separator as AriaSeparator } from 'react-aria-components';
 

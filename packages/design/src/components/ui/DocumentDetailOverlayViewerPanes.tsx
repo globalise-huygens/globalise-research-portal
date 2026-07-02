@@ -16,7 +16,7 @@ import {
   IconViewModeMenu,
   IconZoomIn,
   IconZoomOut,
-} from '@/index';
+} from '../icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   DocumentDetailCanvas,

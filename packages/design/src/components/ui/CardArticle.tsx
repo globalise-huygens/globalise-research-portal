@@ -1,7 +1,7 @@
-import { cn } from '@/lib/utils';
 import * as React from 'react';
 import { Link as AriaLink } from 'react-aria-components';
-import { IconArrowRight } from '../icons/IconArrowRight';
+import { IconArrowRight } from '../icons';
+import { cn } from '../../lib';
 
 type CardArticleBaseProps = {
   /** Category label (e.g. "Article", "News") */

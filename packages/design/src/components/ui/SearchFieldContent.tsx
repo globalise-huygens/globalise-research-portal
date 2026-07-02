@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib';
 import { Input as AriaInput, Label as AriaLabel } from 'react-aria-components';
 import { IconSearch } from '../icons/IconSearch';
 

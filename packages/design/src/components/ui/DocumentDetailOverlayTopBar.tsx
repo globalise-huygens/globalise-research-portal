@@ -17,7 +17,7 @@ import {
   IconSwap,
   IconTableOfContent,
   IconTranscription,
-} from '@/index';
+} from '../icons';
 import * as React from 'react';
 import {
   ContentWarningControl,
@@ -28,7 +28,7 @@ import {
 import {
   type DocumentDetailEntityHighlightCategory,
   DocumentDetailEntityHighlightMenu,
-} from './DocumentDetailEntityHighlightMenu';
+} from '../ui';
 import {
   DocumentDetailBarGroup,
   DocumentDetailTopBar as DocumentDetailTopBarPrimitive,

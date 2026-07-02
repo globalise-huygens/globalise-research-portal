@@ -1,5 +1,5 @@
-import { useBodyScrollLock } from '@/lib/useBodyScrollLock';
-import { cn } from '@/lib/utils';
+import { useBodyScrollLock } from '../../lib';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Dialog as AriaDialog,

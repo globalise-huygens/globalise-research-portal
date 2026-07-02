@@ -1,5 +1,5 @@
-import { IconArrowRight } from '@/components/icons/IconArrowRight';
-import { cn } from '@/lib/utils';
+import { IconArrowRight } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,

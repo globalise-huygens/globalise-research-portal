@@ -1,5 +1,5 @@
-import { IconArrowTopRight } from '@/components/icons/IconArrowTopRight';
-import { cn } from '@/lib/utils';
+import { IconArrowTopRight } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import { DocumentDetailPopoverSurface } from './DocumentDetailSurfaces';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';

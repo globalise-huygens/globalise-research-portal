@@ -1,6 +1,6 @@
-import { IconClose } from '@/components/icons/IconClose';
-import { IconMenu } from '@/components/icons/IconMenu';
-import { cn } from '@/lib/utils';
+import { IconClose } from '../icons';
+import { IconMenu } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,

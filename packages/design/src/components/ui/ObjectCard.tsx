@@ -1,7 +1,5 @@
-import { IconArrowTopRight } from '@/components/icons/IconArrowTopRight';
-import { IconClose } from '@/components/icons/IconClose';
-import { IconExternalLink } from '@/components/icons/IconExternalLink';
-import { cn } from '@/lib/utils';
+import { IconArrowTopRight, IconClose, IconExternalLink } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,
@@ -33,7 +31,9 @@ const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
 );
 ObjectCard.displayName = 'ObjectCard';
 
-export type ObjectCardTitleProps = {} & React.HTMLAttributes<HTMLHeadingElement>;
+export type ObjectCardTitleProps =
+  {}
+  & React.HTMLAttributes<HTMLHeadingElement>;
 
 function ObjectCardTitle({ className, ...props }: ObjectCardTitleProps) {
   return (
@@ -100,7 +100,7 @@ function ObjectCardHeader({
                 aria-label="Close"
                 className="gds-object-card__close"
               >
-                <IconClose className="gds-object-card__close-icon" />
+                <IconClose className="gds-object-card__close-icon"/>
               </AriaButton>
             </ObjectCardActionTooltip>
           )}
@@ -253,7 +253,7 @@ const ObjectCardExternalLink = React.forwardRef<
   const content = (
     <>
       <span className="gds-object-card__external-link-label">{children}</span>
-      <IconExternalLink className="gds-object-card__external-link-icon" />
+      <IconExternalLink className="gds-object-card__external-link-icon"/>
     </>
   );
 
@@ -287,7 +287,7 @@ function ObjectCardListItem({
   if (href) {
     return (
       <AriaLink href={href} className={classes}>
-        <IconArrowTopRight className="gds-object-card__list-item-icon" />
+        <IconArrowTopRight className="gds-object-card__list-item-icon"/>
         {children}
       </AriaLink>
     );
@@ -304,7 +304,7 @@ export type ObjectCardFooterProps = {
 function ObjectCardFooter({ className, children }: ObjectCardFooterProps) {
   return (
     <div className={cn('gds-object-card__footer', className)}>
-      <AriaSeparator className="gds-object-card__footer-divider" />
+      <AriaSeparator className="gds-object-card__footer-divider"/>
       <div className="gds-object-card__footer-content">{children}</div>
     </div>
   );

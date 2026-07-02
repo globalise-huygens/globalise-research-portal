@@ -1,7 +1,7 @@
-import { Container } from '@/components/ui/Container';
-import { Divider } from '@/components/ui/Divider';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib';
 import * as React from 'react';
+import { Container } from './Container.tsx';
+import { Divider } from './Divider.tsx';
 
 export type SectionDividerProps = {} & React.HTMLAttributes<HTMLDivElement>;
 

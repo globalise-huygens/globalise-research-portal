@@ -1,7 +1,4 @@
-import { IconArrowTopRight } from '@/components/icons/IconArrowTopRight';
-import { IconCopy } from '@/components/icons/IconCopy';
-import { IconExternalLink } from '@/components/icons/IconExternalLink';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,
@@ -10,6 +7,7 @@ import {
   Link as AriaLink,
 } from 'react-aria-components';
 import { ObjectCardPanel, type ObjectCardPanelProps } from './ObjectCard';
+import { IconArrowTopRight, IconCopy, IconExternalLink } from '../icons';
 
 type ReferencePanelActionTooltipProps = {
   label: React.ReactNode;
