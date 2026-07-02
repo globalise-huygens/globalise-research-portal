@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [tailwindcss(), tanstackRouter({ autoCodeSplitting: true }), react()],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("../design-system/src", import.meta.url)),
+      "@": fileURLToPath(new URL("../design/src", import.meta.url)),
     },
     dedupe: ["react", "react-dom"],
   },

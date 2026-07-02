@@ -8,7 +8,7 @@
   "include": ["src"],
   "references": [
     { "path": "../common" },
-    { "path": "../design-system" },
+    { "path": "../design" },
     { "path": "../diplomatic" },
     { "path": "../document" },
     { "path": "../facsimile" },

@@ -20,7 +20,7 @@ import {
   IconScan,
   IconSidebar,
   IconTranscription,
-} from '@globalise/design-system';
+} from '@globalise/design';
 
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';

@@ -4,7 +4,7 @@ import {
   IconTableOfContent,
   IconEntities,
   IconEvents,
-} from '@globalise/design-system';
+} from '@globalise/design';
 
 export const sideBarPanels = [
   {

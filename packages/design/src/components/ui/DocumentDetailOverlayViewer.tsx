@@ -140,6 +140,7 @@ export function DocumentDetailOverlayViewer({
     renderScanThumbnail ?? renderScanPage ?? renderDefaultScanPage;
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentScan(getInitialScan(content));
     setCurrentSearchHit(content.searchHits.current);
     setIsSearchNavigationVisible(true);

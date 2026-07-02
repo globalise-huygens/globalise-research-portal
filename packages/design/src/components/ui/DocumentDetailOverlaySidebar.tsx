@@ -612,6 +612,7 @@ export function MetadataSidebar({
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setExpandedDocumentIds((current) => {
       if (current.has(currentDocument.id)) {
         return current;
@@ -624,6 +625,7 @@ export function MetadataSidebar({
   }, [currentDocument]);
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setExpandedClassifiedGroupIds((current) => {
       const next = new Set(
         classifiedGroups

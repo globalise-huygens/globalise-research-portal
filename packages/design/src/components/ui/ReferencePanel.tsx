@@ -259,6 +259,7 @@ function ReferencePanel({
   const [liveMessage, setLiveMessage] = React.useState('');
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisibleCount(clampedInitialVisibleCount);
     setLiveMessage('');
   }, [items, clampedInitialVisibleCount]);

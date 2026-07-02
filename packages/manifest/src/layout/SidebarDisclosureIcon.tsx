@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IconExpandSection } from '@globalise/design-system';
+import { IconExpandSection } from '@globalise/design';
 
 export function SidebarDisclosureIcon({ isExpanded = false }: { isExpanded?: boolean }) {
   return (
