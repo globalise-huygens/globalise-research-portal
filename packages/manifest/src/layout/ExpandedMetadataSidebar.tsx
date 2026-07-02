@@ -3,7 +3,7 @@ import {
   DocumentDetailMetadataSidebar,
   DocumentDetailMetadataSidebarButton,
   DocumentDetailMetadataSidebarBadge,
-} from '@globalise/design-system';
+} from '@globalise/design';
 import { sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 
@@ -15,7 +15,7 @@ export function ExpandedMetadataSidebar({
   onToggleSection: (sectionId: string) => void;
 }) {
   return (
-    <DocumentDetailMetadataSidebar className="w-full overflow-hidden border-r-0">
+    <DocumentDetailMetadataSidebar className="manifest-document-layout__expanded-sidebar">
       {sideBarPanels.map((item) => {
         const isExpanded = expandedSections.has(item.id);
         const panelId = `${item.id}-panel`;
@@ -25,7 +25,7 @@ export function ExpandedMetadataSidebar({
             <DocumentDetailMetadataSidebarButton
               aria-controls={panelId}
               aria-expanded={isExpanded}
-              className="h-s64 shrink-0"
+              className="manifest-document-layout__sidebar-button"
               icon={item.icon}
               label={item.label}
               count={item.count}
@@ -44,7 +44,7 @@ export function ExpandedMetadataSidebar({
                 id={panelId}
                 role="region"
                 aria-label={`${item.label} details`}
-                className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden border-b border-brand-white/10 bg-neutral-800 text-brand-white [scrollbar-color:var(--neutral-600)_transparent] scrollbar-thin"
+                className="manifest-document-layout__sidebar-panel"
               >
                 TODO: {panelId} content
               </div>

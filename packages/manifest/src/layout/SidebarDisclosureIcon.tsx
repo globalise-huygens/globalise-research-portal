@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { cn, IconExpandSection } from '@globalise/design-system';
+import { IconExpandSection } from '@globalise/design';
 
 export function SidebarDisclosureIcon({ isExpanded = false }: { isExpanded?: boolean }) {
   return (
     <IconExpandSection
-      className={cn(
-        'h-s20 w-s20 text-current transition-transform duration-100 ease-out motion-reduce:transition-none',
-        isExpanded && 'rotate-180',
-      )}
+      className={
+        isExpanded
+          ? 'manifest-document-layout__sidebar-disclosure manifest-document-layout__sidebar-disclosure--expanded'
+          : 'manifest-document-layout__sidebar-disclosure'
+      }
     />
   );
 }

@@ -5,7 +5,7 @@ import {
   setTranscriptionMode,
   useSettings,
 } from '@globalise/document';
-import { Button } from '@globalise/design-system';
+import { Button } from '@globalise/design';
 
 export function ManifestTranscriptionControls() {
   const { transcriptionMode, diplomaticViewScale } = useSettings();
