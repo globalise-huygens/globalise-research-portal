@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MetadataRouteImport } from './routes/metadata'
 import { Route as DocumentRouteImport } from './routes/document'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
@@ -16,6 +17,11 @@ import { Route as ManifestTranscriptionRouteImport } from './routes/manifest/tra
 import { Route as ManifestLayoutRouteImport } from './routes/manifest/layout'
 import { Route as ManifestFacsimileRouteImport } from './routes/manifest/facsimile'
 
+const MetadataRoute = MetadataRouteImport.update({
+  id: '/metadata',
+  path: '/metadata',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentRoute = DocumentRouteImport.update({
   id: '/document',
   path: '/document',
@@ -50,6 +56,7 @@ const ManifestFacsimileRoute = ManifestFacsimileRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/document': typeof DocumentRoute
+  '/metadata': typeof MetadataRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/document': typeof DocumentRoute
+  '/metadata': typeof MetadataRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/document': typeof DocumentRoute
+  '/metadata': typeof MetadataRoute
   '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
   '/manifest/transcription': typeof ManifestTranscriptionRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/document'
+    | '/metadata'
     | '/manifest/facsimile'
     | '/manifest/layout'
     | '/manifest/transcription'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/document'
+    | '/metadata'
     | '/manifest/facsimile'
     | '/manifest/layout'
     | '/manifest/transcription'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/document'
+    | '/metadata'
     | '/manifest/facsimile'
     | '/manifest/layout'
     | '/manifest/transcription'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DocumentRoute: typeof DocumentRoute
+  MetadataRoute: typeof MetadataRoute
   ManifestFacsimileRoute: typeof ManifestFacsimileRoute
   ManifestLayoutRoute: typeof ManifestLayoutRoute
   ManifestTranscriptionRoute: typeof ManifestTranscriptionRoute
@@ -110,6 +123,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/metadata': {
+      id: '/metadata'
+      path: '/metadata'
+      fullPath: '/metadata'
+      preLoaderRoute: typeof MetadataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/document': {
       id: '/document'
       path: '/document'
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DocumentRoute: DocumentRoute,
+  MetadataRoute: MetadataRoute,
   ManifestFacsimileRoute: ManifestFacsimileRoute,
   ManifestLayoutRoute: ManifestLayoutRoute,
   ManifestTranscriptionRoute: ManifestTranscriptionRoute,
