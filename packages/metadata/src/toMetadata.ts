@@ -1,4 +1,5 @@
-import { MetadataEntry } from './MetadataModel.ts';
+import { MetadataEntry } from './MetadataModel';
+import { asArray } from './asArray.ts';
 
 export type LinkedArtNode = {
   id?: string;
@@ -9,7 +10,7 @@ export type LinkedArtNode = {
   [key: string]: unknown;
 };
 
-const propsToSkip = new Set(['type', '_label', 'classified_as', 'id', '@context']);
+const propsToSkip = new Set(['type', '_label', 'content', 'classified_as', 'id', '@context']);
 
 export function toMetadata(document: unknown): MetadataEntry[] {
   return isNode(document) ? toMetadataEntry(document).children : [];
@@ -19,12 +20,7 @@ function toMetadataEntry(
   node: LinkedArtNode,
   key?: string,
 ): MetadataEntry {
-  const label = toLabel(node, key) ?? '';
-  const value = node._label ?? node.content ?? '';
-  const url = getUrl(node);
-
   const children: MetadataEntry[] = [];
-
   for (const [key, values] of Object.entries(node)) {
     if (propsToSkip.has(key)) {
       continue;
@@ -33,12 +29,27 @@ function toMetadataEntry(
       if (isNode(value)) {
         children.push(toMetadataEntry(value, key));
       } else {
-        children.push({ label: key, value: String(value), children: [] });
+        const child = {
+          source: { propName: key },
+          label: key,
+          value: String(value),
+          children: [],
+        } satisfies MetadataEntry;
+        children.push(child);
       }
     }
   }
 
-  return { label, value, url, children };
+  const source = {
+    propName: key,
+    classifiedAs: asArray(node.classified_as)[0]?.id,
+  };
+
+  return {
+    label: toLabel(node, key) ?? '',
+    value: node._label ?? node.content ?? '',
+    url: getUrl(node), children, source,
+  };
 }
 
 function toLabel(node: LinkedArtNode, key?: string): string | undefined {
@@ -47,13 +58,6 @@ function toLabel(node: LinkedArtNode, key?: string): string | undefined {
 
 function getUrl(node: LinkedArtNode): string | undefined {
   return isUrl(node.id) ? node.id : undefined;
-}
-
-function asArray<T>(value: T | T[] | undefined | null): T[] {
-  if (!value) {
-    return [];
-  }
-  return Array.isArray(value) ? value : [value];
 }
 
 function isNode(value: unknown): value is LinkedArtNode {
