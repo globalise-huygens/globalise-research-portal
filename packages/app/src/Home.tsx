@@ -11,6 +11,7 @@ export function Home() {
       <li><Link to="/manifest/layout">Manifest document layout</Link></li>
       <li><Link to="/manifest/facsimile">Manifest facsimile viewer</Link></li>
       <li><Link to="/manifest/transcription">Manifest transcription viewer</Link></li>
+      <li><Link to="/metadata">Metadata</Link></li>
     </ul>
   </>
   );
