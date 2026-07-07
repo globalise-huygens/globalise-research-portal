@@ -1,5 +1,5 @@
 export {
-  registryComponents,
+  componentRegistry,
   type RegistryComponentName,
-} from './registryComponents.ts';
+} from './componentRegistry.ts';
 export { RegistryComponent } from './RegistryComponent';

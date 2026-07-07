@@ -9,11 +9,11 @@ export type RegistryComponentConfig = Record<
   ComponentType<RegistryComponentProps>
 >;
 
-export const registryComponents = {
+export const componentRegistry = {
   Doc,
   Li,
   Timespan,
   default: Li,
 } satisfies RegistryComponentConfig;
 
-export type RegistryComponentName = keyof typeof registryComponents;
+export type RegistryComponentName = keyof typeof componentRegistry;
