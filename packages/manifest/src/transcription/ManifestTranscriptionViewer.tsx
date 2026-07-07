@@ -1,10 +1,12 @@
 import { initCanvases, useDocumentStore } from '@globalise/common/document';
 import { useTranscriptionMode } from '@globalise/document';
+import { ControlBar } from '@globalise/facsimile';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
+import { ManifestTranscriptionControls } from './ManifestTranscriptionControls.tsx';
 
 type Props = {
   initialCanvasId?: string;
@@ -42,18 +44,25 @@ export function ManifestTranscriptionViewer({
   const currentCanvasId =
     useDocumentStore.getState().selectedCanvasId ?? undefined;
 
-  if (transcriptionMode === 'line-by-line') {
-    return (
+  const content =
+    transcriptionMode === 'line-by-line' ? (
       <ManifestLineByLineViewer
         initialCanvasId={currentCanvasId}
         onCanvasChange={onCanvasChange}
       />
+    ) : (
+      <ManifestDiplomaticViewer
+        initialCanvasId={currentCanvasId}
+        onCanvasChange={onCanvasChange}
+      />
     );
-  }
+
   return (
-    <ManifestDiplomaticViewer
-      initialCanvasId={currentCanvasId}
-      onCanvasChange={onCanvasChange}
-    />
+    <div className="manifest-document-layout__transcription-viewer">
+      <ControlBar className="gds-document-detail-scan-toolbar">
+        <ManifestTranscriptionControls />
+      </ControlBar>
+      {content}
+    </div>
   );
 }

@@ -8,7 +8,6 @@ import {
   ManifestDocumentPageLayout,
   ManifestDropdown,
   ManifestFacsimileViewer,
-  ManifestTranscriptionControls,
   ManifestTranscriptionViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
@@ -68,7 +67,6 @@ export function ManifestLayoutIntegrationPage() {
               onChange={handleManifestChange}
             />
           }
-          topRight={<ManifestTranscriptionControls />}
           scan={
             <ManifestFacsimileViewer
               initialCanvasId={initialCanvasId}

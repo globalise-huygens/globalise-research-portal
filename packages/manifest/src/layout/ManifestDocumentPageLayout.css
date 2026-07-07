@@ -89,6 +89,46 @@
   justify-content: flex-end;
 }
 
+.manifest-document-layout__transcription-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s8);
+}
+
+.manifest-document-layout__transcription-mode-group {
+  height: var(--s32);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.manifest-document-layout__transcription-mode-item {
+  min-width: 0;
+  border-color: rgb(255 255 255 / 0.2);
+  background: transparent;
+  color: rgb(255 255 255 / 0.78);
+  padding-inline: var(--s10);
+}
+
+.manifest-document-layout__transcription-mode-item[data-selected],
+.manifest-document-layout__transcription-mode-item[aria-pressed='true'] {
+  background: var(--color-brand-white);
+  color: var(--color-brand-black);
+}
+
+.manifest-document-layout__transcription-mode-item span {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-document-layout__transcription-mode-icon {
+  width: var(--s16);
+  height: var(--s16);
+  flex-shrink: 0;
+}
+
 .manifest-document-layout__top-bar-divider {
   color: rgb(255 255 255 / 0.7);
   font-family: var(--font-sans);
@@ -205,6 +245,12 @@
 
 .manifest-document-layout__canvas {
   background: var(--color-neutral-500);
+}
+
+.manifest-document-layout__transcription-viewer {
+  position: relative;
+  height: 100%;
+  min-height: 0;
 }
 
 .gds-document-detail-canvas.manifest-document-layout__canvas {

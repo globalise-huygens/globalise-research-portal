@@ -38,7 +38,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
         viewport.setRotation(0);
       }
       viewport.fitBounds(homeBounds, true);
-      viewport.zoomTo(viewport.getHomeZoom(), null, true);
+      viewport.zoomTo(viewport.getHomeZoom(), undefined, true);
       viewport.panTo(homeBounds.getCenter(), true);
       viewport.applyConstraints();
     } else {

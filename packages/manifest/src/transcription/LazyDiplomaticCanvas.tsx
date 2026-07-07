@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { canvasName } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
@@ -7,11 +7,11 @@ import {
   useSelectedCanvasIndex,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import { canvasName } from '@globalise/common/annotation';
 import { DiplomaticView } from '@globalise/diplomatic';
-import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
-import { PageLabel } from './PageLabel.tsx';
+import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
+import { PageLabel } from './PageLabel.tsx';
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 
 type Props = {
   canvasId: string;
@@ -54,6 +54,11 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
+  const hasRenderableSize =
+    Number.isFinite(width) &&
+    width > 0 &&
+    Number.isFinite(height) &&
+    height > 0;
   const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
@@ -96,7 +101,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
           Loading...
         </TranscriptionPlaceholder>
       )}
-      {isInRenderRange && isContentReady && partOf && (
+      {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
           <PageLabel label={canvasLabel} />
           <div style={{ height: '100%', width }}>
