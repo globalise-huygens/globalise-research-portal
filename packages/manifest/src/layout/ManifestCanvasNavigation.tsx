@@ -1,8 +1,14 @@
+import { type CanvasId, useSelectedCanvas } from '@globalise/common/document';
+import {
+  DocumentDetailBarGroup,
+  IconLeft,
+  IconLeftFirst,
+  IconRight,
+  IconRightLast,
+} from '@globalise/design';
 import { getValue } from '@iiif/helpers/i18n';
 import { useManifest, useViewer } from '@knaw-huc/osd-iiif-viewer';
-import { DocumentDetailBarGroup, IconLeft, IconLeftFirst, IconRight, IconRightLast } from '@globalise/design-system';
 import { Point } from 'openseadragon';
-import { useSelectedCanvas, type CanvasId } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
@@ -12,7 +18,9 @@ export function ManifestCanvasNavigation() {
   const { vault } = useManifest();
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const { id: selectedCanvasId } = useSelectedCanvas();
-  const selectedIndex = lazyCanvases.findIndex((c) => c.canvasId === selectedCanvasId);
+  const selectedIndex = lazyCanvases.findIndex(
+    (c) => c.canvasId === selectedCanvasId,
+  );
 
   if (!lazyCanvases.length || selectedIndex === -1) {
     return null;
@@ -21,9 +29,7 @@ export function ManifestCanvasNavigation() {
   const canvas = vault
     ? vault.get({ id: lazyCanvases[selectedIndex].canvasId, type: 'Canvas' })
     : null;
-  const label = canvas
-    ? getValue(canvas.label)
-    : `Scan ${selectedIndex + 1}`;
+  const label = canvas ? getValue(canvas.label) : `Scan ${selectedIndex + 1}`;
 
   const hasPrev = selectedIndex > 0;
   const hasNext = selectedIndex < lazyCanvases.length - 1;

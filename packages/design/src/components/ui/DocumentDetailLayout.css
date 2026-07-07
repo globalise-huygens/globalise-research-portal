@@ -1,0 +1,277 @@
+@layer components {
+  .gds-document-detail-full-bleed {
+    grid-column: 1 / -1;
+  }
+
+  .gds-document-detail-top-bar,
+  .gds-document-detail-bottom-bar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    border-color: rgb(255 255 255 / 0.1);
+    background: var(--color-neutral-900);
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-top-bar {
+    height: var(--overlay-document-viewer-top-bar-height);
+    border-bottom-width: 1px;
+  }
+
+  .gds-document-detail-bottom-bar {
+    height: var(--overlay-document-viewer-bottom-bar-height);
+    border-top-width: 1px;
+  }
+
+  .gds-document-detail-body {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 0%;
+    overflow: hidden;
+  }
+
+  .gds-document-detail-bar-group {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--s12);
+  }
+
+  .gds-document-detail-title {
+    min-width: 0;
+    padding-inline: var(--s16);
+    text-align: center;
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .gds-document-detail-icon-rail {
+    display: flex;
+    width: var(--overlay-document-viewer-rail-width);
+    min-width: var(--overlay-document-viewer-rail-width);
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid rgb(255 255 255 / 0.1);
+    background: var(--color-brand-black);
+  }
+
+  .gds-document-detail-sidebar {
+    display: flex;
+    width: var(--overlay-document-viewer-sidebar-width);
+    min-width: var(--overlay-document-viewer-sidebar-width);
+    max-width: var(--overlay-document-viewer-sidebar-width);
+    height: 100%;
+    flex-shrink: 0;
+    flex-direction: column;
+    overflow-y: auto;
+    border-right: 1px solid rgb(255 255 255 / 0.1);
+    background: var(--color-neutral-900);
+    color: var(--color-brand-white);
+    scrollbar-color: var(--color-neutral-600) transparent;
+    scrollbar-width: thin;
+  }
+
+  .gds-document-detail-sidebar-button {
+    display: flex;
+    width: 100%;
+    height: var(--s64);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s16);
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    padding-inline: var(--s24);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    transition: background-color 75ms ease-out;
+  }
+
+  .gds-document-detail-sidebar-button[data-hovered] {
+    background: rgb(255 255 255 / 0.05);
+  }
+
+  .gds-document-detail-sidebar-button[data-focus-visible] {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-ring);
+  }
+
+  .gds-document-detail-sidebar-button[data-variant="warning"] {
+    border-color: rgb(255 84 61 / 0.25);
+    color: var(--color-vermilion-500);
+  }
+
+  .gds-document-detail-sidebar-button[data-variant="warning"]
+    .gds-document-detail-sidebar-button__count,
+  .gds-document-detail-sidebar-button[data-variant="warning"]
+    .gds-document-detail-icon {
+    color: var(--color-vermilion-500);
+  }
+
+  .gds-document-detail-sidebar-button__content {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--s8);
+  }
+
+  .gds-document-detail-sidebar-button__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-sidebar-button__count {
+    flex-shrink: 0;
+    color: rgb(255 255 255 / 0.45);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-sidebar-badge {
+    display: inline-flex;
+    min-width: var(--s28);
+    height: var(--s20);
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-neutral-500);
+    background: var(--color-neutral-600);
+    padding-inline: var(--s4);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .gds-document-detail-side-panel {
+    display: flex;
+    width: var(--overlay-document-viewer-side-panel-width);
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: var(--section-gap);
+    overflow-y: auto;
+    border-right: 1px solid rgb(255 255 255 / 0.1);
+    background: var(--color-neutral-900);
+    padding: var(--panel-pad);
+    scrollbar-color: var(--color-neutral-600) transparent;
+    scrollbar-width: thin;
+  }
+
+  .gds-document-detail-viewer {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 0%;
+  }
+
+  .gds-document-detail-split-viewer {
+    display: grid;
+    min-width: 0;
+    flex: 1 1 0%;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .gds-document-detail-viewer-pane {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 0%;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .gds-document-detail-viewer-pane[hidden] {
+    display: none;
+  }
+
+  .gds-document-detail-viewer-pane:last-child {
+    border-right: 0;
+  }
+
+  .gds-document-detail-viewer-pane[data-toolbar-floating="true"] {
+    position: relative;
+  }
+
+  .gds-document-detail-viewer-pane__content {
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 0%;
+    overflow: hidden;
+  }
+
+  .gds-document-detail-panel-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-top: calc(var(--panel-pad) * -1);
+    margin-inline: calc(var(--panel-pad) * -1);
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    background: inherit;
+    padding: var(--s16) var(--panel-pad);
+  }
+
+  @media (max-width: 767px) {
+    .gds-document-detail-top-bar,
+    .gds-document-detail-bottom-bar {
+      padding-left: max(var(--s8), env(safe-area-inset-left));
+      padding-right: max(var(--s8), env(safe-area-inset-right));
+    }
+
+    .gds-document-detail-top-bar {
+      padding-top: env(safe-area-inset-top);
+      height: calc(
+        var(--overlay-document-viewer-top-bar-height) + env(safe-area-inset-top)
+      );
+    }
+
+    .gds-document-detail-bottom-bar {
+      padding-bottom: max(var(--s4), env(safe-area-inset-bottom));
+      min-height: calc(
+        var(--overlay-document-viewer-bottom-bar-height) +
+          env(safe-area-inset-bottom)
+      );
+    }
+
+    .gds-document-detail-sidebar {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+      border-right: 0;
+    }
+
+    .gds-document-detail-sidebar-button {
+      height: var(--s56);
+      padding-inline: var(--s16);
+    }
+
+    .gds-document-detail-sidebar-button__label,
+    .gds-document-detail-sidebar-button__count {
+      font-size: 0.875rem;
+      line-height: 1.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gds-document-detail-split-viewer {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gds-document-detail-title {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    .gds-document-detail-sidebar-button__label,
+    .gds-document-detail-sidebar-button__count {
+      font-size: 1.125rem;
+      line-height: 1.25rem;
+    }
+  }
+}

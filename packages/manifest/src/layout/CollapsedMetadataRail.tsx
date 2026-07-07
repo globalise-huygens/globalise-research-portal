@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DocumentDetailIconRail, DocumentDetailRailButton } from '@globalise/design-system';
+import { DocumentDetailIconRail, DocumentDetailRailButton } from '@globalise/design';
 import { sideBarPanels } from './sideBarPanels.tsx';
 
 export function CollapsedMetadataRail({
@@ -8,12 +8,12 @@ export function CollapsedMetadataRail({
   onExpandSection: (sectionId: string) => void;
 }) {
   return (
-    <DocumentDetailIconRail className="h-full w-full border-r-0 bg-neutral-900">
+    <DocumentDetailIconRail className="manifest-document-layout__collapsed-rail">
       {sideBarPanels.map((item) => (
         <DocumentDetailRailButton
           key={item.id}
           aria-label={`Expand ${item.label}`}
-          className="border-b-0"
+          className="manifest-document-layout__rail-button"
           icon={item.icon}
           label={item.railLabel}
           onPress={() => onExpandSection(item.id)}
