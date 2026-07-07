@@ -1,5 +1,5 @@
 import { CategoryView } from './MetadataModel';
-import { componentRegistry } from './registry/componentRegistry.ts';
+import { RegistryComponent } from './registry';
 
 type MetadataSectionProps = {
   categories: CategoryView[]
@@ -10,15 +10,13 @@ export function MetadataView(
 ) {
   return (
     <>
-      {categories.map((categoryView, ci) => (
+      {categories.map((category, ci) => (
         <section key={ci} className="metadata-category">
-          <h3>{categoryView.categoryName}</h3>
+          <h3>{category.category}</h3>
           <ul className="metadata">
-            {categoryView.items.map((item, i) => {
-              const Component = componentRegistry[item.componentName]
-                ?? componentRegistry.default;
-              return <Component key={i} entry={item.entry} />;
-            })}
+            {category.metadata.map((entry, i) =>
+              <RegistryComponent key={i} entry={entry} />)
+            }
           </ul>
         </section>
       ))}

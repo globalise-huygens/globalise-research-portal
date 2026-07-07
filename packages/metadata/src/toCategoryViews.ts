@@ -1,49 +1,37 @@
 import {
   MetadataConfig,
-  MetadataEntry,
+  MetadataNode,
   CategoryView,
-  ComponentEntry, CategoryName,
+  MetadataWithComponent, CategoryName,
   defaultCategory, defaultTarget,
 } from './MetadataModel';
 
 import { matchRule } from './matchRule.ts';
+import { toMetadataWithComponent } from './toMetadataWithComponent.ts';
 
 export function toCategoryViews(
-  metadataEntries: MetadataEntry[],
+  entries: MetadataNode[],
   config: MetadataConfig,
 ): CategoryView[] {
-  const categoryComponentEntries = new Map<CategoryName, ComponentEntry[]>();
+  const byCategory = new Map<CategoryName, MetadataWithComponent[]>();
 
-  for (const entry of metadataEntries) {
-    const target = matchRule(entry, config);
+  for (const entry of entries) {
+    const target = matchRule(entry, config.rules);
+    if (!target && config.onNoMatch === 'hide') {continue;}
 
-    if (!target && config.onNoMatch === 'hide') {
-      continue;
-    }
-
-    const { category, component, label } = target ?? defaultTarget;
-
-    const item: ComponentEntry = {
-      componentName: component,
-      entry: label ? { ...entry, label } : entry,
-    };
-    const componentEntries = categoryComponentEntries.get(category) ?? [];
-    componentEntries.push(item);
-    categoryComponentEntries.set(category, componentEntries);
+    const { category } = target ?? defaultTarget;
+    const list = byCategory.get(category) ?? [];
+    list.push(toMetadataWithComponent(entry, config.rules));
+    byCategory.set(category, list);
   }
 
   const isAppending = config.onNoMatch === 'append';
   const hasOtherCategory = config.categories.some((c) => c.name === 'other');
-
   const categories = isAppending && !hasOtherCategory
     ? [...config.categories, defaultCategory]
     : config.categories;
 
   return categories
-    .map((c) => {
-      const items = categoryComponentEntries.get(c.name) ?? [];
-      const categoryName = c.label;
-      return ({ categoryName, items });
-    })
-    .filter((c) => c.items.length);
+    .map((c) => ({ category: c.label, metadata: byCategory.get(c.name) ?? [] }))
+    .filter((c) => c.metadata.length);
 }

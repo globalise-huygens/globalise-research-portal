@@ -1,4 +1,4 @@
-import { MetadataEntry } from './MetadataModel';
+import { MetadataNode } from './MetadataModel';
 import { asArray } from './asArray.ts';
 
 export type LinkedArtNode = {
@@ -16,32 +16,32 @@ const entriesToSkip = new Set([
   'content',
   'classified_as',
   'id',
-  '@context'
+  '@context',
 ]);
 
-export function toMetadata(document: unknown): MetadataEntry[] {
-  return isNode(document) ? toMetadataEntry(document).children : [];
+export function toMetadata(document: unknown): MetadataNode[] {
+  return isNode(document) ? toMetadataNode(document).children : [];
 }
 
-function toMetadataEntry(
+function toMetadataNode(
   node: LinkedArtNode,
   key?: string,
-): MetadataEntry {
-  const children: MetadataEntry[] = [];
+): MetadataNode {
+  const children: MetadataNode[] = [];
   for (const [key, values] of Object.entries(node)) {
     if (entriesToSkip.has(key)) {
       continue;
     }
     for (const value of asArray(values)) {
       if (isNode(value)) {
-        children.push(toMetadataEntry(value, key));
+        children.push(toMetadataNode(value, key));
       } else {
         const child = {
           source: { propName: key },
           label: key,
           value: String(value),
           children: [],
-        } satisfies MetadataEntry;
+        } satisfies MetadataNode;
         children.push(child);
       }
     }

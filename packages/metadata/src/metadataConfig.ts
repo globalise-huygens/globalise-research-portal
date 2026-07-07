@@ -1,9 +1,9 @@
-import { MetadataConfig } from './MetadataModel';
-import { Doc } from './registry/Doc.tsx';
-import { Li } from './registry/Li.tsx';
-import { Timespan } from './registry/Timespan.tsx';
+import { MatchTarget, MetadataConfig } from './MetadataModel';
 
-const identificationLi = { category: 'identification', component: Li.name };
+const identificationLi = {
+  category: 'identification',
+  component: 'Li',
+} satisfies MatchTarget;
 
 export const metadataConfig: MetadataConfig = {
   categories: [
@@ -23,23 +23,23 @@ export const metadataConfig: MetadataConfig = {
     },
     {
       sourceMatcher: 'title',
-      target: { category: 'identification', component: Li.name, label: 'Title' },
+      target: { category: 'identification', component: 'Li', label: 'Title' },
     },
     {
       sourceMatcher: 'produced_by',
-      target: { category: 'production', component: Li.name, label: 'Production' },
+      target: { category: 'production', component: 'Li', label: 'Production' },
     },
     {
       sourceMatcher: 'member_of',
-      target: { category: 'hierarchy', component: Li.name, label: 'Part of' },
+      target: { category: 'hierarchy', component: 'Li', label: 'Part of' },
     },
     {
       sourceMatcher: 'part',
-      target: { category: 'documents', component: Doc.name },
+      target: { category: 'documents', component: 'Doc' },
     },
     {
       sourceMatcher: 'timespan',
-      target: { category: 'production', component: Timespan.name, label: 'Date' },
+      target: { category: 'production', component: 'Timespan', label: 'Timespan' },
     },
   ],
   onNoMatch: 'append',

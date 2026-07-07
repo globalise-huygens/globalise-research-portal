@@ -19,10 +19,10 @@ export function MetadataPanel() {
     return manifest.seeAlso[0]?.id;
   }, [isManifestReady, manifestId]);
 
-  const categories = useMemo(() => {
-    const entries = toMetadata(json);
-    return toCategoryViews(entries, metadataConfig);
-  }, [json]);
+  const categories = useMemo(
+    () => toCategoryViews(toMetadata(json), metadataConfig),
+    [json],
+  );
 
   useEffect(() => {
     if (!curatedHoldingUrl) {
