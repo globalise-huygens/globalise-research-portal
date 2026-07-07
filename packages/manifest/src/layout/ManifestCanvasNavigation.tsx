@@ -1,6 +1,6 @@
 import { getValue } from '@iiif/helpers/i18n';
 import { useManifest, useViewer } from '@knaw-huc/osd-iiif-viewer';
-import { DocumentDetailBarGroup, IconLeft, IconLeftFirst, IconRight, IconRightLast } from './designSystemCompat.tsx';
+import { DocumentDetailBarGroup, IconLeft, IconLeftFirst, IconRight, IconRightLast } from '@globalise/design-system';
 import { Point } from 'openseadragon';
 import { useSelectedCanvas, type CanvasId } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';

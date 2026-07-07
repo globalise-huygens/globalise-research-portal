@@ -1,14 +1,20 @@
 import * as React from 'react';
-import { DocumentDetailTooltip, DocumentDetailToolButton } from './designSystemCompat';
+import { DocumentDetailTooltip, DocumentDetailToolButton } from '@globalise/design-system';
+
+type TooltipIconButtonProps = React.ComponentProps<'button'> & {
+  icon?: React.ReactNode;
+  isActive?: boolean;
+  isDisabled?: boolean;
+  onPress?: () => void;
+  tooltip: React.ReactNode;
+  tooltipPlacement?: 'bottom' | 'top' | 'left' | 'right';
+};
 
 export function TooltipIconButton({
   tooltip,
   tooltipPlacement = 'bottom',
   ...buttonProps
-}: React.ComponentProps<typeof DocumentDetailToolButton> & {
-  tooltip: React.ReactNode;
-  tooltipPlacement?: React.ComponentProps<typeof DocumentDetailTooltip>['placement'];
-}) {
+}: TooltipIconButtonProps) {
   return (
     <DocumentDetailTooltip label={tooltip} placement={tooltipPlacement}>
       <DocumentDetailToolButton {...buttonProps} />

@@ -17,7 +17,7 @@ import {
   IconScan,
   IconSidebar,
   IconTranscription,
-} from './designSystemCompat';
+} from '@globalise/design-system';
 
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
@@ -137,7 +137,7 @@ export function ManifestDocumentPageLayout(
               aria-label="Primary viewer mode controls"
               selectionMode="multiple"
               selectedKeys={selectedKeys}
-              onSelectionChange={(keys) => {
+              onSelectionChange={(keys: Iterable<unknown>) => {
                 const next = new Set(Array.from(keys).map(String));
                 if (next.size === 0) {
                   return;

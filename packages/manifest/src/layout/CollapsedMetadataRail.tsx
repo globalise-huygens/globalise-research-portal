@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DocumentDetailIconRail, DocumentDetailRailButton } from './designSystemCompat';
+import { DocumentDetailIconRail, DocumentDetailRailButton } from '@globalise/design-system';
 import { sideBarPanels } from './sideBarPanels.tsx';
 
 export function CollapsedMetadataRail({

@@ -13,7 +13,7 @@
     "./layout": "./src/layout/ManifestDocumentPageLayout.tsx"
   },
   "dependencies": {
-    "@globalise/design-system": "file:../../../globalise-design-system",
+    "@globalise/design-system": "file:../../../globalise-design-system/packages/ui",
     "@globalise/common": "*",
     "@globalise/diplomatic": "*",
     "@globalise/document": "*",

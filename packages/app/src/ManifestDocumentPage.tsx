@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { ManifestLoader } from '@globalise/facsimile';
+import { Page } from './Page.tsx';
 import {
-  ManifestCanvasNavigation,
-  ManifestDocumentPageLayout,
   ManifestDropdown,
   ManifestFacsimileViewer,
   ManifestTranscriptionControls,
   ManifestTranscriptionViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
+import { SplitPaneLayout } from '@globalise/document';
 import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
@@ -55,29 +55,47 @@ export function ManifestDocumentPage() {
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
-        <ManifestDocumentPageLayout
-          topLeft={
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
+        <Page
+          header={
+            <>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <ManifestDropdown
+                  manifests={allManifests}
+                  selected={manifestUrl}
+                  onChange={handleManifestChange}
+                />
+              </div>
+              <div style={{
+                flex: '0 0 auto',
+                display: 'flex',
+                gap: '0.25rem',
+                alignItems: 'center',
+              }}>
+                <ManifestTranscriptionControls/>
+              </div>
+            </>
           }
-          topRight={<ManifestTranscriptionControls/>}
-          scan={
+        >
+          <SplitPaneLayout>
             <ManifestFacsimileViewer
               initialCanvasId={initialCanvasId}
               onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
             />
-          }
-          transcription={
-            <ManifestTranscriptionViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
-            />
-          }
-          bottom={<ManifestCanvasNavigation/>}
-        />
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              overflow: 'hidden',
+            }}>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <ManifestTranscriptionViewer
+                  initialCanvasId={initialCanvasId}
+                  onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
+                />
+              </div>
+            </div>
+          </SplitPaneLayout>
+        </Page>
       </ManifestLoader>
     </ViewerProvider>
   );
