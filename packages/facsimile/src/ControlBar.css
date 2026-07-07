@@ -1,4 +1,4 @@
-.control-bar {
+.control-bar:not(.gds-document-detail-scan-toolbar) {
     position: absolute;
     z-index: 10;
     display: flex;
@@ -14,7 +14,7 @@
     }
     transition: opacity 0.2s;
 
-    &:not(.gds-document-detail-scan-toolbar) button {
+    button {
         border: 1px solid #ddd;
         border-radius: 0.2rem;
         background: #f0f0f0;
