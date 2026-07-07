@@ -109,7 +109,7 @@ export function ManifestDocumentPageLayout({
 
         <div className="manifest-document-layout__main">
           <DocumentDetailTopBar className="manifest-document-layout__top-bar">
-            <DocumentDetailBarGroup className="min-w-0 flex-1 justify-start gap-s8">
+            <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--left">
               <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
@@ -119,7 +119,7 @@ export function ManifestDocumentPageLayout({
                 tooltip={isSidebarExpanded ? 'Closes sidebar' : 'Opens sidebar'}
                 isActive={isSidebarExpanded}
                 className={TOP_BAR_BUTTON}
-                icon={<IconSidebar className="h-s16 w-s16" />}
+                icon={<IconSidebar className="manifest-document-layout__toolbar-icon" />}
                 onPress={() => setIsSidebarExpanded((v) => !v)}
               />
 

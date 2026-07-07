@@ -1,4 +1,3 @@
-import { noop, orThrow } from '@globalise/common';
 import {
   Annotation,
   filterAnnotationsWithSelector,
@@ -9,6 +8,7 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
+import { noop, orThrow } from '@globalise/common';
 import {
   D3El,
   FullOriginalLayoutConfig,
@@ -22,9 +22,9 @@ import {
   groupSegments,
   segment,
 } from '@knaw-huc/text-annotation-segmenter';
-import { createFragment } from './createFragment.ts';
-import { renderBlocks } from './renderBlocks';
 import { renderLineNumbers } from './renderLineNumbers';
+import { renderBlocks } from './renderBlocks';
+import { createFragment } from './createFragment.ts';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showBlocks: boolean;
@@ -55,10 +55,7 @@ export function renderDiplomaticView(
   $view.classList.add('original-layout');
 
   const mergedConfig = {
-    onHover: noop,
-    onClick: noop,
-    ...defaultConfig,
-    ...config,
+    onHover: noop, onClick: noop, ...defaultConfig, ...config,
   };
   const { showBlocks, onHover, onClick } = mergedConfig;
   $view.innerHTML = '';
@@ -70,16 +67,8 @@ export function renderDiplomaticView(
     $layoutView.classList.add('with-blocks');
   }
 
-  const viewWidth = $layoutView.getBoundingClientRect().width;
-  if (!viewWidth) {
-    return {
-      setSelected: noop,
-    };
-  }
-
-  const wordAnnos = Object.values(annotations).filter(
-    (a) => a.textGranularity === 'word',
-  );
+  const wordAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'word');
   const fragments = wordAnnos.map(createFragment);
   const originalLayout = renderOriginalLayout($layoutView, fragments, config);
   const { $fragments, scale, offset } = originalLayout;
@@ -93,8 +82,8 @@ export function renderDiplomaticView(
   );
 
   const textSegments = segment(pageText, markedAnnos, (a) => {
-    const selector =
-      findTextPositionSelector(a, pageAnnoId) ?? orThrow('No selector');
+    const selector = findTextPositionSelector(a, pageAnnoId)
+      ?? orThrow('No selector');
     return { start: selector.start, end: selector.end };
   });
   const groupedByWord = groupSegments(
@@ -103,10 +92,7 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock } = indexAnnotations(
-    annotations,
-    pageAnnoId,
-  );
+  const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {
@@ -154,9 +140,8 @@ export function renderDiplomaticView(
   let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
 
   if (showBlocks) {
-    const lineCount = Object.values(annotations).filter(
-      (a) => a.textGranularity === 'line',
-    ).length;
+    const lineCount = Object.values(annotations)
+      .filter((a) => a.textGranularity === 'line').length;
     const digitCount = String(lineCount).length;
     const lineNumberGap = scale(30);
     const lineNumberWidth = lineNumberGap + scale(30 * digitCount);
@@ -164,14 +149,9 @@ export function renderDiplomaticView(
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks } = renderBlocks(annotations, $layoutView, {
-      scale,
-      offset,
-    });
+    const { $blocks } = renderBlocks(annotations, $layoutView, { scale, offset });
     const lineNumbers = renderLineNumbers(annotations, $view, {
-      scale,
-      gap: lineNumberGap,
-      offset: {
+      scale, gap: lineNumberGap, offset: {
         left: offset.left + lineNumberWidth,
         top: offset.top,
       },
@@ -228,9 +208,7 @@ export function renderDiplomaticView(
       selectBlock(id);
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
-      $segments.forEach(($r) => {
-        $r.classList.add('selected');
-      });
+      $segments.forEach(($r) => { $r.classList.add('selected'); });
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }

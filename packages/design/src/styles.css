@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap");
 
-@import './styles/globals.css';
-@import './components/ui/ui.css';
+@import "./styles/globals.css";
+@import "./components/ui/ui.css";
 
 :root {
   color-scheme: dark;

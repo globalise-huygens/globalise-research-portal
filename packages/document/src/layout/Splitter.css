@@ -1,33 +1,23 @@
 .splitter {
-  --splitter-track: var(--color-brand-black, #0c0a09);
-  --splitter-track-hover: var(--color-neutral-900, #262626);
-  --splitter-track-active: var(--color-neutral-800, #363636);
-  --splitter-line: rgb(185 155 127 / 0.32);
-  --splitter-line-active: var(--color-brand-vermilion, #ff543d);
-  --splitter-grip: var(--color-parchment-500, #b99b7f);
-
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--splitter-track);
+  background: var(--color-brand-black, #0c0a09);
   touch-action: none;
   user-select: none;
-  transition:
-    background 120ms ease-out,
-    box-shadow 120ms ease-out;
 
   &:hover {
-    background: var(--splitter-track-hover);
+    background: var(--color-neutral-900, #262626);
   }
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 1px var(--splitter-line-active);
+    box-shadow: 0 0 0 1px var(--color-brand-vermilion, #ff543d);
   }
 
   &.active {
-    background: var(--splitter-track-active);
+    background: var(--color-neutral-800, #363636);
   }
 
   .splitter-grip {
@@ -36,13 +26,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--splitter-grip);
-    font-size: 1em;
+    color: var(--color-brand-parchment, #b99b7f);
     opacity: 0.78;
-    transition:
-      color 120ms ease-out,
-      opacity 120ms ease-out,
-      transform 120ms ease-out;
 
     .grip-icon {
       width: 1rem;
@@ -52,7 +37,7 @@
 
   &:hover .splitter-grip,
   &.active .splitter-grip {
-    color: var(--splitter-line-active);
+    color: var(--color-brand-vermilion, #ff543d);
     opacity: 1;
   }
 
@@ -66,7 +51,7 @@
       bottom: 0;
       left: 50%;
       width: 1px;
-      background: var(--splitter-line);
+      background: rgb(185 155 127 / 0.32);
       content: '';
       transform: translateX(-50%);
     }
@@ -82,7 +67,7 @@
       right: 0;
       left: 0;
       height: 1px;
-      background: var(--splitter-line);
+      background: rgb(185 155 127 / 0.32);
       content: '';
       transform: translateY(-50%);
     }

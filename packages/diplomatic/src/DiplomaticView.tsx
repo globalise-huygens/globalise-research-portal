@@ -1,10 +1,3 @@
-import '@knaw-huc/original-layout/style.css';
-import './DiplomaticView.css';
-import { Annotation } from '@globalise/common/annotation';
-import { setHovered, toggleClicked } from '@globalise/common/document';
-import type { Id } from '@knaw-huc/original-layout';
-import { ViewFit } from '@knaw-huc/original-layout';
-import { debounce } from 'lodash';
 import React, {
   useEffect,
   useLayoutEffect,
@@ -12,10 +5,20 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import type { Id } from '@knaw-huc/original-layout';
+import { ViewFit } from '@knaw-huc/original-layout';
 import { renderDiplomaticView } from './renderDiplomaticView';
 
+import '@knaw-huc/original-layout/style.css';
+import './DiplomaticView.css';
+import {
+  Annotation,
+} from '@globalise/common/annotation';
+import { setHovered, toggleClicked } from '@globalise/common/document';
+import { debounce } from 'lodash';
+
 export type DiplomaticViewProps = {
-  id?: string;
+  id?: string
   annotations: Record<Id, Annotation>;
   page: { width: number; height: number };
   fit?: ViewFit;
@@ -24,6 +27,7 @@ export type DiplomaticViewProps = {
   selected?: Id[];
   style?: React.CSSProperties;
 };
+
 
 export function DiplomaticView(props: DiplomaticViewProps) {
   const {
@@ -60,20 +64,10 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useLayoutEffect(createDiplomaticView, [
-    annotations,
-    page,
-    fit,
-    showBlocks,
-    width,
-  ]);
+  useLayoutEffect(createDiplomaticView, [annotations, page, fit, showBlocks, width]);
   function createDiplomaticView() {
     const $view = containerRef.current;
     if (!$view || !width) {
-      return;
-    }
-    const measuredWidth = $view.getBoundingClientRect().width;
-    if (!measuredWidth) {
       return;
     }
     $view.innerHTML = '';

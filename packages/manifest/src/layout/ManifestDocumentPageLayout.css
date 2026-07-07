@@ -1,4 +1,4 @@
-@import '@globalise/design/styles.css';
+@import "@globalise/design/styles.css";
 
 .manifest-document-layout {
   --manifest-sidebar-expanded-width: clamp(17rem, var(--sidebar-width), 22rem);
@@ -31,7 +31,7 @@
   transition: grid-template-columns 150ms ease-out;
 }
 
-.manifest-document-layout__frame[data-sidebar-expanded='false'] {
+.manifest-document-layout__frame[data-sidebar-expanded="false"] {
   --manifest-sidebar-width: var(--manifest-sidebar-collapsed-width);
 }
 
@@ -47,11 +47,11 @@
   transition: width 150ms ease-out;
 }
 
-.manifest-document-layout__sidebar[data-expanded='true'] {
+.manifest-document-layout__sidebar[data-expanded="true"] {
   width: var(--manifest-sidebar-expanded-width);
 }
 
-.manifest-document-layout__sidebar[data-expanded='false'] {
+.manifest-document-layout__sidebar[data-expanded="false"] {
   width: var(--manifest-sidebar-collapsed-width);
 }
 
@@ -112,7 +112,7 @@
 }
 
 .manifest-document-layout__transcription-mode-item[data-selected],
-.manifest-document-layout__transcription-mode-item[aria-pressed='true'] {
+.manifest-document-layout__transcription-mode-item[aria-pressed="true"] {
   background: var(--color-brand-white);
   color: var(--color-brand-black);
 }
@@ -162,10 +162,6 @@
   font-family: var(--font-sans);
 }
 
-.manifest-document-layout__bottom-bar-group {
-  gap: var(--s8);
-}
-
 .manifest-document-layout__bottom-button {
   min-width: var(--s24);
   height: var(--s24);
@@ -202,17 +198,6 @@
 .manifest-document-layout__segmented-icon {
   width: 18px;
   height: 18px;
-}
-
-.manifest-document-layout__scan-count {
-  display: inline-flex;
-  min-width: 0;
-  align-items: baseline;
-  gap: var(--s8);
-  color: var(--color-neutral-300);
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  line-height: 1rem;
 }
 
 .manifest-document-layout__split-viewer {
@@ -374,12 +359,6 @@
 
 .manifest-document-layout__sidebar-disclosure--expanded {
   transform: rotate(180deg);
-}
-
-@media (min-width: 1024px) {
-  .manifest-document-layout__split-viewer[data-layout='split'] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 767px) {
