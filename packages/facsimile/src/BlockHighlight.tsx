@@ -18,10 +18,10 @@ export function BlockHighlight(
 
   const highlightStyle: HighlightStyle = {
     fill: 'transparent',
-    stroke: selected ? 'rgba(0,255,0,1)'
-      : hovered ? 'rgba(0,0,0,0.3)'
+    stroke: selected ? 'rgba(255, 84, 61, 0.95)'
+      : hovered ? 'rgba(185, 155, 127, 0.9)'
         : 'transparent',
-    strokeWidth: 5,
+    strokeWidth: selected ? 7 : 5,
   };
 
   return (

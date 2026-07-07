@@ -3,6 +3,7 @@ import {
   DocumentDetailSegmentedToggleItem,
   DocumentDetailToolButton,
   DocumentDetailTooltip,
+  IconReset,
   IconTranscriptionDiplomatic,
   IconTranscriptionNormalised,
   IconZoomIn,
@@ -80,6 +81,17 @@ export function ManifestTranscriptionControls() {
           size="compact"
         />
       </div>
+      <span
+        className="gds-document-detail-scan-toolbar__divider"
+        aria-hidden="true"
+      />
+      <DocumentDetailToolButton
+        aria-label="Reset transcription zoom"
+        className="gds-document-detail-scan-toolbar__button"
+        icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
+        onPress={() => setDiplomaticViewScale(100)}
+        size="compact"
+      />
     </div>
   );
 }

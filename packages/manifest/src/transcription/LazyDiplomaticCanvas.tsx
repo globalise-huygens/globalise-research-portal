@@ -70,6 +70,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
       {...{ [canvasIndexAttribute]: index }}
       style={{
         position: 'relative',
+        width,
         height,
         contentVisibility: 'auto',
         containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,

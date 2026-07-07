@@ -54,6 +54,8 @@ export function ManifestLineByLineViewer({
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
+  const suppressCanvasChangeRef = useRef(false);
+  const previousScaleRef = useRef(transcriptionScale);
 
   const lastSelectedCanvasId = useRef(selectedCanvasId);
 
@@ -110,6 +112,9 @@ export function ManifestLineByLineViewer({
 
     const processScroll = () => {
       rafId = null;
+      if (suppressCanvasChangeRef.current) {
+        return;
+      }
       const scrollerRect = scroller.getBoundingClientRect();
       const topQuarter = scrollerRect.top + scrollerRect.height * 0.25;
       const elements =
@@ -145,6 +150,45 @@ export function ManifestLineByLineViewer({
         cancelAnimationFrame(rafId);
       }
       scroller.removeEventListener('scroll', onScroll);
+    };
+  }
+
+  useEffect(preserveSelectedCanvasAfterScaleChange, [
+    canvasInfos,
+    selectedCanvasId,
+    transcriptionScale,
+  ]);
+  function preserveSelectedCanvasAfterScaleChange() {
+    if (previousScaleRef.current === transcriptionScale) {
+      return;
+    }
+    previousScaleRef.current = transcriptionScale;
+
+    const canvasId = selectedCanvasId ?? canvasInfos[0]?.canvasId;
+    if (!canvasId) {
+      return;
+    }
+    const index = canvasInfos.findIndex((c) => c.canvasId === canvasId);
+    if (index === -1) {
+      return;
+    }
+
+    suppressCanvasChangeRef.current = true;
+    const rafId = requestAnimationFrame(() => {
+      virtuosoRef.current?.scrollToIndex({
+        index,
+        align: 'start',
+        behavior: 'auto',
+      });
+    });
+    const timeoutId = window.setTimeout(() => {
+      suppressCanvasChangeRef.current = false;
+    }, 150);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(timeoutId);
+      suppressCanvasChangeRef.current = false;
     };
   }
 

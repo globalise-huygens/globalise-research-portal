@@ -25,9 +25,13 @@ export function WordHighlight(
   const [hovered, setHoveredLocal] = useState(false);
 
   const highlightStyle: HighlightStyle = {
-    fill: selected ? 'rgba(0,255,0,0.35)'
-      : hovered ? 'rgba(0,0,0,0.1)'
+    fill: selected ? 'rgba(255, 84, 61, 0.34)'
+      : hovered ? 'rgba(41, 191, 204, 0.2)'
         : 'transparent',
+    stroke: selected ? 'rgba(255, 84, 61, 0.95)'
+      : hovered ? 'rgba(41, 191, 204, 0.75)'
+        : 'transparent',
+    strokeWidth: selected ? 2 : 1,
     cursor: 'pointer',
   };
 

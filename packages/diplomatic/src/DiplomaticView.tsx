@@ -1,4 +1,5 @@
 import '@knaw-huc/original-layout/style.css';
+import './DiplomaticView.css';
 import { Annotation } from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
 import type { Id } from '@knaw-huc/original-layout';

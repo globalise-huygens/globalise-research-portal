@@ -1,43 +1,91 @@
 .splitter {
+  --splitter-track: var(--color-brand-black, #0c0a09);
+  --splitter-track-hover: var(--color-neutral-900, #262626);
+  --splitter-track-active: var(--color-neutral-800, #363636);
+  --splitter-line: rgb(185 155 127 / 0.32);
+  --splitter-line-active: var(--color-brand-vermilion, #ff543d);
+  --splitter-grip: var(--color-parchment-500, #b99b7f);
+
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eee;
+  background: var(--splitter-track);
   touch-action: none;
   user-select: none;
+  transition:
+    background 120ms ease-out,
+    box-shadow 120ms ease-out;
 
   &:hover {
-    background: #ddd;
+    background: var(--splitter-track-hover);
   }
 
   &:focus-visible {
     outline: none;
+    box-shadow: 0 0 0 1px var(--splitter-line-active);
   }
 
   &.active {
-    background: #ccc;
+    background: var(--splitter-track-active);
   }
 
   .splitter-grip {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #999;
+    color: var(--splitter-grip);
     font-size: 1em;
+    opacity: 0.78;
+    transition:
+      color 120ms ease-out,
+      opacity 120ms ease-out,
+      transform 120ms ease-out;
 
     .grip-icon {
-      width: 0.75em;
+      width: 1rem;
+      height: 1rem;
     }
+  }
+
+  &:hover .splitter-grip,
+  &.active .splitter-grip {
+    color: var(--splitter-line-active);
+    opacity: 1;
   }
 
   &.horizontal {
     cursor: col-resize;
     width: 100%;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: var(--splitter-line);
+      content: '';
+      transform: translateX(-50%);
+    }
   }
 
   &.vertical {
     cursor: row-resize;
     height: 100%;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      left: 0;
+      height: 1px;
+      background: var(--splitter-line);
+      content: '';
+      transform: translateY(-50%);
+    }
 
     .grip-icon {
       transform: rotate(90deg);

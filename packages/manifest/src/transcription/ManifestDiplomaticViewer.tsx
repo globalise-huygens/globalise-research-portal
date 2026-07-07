@@ -1,7 +1,15 @@
+import { useSelectedCanvas } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { getCanvasIndex } from './canvasIndexAttribute.ts';
 import { LazyDiplomaticCanvas } from './LazyDiplomaticCanvas.tsx';
@@ -31,6 +39,8 @@ export function ManifestDiplomaticViewer({
   const scaleFactor = diplomaticViewScale / 100;
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasListRef = useRef<HTMLDivElement>(null);
+  const suppressCanvasChangeRef = useRef(false);
+  const previousScaleRef = useRef(scaleFactor);
   const [containerWidth, setContainerWidth] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
   const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(
@@ -64,6 +74,7 @@ export function ManifestDiplomaticViewer({
     [initialCanvasId, canvasInfos],
   );
   const lastScrolledCanvas = useRef<number | null>(initialCanvas);
+  const { id: selectedCanvasId } = useSelectedCanvas();
 
   useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
 
@@ -89,6 +100,9 @@ export function ManifestDiplomaticViewer({
 
     const selectedCanvasObserver = new IntersectionObserver(
       (canvasEvents) => {
+        if (suppressCanvasChangeRef.current) {
+          return;
+        }
         for (const event of canvasEvents) {
           if (!event.isIntersecting) {
             continue;
@@ -171,6 +185,49 @@ export function ManifestDiplomaticViewer({
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
     child.scrollIntoView({ block });
     lastScrolledCanvas.current = initialCanvas;
+  }
+
+  useLayoutEffect(preserveSelectedCanvasAfterScaleChange, [
+    canvasInfos,
+    containerWidth,
+    scaleFactor,
+    selectedCanvasId,
+  ]);
+  function preserveSelectedCanvasAfterScaleChange() {
+    if (previousScaleRef.current === scaleFactor) {
+      return;
+    }
+    previousScaleRef.current = scaleFactor;
+
+    const scrollContainer = scrollRef.current;
+    const canvasList = canvasListRef.current;
+    if (!scrollContainer || !canvasList || !selectedCanvasId || !containerWidth) {
+      return;
+    }
+
+    const index = canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId);
+    if (index === -1) {
+      return;
+    }
+    const child = canvasList.children[index];
+    if (!(child instanceof HTMLElement)) {
+      return;
+    }
+
+    suppressCanvasChangeRef.current = true;
+    const viewportHeight = scrollContainer.clientHeight;
+    const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
+    child.scrollIntoView({ block, inline: 'nearest' });
+    lastScrolledCanvas.current = index;
+
+    const timeoutId = window.setTimeout(() => {
+      suppressCanvasChangeRef.current = false;
+    }, 150);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      suppressCanvasChangeRef.current = false;
+    };
   }
 
   const renderDistance = useMemo(() => {
