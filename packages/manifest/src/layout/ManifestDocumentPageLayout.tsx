@@ -82,7 +82,7 @@ export function ManifestDocumentPageLayout({
       }
     >
       <DocumentDetailCanvas className="manifest-document-layout__canvas">
-        TODO: Viewer content
+        {scan}
       </DocumentDetailCanvas>
     </DocumentDetailViewerPane>
   ) : null;
@@ -115,18 +115,8 @@ export function ManifestDocumentPageLayout({
           )}
         </div>
 
-        <div
-          className="flex min-h-0 flex-1 flex-col transition-[margin-left] duration-150 ease-out motion-reduce:transition-none"
-          style={{
-            marginLeft: isSidebarExpanded
-              ? 'var(--overlay-document-viewer-sidebar-width)'
-              : 'var(--overlay-document-viewer-rail-width)',
-          }}
-        >
-          <DocumentDetailTopBar
-            className="h-s64 items-center border-b-0 bg-neutral-900 pr-s24"
-            style={{ paddingLeft: 'var(--s16)' }}
-          >
+        <div className="manifest-document-layout__main">
+          <DocumentDetailTopBar className="manifest-document-layout__top-bar">
             <DocumentDetailBarGroup className="min-w-0 flex-1 justify-start gap-s8">
               <TooltipIconButton
                 aria-controls="document-detail-sidebar"
@@ -144,6 +134,8 @@ export function ManifestDocumentPageLayout({
               <span className="manifest-document-layout__top-bar-divider">
                 |
               </span>
+
+              {topLeft}
 
               <DocumentDetailSegmentedToggleGroup
                 aria-label="Primary viewer mode controls"
@@ -200,11 +192,11 @@ export function ManifestDocumentPageLayout({
             </DocumentDetailBarGroup>
 
             <div className="manifest-document-layout__top-bar-center">
-              TODO: Centre content
+              {topCenter}
             </div>
 
             <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
-              TODO: Right content
+              {topRight}
             </DocumentDetailBarGroup>
           </DocumentDetailTopBar>
 
@@ -220,7 +212,7 @@ export function ManifestDocumentPageLayout({
                   className="manifest-document-layout__viewer-pane"
                 >
                   <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
-                    TODO: Transcript content
+                    {transcription}
                   </DocumentDetailTranscriptCanvas>
                 </DocumentDetailViewerPane>
               )}
@@ -228,59 +220,61 @@ export function ManifestDocumentPageLayout({
           </DocumentDetailBody>
 
           <DocumentDetailBottomBar className="manifest-document-layout__bottom-bar">
-            <DocumentDetailBarGroup className="manifest-document-layout__bottom-bar-group">
-              <TooltipIconButton
-                aria-label="First scan"
-                tooltip="Go to first scan"
-                tooltipPlacement="top"
-                isDisabled={isAtFirst}
-                className={BOTTOM_BAR_BUTTON}
-                icon={
-                  <IconLeftFirst className="manifest-document-layout__toolbar-icon" />
-                }
-                onPress={() => setCurrentScan(1)}
-              />
-              <TooltipIconButton
-                aria-label="Previous scan"
-                tooltip="Go to previous scan"
-                tooltipPlacement="top"
-                isDisabled={isAtFirst}
-                className={BOTTOM_BAR_BUTTON}
-                icon={
-                  <IconLeft className="manifest-document-layout__toolbar-icon" />
-                }
-                onPress={() => setCurrentScan((s) => Math.max(s - 1, 1))}
-              />
+            {bottom ?? (
+              <DocumentDetailBarGroup className="manifest-document-layout__bottom-bar-group">
+                <TooltipIconButton
+                  aria-label="First scan"
+                  tooltip="Go to first scan"
+                  tooltipPlacement="top"
+                  isDisabled={isAtFirst}
+                  className={BOTTOM_BAR_BUTTON}
+                  icon={
+                    <IconLeftFirst className="manifest-document-layout__toolbar-icon" />
+                  }
+                  onPress={() => setCurrentScan(1)}
+                />
+                <TooltipIconButton
+                  aria-label="Previous scan"
+                  tooltip="Go to previous scan"
+                  tooltipPlacement="top"
+                  isDisabled={isAtFirst}
+                  className={BOTTOM_BAR_BUTTON}
+                  icon={
+                    <IconLeft className="manifest-document-layout__toolbar-icon" />
+                  }
+                  onPress={() => setCurrentScan((s) => Math.max(s - 1, 1))}
+                />
 
-              <span className="manifest-document-layout__scan-count">
-                Scan {currentScan} of {totalScans}
-              </span>
+                <span className="manifest-document-layout__scan-count">
+                  Scan {currentScan} of {totalScans}
+                </span>
 
-              <TooltipIconButton
-                aria-label="Next scan"
-                tooltip="Go to next scan"
-                tooltipPlacement="top"
-                isDisabled={isAtLast}
-                className={BOTTOM_BAR_BUTTON}
-                icon={
-                  <IconRight className="manifest-document-layout__toolbar-icon" />
-                }
-                onPress={() =>
-                  setCurrentScan((s) => Math.min(s + 1, totalScans))
-                }
-              />
-              <TooltipIconButton
-                aria-label="Last scan"
-                tooltip="Go to last scan"
-                tooltipPlacement="top"
-                isDisabled={isAtLast}
-                className={BOTTOM_BAR_BUTTON}
-                icon={
-                  <IconRightLast className="manifest-document-layout__toolbar-icon" />
-                }
-                onPress={() => setCurrentScan(totalScans)}
-              />
-            </DocumentDetailBarGroup>
+                <TooltipIconButton
+                  aria-label="Next scan"
+                  tooltip="Go to next scan"
+                  tooltipPlacement="top"
+                  isDisabled={isAtLast}
+                  className={BOTTOM_BAR_BUTTON}
+                  icon={
+                    <IconRight className="manifest-document-layout__toolbar-icon" />
+                  }
+                  onPress={() =>
+                    setCurrentScan((s) => Math.min(s + 1, totalScans))
+                  }
+                />
+                <TooltipIconButton
+                  aria-label="Last scan"
+                  tooltip="Go to last scan"
+                  tooltipPlacement="top"
+                  isDisabled={isAtLast}
+                  className={BOTTOM_BAR_BUTTON}
+                  icon={
+                    <IconRightLast className="manifest-document-layout__toolbar-icon" />
+                  }
+                  onPress={() => setCurrentScan(totalScans)}
+                />
+              </DocumentDetailBarGroup>
+            )}
           </DocumentDetailBottomBar>
         </div>
       </div>
