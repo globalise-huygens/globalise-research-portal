@@ -18,7 +18,6 @@ import {
 export function ManifestTranscriptionControls() {
   const transcriptionMode = useTranscriptionMode();
   const diplomaticViewScale = useDiplomaticViewScale();
-  const showDiplomatic = transcriptionMode === 'diplomatic';
 
   return (
     <div className="manifest-document-layout__transcription-toolbar">
@@ -54,35 +53,33 @@ export function ManifestTranscriptionControls() {
           />
         </DocumentDetailTooltip>
       </DocumentDetailSegmentedToggleGroup>
-      {showDiplomatic && (
-        <div className="gds-document-detail-scan-toolbar__zoom-segment">
-          <DocumentDetailToolButton
-            aria-label="Zoom out transcription"
-            className="gds-document-detail-scan-toolbar__button"
-            icon={
-              <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
-            }
-            onPress={() =>
-              setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))
-            }
-            size="compact"
-          />
-          <span className="gds-document-detail-scan-toolbar__zoom-label">
-            {diplomaticViewScale}%
-          </span>
-          <DocumentDetailToolButton
-            aria-label="Zoom in transcription"
-            className="gds-document-detail-scan-toolbar__button"
-            icon={
-              <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
-            }
-            onPress={() =>
-              setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))
-            }
-            size="compact"
-          />
-        </div>
-      )}
+      <div className="gds-document-detail-scan-toolbar__zoom-segment">
+        <DocumentDetailToolButton
+          aria-label="Zoom out transcription"
+          className="gds-document-detail-scan-toolbar__button"
+          icon={
+            <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
+          }
+          onPress={() =>
+            setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))
+          }
+          size="compact"
+        />
+        <span className="gds-document-detail-scan-toolbar__zoom-label">
+          {diplomaticViewScale}%
+        </span>
+        <DocumentDetailToolButton
+          aria-label="Zoom in transcription"
+          className="gds-document-detail-scan-toolbar__button"
+          icon={
+            <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
+          }
+          onPress={() =>
+            setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))
+          }
+          size="compact"
+        />
+      </div>
     </div>
   );
 }

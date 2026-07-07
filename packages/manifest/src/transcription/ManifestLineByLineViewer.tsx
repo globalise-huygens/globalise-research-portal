@@ -2,6 +2,7 @@ import {
   loadCanvasAnnotationPages,
   useSelectedCanvas,
 } from '@globalise/common/document';
+import { useDiplomaticViewScale } from '@globalise/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useRef } from 'react';
@@ -33,6 +34,7 @@ export function ManifestLineByLineViewer({
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const transcriptionScale = useDiplomaticViewScale();
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
     if (!manifestId || !isManifestReady) {
@@ -175,6 +177,7 @@ export function ManifestLineByLineViewer({
           <LazyLineByLineCanvas
             canvasId={canvasInfos[index].canvasId}
             annotationUrls={canvasInfos[index].annotationUrls}
+            scale={transcriptionScale}
           />
         </div>
       )}

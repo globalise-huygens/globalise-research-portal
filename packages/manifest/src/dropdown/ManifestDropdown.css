@@ -11,7 +11,12 @@
         border-radius: 0.2rem;
         padding: 0 0.5rem;
         background: white;
+        color: #111;
         font: inherit;
+    }
+
+    input::placeholder {
+        color: #666;
     }
 
     ul {
@@ -24,6 +29,7 @@
         background: white;
         border: 1px solid #ddd;
         border-radius: 0 0 0.2rem 0.2rem;
+        color: #111;
         list-style: none;
         margin: 0;
         padding: 0;
