@@ -204,7 +204,7 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <ControlBar className="control-bar--scan">
+      <ControlBar className="gds-document-detail-scan-toolbar">
         <FacsimileControls fullscreenRef={containerRef} />
       </ControlBar>
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />

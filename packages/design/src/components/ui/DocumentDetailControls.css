@@ -40,11 +40,11 @@
   }
 
   .gds-document-detail-rail-button[data-hovered],
-  .gds-document-detail-rail-button[data-active="true"] {
+  .gds-document-detail-rail-button[data-active='true'] {
     background: var(--color-neutral-800);
   }
 
-  .gds-document-detail-rail-button[data-variant="accent"] {
+  .gds-document-detail-rail-button[data-variant='accent'] {
     background: var(--color-vermilion-500);
     color: var(--color-brand-black);
   }
@@ -74,12 +74,12 @@
     font-weight: 500;
   }
 
-  .gds-document-detail-control[data-icon-only="true"] {
+  .gds-document-detail-control[data-icon-only='true'] {
     width: var(--control);
     padding-inline: 0;
   }
 
-  .gds-document-detail-control[data-icon-only="false"] {
+  .gds-document-detail-control[data-icon-only='false'] {
     gap: var(--s8);
     padding-inline: var(--s12);
   }
@@ -88,7 +88,7 @@
     border-color: rgb(255 255 255 / 0.4);
   }
 
-  .gds-document-detail-control[data-active="true"] {
+  .gds-document-detail-control[data-active='true'] {
     border-color: var(--color-vermilion-500);
     background: var(--color-vermilion-500);
     color: var(--color-brand-black);
@@ -104,19 +104,19 @@
     font-size: 0.75rem;
   }
 
-  .gds-document-detail-tool-button[data-size="compact"] {
+  .gds-document-detail-tool-button[data-size='compact'] {
     min-width: var(--s28);
     height: var(--s32);
     padding-inline: var(--s6);
   }
 
-  .gds-document-detail-tool-button[data-size="regular"] {
+  .gds-document-detail-tool-button[data-size='regular'] {
     min-width: var(--s32);
     height: var(--s36);
     padding-inline: var(--s8);
   }
 
-  .gds-document-detail-tool-button[data-size="touch"] {
+  .gds-document-detail-tool-button[data-size='touch'] {
     min-width: var(--s44);
     min-height: var(--s44);
     padding-inline: var(--s12);
@@ -126,7 +126,7 @@
     background: rgb(255 255 255 / 0.1);
   }
 
-  .gds-document-detail-tool-button[data-active="false"] {
+  .gds-document-detail-tool-button[data-active='false'] {
     background: transparent;
     color: var(--color-brand-white);
   }
@@ -135,7 +135,7 @@
     background: rgb(255 255 255 / 0.15);
   }
 
-  .gds-document-detail-tool-button[data-active="true"] {
+  .gds-document-detail-tool-button[data-active='true'] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
     box-shadow: none;
@@ -170,12 +170,12 @@
     box-shadow: none;
   }
 
-  .gds-document-detail-segmented-toggle-group[data-size="compact"] {
+  .gds-document-detail-segmented-toggle-group[data-size='compact'] {
     height: var(--s32);
     border-radius: 4px;
   }
 
-  .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+  .gds-document-detail-segmented-toggle-group[data-size='regular'] {
     height: var(--s40);
     border-radius: 4px;
   }
@@ -196,12 +196,12 @@
     font-size: 0.75rem;
   }
 
-  .gds-document-detail-segment[data-active="false"] {
+  .gds-document-detail-segment[data-active='false'] {
     background: transparent;
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-segment[data-active="true"] {
+  .gds-document-detail-segment[data-active='true'] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
     box-shadow: 0 1px 1px rgb(0 0 0 / 0.12);
@@ -239,7 +239,7 @@
     border-bottom-left-radius: 4px;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-size="compact"] {
+  .gds-document-detail-segmented-toggle-item[data-size='compact'] {
     min-width: var(--s56);
     height: var(--s32);
     gap: var(--s4);
@@ -248,7 +248,7 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+  .gds-document-detail-segmented-toggle-item[data-size='regular'] {
     min-width: var(--s72);
     height: var(--s40);
     gap: var(--s8);
@@ -264,19 +264,19 @@
   }
 
   .gds-document-detail-segmented-toggle-item[data-selected],
-  .gds-document-detail-segmented-toggle-item[aria-pressed="true"] {
+  .gds-document-detail-segmented-toggle-item[aria-pressed='true'] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
   }
 
   .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
-      [aria-pressed="true"]
+      [aria-pressed='true']
     ) {
     color: rgb(255 255 255 / 0.65);
   }
 
   .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
-      [aria-pressed="true"]
+      [aria-pressed='true']
     )[data-hovered] {
     background: rgb(255 255 255 / 0.18);
     color: var(--color-brand-white);
@@ -381,6 +381,145 @@
     line-height: 1;
   }
 
+  .gds-document-detail-control-bar {
+    position: absolute;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s8);
+    background: var(--color-brand-white);
+    padding: var(--s8);
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .gds-document-detail-control-bar:hover {
+    opacity: 1;
+  }
+
+  .gds-document-detail-control-bar:not(.gds-document-detail-scan-toolbar)
+    button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f0f0f0;
+    color: inherit;
+    cursor: pointer;
+    padding: var(--s4) var(--s8);
+  }
+
+  .gds-document-detail-control-bar:not(.gds-document-detail-scan-toolbar)
+    button:disabled {
+    color: grey;
+    opacity: 1;
+  }
+
+  .gds-document-detail-control-bar:not(.gds-document-detail-scan-toolbar)
+    button.active {
+    background: #ddd;
+    font-weight: 700;
+  }
+
+  .gds-document-detail-scan-toolbar {
+    position: absolute;
+    top: var(--s20);
+    left: var(--s16);
+    z-index: 20;
+    display: inline-flex;
+    width: fit-content;
+    height: var(--s40);
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 0;
+    background: rgb(12 10 9 / 0.72);
+    padding-inline: var(--s4);
+    color: var(--color-brand-white);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+    backdrop-filter: blur(2px);
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-segment {
+    display: inline-flex;
+    height: var(--s32);
+    align-items: stretch;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .gds-document-detail-scan-toolbar__button {
+    width: var(--s36);
+    min-width: var(--s36);
+    height: var(--s32);
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    color: rgb(255 255 255 / 0.78);
+    box-shadow: none;
+    padding-inline: 0;
+  }
+
+  .gds-document-detail-scan-toolbar__button[data-hovered] {
+    background: rgb(255 255 255 / 0.12);
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-scan-toolbar__button[data-pressed] {
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  .gds-document-detail-scan-toolbar__button[data-focused],
+  .gds-document-detail-scan-toolbar__button[data-focus-visible],
+  .gds-document-detail-scan-toolbar__button:focus,
+  .gds-document-detail-scan-toolbar__button:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .gds-document-detail-scan-toolbar__button
+    .gds-document-detail-scan-toolbar__icon {
+    width: var(--s20);
+    height: var(--s20);
+    flex-shrink: 0;
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-segment
+    .gds-document-detail-scan-toolbar__button:first-child {
+    border-right: 1px solid rgb(255 255 255 / 0.14);
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-segment
+    .gds-document-detail-scan-toolbar__button:last-child {
+    border-left: 1px solid rgb(255 255 255 / 0.14);
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-label {
+    display: inline-flex;
+    min-width: var(--s64);
+    height: var(--s32);
+    align-items: center;
+    justify-content: center;
+    background: rgb(255 255 255 / 0.06);
+    color: var(--color-parchment-500);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    padding-inline: var(--s8);
+    text-align: center;
+  }
+
+  .gds-document-detail-scan-toolbar__divider {
+    width: 1px;
+    height: var(--s20);
+    margin-inline: var(--s4);
+    background: rgb(255 255 255 / 0.2);
+  }
+
   @media (max-width: 767px) {
     .gds-document-detail-rail-button {
       height: var(--s56);
@@ -392,18 +531,24 @@
       min-height: var(--s40);
     }
 
-    .gds-document-detail-tool-button[data-size="touch"] {
+    .gds-document-detail-tool-button[data-size='touch'] {
       min-width: var(--s44);
       min-height: var(--s44);
     }
 
-    .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+    .gds-document-detail-segmented-toggle-group[data-size='regular'] {
       height: var(--s40);
     }
 
-    .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+    .gds-document-detail-segmented-toggle-item[data-size='regular'] {
       height: var(--s40);
       padding-inline: var(--s10);
+    }
+
+    .gds-document-detail-scan-toolbar {
+      left: var(--s12);
+      top: var(--s12);
+      max-width: calc(100% - var(--s24));
     }
   }
 }

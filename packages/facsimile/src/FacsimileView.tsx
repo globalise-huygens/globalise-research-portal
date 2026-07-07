@@ -32,7 +32,7 @@ export function FacsimileView({
         }}
       />
       <FacsimileOverlay canvasId={canvasId} />
-      <ControlBar className="control-bar--scan">
+      <ControlBar className="gds-document-detail-scan-toolbar">
         <FacsimileControls fullscreenRef={fullscreenRef} />
       </ControlBar>
       {showNavigation && <CanvasControls />}

@@ -1,18 +1,11 @@
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { ControlBar } from './ControlBar';
 import { useCanvasNavigation } from './useCanvasNavigation';
 
 export function CanvasControls() {
-  const {
-    isReady,
-    prev,
-    next,
-    goToRandom,
-    label,
-    position,
-    hasPrev,
-    hasNext,
-  } = useCanvasNavigation();
+  const { isReady, prev, next, goToRandom, label, position, hasPrev, hasNext } =
+    useCanvasNavigation();
 
   if (!isReady) {
     return null;
@@ -20,18 +13,18 @@ export function CanvasControls() {
 
   return (
     <div className="navigation">
-      <span className="info">{label}&nbsp;{position}</span>
-      <div className="control-bar">
+      <span className="info">
+        {label}&nbsp;{position}
+      </span>
+      <ControlBar>
         <button onClick={prev} disabled={!hasPrev}>
-          <NavigateBeforeIcon/>
+          <NavigateBeforeIcon />
         </button>
-        <button onClick={goToRandom}>
-          I'm Feeling Lucky
-        </button>
+        <button onClick={goToRandom}>I'm Feeling Lucky</button>
         <button onClick={next} disabled={!hasNext}>
-          <NavigateNextIcon/>
+          <NavigateNextIcon />
         </button>
-      </div>
+      </ControlBar>
     </div>
   );
 }
