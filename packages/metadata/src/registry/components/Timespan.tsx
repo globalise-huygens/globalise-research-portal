@@ -7,7 +7,7 @@ export function Timespan({ entry }: RegistryComponentProps) {
   const begin = findChild(metadata, 'begin_of_the_begin')?.value;
   const end = findChild(metadata, 'end_of_the_end')?.value;
   return (
-    <li className="metadata-entry">
+    <li className="metadata-entry timespan">
       <Label label={metadata.label}/>
       <span className="value">
         <span title={begin}>{formatDate(begin)}</span>

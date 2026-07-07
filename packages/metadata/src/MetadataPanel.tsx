@@ -5,6 +5,7 @@ import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { toCategoryViews } from './toCategoryViews.ts';
 import { metadataConfig } from './metadataConfig.ts';
 import { MetadataView } from './MetadataView.tsx';
+import './MetadataPanel.css';
 
 export function MetadataPanel() {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();

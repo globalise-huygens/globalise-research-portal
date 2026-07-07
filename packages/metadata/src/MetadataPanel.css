@@ -1,0 +1,16 @@
+.label {
+    color: grey;
+}
+
+@keyframes blink {
+    0%   { color: #39ff14; }
+    50%  { color: #ff6a00; }
+}
+
+.timespan {
+    .label:hover {
+        color: #39ff14;
+        animation: blink 1s step-start infinite;
+    }
+}
+
