@@ -10,13 +10,14 @@ export type LinkedArtNode = {
   [key: string]: unknown;
 };
 
-const entriesToSkip = new Set([
-  'type',
-  '_label',
-  'content',
-  'classified_as',
-  'id',
-  '@context',
+// TODO move to config:
+const entriesToSkip = new Set<string>([
+  // 'type',
+  // '_label',
+  // 'content',
+  // 'classified_as',
+  // 'id',
+  // '@context',
 ]);
 
 export function toMetadata(document: unknown): MetadataNode[] {
@@ -37,7 +38,7 @@ function toMetadataNode(
         children.push(toMetadataNode(value, key));
       } else {
         const child = {
-          source: { propName: key },
+          tags: [key],
           label: key,
           value: String(value),
           children: [],
@@ -47,15 +48,21 @@ function toMetadataNode(
     }
   }
 
-  const source = {
-    propName: key,
-    classifiedAs: asArray(node.classified_as)[0]?.id,
-  };
+  const tags = [];
+  if(key) {
+    tags.push(key);
+  }
+  const classifiedAs = node.classified_as?.[0]?.id;
+  if (classifiedAs) {
+    tags.push(classifiedAs);
+  }
 
   return {
     label: toLabel(node, key) ?? '',
     value: node._label ?? node.content ?? '',
-    url: getUrl(node), children, source,
+    url: getUrl(node),
+    children,
+    tags,
   };
 }
 

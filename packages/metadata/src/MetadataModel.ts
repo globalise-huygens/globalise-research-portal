@@ -7,20 +7,10 @@ export type MetadataNode = {
   children: MetadataNode[];
 
   /**
-   * Allows matching components to the data based on {@link MatchRule}s
+   * Allows matching metadata to a component based on {@link MatchRule}s
+   *
    */
-  source: {
-
-    /**
-     * Original prop name
-     */
-    propName?: string;
-
-    /**
-     * URI of the node's first classified_as: Getty AAT semantic tag
-     */
-    classifiedAs?: string
-  };
+  tags: string[];
 };
 
 export type CategoryName = string;
@@ -41,7 +31,7 @@ export type MatchRule = {
   /**
    * Must match to source propName or classifiedAs of a {@link MetadataNode}
    */
-  sourceMatcher: string | string[];
+  tags: string[];
   target: MatchTarget
 };
 
@@ -67,7 +57,7 @@ export type MetadataConfig = {
 export type ComponentName = string;
 
 /**
- * Metadata entry matched to a component from {@link registryComponentConfig}
+ * Metadata entry matched to a component from {@link componentRegistry}
  */
 export type MetadataWithComponent = {
   metadata: MetadataNode;

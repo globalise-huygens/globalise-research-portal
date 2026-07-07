@@ -1,10 +1,5 @@
 import { MatchTarget, MetadataConfig } from './MetadataModel';
 
-const identificationLi = {
-  category: 'identification',
-  component: 'Li',
-} satisfies MatchTarget;
-
 export const metadataConfig: MetadataConfig = {
   categories: [
     { name: 'identification', label: 'Identification' },
@@ -14,31 +9,33 @@ export const metadataConfig: MetadataConfig = {
   ],
   rules: [
     {
-      sourceMatcher: 'http://vocab.getty.edu/aat/300312355',
-      target: identificationLi,
+      tags: [
+        'http://vocab.getty.edu/aat/300312355',
+        'http://vocab.getty.edu/aat/300445023',
+      ],
+      target: {
+        category: 'identification',
+        component: 'Li',
+      } satisfies MatchTarget,
     },
     {
-      sourceMatcher: 'http://vocab.getty.edu/aat/300445023',
-      target: identificationLi,
-    },
-    {
-      sourceMatcher: 'title',
+      tags: ['title'],
       target: { category: 'identification', component: 'Li', label: 'Title' },
     },
     {
-      sourceMatcher: 'produced_by',
+      tags: ['produced_by'],
       target: { category: 'production', component: 'Li', label: 'Production' },
     },
     {
-      sourceMatcher: 'member_of',
+      tags: ['member_of'],
       target: { category: 'hierarchy', component: 'Li', label: 'Part of' },
     },
     {
-      sourceMatcher: 'part',
+      tags: ['part'],
       target: { category: 'documents', component: 'Doc' },
     },
     {
-      sourceMatcher: 'timespan',
+      tags: ['timespan'],
       target: { category: 'production', component: 'Timespan', label: 'Timespan' },
     },
   ],

@@ -1,13 +1,13 @@
 import { MetadataWithComponent, MatchRule, MetadataNode, defaultTarget } from './MetadataModel';
-import { matchRule } from './matchRule.ts';
+import { matchToRule } from './matchToRule.ts';
 
-export function toMetadataWithComponent(
+export function linkComponent(
   node: MetadataNode,
   rules: MatchRule[],
 ): MetadataWithComponent {
-  const { component, label } = matchRule(node, rules) ?? defaultTarget;
+  const { component, label } = matchToRule(node, rules) ?? defaultTarget;
   const children = node.children.map(
-    (child) => toMetadataWithComponent(child, rules),
+    (child) => linkComponent(child, rules),
   );
   const metadata = label
     ? { ...node, label }

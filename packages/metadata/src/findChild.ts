@@ -2,7 +2,7 @@ import { MetadataNode } from './MetadataModel.ts';
 
 export function findChild(
   entry: MetadataNode,
-  propName: string,
+  tag: string,
 ): MetadataNode | undefined {
-  return entry.children.find((c) => c.source.propName === propName);
+  return entry.children.find((c) => c.tags.includes(tag));
 }
