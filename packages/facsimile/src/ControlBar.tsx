@@ -1,4 +1,3 @@
-import './ControlBar.css';
 import { type ReactNode } from 'react';
 
 type ControlBarProps = {

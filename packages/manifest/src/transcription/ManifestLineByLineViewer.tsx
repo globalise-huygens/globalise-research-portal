@@ -55,7 +55,11 @@ export function ManifestLineByLineViewer({
 
   const lastSelectedCanvasId = useRef(selectedCanvasId);
 
-  useEffect(scrollToSelectedCanvas, [selectedCanvasId, selectedCanvasSource]);
+  useEffect(scrollToSelectedCanvas, [
+    canvasInfos,
+    selectedCanvasId,
+    selectedCanvasSource,
+  ]);
 
   function scrollToSelectedCanvas() {
     if (selectedCanvasId === lastSelectedCanvasId.current) {

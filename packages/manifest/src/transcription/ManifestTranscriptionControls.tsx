@@ -16,15 +16,8 @@ import {
 } from '@globalise/document';
 
 export function ManifestTranscriptionControls() {
-  const readTranscriptionMode = useTranscriptionMode as () =>
-    | 'diplomatic'
-    | 'line-by-line';
-  const readDiplomaticViewScale = useDiplomaticViewScale as () => number;
-  const setMode = setTranscriptionMode;
-  const setScale = setDiplomaticViewScale;
-
-  const transcriptionMode = readTranscriptionMode();
-  const diplomaticViewScale = readDiplomaticViewScale();
+  const transcriptionMode = useTranscriptionMode();
+  const diplomaticViewScale = useDiplomaticViewScale();
   const showDiplomatic = transcriptionMode === 'diplomatic';
 
   return (
@@ -44,7 +37,7 @@ export function ManifestTranscriptionControls() {
             icon={
               <IconTranscriptionNormalised className="manifest-document-layout__transcription-mode-icon" />
             }
-            onPress={() => setMode('line-by-line')}
+            onPress={() => setTranscriptionMode('line-by-line')}
             size="compact"
           />
         </DocumentDetailTooltip>
@@ -56,7 +49,7 @@ export function ManifestTranscriptionControls() {
             icon={
               <IconTranscriptionDiplomatic className="manifest-document-layout__transcription-mode-icon" />
             }
-            onPress={() => setMode('diplomatic')}
+            onPress={() => setTranscriptionMode('diplomatic')}
             size="compact"
           />
         </DocumentDetailTooltip>
@@ -69,7 +62,9 @@ export function ManifestTranscriptionControls() {
             icon={
               <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
             }
-            onPress={() => setScale(Math.max(30, diplomaticViewScale - 10))}
+            onPress={() =>
+              setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))
+            }
             size="compact"
           />
           <span className="gds-document-detail-scan-toolbar__zoom-label">
@@ -81,7 +76,9 @@ export function ManifestTranscriptionControls() {
             icon={
               <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
             }
-            onPress={() => setScale(Math.min(200, diplomaticViewScale + 10))}
+            onPress={() =>
+              setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))
+            }
             size="compact"
           />
         </div>

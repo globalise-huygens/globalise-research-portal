@@ -73,7 +73,7 @@ export function renderDiplomaticView(
   const viewWidth = $layoutView.getBoundingClientRect().width;
   if (!viewWidth) {
     return {
-      setSelected: () => {},
+      setSelected: noop,
     };
   }
 

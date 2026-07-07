@@ -2,7 +2,6 @@ import './SplitPaneLayout.css';
 import React, {
   ReactNode,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -35,16 +34,10 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
     (ratio: number) => Math.min(Math.max(ratio, minRatio), 1 - minRatio),
     [],
   );
-  const [liveRatio, setLiveRatio] = useState(() => clampRatio(paneRatio));
+  const clampedPaneRatio = clampRatio(paneRatio);
+  const [dragRatio, setDragRatio] = useState<number | null>(null);
+  const liveRatio = isDragging ? (dragRatio ?? clampedPaneRatio) : clampedPaneRatio;
   const pendingRatioRef = useRef(liveRatio);
-
-  useEffect(() => {
-    if (!isDragging) {
-      const next = clampRatio(paneRatio);
-      pendingRatioRef.current = next;
-      setLiveRatio(next);
-    }
-  }, [paneRatio, isDragging, clampRatio]);
 
   const updatePaneRatio = useCallback(
     (clientX: number, clientY: number) => {
@@ -67,7 +60,7 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
       );
 
       pendingRatioRef.current = nextRatio;
-      setLiveRatio(nextRatio);
+      setDragRatio(nextRatio);
     },
     [direction],
   );
@@ -76,6 +69,7 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
     (event: React.PointerEvent<HTMLDivElement>) => {
       event.preventDefault();
       const target = event.currentTarget;
+      pendingRatioRef.current = liveRatio;
       setIsDragging(true);
       target.setPointerCapture(event.pointerId);
 
@@ -85,6 +79,7 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
 
       const handleUp = () => {
         setIsDragging(false);
+        setDragRatio(null);
         setPaneRatio(pendingRatioRef.current);
         if (target.hasPointerCapture(event.pointerId)) {
           target.releasePointerCapture(event.pointerId);
@@ -99,7 +94,7 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
       window.addEventListener('pointercancel', handleUp);
       updatePaneRatio(event.clientX, event.clientY);
     },
-    [updatePaneRatio],
+    [liveRatio, updatePaneRatio],
   );
 
   const splitTemplate =
@@ -125,7 +120,7 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
         onDoubleClick={() => {
           resetScaling();
           pendingRatioRef.current = 0.5;
-          setLiveRatio(0.5);
+          setDragRatio(null);
         }}
         onPointerDown={handlePointerDown}
       />

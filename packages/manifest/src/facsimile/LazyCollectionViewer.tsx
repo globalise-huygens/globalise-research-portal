@@ -59,6 +59,17 @@ export function LazyCollectionViewer({
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
 
+  const lazyCanvasesRef = useRef(lazyCanvases);
+  const onCanvasChangeRef = useRef(onCanvasChange);
+
+  useEffect(() => {
+    lazyCanvasesRef.current = lazyCanvases;
+  }, [lazyCanvases]);
+
+  useEffect(() => {
+    onCanvasChangeRef.current = onCanvasChange;
+  }, [onCanvasChange]);
+
   useEffect(syncLazyCanvases, [lazyCanvases]);
 
   function syncLazyCanvases() {
@@ -166,9 +177,9 @@ export function LazyCollectionViewer({
     };
 
     const onViewportChange = () => {
-      const centerId = findCenterScan(viewer, lazyCanvases);
+      const centerId = findCenterScan(viewer, lazyCanvasesRef.current);
       if (centerId) {
-        onCanvasChange(centerId);
+        onCanvasChangeRef.current(centerId);
       }
     };
 

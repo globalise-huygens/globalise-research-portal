@@ -57,9 +57,9 @@ export function ManifestDiplomaticViewer({
     () =>
       initialCanvasId
         ? Math.max(
-            0,
-            canvasInfos.findIndex((c) => c.canvasId === initialCanvasId),
-          )
+          0,
+          canvasInfos.findIndex((c) => c.canvasId === initialCanvasId),
+        )
         : 0,
     [initialCanvasId, canvasInfos],
   );

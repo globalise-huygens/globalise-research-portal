@@ -1,5 +1,6 @@
 import {
   DocumentDetailToolButton,
+  IconPictureInPicture,
   IconReset,
   IconRotate,
   IconZoomIn,
@@ -14,7 +15,7 @@ type FacsimileControlBarProps = {
 
 export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const viewer = useViewer();
-  const { zoomIn, zoomOut, home, rotate, rotation } =
+  const { zoomIn, zoomOut, home, rotate, rotation, toggleFullPage, isFullPage } =
     useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
 
@@ -93,6 +94,15 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
         onPress={() => {
           rotate(90);
         }}
+        size="compact"
+      />
+      <DocumentDetailToolButton
+        aria-label={isFullPage ? 'Exit fullscreen' : 'Enter fullscreen'}
+        className="gds-document-detail-scan-toolbar__button"
+        icon={
+          <IconPictureInPicture className="gds-document-detail-scan-toolbar__icon" />
+        }
+        onPress={toggleFullPage}
         size="compact"
       />
     </>
