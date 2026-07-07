@@ -3,7 +3,7 @@ import {
   DocumentDetailMetadataSidebar,
   DocumentDetailMetadataSidebarButton,
   DocumentDetailMetadataSidebarBadge,
-} from '@globalise/design-system';
+} from './designSystemCompat';
 import { sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 

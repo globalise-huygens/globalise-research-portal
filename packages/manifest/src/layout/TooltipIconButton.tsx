@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DocumentDetailTooltip, DocumentDetailToolButton } from '@globalise/design-system';
+import { DocumentDetailTooltip, DocumentDetailToolButton } from './designSystemCompat';
 
 export function TooltipIconButton({
   tooltip,

@@ -14,31 +14,36 @@ import {
   DocumentDetailTopBar,
   DocumentDetailTranscriptCanvas,
   DocumentDetailViewerPane,
-  IconLeft,
-  IconLeftFirst,
-  IconRight,
-  IconRightLast,
   IconScan,
   IconSidebar,
   IconTranscription,
-} from '@globalise/design-system';
+} from './designSystemCompat';
 
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { TooltipIconButton } from './TooltipIconButton';
-import { TOP_BAR_BUTTON, BOTTOM_BAR_BUTTON } from './buttonClasses';
+import { TOP_BAR_BUTTON } from './buttonClasses';
 
 import './ManifestDocumentPageLayout.css';
 
-export function ManifestDocumentPageLayout() {
+type Props = {
+  topLeft?: React.ReactNode;
+  topCenter?: React.ReactNode;
+  topRight?: React.ReactNode;
+  scan?: React.ReactNode;
+  transcription?: React.ReactNode;
+  bottom?: React.ReactNode;
+};
+
+export function ManifestDocumentPageLayout(
+  { topLeft, topCenter, topRight, scan, transcription, bottom }: Props,
+) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     () => new Set(['inventory']),
   );
-  const [currentScan, setCurrentScan] = React.useState(1);
-  const totalScans = 26;
 
   const toggleSidebarSection = React.useCallback((sectionId: string) => {
     setExpandedSections((prev) => {
@@ -57,16 +62,13 @@ export function ManifestDocumentPageLayout() {
     setIsSidebarExpanded(true);
   }, []);
 
-  const isAtFirst = currentScan === 1;
-  const isAtLast = currentScan === totalScans;
-
   const scanPane = isScanVisible ? (
     <DocumentDetailViewerPane
       key="scan"
       className={cn('relative', isTextVisible ? 'border-r border-brand-black' : 'border-r-0')}
     >
       <DocumentDetailCanvas className="bg-neutral-500">
-        TODO: Viewer content
+        {scan}
       </DocumentDetailCanvas>
     </DocumentDetailViewerPane>
   ) : null;
@@ -123,6 +125,12 @@ export function ManifestDocumentPageLayout() {
               onPress={() => setIsSidebarExpanded((v) => !v)}
             />
 
+            {topLeft && (
+              <div className="min-w-0 flex-1">
+                {topLeft}
+              </div>
+            )}
+
             <span className="font-sans text-xs text-brand-white/70">|</span>
 
             <DocumentDetailSegmentedToggleGroup
@@ -163,12 +171,12 @@ export function ManifestDocumentPageLayout() {
             </DocumentDetailSegmentedToggleGroup>
           </DocumentDetailBarGroup>
 
-          <div className="flex-1 text-center">
-            TODO: Centre content
+          <div className="min-w-0 flex-1 text-center">
+            {topCenter}
           </div>
 
           <DocumentDetailBarGroup className="flex-1 min-w-0 ml-auto gap-s8 justify-end">
-            TODO: Right content
+            {topRight}
           </DocumentDetailBarGroup>
         </DocumentDetailTopBar>
 
@@ -182,7 +190,7 @@ export function ManifestDocumentPageLayout() {
             {isTextVisible && (
               <DocumentDetailViewerPane key="text" className="relative border-r-0">
                 <DocumentDetailTranscriptCanvas className="bg-neutral-500">
-                  TODO: Transcript content
+                  {transcription}
                 </DocumentDetailTranscriptCanvas>
               </DocumentDetailViewerPane>
             )}
@@ -190,49 +198,7 @@ export function ManifestDocumentPageLayout() {
         </DocumentDetailBody>
 
         <DocumentDetailBottomBar className="border-t-0 justify-center gap-s8">
-          <DocumentDetailBarGroup className="gap-s8">
-            <TooltipIconButton
-              aria-label="First scan"
-              tooltip="Go to first scan"
-              tooltipPlacement="top"
-              isDisabled={isAtFirst}
-              className={BOTTOM_BAR_BUTTON}
-              icon={<IconLeftFirst className="h-s16 w-s16" />}
-              onPress={() => setCurrentScan(1)}
-            />
-            <TooltipIconButton
-              aria-label="Previous scan"
-              tooltip="Go to previous scan"
-              tooltipPlacement="top"
-              isDisabled={isAtFirst}
-              className={BOTTOM_BAR_BUTTON}
-              icon={<IconLeft className="h-s16 w-s16" />}
-              onPress={() => setCurrentScan((s) => Math.max(s - 1, 1))}
-            />
-
-            <span className="min-w-0 inline-flex items-baseline gap-s8 leading-4 text-xs text-neutral-300">
-              Scan {currentScan} of {totalScans}
-            </span>
-
-            <TooltipIconButton
-              aria-label="Next scan"
-              tooltip="Go to next scan"
-              tooltipPlacement="top"
-              isDisabled={isAtLast}
-              className={BOTTOM_BAR_BUTTON}
-              icon={<IconRight className="h-s16 w-s16" />}
-              onPress={() => setCurrentScan((s) => Math.min(s + 1, totalScans))}
-            />
-            <TooltipIconButton
-              aria-label="Last scan"
-              tooltip="Go to last scan"
-              tooltipPlacement="top"
-              isDisabled={isAtLast}
-              className={BOTTOM_BAR_BUTTON}
-              icon={<IconRightLast className="h-s16 w-s16" />}
-              onPress={() => setCurrentScan(totalScans)}
-            />
-          </DocumentDetailBarGroup>
+          {bottom}
         </DocumentDetailBottomBar>
       </div>
     </div>
