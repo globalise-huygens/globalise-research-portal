@@ -500,7 +500,7 @@
 
   .gds-document-detail-scan-toolbar__zoom-label {
     display: inline-flex;
-    min-width: var(--s64);
+    min-width: var(--s56);
     height: var(--s32);
     align-items: center;
     justify-content: center;
@@ -509,7 +509,7 @@
     font-family: var(--font-sans);
     font-size: 0.75rem;
     line-height: 1rem;
-    padding-inline: var(--s8);
+    padding-inline: var(--s2);
     text-align: center;
   }
 
