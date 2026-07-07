@@ -1,20 +1,14 @@
-import type { DocumentDetailToolButtonProps } from '@globalise/design';
-import {
-  DocumentDetailToolButton,
-  DocumentDetailTooltip,
-} from '@globalise/design';
 import * as React from 'react';
-
-type TooltipIconButtonProps = DocumentDetailToolButtonProps & {
-  tooltip: React.ReactNode;
-  tooltipPlacement?: 'bottom' | 'top' | 'left' | 'right';
-};
+import { DocumentDetailTooltip, DocumentDetailToolButton } from '@globalise/design';
 
 export function TooltipIconButton({
   tooltip,
   tooltipPlacement = 'bottom',
   ...buttonProps
-}: TooltipIconButtonProps) {
+}: React.ComponentProps<typeof DocumentDetailToolButton> & {
+  tooltip: React.ReactNode;
+  tooltipPlacement?: React.ComponentProps<typeof DocumentDetailTooltip>['placement'];
+}) {
   return (
     <DocumentDetailTooltip label={tooltip} placement={tooltipPlacement}>
       <DocumentDetailToolButton {...buttonProps} />

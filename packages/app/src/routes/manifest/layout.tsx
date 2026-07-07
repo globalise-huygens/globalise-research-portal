@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { ManifestLayoutIntegrationPage } from '../../ManifestLayoutIntegrationPage.tsx';
+import { ManifestLayoutPage } from '../../ManifestLayoutPage.tsx';
 
 export const Route = createFileRoute('/manifest/layout')({
-  component: ManifestLayoutIntegrationPage,
+  component: ManifestLayoutPage,
 });
