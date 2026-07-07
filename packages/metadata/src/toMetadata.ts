@@ -10,7 +10,14 @@ export type LinkedArtNode = {
   [key: string]: unknown;
 };
 
-const propsToSkip = new Set(['type', '_label', 'content', 'classified_as', 'id', '@context']);
+const entriesToSkip = new Set([
+  'type',
+  '_label',
+  'content',
+  'classified_as',
+  'id',
+  '@context'
+]);
 
 export function toMetadata(document: unknown): MetadataEntry[] {
   return isNode(document) ? toMetadataEntry(document).children : [];
@@ -22,7 +29,7 @@ function toMetadataEntry(
 ): MetadataEntry {
   const children: MetadataEntry[] = [];
   for (const [key, values] of Object.entries(node)) {
-    if (propsToSkip.has(key)) {
+    if (entriesToSkip.has(key)) {
       continue;
     }
     for (const value of asArray(values)) {

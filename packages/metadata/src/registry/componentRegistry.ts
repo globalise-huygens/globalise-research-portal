@@ -3,6 +3,7 @@ import { ComponentName } from '../MetadataModel';
 import { Li } from './Li.tsx';
 import { Doc } from './Doc.tsx';
 import { MetadataComponentProps } from './MetadataComponentProps.tsx';
+import { Timespan } from './Timespan.tsx';
 
 export type ComponentRegistry = Record<
   ComponentName,
@@ -10,7 +11,8 @@ export type ComponentRegistry = Record<
 >;
 
 export const componentRegistry = {
-  [Li.name]: Li,
   [Doc.name]: Doc,
+  [Li.name]: Li,
+  [Timespan.name]: Timespan,
   default: Li,
 } satisfies ComponentRegistry;

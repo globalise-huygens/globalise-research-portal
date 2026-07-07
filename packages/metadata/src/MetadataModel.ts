@@ -23,16 +23,24 @@ export type MetadataEntry = {
 
 export type CategoryName = string;
 
+export type MatchTarget = {
+  category: CategoryName;
+  component: ComponentName;
+  label?: string;
+};
+
+export const defaultTarget = {
+  category: 'other',
+  component: 'default',
+  label: 'Other',
+} satisfies MatchTarget;
+
 export type MatchRule = {
   /**
    * Must match to source propName or classifiedAs of a {@link MetadataEntry}
    */
   sourceMatcher: string | string[];
-  target: {
-    category: CategoryName;
-    component: ComponentName;
-    label?: string;
-  }
+  target: MatchTarget
 };
 
 export type MetadataCategory = {
@@ -40,9 +48,17 @@ export type MetadataCategory = {
   label: string
 };
 
+export const defaultCategory = {
+  name: 'other' as CategoryName,
+  label: 'Other',
+} satisfies MetadataCategory;
+
 export type MetadataConfig = {
   categories: MetadataCategory[];
   rules: MatchRule[];
+  /**
+   * If 'append' the metadata entry will be added to {@link defaultCategory}
+   */
   onNoMatch?: 'append' | 'hide';
 };
 

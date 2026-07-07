@@ -1,17 +1,12 @@
 import {
-  MetadataCategory,
   MetadataConfig,
   MetadataEntry,
   CategoryView,
   ComponentEntry, CategoryName,
+  defaultCategory, defaultTarget,
 } from './MetadataModel';
 
-import { asArray } from './asArray.ts';
-
-export const defaultCategory = {
-  name: 'other' as CategoryName,
-  label: 'Other',
-} satisfies MetadataCategory;
+import { matchRule } from './matchRule.ts';
 
 export function toCategoryViews(
   metadataEntries: MetadataEntry[],
@@ -20,15 +15,14 @@ export function toCategoryViews(
   const categoryComponentEntries = new Map<CategoryName, ComponentEntry[]>();
 
   for (const entry of metadataEntries) {
-    const rule = config.rules.find((rule) => {
-      const { classifiedAs, propName } = entry.source;
-      return asArray(rule.sourceMatcher).some((m) => m === classifiedAs || m === propName);
-    });
-    if (!rule && config.onNoMatch === 'hide') {
+    const target = matchRule(entry, config);
+
+    if (!target && config.onNoMatch === 'hide') {
       continue;
     }
 
-    const { category = 'other', component = 'default', label } = rule?.target ?? {};
+    const { category, component, label } = target ?? defaultTarget;
+
     const item: ComponentEntry = {
       componentName: component,
       entry: label ? { ...entry, label } : entry,
@@ -51,5 +45,5 @@ export function toCategoryViews(
       const categoryName = c.label;
       return ({ categoryName, items });
     })
-    .filter((c) => c.items.length > 0);
+    .filter((c) => c.items.length);
 }

@@ -2,15 +2,15 @@ import { CategoryView } from './MetadataModel';
 import { componentRegistry } from './registry/componentRegistry.ts';
 
 type MetadataSectionProps = {
-  categorViews: CategoryView[]
+  categories: CategoryView[]
 };
 
-export function MetadataSection(
-  { categorViews }: MetadataSectionProps,
+export function MetadataView(
+  { categories }: MetadataSectionProps,
 ) {
   return (
     <>
-      {categorViews.map((categoryView, ci) => (
+      {categories.map((categoryView, ci) => (
         <section key={ci} className="metadata-category">
           <h3>{categoryView.categoryName}</h3>
           <ul className="metadata">

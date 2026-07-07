@@ -1,13 +1,13 @@
-import {useEffect, useMemo, useState} from 'react';
-import {fetchJson} from '@globalise/common';
-import {toMetadata} from './toMetadata.ts';
-import {useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {toCategoryViews} from './toCategoryViews.ts';
-import {metadataConfig} from './metadata.config.ts';
-import {MetadataSection} from './MetadataSection.tsx';
+import { useEffect, useMemo, useState } from 'react';
+import { fetchJson } from '@globalise/common';
+import { toMetadata } from './toMetadata.ts';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { toCategoryViews } from './toCategoryViews.ts';
+import { metadataConfig } from './metadataConfig.ts';
+import { MetadataView } from './MetadataView.tsx';
 
 export function MetadataPanel() {
-  const {vault, id: manifestId, isReady: isManifestReady} = useManifest();
+  const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
 
   const [json, setLinkedArt] = useState<unknown>();
 
@@ -15,11 +15,11 @@ export function MetadataPanel() {
     if (!isManifestReady) {
       return;
     }
-    const manifest = vault.get({id: manifestId, type: 'Manifest'});
+    const manifest = vault.get({ id: manifestId, type: 'Manifest' });
     return manifest.seeAlso[0]?.id;
   }, [isManifestReady, manifestId]);
 
-  const view = useMemo(() => {
+  const categories = useMemo(() => {
     const entries = toMetadata(json);
     return toCategoryViews(entries, metadataConfig);
   }, [json]);
@@ -30,16 +30,15 @@ export function MetadataPanel() {
     }
     fetchJson(curatedHoldingUrl)
       .then(setLinkedArt)
-      .catch(console.error)
-    ;
+      .catch(console.error);
   }, [curatedHoldingUrl]);
 
   if (!curatedHoldingUrl) {
     return <>No CuratedHolding found</>;
   }
 
-  return <div style={{height: '100%', overflowY: 'scroll', width: '40rem'}}>
+  return <div style={{ height: '100%', overflowY: 'scroll', width: '40rem' }}>
     <p><a href={curatedHoldingUrl} target="_blank">{curatedHoldingUrl}</a></p>
-    <MetadataSection categorViews={view}/>;
+    <MetadataView categories={categories}/>;
   </div>;
 }
