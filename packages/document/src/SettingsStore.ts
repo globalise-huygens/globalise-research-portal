@@ -4,7 +4,7 @@ import { DocumentMode } from './DocumentModeControls';
 
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 export type SettingsState = {
-  documentMode: DocumentMode
+  documentMode: DocumentMode;
   paneRatio: number;
   transcriptionMode: TranscriptionMode;
   diplomaticViewScale: number;
@@ -22,14 +22,23 @@ export const useSettingsStore = create<SettingsState>()(
    * Persist settings to localStorage
    * Increment version to overwrite previous versions:
    */
-  persist(
-    () => ({ ...defaultSettings }),
-    { name: 'settings', version: 0 },
-  ),
+  persist(() => ({ ...defaultSettings }), { name: 'settings', version: 0 }),
 );
 
 export function useSettings() {
   return useSettingsStore();
+}
+
+export function usePaneRatio() {
+  return useSettingsStore((state) => state.paneRatio);
+}
+
+export function useTranscriptionMode() {
+  return useSettingsStore((state) => state.transcriptionMode);
+}
+
+export function useDiplomaticViewScale() {
+  return useSettingsStore((state) => state.diplomaticViewScale);
 }
 
 export function setDocumentMode(documentMode: DocumentMode) {

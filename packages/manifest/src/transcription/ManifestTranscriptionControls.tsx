@@ -1,14 +1,16 @@
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import { Button } from '@globalise/design';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
-  useSettings,
+  useDiplomaticViewScale,
+  useTranscriptionMode,
 } from '@globalise/document';
-import { Button } from '@globalise/design';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 export function ManifestTranscriptionControls() {
-  const { transcriptionMode, diplomaticViewScale } = useSettings();
+  const transcriptionMode = useTranscriptionMode();
+  const diplomaticViewScale = useDiplomaticViewScale();
   const showDiplomatic = transcriptionMode === 'diplomatic';
 
   return (
@@ -18,7 +20,9 @@ export function ManifestTranscriptionControls() {
           <ZoomOutIcon
             className="icon"
             fontSize="small"
-            onClick={() => setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))}
+            onClick={() =>
+              setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))
+            }
           />
           <input
             type="range"
@@ -30,7 +34,9 @@ export function ManifestTranscriptionControls() {
           <ZoomInIcon
             className="icon"
             fontSize="small"
-            onClick={() => setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))}
+            onClick={() =>
+              setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))
+            }
           />
         </span>
       )}

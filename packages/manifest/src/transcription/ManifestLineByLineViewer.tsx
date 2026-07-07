@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
-import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import {
   loadCanvasAnnotationPages,
   useSelectedCanvas,
 } from '@globalise/common/document';
+import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useEffect, useMemo, useRef } from 'react';
+import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
-import { LazyLineByLineCanvas } from './LazyLineByLineCanvas.tsx';
 import {
   canvasIndexAttribute,
   canvasIndexSelector,
   getCanvasIndex,
 } from './canvasIndexAttribute.ts';
+import { LazyLineByLineCanvas } from './LazyLineByLineCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -28,9 +28,10 @@ const CANVAS_BUFFER_RANGE = 7;
 const DEFAULT_ITEM_HEIGHT = 600;
 const INCREASE_VIEWPORT_BY = 0;
 
-export function ManifestLineByLineViewer(
-  { initialCanvasId, onCanvasChange }: Props,
-) {
+export function ManifestLineByLineViewer({
+  initialCanvasId,
+  onCanvasChange,
+}: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
@@ -75,9 +76,13 @@ export function ManifestLineByLineViewer(
     });
   }
 
-  function handleRangeChanged(
-    { startIndex, endIndex }: { startIndex: number; endIndex: number },
-  ) {
+  function handleRangeChanged({
+    startIndex,
+    endIndex,
+  }: {
+    startIndex: number;
+    endIndex: number;
+  }) {
     const from = Math.max(0, startIndex - CANVAS_BUFFER_RANGE);
     const to = Math.min(canvasInfos.length - 1, endIndex + CANVAS_BUFFER_RANGE);
     for (let i = from; i <= to; i++) {
@@ -95,10 +100,14 @@ export function ManifestLineByLineViewer(
       return;
     }
     let prevCanvasId: string | null = null;
-    const onScroll = () => {
+    let rafId: number | null = null;
+
+    const processScroll = () => {
+      rafId = null;
       const scrollerRect = scroller.getBoundingClientRect();
       const topQuarter = scrollerRect.top + scrollerRect.height * 0.25;
-      const elements = scroller.querySelectorAll<HTMLElement>(canvasIndexSelector);
+      const elements =
+        scroller.querySelectorAll<HTMLElement>(canvasIndexSelector);
       for (const element of elements) {
         const elementBottom = element.getBoundingClientRect().bottom;
         if (elementBottom <= topQuarter) {
@@ -116,8 +125,21 @@ export function ManifestLineByLineViewer(
         return;
       }
     };
+
+    const onScroll = () => {
+      if (rafId !== null) {
+        return;
+      }
+      rafId = requestAnimationFrame(processScroll);
+    };
+
     scroller.addEventListener('scroll', onScroll, { passive: true });
-    return () => scroller.removeEventListener('scroll', onScroll);
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      scroller.removeEventListener('scroll', onScroll);
+    };
   }
 
   function handleScrollerRef(ref: HTMLElement | Window | null) {

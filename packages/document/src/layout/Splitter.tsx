@@ -1,48 +1,37 @@
+import './Splitter.css';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { DividerProps } from 'react-split-pane';
+import * as React from 'react';
 import { Direction } from './useLayoutDirection';
 
-import './Splitter.css';
-
-type SplitterProps = DividerProps & {
+type SplitterProps = React.HTMLAttributes<HTMLDivElement> & {
   onDoubleClick?: () => void;
   direction?: Direction;
+  isDragging?: boolean;
 };
 
-export function Splitter(
-  {
-    onDoubleClick,
-    direction,
-    isDragging,
-    className,
-    ...props
-  }: SplitterProps,
-) {
-  const classNames = [
-    'splitter',
-    direction,
-    className,
-  ];
+export function Splitter({
+  onDoubleClick,
+  direction,
+  isDragging,
+  className,
+  onPointerDown,
+  ...props
+}: SplitterProps) {
+  const classNames = ['splitter', direction, className];
 
   if (isDragging) {
     classNames.push('active');
   }
 
-  const {
-    currentSize: _currentSize,
-    minSize: _minSize,
-    maxSize: _maxSize,
-    ...divProps
-  } = props;
-
   return (
     <div
       className={classNames.join(' ')}
+      onPointerDown={onPointerDown}
       onDoubleClick={onDoubleClick}
-      {...divProps}
+      {...props}
     >
       <div className="splitter-grip">
-        <DragIndicatorIcon className="grip-icon"/>
+        <DragIndicatorIcon className="grip-icon" />
       </div>
     </div>
   );

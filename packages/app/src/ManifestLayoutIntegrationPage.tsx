@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import {
+  setSelectedCanvas,
+  useDocumentStore,
+} from '@globalise/common/document';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestCanvasNavigation,
@@ -10,12 +12,15 @@ import {
   ManifestTranscriptionViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
-import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
+import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import { useEffect, useState } from 'react';
 
-const defaultManifest = 'https://globalise-huygens.github.io/' +
+const defaultManifest =
+  'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
 
-const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
+const collectionUrl =
+  'https://data.globalise.huygens.knaw.nl/' +
   'hdl:20.500.14722/inventory:collection';
 
 const MANIFEST = 'manifest';
@@ -30,16 +35,19 @@ export function ManifestLayoutIntegrationPage() {
 
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(() =>
-    useDocumentStore.subscribe((state, prev) => {
-      const { selectedCanvasId } = state;
-      if (selectedCanvasId === prev.selectedCanvasId || !selectedCanvasId) {
-        return;
-      }
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set(CANVAS, selectedCanvasId);
-      history.replaceState({}, '', newUrl);
-    }), []);
+  useEffect(
+    () =>
+      useDocumentStore.subscribe((state, prev) => {
+        const { selectedCanvasId } = state;
+        if (selectedCanvasId === prev.selectedCanvasId || !selectedCanvasId) {
+          return;
+        }
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set(CANVAS, selectedCanvasId);
+        history.replaceState({}, '', newUrl);
+      }),
+    [],
+  );
 
   function handleManifestChange(url: string) {
     setManifestUrl(url);
@@ -60,7 +68,7 @@ export function ManifestLayoutIntegrationPage() {
               onChange={handleManifestChange}
             />
           }
-          topRight={<ManifestTranscriptionControls/>}
+          topRight={<ManifestTranscriptionControls />}
           scan={
             <ManifestFacsimileViewer
               initialCanvasId={initialCanvasId}
@@ -73,7 +81,7 @@ export function ManifestLayoutIntegrationPage() {
               onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
             />
           }
-          bottom={<ManifestCanvasNavigation/>}
+          bottom={<ManifestCanvasNavigation />}
         />
       </ManifestLoader>
     </ViewerProvider>

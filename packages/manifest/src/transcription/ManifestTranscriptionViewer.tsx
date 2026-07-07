@@ -1,21 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { useSettings } from '@globalise/document';
 import { initCanvases, useDocumentStore } from '@globalise/common/document';
+import { useTranscriptionMode } from '@globalise/document';
+import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 
 type Props = {
   initialCanvasId?: string;
   onCanvasChange: (canvasId: string) => void;
 };
 
-export function ManifestTranscriptionViewer(
-  { initialCanvasId, onCanvasChange }: Props,
-) {
+export function ManifestTranscriptionViewer({
+  initialCanvasId,
+  onCanvasChange,
+}: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
-  const { transcriptionMode } = useSettings();
+  const transcriptionMode = useTranscriptionMode();
   const [storeReady, setStoreReady] = useState(false);
 
   const canvasIds = useMemo(() => {
@@ -38,7 +39,8 @@ export function ManifestTranscriptionViewer(
     return null;
   }
 
-  const currentCanvasId = useDocumentStore.getState().selectedCanvasId ?? undefined;
+  const currentCanvasId =
+    useDocumentStore.getState().selectedCanvasId ?? undefined;
 
   if (transcriptionMode === 'line-by-line') {
     return (

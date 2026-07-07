@@ -8,7 +8,6 @@ import {
   DocumentDetailCanvas,
   DocumentDetailSegmentedToggleGroup,
   DocumentDetailSegmentedToggleItem,
-  DocumentDetailSplitViewer,
   DocumentDetailTooltip,
   DocumentDetailTopBar,
   DocumentDetailTranscriptCanvas,
@@ -21,6 +20,7 @@ import {
   IconSidebar,
   IconTranscription,
 } from '@globalise/design';
+import { SplitPaneLayout } from '@globalise/document';
 import * as React from 'react';
 import { BOTTOM_BAR_BUTTON, TOP_BAR_BUTTON } from './buttonClasses';
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
@@ -201,12 +201,30 @@ export function ManifestDocumentPageLayout({
           </DocumentDetailTopBar>
 
           <DocumentDetailBody>
-            <DocumentDetailSplitViewer
-              className="manifest-document-layout__split-viewer"
-              data-layout={isScanVisible && isTextVisible ? 'split' : 'single'}
-            >
-              {scanPane}
-              {isTextVisible && (
+            {isScanVisible && isTextVisible ? (
+              <div className="manifest-document-layout__split-viewer">
+                <SplitPaneLayout>
+                  <DocumentDetailViewerPane
+                    key="scan"
+                    className="manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered"
+                  >
+                    <DocumentDetailCanvas className="manifest-document-layout__canvas">
+                      {scan}
+                    </DocumentDetailCanvas>
+                  </DocumentDetailViewerPane>
+                  <DocumentDetailViewerPane
+                    key="text"
+                    className="manifest-document-layout__viewer-pane"
+                  >
+                    <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
+                      {transcription}
+                    </DocumentDetailTranscriptCanvas>
+                  </DocumentDetailViewerPane>
+                </SplitPaneLayout>
+              </div>
+            ) : (
+              (scanPane ??
+              (isTextVisible && (
                 <DocumentDetailViewerPane
                   key="text"
                   className="manifest-document-layout__viewer-pane"
@@ -215,8 +233,8 @@ export function ManifestDocumentPageLayout({
                     {transcription}
                   </DocumentDetailTranscriptCanvas>
                 </DocumentDetailViewerPane>
-              )}
-            </DocumentDetailSplitViewer>
+              )))
+            )}
           </DocumentDetailBody>
 
           <DocumentDetailBottomBar className="manifest-document-layout__bottom-bar">
