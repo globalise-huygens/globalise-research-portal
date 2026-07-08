@@ -456,19 +456,49 @@
     border-left: 1px solid rgb(255 255 255 / 0.14);
   }
 
-  .gds-document-detail-scan-toolbar__zoom-label {
+  .gds-document-detail-scan-toolbar__zoom-field {
     display: inline-flex;
     min-width: var(--s56);
     height: var(--s32);
     align-items: center;
     justify-content: center;
+    gap: var(--s2);
     background: rgb(255 255 255 / 0.06);
     color: var(--color-parchment-500);
     font-family: var(--font-sans);
     font-size: 0.75rem;
     line-height: 1rem;
-    padding-inline: var(--s2);
+    padding-inline: var(--s6);
     text-align: center;
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-input {
+    width: 3ch;
+    height: var(--s20);
+    border: 0;
+    border-radius: 0;
+    appearance: textfield;
+    background: transparent;
+    color: var(--color-parchment-500);
+    font: inherit;
+    line-height: 1rem;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-align: right;
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-input::-webkit-inner-spin-button,
+  .gds-document-detail-scan-toolbar__zoom-input::-webkit-outer-spin-button {
+    appearance: none;
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-input:focus {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .gds-document-detail-scan-toolbar__zoom-suffix {
+    color: var(--color-parchment-500);
   }
 
   .gds-document-detail-scan-toolbar__divider {

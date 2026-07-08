@@ -15,10 +15,28 @@ import {
   useDiplomaticViewScale,
   useTranscriptionMode,
 } from '@globalise/document';
+import { useState } from 'react';
 
 export function ManifestTranscriptionControls() {
   const transcriptionMode = useTranscriptionMode();
   const diplomaticViewScale = useDiplomaticViewScale();
+  const [zoomInput, setZoomInput] = useState<string | null>(null);
+  const zoomInputValue = zoomInput ?? String(diplomaticViewScale);
+
+  function applyZoomPercent(value: number) {
+    const nextZoomPercent = Math.min(Math.max(value, 30), 200);
+    setDiplomaticViewScale(nextZoomPercent);
+    setZoomInput(null);
+  }
+
+  function commitZoomInput() {
+    const parsed = Number.parseInt(zoomInputValue, 10);
+    if (Number.isNaN(parsed)) {
+      setZoomInput(null);
+      return;
+    }
+    applyZoomPercent(parsed);
+  }
 
   return (
     <div className="manifest-document-layout__transcription-toolbar">
@@ -61,23 +79,39 @@ export function ManifestTranscriptionControls() {
           icon={
             <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
           }
-          onPress={() =>
-            setDiplomaticViewScale(Math.max(30, diplomaticViewScale - 10))
-          }
+          onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
         />
-        <span className="gds-document-detail-scan-toolbar__zoom-label">
-          {diplomaticViewScale}%
-        </span>
+        <label className="gds-document-detail-scan-toolbar__zoom-field">
+          <input
+            aria-label="Transcription zoom percentage"
+            className="gds-document-detail-scan-toolbar__zoom-input"
+            inputMode="numeric"
+            maxLength={3}
+            value={zoomInputValue}
+            onBlur={commitZoomInput}
+            onChange={(event) => {
+              setZoomInput(event.currentTarget.value.replace(/[^\d]/g, ''));
+            }}
+            onFocus={(event) => event.currentTarget.select()}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                commitZoomInput();
+                event.currentTarget.blur();
+              }
+            }}
+          />
+          <span className="gds-document-detail-scan-toolbar__zoom-suffix">
+            %
+          </span>
+        </label>
         <DocumentDetailToolButton
           aria-label="Zoom in transcription"
           className="gds-document-detail-scan-toolbar__button"
           icon={
             <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
           }
-          onPress={() =>
-            setDiplomaticViewScale(Math.min(200, diplomaticViewScale + 10))
-          }
+          onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
       </div>
@@ -89,7 +123,7 @@ export function ManifestTranscriptionControls() {
         aria-label="Reset transcription zoom"
         className="gds-document-detail-scan-toolbar__button"
         icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
-        onPress={() => setDiplomaticViewScale(100)}
+        onPress={() => applyZoomPercent(100)}
         size="compact"
       />
     </div>

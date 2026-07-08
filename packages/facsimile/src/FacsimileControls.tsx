@@ -17,15 +17,44 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const { zoomIn, zoomOut, home, rotate, rotation } =
     useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
+  const [zoomInput, setZoomInput] = useState('100');
+
+  function applyZoomPercent(value: number) {
+    const nextZoomPercent = Math.min(Math.max(value, 10), 400);
+    if (viewer) {
+      const { viewport } = viewer;
+      viewport.zoomTo(
+        viewport.getHomeZoom() * (nextZoomPercent / 100),
+        undefined,
+        true,
+      );
+      viewport.applyConstraints();
+    }
+    setZoomPercent(nextZoomPercent);
+    setZoomInput(String(nextZoomPercent));
+  }
+
+  function commitZoomInput() {
+    const parsed = Number.parseInt(zoomInput, 10);
+    if (Number.isNaN(parsed)) {
+      setZoomInput(String(zoomPercent));
+      return;
+    }
+    applyZoomPercent(parsed);
+  }
 
   function handleZoomIn() {
-    zoomIn();
-    setZoomPercent((value) => Math.min(value + 10, 400));
+    if (!viewer) {
+      zoomIn();
+    }
+    applyZoomPercent(zoomPercent + 10);
   }
 
   function handleZoomOut() {
-    zoomOut();
-    setZoomPercent((value) => Math.max(value - 10, 10));
+    if (!viewer) {
+      zoomOut();
+    }
+    applyZoomPercent(zoomPercent - 10);
   }
 
   function handleResetView() {
@@ -48,6 +77,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       }
     }
     setZoomPercent(100);
+    setZoomInput('100');
   }
 
   return (
@@ -62,9 +92,29 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
           onPress={handleZoomOut}
           size="compact"
         />
-        <span className="gds-document-detail-scan-toolbar__zoom-label">
-          {zoomPercent}%
-        </span>
+        <label className="gds-document-detail-scan-toolbar__zoom-field">
+          <input
+            aria-label="Scan zoom percentage"
+            className="gds-document-detail-scan-toolbar__zoom-input"
+            inputMode="numeric"
+            maxLength={3}
+            value={zoomInput}
+            onBlur={commitZoomInput}
+            onChange={(event) => {
+              setZoomInput(event.currentTarget.value.replace(/[^\d]/g, ''));
+            }}
+            onFocus={(event) => event.currentTarget.select()}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                commitZoomInput();
+                event.currentTarget.blur();
+              }
+            }}
+          />
+          <span className="gds-document-detail-scan-toolbar__zoom-suffix">
+            %
+          </span>
+        </label>
         <DocumentDetailToolButton
           aria-label="Zoom in"
           className="gds-document-detail-scan-toolbar__button"
