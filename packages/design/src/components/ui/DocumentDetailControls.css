@@ -516,6 +516,139 @@
     background: rgb(255 255 255 / 0.2);
   }
 
+  .gds-document-detail-scan-toolbar__settings {
+    position: relative;
+    display: inline-flex;
+    height: var(--s32);
+    align-items: center;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-panel {
+    position: absolute;
+    top: calc(100% + var(--s24));
+    right: 0;
+    z-index: 30;
+    width: min(628px, calc(100vw - var(--s32)));
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: 0;
+    background: rgb(12 10 9 / 0.94);
+    box-shadow: 0 18px 48px rgb(0 0 0 / 0.36);
+    color: var(--color-brand-white);
+    padding: var(--s24);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-row {
+    display: grid;
+    grid-template-columns: 170px minmax(180px, 1fr) var(--s64);
+    align-items: center;
+    gap: var(--s20);
+    min-height: var(--s48);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s12);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-icon {
+    width: var(--s32);
+    height: var(--s32);
+    flex-shrink: 0;
+    color: var(--color-brand-white);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider {
+    width: 100%;
+    height: var(--s24);
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider::-webkit-slider-runnable-track {
+    height: var(--s4);
+    border-radius: 0;
+    background:
+      linear-gradient(
+        to right,
+        var(--color-brand-white) 0,
+        var(--color-brand-white) var(--slider-fill),
+        rgb(255 255 255 / 0.32) var(--slider-fill),
+        rgb(255 255 255 / 0.32) 100%
+      );
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-track {
+    height: var(--s4);
+    border-radius: 0;
+    background: rgb(255 255 255 / 0.32);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-progress {
+    height: var(--s4);
+    border-radius: 0;
+    background: var(--color-brand-white);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider::-webkit-slider-thumb {
+    width: var(--s12);
+    height: var(--s12);
+    appearance: none;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-brand-white);
+    margin-top: calc((var(--s4) - var(--s12)) / 2);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-thumb {
+    width: var(--s12);
+    height: var(--s12);
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-brand-white);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-slider:focus-visible {
+    outline: 2px solid var(--color-brand-white);
+    outline-offset: var(--s4);
+  }
+
+  .gds-document-detail-scan-toolbar__settings-value {
+    color: rgb(255 255 255 / 0.88);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25rem;
+    text-align: right;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-row--invert {
+    grid-template-columns: 170px 1fr;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s12);
+    color: rgb(255 255 255 / 0.9);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+
+  .gds-document-detail-scan-toolbar__settings-checkbox input {
+    width: var(--s24);
+    height: var(--s24);
+    margin: 0;
+    accent-color: var(--color-brand-white);
+  }
+
   @media (max-width: 767px) {
     .gds-document-detail-rail-button {
       height: var(--s56);
@@ -545,6 +678,23 @@
       left: var(--s12);
       top: var(--s12);
       max-width: calc(100% - var(--s24));
+    }
+
+    .gds-document-detail-scan-toolbar__settings-panel {
+      right: calc(-1 * var(--s48));
+      width: calc(100vw - var(--s24));
+      padding: var(--s16);
+    }
+
+    .gds-document-detail-scan-toolbar__settings-row,
+    .gds-document-detail-scan-toolbar__settings-row--invert {
+      grid-template-columns: 1fr;
+      gap: var(--s8);
+      padding-block: var(--s8);
+    }
+
+    .gds-document-detail-scan-toolbar__settings-value {
+      text-align: left;
     }
   }
 }

@@ -10,7 +10,7 @@ import {
   useViewerStore,
 } from '@knaw-huc/osd-iiif-viewer';
 import { Point, Viewer as OsdViewer } from 'openseadragon';
-import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import { findCenterScan } from './findCenterScan.ts';
 import {
   setLazyCanvases,
@@ -48,6 +48,7 @@ export function LazyCollectionViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
+  const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
   const isScrollReady = size.width && size.height;
@@ -216,9 +217,19 @@ export function LazyCollectionViewer({
   return (
     <>
       <ControlBar className="gds-document-detail-scan-toolbar">
-        <FacsimileControls fullscreenRef={containerRef} />
+        <FacsimileControls
+          fullscreenRef={containerRef}
+          onScanFilterChange={setScanFilter}
+        />
       </ControlBar>
-      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <div
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          filter: scanFilter || undefined,
+        }}
+      />
       {children}
     </>
   );
