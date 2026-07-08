@@ -30,9 +30,10 @@ type FacsimileControlBarProps = {
 
 const MIN_ZOOM_PERCENT = 10;
 const MAX_ZOOM_PERCENT = 400;
-const SETTINGS_PANEL_WIDTH = 360;
+const DEFAULT_SCAN_FILTER_VALUE = 100;
+const SETTINGS_PANEL_WIDTH = 320;
 const SETTINGS_PANEL_MARGIN = 12;
-const SETTINGS_PANEL_MIN_HEIGHT = 160;
+const SETTINGS_PANEL_MIN_HEIGHT = 140;
 
 function getSliderFillStyle(value: number, min: number, max: number) {
   const percent = ((value - min) / (max - min)) * 100;
@@ -51,9 +52,9 @@ export function FacsimileControls({
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [brightness, setBrightness] = useState(100);
-  const [contrast, setContrast] = useState(100);
-  const [saturation, setSaturation] = useState(100);
+  const [brightness, setBrightness] = useState(DEFAULT_SCAN_FILTER_VALUE);
+  const [contrast, setContrast] = useState(DEFAULT_SCAN_FILTER_VALUE);
+  const [saturation, setSaturation] = useState(DEFAULT_SCAN_FILTER_VALUE);
   const [isInverted, setIsInverted] = useState(false);
   const [settingsPanelStyle, setSettingsPanelStyle] =
     useState<CSSProperties | null>(null);
@@ -216,6 +217,11 @@ export function FacsimileControls({
   }
 
   function handleResetView() {
+    setBrightness(DEFAULT_SCAN_FILTER_VALUE);
+    setContrast(DEFAULT_SCAN_FILTER_VALUE);
+    setSaturation(DEFAULT_SCAN_FILTER_VALUE);
+    setIsInverted(false);
+
     if (viewer) {
       const { viewport } = viewer;
       const initialView = getInitialView();
