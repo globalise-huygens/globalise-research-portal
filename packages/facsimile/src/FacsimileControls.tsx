@@ -17,8 +17,7 @@ const MAX_ZOOM_PERCENT = 400;
 
 export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const viewer = useViewer();
-  const { zoomIn, zoomOut, home, rotate, rotation } =
-    useViewerControls(fullscreenRef);
+  const { home, rotate, rotation } = useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState<string | null>(null);
 
@@ -71,19 +70,11 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   }
 
   function handleZoomIn() {
-    zoomIn();
-    setZoomPercent((value) =>
-      Math.min(Math.round(value * 1.5), MAX_ZOOM_PERCENT),
-    );
-    setZoomInput(null);
+    applyZoomPercent(zoomPercent + 10);
   }
 
   function handleZoomOut() {
-    zoomOut();
-    setZoomPercent((value) =>
-      Math.max(Math.round(value * 0.667), MIN_ZOOM_PERCENT),
-    );
-    setZoomInput(null);
+    applyZoomPercent(zoomPercent - 10);
   }
 
   function handleResetView() {
