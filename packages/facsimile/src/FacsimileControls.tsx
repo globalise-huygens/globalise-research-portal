@@ -17,18 +17,16 @@ const MAX_ZOOM_PERCENT = 400;
 
 export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const viewer = useViewer();
-  const { zoomIn, zoomOut, home, rotate, rotation } =
+  const { zoomIn, zoomOut, home, rotate, rotation, zoomLevel } =
     useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
-  const [zoomInput, setZoomInput] = useState('100');
+  const [zoomInput, setZoomInput] = useState<string | null>(null);
 
-  function getCurrentZoomPercent() {
-    if (!viewer) {
-      return zoomPercent;
-    }
-    const { viewport } = viewer;
-    return Math.round((viewport.getZoom() / viewport.getHomeZoom()) * 100);
-  }
+  const currentZoomPercent =
+    viewer && zoomLevel
+      ? Math.round((zoomLevel / viewer.viewport.getHomeZoom()) * 100)
+      : zoomPercent;
+  const zoomInputValue = zoomInput ?? String(currentZoomPercent);
 
   function setViewerZoomPercent(value: number) {
     const nextZoomPercent = Math.min(
@@ -50,13 +48,14 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
 
   function applyZoomPercent(value: number) {
     const nextZoomPercent = setViewerZoomPercent(value);
-    setZoomInput(String(nextZoomPercent));
+    setZoomInput(null);
+    return nextZoomPercent;
   }
 
   function commitZoomInput() {
-    const parsed = Number.parseInt(zoomInput, 10);
+    const parsed = Number.parseInt(zoomInputValue, 10);
     if (Number.isNaN(parsed)) {
-      setZoomInput(String(zoomPercent));
+      setZoomInput(null);
       return;
     }
     applyZoomPercent(parsed);
@@ -76,17 +75,21 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   }
 
   function handleZoomIn() {
-    if (!viewer) {
+    if (viewer) {
       zoomIn();
+      setZoomInput(null);
+      return;
     }
-    applyZoomPercent(getCurrentZoomPercent() + 10);
+    applyZoomPercent(currentZoomPercent + 10);
   }
 
   function handleZoomOut() {
-    if (!viewer) {
+    if (viewer) {
       zoomOut();
+      setZoomInput(null);
+      return;
     }
-    applyZoomPercent(getCurrentZoomPercent() - 10);
+    applyZoomPercent(currentZoomPercent - 10);
   }
 
   function handleResetView() {
@@ -109,7 +112,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       }
     }
     setZoomPercent(100);
-    setZoomInput('100');
+    setZoomInput(null);
   }
 
   return (
@@ -132,7 +135,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
             maxLength={3}
             pattern="[0-9]*"
             type="text"
-            value={zoomInput}
+            value={zoomInputValue}
             onBlur={commitZoomInput}
             onChange={(event) => {
               handleZoomInputChange(event.currentTarget.value);
