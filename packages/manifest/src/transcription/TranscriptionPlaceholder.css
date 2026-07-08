@@ -1,7 +1,4 @@
 .manifest-transcription-placeholder {
-  --placeholder-annotation: var(--color-brand-parchment, #b99b7f);
-  --placeholder-muted: var(--color-neutral-600, #666666);
-
   position: relative;
   display: flex;
   width: 100%;
@@ -9,24 +6,13 @@
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: center;
-  background: var(--color-brand-white, #ffffff);
-  color: var(--placeholder-muted);
+  background: var(--color-neutral-500, #737373);
+  color: var(--color-brand-black, #0c0a09);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.875rem;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0;
   line-height: 1.75;
   padding: 5rem 1rem;
   text-align: center;
-}
-
-.manifest-transcription-placeholder::after {
-  position: absolute;
-  top: 5rem;
-  width: 8rem;
-  height: 1px;
-  background: var(--placeholder-annotation);
-  content: '';
-  opacity: 0.8;
-  transform: translateY(1.8rem);
 }
