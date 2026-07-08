@@ -12,7 +12,16 @@ import {
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, type Rect } from 'openseadragon';
-import { type RefObject, useEffect, useId, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  type RefObject,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { createPortal } from 'react-dom';
 
 type FacsimileControlBarProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
@@ -21,6 +30,9 @@ type FacsimileControlBarProps = {
 
 const MIN_ZOOM_PERCENT = 10;
 const MAX_ZOOM_PERCENT = 400;
+const SETTINGS_PANEL_WIDTH = 360;
+const SETTINGS_PANEL_MARGIN = 12;
+const SETTINGS_PANEL_MIN_HEIGHT = 160;
 
 function getSliderFillStyle(value: number, min: number, max: number) {
   const percent = ((value - min) / (max - min)) * 100;
@@ -43,7 +55,10 @@ export function FacsimileControls({
   const [contrast, setContrast] = useState(100);
   const [saturation, setSaturation] = useState(100);
   const [isInverted, setIsInverted] = useState(false);
+  const [settingsPanelStyle, setSettingsPanelStyle] =
+    useState<CSSProperties | null>(null);
   const initialViewRef = useRef<{ zoom: number; center: Point } | null>(null);
+  const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsPanelId = useId();
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
@@ -76,6 +91,65 @@ export function FacsimileControls({
   }, [onScanFilterChange, scanFilter]);
 
   useEffect(() => () => onScanFilterChange?.(''), [onScanFilterChange]);
+
+  useLayoutEffect(() => {
+    if (!isSettingsOpen) {
+      return;
+    }
+
+    function updateSettingsPanelPosition() {
+      const button = settingsButtonRef.current;
+      if (!button) {
+        return;
+      }
+      const buttonRect = button.getBoundingClientRect();
+      const width = Math.min(
+        SETTINGS_PANEL_WIDTH,
+        window.innerWidth - SETTINGS_PANEL_MARGIN * 2,
+      );
+      const left = Math.min(
+        Math.max(
+          SETTINGS_PANEL_MARGIN,
+          buttonRect.right - width,
+        ),
+        window.innerWidth - width - SETTINGS_PANEL_MARGIN,
+      );
+      const belowTop = buttonRect.bottom + SETTINGS_PANEL_MARGIN;
+      const availableBelow =
+        window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
+      const availableAbove =
+        buttonRect.top - SETTINGS_PANEL_MARGIN * 2;
+
+      if (
+        availableBelow < SETTINGS_PANEL_MIN_HEIGHT &&
+        availableAbove > availableBelow
+      ) {
+        setSettingsPanelStyle({
+          bottom:
+            window.innerHeight - buttonRect.top + SETTINGS_PANEL_MARGIN,
+          left,
+          maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableAbove),
+          width,
+        });
+        return;
+      }
+
+      setSettingsPanelStyle({
+        left,
+        maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableBelow),
+        top: belowTop,
+        width,
+      });
+    }
+
+    updateSettingsPanelPosition();
+    window.addEventListener('resize', updateSettingsPanelPosition);
+    window.addEventListener('scroll', updateSettingsPanelPosition, true);
+    return () => {
+      window.removeEventListener('resize', updateSettingsPanelPosition);
+      window.removeEventListener('scroll', updateSettingsPanelPosition, true);
+    };
+  }, [isSettingsOpen]);
 
   function getInitialView() {
     if (!viewer) {
@@ -242,6 +316,7 @@ export function FacsimileControls({
       />
       <div className="gds-document-detail-scan-toolbar__settings">
         <DocumentDetailToolButton
+          ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}
           aria-expanded={isSettingsOpen}
@@ -250,115 +325,124 @@ export function FacsimileControls({
             <IconSetting className="gds-document-detail-scan-toolbar__icon" />
           }
           isActive={isSettingsOpen}
-          onPress={() => setIsSettingsOpen((open) => !open)}
+          onPress={() => {
+            if (isSettingsOpen) {
+              setSettingsPanelStyle(null);
+            }
+            setIsSettingsOpen((open) => !open);
+          }}
           size="compact"
         />
-        {isSettingsOpen && (
-          <div
-            id={settingsPanelId}
-            className="gds-document-detail-scan-toolbar__settings-panel"
-            role="group"
-            aria-label="Scan image settings"
-            onKeyDown={(event) => {
-              if (event.key === 'Escape') {
-                setIsSettingsOpen(false);
-              }
-            }}
-          >
-            <div className="gds-document-detail-scan-toolbar__settings-row">
-              <div className="gds-document-detail-scan-toolbar__settings-label">
-                <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
-                <span>Brightness</span>
-              </div>
-              <input
-                aria-label="Brightness"
-                className="gds-document-detail-scan-toolbar__settings-slider"
-                type="range"
-                min={50}
-                max={150}
-                step={1}
-                value={brightness}
-                style={getSliderFillStyle(brightness, 50, 150)}
-                onInput={(event) => {
-                  setBrightness(Number(event.currentTarget.value));
-                }}
-                onChange={(event) => {
-                  setBrightness(Number(event.currentTarget.value));
-                }}
-              />
-              <span className="gds-document-detail-scan-toolbar__settings-value">
-                {brightness}%
-              </span>
-            </div>
-            <div className="gds-document-detail-scan-toolbar__settings-row">
-              <div className="gds-document-detail-scan-toolbar__settings-label">
-                <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
-                <span>Contrast</span>
-              </div>
-              <input
-                aria-label="Contrast"
-                className="gds-document-detail-scan-toolbar__settings-slider"
-                type="range"
-                min={50}
-                max={150}
-                step={1}
-                value={contrast}
-                style={getSliderFillStyle(contrast, 50, 150)}
-                onInput={(event) => {
-                  setContrast(Number(event.currentTarget.value));
-                }}
-                onChange={(event) => {
-                  setContrast(Number(event.currentTarget.value));
-                }}
-              />
-              <span className="gds-document-detail-scan-toolbar__settings-value">
-                {contrast}%
-              </span>
-            </div>
-            <div className="gds-document-detail-scan-toolbar__settings-row">
-              <div className="gds-document-detail-scan-toolbar__settings-label">
-                <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
-                <span>Saturation</span>
-              </div>
-              <input
-                aria-label="Saturation"
-                className="gds-document-detail-scan-toolbar__settings-slider"
-                type="range"
-                min={0}
-                max={200}
-                step={1}
-                value={saturation}
-                style={getSliderFillStyle(saturation, 0, 200)}
-                onInput={(event) => {
-                  setSaturation(Number(event.currentTarget.value));
-                }}
-                onChange={(event) => {
-                  setSaturation(Number(event.currentTarget.value));
-                }}
-              />
-              <span className="gds-document-detail-scan-toolbar__settings-value">
-                {saturation}%
-              </span>
-            </div>
-            <div className="gds-document-detail-scan-toolbar__settings-row gds-document-detail-scan-toolbar__settings-row--invert">
-              <div className="gds-document-detail-scan-toolbar__settings-label">
-                <IconInvert className="gds-document-detail-scan-toolbar__settings-icon" />
-                <span>Invert</span>
-              </div>
-              <label className="gds-document-detail-scan-toolbar__settings-checkbox">
-                <input
-                  type="checkbox"
-                  checked={isInverted}
-                  onChange={(event) => {
-                    setIsInverted(event.currentTarget.checked);
-                  }}
-                />
-                <span>Invert scan image</span>
-              </label>
-            </div>
-          </div>
-        )}
       </div>
+      {isSettingsOpen && settingsPanelStyle && createPortal(
+        <div
+          id={settingsPanelId}
+          className="gds-document-detail-scan-toolbar__settings-panel"
+          role="dialog"
+          aria-label="Scan image settings"
+          style={settingsPanelStyle}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              setSettingsPanelStyle(null);
+              setIsSettingsOpen(false);
+              settingsButtonRef.current?.focus();
+            }
+          }}
+        >
+          <div className="gds-document-detail-scan-toolbar__settings-row">
+            <div className="gds-document-detail-scan-toolbar__settings-label">
+              <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
+              <span>Brightness</span>
+            </div>
+            <input
+              aria-label="Brightness"
+              className="gds-document-detail-scan-toolbar__settings-slider"
+              type="range"
+              min={50}
+              max={150}
+              step={1}
+              value={brightness}
+              style={getSliderFillStyle(brightness, 50, 150)}
+              onInput={(event) => {
+                setBrightness(Number(event.currentTarget.value));
+              }}
+              onChange={(event) => {
+                setBrightness(Number(event.currentTarget.value));
+              }}
+            />
+            <span className="gds-document-detail-scan-toolbar__settings-value">
+              {brightness}%
+            </span>
+          </div>
+          <div className="gds-document-detail-scan-toolbar__settings-row">
+            <div className="gds-document-detail-scan-toolbar__settings-label">
+              <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
+              <span>Contrast</span>
+            </div>
+            <input
+              aria-label="Contrast"
+              className="gds-document-detail-scan-toolbar__settings-slider"
+              type="range"
+              min={50}
+              max={150}
+              step={1}
+              value={contrast}
+              style={getSliderFillStyle(contrast, 50, 150)}
+              onInput={(event) => {
+                setContrast(Number(event.currentTarget.value));
+              }}
+              onChange={(event) => {
+                setContrast(Number(event.currentTarget.value));
+              }}
+            />
+            <span className="gds-document-detail-scan-toolbar__settings-value">
+              {contrast}%
+            </span>
+          </div>
+          <div className="gds-document-detail-scan-toolbar__settings-row">
+            <div className="gds-document-detail-scan-toolbar__settings-label">
+              <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
+              <span>Saturation</span>
+            </div>
+            <input
+              aria-label="Saturation"
+              className="gds-document-detail-scan-toolbar__settings-slider"
+              type="range"
+              min={0}
+              max={200}
+              step={1}
+              value={saturation}
+              style={getSliderFillStyle(saturation, 0, 200)}
+              onInput={(event) => {
+                setSaturation(Number(event.currentTarget.value));
+              }}
+              onChange={(event) => {
+                setSaturation(Number(event.currentTarget.value));
+              }}
+            />
+            <span className="gds-document-detail-scan-toolbar__settings-value">
+              {saturation}%
+            </span>
+          </div>
+          <div className="gds-document-detail-scan-toolbar__settings-row gds-document-detail-scan-toolbar__settings-row--invert">
+            <div className="gds-document-detail-scan-toolbar__settings-label">
+              <IconInvert className="gds-document-detail-scan-toolbar__settings-icon" />
+              <span>Invert</span>
+            </div>
+            <label className="gds-document-detail-scan-toolbar__settings-checkbox">
+              <input
+                type="checkbox"
+                checked={isInverted}
+                onChange={(event) => {
+                  setIsInverted(event.currentTarget.checked);
+                }}
+              />
+              <span>Invert scan image</span>
+            </label>
+          </div>
+        </div>,
+        document.body,
+      )}
     </>
   );
 }

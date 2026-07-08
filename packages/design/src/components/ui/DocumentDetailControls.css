@@ -524,12 +524,10 @@
   }
 
   .gds-document-detail-scan-toolbar__settings-panel {
-    position: absolute;
-    top: calc(100% + var(--s12));
-    right: calc(-1 * var(--s36));
-    z-index: 30;
-    width: min(420px, calc(100vw - var(--s24)));
-    max-height: calc(100vh - var(--s96));
+    position: fixed;
+    z-index: 1000;
+    width: min(360px, calc(100vw - var(--s24)));
+    max-height: calc(100vh - var(--s24));
     overflow: auto;
     border: 1px solid rgb(255 255 255 / 0.22);
     border-radius: 0;
@@ -683,9 +681,8 @@
     }
 
     .gds-document-detail-scan-toolbar__settings-panel {
-      right: calc(-1 * var(--s36));
       width: calc(100vw - var(--s24));
-      max-height: calc(100vh - var(--s80));
+      max-height: calc(100vh - var(--s24));
       padding: var(--s16);
     }
 
