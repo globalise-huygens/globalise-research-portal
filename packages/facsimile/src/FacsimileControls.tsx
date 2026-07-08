@@ -111,27 +111,13 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   }
 
   function handleZoomIn() {
-    if (viewer) {
-      viewer.viewport.zoomBy(1.5);
-      viewer.viewport.applyConstraints();
-      syncZoomPercentFromViewer();
-      setZoomInput(null);
-      return;
-    }
     zoomIn();
-    applyZoomPercent(Math.min(zoomPercent + 10, MAX_ZOOM_PERCENT));
+    setZoomInput(null);
   }
 
   function handleZoomOut() {
-    if (viewer) {
-      viewer.viewport.zoomBy(0.667);
-      viewer.viewport.applyConstraints();
-      syncZoomPercentFromViewer();
-      setZoomInput(null);
-      return;
-    }
     zoomOut();
-    applyZoomPercent(Math.max(zoomPercent - 10, MIN_ZOOM_PERCENT));
+    setZoomInput(null);
   }
 
   function handleResetView() {
