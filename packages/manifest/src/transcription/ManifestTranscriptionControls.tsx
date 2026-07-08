@@ -117,8 +117,8 @@ export function ManifestTranscriptionControls() {
             onFocus={(event) => event.currentTarget.select()}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
+                event.preventDefault();
                 commitZoomInput();
-                event.currentTarget.blur();
               }
             }}
           />
