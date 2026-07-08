@@ -457,7 +457,8 @@
   }
 
   .gds-document-detail-scan-toolbar__zoom-field {
-    display: inline-flex;
+    display: inline-grid;
+    grid-template-columns: 3ch auto;
     min-width: var(--s56);
     height: var(--s32);
     align-items: center;
@@ -467,6 +468,7 @@
     color: var(--color-parchment-500);
     font-family: var(--font-sans);
     font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
     line-height: 1rem;
     padding-inline: var(--s6);
     text-align: center;
@@ -498,7 +500,11 @@
   }
 
   .gds-document-detail-scan-toolbar__zoom-suffix {
+    display: inline-flex;
+    height: var(--s20);
+    align-items: center;
     color: var(--color-parchment-500);
+    line-height: 1rem;
   }
 
   .gds-document-detail-scan-toolbar__divider {

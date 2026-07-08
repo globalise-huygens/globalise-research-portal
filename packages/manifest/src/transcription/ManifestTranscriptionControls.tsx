@@ -17,6 +17,9 @@ import {
 } from '@globalise/document';
 import { useState } from 'react';
 
+const MIN_ZOOM_PERCENT = 30;
+const MAX_ZOOM_PERCENT = 200;
+
 export function ManifestTranscriptionControls() {
   const transcriptionMode = useTranscriptionMode();
   const diplomaticViewScale = useDiplomaticViewScale();
@@ -24,7 +27,10 @@ export function ManifestTranscriptionControls() {
   const zoomInputValue = zoomInput ?? String(diplomaticViewScale);
 
   function applyZoomPercent(value: number) {
-    const nextZoomPercent = Math.min(Math.max(value, 30), 200);
+    const nextZoomPercent = Math.min(
+      Math.max(value, MIN_ZOOM_PERCENT),
+      MAX_ZOOM_PERCENT,
+    );
     setDiplomaticViewScale(nextZoomPercent);
     setZoomInput(null);
   }
@@ -36,6 +42,19 @@ export function ManifestTranscriptionControls() {
       return;
     }
     applyZoomPercent(parsed);
+  }
+
+  function handleZoomInputChange(value: string) {
+    const nextValue = value.replace(/[^\d]/g, '').slice(0, 3);
+    const parsed = Number.parseInt(nextValue, 10);
+    setZoomInput(nextValue);
+    if (
+      !Number.isNaN(parsed) &&
+      parsed >= MIN_ZOOM_PERCENT &&
+      parsed <= MAX_ZOOM_PERCENT
+    ) {
+      setDiplomaticViewScale(parsed);
+    }
   }
 
   return (
@@ -84,14 +103,16 @@ export function ManifestTranscriptionControls() {
         />
         <label className="gds-document-detail-scan-toolbar__zoom-field">
           <input
-            aria-label="Transcription zoom percentage"
+            aria-label="Transcription zoom percentage, 30 to 200"
             className="gds-document-detail-scan-toolbar__zoom-input"
             inputMode="numeric"
             maxLength={3}
+            pattern="[0-9]*"
+            type="text"
             value={zoomInputValue}
             onBlur={commitZoomInput}
             onChange={(event) => {
-              setZoomInput(event.currentTarget.value.replace(/[^\d]/g, ''));
+              handleZoomInputChange(event.currentTarget.value);
             }}
             onFocus={(event) => event.currentTarget.select()}
             onKeyDown={(event) => {
@@ -101,7 +122,10 @@ export function ManifestTranscriptionControls() {
               }
             }}
           />
-          <span className="gds-document-detail-scan-toolbar__zoom-suffix">
+          <span
+            aria-hidden="true"
+            className="gds-document-detail-scan-toolbar__zoom-suffix"
+          >
             %
           </span>
         </label>

@@ -12,6 +12,9 @@ type FacsimileControlBarProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
 };
 
+const MIN_ZOOM_PERCENT = 10;
+const MAX_ZOOM_PERCENT = 400;
+
 export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const viewer = useViewer();
   const { zoomIn, zoomOut, home, rotate, rotation } =
@@ -19,8 +22,11 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState('100');
 
-  function applyZoomPercent(value: number) {
-    const nextZoomPercent = Math.min(Math.max(value, 10), 400);
+  function setViewerZoomPercent(value: number) {
+    const nextZoomPercent = Math.min(
+      Math.max(value, MIN_ZOOM_PERCENT),
+      MAX_ZOOM_PERCENT,
+    );
     if (viewer) {
       const { viewport } = viewer;
       viewport.zoomTo(
@@ -31,6 +37,11 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       viewport.applyConstraints();
     }
     setZoomPercent(nextZoomPercent);
+    return nextZoomPercent;
+  }
+
+  function applyZoomPercent(value: number) {
+    const nextZoomPercent = setViewerZoomPercent(value);
     setZoomInput(String(nextZoomPercent));
   }
 
@@ -41,6 +52,19 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       return;
     }
     applyZoomPercent(parsed);
+  }
+
+  function handleZoomInputChange(value: string) {
+    const nextValue = value.replace(/[^\d]/g, '').slice(0, 3);
+    const parsed = Number.parseInt(nextValue, 10);
+    setZoomInput(nextValue);
+    if (
+      !Number.isNaN(parsed) &&
+      parsed >= MIN_ZOOM_PERCENT &&
+      parsed <= MAX_ZOOM_PERCENT
+    ) {
+      setViewerZoomPercent(parsed);
+    }
   }
 
   function handleZoomIn() {
@@ -94,14 +118,16 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
         />
         <label className="gds-document-detail-scan-toolbar__zoom-field">
           <input
-            aria-label="Scan zoom percentage"
+            aria-label="Scan zoom percentage, 10 to 400"
             className="gds-document-detail-scan-toolbar__zoom-input"
             inputMode="numeric"
             maxLength={3}
+            pattern="[0-9]*"
+            type="text"
             value={zoomInput}
             onBlur={commitZoomInput}
             onChange={(event) => {
-              setZoomInput(event.currentTarget.value.replace(/[^\d]/g, ''));
+              handleZoomInputChange(event.currentTarget.value);
             }}
             onFocus={(event) => event.currentTarget.select()}
             onKeyDown={(event) => {
@@ -111,7 +137,10 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
               }
             }}
           />
-          <span className="gds-document-detail-scan-toolbar__zoom-suffix">
+          <span
+            aria-hidden="true"
+            className="gds-document-detail-scan-toolbar__zoom-suffix"
+          >
             %
           </span>
         </label>
