@@ -1,56 +1,53 @@
-import { MetadataNode } from './MetadataModel';
+import { MetadataEntry } from './MetadataModel';
 import { asArray } from './asArray.ts';
 
-export type LinkedArtNode = {
+export type LinkedArtElement = {
   id?: string;
   type?: string;
   _label?: string;
   content?: string;
-  classified_as?: LinkedArtNode[];
+  classified_as?: LinkedArtElement[];
   [key: string]: unknown;
 };
 
-// TODO move to config:
-const entriesToSkip = new Set<string>([
-  // 'type',
-  // '_label',
-  // 'content',
-  // 'classified_as',
-  // 'id',
-  // '@context',
-]);
-
-export function toMetadata(document: unknown): MetadataNode[] {
-  return isNode(document) ? toMetadataNode(document).children : [];
+export function toMetadata(
+  document: unknown,
+  propsToSkip: Set<string>,
+): MetadataEntry[] {
+  return isLinkedArtElement(document)
+    ? toMetadataEntry(document, propsToSkip).children
+    : [];
 }
 
-function toMetadataNode(
-  node: LinkedArtNode,
-  key?: string,
-): MetadataNode {
-  const children: MetadataNode[] = [];
-  for (const [key, values] of Object.entries(node)) {
-    if (entriesToSkip.has(key)) {
+function toMetadataEntry(
+  node: LinkedArtElement,
+  propsToSkip: Set<string>,
+  propName?: string,
+): MetadataEntry {
+  const children: MetadataEntry[] = [];
+  for (const [propName, values] of Object.entries(node)) {
+    if (propsToSkip.has(propName)) {
       continue;
     }
     for (const value of asArray(values)) {
-      if (isNode(value)) {
-        children.push(toMetadataNode(value, key));
+      if (isLinkedArtElement(value)) {
+        children.push(toMetadataEntry(value, propsToSkip, propName));
       } else {
         const child = {
-          tags: [key],
-          label: key,
+          tags: [propName],
+          label: propName,
           value: String(value),
           children: [],
-        } satisfies MetadataNode;
+          source: node,
+        } satisfies MetadataEntry;
         children.push(child);
       }
     }
   }
 
   const tags = [];
-  if(key) {
-    tags.push(key);
+  if(propName) {
+    tags.push(propName);
   }
   const classifiedAs = node.classified_as?.[0]?.id;
   if (classifiedAs) {
@@ -58,23 +55,36 @@ function toMetadataNode(
   }
 
   return {
-    label: toLabel(node, key) ?? '',
-    value: node._label ?? node.content ?? '',
+    label: toMetadataLabel(node, propName) ?? '',
+    value: toMetadataValue(node) ?? '',
     url: getUrl(node),
     children,
     tags,
+    source: node,
   };
 }
 
-function toLabel(node: LinkedArtNode, key?: string): string | undefined {
-  return asArray(node.classified_as)[0]?._label ?? key ?? node.type;
+function toMetadataLabel(
+  node: LinkedArtElement,
+  key?: string,
+): string | undefined {
+  return asArray(node.classified_as)[0]?._label
+    ?? key
+    ?? node.type;
 }
 
-function getUrl(node: LinkedArtNode): string | undefined {
+function toMetadataValue(
+  node: LinkedArtElement,
+) {
+  return node._label
+    ?? node.content;
+}
+
+function getUrl(node: LinkedArtElement): string | undefined {
   return isUrl(node.id) ? node.id : undefined;
 }
 
-function isNode(value: unknown): value is LinkedArtNode {
+function isLinkedArtElement(value: unknown): value is LinkedArtElement {
   return (
     !!value &&
     typeof value === 'object' &&

@@ -1,8 +1,8 @@
-import { MetadataNode } from './MetadataModel.ts';
+import { MetadataEntry } from './MetadataModel.ts';
 
 export function findChild(
-  entry: MetadataNode,
+  entry: MetadataEntry,
   tag: string,
-): MetadataNode | undefined {
+): MetadataEntry | undefined {
   return entry.children.find((c) => c.tags.includes(tag));
 }

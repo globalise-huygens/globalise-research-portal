@@ -3,9 +3,20 @@ import { MatchTarget, MetadataConfig } from './MetadataModel';
 export const metadataConfig: MetadataConfig = {
   categories: [
     { name: 'identification', label: 'Identification' },
+    { name: 'other', label: 'Other' },
     { name: 'production', label: 'Production' },
     { name: 'hierarchy', label: 'Part of' },
     { name: 'documents', label: 'Documents' },
+  ],
+  defaultCategory: 'other',
+  propsToSkip: [
+    'id',
+    '@context',
+    'type',
+    '_label',
+    'content',
+    'classified_as',
+    'identified_by',
   ],
   rules: [
     {

@@ -20,8 +20,9 @@ export function MetadataPanel() {
     return manifest.seeAlso[0]?.id;
   }, [isManifestReady, manifestId]);
 
+  const propsToSkip = new Set(metadataConfig.propsToSkip);
   const categories = useMemo(
-    () => toCategoryViews(toMetadata(json), metadataConfig),
+    () => toCategoryViews(toMetadata(json, propsToSkip), metadataConfig),
     [json],
   );
 

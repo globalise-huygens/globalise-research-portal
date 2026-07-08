@@ -1,11 +1,11 @@
 import {
   MatchRule,
   MatchTarget,
-  MetadataNode,
+  MetadataEntry,
 } from './MetadataModel';
 
 export function matchToRule(
-  entry: MetadataNode,
+  entry: MetadataEntry,
   rules: MatchRule[],
 ): MatchTarget | undefined {
   const found = rules.find(

@@ -9,5 +9,7 @@ export type RegistryComponentProps = { entry: MetadataWithComponent };
 export function RegistryComponent({ entry }: RegistryComponentProps) {
   const Component = componentRegistry[entry.component]
     ?? componentRegistry.default;
-  return <Component entry={entry}/>;
+  return <>
+    <Component entry={entry}/>
+  </>;
 }

@@ -1,16 +1,21 @@
 import { RegistryComponentName } from './registry';
 
-export type MetadataNode = {
+export type MetadataEntry = {
   label: string;
   value: string;
   url?: string;
-  children: MetadataNode[];
+  children: MetadataEntry[];
 
   /**
    * Allows matching metadata to a component based on {@link MatchRule}s
-   *
+   * Includes the property name and classified_as property
    */
   tags: string[];
+
+  /**
+   * Original linked art element:
+   */
+  source: unknown;
 };
 
 export type CategoryName = string;
@@ -29,7 +34,7 @@ export const defaultTarget = {
 
 export type MatchRule = {
   /**
-   * Must match to source propName or classifiedAs of a {@link MetadataNode}
+   * Must match to the tags a {@link MetadataEntry}
    */
   tags: string[];
   target: MatchTarget
@@ -40,13 +45,10 @@ export type MetadataCategory = {
   label: string
 };
 
-export const defaultCategory = {
-  name: 'other' as CategoryName,
-  label: 'Other',
-} satisfies MetadataCategory;
-
 export type MetadataConfig = {
+  propsToSkip: string[];
   categories: MetadataCategory[];
+  defaultCategory: CategoryName
   rules: MatchRule[];
   /**
    * If 'append' the metadata entry will be added to {@link defaultCategory}
@@ -60,7 +62,7 @@ export type ComponentName = string;
  * Metadata entry matched to a component from {@link componentRegistry}
  */
 export type MetadataWithComponent = {
-  metadata: MetadataNode;
+  metadata: MetadataEntry;
   component: RegistryComponentName;
   children: MetadataWithComponent[];
 };

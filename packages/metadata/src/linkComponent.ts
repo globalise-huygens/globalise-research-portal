@@ -1,8 +1,8 @@
-import { MetadataWithComponent, MatchRule, MetadataNode, defaultTarget } from './MetadataModel';
+import { MetadataWithComponent, MatchRule, MetadataEntry, defaultTarget } from './MetadataModel';
 import { matchToRule } from './matchToRule.ts';
 
 export function linkComponent(
-  node: MetadataNode,
+  node: MetadataEntry,
   rules: MatchRule[],
 ): MetadataWithComponent {
   const { component, label } = matchToRule(node, rules) ?? defaultTarget;

@@ -56,3 +56,5 @@ export { IconTranscriptionNormalised } from './IconTranscriptionNormalised';
 export { IconViewModeMenu } from './IconViewModeMenu';
 export { IconZoomIn } from './IconZoomIn';
 export { IconZoomOut } from './IconZoomOut';
+export { IconOpenInNew } from './IconOpenInNew';
+export { IconDataObject } from './IconDataObject';

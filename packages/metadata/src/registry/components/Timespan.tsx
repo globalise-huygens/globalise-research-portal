@@ -1,5 +1,5 @@
 import { RegistryComponentProps } from '../RegistryComponent.tsx';
-import { findChild } from '../../findChild.tsx';
+import { findChild } from '../../findChild.ts';
 import { Label } from '../Label.tsx';
 
 export function Timespan({ entry }: RegistryComponentProps) {

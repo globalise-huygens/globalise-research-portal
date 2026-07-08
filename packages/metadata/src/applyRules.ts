@@ -1,8 +1,8 @@
-import { MetadataWithComponent, MatchRule, MetadataNode } from './MetadataModel';
+import { MetadataWithComponent, MatchRule, MetadataEntry } from './MetadataModel';
 import { matchToRule } from './matchToRule.ts';
 
 export function applyRules(
-  entries: MetadataNode[],
+  entries: MetadataEntry[],
   rules: MatchRule[],
 ): MetadataWithComponent[] {
   return entries.map((entry) => {
