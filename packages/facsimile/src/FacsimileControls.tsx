@@ -6,7 +6,8 @@ import {
   IconZoomOut,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
-import { type RefObject, useState } from 'react';
+import { type Point, type Rect } from 'openseadragon';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 
 type FacsimileControlBarProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
@@ -20,8 +21,42 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const { home, rotate, rotation } = useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState<string | null>(null);
+  const initialViewRef = useRef<{ zoom: number; center: Point } | null>(null);
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
+
+  useEffect(() => {
+    if (!viewer) {
+      initialViewRef.current = null;
+      return;
+    }
+    let nextFrameId: number | null = null;
+    const frameId = requestAnimationFrame(() => {
+      nextFrameId = requestAnimationFrame(() => {
+        initialViewRef.current = {
+          zoom: viewer.viewport.getZoom(),
+          center: viewer.viewport.getCenter(),
+        };
+      });
+    });
+    return () => {
+      cancelAnimationFrame(frameId);
+      if (nextFrameId !== null) {
+        cancelAnimationFrame(nextFrameId);
+      }
+    };
+  }, [viewer]);
+
+  function getInitialView() {
+    if (!viewer) {
+      return null;
+    }
+    initialViewRef.current ??= {
+      zoom: viewer.viewport.getZoom(),
+      center: viewer.viewport.getCenter(),
+    };
+    return initialViewRef.current;
+  }
 
   function setViewerZoomPercent(value: number) {
     const requestedZoomPercent = Math.min(
@@ -30,14 +65,16 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
     );
     if (viewer) {
       const { viewport } = viewer;
+      const initialView = getInitialView();
+      const baseZoom = initialView?.zoom ?? viewport.getZoom();
       viewport.zoomTo(
-        viewport.getHomeZoom() * (requestedZoomPercent / 100),
+        baseZoom * (requestedZoomPercent / 100),
         undefined,
         true,
       );
       viewport.applyConstraints(true);
       const actualZoomPercent = Math.round(
-        (viewport.getZoom() / viewport.getHomeZoom()) * 100,
+        (viewport.getZoom() / baseZoom) * 100,
       );
       setZoomPercent(actualZoomPercent);
       return actualZoomPercent;
@@ -77,19 +114,22 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   function handleResetView() {
     if (viewer) {
       const { viewport } = viewer;
-      const homeBounds = viewport.getHomeBounds();
+      const initialView = getInitialView();
 
       // Force-reset all mutable viewport state for lazy/virtualized manifests.
       if (viewport.getRotation() !== 0) {
         viewport.setRotation(0);
       }
-      viewport.fitBounds(homeBounds, true);
-      viewport.zoomTo(viewport.getHomeZoom(), undefined, true);
-      viewport.panTo(homeBounds.getCenter(), true);
+      if (initialView) {
+        viewport.zoomTo(initialView.zoom, undefined, true);
+        viewport.panTo(initialView.center, true);
+      } else {
+        const homeBounds: Rect = viewport.getHomeBounds();
+        viewport.fitBounds(homeBounds, true);
+        viewport.panTo(homeBounds.getCenter(), true);
+      }
       viewport.applyConstraints(true);
-      setZoomPercent(
-        Math.round((viewport.getZoom() / viewport.getHomeZoom()) * 100),
-      );
+      setZoomPercent(100);
     } else {
       home();
       if (rotation !== 0) {
