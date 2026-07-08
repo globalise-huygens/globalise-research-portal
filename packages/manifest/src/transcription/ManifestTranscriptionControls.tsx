@@ -57,6 +57,18 @@ export function ManifestTranscriptionControls() {
     }
   }
 
+  function handleZoomOut() {
+    applyZoomPercent(diplomaticViewScale - 10);
+  }
+
+  function handleZoomIn() {
+    applyZoomPercent(diplomaticViewScale + 10);
+  }
+
+  function handleResetZoom() {
+    applyZoomPercent(100);
+  }
+
   return (
     <div className="manifest-document-layout__transcription-toolbar">
       <DocumentDetailSegmentedToggleGroup
@@ -98,7 +110,7 @@ export function ManifestTranscriptionControls() {
           icon={
             <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
           }
-          onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
+          onPress={handleZoomOut}
           size="compact"
         />
         <label className="gds-document-detail-scan-toolbar__zoom-field">
@@ -135,7 +147,7 @@ export function ManifestTranscriptionControls() {
           icon={
             <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
           }
-          onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
+          onPress={handleZoomIn}
           size="compact"
         />
       </div>
@@ -147,7 +159,7 @@ export function ManifestTranscriptionControls() {
         aria-label="Reset transcription zoom"
         className="gds-document-detail-scan-toolbar__button"
         icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
-        onPress={() => applyZoomPercent(100)}
+        onPress={handleResetZoom}
         size="compact"
       />
     </div>

@@ -6,7 +6,7 @@ import {
   IconZoomOut,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
-import { type RefObject, useState } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 
 type FacsimileControlBarProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
@@ -17,16 +17,49 @@ const MAX_ZOOM_PERCENT = 400;
 
 export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const viewer = useViewer();
-  const { zoomIn, zoomOut, home, rotate, rotation, zoomLevel } =
+  const { zoomIn, zoomOut, home, rotate, rotation } =
     useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState<string | null>(null);
 
-  const currentZoomPercent =
-    viewer && zoomLevel
-      ? Math.round((zoomLevel / viewer.viewport.getHomeZoom()) * 100)
-      : zoomPercent;
-  const zoomInputValue = zoomInput ?? String(currentZoomPercent);
+  const zoomInputValue = zoomInput ?? String(zoomPercent);
+
+  function readViewerZoomPercent() {
+    if (!viewer) {
+      return null;
+    }
+    const { viewport } = viewer;
+    return Math.round((viewport.getZoom() / viewport.getHomeZoom()) * 100);
+  }
+
+  function syncZoomPercentFromViewer() {
+    const nextZoomPercent = readViewerZoomPercent();
+    if (nextZoomPercent === null) {
+      return zoomPercent;
+    }
+    setZoomPercent(nextZoomPercent);
+    return nextZoomPercent;
+  }
+
+  useEffect(() => {
+    if (!viewer) {
+      return;
+    }
+    const syncZoom = () => {
+      const { viewport } = viewer;
+      setZoomPercent(
+        Math.round((viewport.getZoom() / viewport.getHomeZoom()) * 100),
+      );
+    };
+    viewer.addHandler('open', syncZoom);
+    viewer.addHandler('animation-finish', syncZoom);
+    viewer.addHandler('animation-start', syncZoom);
+    return () => {
+      viewer.removeHandler('open', syncZoom);
+      viewer.removeHandler('animation-finish', syncZoom);
+      viewer.removeHandler('animation-start', syncZoom);
+    };
+  }, [viewer]);
 
   function setViewerZoomPercent(value: number) {
     const nextZoomPercent = Math.min(
@@ -41,6 +74,9 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
         true,
       );
       viewport.applyConstraints();
+    }
+    if (viewer) {
+      return syncZoomPercentFromViewer();
     }
     setZoomPercent(nextZoomPercent);
     return nextZoomPercent;
@@ -76,20 +112,26 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
 
   function handleZoomIn() {
     if (viewer) {
-      zoomIn();
+      viewer.viewport.zoomBy(1.5);
+      viewer.viewport.applyConstraints();
+      syncZoomPercentFromViewer();
       setZoomInput(null);
       return;
     }
-    applyZoomPercent(currentZoomPercent + 10);
+    zoomIn();
+    applyZoomPercent(Math.min(zoomPercent + 10, MAX_ZOOM_PERCENT));
   }
 
   function handleZoomOut() {
     if (viewer) {
-      zoomOut();
+      viewer.viewport.zoomBy(0.667);
+      viewer.viewport.applyConstraints();
+      syncZoomPercentFromViewer();
       setZoomInput(null);
       return;
     }
-    applyZoomPercent(currentZoomPercent - 10);
+    zoomOut();
+    applyZoomPercent(Math.max(zoomPercent - 10, MIN_ZOOM_PERCENT));
   }
 
   function handleResetView() {
@@ -105,6 +147,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       viewport.zoomTo(viewport.getHomeZoom(), undefined, true);
       viewport.panTo(homeBounds.getCenter(), true);
       viewport.applyConstraints();
+      syncZoomPercentFromViewer();
     } else {
       home();
       if (rotation !== 0) {
