@@ -63,15 +63,7 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
 
   function handleZoomInputChange(value: string) {
     const nextValue = value.replace(/[^\d]/g, '').slice(0, 3);
-    const parsed = Number.parseInt(nextValue, 10);
     setZoomInput(nextValue);
-    if (
-      !Number.isNaN(parsed) &&
-      parsed >= MIN_ZOOM_PERCENT &&
-      parsed <= MAX_ZOOM_PERCENT
-    ) {
-      setViewerZoomPercent(parsed);
-    }
   }
 
   function handleZoomIn() {
