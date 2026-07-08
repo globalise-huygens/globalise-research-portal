@@ -458,12 +458,13 @@
 
   .gds-document-detail-scan-toolbar__zoom-field {
     display: inline-grid;
-    grid-template-columns: 3ch auto;
-    min-width: var(--s56);
+    grid-template-columns: 3ch 1ch;
+    box-sizing: border-box;
+    min-width: var(--s64);
     height: var(--s32);
     align-items: center;
     justify-content: center;
-    gap: var(--s2);
+    column-gap: var(--s2);
     background: rgb(255 255 255 / 0.06);
     color: var(--color-parchment-500);
     font-family: var(--font-sans);
@@ -476,7 +477,7 @@
 
   .gds-document-detail-scan-toolbar__zoom-input {
     width: 3ch;
-    height: var(--s20);
+    height: 1rem;
     border: 0;
     border-radius: 0;
     appearance: textfield;
@@ -501,8 +502,9 @@
 
   .gds-document-detail-scan-toolbar__zoom-suffix {
     display: inline-flex;
-    height: var(--s20);
+    height: 1rem;
     align-items: center;
+    justify-content: flex-start;
     color: var(--color-parchment-500);
     line-height: 1rem;
   }

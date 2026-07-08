@@ -24,21 +24,26 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
   const zoomInputValue = zoomInput ?? String(zoomPercent);
 
   function setViewerZoomPercent(value: number) {
-    const nextZoomPercent = Math.min(
+    const requestedZoomPercent = Math.min(
       Math.max(value, MIN_ZOOM_PERCENT),
       MAX_ZOOM_PERCENT,
     );
     if (viewer) {
       const { viewport } = viewer;
       viewport.zoomTo(
-        viewport.getHomeZoom() * (nextZoomPercent / 100),
+        viewport.getHomeZoom() * (requestedZoomPercent / 100),
         undefined,
         true,
       );
-      viewport.applyConstraints();
+      viewport.applyConstraints(true);
+      const actualZoomPercent = Math.round(
+        (viewport.getZoom() / viewport.getHomeZoom()) * 100,
+      );
+      setZoomPercent(actualZoomPercent);
+      return actualZoomPercent;
     }
-    setZoomPercent(nextZoomPercent);
-    return nextZoomPercent;
+    setZoomPercent(requestedZoomPercent);
+    return requestedZoomPercent;
   }
 
   function applyZoomPercent(value: number) {
@@ -89,14 +94,17 @@ export function FacsimileControls({ fullscreenRef }: FacsimileControlBarProps) {
       viewport.fitBounds(homeBounds, true);
       viewport.zoomTo(viewport.getHomeZoom(), undefined, true);
       viewport.panTo(homeBounds.getCenter(), true);
-      viewport.applyConstraints();
+      viewport.applyConstraints(true);
+      setZoomPercent(
+        Math.round((viewport.getZoom() / viewport.getHomeZoom()) * 100),
+      );
     } else {
       home();
       if (rotation !== 0) {
         rotate(-rotation);
       }
+      setZoomPercent(100);
     }
-    setZoomPercent(100);
     setZoomInput(null);
   }
 
