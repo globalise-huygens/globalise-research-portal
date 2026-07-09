@@ -1,7 +1,9 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
+  getEntityCategoryClassName,
   getEntityType,
+  getEntityVisualCategoryClassName,
   isEntity,
   toClassName,
   isWord,
@@ -57,10 +59,12 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const entityType = getEntityType(annotation);
+  const entityCategory = getEntityCategoryClassName(annotation);
+  const visualCategory = getEntityVisualCategoryClassName(annotation);
   const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
   return (
     <span
-      className={`entity ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}
+      className={`entity ${entityCategory} ${visualCategory} ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}
       title={`${entityType} | ${annotation.id}`}
     >
       {children}

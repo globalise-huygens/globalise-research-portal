@@ -1,8 +1,10 @@
 import {
   Annotation,
   filterAnnotationsWithSelector,
+  getEntityCategoryClassName,
   findTextPositionSelector,
   getEntityType,
+  getEntityVisualCategoryClassName,
   getPageText,
   indexAnnotations,
   isEntity,
@@ -114,7 +116,14 @@ export function renderDiplomaticView(
 
       if (entityAnno) {
         const entityType = getEntityType(entityAnno);
-        $segment.classList.add(...['entity', toClassName(entityType)]);
+        $segment.classList.add(
+          ...[
+            'entity',
+            getEntityCategoryClassName(entityAnno),
+            getEntityVisualCategoryClassName(entityAnno),
+            toClassName(entityType),
+          ],
+        );
         $segment.title = `${entityType} | ${entityAnno.id}`;
 
         if (!$entityToSegments[entityAnno.id]) {

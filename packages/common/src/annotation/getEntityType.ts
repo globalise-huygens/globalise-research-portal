@@ -1,9 +1,7 @@
 import { Annotation } from './AnnoModel.ts';
-import { getBody } from './getBody.ts';
-import { assertEntityBody } from './EntityModel.ts';
+import { getPrimaryEntityBody } from './EntityModel.ts';
 
 export function getEntityType(entity: Annotation) {
-  const body = getBody(entity);
-  assertEntityBody(body);
+  const body = getPrimaryEntityBody(entity);
   return body.classified_as._label;
 }

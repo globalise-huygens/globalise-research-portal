@@ -409,13 +409,77 @@
     min-width: 0;
   }
 
-  .gds-entity-preview-card__entity-badge {
-    max-width: 100%;
-    height: var(--s20);
-    background: rgb(23 37 84);
-    color: rgb(191 219 254);
-    outline-color: rgb(21 94 117);
-    padding-inline: var(--s8);
+  .gds-entity-preview-card__category-trigger {
+    --entity-preview-category-background: rgb(255 255 255 / 0.04);
+    --entity-preview-category-border: var(--color-neutral-500);
+    --entity-preview-category-color: var(--color-neutral-200);
+
+    display: inline-flex;
+    width: var(--s24);
+    height: var(--s24);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--entity-preview-category-border);
+    background: var(--entity-preview-category-background);
+    color: var(--entity-preview-category-color);
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="ship"],
+  .gds-entity-preview-card__category-trigger[data-type="commodity"] {
+    --entity-preview-category-background: #e1ba9c;
+    --entity-preview-category-border: #7a563d;
+    --entity-preview-category-color: #2d1f17;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="person"],
+  .gds-entity-preview-card__category-trigger[data-type="organisation"] {
+    --entity-preview-category-background: #ffbdca;
+    --entity-preview-category-border: #9a4f60;
+    --entity-preview-category-color: #351820;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="place"] {
+    --entity-preview-category-background: #94cc7d;
+    --entity-preview-category-border: #3f6f31;
+    --entity-preview-category-color: #172911;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="date"] {
+    --entity-preview-category-background: #86bcc8;
+    --entity-preview-category-border: #356a75;
+    --entity-preview-category-color: #112b31;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="document"] {
+    --entity-preview-category-background: #fddc34;
+    --entity-preview-category-border: #856f00;
+    --entity-preview-category-color: #2f2700;
+  }
+
+  .gds-entity-preview-card__category-trigger[data-type="dimensions"] {
+    --entity-preview-category-background: #e6e4ec;
+    --entity-preview-category-border: #6d5f78;
+    --entity-preview-category-color: #26222b;
+  }
+
+  .gds-entity-preview-card__category-trigger:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .gds-entity-preview-card__category-icon,
+  .gds-entity-preview-card__category-initial {
+    display: inline-flex;
+    width: var(--s16);
+    height: var(--s16);
+    align-items: center;
+    justify-content: center;
   }
 
   .gds-entity-preview-card__automation-badge {
