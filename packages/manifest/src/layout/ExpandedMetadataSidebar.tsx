@@ -6,6 +6,7 @@ import {
 } from '@globalise/design';
 import { sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
+import { MetadataPanel } from '@globalise/metadata';
 
 export function ExpandedMetadataSidebar({
   expandedSections,
@@ -18,7 +19,7 @@ export function ExpandedMetadataSidebar({
     <DocumentDetailMetadataSidebar className="manifest-document-layout__expanded-sidebar">
       {sideBarPanels.map((item) => {
         const isExpanded = expandedSections.has(item.id);
-        const panelId = `${item.id}-panel`;
+        const panelId: (typeof sideBarPanels)[number]['id'] = item.id;
 
         return (
           <React.Fragment key={item.id}>
@@ -46,7 +47,9 @@ export function ExpandedMetadataSidebar({
                 aria-label={`${item.label} details`}
                 className="manifest-document-layout__sidebar-panel"
               >
-                TODO: {panelId} content
+                {panelId === 'inventory' && (
+                  <MetadataPanel />
+                )}
               </div>
             )}
           </React.Fragment>

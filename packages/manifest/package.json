@@ -19,6 +19,7 @@
     "@globalise/document": "*",
     "@globalise/facsimile": "*",
     "@globalise/line-by-line": "*",
+    "@globalise/metadata": "*",
     "openseadragon": "^5.0.1"
   },
   "devDependencies": {

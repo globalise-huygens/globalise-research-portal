@@ -10,27 +10,33 @@ export const sideBarPanels = [
   {
     id: 'inventory',
     label: 'Inventory',
-    badge: '1664',
+    badge: '',
     railLabel: '1664',
     icon: <IconInventory className="manifest-document-layout__sidebar-icon" />,
+    count: 0,
   },
   {
     id: 'table-of-contents',
     label: 'Table of Contents',
+    badge: '',
+    railLabel: 'rail label?',
     icon: <IconTableOfContent className="manifest-document-layout__sidebar-icon" />,
+    count: 0,
   },
   {
     id: 'entity-tags',
     label: 'Entity tags',
-    count: '(376)',
     railLabel: '376',
+    badge: 'badge',
     icon: <IconEntities className="manifest-document-layout__sidebar-icon" />,
+    count: 0,
   },
   {
     id: 'events',
     label: 'Event tags',
-    count: '(0)',
     railLabel: '0',
+    badge: '',
     icon: <IconEvents className="manifest-document-layout__sidebar-icon" />,
+    count: 0,
   },
-];
+] as const;

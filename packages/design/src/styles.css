@@ -2,6 +2,7 @@
 
 @import "./styles/globals.css";
 @import "./components/ui/ui.css";
+@import "./components/icons/inline-icon.css";
 
 :root {
   color-scheme: dark;

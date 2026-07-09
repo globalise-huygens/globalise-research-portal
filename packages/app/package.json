@@ -12,6 +12,7 @@
     "@globalise/design": "*",
     "@globalise/document": "*",
     "@globalise/manifest": "*",
+    "@globalise/metadata": "*",
     "@globalise/search": "*",
     "@iiif/helpers": "^1.5.9",
     "@knaw-huc/osd-iiif-viewer": "^0.3.0",
