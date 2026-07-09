@@ -15,6 +15,7 @@ import { type Point, type Rect } from 'openseadragon';
 import {
   type CSSProperties,
   type RefObject,
+  type ReactNode,
   useEffect,
   useId,
   useLayoutEffect,
@@ -35,11 +36,61 @@ const SETTINGS_PANEL_WIDTH = 320;
 const SETTINGS_PANEL_MARGIN = 12;
 const SETTINGS_PANEL_MIN_HEIGHT = 140;
 
+type ScanSetting = {
+  ariaLabel: string;
+  icon: ReactNode;
+  label: string;
+  max: number;
+  min: number;
+  onChange: (value: number) => void;
+  value: number;
+};
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 function getSliderFillStyle(value: number, min: number, max: number) {
   const percent = ((value - min) / (max - min)) * 100;
 
   return {
     ['--slider-fill' as string]: `${percent}%`,
+  };
+}
+
+function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
+  const width = Math.min(
+    SETTINGS_PANEL_WIDTH,
+    window.innerWidth - SETTINGS_PANEL_MARGIN * 2,
+  );
+  const left = clamp(
+    buttonRect.right - width,
+    SETTINGS_PANEL_MARGIN,
+    window.innerWidth - width - SETTINGS_PANEL_MARGIN,
+  );
+  const belowTop = buttonRect.bottom + SETTINGS_PANEL_MARGIN;
+  const availableBelow =
+    window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
+  const availableAbove =
+    buttonRect.top - SETTINGS_PANEL_MARGIN * 2;
+
+  if (
+    availableBelow < SETTINGS_PANEL_MIN_HEIGHT &&
+    availableAbove > availableBelow
+  ) {
+    return {
+      bottom: window.innerHeight - buttonRect.top + SETTINGS_PANEL_MARGIN,
+      left,
+      maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableAbove),
+      width,
+    };
+  }
+
+  return {
+    left,
+    maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableBelow),
+    top: belowTop,
+    width,
   };
 }
 
@@ -103,44 +154,9 @@ export function FacsimileControls({
       if (!button) {
         return;
       }
-      const buttonRect = button.getBoundingClientRect();
-      const width = Math.min(
-        SETTINGS_PANEL_WIDTH,
-        window.innerWidth - SETTINGS_PANEL_MARGIN * 2,
+      setSettingsPanelStyle(
+        getSettingsPanelStyle(button.getBoundingClientRect()),
       );
-      const left = Math.min(
-        Math.max(
-          SETTINGS_PANEL_MARGIN,
-          buttonRect.right - width,
-        ),
-        window.innerWidth - width - SETTINGS_PANEL_MARGIN,
-      );
-      const belowTop = buttonRect.bottom + SETTINGS_PANEL_MARGIN;
-      const availableBelow =
-        window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
-      const availableAbove =
-        buttonRect.top - SETTINGS_PANEL_MARGIN * 2;
-
-      if (
-        availableBelow < SETTINGS_PANEL_MIN_HEIGHT &&
-        availableAbove > availableBelow
-      ) {
-        setSettingsPanelStyle({
-          bottom:
-            window.innerHeight - buttonRect.top + SETTINGS_PANEL_MARGIN,
-          left,
-          maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableAbove),
-          width,
-        });
-        return;
-      }
-
-      setSettingsPanelStyle({
-        left,
-        maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableBelow),
-        top: belowTop,
-        width,
-      });
     }
 
     updateSettingsPanelPosition();
@@ -164,8 +180,9 @@ export function FacsimileControls({
   }
 
   function setViewerZoomPercent(value: number) {
-    const requestedZoomPercent = Math.min(
-      Math.max(value, MIN_ZOOM_PERCENT),
+    const requestedZoomPercent = clamp(
+      value,
+      MIN_ZOOM_PERCENT,
       MAX_ZOOM_PERCENT,
     );
     if (viewer) {
@@ -249,6 +266,42 @@ export function FacsimileControls({
     }
     setZoomInput(null);
   }
+
+  const scanSettings: ScanSetting[] = [
+    {
+      ariaLabel: 'Brightness',
+      icon: (
+        <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
+      ),
+      label: 'Brightness',
+      max: 150,
+      min: 50,
+      onChange: setBrightness,
+      value: brightness,
+    },
+    {
+      ariaLabel: 'Contrast',
+      icon: (
+        <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
+      ),
+      label: 'Contrast',
+      max: 150,
+      min: 50,
+      onChange: setContrast,
+      value: contrast,
+    },
+    {
+      ariaLabel: 'Saturation',
+      icon: (
+        <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
+      ),
+      label: 'Saturation',
+      max: 200,
+      min: 0,
+      onChange: setSaturation,
+      value: saturation,
+    },
+  ];
 
   return (
     <>
@@ -355,81 +408,9 @@ export function FacsimileControls({
             }
           }}
         >
-          <div className="gds-document-detail-scan-toolbar__settings-row">
-            <div className="gds-document-detail-scan-toolbar__settings-label">
-              <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
-              <span>Brightness</span>
-            </div>
-            <input
-              aria-label="Brightness"
-              className="gds-document-detail-scan-toolbar__settings-slider"
-              type="range"
-              min={50}
-              max={150}
-              step={1}
-              value={brightness}
-              style={getSliderFillStyle(brightness, 50, 150)}
-              onInput={(event) => {
-                setBrightness(Number(event.currentTarget.value));
-              }}
-              onChange={(event) => {
-                setBrightness(Number(event.currentTarget.value));
-              }}
-            />
-            <span className="gds-document-detail-scan-toolbar__settings-value">
-              {brightness}%
-            </span>
-          </div>
-          <div className="gds-document-detail-scan-toolbar__settings-row">
-            <div className="gds-document-detail-scan-toolbar__settings-label">
-              <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
-              <span>Contrast</span>
-            </div>
-            <input
-              aria-label="Contrast"
-              className="gds-document-detail-scan-toolbar__settings-slider"
-              type="range"
-              min={50}
-              max={150}
-              step={1}
-              value={contrast}
-              style={getSliderFillStyle(contrast, 50, 150)}
-              onInput={(event) => {
-                setContrast(Number(event.currentTarget.value));
-              }}
-              onChange={(event) => {
-                setContrast(Number(event.currentTarget.value));
-              }}
-            />
-            <span className="gds-document-detail-scan-toolbar__settings-value">
-              {contrast}%
-            </span>
-          </div>
-          <div className="gds-document-detail-scan-toolbar__settings-row">
-            <div className="gds-document-detail-scan-toolbar__settings-label">
-              <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
-              <span>Saturation</span>
-            </div>
-            <input
-              aria-label="Saturation"
-              className="gds-document-detail-scan-toolbar__settings-slider"
-              type="range"
-              min={0}
-              max={200}
-              step={1}
-              value={saturation}
-              style={getSliderFillStyle(saturation, 0, 200)}
-              onInput={(event) => {
-                setSaturation(Number(event.currentTarget.value));
-              }}
-              onChange={(event) => {
-                setSaturation(Number(event.currentTarget.value));
-              }}
-            />
-            <span className="gds-document-detail-scan-toolbar__settings-value">
-              {saturation}%
-            </span>
-          </div>
+          {scanSettings.map((setting) => (
+            <ScanSettingSlider key={setting.label} {...setting} />
+          ))}
           <div className="gds-document-detail-scan-toolbar__settings-row gds-document-detail-scan-toolbar__settings-row--invert">
             <div className="gds-document-detail-scan-toolbar__settings-label">
               <IconInvert className="gds-document-detail-scan-toolbar__settings-icon" />
@@ -450,5 +431,47 @@ export function FacsimileControls({
         document.body,
       )}
     </>
+  );
+}
+
+function ScanSettingSlider({
+  ariaLabel,
+  icon,
+  label,
+  max,
+  min,
+  onChange,
+  value,
+}: ScanSetting) {
+  function handleChange(nextValue: string) {
+    onChange(Number(nextValue));
+  }
+
+  return (
+    <div className="gds-document-detail-scan-toolbar__settings-row">
+      <div className="gds-document-detail-scan-toolbar__settings-label">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <input
+        aria-label={ariaLabel}
+        className="gds-document-detail-scan-toolbar__settings-slider"
+        type="range"
+        min={min}
+        max={max}
+        step={1}
+        value={value}
+        style={getSliderFillStyle(value, min, max)}
+        onInput={(event) => {
+          handleChange(event.currentTarget.value);
+        }}
+        onChange={(event) => {
+          handleChange(event.currentTarget.value);
+        }}
+      />
+      <span className="gds-document-detail-scan-toolbar__settings-value">
+        {value}%
+      </span>
+    </div>
   );
 }

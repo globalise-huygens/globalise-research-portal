@@ -64,20 +64,38 @@ export function ManifestDocumentPageLayout({
     setIsSidebarExpanded(true);
   }, []);
 
-  const scanPane = isScanVisible ? (
-    <DocumentDetailViewerPane
-      key="scan"
-      className={
-        isTextVisible
-          ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
-          : 'manifest-document-layout__viewer-pane'
-      }
-    >
-      <DocumentDetailCanvas className="manifest-document-layout__canvas">
-        {scan}
-      </DocumentDetailCanvas>
-    </DocumentDetailViewerPane>
-  ) : null;
+  function renderScanPane(isBordered: boolean) {
+    return (
+      <DocumentDetailViewerPane
+        key="scan"
+        className={
+          isBordered
+            ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
+            : 'manifest-document-layout__viewer-pane'
+        }
+      >
+        <DocumentDetailCanvas className="manifest-document-layout__canvas">
+          {scan}
+        </DocumentDetailCanvas>
+      </DocumentDetailViewerPane>
+    );
+  }
+
+  function renderTranscriptionPane() {
+    return (
+      <DocumentDetailViewerPane
+        key="text"
+        className="manifest-document-layout__viewer-pane"
+      >
+        <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
+          {transcription}
+        </DocumentDetailTranscriptCanvas>
+      </DocumentDetailViewerPane>
+    );
+  }
+
+  const scanPane = isScanVisible ? renderScanPane(isTextVisible) : null;
+  const transcriptionPane = isTextVisible ? renderTranscriptionPane() : null;
 
   const selectedKeys = new Array<string>();
   if (isScanVisible) {
@@ -196,36 +214,12 @@ export function ManifestDocumentPageLayout({
             {isScanVisible && isTextVisible ? (
               <div className="manifest-document-layout__split-viewer">
                 <SplitPaneLayout>
-                  <DocumentDetailViewerPane
-                    key="scan"
-                    className="manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered"
-                  >
-                    <DocumentDetailCanvas className="manifest-document-layout__canvas">
-                      {scan}
-                    </DocumentDetailCanvas>
-                  </DocumentDetailViewerPane>
-                  <DocumentDetailViewerPane
-                    key="text"
-                    className="manifest-document-layout__viewer-pane"
-                  >
-                    <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
-                      {transcription}
-                    </DocumentDetailTranscriptCanvas>
-                  </DocumentDetailViewerPane>
+                  {renderScanPane(true)}
+                  {renderTranscriptionPane()}
                 </SplitPaneLayout>
               </div>
             ) : (
-              (scanPane ??
-              (isTextVisible && (
-                <DocumentDetailViewerPane
-                  key="text"
-                  className="manifest-document-layout__viewer-pane"
-                >
-                  <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
-                    {transcription}
-                  </DocumentDetailTranscriptCanvas>
-                </DocumentDetailViewerPane>
-              )))
+              (scanPane ?? transcriptionPane)
             )}
           </DocumentDetailBody>
 
