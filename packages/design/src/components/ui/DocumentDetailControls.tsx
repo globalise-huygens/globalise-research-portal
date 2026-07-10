@@ -203,7 +203,7 @@ const DocumentDetailCheckbox = React.forwardRef<
     className={cn('gds-document-detail-checkbox', className)}
     {...props}
   >
-    {() => (
+    {({ isIndeterminate }) => (
       <>
         <span
           className={cn(
@@ -211,7 +211,20 @@ const DocumentDetailCheckbox = React.forwardRef<
             indicatorClassName,
           )}
           aria-hidden="true"
-        />
+        >
+          {isIndeterminate ? (
+            <span className="gds-document-detail-checkbox__indeterminate" />
+          ) : (
+            <svg
+              className="gds-document-detail-checkbox__check"
+              viewBox="0 -960 960 960"
+              focusable="false"
+              aria-hidden="true"
+            >
+              <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
+            </svg>
+          )}
+        </span>
         {children && <span>{children}</span>}
       </>
     )}
