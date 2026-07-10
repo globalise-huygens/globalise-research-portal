@@ -14,6 +14,7 @@ import {
   DocumentDetailViewerPane,
   IconScan,
   IconSidebar,
+  IconSwap,
   IconTranscription,
 } from '@globalise/design';
 import { SplitPaneLayout } from '@globalise/document';
@@ -46,6 +47,8 @@ export function ManifestDocumentPageLayout({
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
+  const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
+    React.useState(false);
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     () => new Set(['inventory']),
   );
@@ -84,11 +87,15 @@ export function ManifestDocumentPageLayout({
     );
   }
 
-  function renderTranscriptionPane() {
+  function renderTranscriptionPane(isBordered = false) {
     return (
       <DocumentDetailViewerPane
         key="text"
-        className="manifest-document-layout__viewer-pane"
+        className={
+          isBordered
+            ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
+            : 'manifest-document-layout__viewer-pane'
+        }
       >
         <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
           {transcription}
@@ -107,6 +114,10 @@ export function ManifestDocumentPageLayout({
   if (isTextVisible) {
     selectedKeys.push('text');
   }
+  const splitPanes: [React.ReactNode, React.ReactNode] = isViewerOrderSwapped
+    ? [renderTranscriptionPane(true), renderScanPane(false)]
+    : [renderScanPane(true), renderTranscriptionPane()];
+
   return (
     <div className="gds manifest-document-layout">
       <div
@@ -210,6 +221,17 @@ export function ManifestDocumentPageLayout({
             </div>
 
             <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
+              <TooltipIconButton
+                aria-label="Swap scan and transcription viewer"
+                tooltip="Swap scan and transcription viewer"
+                isActive={isViewerOrderSwapped}
+                isDisabled={!isScanVisible || !isTextVisible}
+                className={TOP_BAR_BUTTON}
+                icon={
+                  <IconSwap className="manifest-document-layout__toolbar-icon" />
+                }
+                onPress={() => setIsViewerOrderSwapped((v) => !v)}
+              />
               <ManifestEntityHighlightMenu />
               <ManifestLayoutElementsToggle />
               {topRight}
@@ -220,8 +242,7 @@ export function ManifestDocumentPageLayout({
             {isScanVisible && isTextVisible ? (
               <div className="manifest-document-layout__split-viewer">
                 <SplitPaneLayout>
-                  {renderScanPane(true)}
-                  {renderTranscriptionPane()}
+                  {splitPanes}
                 </SplitPaneLayout>
               </div>
             ) : (
