@@ -189,6 +189,42 @@
   opacity: 0.4;
 }
 
+.manifest-document-layout__scan-position {
+  display: inline-flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--s8);
+  color: var(--color-neutral-300);
+  font-size: var(--text-xs);
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-document-layout__scan-position-input {
+  min-width: 2ch;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-brand-parchment);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  padding: 0;
+  text-align: center;
+  appearance: textfield;
+}
+
+.manifest-document-layout__scan-position-input::-webkit-inner-spin-button,
+.manifest-document-layout__scan-position-input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.manifest-document-layout__scan-position-input:focus {
+  outline: 1px solid var(--color-brand-parchment);
+  outline-offset: 2px;
+}
+
 .manifest-document-layout__bottom-button > svg,
 .manifest-document-layout__bottom-button .gds-document-detail-icon svg,
 .manifest-document-layout__toolbar-icon {

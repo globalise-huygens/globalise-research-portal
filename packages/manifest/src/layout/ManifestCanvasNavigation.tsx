@@ -1,4 +1,8 @@
-import { type CanvasId, useSelectedCanvas } from '@globalise/common/document';
+import {
+  setSelectedCanvas,
+  type CanvasId,
+  useSelectedCanvas,
+} from '@globalise/common/document';
 import {
   DocumentDetailBarGroup,
   IconLeft,
@@ -6,18 +10,18 @@ import {
   IconRight,
   IconRightLast,
 } from '@globalise/design';
-import { getValue } from '@iiif/helpers/i18n';
-import { useManifest, useViewer } from '@knaw-huc/osd-iiif-viewer';
+import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 import { Point } from 'openseadragon';
+import { useState } from 'react';
 import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
 
 export function ManifestCanvasNavigation() {
   const viewer = useViewer();
-  const { vault } = useManifest();
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const { id: selectedCanvasId } = useSelectedCanvas();
+  const [scanInput, setScanInput] = useState<string | null>(null);
   const selectedIndex = lazyCanvases.findIndex(
     (c) => c.canvasId === selectedCanvasId,
   );
@@ -26,11 +30,9 @@ export function ManifestCanvasNavigation() {
     return null;
   }
 
-  const canvas = vault
-    ? vault.get({ id: lazyCanvases[selectedIndex].canvasId, type: 'Canvas' })
-    : null;
-  const label = canvas ? getValue(canvas.label) : `Scan ${selectedIndex + 1}`;
-
+  const currentScanNumber = selectedIndex + 1;
+  const totalScans = lazyCanvases.length;
+  const scanInputValue = scanInput ?? String(currentScanNumber);
   const hasPrev = selectedIndex > 0;
   const hasNext = selectedIndex < lazyCanvases.length - 1;
   const firstId = lazyCanvases[0]?.canvasId;
@@ -39,7 +41,12 @@ export function ManifestCanvasNavigation() {
   const lastId = lazyCanvases[lazyCanvases.length - 1]?.canvasId;
 
   function scrollTo(canvasId?: CanvasId) {
-    if (!viewer || !canvasId) {
+    if (!canvasId) {
+      return;
+    }
+    setScanInput(null);
+    setSelectedCanvas(canvasId, 'external');
+    if (!viewer) {
       return;
     }
     const canvas = lazyCanvases.find((c) => c.canvasId === canvasId);
@@ -47,6 +54,28 @@ export function ManifestCanvasNavigation() {
       return;
     }
     viewer.viewport.panTo(new Point(0.5, canvas.y + canvas.height / 2));
+  }
+
+  function navigateToScanNumber(scanNumber: number) {
+    const nextScanNumber = Math.min(Math.max(scanNumber, 1), totalScans);
+    const nextCanvasId = lazyCanvases[nextScanNumber - 1]?.canvasId;
+    setScanInput(null);
+    scrollTo(nextCanvasId);
+  }
+
+  function commitScanInput() {
+    const parsed = Number.parseInt(scanInputValue, 10);
+    if (Number.isNaN(parsed)) {
+      setScanInput(null);
+      return;
+    }
+    navigateToScanNumber(parsed);
+  }
+
+  function handleScanInputChange(value: string) {
+    setScanInput(
+      value.replace(/[^\d]/g, '').slice(0, String(totalScans).length),
+    );
   }
 
   return (
@@ -70,8 +99,34 @@ export function ManifestCanvasNavigation() {
         onPress={() => scrollTo(prevId)}
       />
 
-      <span className="min-w-0 inline-flex items-baseline gap-s8 leading-4 text-xs text-neutral-300">
-        {label} ({selectedIndex + 1}/{lazyCanvases.length})
+      <span className="manifest-document-layout__scan-position">
+        <span>Scan</span>
+        <input
+          aria-label={`Current scan number, 1 to ${totalScans}`}
+          className="manifest-document-layout__scan-position-input"
+          inputMode="numeric"
+          maxLength={String(totalScans).length}
+          pattern="[0-9]*"
+          style={{ width: `${Math.max(2, String(totalScans).length)}ch` }}
+          type="text"
+          value={scanInputValue}
+          onBlur={commitScanInput}
+          onChange={(event) => {
+            handleScanInputChange(event.currentTarget.value);
+          }}
+          onFocus={(event) => event.currentTarget.select()}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              commitScanInput();
+            } else if (event.key === 'Escape') {
+              event.preventDefault();
+              setScanInput(null);
+              event.currentTarget.blur();
+            }
+          }}
+        />
+        <span>of {totalScans}</span>
       </span>
 
       <TooltipIconButton
