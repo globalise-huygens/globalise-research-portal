@@ -145,6 +145,7 @@
 }
 
 .manifest-document-layout__content-warning {
+  width: fit-content;
   min-width: 0;
 }
 

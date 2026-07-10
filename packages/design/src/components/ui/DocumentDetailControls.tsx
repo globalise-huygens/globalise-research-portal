@@ -393,16 +393,7 @@ export function ContentWarningControl({
   const isPopoverOpen = isOpen || isHoverPreviewOpen;
 
   return (
-    <div
-      onMouseEnter={() => setIsHoverPreviewOpen(true)}
-      onMouseLeave={() => setIsHoverPreviewOpen(false)}
-      onFocus={() => setIsHoverPreviewOpen(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          setIsHoverPreviewOpen(false);
-        }
-      }}
-    >
+    <div>
       <DocumentDetailToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
         className="document-detail-overlay-warning-button"
@@ -410,6 +401,10 @@ export function ContentWarningControl({
           <IconContentWarning className="document-detail-overlay-icon-medium" />
         }
         isActive={isOpen}
+        onBlur={() => setIsHoverPreviewOpen(false)}
+        onFocus={() => setIsHoverPreviewOpen(true)}
+        onMouseEnter={() => setIsHoverPreviewOpen(true)}
+        onMouseLeave={() => setIsHoverPreviewOpen(false)}
         onPress={() => onOpenChange(!isOpen)}
         size="compact"
       >
