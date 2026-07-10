@@ -14,6 +14,7 @@ import {
   type ToggleButtonProps as AriaToggleButtonProps,
 } from 'react-aria-components';
 import type { DocumentDetailOverlayContent } from './DocumentDetailOverlayTypes';
+import { IconArrowTopRight } from '../icons/IconArrowTopRight';
 import { IconContentWarning } from '../icons/IconContentWarning';
 import { DocumentDetailTooltip } from './DocumentDetailSurfaces';
 
@@ -421,7 +422,13 @@ export function ContentWarningControl({
           aria-label={warning.title}
         >
           <p>{warning.body}</p>
-          <a href="#">{warning.linkLabel}</a>
+          <a href="#">
+            <span>{warning.linkLabel}</span>
+            <IconArrowTopRight
+              aria-hidden="true"
+              className="document-detail-overlay-warning-link-icon"
+            />
+          </a>
         </div>
       )}
     </div>
