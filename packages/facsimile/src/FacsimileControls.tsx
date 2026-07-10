@@ -16,6 +16,7 @@ import {
   type CSSProperties,
   type RefObject,
   type ReactNode,
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
@@ -116,6 +117,17 @@ export function FacsimileControls({
   const zoomInputValue = zoomInput ?? String(zoomPercent);
   const scanFilter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) invert(${isInverted ? 1 : 0})`;
 
+  const getInitialView = useCallback(() => {
+    if (!viewer) {
+      return null;
+    }
+    initialViewRef.current ??= {
+      zoom: viewer.viewport.getZoom(),
+      center: viewer.viewport.getCenter(),
+    };
+    return initialViewRef.current;
+  }, [viewer]);
+
   useEffect(() => {
     if (!viewer) {
       initialViewRef.current = null;
@@ -135,6 +147,41 @@ export function FacsimileControls({
       if (nextFrameId !== null) {
         cancelAnimationFrame(nextFrameId);
       }
+    };
+  }, [getInitialView, viewer]);
+
+  useEffect(() => {
+    if (!viewer) {
+      return;
+    }
+
+    let frameId: number | null = null;
+    const updateZoomPercent = () => {
+      if (frameId !== null) {
+        return;
+      }
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        const initialView = getInitialView();
+        if (!initialView) {
+          return;
+        }
+        setZoomPercent(Math.round(
+          (viewer.viewport.getZoom() / initialView.zoom) * 100,
+        ));
+      });
+    };
+
+    viewer.addHandler('viewport-change', updateZoomPercent);
+    viewer.addHandler('animation', updateZoomPercent);
+    updateZoomPercent();
+
+    return () => {
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+      viewer.removeHandler('viewport-change', updateZoomPercent);
+      viewer.removeHandler('animation', updateZoomPercent);
     };
   }, [viewer]);
 
@@ -167,17 +214,6 @@ export function FacsimileControls({
       window.removeEventListener('scroll', updateSettingsPanelPosition, true);
     };
   }, [isSettingsOpen]);
-
-  function getInitialView() {
-    if (!viewer) {
-      return null;
-    }
-    initialViewRef.current ??= {
-      zoom: viewer.viewport.getZoom(),
-      center: viewer.viewport.getCenter(),
-    };
-    return initialViewRef.current;
-  }
 
   function setViewerZoomPercent(value: number) {
     const requestedZoomPercent = clamp(
