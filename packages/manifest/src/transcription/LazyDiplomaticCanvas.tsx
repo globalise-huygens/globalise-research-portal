@@ -24,6 +24,7 @@ type Props = {
   scaleFactor: number;
   isVisible: boolean;
   renderDistance: number;
+  showLayoutElements: boolean;
 };
 
 export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
@@ -36,6 +37,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   scaleFactor,
   isVisible,
   renderDistance,
+  showLayoutElements,
 }: Props) {
   const annotations = useAnnotations(canvasId);
   const highlightedEntityCategories = useEntityHighlightCategories();
@@ -114,7 +116,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
               selected={selectedIds}
               page={partOf}
               fit="width"
-              showBlocks={true}
+              showBlocks={showLayoutElements}
               showScanMargin={true}
               highlightedEntityCategories={highlightedEntityCategories}
             />

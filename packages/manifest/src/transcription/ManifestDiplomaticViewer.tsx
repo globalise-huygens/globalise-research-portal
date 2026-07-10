@@ -24,6 +24,7 @@ type CanvasInfo = {
 
 type Props = {
   initialCanvasId?: string;
+  showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
 
@@ -32,6 +33,7 @@ const MAX_VIEWPORTS_TO_RENDER = 2;
 
 export function ManifestDiplomaticViewer({
   initialCanvasId,
+  showLayoutElements,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
@@ -271,6 +273,7 @@ export function ManifestDiplomaticViewer({
               index={i}
               isVisible={visibleCanvases.has(i)}
               renderDistance={renderDistance}
+              showLayoutElements={showLayoutElements}
             />
           ))}
       </div>

@@ -47,6 +47,11 @@ type ScanSetting = {
   value: number;
 };
 
+type InitialView = {
+  center: Point;
+  zoom: number;
+};
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -110,14 +115,14 @@ export function FacsimileControls({
   const [isInverted, setIsInverted] = useState(false);
   const [settingsPanelStyle, setSettingsPanelStyle] =
     useState<CSSProperties | null>(null);
-  const initialViewRef = useRef<{ zoom: number; center: Point } | null>(null);
+  const initialViewRef = useRef<InitialView | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsPanelId = useId();
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
   const scanFilter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) invert(${isInverted ? 1 : 0})`;
 
-  const getInitialView = useCallback(() => {
+  const getInitialView = useCallback((): InitialView | null => {
     if (!viewer) {
       return null;
     }
@@ -148,7 +153,7 @@ export function FacsimileControls({
         cancelAnimationFrame(nextFrameId);
       }
     };
-  }, [getInitialView, viewer]);
+  }, [viewer]);
 
   useEffect(() => {
     if (!viewer) {
@@ -172,6 +177,7 @@ export function FacsimileControls({
       });
     };
 
+    viewer.addHandler('zoom', updateZoomPercent);
     viewer.addHandler('viewport-change', updateZoomPercent);
     viewer.addHandler('animation', updateZoomPercent);
     updateZoomPercent();
@@ -180,10 +186,11 @@ export function FacsimileControls({
       if (frameId !== null) {
         cancelAnimationFrame(frameId);
       }
+      viewer.removeHandler('zoom', updateZoomPercent);
       viewer.removeHandler('viewport-change', updateZoomPercent);
       viewer.removeHandler('animation', updateZoomPercent);
     };
-  }, [viewer]);
+  }, [getInitialView, viewer]);
 
   useEffect(() => {
     onScanFilterChange?.(scanFilter);

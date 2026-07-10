@@ -17,6 +17,7 @@ import {
   useAnnotations,
   useCanvasIndexes,
   useEntityHighlightCategories,
+  useIsLayoutElementsVisible,
   usePages,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
@@ -47,6 +48,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
   const highlightedEntityCategories = useEntityHighlightCategories();
+  const showLayoutElements = useIsLayoutElementsVisible();
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
@@ -124,6 +126,9 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   [isScrolling, words, selectedIds]);
 
   const visibleBlocks = useMemo(() => {
+    if (!showLayoutElements) {
+      return [];
+    }
     if(!isScrolling) {
       return blocks;
     }
@@ -132,7 +137,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
     return blocks.filter((b) => selectedIds.includes(b.id));
   },
-  [isScrolling, blocks, selectedIds]);
+  [isScrolling, blocks, selectedIds, showLayoutElements]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;

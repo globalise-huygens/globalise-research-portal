@@ -1,4 +1,8 @@
-import { initCanvases, useDocumentStore } from '@globalise/common/document';
+import {
+  initCanvases,
+  useDocumentStore,
+  useIsLayoutElementsVisible,
+} from '@globalise/common/document';
 import { useTranscriptionMode } from '@globalise/document';
 import { ControlBar } from '@globalise/facsimile';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
@@ -19,6 +23,7 @@ export function ManifestTranscriptionViewer({
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
   const transcriptionMode = useTranscriptionMode();
+  const showLayoutElements = useIsLayoutElementsVisible();
   const [storeReady, setStoreReady] = useState(false);
 
   const canvasIds = useMemo(() => {
@@ -48,11 +53,13 @@ export function ManifestTranscriptionViewer({
     transcriptionMode === 'line-by-line' ? (
       <ManifestLineByLineViewer
         initialCanvasId={currentCanvasId}
+        showLayoutElements={showLayoutElements}
         onCanvasChange={onCanvasChange}
       />
     ) : (
       <ManifestDiplomaticViewer
         initialCanvasId={currentCanvasId}
+        showLayoutElements={showLayoutElements}
         onCanvasChange={onCanvasChange}
       />
     );

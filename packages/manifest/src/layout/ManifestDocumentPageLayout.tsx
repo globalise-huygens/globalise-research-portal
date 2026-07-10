@@ -23,6 +23,7 @@ import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
+import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
 import { TooltipIconButton } from './TooltipIconButton';
 
 type Props = {
@@ -210,6 +211,7 @@ export function ManifestDocumentPageLayout({
 
             <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
               <ManifestEntityHighlightMenu />
+              <ManifestLayoutElementsToggle />
               {topRight}
             </DocumentDetailBarGroup>
           </DocumentDetailTopBar>

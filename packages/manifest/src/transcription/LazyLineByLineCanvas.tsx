@@ -12,10 +12,11 @@ type Props = {
   canvasId: string;
   annotationUrls: string[];
   scale: number;
+  showLayoutElements: boolean;
 };
 
 export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
-  { canvasId, annotationUrls, scale }: Props,
+  { canvasId, annotationUrls, scale, showLayoutElements }: Props,
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -49,7 +50,11 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
       {isLoading && <Placeholder>Loading...</Placeholder>}
       {isContentReady && (
         <div style={{ fontSize: `${scale}%` }}>
-          <LineByLineView canvasId={canvasId} annotations={annotations}/>
+          <LineByLineView
+            canvasId={canvasId}
+            annotations={annotations}
+            showLayoutElements={showLayoutElements}
+          />
         </div>
       )}
     </div>

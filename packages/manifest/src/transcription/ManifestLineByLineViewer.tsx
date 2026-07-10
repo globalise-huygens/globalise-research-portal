@@ -22,6 +22,7 @@ type CanvasInfo = {
 
 type Props = {
   initialCanvasId?: string;
+  showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
 
@@ -31,6 +32,7 @@ const INCREASE_VIEWPORT_BY = 0;
 
 export function ManifestLineByLineViewer({
   initialCanvasId,
+  showLayoutElements,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
@@ -222,6 +224,7 @@ export function ManifestLineByLineViewer({
             canvasId={canvasInfos[index].canvasId}
             annotationUrls={canvasInfos[index].annotationUrls}
             scale={transcriptionScale}
+            showLayoutElements={showLayoutElements}
           />
         </div>
       )}
