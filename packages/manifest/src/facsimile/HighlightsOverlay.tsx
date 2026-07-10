@@ -16,6 +16,7 @@ import {
   loadCanvasAnnotationPages,
   useAnnotations,
   useCanvasIndexes,
+  useEntityHighlightCategories,
   usePages,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
@@ -45,6 +46,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
+  const highlightedEntityCategories = useEntityHighlightCategories();
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
@@ -73,7 +75,11 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const wordHighlightTones = useMemo(() => {
     const tones: Partial<Record<Id, EntityHighlightTone>> = {};
     for (const [entityId, wordIds] of Object.entries(indexes.entityToWords)) {
-      const tone = getEntityHighlightTone(entityId, annotations);
+      const tone = getEntityHighlightTone(
+        entityId,
+        annotations,
+        highlightedEntityCategories,
+      );
       if (!tone) {
         continue;
       }
@@ -82,7 +88,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       });
     }
     return tones;
-  }, [annotations, indexes.entityToWords]);
+  }, [annotations, highlightedEntityCategories, indexes.entityToWords]);
 
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
@@ -172,10 +178,12 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 function getEntityHighlightTone(
   entityId: Id,
   annotations: Record<Id, Annotation>,
+  highlightedEntityCategories: Set<EntityHighlightTone>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
   if (!annotation || !isEntity(annotation)) {
     return undefined;
   }
-  return getEntityVisualCategoryClassName(annotation);
+  const tone = getEntityVisualCategoryClassName(annotation);
+  return highlightedEntityCategories.has(tone) ? tone : undefined;
 }

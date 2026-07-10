@@ -1,6 +1,17 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
-import { Annotation, Id, isEntity, isWord } from '@globalise/common/annotation';
-import { setHovered, toggleClicked } from '@globalise/common/document';
+import {
+  Annotation,
+  type EntityVisualCategoryClassName,
+  getEntityVisualCategoryClassName,
+  Id,
+  isEntity,
+  isWord,
+} from '@globalise/common/annotation';
+import {
+  setHovered,
+  toggleClicked,
+  useEntityHighlightCategories,
+} from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
 import { NestedSegment } from './NestedSegment';
 
@@ -13,10 +24,15 @@ type TextProps = {
 export function SegmentedText(
   { canvasId, blockId, segments }: TextProps,
 ) {
+  const highlightedEntityCategories = useEntityHighlightCategories();
+
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoverId = selectAnnotation(segment.annotations)
+      const hoverId = selectAnnotation(
+        segment.annotations,
+        highlightedEntityCategories,
+      )
         ?? blockId
         ?? null;
 
@@ -57,8 +73,14 @@ export function SegmentedText(
   </>;
 }
 
-function selectAnnotation(annotations: Annotation[]): Id | undefined {
-  const entity = annotations.find((a) => isEntity(a));
+function selectAnnotation(
+  annotations: Annotation[],
+  highlightedEntityCategories: Set<EntityVisualCategoryClassName>,
+): Id | undefined {
+  const entity = annotations.find((a) =>
+    isEntity(a) &&
+    highlightedEntityCategories.has(getEntityVisualCategoryClassName(a)),
+  );
   if (entity) {
     return entity.id;
   }

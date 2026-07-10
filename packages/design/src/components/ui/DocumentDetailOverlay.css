@@ -569,13 +569,13 @@
     right: 0;
     z-index: 40;
     display: flex;
-    width: 320px;
+    width: 260px;
     flex-direction: column;
-    gap: var(--s16);
+    gap: var(--s8);
     border-color: rgb(255 255 255 / 0.1);
     border-radius: 0;
     background: var(--color-neutral-800);
-    padding: var(--s16);
+    padding: var(--s12);
     box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
   }
 
@@ -592,11 +592,11 @@
   .gds-entity-highlight-menu__subcategories {
     display: flex;
     flex-direction: column;
-    gap: var(--s8);
+    gap: var(--s6);
   }
 
   .gds-entity-highlight-menu__list {
-    max-height: 392px;
+    max-height: 304px;
     overflow-y: auto;
     padding-right: var(--s4);
     scrollbar-color: var(--color-neutral-600) transparent;
@@ -608,9 +608,9 @@
   .gds-entity-highlight-menu__subcategory-row {
     display: grid;
     align-items: center;
-    gap: var(--s8);
+    gap: var(--s6);
     border: 0;
-    padding: var(--s8);
+    padding: var(--s6) var(--s8);
   }
 
   .gds-entity-highlight-menu__all {
@@ -623,7 +623,7 @@
   }
 
   .gds-entity-highlight-menu__category-row {
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .gds-entity-highlight-menu__subcategory-row {
@@ -765,6 +765,70 @@
 
   .gds-entity-highlight-menu__tone-text-quantity {
     color: rgb(255 255 255 / 0.75);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-actor {
+    background: rgb(255 189 202 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-appellation {
+    background: rgb(254 243 186 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-conceptual-object {
+    background: rgb(253 220 52 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-dimension {
+    background: rgb(230 228 236 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-physical-thing {
+    background: rgb(225 186 156 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-place {
+    background: rgb(148 204 125 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-time-span {
+    background: rgb(134 188 200 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-cidoc-type {
+    background: rgb(250 181 101 / 0.18);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-actor {
+    color: rgb(255 210 220 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-appellation {
+    color: rgb(254 243 186 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-conceptual-object {
+    color: rgb(255 235 150 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-dimension {
+    color: rgb(230 228 236 / 0.9);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-physical-thing {
+    color: rgb(235 205 180 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-place {
+    color: rgb(190 255 220 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-time-span {
+    color: rgb(190 235 245 / 0.96);
+  }
+
+  .gds-entity-highlight-menu__tone-text-cidoc-type {
+    color: rgb(255 220 170 / 0.96);
   }
 
   .gds-entity-highlight-menu__icon,

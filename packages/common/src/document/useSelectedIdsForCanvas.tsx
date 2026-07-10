@@ -1,4 +1,8 @@
-import { Id } from '@globalise/common/annotation';
+import {
+  getEntityVisualCategoryClassName,
+  Id,
+  isEntity,
+} from '@globalise/common/annotation';
 import { useDocumentStore } from '@globalise/common/document';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -14,6 +18,16 @@ export function useSelectedIdsForCanvas(
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {
+        continue;
+      }
+      const selectedAnnotation = canvas.annotations[selectedId];
+      if (
+        selectedAnnotation &&
+        isEntity(selectedAnnotation) &&
+        !s.entityHighlightCategories.has(
+          getEntityVisualCategoryClassName(selectedAnnotation),
+        )
+      ) {
         continue;
       }
       if (selectedId in canvas.annotations) {

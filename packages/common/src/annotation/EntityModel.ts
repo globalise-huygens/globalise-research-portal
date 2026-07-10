@@ -17,15 +17,19 @@ const entityTypes = [
 ] as const;
 
 export type EntityType = (typeof entityTypes)[number];
+export const entityVisualCategories = [
+  'cidoc-actor',
+  'cidoc-appellation',
+  'cidoc-conceptual-object',
+  'cidoc-dimension',
+  'cidoc-physical-thing',
+  'cidoc-place',
+  'cidoc-time-span',
+  'cidoc-type',
+] as const;
+
 export type EntityVisualCategoryClassName =
-  | 'cidoc-actor'
-  | 'cidoc-appellation'
-  | 'cidoc-conceptual-object'
-  | 'cidoc-dimension'
-  | 'cidoc-physical-thing'
-  | 'cidoc-place'
-  | 'cidoc-time-span'
-  | 'cidoc-type';
+  (typeof entityVisualCategories)[number];
 
 export function assertEntityBody(
   body: Body | undefined,
@@ -106,6 +110,14 @@ export function getEntityVisualCategoryClassName(
     default:
       return getFallbackVisualCategory(body.type);
   }
+}
+
+export function isEntityVisualCategory(
+  value: string,
+): value is EntityVisualCategoryClassName {
+  return entityVisualCategories.includes(
+    value as EntityVisualCategoryClassName,
+  );
 }
 
 function getClassificationCode(classificationId: string) {

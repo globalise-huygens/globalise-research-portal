@@ -4,6 +4,7 @@ import {
   useAnnotations,
   usePages,
   usePartOf,
+  useEntityHighlightCategories,
   useSelectedCanvasIndex,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
@@ -37,6 +38,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   renderDistance,
 }: Props) {
   const annotations = useAnnotations(canvasId);
+  const highlightedEntityCategories = useEntityHighlightCategories();
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -114,6 +116,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
               fit="width"
               showBlocks={true}
               showScanMargin={true}
+              highlightedEntityCategories={highlightedEntityCategories}
             />
           </div>
         </>

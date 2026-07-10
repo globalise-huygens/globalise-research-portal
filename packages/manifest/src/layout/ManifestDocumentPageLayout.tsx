@@ -21,6 +21,7 @@ import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
+import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { TooltipIconButton } from './TooltipIconButton';
 
 type Props = {
@@ -206,6 +207,7 @@ export function ManifestDocumentPageLayout({
             </div>
 
             <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
+              <ManifestEntityHighlightMenu />
               {topRight}
             </DocumentDetailBarGroup>
           </DocumentDetailTopBar>

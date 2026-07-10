@@ -10,6 +10,7 @@ import {
 } from '@globalise/common/annotation';
 import {
   useDocumentStore,
+  useIsEntityHighlightCategoryVisible,
   useIsSelectedInTranscription,
 } from '@globalise/common/document';
 
@@ -61,7 +62,13 @@ function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const entityType = getEntityType(annotation);
   const entityCategory = getEntityCategoryClassName(annotation);
   const visualCategory = getEntityVisualCategoryClassName(annotation);
+  const isHighlighted = useIsEntityHighlightCategoryVisible(visualCategory);
   const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
+
+  if (!isHighlighted) {
+    return <>{children}</>;
+  }
+
   return (
     <span
       className={`entity ${entityCategory} ${visualCategory} ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}
