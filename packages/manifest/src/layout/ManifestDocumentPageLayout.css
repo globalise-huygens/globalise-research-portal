@@ -137,8 +137,15 @@
 }
 
 .manifest-document-layout__top-bar-center {
+  display: flex;
   flex: 1 1 0%;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.manifest-document-layout__content-warning {
+  min-width: 0;
 }
 
 .manifest-document-layout__top-button {

@@ -21,6 +21,7 @@ import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
+import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { TooltipIconButton } from './TooltipIconButton';
 
@@ -203,6 +204,7 @@ export function ManifestDocumentPageLayout({
             </DocumentDetailBarGroup>
 
             <div className="manifest-document-layout__top-bar-center">
+              <ManifestContentWarning />
               {topCenter}
             </div>
 
