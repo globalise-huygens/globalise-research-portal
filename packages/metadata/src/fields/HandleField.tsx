@@ -5,7 +5,7 @@ import {
   url,
   useMetadataNodes,
 } from '@globalise/common';
-import { IconOpenInNew } from '@globalise/design';
+import { IconExternalLink } from '@globalise/design';
 import { Pair } from '../common';
 
 const webPage = 'http://vocab.getty.edu/aat/300264578';
@@ -28,7 +28,7 @@ export function HandleField() {
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconOpenInNew className="document-detail-overlay-icon-small"/>
+        <IconExternalLink className="document-detail-overlay-icon-small"/>
       </a>
     </Pair>
   );
