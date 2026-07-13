@@ -455,12 +455,20 @@
 
   .manifest-document-layout__sidebar {
     position: absolute;
-    inset: 0 auto 0 0;
+    top: var(--manifest-top-bar-height);
+    bottom: var(--manifest-bottom-bar-height);
+    left: 0;
     width: var(--manifest-sidebar-width);
   }
 
   .manifest-document-layout__main {
     grid-column: 1;
+  }
+
+  .manifest-document-layout__top-bar,
+  .manifest-document-layout__bottom-bar {
+    position: relative;
+    z-index: 20;
   }
 }
 
