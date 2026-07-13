@@ -17,7 +17,13 @@ export function PlaceTag({ label, href }: PlaceTagProps) {
   }
 
   return (
-    <a data-type="place" className="gds-entity-tag" href={href} target="_blank">
+    <a
+      data-type="place"
+      className="gds-entity-tag"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {labelWithIcon}
     </a>
   );
