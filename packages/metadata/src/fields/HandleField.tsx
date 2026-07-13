@@ -21,7 +21,12 @@ export function HandleField() {
   }
   return (
     <Pair label={label}>
-      <a className="document-detail-overlay-link" href={href} target="_blank">
+      <a
+        className="document-detail-overlay-link"
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {labelOf(object)}
         <IconOpenInNew className="document-detail-overlay-icon-small"/>
       </a>
