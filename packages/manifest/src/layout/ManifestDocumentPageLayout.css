@@ -474,6 +474,8 @@
     bottom: var(--manifest-bottom-bar-height);
     left: 0;
     width: var(--manifest-sidebar-width);
+    /* Keep floating viewer controls behind the expanded mobile sidebar. */
+    z-index: 30;
   }
 
   .manifest-document-layout__main {
