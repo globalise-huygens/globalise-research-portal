@@ -1,5 +1,5 @@
-import {url, useMetadataNodes} from '@globalise/common';
-import {Joined, Pair, PlaceTag} from '../common';
+import { url, useMetadataNodes } from '@globalise/common';
+import { Joined, Pair, PlaceTag } from '../common';
 
 export function PlacesField() {
   const label = 'Location(s)';

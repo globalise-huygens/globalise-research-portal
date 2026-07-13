@@ -6,7 +6,7 @@ export type JoinedProps = {
 };
 
 export function Joined(
-  { children, separator = ', ' }: JoinedProps
+  { children, separator = ', ' }: JoinedProps,
 ) {
   return (
     <>
