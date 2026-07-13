@@ -56,16 +56,10 @@ export function ManifestLineByLineViewer({
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const scrollerRef = useRef<HTMLElement | null>(null);
-  const suppressCanvasChangeRef = useRef(false);
-  const previousScaleRef = useRef(transcriptionScale);
 
   const lastSelectedCanvasId = useRef(selectedCanvasId);
 
-  useEffect(scrollToSelectedCanvas, [
-    canvasInfos,
-    selectedCanvasId,
-    selectedCanvasSource,
-  ]);
+  useEffect(scrollToSelectedCanvas, [selectedCanvasId, selectedCanvasSource]);
 
   function scrollToSelectedCanvas() {
     if (selectedCanvasId === lastSelectedCanvasId.current) {
@@ -110,13 +104,8 @@ export function ManifestLineByLineViewer({
       return;
     }
     let prevCanvasId: string | null = null;
-    let rafId: number | null = null;
 
-    const processScroll = () => {
-      rafId = null;
-      if (suppressCanvasChangeRef.current) {
-        return;
-      }
+    const onScroll = () => {
       const scrollerRect = scroller.getBoundingClientRect();
       const topQuarter = scrollerRect.top + scrollerRect.height * 0.25;
       const elements =
@@ -139,59 +128,8 @@ export function ManifestLineByLineViewer({
       }
     };
 
-    const onScroll = () => {
-      if (rafId !== null) {
-        return;
-      }
-      rafId = requestAnimationFrame(processScroll);
-    };
-
     scroller.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-      }
-      scroller.removeEventListener('scroll', onScroll);
-    };
-  }
-
-  useEffect(preserveSelectedCanvasAfterScaleChange, [
-    canvasInfos,
-    selectedCanvasId,
-    transcriptionScale,
-  ]);
-  function preserveSelectedCanvasAfterScaleChange() {
-    if (previousScaleRef.current === transcriptionScale) {
-      return;
-    }
-    previousScaleRef.current = transcriptionScale;
-
-    const canvasId = selectedCanvasId ?? canvasInfos[0]?.canvasId;
-    if (!canvasId) {
-      return;
-    }
-    const index = canvasInfos.findIndex((c) => c.canvasId === canvasId);
-    if (index === -1) {
-      return;
-    }
-
-    suppressCanvasChangeRef.current = true;
-    const rafId = requestAnimationFrame(() => {
-      virtuosoRef.current?.scrollToIndex({
-        index,
-        align: 'start',
-        behavior: 'auto',
-      });
-    });
-    const timeoutId = window.setTimeout(() => {
-      suppressCanvasChangeRef.current = false;
-    }, 150);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.clearTimeout(timeoutId);
-      suppressCanvasChangeRef.current = false;
-    };
+    return () => scroller.removeEventListener('scroll', onScroll);
   }
 
   function handleScrollerRef(ref: HTMLElement | Window | null) {
