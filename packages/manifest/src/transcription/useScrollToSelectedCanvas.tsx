@@ -24,7 +24,14 @@ export function useScrollToSelectedCanvas(
     if (child instanceof HTMLElement && !isCentered(scrollContainer, child)) {
       child.scrollIntoView({ block: 'center', behavior: 'auto' });
     }
-  }, [selectedCanvasId, selectedCanvas, containerWidth, scrollRef, canvasListRef]);
+  }, [
+    selectedCanvasId,
+    selectedCanvas,
+    selectedCanvasSource,
+    containerWidth,
+    scrollRef,
+    canvasListRef,
+  ]);
 }
 
 export function isCentered(container: HTMLElement, element: HTMLElement): boolean {
