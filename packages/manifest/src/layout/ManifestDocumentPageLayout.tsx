@@ -2,6 +2,7 @@
 
 import './ManifestDocumentPageLayout.css';
 import {
+  cn,
   DocumentDetailBarGroup,
   DocumentDetailBody,
   DocumentDetailBottomBar,
@@ -35,6 +36,34 @@ type Props = {
   transcription?: React.ReactNode;
   bottom?: React.ReactNode;
 };
+
+type ViewerPaneProps = {
+  children?: React.ReactNode;
+  isBordered?: boolean;
+  type: 'scan' | 'transcription';
+};
+
+function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
+  const canvasClassName = 'manifest-document-layout__canvas';
+  const paneClassName = cn(
+    'manifest-document-layout__viewer-pane',
+    isBordered && 'manifest-document-layout__viewer-pane--bordered',
+  );
+
+  return (
+    <DocumentDetailViewerPane className={paneClassName}>
+      {type === 'scan' ? (
+        <DocumentDetailCanvas className={canvasClassName}>
+          {children}
+        </DocumentDetailCanvas>
+      ) : (
+        <DocumentDetailTranscriptCanvas className={canvasClassName}>
+          {children}
+        </DocumentDetailTranscriptCanvas>
+      )}
+    </DocumentDetailViewerPane>
+  );
+}
 
 export function ManifestDocumentPageLayout({
   topLeft,
@@ -70,42 +99,14 @@ export function ManifestDocumentPageLayout({
     setIsSidebarExpanded(true);
   }, []);
 
-  function renderScanPane(isBordered: boolean) {
-    return (
-      <DocumentDetailViewerPane
-        key="scan"
-        className={
-          isBordered
-            ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
-            : 'manifest-document-layout__viewer-pane'
-        }
-      >
-        <DocumentDetailCanvas className="manifest-document-layout__canvas">
-          {scan}
-        </DocumentDetailCanvas>
-      </DocumentDetailViewerPane>
-    );
-  }
-
-  function renderTranscriptionPane(isBordered = false) {
-    return (
-      <DocumentDetailViewerPane
-        key="text"
-        className={
-          isBordered
-            ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
-            : 'manifest-document-layout__viewer-pane'
-        }
-      >
-        <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
-          {transcription}
-        </DocumentDetailTranscriptCanvas>
-      </DocumentDetailViewerPane>
-    );
-  }
-
-  const scanPane = isScanVisible ? renderScanPane(isTextVisible) : null;
-  const transcriptionPane = isTextVisible ? renderTranscriptionPane() : null;
+  const scanPane = isScanVisible ? (
+    <ViewerPane type="scan" isBordered={isTextVisible}>
+      {scan}
+    </ViewerPane>
+  ) : null;
+  const transcriptionPane = isTextVisible ? (
+    <ViewerPane type="transcription">{transcription}</ViewerPane>
+  ) : null;
 
   const selectedKeys = new Array<string>();
   if (isScanVisible) {
@@ -115,8 +116,18 @@ export function ManifestDocumentPageLayout({
     selectedKeys.push('text');
   }
   const splitPanes: [React.ReactNode, React.ReactNode] = isViewerOrderSwapped
-    ? [renderTranscriptionPane(true), renderScanPane(false)]
-    : [renderScanPane(true), renderTranscriptionPane()];
+    ? [
+      <ViewerPane key="transcription" type="transcription" isBordered>
+        {transcription}
+      </ViewerPane>,
+      <ViewerPane key="scan" type="scan">{scan}</ViewerPane>,
+    ]
+    : [
+      <ViewerPane key="scan" type="scan" isBordered>{scan}</ViewerPane>,
+      <ViewerPane key="transcription" type="transcription">
+        {transcription}
+      </ViewerPane>,
+    ];
 
   return (
     <div className="gds manifest-document-layout">
