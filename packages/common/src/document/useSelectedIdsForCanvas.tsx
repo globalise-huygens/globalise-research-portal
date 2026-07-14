@@ -1,5 +1,5 @@
 import {
-  getEntityVisualCategoryClassName,
+  getEntityClassifiedAsClassName,
   Id,
   isEntity,
 } from '@globalise/common/annotation';
@@ -25,7 +25,7 @@ export function useSelectedIdsForCanvas(
         selectedAnnotation &&
         isEntity(selectedAnnotation) &&
         !s.entityHighlightCategories.has(
-          getEntityVisualCategoryClassName(selectedAnnotation),
+          getEntityClassifiedAsClassName(selectedAnnotation),
         )
       ) {
         continue;

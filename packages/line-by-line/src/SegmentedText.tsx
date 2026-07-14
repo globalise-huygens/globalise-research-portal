@@ -2,7 +2,7 @@ import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
   type EntityVisualCategoryClassName,
-  getEntityVisualCategoryClassName,
+  getEntityClassifiedAsClassName,
   Id,
   isEntity,
   isWord,
@@ -79,7 +79,7 @@ function selectAnnotation(
 ): Id | undefined {
   const entity = annotations.find((a) =>
     isEntity(a) &&
-    highlightedEntityCategories.has(getEntityVisualCategoryClassName(a)),
+    highlightedEntityCategories.has(getEntityClassifiedAsClassName(a)),
   );
   if (entity) {
     return entity.id;

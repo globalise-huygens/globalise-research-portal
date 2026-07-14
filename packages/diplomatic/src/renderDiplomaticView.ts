@@ -1,11 +1,11 @@
 import {
   Annotation,
   filterAnnotationsWithSelector,
-  getEntityCategoryClassName,
+  getEntityTypeClassName,
   type EntityVisualCategoryClassName,
   findTextPositionSelector,
-  getEntityType,
-  getEntityVisualCategoryClassName,
+  getEntityClassifiedAsLabel,
+  getEntityClassifiedAsClassName,
   getPageText,
   indexAnnotations,
   isEntity,
@@ -121,7 +121,7 @@ export function renderDiplomaticView(
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
       const visualCategory = entityAnno
-        ? getEntityVisualCategoryClassName(entityAnno)
+        ? getEntityClassifiedAsClassName(entityAnno)
         : null;
       const isHighlightedEntity =
         entityAnno &&
@@ -132,16 +132,17 @@ export function renderDiplomaticView(
         );
 
       if (isHighlightedEntity) {
-        const entityType = getEntityType(entityAnno);
+        const entityLabel = toClassName(getEntityClassifiedAsLabel(entityAnno));
+        const entityType = getEntityTypeClassName(entityAnno);
         $segment.classList.add(
           ...[
             'entity',
-            getEntityCategoryClassName(entityAnno),
+            entityType,
             visualCategory,
-            toClassName(entityType),
+            entityLabel,
           ],
         );
-        $segment.title = `${entityType} | ${entityAnno.id}`;
+        $segment.title = `${entityLabel} | ${entityAnno.id}`;
 
         if (!$entityToSegments[entityAnno.id]) {
           $entityToSegments[entityAnno.id] = [];

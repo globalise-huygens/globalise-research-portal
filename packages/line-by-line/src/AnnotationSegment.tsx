@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
-  getEntityCategoryClassName,
-  getEntityType,
-  getEntityVisualCategoryClassName,
+  getEntityTypeClassName,
+  getEntityClassifiedAsLabel,
+  getEntityClassifiedAsClassName,
   isEntity,
   toClassName,
   isWord,
@@ -59,10 +59,10 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
 }
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
-  const entityType = getEntityType(annotation);
-  const entityCategory = getEntityCategoryClassName(annotation);
-  const visualCategory = getEntityVisualCategoryClassName(annotation);
-  const isHighlighted = useIsEntityHighlightCategoryVisible(visualCategory);
+  const label = getEntityClassifiedAsLabel(annotation);
+  const classifiedAs = getEntityClassifiedAsClassName(annotation);
+  const category = getEntityTypeClassName(annotation);
+  const isHighlighted = useIsEntityHighlightCategoryVisible(classifiedAs);
   const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
 
   if (!isHighlighted) {
@@ -71,8 +71,8 @@ function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
 
   return (
     <span
-      className={`entity ${entityCategory} ${visualCategory} ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}
-      title={`${entityType} | ${annotation.id}`}
+      className={`entity ${category} ${classifiedAs} ${toClassName(label)}${isSelected ? ' selected' : ''}`}
+      title={`${label} | ${annotation.id}`}
     >
       {children}
     </span>
