@@ -1,8 +1,11 @@
 import {
   Annotation,
   filterAnnotationsWithSelector,
+  getEntityTypeClassName,
+  type EntityVisualCategoryClassName,
   findTextPositionSelector,
-  getEntityType,
+  getEntityClassifiedAsLabel,
+  getEntityClassifiedAsClassName,
   getPageText,
   indexAnnotations,
   isEntity,
@@ -43,6 +46,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
+    highlightedEntityCategories?: Set<EntityVisualCategoryClassName>;
     onHover?: (id: Id | null) => void;
     onClick?: (id: Id) => void;
   };
@@ -57,11 +61,17 @@ export function renderDiplomaticView(
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
   };
-  const { showBlocks, onHover, onClick } = mergedConfig;
+  const {
+    highlightedEntityCategories,
+    showBlocks,
+    onHover,
+    onClick,
+  } = mergedConfig;
   $view.innerHTML = '';
 
   const $layoutView = document.createElement('div');
   $view.appendChild($layoutView);
+  $layoutView.style.width = '100%';
   if (showBlocks) {
     $layoutView.classList.add('with-blocks');
   }
@@ -110,11 +120,29 @@ export function renderDiplomaticView(
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
+      const visualCategory = entityAnno
+        ? getEntityClassifiedAsClassName(entityAnno)
+        : null;
+      const isHighlightedEntity =
+        entityAnno &&
+        visualCategory &&
+        (
+          !highlightedEntityCategories ||
+          highlightedEntityCategories.has(visualCategory)
+        );
 
-      if (entityAnno) {
-        const entityType = getEntityType(entityAnno);
-        $segment.classList.add(...['entity', toClassName(entityType)]);
-        $segment.title = `${entityType} | ${entityAnno.id}`;
+      if (isHighlightedEntity) {
+        const entityLabel = toClassName(getEntityClassifiedAsLabel(entityAnno));
+        const entityType = getEntityTypeClassName(entityAnno);
+        $segment.classList.add(
+          ...[
+            'entity',
+            entityType,
+            visualCategory,
+            entityLabel,
+          ],
+        );
+        $segment.title = `${entityLabel} | ${entityAnno.id}`;
 
         if (!$entityToSegments[entityAnno.id]) {
           $entityToSegments[entityAnno.id] = [];
@@ -207,7 +235,7 @@ export function renderDiplomaticView(
       selectBlock(id);
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
-      $segments.forEach(($r) => { $r.classList.add('selected'); });
+      $segments?.forEach(($r) => { $r.classList.add('selected'); });
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -222,7 +250,7 @@ export function renderDiplomaticView(
       deselectBlock(id);
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
-      $segments.forEach(($r) => $r.classList.remove('selected'));
+      $segments?.forEach(($r) => $r.classList.remove('selected'));
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }

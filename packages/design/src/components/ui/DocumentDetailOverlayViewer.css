@@ -129,6 +129,8 @@
 
 .document-detail-overlay-warning-popover a {
   display: inline-flex;
+  align-items: center;
+  gap: var(--s6);
   margin-top: var(--s16);
   color: var(--color-brand-vermilion);
   font-family: var(--font-sans);
@@ -136,6 +138,12 @@
   line-height: 1.2;
   text-decoration: underline;
   text-underline-offset: 0.18em;
+}
+
+.document-detail-overlay-warning-link-icon {
+  width: var(--s16);
+  height: var(--s16);
+  flex-shrink: 0;
 }
 
 .document-detail-overlay-toolbar-actions {

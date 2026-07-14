@@ -7,7 +7,6 @@ export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';
 export { findSvgPath } from './findSvgPath';
 export type { SvgPath } from './findSvgPath';
-export { getEntityType } from './getEntityType';
 export { findTextPositionSelector, isTextPositionSelector } from './findTextPositionSelector';
 export { isTextualBody } from './isTextualBody';
 export { isPage } from './isPage';

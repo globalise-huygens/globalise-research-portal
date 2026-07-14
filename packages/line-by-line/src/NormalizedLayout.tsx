@@ -9,10 +9,11 @@ import './NormalizedLayout.css';
 type Props = {
   canvasId: string;
   lineSegments: LineSegments;
+  showLayoutElements: boolean;
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  { canvasId, lineSegments }: Props,
+  { canvasId, lineSegments, showLayoutElements }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
 
@@ -29,7 +30,10 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
   }, [blockEntries, segmentsByLine]);
 
   return (
-    <div className="normalized-view">
+    <div
+      className="normalized-view"
+      data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
+    >
       <div className="text">
         {blockEntries.map(([blockId, lineIds], i) => (
           <BlockGroup

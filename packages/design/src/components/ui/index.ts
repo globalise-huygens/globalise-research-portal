@@ -146,6 +146,7 @@ export type {
 
 export {
   checkboxCss,
+  ContentWarningControl,
   DocumentDetailBarGroup,
   DocumentDetailBody,
   DocumentDetailBottomBar,

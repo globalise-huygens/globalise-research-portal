@@ -14,7 +14,7 @@
   grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
   column-gap: var(--shell-gutter);
   overflow: hidden;
-  background: var(--color-brand-black);
+  background: var(--color-neutral-900);
   font-family: var(--font-sans);
   padding-inline: 0;
 }
@@ -27,7 +27,7 @@
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  background: var(--color-brand-black);
+  background: var(--color-neutral-900);
   transition: grid-template-columns 150ms ease-out;
 }
 
@@ -44,6 +44,7 @@
   min-height: 0;
   width: var(--manifest-sidebar-width);
   overflow: hidden;
+  background: var(--color-neutral-900);
   transition: width 150ms ease-out;
 }
 
@@ -58,7 +59,8 @@
 .manifest-document-layout__main {
   display: grid;
   grid-column: 2;
-  grid-template-rows: var(--manifest-top-bar-height) minmax(0, 1fr)
+  grid-template-rows:
+    var(--manifest-top-bar-height) minmax(0, 1fr)
     var(--manifest-bottom-bar-height);
   min-width: 0;
   min-height: 0;
@@ -88,6 +90,46 @@
   justify-content: flex-end;
 }
 
+.manifest-document-layout__transcription-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s8);
+}
+
+.manifest-document-layout__transcription-mode-group {
+  height: var(--s32);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.manifest-document-layout__transcription-mode-item {
+  min-width: 0;
+  border-color: rgb(255 255 255 / 0.2);
+  background: transparent;
+  color: rgb(255 255 255 / 0.78);
+  padding-inline: var(--s10);
+}
+
+.manifest-document-layout__transcription-mode-item[data-selected],
+.manifest-document-layout__transcription-mode-item[aria-pressed="true"] {
+  background: var(--color-brand-white);
+  color: var(--color-brand-black);
+}
+
+.manifest-document-layout__transcription-mode-item span {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-document-layout__transcription-mode-icon {
+  width: var(--s16);
+  height: var(--s16);
+  flex-shrink: 0;
+}
+
 .manifest-document-layout__top-bar-divider {
   color: rgb(255 255 255 / 0.7);
   font-family: var(--font-sans);
@@ -95,8 +137,48 @@
 }
 
 .manifest-document-layout__top-bar-center {
+  display: flex;
   flex: 1 1 0%;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.manifest-document-layout__content-warning {
+  width: fit-content;
+  min-width: 0;
+}
+
+.manifest-document-layout__content-warning .document-detail-overlay-warning-button {
+  height: var(--s32);
+  gap: var(--s6);
+  border-radius: 3px;
+  padding-inline: var(--s10);
+  font-size: var(--text-xs);
+  line-height: var(--s16);
+}
+
+.manifest-document-layout__content-warning
+  .document-detail-overlay-warning-button
+  .document-detail-overlay-icon-medium {
+  width: var(--s16);
+  height: var(--s16);
+}
+
+.manifest-document-layout__content-warning .document-detail-overlay-warning-popover {
+  z-index: 1200;
+  width: min(23rem, calc(100vw - var(--s32)));
+  padding: var(--s12);
+}
+
+.manifest-document-layout__content-warning .document-detail-overlay-warning-popover p,
+.manifest-document-layout__content-warning .document-detail-overlay-warning-popover a {
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+.manifest-document-layout__content-warning .document-detail-overlay-warning-popover a {
+  margin-top: var(--s10);
 }
 
 .manifest-document-layout__top-button {
@@ -119,10 +201,6 @@
   gap: var(--s8);
   border-top: 0;
   font-family: var(--font-sans);
-}
-
-.manifest-document-layout__bottom-bar-group {
-  gap: var(--s8);
 }
 
 .manifest-document-layout__bottom-button {
@@ -151,6 +229,42 @@
   opacity: 0.4;
 }
 
+.manifest-document-layout__scan-position {
+  display: inline-flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--s8);
+  color: var(--color-neutral-300);
+  font-size: var(--text-xs);
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-document-layout__scan-position-input {
+  min-width: 2ch;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-brand-parchment);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  padding: 0;
+  text-align: center;
+  appearance: textfield;
+}
+
+.manifest-document-layout__scan-position-input::-webkit-inner-spin-button,
+.manifest-document-layout__scan-position-input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.manifest-document-layout__scan-position-input:focus {
+  outline: 1px solid var(--color-brand-parchment);
+  outline-offset: 2px;
+}
+
 .manifest-document-layout__bottom-button > svg,
 .manifest-document-layout__bottom-button .gds-document-detail-icon svg,
 .manifest-document-layout__toolbar-icon {
@@ -163,24 +277,38 @@
   height: 18px;
 }
 
-.manifest-document-layout__scan-count {
-  display: inline-flex;
-  min-width: 0;
-  align-items: baseline;
-  gap: var(--s8);
-  color: var(--color-neutral-300);
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-  line-height: 1rem;
-}
-
 .manifest-document-layout__split-viewer {
-  grid-template-columns: minmax(0, 1fr);
+  display: flex;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .manifest-document-layout__main > .gds-document-detail-body,
 .manifest-document-layout__split-viewer {
   min-height: 0;
+}
+
+.manifest-document-layout__split-viewer .split-pane-layout,
+.manifest-document-layout__split-viewer .split-pane {
+  width: 100%;
+  height: 100%;
+}
+
+/* react-split-pane sizes these wrappers with inline dimensions. Keep the
+   viewer itself stretched inside those wrappers so OpenSeadragon and the
+   transcription scroller can measure a non-zero viewport. */
+.manifest-document-layout__split-viewer .split-pane-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.manifest-document-layout__split-viewer .split-pane-pane >
+.manifest-document-layout__viewer-pane {
+  width: 100%;
+  height: 100%;
 }
 
 .manifest-document-layout__viewer-pane {
@@ -196,16 +324,42 @@
   background: var(--color-neutral-500);
 }
 
+.manifest-document-layout__transcription-viewer {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+
+.gds-document-detail-canvas.manifest-document-layout__canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gds-document-detail-canvas.manifest-document-layout__canvas > * {
+  min-height: 0;
+}
+
+.gds-document-detail-transcript-canvas.manifest-document-layout__canvas {
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 .manifest-document-layout__collapsed-rail {
   width: 100%;
   height: 100%;
   border-right: 0;
-  background: var(--color-brand-black);
+  background: var(--color-neutral-900);
 }
 
 .manifest-document-layout__rail-button {
   border: 0;
-  background: var(--color-brand-black);
+  background: var(--color-neutral-900);
 }
 
 .manifest-document-layout__expanded-sidebar {
@@ -263,8 +417,7 @@
   line-height: var(--s28);
 }
 
-.manifest-document-layout__sidebar-button
-  .gds-document-detail-sidebar-badge {
+.manifest-document-layout__sidebar-button .gds-document-detail-sidebar-badge {
   height: var(--s28);
   min-width: var(--s40);
   border-color: var(--color-neutral-500);
@@ -300,12 +453,6 @@
   transform: rotate(180deg);
 }
 
-@media (min-width: 1024px) {
-  .manifest-document-layout__split-viewer[data-layout="split"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 767px) {
   .manifest-document-layout {
     --manifest-sidebar-expanded-width: 100vw;
@@ -323,12 +470,22 @@
 
   .manifest-document-layout__sidebar {
     position: absolute;
-    inset: 0 auto 0 0;
+    top: var(--manifest-top-bar-height);
+    bottom: var(--manifest-bottom-bar-height);
+    left: 0;
     width: var(--manifest-sidebar-width);
+    /* Keep floating viewer controls behind the expanded mobile sidebar. */
+    z-index: 30;
   }
 
   .manifest-document-layout__main {
     grid-column: 1;
+  }
+
+  .manifest-document-layout__top-bar,
+  .manifest-document-layout__bottom-bar {
+    position: relative;
+    z-index: 20;
   }
 }
 

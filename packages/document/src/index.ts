@@ -4,6 +4,11 @@ export { HeaderRegion } from './header/HeaderRegion.tsx';
 export { HeaderBar } from './layout/Header.tsx';
 export type { TranscriptionMode } from './SettingsStore';
 export {
-  useSettings, setTranscriptionMode, setDiplomaticViewScale,
+  setDiplomaticViewScale,
+  setTranscriptionMode,
+  useDiplomaticViewScale,
+  usePaneRatio,
+  useSettings,
+  useTranscriptionMode,
 } from './SettingsStore';
 export { SplitPaneLayout } from './layout/SplitPaneLayout';

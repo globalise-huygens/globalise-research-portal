@@ -28,9 +28,9 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'rgba(0,200,0,1)',
-      stroke: 'rgba(0,200,0,0.25)',
-      fill: 'rgba(0,255,0,0.01)',
+      text: 'rgba(93, 71, 54, 0.72)',
+      stroke: 'rgba(93, 71, 54, 0.48)',
+      fill: 'rgba(185, 155, 127, 0.08)',
     },
   }: BlocksConfig,
 ) {
@@ -69,7 +69,10 @@ export function renderBlocks(
         .append('polygon')
         .attr('points', createPath(corners))
         .attr('fill', colors.fill)
-        .attr('stroke', colors.stroke);
+        .attr('stroke', colors.stroke)
+        .attr('stroke-width', 1.25)
+        .attr('stroke-linejoin', 'miter')
+        .attr('vector-effect', 'non-scaling-stroke');
 
       const blockTopLeft = corners[0];
       $highlight

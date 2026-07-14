@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { ManifestDocumentPageLayout } from '@globalise/manifest/layout';
+import { ManifestLayoutPage } from '../../ManifestLayoutPage.tsx';
 
 export const Route = createFileRoute('/manifest/layout')({
-  component: () => <ManifestDocumentPageLayout />,
+  component: ManifestLayoutPage,
 });

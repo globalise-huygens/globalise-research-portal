@@ -200,9 +200,11 @@ function DocumentDetailEntityHighlightMenu({
                 <div className="gds-entity-highlight-menu__all-title">
                   {allLabel}
                 </div>
-                <div className="gds-entity-highlight-menu__all-description">
-                  {allDescription}
-                </div>
+                {allDescription && (
+                  <div className="gds-entity-highlight-menu__all-description">
+                    {allDescription}
+                  </div>
+                )}
               </div>
               <DocumentDetailCheckbox
                 aria-label="Toggle all entity highlights"

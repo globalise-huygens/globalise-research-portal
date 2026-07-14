@@ -4,18 +4,31 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
+  getEntityClassifiedAsClassName,
+  type Annotation,
+  type Id,
   isBlock,
+  isEntity,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
+  useCanvasIndexes,
+  useEntityHighlightCategories,
+  useIsLayoutElementsVisible,
   usePages,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
 import { orThrow } from '@globalise/common';
-import { BlockHighlight, Tooltip, TooltipProps, WordHighlight } from '@globalise/facsimile';
+import {
+  BlockHighlight,
+  type EntityHighlightTone,
+  Tooltip,
+  TooltipProps,
+  WordHighlight,
+} from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
@@ -34,6 +47,9 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
+  const highlightedEntityCategories = useEntityHighlightCategories();
+  const showLayoutElements = useIsLayoutElementsVisible();
+  const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
 
@@ -58,6 +74,24 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     canvasSize = { width: canvas.width, height: canvas.height };
   }
 
+  const wordHighlightTones = useMemo(() => {
+    const tones: Partial<Record<Id, EntityHighlightTone>> = {};
+    for (const [entityId, wordIds] of Object.entries(indexes.entityToWords)) {
+      const tone = getEntityHighlightTone(
+        entityId,
+        annotations,
+        highlightedEntityCategories,
+      );
+      if (!tone) {
+        continue;
+      }
+      wordIds.forEach((wordId) => {
+        tones[wordId] = tone;
+      });
+    }
+    return tones;
+  }, [annotations, highlightedEntityCategories, indexes.entityToWords]);
+
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
     [lazyCanvas.y, lazyCanvas.height],
@@ -69,7 +103,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       id: a.id,
       path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       text: findTextualBodyValue(a) ?? orThrow('No body value'),
-    })), [annotations]);
+      tone: wordHighlightTones[a.id],
+    })), [annotations, wordHighlightTones]);
 
   const blocks = useMemo(() => Object.values(annotations)
     .filter(isBlock)
@@ -91,6 +126,9 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   [isScrolling, words, selectedIds]);
 
   const visibleBlocks = useMemo(() => {
+    if (!showLayoutElements) {
+      return [];
+    }
     if(!isScrolling) {
       return blocks;
     }
@@ -99,7 +137,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
     return blocks.filter((b) => selectedIds.includes(b.id));
   },
-  [isScrolling, blocks, selectedIds]);
+  [isScrolling, blocks, selectedIds, showLayoutElements]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
@@ -117,15 +155,21 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
           {visibleBlocks.map(({ id, path }) => (
-            <BlockHighlight key={id} canvasId={lazyCanvas.canvasId} id={id} points={path}/>
+            <BlockHighlight
+              key={id}
+              canvasId={lazyCanvas.canvasId}
+              id={id}
+              points={path}
+            />
           ))}
-          {visibleWords.map(({ id, path, text }) => (
+          {visibleWords.map(({ id, path, text, tone }) => (
             <WordHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
               id={id}
               points={path}
               text={text}
+              tone={tone}
               setTooltip={setTooltip}
             />
           ))}
@@ -135,3 +179,16 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     </>
   );
 });
+
+function getEntityHighlightTone(
+  entityId: Id,
+  annotations: Record<Id, Annotation>,
+  highlightedEntityCategories: Set<EntityHighlightTone>,
+): EntityHighlightTone | undefined {
+  const annotation = annotations[entityId];
+  if (!annotation || !isEntity(annotation)) {
+    return undefined;
+  }
+  const tone = getEntityClassifiedAsClassName(annotation);
+  return highlightedEntityCategories.has(tone) ? tone : undefined;
+}

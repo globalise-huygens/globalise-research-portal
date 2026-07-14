@@ -15,9 +15,9 @@
     transition: opacity 0.2s;
 
     button {
-        background: #f0f0f0;
         border: 1px solid #ddd;
         border-radius: 0.2rem;
+        background: #f0f0f0;
         cursor: pointer;
         display: flex;
         align-items: center;
