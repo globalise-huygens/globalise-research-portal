@@ -16,7 +16,7 @@ export function Highlight(
     onClick = noop,
     onHover = noop,
   }: HighlightProps) {
-  const { fill, stroke, strokeWidth, cursor } = highlightStyle;
+  const { fill, stroke, strokeWidth, cursor, vectorEffect } = highlightStyle;
 
   return (
     <polygon
@@ -24,6 +24,7 @@ export function Highlight(
       fill={fill}
       stroke={stroke ?? 'none'}
       strokeWidth={strokeWidth ?? 0}
+      vectorEffect={vectorEffect}
       style={{ pointerEvents: 'auto', cursor: cursor ?? 'default' }}
       onClick={() => { onClick(); }}
       onMouseEnter={(e) => { onHover(true, e); }}

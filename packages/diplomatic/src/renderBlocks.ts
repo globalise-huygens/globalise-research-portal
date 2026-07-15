@@ -28,9 +28,9 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'var(--diplomatic-structure-text, rgba(93, 71, 54, 0.72))',
-      stroke: 'var(--diplomatic-structure-stroke, rgba(93, 71, 54, 0.48))',
-      fill: 'var(--diplomatic-structure-fill, rgba(185, 155, 127, 0.08))',
+      text: 'var(--color-layout-element-text, #5d4736)',
+      stroke: 'var(--color-layout-element-stroke, rgb(93 71 54 / 0.58))',
+      fill: 'var(--color-layout-element-fill, rgb(185 155 127 / 0.1))',
     },
   }: BlocksConfig,
 ) {
@@ -63,7 +63,9 @@ export function renderBlocks(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const label = findSourceLabel(block);
-      const $highlight = $svg.append('g').attr('opacity', 0);
+      const $highlight = $svg.append('g')
+        .attr('class', 'layout-block')
+        .attr('data-selected', 'false');
 
       $highlight
         .append('polygon')

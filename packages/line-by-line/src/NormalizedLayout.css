@@ -2,10 +2,11 @@
     --normalized-annotation: var(--color-brand-parchment, #b99b7f);
     --normalized-annotation-strong: var(--color-parchment-800, #5d4736);
     --normalized-selected: var(--color-brand-vermilion, #ff543d);
-    --normalized-structure: var(--color-parchment-700, #7e6149);
-    --normalized-structure-strong: var(--color-parchment-800, #5d4736);
+    --normalized-structure: var(--color-layout-element-stroke, rgb(93 71 54 / 0.58));
+    --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(78 65 53 / 0.92));
+    --normalized-structure-fill: var(--color-layout-element-fill, rgb(185 155 127 / 0.1));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(185 155 127 / 0.22));
     --normalized-text: var(--color-brand-black, #0c0a09);
-    --normalized-muted: var(--color-neutral-600, #666666);
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -41,7 +42,7 @@
             min-width: 2.35rem;
             margin-right: 0.65em;
             margin-left: 0.15em;
-            color: color-mix(in srgb, var(--normalized-structure) 72%, var(--normalized-muted));
+            color: var(--normalized-structure);
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
               monospace;
             font-size: 0.72em;
@@ -67,16 +68,14 @@
     }
 
     .block-group {
-        border-left: 1px solid transparent;
+        border-left: 1px solid var(--normalized-structure);
+        background: var(--normalized-structure-fill);
         padding-left: 0.35rem;
 
         &.selected {
-            background: color-mix(in srgb, var(--normalized-annotation) 7%, transparent);
-            border-left-color: color-mix(
-              in srgb,
-              var(--normalized-selected) 68%,
-              var(--normalized-structure-strong)
-            );
+            border-left-color: var(--normalized-structure-strong);
+            background: var(--normalized-structure-fill-strong);
+            box-shadow: inset 1px 0 0 var(--normalized-structure-strong);
         }
     }
 
@@ -84,9 +83,10 @@
         color: var(--normalized-structure-strong);
     }
 
-    &[data-layout-elements-visible="false"] .block-group.selected {
+    &[data-layout-elements-visible="false"] .block-group {
         background: transparent;
         border-left-color: transparent;
+        box-shadow: none;
     }
 
     .entity {

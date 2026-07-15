@@ -2,13 +2,12 @@
     --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
     --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
-    --diplomatic-structure: var(--color-parchment-700, #7e6149);
-    --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
-    --diplomatic-structure-fill: rgb(185 155 127 / 0.08);
-    --diplomatic-structure-stroke: rgb(93 71 54 / 0.48);
-    --diplomatic-structure-text: rgb(93 71 54 / 0.72);
+    --diplomatic-structure: var(--color-layout-element-stroke, rgb(93 71 54 / 0.58));
+    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(78 65 53 / 0.92));
+    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(185 155 127 / 0.1));
+    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(185 155 127 / 0.22));
+    --diplomatic-structure-text: var(--color-layout-element-text, #5d4736);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
-    --diplomatic-muted: var(--color-neutral-600, #666666);
 
     color: var(--diplomatic-text);
 
@@ -87,7 +86,7 @@
 
     .line-numbers .line-number {
         position: absolute;
-        color: color-mix(in srgb, var(--diplomatic-structure) 72%, var(--diplomatic-muted));
+        color: var(--diplomatic-structure);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-variant-numeric: tabular-nums;
@@ -104,7 +103,7 @@
     }
 
     .block-label {
-        fill: color-mix(in srgb, var(--diplomatic-structure-strong) 84%, transparent);
+        fill: var(--diplomatic-structure-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-weight: 600;
@@ -114,8 +113,19 @@
         stroke-width: 2px;
     }
 
-    .blocks polygon {
+    .blocks .layout-block polygon {
         fill: var(--diplomatic-structure-fill);
         stroke: var(--diplomatic-structure-stroke);
+        stroke-width: 1px;
+    }
+
+    .blocks .layout-block[data-selected="true"] polygon {
+        fill: var(--diplomatic-structure-fill-strong);
+        stroke: var(--diplomatic-structure-strong);
+        stroke-width: 2px;
+    }
+
+    .blocks .layout-block[data-selected="true"] .block-label {
+        fill: var(--diplomatic-structure-text);
     }
 }
