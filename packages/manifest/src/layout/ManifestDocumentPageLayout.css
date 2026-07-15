@@ -7,10 +7,11 @@
   --manifest-top-bar-height: var(--s56);
   --manifest-bottom-bar-height: var(--s56);
   --manifest-viewer-chrome: var(--color-neutral-900);
-  --manifest-scan-workspace: #6f6a64;
-  --manifest-transcription-workspace: var(--color-parchment-200);
+  --manifest-viewer-workspace: var(--color-parchment-300);
+  --manifest-scan-workspace: var(--manifest-viewer-workspace);
+  --manifest-transcription-workspace: var(--manifest-viewer-workspace);
   --manifest-transcription-page: var(--color-parchment-50);
-  --manifest-transcription-page-border: var(--color-parchment-700);
+  --manifest-transcription-page-border: var(--color-brand-white);
   --manifest-transcription-text: var(--color-brand-black);
 
   box-sizing: border-box;
@@ -332,6 +333,10 @@
 
 .manifest-document-layout__canvas--scan {
   background: var(--manifest-scan-workspace);
+}
+
+.manifest-document-layout__canvas--scan .openseadragon-container {
+  background: var(--manifest-scan-workspace) !important;
 }
 
 .manifest-document-layout__canvas--transcription {

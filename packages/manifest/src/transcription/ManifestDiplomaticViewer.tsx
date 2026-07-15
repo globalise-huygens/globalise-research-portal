@@ -3,7 +3,6 @@ import { useDiplomaticViewScale } from '@globalise/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
-  CSSProperties,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -249,17 +248,12 @@ export function ManifestDiplomaticViewer({
     );
   }, [viewportHeight, canvasInfos, containerWidth, scaleFactor]);
 
-  const containerStyle: CSSProperties = {
-    maxWidth: 800,
-    margin: '0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  };
-
   return (
-    <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
-      <div ref={canvasListRef} style={{ ...containerStyle }}>
+    <div ref={scrollRef} className="manifest-transcription-scroll">
+      <div
+        ref={canvasListRef}
+        className="manifest-transcription-page-list manifest-transcription-page-list--diplomatic"
+      >
         {containerWidth &&
           canvasInfos.map((info, i) => (
             <LazyDiplomaticCanvas
