@@ -11,3 +11,4 @@ export { ManifestLoader } from './ManifestLoader';
 export { BlockHighlight } from './BlockHighlight.tsx';
 export { WordHighlight } from './WordHighlight.tsx';
 export { Tooltip } from './Tooltip';
+export type { EntityHighlightTone } from './EntityHighlightTone.ts';

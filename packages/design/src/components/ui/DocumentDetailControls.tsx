@@ -14,6 +14,7 @@ import {
   type ToggleButtonProps as AriaToggleButtonProps,
 } from 'react-aria-components';
 import type { DocumentDetailOverlayContent } from './DocumentDetailOverlayTypes';
+import { IconArrowTopRight } from '../icons/IconArrowTopRight';
 import { IconContentWarning } from '../icons/IconContentWarning';
 import { DocumentDetailTooltip } from './DocumentDetailSurfaces';
 
@@ -202,7 +203,7 @@ const DocumentDetailCheckbox = React.forwardRef<
     className={cn('gds-document-detail-checkbox', className)}
     {...props}
   >
-    {() => (
+    {({ isIndeterminate }) => (
       <>
         <span
           className={cn(
@@ -210,7 +211,20 @@ const DocumentDetailCheckbox = React.forwardRef<
             indicatorClassName,
           )}
           aria-hidden="true"
-        />
+        >
+          {isIndeterminate ? (
+            <span className="gds-document-detail-checkbox__indeterminate" />
+          ) : (
+            <svg
+              className="gds-document-detail-checkbox__check"
+              viewBox="0 -960 960 960"
+              focusable="false"
+              aria-hidden="true"
+            >
+              <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
+            </svg>
+          )}
+        </span>
         {children && <span>{children}</span>}
       </>
     )}
@@ -392,16 +406,7 @@ export function ContentWarningControl({
   const isPopoverOpen = isOpen || isHoverPreviewOpen;
 
   return (
-    <div
-      onMouseEnter={() => setIsHoverPreviewOpen(true)}
-      onMouseLeave={() => setIsHoverPreviewOpen(false)}
-      onFocus={() => setIsHoverPreviewOpen(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          setIsHoverPreviewOpen(false);
-        }
-      }}
-    >
+    <div>
       <DocumentDetailToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
         className="document-detail-overlay-warning-button"
@@ -409,6 +414,10 @@ export function ContentWarningControl({
           <IconContentWarning className="document-detail-overlay-icon-medium" />
         }
         isActive={isOpen}
+        onBlur={() => setIsHoverPreviewOpen(false)}
+        onFocus={() => setIsHoverPreviewOpen(true)}
+        onMouseEnter={() => setIsHoverPreviewOpen(true)}
+        onMouseLeave={() => setIsHoverPreviewOpen(false)}
         onPress={() => onOpenChange(!isOpen)}
         size="compact"
       >
@@ -421,7 +430,13 @@ export function ContentWarningControl({
           aria-label={warning.title}
         >
           <p>{warning.body}</p>
-          <a href="#">{warning.linkLabel}</a>
+          <a href="#">
+            <span>{warning.linkLabel}</span>
+            <IconArrowTopRight
+              aria-hidden="true"
+              className="document-detail-overlay-warning-link-icon"
+            />
+          </a>
         </div>
       )}
     </div>

@@ -55,7 +55,7 @@
     flex-direction: column;
     align-items: center;
     border-right: 1px solid rgb(255 255 255 / 0.1);
-    background: var(--color-brand-black);
+    background: var(--color-neutral-900);
   }
 
   .gds-document-detail-sidebar {

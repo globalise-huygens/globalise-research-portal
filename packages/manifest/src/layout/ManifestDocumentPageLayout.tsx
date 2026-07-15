@@ -1,43 +1,106 @@
 'use client';
 
-import * as React from 'react';
+import './ManifestDocumentPageLayout.css';
 import {
+  cn,
   DocumentDetailBarGroup,
   DocumentDetailBody,
   DocumentDetailBottomBar,
   DocumentDetailCanvas,
   DocumentDetailSegmentedToggleGroup,
   DocumentDetailSegmentedToggleItem,
-  DocumentDetailSplitViewer,
   DocumentDetailTooltip,
   DocumentDetailTopBar,
   DocumentDetailTranscriptCanvas,
   DocumentDetailViewerPane,
-  IconLeft,
-  IconLeftFirst,
-  IconRight,
-  IconRightLast,
   IconScan,
   IconSidebar,
+  IconSwap,
   IconTranscription,
 } from '@globalise/design';
-
+import { SplitPaneLayout } from '@globalise/document';
+import * as React from 'react';
+import { TOP_BAR_BUTTON } from './buttonClasses';
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
+import { ManifestContentWarning } from './ManifestContentWarning';
+import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
+import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
 import { TooltipIconButton } from './TooltipIconButton';
-import { TOP_BAR_BUTTON, BOTTOM_BAR_BUTTON } from './buttonClasses';
 
-import './ManifestDocumentPageLayout.css';
+type Props = {
+  topLeft?: React.ReactNode;
+  topCenter?: React.ReactNode;
+  topRight?: React.ReactNode;
+  scan?: React.ReactNode;
+  transcription?: React.ReactNode;
+  bottom?: React.ReactNode;
+};
 
-export function ManifestDocumentPageLayout() {
-  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
+type ViewerPaneProps = {
+  children?: React.ReactNode;
+  isBordered?: boolean;
+  type: 'scan' | 'transcription';
+};
+
+const mobileLayoutQuery = '(max-width: 767px)';
+
+function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
+  const canvasClassName = 'manifest-document-layout__canvas';
+  const paneClassName = cn(
+    'manifest-document-layout__viewer-pane',
+    isBordered && 'manifest-document-layout__viewer-pane--bordered',
+  );
+
+  return (
+    <DocumentDetailViewerPane className={paneClassName}>
+      {type === 'scan' ? (
+        <DocumentDetailCanvas className={canvasClassName}>
+          {children}
+        </DocumentDetailCanvas>
+      ) : (
+        <DocumentDetailTranscriptCanvas className={canvasClassName}>
+          {children}
+        </DocumentDetailTranscriptCanvas>
+      )}
+    </DocumentDetailViewerPane>
+  );
+}
+
+export function ManifestDocumentPageLayout({
+  topLeft,
+  topCenter,
+  topRight,
+  scan,
+  transcription,
+  bottom,
+}: Props) {
+  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
+    () =>
+      typeof window === 'undefined' ||
+      !window.matchMedia(mobileLayoutQuery).matches,
+  );
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
+  const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
+    React.useState(false);
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     () => new Set(['inventory']),
   );
-  const [currentScan, setCurrentScan] = React.useState(1);
-  const totalScans = 26;
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia(mobileLayoutQuery);
+    const collapseSidebarOnMobile = ({ matches }: MediaQueryListEvent) => {
+      if (matches) {
+        setIsSidebarExpanded(false);
+      }
+    };
+
+    mediaQuery.addEventListener('change', collapseSidebarOnMobile);
+    return () => {
+      mediaQuery.removeEventListener('change', collapseSidebarOnMobile);
+    };
+  }, []);
 
   const toggleSidebarSection = React.useCallback((sectionId: string) => {
     setExpandedSections((prev) => {
@@ -56,22 +119,13 @@ export function ManifestDocumentPageLayout() {
     setIsSidebarExpanded(true);
   }, []);
 
-  const isAtFirst = currentScan === 1;
-  const isAtLast = currentScan === totalScans;
-
   const scanPane = isScanVisible ? (
-    <DocumentDetailViewerPane
-      key="scan"
-      className={
-        isTextVisible
-          ? 'manifest-document-layout__viewer-pane manifest-document-layout__viewer-pane--bordered'
-          : 'manifest-document-layout__viewer-pane'
-      }
-    >
-      <DocumentDetailCanvas className="manifest-document-layout__canvas">
-        TODO: Viewer content
-      </DocumentDetailCanvas>
-    </DocumentDetailViewerPane>
+    <ViewerPane type="scan" isBordered={isTextVisible}>
+      {scan}
+    </ViewerPane>
+  ) : null;
+  const transcriptionPane = isTextVisible ? (
+    <ViewerPane type="transcription">{transcription}</ViewerPane>
   ) : null;
 
   const selectedKeys = new Array<string>();
@@ -81,6 +135,20 @@ export function ManifestDocumentPageLayout() {
   if (isTextVisible) {
     selectedKeys.push('text');
   }
+  const splitPanes: [React.ReactNode, React.ReactNode] = isViewerOrderSwapped
+    ? [
+      <ViewerPane key="transcription" type="transcription" isBordered>
+        {transcription}
+      </ViewerPane>,
+      <ViewerPane key="scan" type="scan">{scan}</ViewerPane>,
+    ]
+    : [
+      <ViewerPane key="scan" type="scan" isBordered>{scan}</ViewerPane>,
+      <ViewerPane key="transcription" type="transcription">
+        {transcription}
+      </ViewerPane>,
+    ];
+
   return (
     <div className="gds manifest-document-layout">
       <div
@@ -108,7 +176,9 @@ export function ManifestDocumentPageLayout() {
               <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
-                aria-label={isSidebarExpanded ? 'Close sidebar' : 'Open sidebar'}
+                aria-label={
+                  isSidebarExpanded ? 'Close sidebar' : 'Open sidebar'
+                }
                 tooltip={isSidebarExpanded ? 'Closes sidebar' : 'Opens sidebar'}
                 isActive={isSidebarExpanded}
                 className={TOP_BAR_BUTTON}
@@ -116,7 +186,11 @@ export function ManifestDocumentPageLayout() {
                 onPress={() => setIsSidebarExpanded((v) => !v)}
               />
 
-              <span className="manifest-document-layout__top-bar-divider">|</span>
+              <span className="manifest-document-layout__top-bar-divider">
+                |
+              </span>
+
+              {topLeft}
 
               <DocumentDetailSegmentedToggleGroup
                 aria-label="Primary viewer mode controls"
@@ -132,23 +206,39 @@ export function ManifestDocumentPageLayout() {
                 }}
               >
                 <DocumentDetailTooltip
-                  label={isScanVisible ? 'Closes scan viewer' : 'Opens scan viewer'}
+                  label={
+                    isScanVisible ? 'Closes scan viewer' : 'Opens scan viewer'
+                  }
                 >
                   <DocumentDetailSegmentedToggleItem
                     id="scan"
-                    aria-label={isScanVisible ? 'Close scan viewer' : 'Open scan viewer'}
-                    icon={<IconScan className="manifest-document-layout__segmented-icon" />}
+                    aria-label={
+                      isScanVisible ? 'Close scan viewer' : 'Open scan viewer'
+                    }
+                    icon={
+                      <IconScan className="manifest-document-layout__segmented-icon" />
+                    }
                   >
                     Scan
                   </DocumentDetailSegmentedToggleItem>
                 </DocumentDetailTooltip>
                 <DocumentDetailTooltip
-                  label={isTextVisible ? 'Closes transcription viewer' : 'Opens transcription viewer'}
+                  label={
+                    isTextVisible
+                      ? 'Closes transcription viewer'
+                      : 'Opens transcription viewer'
+                  }
                 >
                   <DocumentDetailSegmentedToggleItem
                     id="text"
-                    aria-label={isTextVisible ? 'Close transcription viewer' : 'Open transcription viewer'}
-                    icon={<IconTranscription className="manifest-document-layout__segmented-icon" />}
+                    aria-label={
+                      isTextVisible
+                        ? 'Close transcription viewer'
+                        : 'Open transcription viewer'
+                    }
+                    icon={
+                      <IconTranscription className="manifest-document-layout__segmented-icon" />
+                    }
                   >
                     Text
                   </DocumentDetailSegmentedToggleItem>
@@ -157,74 +247,42 @@ export function ManifestDocumentPageLayout() {
             </DocumentDetailBarGroup>
 
             <div className="manifest-document-layout__top-bar-center">
-              TODO: Centre content
+              <ManifestContentWarning />
+              {topCenter}
             </div>
 
             <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
-              TODO: Right content
+              <TooltipIconButton
+                aria-label="Swap scan and transcription viewer"
+                tooltip="Swap scan and transcription viewer"
+                isActive={isViewerOrderSwapped}
+                isDisabled={!isScanVisible || !isTextVisible}
+                className={TOP_BAR_BUTTON}
+                icon={
+                  <IconSwap className="manifest-document-layout__toolbar-icon" />
+                }
+                onPress={() => setIsViewerOrderSwapped((v) => !v)}
+              />
+              <ManifestEntityHighlightMenu />
+              <ManifestLayoutElementsToggle />
+              {topRight}
             </DocumentDetailBarGroup>
           </DocumentDetailTopBar>
 
           <DocumentDetailBody>
-            <DocumentDetailSplitViewer
-              className="manifest-document-layout__split-viewer"
-              data-layout={isScanVisible && isTextVisible ? 'split' : 'single'}
-            >
-              {scanPane}
-              {isTextVisible && (
-                <DocumentDetailViewerPane key="text" className="manifest-document-layout__viewer-pane">
-                  <DocumentDetailTranscriptCanvas className="manifest-document-layout__canvas">
-                    TODO: Transcript content
-                  </DocumentDetailTranscriptCanvas>
-                </DocumentDetailViewerPane>
-              )}
-            </DocumentDetailSplitViewer>
+            {isScanVisible && isTextVisible ? (
+              <div className="manifest-document-layout__split-viewer">
+                <SplitPaneLayout>
+                  {splitPanes}
+                </SplitPaneLayout>
+              </div>
+            ) : (
+              (scanPane ?? transcriptionPane)
+            )}
           </DocumentDetailBody>
 
           <DocumentDetailBottomBar className="manifest-document-layout__bottom-bar">
-            <DocumentDetailBarGroup className="manifest-document-layout__bottom-bar-group">
-              <TooltipIconButton
-                aria-label="First scan"
-                tooltip="Go to first scan"
-                tooltipPlacement="top"
-                isDisabled={isAtFirst}
-                className={BOTTOM_BAR_BUTTON}
-                icon={<IconLeftFirst className="manifest-document-layout__toolbar-icon" />}
-                onPress={() => setCurrentScan(1)}
-              />
-              <TooltipIconButton
-                aria-label="Previous scan"
-                tooltip="Go to previous scan"
-                tooltipPlacement="top"
-                isDisabled={isAtFirst}
-                className={BOTTOM_BAR_BUTTON}
-                icon={<IconLeft className="manifest-document-layout__toolbar-icon" />}
-                onPress={() => setCurrentScan((s) => Math.max(s - 1, 1))}
-              />
-
-              <span className="manifest-document-layout__scan-count">
-                Scan {currentScan} of {totalScans}
-              </span>
-
-              <TooltipIconButton
-                aria-label="Next scan"
-                tooltip="Go to next scan"
-                tooltipPlacement="top"
-                isDisabled={isAtLast}
-                className={BOTTOM_BAR_BUTTON}
-                icon={<IconRight className="manifest-document-layout__toolbar-icon" />}
-                onPress={() => setCurrentScan((s) => Math.min(s + 1, totalScans))}
-              />
-              <TooltipIconButton
-                aria-label="Last scan"
-                tooltip="Go to last scan"
-                tooltipPlacement="top"
-                isDisabled={isAtLast}
-                className={BOTTOM_BAR_BUTTON}
-                icon={<IconRightLast className="manifest-document-layout__toolbar-icon" />}
-                onPress={() => setCurrentScan(totalScans)}
-              />
-            </DocumentDetailBarGroup>
+            {bottom}
           </DocumentDetailBottomBar>
         </div>
       </div>

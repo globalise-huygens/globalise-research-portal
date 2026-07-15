@@ -1,11 +1,19 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { useSettings } from '@globalise/document';
-import { LazyDiplomaticCanvas } from './LazyDiplomaticCanvas.tsx';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
+import { useSelectedCanvas } from '@globalise/common/document';
+import { useDiplomaticViewScale } from '@globalise/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
-import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import {
+  CSSProperties,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { getCanvasIndex } from './canvasIndexAttribute.ts';
+import { LazyDiplomaticCanvas } from './LazyDiplomaticCanvas.tsx';
+import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -16,23 +24,30 @@ type CanvasInfo = {
 
 type Props = {
   initialCanvasId?: string;
+  showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
 
 const MIN_CANVASES_TO_RENDER = 4;
 const MAX_VIEWPORTS_TO_RENDER = 2;
 
-export function ManifestDiplomaticViewer(
-  { initialCanvasId, onCanvasChange }: Props,
-) {
+export function ManifestDiplomaticViewer({
+  initialCanvasId,
+  showLayoutElements,
+  onCanvasChange,
+}: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
-  const { diplomaticViewScale } = useSettings();
+  const diplomaticViewScale = useDiplomaticViewScale();
   const scaleFactor = diplomaticViewScale / 100;
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasListRef = useRef<HTMLDivElement>(null);
+  const suppressCanvasChangeRef = useRef(false);
+  const previousScaleRef = useRef(scaleFactor);
   const [containerWidth, setContainerWidth] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
-  const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(new Set());
+  const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(
+    new Set(),
+  );
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
     if (!manifestId || !isManifestReady) {
@@ -51,12 +66,17 @@ export function ManifestDiplomaticViewer(
   }, [vault, manifestId, isManifestReady]);
 
   const initialCanvas = useMemo(
-    () => initialCanvasId
-      ? Math.max(0, canvasInfos.findIndex((c) => c.canvasId === initialCanvasId))
-      : 0,
+    () =>
+      initialCanvasId
+        ? Math.max(
+          0,
+          canvasInfos.findIndex((c) => c.canvasId === initialCanvasId),
+        )
+        : 0,
     [initialCanvasId, canvasInfos],
   );
   const lastScrolledCanvas = useRef<number | null>(initialCanvas);
+  const { id: selectedCanvasId } = useSelectedCanvas();
 
   useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
 
@@ -80,54 +100,63 @@ export function ManifestDiplomaticViewer(
     resizeObserver.observe(canvasList);
     resizeObserver.observe(scrollContainer);
 
-    const selectedCanvasObserver = new IntersectionObserver((canvasEvents) => {
-      for (const event of canvasEvents) {
-        if (!event.isIntersecting) {
-          continue;
+    const selectedCanvasObserver = new IntersectionObserver(
+      (canvasEvents) => {
+        if (suppressCanvasChangeRef.current) {
+          return;
         }
-        const index = getCanvasIndex(event.target as HTMLElement);
-        if (index === null || index === lastScrolledCanvas.current) {
-          continue;
-        }
-        const info = canvasInfos[index];
-        if (!info) {
-          continue;
-        }
-        lastScrolledCanvas.current = index;
-        onCanvasChange(info.canvasId);
-      }
-    }, {
-      root: scrollContainer,
-      // Only switch to a new canvas when that canvas enters screen center:
-      rootMargin: '-49% 0px -49% 0px',
-      threshold: 0,
-    });
-
-    const visibleCanvasesObserver = new IntersectionObserver((canvasEvents) => {
-      setVisibleCanvases((prev) => {
-        const next = new Set(prev);
-        let changed = false;
         for (const event of canvasEvents) {
-          const index = getCanvasIndex(event.target as HTMLElement);
-          if (index === null) {
+          if (!event.isIntersecting) {
             continue;
           }
-          if (event.isIntersecting) {
-            if (!next.has(index)) {
-              next.add(index);
+          const index = getCanvasIndex(event.target as HTMLElement);
+          if (index === null || index === lastScrolledCanvas.current) {
+            continue;
+          }
+          const info = canvasInfos[index];
+          if (!info) {
+            continue;
+          }
+          lastScrolledCanvas.current = index;
+          onCanvasChange(info.canvasId);
+        }
+      },
+      {
+        root: scrollContainer,
+        // Only switch to a new canvas when that canvas enters screen center:
+        rootMargin: '-49% 0px -49% 0px',
+        threshold: 0,
+      },
+    );
+
+    const visibleCanvasesObserver = new IntersectionObserver(
+      (canvasEvents) => {
+        setVisibleCanvases((prev) => {
+          const next = new Set(prev);
+          let changed = false;
+          for (const event of canvasEvents) {
+            const index = getCanvasIndex(event.target as HTMLElement);
+            if (index === null) {
+              continue;
+            }
+            if (event.isIntersecting) {
+              if (!next.has(index)) {
+                next.add(index);
+                changed = true;
+              }
+            } else if (next.has(index)) {
+              next.delete(index);
               changed = true;
             }
-          } else if (next.has(index)) {
-            next.delete(index);
-            changed = true;
           }
-        }
-        return changed ? next : prev;
-      });
-    }, {
-      root: scrollContainer,
-      threshold: 0,
-    });
+          return changed ? next : prev;
+        });
+      },
+      {
+        root: scrollContainer,
+        threshold: 0,
+      },
+    );
 
     Array.from(canvasList.children).forEach((child) => {
       selectedCanvasObserver.observe(child);
@@ -141,7 +170,11 @@ export function ManifestDiplomaticViewer(
     };
   }
 
-  useEffect(initCanvasScroll, [canvasInfos.length, initialCanvas, containerWidth]);
+  useEffect(initCanvasScroll, [
+    canvasInfos.length,
+    initialCanvas,
+    containerWidth,
+  ]);
   function initCanvasScroll() {
     if (!initialCanvas || !scrollRef.current || !containerWidth) {
       return;
@@ -154,6 +187,49 @@ export function ManifestDiplomaticViewer(
     const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
     child.scrollIntoView({ block });
     lastScrolledCanvas.current = initialCanvas;
+  }
+
+  useLayoutEffect(preserveSelectedCanvasAfterScaleChange, [
+    canvasInfos,
+    containerWidth,
+    scaleFactor,
+    selectedCanvasId,
+  ]);
+  function preserveSelectedCanvasAfterScaleChange() {
+    if (previousScaleRef.current === scaleFactor) {
+      return;
+    }
+    previousScaleRef.current = scaleFactor;
+
+    const scrollContainer = scrollRef.current;
+    const canvasList = canvasListRef.current;
+    if (!scrollContainer || !canvasList || !selectedCanvasId || !containerWidth) {
+      return;
+    }
+
+    const index = canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId);
+    if (index === -1) {
+      return;
+    }
+    const child = canvasList.children[index];
+    if (!(child instanceof HTMLElement)) {
+      return;
+    }
+
+    suppressCanvasChangeRef.current = true;
+    const viewportHeight = scrollContainer.clientHeight;
+    const block = child.offsetHeight > viewportHeight ? 'start' : 'center';
+    child.scrollIntoView({ block, inline: 'nearest' });
+    lastScrolledCanvas.current = index;
+
+    const timeoutId = window.setTimeout(() => {
+      suppressCanvasChangeRef.current = false;
+    }, 150);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      suppressCanvasChangeRef.current = false;
+    };
   }
 
   const renderDistance = useMemo(() => {
@@ -184,20 +260,22 @@ export function ManifestDiplomaticViewer(
   return (
     <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
       <div ref={canvasListRef} style={{ ...containerStyle }}>
-        {containerWidth && canvasInfos.map((info, i) => (
-          <LazyDiplomaticCanvas
-            scaleFactor={scaleFactor}
-            key={info.canvasId}
-            canvasId={info.canvasId}
-            canvasWidth={info.width}
-            canvasHeight={info.height}
-            containerWidth={containerWidth}
-            annotationUrls={info.annotationUrls}
-            index={i}
-            isVisible={visibleCanvases.has(i)}
-            renderDistance={renderDistance}
-          />
-        ))}
+        {containerWidth &&
+          canvasInfos.map((info, i) => (
+            <LazyDiplomaticCanvas
+              scaleFactor={scaleFactor}
+              key={info.canvasId}
+              canvasId={info.canvasId}
+              canvasWidth={info.width}
+              canvasHeight={info.height}
+              containerWidth={containerWidth}
+              annotationUrls={info.annotationUrls}
+              index={i}
+              isVisible={visibleCanvases.has(i)}
+              renderDistance={renderDistance}
+              showLayoutElements={showLayoutElements}
+            />
+          ))}
       </div>
     </div>
   );

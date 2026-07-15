@@ -11,10 +11,12 @@ import { PageLabel } from './PageLabel.tsx';
 type Props = {
   canvasId: string;
   annotationUrls: string[];
+  scale: number;
+  showLayoutElements: boolean;
 };
 
 export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
-  { canvasId, annotationUrls }: Props,
+  { canvasId, annotationUrls, scale, showLayoutElements }: Props,
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -47,7 +49,13 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
       {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}
       {isContentReady && (
-        <LineByLineView canvasId={canvasId} annotations={annotations}/>
+        <div style={{ fontSize: `${scale}%` }}>
+          <LineByLineView
+            canvasId={canvasId}
+            annotations={annotations}
+            showLayoutElements={showLayoutElements}
+          />
+        </div>
       )}
     </div>
   );

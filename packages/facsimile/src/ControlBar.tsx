@@ -1,7 +1,16 @@
+import { cn } from '@globalise/design';
 import { type ReactNode } from 'react';
-
 import './ControlBar.css';
 
-export function ControlBar({ children }: { children: ReactNode }) {
-  return <div className="control-bar">{children}</div>;
+type ControlBarProps = {
+  children: ReactNode;
+  className?: string;
+};
+
+export function ControlBar({ children, className }: ControlBarProps) {
+  return (
+    <div className={cn('gds-document-detail-control-bar', className)}>
+      {children}
+    </div>
+  );
 }

@@ -31,7 +31,7 @@ export function CurrentCanvasOverlay() {
         width: '100%',
         height: '100%',
         boxSizing: 'border-box',
-        border: '0.33em solid ' + canvasBorderColor,
+        boxShadow: `inset 0 0 0 0.33em ${canvasBorderColor}`,
         pointerEvents: 'none',
         textAlign: 'right',
         color: 'white',

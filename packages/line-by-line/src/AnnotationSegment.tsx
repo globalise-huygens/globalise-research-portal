@@ -1,13 +1,16 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
-  getEntityType,
+  getEntityTypeClassName,
+  getEntityClassifiedAsLabel,
+  getEntityClassifiedAsClassName,
   isEntity,
   toClassName,
   isWord,
 } from '@globalise/common/annotation';
 import {
   useDocumentStore,
+  useIsEntityHighlightCategoryVisible,
   useIsSelectedInTranscription,
 } from '@globalise/common/document';
 
@@ -56,12 +59,20 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
 }
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
-  const entityType = getEntityType(annotation);
+  const label = getEntityClassifiedAsLabel(annotation);
+  const classifiedAs = getEntityClassifiedAsClassName(annotation);
+  const category = getEntityTypeClassName(annotation);
+  const isHighlighted = useIsEntityHighlightCategoryVisible(classifiedAs);
   const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
+
+  if (!isHighlighted) {
+    return <>{children}</>;
+  }
+
   return (
     <span
-      className={`entity ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}
-      title={`${entityType} | ${annotation.id}`}
+      className={`entity ${category} ${classifiedAs} ${toClassName(label)}${isSelected ? ' selected' : ''}`}
+      title={`${label} | ${annotation.id}`}
     >
       {children}
     </span>

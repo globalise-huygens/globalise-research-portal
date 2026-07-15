@@ -1,16 +1,18 @@
-import { memo, useEffect } from 'react';
+import { canvasName } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
   usePages,
-  usePartOf, useSelectedCanvasIndex,
+  usePartOf,
+  useEntityHighlightCategories,
+  useSelectedCanvasIndex,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
-import { canvasName } from '@globalise/common/annotation';
 import { DiplomaticView } from '@globalise/diplomatic';
-import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
-import { PageLabel } from './PageLabel.tsx';
+import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
+import { PageLabel } from './PageLabel.tsx';
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 
 type Props = {
   canvasId: string;
@@ -22,23 +24,23 @@ type Props = {
   scaleFactor: number;
   isVisible: boolean;
   renderDistance: number;
+  showLayoutElements: boolean;
 };
 
-export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
-  {
-    canvasId,
-    canvasWidth,
-    canvasHeight,
-    annotationUrls,
-    containerWidth,
-    index,
-    scaleFactor,
-    isVisible,
-    renderDistance,
-  }: Props,
-) {
-
+export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
+  canvasId,
+  canvasWidth,
+  canvasHeight,
+  annotationUrls,
+  containerWidth,
+  index,
+  scaleFactor,
+  isVisible,
+  renderDistance,
+  showLayoutElements,
+}: Props) {
   const annotations = useAnnotations(canvasId);
+  const highlightedEntityCategories = useEntityHighlightCategories();
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -48,17 +50,19 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
 
   const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
-  useEffect(
-    () => {
-      if (isVisible && annotationUrls.length) {
-        void loadCanvasAnnotationPages(canvasId, annotationUrls);
-      }
-    },
-    [isVisible, canvasId, annotationUrls],
-  );
+  useEffect(() => {
+    if (isVisible && annotationUrls.length) {
+      void loadCanvasAnnotationPages(canvasId, annotationUrls);
+    }
+  }, [isVisible, canvasId, annotationUrls]);
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
+  const hasRenderableSize =
+    Number.isFinite(width) &&
+    width > 0 &&
+    Number.isFinite(height) &&
+    height > 0;
   const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
@@ -70,7 +74,10 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
       {...{ [canvasIndexAttribute]: index }}
       style={{
         position: 'relative',
+        width,
         height,
+        contentVisibility: 'auto',
+        containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,
 
         /**
          * Prevent browser painting calculation outside of window:
@@ -80,28 +87,28 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
     >
       {isInRenderRange && error && (
         <TranscriptionPlaceholder
-          color='indianred'
-          background='rgb(248 243 243)'
+          color="indianred"
+          background="rgb(248 243 243)"
         >
-          <PageLabel label={canvasLabel}/>
+          <PageLabel label={canvasLabel} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel}/>
+          <PageLabel label={canvasLabel} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel}/>
+          <PageLabel label={canvasLabel} />
           Loading...
         </TranscriptionPlaceholder>
       )}
-      {isInRenderRange && isContentReady && partOf && (
+      {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
-          <PageLabel label={canvasLabel}/>
+          <PageLabel label={canvasLabel} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
               id={canvasId}
@@ -109,8 +116,9 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription(
               selected={selectedIds}
               page={partOf}
               fit="width"
-              showBlocks={true}
+              showBlocks={showLayoutElements}
               showScanMargin={true}
+              highlightedEntityCategories={highlightedEntityCategories}
             />
           </div>
         </>

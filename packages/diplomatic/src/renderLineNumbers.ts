@@ -101,6 +101,7 @@ export function renderLineNumbers(
     const $lineNumber = $lineNumbers[lineId];
     if ($lineNumber) {
       $lineNumber.style.display = 'block';
+      $lineNumber.classList.add('is-visible');
     }
   }
 
@@ -108,6 +109,7 @@ export function renderLineNumbers(
     const $lineNumber = $lineNumbers[lineId];
     if ($lineNumber) {
       $lineNumber.style.display = 'none';
+      $lineNumber.classList.remove('is-visible');
     }
   }
 

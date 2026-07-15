@@ -180,18 +180,54 @@ export const checkboxCss = `.gds-document-detail-checkbox {
 
 .gds-document-detail-checkbox__indicator {
   display: flex;
-  width: var(--s12);
-  height: var(--s12);
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgb(255 255 255 / 0.38);
   background: var(--color-neutral-700);
+  color: transparent;
+  transition:
+    background-color 75ms ease-out,
+    border-color 75ms ease-out,
+    color 75ms ease-out,
+    box-shadow 75ms ease-out;
+}
+
+.gds-document-detail-checkbox__check {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  opacity: 0;
+}
+
+.gds-document-detail-checkbox__indeterminate {
+  display: block;
+  width: var(--s8);
+  height: 2px;
+  background: currentColor;
+  opacity: 0;
 }
 
 .gds-document-detail-checkbox[data-selected] .gds-document-detail-checkbox__indicator,
 .gds-document-detail-checkbox[data-indeterminate] .gds-document-detail-checkbox__indicator {
-  background: var(--color-brand-white);
-  box-shadow: inset 0 0 0 2px var(--color-neutral-800);
+  border-color: var(--color-neutral-100);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.gds-document-detail-checkbox[data-selected] .gds-document-detail-checkbox__check,
+.gds-document-detail-checkbox[data-indeterminate] .gds-document-detail-checkbox__indeterminate {
+  opacity: 1;
+}
+
+.gds-document-detail-checkbox[data-disabled] .gds-document-detail-checkbox__indicator {
+  border-color: rgb(255 255 255 / 0.16);
+  background: rgb(255 255 255 / 0.14);
+  color: rgb(255 255 255 / 0.35);
 }`;
 
 export const popoverCss = `.gds-document-detail-popover-surface {

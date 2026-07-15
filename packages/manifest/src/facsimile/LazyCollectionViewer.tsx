@@ -1,24 +1,26 @@
-import { Point, Viewer as OsdViewer } from 'openseadragon';
-import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
-import {
-  useManifest,
-  useViewer,
-  useViewerStore,
-} from '@knaw-huc/osd-iiif-viewer';
-import { useContainerSize } from './useContainerSize.tsx';
-import { observeResize } from './util/observeResize.tsx';
-import { useLazyCanvasLoader } from './useLazyCanvasLoader.tsx';
-import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
-import {
-  setLazyCanvases, setLoaded, setScrolling,
-} from './LazyCollectionViewerStore.ts';
 import {
   CanvasId,
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { findCenterScan } from './findCenterScan.ts';
 import { ControlBar, FacsimileControls } from '@globalise/facsimile';
+import {
+  useManifest,
+  useViewer,
+  useViewerStore,
+} from '@knaw-huc/osd-iiif-viewer';
+import { Point, Viewer as OsdViewer } from 'openseadragon';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import { findCenterScan } from './findCenterScan.ts';
+import {
+  setLazyCanvases,
+  setLoaded,
+  setScrolling,
+} from './LazyCollectionViewerStore.ts';
+import { useContainerSize } from './useContainerSize.tsx';
+import { useLazyCanvasLoader } from './useLazyCanvasLoader.tsx';
+import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
+import { observeResize } from './util/observeResize.tsx';
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -36,18 +38,17 @@ type Props = PropsWithChildren<{
  * - lazy-load tile sources before they enter the screen.
  * - unload tiles that scroll out of view.
  */
-export function LazyCollectionViewer(
-  {
-    children,
-    scanHeight,
-    gap = 0.02,
-    initialCanvasId,
-    onCanvasChange,
-  }: Props,
-) {
+export function LazyCollectionViewer({
+  children,
+  scanHeight,
+  gap = 0.02,
+  initialCanvasId,
+  onCanvasChange,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
   const viewer = useViewer();
+  const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
   const isScrollReady = size.width && size.height;
@@ -58,6 +59,17 @@ export function LazyCollectionViewer(
     }
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
+
+  const lazyCanvasesRef = useRef(lazyCanvases);
+  const onCanvasChangeRef = useRef(onCanvasChange);
+
+  useEffect(() => {
+    lazyCanvasesRef.current = lazyCanvases;
+  }, [lazyCanvases]);
+
+  useEffect(() => {
+    onCanvasChangeRef.current = onCanvasChange;
+  }, [onCanvasChange]);
 
   useEffect(syncLazyCanvases, [lazyCanvases]);
 
@@ -83,15 +95,20 @@ export function LazyCollectionViewer(
     if (!lazyCanvases.length) {
       return;
     }
-    initCanvases(lazyCanvases.map((c) => c.canvasId), initialCanvasId);
+    initCanvases(
+      lazyCanvases.map((c) => c.canvasId),
+      initialCanvasId,
+    );
   }
 
   const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
 
-  useEffect(
-    subscribeToExternalCanvasChange,
-    [viewer, lazyCanvases, selectedCanvasId, selectedCanvasSource],
-  );
+  useEffect(subscribeToExternalCanvasChange, [
+    viewer,
+    lazyCanvases,
+    selectedCanvasId,
+    selectedCanvasSource,
+  ]);
 
   function subscribeToExternalCanvasChange() {
     if (!viewer || !lazyCanvases.length) {
@@ -141,8 +158,9 @@ export function LazyCollectionViewer(
         const zoomFactor = scrollDistance < 0 ? 1.1 : 0.9;
         viewer.viewport.zoomBy(zoomFactor);
       } else {
-        const panDistance = viewer.viewport
-          .deltaPointsFromPixels(new Point(0, scrollDistance));
+        const panDistance = viewer.viewport.deltaPointsFromPixels(
+          new Point(0, scrollDistance),
+        );
         viewer.viewport.panBy(panDistance);
       }
     };
@@ -160,9 +178,9 @@ export function LazyCollectionViewer(
     };
 
     const onViewportChange = () => {
-      const centerId = findCenterScan(viewer, lazyCanvases);
+      const centerId = findCenterScan(viewer, lazyCanvasesRef.current);
       if (centerId) {
-        onCanvasChange(centerId);
+        onCanvasChangeRef.current(centerId);
       }
     };
 
@@ -198,12 +216,19 @@ export function LazyCollectionViewer(
 
   return (
     <>
-      <ControlBar>
-        <FacsimileControls fullscreenRef={containerRef}/>
+      <ControlBar className="gds-document-detail-scan-toolbar">
+        <FacsimileControls
+          fullscreenRef={containerRef}
+          onScanFilterChange={setScanFilter}
+        />
       </ControlBar>
       <div
         ref={containerRef}
-        style={{ width: '100%', height: '100%' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          filter: scanFilter || undefined,
+        }}
       />
       {children}
     </>

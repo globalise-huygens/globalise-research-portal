@@ -1,7 +1,10 @@
 import { IconArrowTopRight } from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
-import { DocumentDetailPopoverSurface } from './DocumentDetailSurfaces';
+import {
+  DocumentDetailPopoverSurface,
+  DocumentDetailTooltip,
+} from './DocumentDetailSurfaces';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
@@ -269,6 +272,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
     .map(([label, value]) => ({ label, value }));
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
+  const categoryLabel = getEntityBadgeLabel(data.kind);
 
   return (
     <DocumentDetailPopoverSurface
@@ -278,13 +282,28 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
       <div className="gds-entity-preview-card__header">
         <div className="gds-entity-preview-card__identity">
           <div className="gds-entity-preview-card__leading-row">
-            <EntityBadge
-              type={getEntityBadgeType(data.kind)}
-              icon={data.icon}
-              className="gds-entity-preview-card__entity-badge"
+            <DocumentDetailTooltip
+              label={`Category: ${categoryLabel}`}
+              placement="top"
             >
-              {getEntityBadgeLabel(data.kind)}
-            </EntityBadge>
+              <span
+                tabIndex={0}
+                role="img"
+                aria-label={`Category: ${categoryLabel}`}
+                className="gds-entity-preview-card__category-trigger"
+                data-type={getEntityBadgeType(data.kind)}
+              >
+                {data.icon ? (
+                  <span className="gds-entity-preview-card__category-icon">
+                    {data.icon}
+                  </span>
+                ) : (
+                  <span className="gds-entity-preview-card__category-initial">
+                    {categoryLabel.slice(0, 1)}
+                  </span>
+                )}
+              </span>
+            </DocumentDetailTooltip>
             {automationBadges.map((badge) => (
               <EntityBadge
                 key={badge}

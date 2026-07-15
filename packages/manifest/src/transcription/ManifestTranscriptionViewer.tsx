@@ -1,21 +1,29 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  initCanvases,
+  useDocumentStore,
+  useIsLayoutElementsVisible,
+} from '@globalise/common/document';
+import { useTranscriptionMode } from '@globalise/document';
+import { ControlBar } from '@globalise/facsimile';
+import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { useSettings } from '@globalise/document';
-import { initCanvases, useDocumentStore } from '@globalise/common/document';
+import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { ManifestTranscriptionControls } from './ManifestTranscriptionControls.tsx';
 
 type Props = {
   initialCanvasId?: string;
   onCanvasChange: (canvasId: string) => void;
 };
 
-export function ManifestTranscriptionViewer(
-  { initialCanvasId, onCanvasChange }: Props,
-) {
+export function ManifestTranscriptionViewer({
+  initialCanvasId,
+  onCanvasChange,
+}: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
-  const { transcriptionMode } = useSettings();
+  const transcriptionMode = useTranscriptionMode();
+  const showLayoutElements = useIsLayoutElementsVisible();
   const [storeReady, setStoreReady] = useState(false);
 
   const canvasIds = useMemo(() => {
@@ -38,20 +46,30 @@ export function ManifestTranscriptionViewer(
     return null;
   }
 
-  const currentCanvasId = useDocumentStore.getState().selectedCanvasId ?? undefined;
+  const currentCanvasId =
+    useDocumentStore.getState().selectedCanvasId ?? undefined;
 
-  if (transcriptionMode === 'line-by-line') {
-    return (
+  const content =
+    transcriptionMode === 'line-by-line' ? (
       <ManifestLineByLineViewer
         initialCanvasId={currentCanvasId}
+        showLayoutElements={showLayoutElements}
+        onCanvasChange={onCanvasChange}
+      />
+    ) : (
+      <ManifestDiplomaticViewer
+        initialCanvasId={currentCanvasId}
+        showLayoutElements={showLayoutElements}
         onCanvasChange={onCanvasChange}
       />
     );
-  }
+
   return (
-    <ManifestDiplomaticViewer
-      initialCanvasId={currentCanvasId}
-      onCanvasChange={onCanvasChange}
-    />
+    <div className="manifest-document-layout__transcription-viewer">
+      <ControlBar className="gds-document-detail-scan-toolbar">
+        <ManifestTranscriptionControls />
+      </ControlBar>
+      {content}
+    </div>
   );
 }
