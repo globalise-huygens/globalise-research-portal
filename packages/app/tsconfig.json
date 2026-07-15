@@ -11,6 +11,7 @@
     { "path": "../design" },
     { "path": "../facsimile" },
     { "path": "../manifest" },
+    { "path": "../metadata" },
     { "path": "../search" }
   ]
 }

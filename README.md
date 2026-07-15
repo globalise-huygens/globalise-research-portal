@@ -6,20 +6,7 @@ Demo: https://dev.globalise.nl/
 
 ## Development
 
-- First time: 
-```shell
-git clone https://github.com/globalise-huygens/globalise-design-system.git
-git clone https://github.com/globalise-huygens/globalise-research-portal.git
-
-cd globalise-design-system
-pnpm install
-pnpm build
-cd ../
-
-cd globalise-research-portal
-npm install
-npm start
-```
+- First time: `npm i`
 
 - Start: `npm start`
 - Test: `npm t`

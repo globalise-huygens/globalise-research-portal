@@ -8,6 +8,7 @@
     { "path": "packages/facsimile" },
     { "path": "packages/line-by-line" },
     { "path": "packages/manifest" },
+    { "path": "packages/metadata" },
     { "path": "packages/search" },
   ]
 }
