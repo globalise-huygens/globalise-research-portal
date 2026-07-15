@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ManifestLayoutRouteImport } from './routes/manifest/layout'
+import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ManifestLayoutRoute = ManifestLayoutRouteImport.update({
-  id: '/manifest/layout',
-  path: '/manifest/layout',
+const ManifestIndexRoute = ManifestIndexRouteImport.update({
+  id: '/manifest/',
+  path: '/manifest/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/manifest/layout': typeof ManifestLayoutRoute
+  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/manifest/layout': typeof ManifestLayoutRoute
+  '/manifest': typeof ManifestIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/manifest/layout': typeof ManifestLayoutRoute
+  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/manifest/layout'
+  fullPaths: '/' | '/manifest/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/manifest/layout'
-  id: '__root__' | '/' | '/manifest/layout'
+  to: '/' | '/manifest'
+  id: '__root__' | '/' | '/manifest/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ManifestLayoutRoute: typeof ManifestLayoutRoute
+  ManifestIndexRoute: typeof ManifestIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/manifest/layout': {
-      id: '/manifest/layout'
-      path: '/manifest/layout'
-      fullPath: '/manifest/layout'
-      preLoaderRoute: typeof ManifestLayoutRouteImport
+    '/manifest/': {
+      id: '/manifest/'
+      path: '/manifest'
+      fullPath: '/manifest/'
+      preLoaderRoute: typeof ManifestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ManifestLayoutRoute: ManifestLayoutRoute,
+  ManifestIndexRoute: ManifestIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -6,7 +6,7 @@ export function Home() {
     <h1>Globalise</h1>
     <ul>
       <li><Search/></li>
-      <li><Link to="/manifest/layout">Manifest document layout</Link></li>
+      <li><Link to="/manifest">Manifest viewer</Link></li>
     </ul>
   </>
   );

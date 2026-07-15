@@ -25,7 +25,7 @@ const collectionUrl =
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function ManifestLayoutPage() {
+export function ManifestPage() {
   const params = new URLSearchParams(location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
   const [manifestUrl, setManifestUrl] = useState(
