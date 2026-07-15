@@ -64,12 +64,12 @@ export function getPrimaryEntityBody(annotation: Annotation): EntityBody {
   return body;
 }
 
-export function getEntityCategory(annotation: Annotation) {
+export function getEntityType(annotation: Annotation) {
   return getPrimaryEntityBody(annotation).type;
 }
 
-export function getEntityCategoryClassName(annotation: Annotation) {
-  switch (getEntityCategory(annotation)) {
+export function getEntityTypeClassName(annotation: Annotation) {
+  switch (getEntityType(annotation)) {
     case 'AppellativeStatus':
       return 'appellative-status';
     case 'ClassificatoryStatus':
@@ -79,37 +79,36 @@ export function getEntityCategoryClassName(annotation: Annotation) {
   }
 }
 
-export function getEntityVisualCategoryClassName(
+const ENTITY_CLASSNAMES: Record<string, EntityVisualCategoryClassName> = {
+  'gan:DATE': 'cidoc-time-span',
+  'gan:PER_NAME': 'cidoc-actor',
+  'gan:ORG': 'cidoc-actor',
+  'gan:LOC_NAME': 'cidoc-place',
+  'gan:LOC_ADJ': 'cidoc-place',
+  'gan:DOC': 'cidoc-conceptual-object',
+  'gan:CMTY_QUANT': 'cidoc-dimension',
+  'gan:CMTY_NAME': 'cidoc-physical-thing',
+  'gan:SHIP': 'cidoc-physical-thing',
+  'gan:CMTY_QUAL': 'cidoc-type',
+  'gan:PER_ATTR': 'cidoc-type',
+  'gan:PRF': 'cidoc-type',
+  'gan:SHIP_TYPE': 'cidoc-type',
+  'gan:STATUS': 'cidoc-type',
+};
+
+export function getEntityClassifiedAsClassName(
   annotation: Annotation,
 ): EntityVisualCategoryClassName {
   const body = getPrimaryEntityBody(annotation);
+  return (
+    ENTITY_CLASSNAMES[body.classified_as.id] ??
+    getFallbackVisualCategory(body.type)
+  );
+}
 
-  switch (getClassificationCode(body.classified_as.id)) {
-    case 'DATE':
-      return 'cidoc-time-span';
-    case 'PER_NAME':
-    case 'ORG':
-      return 'cidoc-actor';
-    case 'LOC_NAME':
-    case 'LOC_ADJ':
-      return 'cidoc-place';
-    case 'DOC':
-      return 'cidoc-conceptual-object';
-    case 'CMTY_QUANT':
-      return 'cidoc-dimension';
-    case 'CMTY_NAME':
-    case 'SHIP':
-      return 'cidoc-physical-thing';
-    case 'CMTY_QUAL':
-    case 'ETH_REL':
-    case 'PER_ATTR':
-    case 'PRF':
-    case 'SHIP_TYPE':
-    case 'STATUS':
-      return 'cidoc-type';
-    default:
-      return getFallbackVisualCategory(body.type);
-  }
+export function getEntityClassifiedAsLabel(entity: Annotation) {
+  const body = getPrimaryEntityBody(entity);
+  return body.classified_as._label;
 }
 
 export function isEntityVisualCategory(
@@ -118,10 +117,6 @@ export function isEntityVisualCategory(
   return entityVisualCategories.includes(
     value as EntityVisualCategoryClassName,
   );
-}
-
-function getClassificationCode(classificationId: string) {
-  return classificationId.replace(/^.*[:/#]/, '');
 }
 
 function getFallbackVisualCategory(

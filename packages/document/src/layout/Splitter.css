@@ -1,39 +1,77 @@
 .splitter {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eee;
+    flex: none;
+    background: var(--color-neutral-700, #4d4d4d);
+    touch-action: none;
+    user-select: none;
 
     &:hover {
-        background: #ddd;
+        background: var(--color-neutral-600, #666666);
     }
 
     &:focus-visible {
         outline: none;
+        box-shadow: 0 0 0 1px var(--color-brand-vermilion, #ff543d);
     }
 
-    &.active {
-        background: #ccc;
+    &.active,
+    &.dragging {
+        background: var(--color-neutral-600, #666666);
     }
 
     .splitter-grip {
+        position: relative;
+        z-index: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #999;
-        font-size: 1em;
+        color: var(--color-brand-parchment, #b99b7f);
+        opacity: 0.78;
 
         .grip-icon {
-            width: 0.75em;
+            width: 1rem;
+            height: 1rem;
         }
+    }
+
+    &:hover .splitter-grip,
+    &.active .splitter-grip,
+    &.dragging .splitter-grip {
+        color: var(--color-brand-vermilion, #ff543d);
+        opacity: 1;
     }
 
     &.horizontal {
         cursor: col-resize;
+
+        &::before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            background: rgb(185 155 127 / 0.32);
+            content: '';
+            transform: translateX(-50%);
+        }
     }
 
     &.vertical {
         cursor: row-resize;
+
+        &::before {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            height: 1px;
+            background: rgb(185 155 127 / 0.32);
+            content: '';
+            transform: translateY(-50%);
+        }
 
         .grip-icon {
             transform: rotate(90deg);

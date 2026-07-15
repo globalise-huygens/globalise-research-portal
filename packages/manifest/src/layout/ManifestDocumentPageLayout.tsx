@@ -43,6 +43,8 @@ type ViewerPaneProps = {
   type: 'scan' | 'transcription';
 };
 
+const mobileLayoutQuery = '(max-width: 767px)';
+
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   const canvasClassName = 'manifest-document-layout__canvas';
   const paneClassName = cn(
@@ -73,7 +75,11 @@ export function ManifestDocumentPageLayout({
   transcription,
   bottom,
 }: Props) {
-  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
+  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
+    () =>
+      typeof window === 'undefined' ||
+      !window.matchMedia(mobileLayoutQuery).matches,
+  );
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
   const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
@@ -81,6 +87,20 @@ export function ManifestDocumentPageLayout({
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     () => new Set(['inventory']),
   );
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia(mobileLayoutQuery);
+    const collapseSidebarOnMobile = ({ matches }: MediaQueryListEvent) => {
+      if (matches) {
+        setIsSidebarExpanded(false);
+      }
+    };
+
+    mediaQuery.addEventListener('change', collapseSidebarOnMobile);
+    return () => {
+      mediaQuery.removeEventListener('change', collapseSidebarOnMobile);
+    };
+  }, []);
 
   const toggleSidebarSection = React.useCallback((sectionId: string) => {
     setExpandedSections((prev) => {

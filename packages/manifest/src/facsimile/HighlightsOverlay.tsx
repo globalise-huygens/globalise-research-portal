@@ -4,7 +4,7 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
-  getEntityVisualCategoryClassName,
+  getEntityClassifiedAsClassName,
   type Annotation,
   type Id,
   isBlock,
@@ -189,6 +189,6 @@ function getEntityHighlightTone(
   if (!annotation || !isEntity(annotation)) {
     return undefined;
   }
-  const tone = getEntityVisualCategoryClassName(annotation);
+  const tone = getEntityClassifiedAsClassName(annotation);
   return highlightedEntityCategories.has(tone) ? tone : undefined;
 }

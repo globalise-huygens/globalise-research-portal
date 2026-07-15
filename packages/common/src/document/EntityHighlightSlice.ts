@@ -2,7 +2,7 @@ import { useShallow } from 'zustand/react/shallow';
 import {
   entityVisualCategories,
   type EntityVisualCategoryClassName,
-  getEntityVisualCategoryClassName,
+  getEntityClassifiedAsClassName,
   isEntity,
 } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
@@ -40,7 +40,7 @@ export function useEntityHighlightCounts() {
     for (const canvas of Object.values(s.canvases)) {
       for (const annotation of Object.values(canvas.annotations ?? {})) {
         if (isEntity(annotation)) {
-          counts[getEntityVisualCategoryClassName(annotation)] += 1;
+          counts[getEntityClassifiedAsClassName(annotation)] += 1;
         }
       }
     }
