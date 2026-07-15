@@ -2,8 +2,12 @@ import { ReactNode, useCallback } from 'react';
 import { DividerProps, Pane, SplitPane } from 'react-split-pane';
 import { Splitter } from './Splitter';
 import { useLayoutDirection } from './useLayoutDirection';
-import { resetScaling, setPaneRatio, useSettings } from '../SettingsStore';
 import './SplitPaneLayout.css';
+import {
+  resetScaling,
+  setPaneRatio,
+  useSettings,
+} from '@globalise/common/document';
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];

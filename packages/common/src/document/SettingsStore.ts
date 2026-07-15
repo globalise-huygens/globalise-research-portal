@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { DocumentMode } from './DocumentModeControls';
+
+export type DocumentMode =
+  | 'split'
+  | 'facsimile'
+  | 'transcription'
+  | 'minimap';
 
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 export type SettingsState = {

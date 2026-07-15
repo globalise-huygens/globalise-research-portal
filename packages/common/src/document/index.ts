@@ -6,3 +6,4 @@ export * from './SelectionSlice';
 export { useSelectedIdsForCanvas } from './useSelectedIdsForCanvas';
 export { useCanvasPages } from './useCanvasPages';
 export { useDocumentLifecycle } from './useDocumentLifeCycle';
+export * from './SettingsStore';
