@@ -109,11 +109,11 @@
     --entity-type-strong: #8f5200;
 
     /* Project-neutral document structure: paragraphs, blocks and lines. */
-    --layout-element-fill: rgb(185 155 127 / 0.1);
-    --layout-element-fill-strong: rgb(185 155 127 / 0.22);
-    --layout-element-stroke: rgb(93 71 54 / 0.58);
-    --layout-element-stroke-strong: rgb(78 65 53 / 0.92);
-    --layout-element-text: #5d4736;
+    --layout-element-fill: rgb(128 219 227 / 0.1);
+    --layout-element-fill-strong: rgb(128 219 227 / 0.24);
+    --layout-element-stroke: rgb(18 94 100 / 0.5);
+    --layout-element-stroke-strong: rgb(18 94 100 / 0.7);
+    --layout-element-text: #125e64;
 
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);

@@ -2,11 +2,11 @@
     --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
     --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
-    --diplomatic-structure: var(--color-layout-element-stroke, rgb(93 71 54 / 0.58));
-    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(78 65 53 / 0.92));
-    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(185 155 127 / 0.1));
-    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(185 155 127 / 0.22));
-    --diplomatic-structure-text: var(--color-layout-element-text, #5d4736);
+    --diplomatic-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
+    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
+    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
+    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24));
+    --diplomatic-structure-text: var(--color-layout-element-text, #125e64);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
 
     color: var(--diplomatic-text);

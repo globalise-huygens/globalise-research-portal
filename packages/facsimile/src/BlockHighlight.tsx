@@ -18,11 +18,11 @@ export function BlockHighlight(
 
   const highlightStyle: HighlightStyle = {
     fill: selected
-      ? 'var(--color-layout-element-fill-strong, rgb(185 155 127 / 0.22))'
-      : 'var(--color-layout-element-fill, rgb(185 155 127 / 0.1))',
+      ? 'var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24))'
+      : 'var(--color-layout-element-fill, rgb(128 219 227 / 0.1))',
     stroke: selected || hovered
-      ? 'var(--color-layout-element-stroke-strong, rgb(78 65 53 / 0.92))'
-      : 'var(--color-layout-element-stroke, rgb(93 71 54 / 0.58))',
+      ? 'var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7))'
+      : 'var(--color-layout-element-stroke, rgb(18 94 100 / 0.5))',
     strokeWidth: selected || hovered ? 2 : 1,
     vectorEffect: 'non-scaling-stroke',
   };

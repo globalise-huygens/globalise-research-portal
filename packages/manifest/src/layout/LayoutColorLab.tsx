@@ -40,17 +40,17 @@ const palettes: Palette[] = [
   },
 ];
 
-const defaultPalette = 'warm';
+const defaultPalette = 'teal';
 
 export function LayoutColorLab() {
   const initialParams = new URLSearchParams(window.location.search);
   const initialPalette = initialParams.get('layoutPalette') ?? defaultPalette;
   const [paletteId, setPaletteId] = useState(initialPalette);
   const [fillStrength, setFillStrength] = useState(
-    getInitialStrength(initialParams, 'layoutFill', 14, 0, 40),
+    getInitialStrength(initialParams, 'layoutFill', 10, 0, 40),
   );
   const [outlineStrength, setOutlineStrength] = useState(
-    getInitialStrength(initialParams, 'layoutOutline', 72, 30, 100),
+    getInitialStrength(initialParams, 'layoutOutline', 50, 30, 100),
   );
   const palette = palettes.find(({ id }) => id === paletteId) ?? palettes[0];
 

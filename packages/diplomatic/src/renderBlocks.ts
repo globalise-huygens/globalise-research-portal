@@ -28,9 +28,9 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'var(--color-layout-element-text, #5d4736)',
-      stroke: 'var(--color-layout-element-stroke, rgb(93 71 54 / 0.58))',
-      fill: 'var(--color-layout-element-fill, rgb(185 155 127 / 0.1))',
+      text: 'var(--color-layout-element-text, #125e64)',
+      stroke: 'var(--color-layout-element-stroke, rgb(18 94 100 / 0.5))',
+      fill: 'var(--color-layout-element-fill, rgb(128 219 227 / 0.1))',
     },
   }: BlocksConfig,
 ) {

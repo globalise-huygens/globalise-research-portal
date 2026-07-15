@@ -2,10 +2,10 @@
     --normalized-annotation: var(--color-brand-parchment, #b99b7f);
     --normalized-annotation-strong: var(--color-parchment-800, #5d4736);
     --normalized-selected: var(--color-brand-vermilion, #ff543d);
-    --normalized-structure: var(--color-layout-element-stroke, rgb(93 71 54 / 0.58));
-    --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(78 65 53 / 0.92));
-    --normalized-structure-fill: var(--color-layout-element-fill, rgb(185 155 127 / 0.1));
-    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(185 155 127 / 0.22));
+    --normalized-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
+    --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
+    --normalized-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24));
     --normalized-text: var(--color-brand-black, #0c0a09);
 
     margin-left: 0.5em;
