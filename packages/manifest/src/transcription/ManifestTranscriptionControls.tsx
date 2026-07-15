@@ -14,7 +14,7 @@ import {
   setTranscriptionMode,
   useDiplomaticViewScale,
   useTranscriptionMode,
-} from '@globalise/document';
+} from '@globalise/common/document';
 import { useState } from 'react';
 
 const MIN_ZOOM_PERCENT = 30;

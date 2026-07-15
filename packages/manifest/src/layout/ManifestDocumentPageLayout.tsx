@@ -18,7 +18,6 @@ import {
   IconSwap,
   IconTranscription,
 } from '@globalise/design';
-import { SplitPaneLayout } from '@globalise/document';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 import { CollapsedMetadataRail } from './CollapsedMetadataRail';
@@ -27,6 +26,7 @@ import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
 import { TooltipIconButton } from './TooltipIconButton';
+import { SplitPaneLayout } from './splitpane';
 
 type Props = {
   topLeft?: React.ReactNode;

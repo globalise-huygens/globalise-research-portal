@@ -9,9 +9,9 @@
   "references": [
     { "path": "../common" },
     { "path": "../design" },
-    { "path": "../document" },
     { "path": "../facsimile" },
     { "path": "../manifest" },
+    { "path": "../metadata" },
     { "path": "../search" }
   ]
 }

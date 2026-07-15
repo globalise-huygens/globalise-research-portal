@@ -1,10 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { ManifestDocumentPage } from '../../ManifestDocumentPage.tsx';
+import { ManifestPage } from '../../ManifestPage.tsx';
 
 export const Route = createFileRoute('/manifest/')({
-  component: ManifestIndex,
+  component: ManifestPage,
 });
-
-function ManifestIndex() {
-  return <ManifestDocumentPage />;
-}
