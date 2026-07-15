@@ -20,6 +20,7 @@ import {
   useIsLayoutElementsVisible,
   usePages,
   useSelectedIdsForCanvas,
+  useDocumentStore,
 } from '@globalise/common/document';
 import { orThrow } from '@globalise/common';
 import {
@@ -52,6 +53,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
+  const hoveredId = useDocumentStore((state) => state.hoveredId);
+  const clickedId = useDocumentStore((state) => state.clickedId);
 
   const annotationUrls = useMemo(() => {
     if (!vault) {
@@ -91,6 +94,35 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
     return tones;
   }, [annotations, highlightedEntityCategories, indexes.entityToWords]);
+
+  const joinedSelectedWords = useMemo(() => {
+    const joins: Record<Id, { before: boolean; after: boolean }> = {};
+    for (const selectedId of [hoveredId, clickedId]) {
+      if (!selectedId || !getEntityHighlightTone(
+        selectedId,
+        annotations,
+        highlightedEntityCategories,
+      )) {
+        continue;
+      }
+      const wordIds = indexes.entityToWords[selectedId] ?? [];
+      wordIds.forEach((wordId, index) => {
+        const lineId = indexes.wordToLine[wordId];
+        joins[wordId] = {
+          before: Boolean(lineId) && indexes.wordToLine[wordIds[index - 1]] === lineId,
+          after: Boolean(lineId) && indexes.wordToLine[wordIds[index + 1]] === lineId,
+        };
+      });
+    }
+    return joins;
+  }, [
+    annotations,
+    clickedId,
+    highlightedEntityCategories,
+    hoveredId,
+    indexes.entityToWords,
+    indexes.wordToLine,
+  ]);
 
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
@@ -170,6 +202,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
               text={text}
               tone={tone}
+              joinedBefore={joinedSelectedWords[id]?.before}
+              joinedAfter={joinedSelectedWords[id]?.after}
               setTooltip={setTooltip}
             />
           ))}

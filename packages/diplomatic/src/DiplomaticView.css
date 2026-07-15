@@ -76,12 +76,36 @@
     .entity.selected,
     .selected {
         background: var(--diplomatic-selected);
-        box-shadow: inset 0 0 0 2px var(--diplomatic-selected-strong);
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong),
+          inset 1px 0 0 var(--diplomatic-selected-strong),
+          inset -1px 0 0 var(--diplomatic-selected-strong);
     }
 
     .entity.selected {
         background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
-        box-shadow: inset 0 0 0 2px var(--diplomatic-entity-strong);
+        --diplomatic-selected-strong: var(--diplomatic-entity-strong);
+    }
+
+    .selected.joined-before {
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong),
+          inset -1px 0 0 var(--diplomatic-selected-strong);
+    }
+
+    .selected.joined-after {
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong),
+          inset 1px 0 0 var(--diplomatic-selected-strong);
+    }
+
+    .selected.joined-before.joined-after {
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong);
     }
 
     .line-numbers .line-number {

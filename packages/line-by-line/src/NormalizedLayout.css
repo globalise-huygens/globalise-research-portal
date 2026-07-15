@@ -142,7 +142,7 @@
     }
 
     .entity.selected {
-        box-shadow: inset 0 0 0 2px var(--normalized-entity-strong);
+        --normalized-selected-strong: var(--normalized-entity-strong);
     }
 
     .word {
@@ -156,8 +156,36 @@
 
         &.selected {
             background: var(--normalized-selected);
-            box-shadow: inset 0 0 0 2px var(--normalized-selected-strong);
         }
+    }
+
+    .entity.selected,
+    .word.selected {
+        box-shadow:
+          inset 0 1px 0 var(--normalized-selected-strong),
+          inset 0 -1px 0 var(--normalized-selected-strong),
+          inset 1px 0 0 var(--normalized-selected-strong),
+          inset -1px 0 0 var(--normalized-selected-strong);
+    }
+
+    .selected.joined-before {
+        box-shadow:
+          inset 0 1px 0 var(--normalized-selected-strong),
+          inset 0 -1px 0 var(--normalized-selected-strong),
+          inset -1px 0 0 var(--normalized-selected-strong);
+    }
+
+    .selected.joined-after {
+        box-shadow:
+          inset 0 1px 0 var(--normalized-selected-strong),
+          inset 0 -1px 0 var(--normalized-selected-strong),
+          inset 1px 0 0 var(--normalized-selected-strong);
+    }
+
+    .selected.joined-before.joined-after {
+        box-shadow:
+          inset 0 1px 0 var(--normalized-selected-strong),
+          inset 0 -1px 0 var(--normalized-selected-strong);
     }
 
 }

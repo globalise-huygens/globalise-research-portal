@@ -20,11 +20,22 @@ type WordHighlightProps = {
   points: string;
   text: string;
   tone?: EntityHighlightTone;
+  joinedBefore?: boolean;
+  joinedAfter?: boolean;
   setTooltip: (tooltip: TooltipProps | null) => void;
 };
 
 export function WordHighlight(
-  { canvasId, id, points, text, tone, setTooltip }: WordHighlightProps,
+  {
+    canvasId,
+    id,
+    points,
+    text,
+    tone,
+    joinedBefore,
+    joinedAfter,
+    setTooltip,
+  }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
@@ -36,9 +47,11 @@ export function WordHighlight(
         : 'transparent',
     stroke: selected || hovered ? colors.stroke
       : 'transparent',
-    strokeWidth: selected ? 2 : 1,
+    strokeWidth: 1,
     cursor: 'pointer',
     vectorEffect: 'non-scaling-stroke',
+    omitLeftStroke: selected && joinedBefore,
+    omitRightStroke: selected && joinedAfter,
   };
 
   return (

@@ -4,4 +4,6 @@ export type HighlightStyle = {
   strokeWidth?: number;
   cursor?: string;
   vectorEffect?: 'none' | 'non-scaling-stroke';
+  omitLeftStroke?: boolean;
+  omitRightStroke?: boolean;
 };
