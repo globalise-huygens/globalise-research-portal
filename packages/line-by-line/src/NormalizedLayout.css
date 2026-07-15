@@ -1,7 +1,6 @@
 .normalized-view {
-    --normalized-annotation: var(--color-brand-parchment, #b99b7f);
-    --normalized-annotation-strong: var(--color-parchment-800, #5d4736);
     --normalized-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
+    --normalized-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --normalized-selected-strong: var(--color-selection-stroke, #125e64);
     --normalized-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
     --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
@@ -94,8 +93,9 @@
         --normalized-entity: var(--color-brand-parchment, #b99b7f);
         --normalized-entity-strong: var(--color-parchment-800, #5d4736);
 
-        border-bottom: 1px solid var(--normalized-entity-strong);
         background: color-mix(in srgb, var(--normalized-entity) 34%, transparent);
+        border-radius: 2px;
+        -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
         padding: 0 0.08em;
@@ -142,9 +142,7 @@
     }
 
     .entity.selected {
-        border-bottom-color: var(--normalized-entity-strong);
-        background: color-mix(in srgb, var(--normalized-entity) 52%, transparent);
-        box-shadow: inset 0 -2px 0 var(--normalized-entity-strong);
+        box-shadow: inset 0 0 0 2px var(--normalized-entity-strong);
     }
 
     .word {
@@ -152,13 +150,13 @@
         cursor: pointer;
 
         &:hover {
-            background: color-mix(in srgb, var(--normalized-annotation) 18%, transparent);
-            box-shadow: inset 0 -1px 0 var(--normalized-annotation-strong);
+            background: var(--normalized-selected-hover);
+            box-shadow: inset 0 0 0 1px var(--normalized-selected-strong);
         }
 
         &.selected {
             background: var(--normalized-selected);
-            box-shadow: inset 0 -2px 0 var(--normalized-selected-strong);
+            box-shadow: inset 0 0 0 2px var(--normalized-selected-strong);
         }
     }
 

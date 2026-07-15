@@ -1,7 +1,6 @@
 .original-layout {
-    --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
-    --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
+    --diplomatic-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --diplomatic-selected-strong: var(--color-selection-stroke, #125e64);
     --diplomatic-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
     --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
@@ -18,16 +17,17 @@
     }
 
     .segment:hover {
-        background: color-mix(in srgb, var(--diplomatic-annotation) 18%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-annotation-strong);
+        background: var(--diplomatic-selected-hover);
+        box-shadow: inset 0 0 0 1px var(--diplomatic-selected-strong);
     }
 
     .entity {
         --diplomatic-entity: var(--color-brand-parchment, #b99b7f);
         --diplomatic-entity-strong: var(--color-parchment-800, #5d4736);
 
-        border-bottom: 1px solid var(--diplomatic-entity-strong);
         background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
+        border-radius: 2px;
+        -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--diplomatic-text);
         padding: 0 0.08em;
@@ -76,13 +76,12 @@
     .entity.selected,
     .selected {
         background: var(--diplomatic-selected);
-        box-shadow: inset 0 -2px 0 var(--diplomatic-selected-strong);
+        box-shadow: inset 0 0 0 2px var(--diplomatic-selected-strong);
     }
 
     .entity.selected {
-        border-bottom-color: var(--diplomatic-entity-strong);
-        background: color-mix(in srgb, var(--diplomatic-entity) 52%, transparent);
-        box-shadow: inset 0 -2px 0 var(--diplomatic-entity-strong);
+        background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
+        box-shadow: inset 0 0 0 2px var(--diplomatic-entity-strong);
     }
 
     .line-numbers .line-number {
