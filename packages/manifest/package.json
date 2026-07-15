@@ -19,7 +19,8 @@
     "@globalise/facsimile": "*",
     "@globalise/line-by-line": "*",
     "@globalise/metadata": "*",
-    "openseadragon": "^5.0.1"
+    "openseadragon": "^5.0.1",
+    "react-split-pane": "^3.2.0"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.168.6"
