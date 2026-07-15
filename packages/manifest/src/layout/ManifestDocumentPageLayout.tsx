@@ -25,6 +25,7 @@ import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
+import { LayoutColorLab } from './LayoutColorLab';
 import { TooltipIconButton } from './TooltipIconButton';
 import { SplitPaneLayout } from './splitpane';
 
@@ -78,6 +79,8 @@ export function ManifestDocumentPageLayout({
   transcription,
   bottom,
 }: Props) {
+  const isLayoutColorLabEnabled = typeof window !== 'undefined'
+    && new URLSearchParams(window.location.search).has('layoutColorLab');
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
     () =>
       typeof window === 'undefined' ||
@@ -289,6 +292,7 @@ export function ManifestDocumentPageLayout({
           </DocumentDetailBottomBar>
         </div>
       </div>
+      {isLayoutColorLabEnabled && <LayoutColorLab />}
     </div>
   );
 }
