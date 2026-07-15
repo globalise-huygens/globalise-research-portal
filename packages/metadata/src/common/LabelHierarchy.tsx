@@ -53,13 +53,14 @@ function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
         const isLeaf = !node.children.length;
         return (
           <li key={node.label} data-current={isLeaf}>
-            {node.label}
             {isLeaf && (
               <span
                 className="document-detail-overlay-inventory-current-chip"
               >
                 {current}
-              </span>)}
+              </span>
+            )}
+            {node.label}
             {!isLeaf && (
               <LiHierarchy
                 nodes={node.children}
