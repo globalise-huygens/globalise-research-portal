@@ -2,14 +2,14 @@ import { setSelectedCanvas } from '@globalise/common/document';
 import { DocumentDetailReferenceCard } from '@globalise/design';
 import type { ManifestScan } from './toToc';
 
-export type TocScanRowProps = {
+export type TocScanProps = {
   scan: ManifestScan;
   documentScan: number;
   isSelected: boolean;
 };
 
 export function TocScan(
-  { scan, documentScan, isSelected }: TocScanRowProps,
+  { scan, documentScan, isSelected }: TocScanProps,
 ) {
   const thumbnail = scan.thumbnailUrl && (
     <img

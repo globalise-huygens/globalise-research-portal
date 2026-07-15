@@ -8,14 +8,14 @@ import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocScan } from './TocScan.tsx';
 
-export type TocDocumentRowProps = {
+export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
   selectedCanvasId: CanvasId | null;
 };
 
 export function TocDocument(
-  { document, isCurrent, selectedCanvasId }: TocDocumentRowProps,
+  { document, isCurrent, selectedCanvasId }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
   const [firstScan] = document.scans;
