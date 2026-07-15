@@ -1,13 +1,20 @@
-type Props = { label: string | number };
+import './TranscriptionPage.css';
 
-export function PageLabel({ label }: Props) {
-  return <span style={{
-    position: 'absolute',
-    top: '0.5rem',
-    right: '0.5rem',
-    color: '#999',
-    fontSize: '0.8rem',
-  }}>
-    {label}
-  </span>;
+type Props = {
+  label: string | number;
+  isCurrent?: boolean;
+};
+
+export function PageLabel({ label, isCurrent = false }: Props) {
+  return (
+    <span
+      className="manifest-transcription-page__label"
+      data-current={isCurrent ? 'true' : 'false'}
+    >
+      <span className="manifest-transcription-page__label-prefix">
+        {isCurrent ? 'Current page' : 'Page'}
+      </span>
+      {label}
+    </span>
+  );
 }

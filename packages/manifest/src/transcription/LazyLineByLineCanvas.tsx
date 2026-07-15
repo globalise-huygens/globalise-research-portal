@@ -3,6 +3,7 @@ import {
   loadCanvasAnnotationPages,
   useAnnotations,
   usePages,
+  useSelectedCanvas,
 } from '@globalise/common/document';
 import { canvasName } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
@@ -20,6 +21,8 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
+  const { id: selectedCanvasId } = useSelectedCanvas();
+  const isCurrentCanvas = selectedCanvasId === canvasId;
 
   useEffect(
     () => {
@@ -37,15 +40,15 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
   const isContentReady = !error && hasAnnotationPages && isDataReady;
 
   return (
-    <div style={{
-      position: 'relative',
-      margin: '0 auto',
-      maxWidth: '50rem',
-      padding: '1rem',
-      borderTop: '1px solid #eee',
-    }}>
-      <PageLabel label={canvasLabel}/>
-      {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
+    <div
+      className="manifest-transcription-page manifest-transcription-page--line-by-line"
+      data-current={isCurrentCanvas ? 'true' : 'false'}
+      aria-current={isCurrentCanvas ? 'page' : undefined}
+      aria-label={`Transcription page ${canvasLabel}`}
+      role="group"
+    >
+      <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
+      {error && <Placeholder color="indianred">Error: {error}</Placeholder>}
       {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}
       {isContentReady && (

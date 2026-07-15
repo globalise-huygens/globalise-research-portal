@@ -45,6 +45,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
+  const isCurrentCanvas = selectedIndex === index;
   const isInRenderRangeByDistance =
     selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
 
@@ -72,6 +73,11 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   return (
     <div
       {...{ [canvasIndexAttribute]: index }}
+      className="manifest-transcription-page manifest-transcription-page--diplomatic"
+      data-current={isCurrentCanvas ? 'true' : 'false'}
+      aria-current={isCurrentCanvas ? 'page' : undefined}
+      aria-label={`Transcription page ${canvasLabel}`}
+      role="group"
       style={{
         position: 'relative',
         width,
@@ -90,25 +96,25 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
           color="indianred"
           background="rgb(248 243 243)"
         >
-          <PageLabel label={canvasLabel} />
+          <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
           Loading...
         </TranscriptionPlaceholder>
       )}
       {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
-          <PageLabel label={canvasLabel} />
+          <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
               id={canvasId}

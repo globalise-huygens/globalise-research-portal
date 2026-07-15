@@ -6,6 +6,12 @@
   --manifest-sidebar-width: var(--manifest-sidebar-expanded-width);
   --manifest-top-bar-height: var(--s56);
   --manifest-bottom-bar-height: var(--s56);
+  --manifest-viewer-chrome: var(--color-neutral-900);
+  --manifest-scan-workspace: #6f6a64;
+  --manifest-transcription-workspace: var(--color-parchment-200);
+  --manifest-transcription-page: var(--color-parchment-50);
+  --manifest-transcription-page-border: var(--color-parchment-700);
+  --manifest-transcription-text: var(--color-brand-black);
 
   box-sizing: border-box;
   display: grid;
@@ -14,7 +20,7 @@
   grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
   column-gap: var(--shell-gutter);
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   font-family: var(--font-sans);
   padding-inline: 0;
 }
@@ -27,7 +33,7 @@
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   transition: grid-template-columns 150ms ease-out;
 }
 
@@ -44,7 +50,7 @@
   min-height: 0;
   width: var(--manifest-sidebar-width);
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   transition: width 150ms ease-out;
 }
 
@@ -317,17 +323,27 @@
 }
 
 .manifest-document-layout__viewer-pane--bordered {
-  border-right: 1px solid var(--color-brand-black);
+  border-right: 1px solid var(--manifest-viewer-chrome);
 }
 
 .manifest-document-layout__canvas {
-  background: var(--color-neutral-500);
+  color: var(--manifest-transcription-text);
+}
+
+.manifest-document-layout__canvas--scan {
+  background: var(--manifest-scan-workspace);
+}
+
+.manifest-document-layout__canvas--transcription {
+  background: var(--manifest-transcription-workspace);
 }
 
 .manifest-document-layout__transcription-viewer {
   position: relative;
   height: 100%;
   min-height: 0;
+  background: var(--manifest-transcription-workspace);
+  color: var(--manifest-transcription-text);
 }
 
 .gds-document-detail-canvas.manifest-document-layout__canvas {
@@ -348,6 +364,11 @@
   min-height: 0;
   padding: 0;
   overflow: hidden;
+}
+
+.manifest-document-layout__transcription-viewer > div:last-child {
+  scrollbar-color: var(--color-parchment-600) var(--manifest-transcription-workspace);
+  scrollbar-width: thin;
 }
 
 .manifest-document-layout__collapsed-rail {

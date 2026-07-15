@@ -46,7 +46,10 @@ type ViewerPaneProps = {
 const mobileLayoutQuery = '(max-width: 767px)';
 
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
-  const canvasClassName = 'manifest-document-layout__canvas';
+  const canvasClassName = cn(
+    'manifest-document-layout__canvas',
+    `manifest-document-layout__canvas--${type}`,
+  );
   const paneClassName = cn(
     'manifest-document-layout__viewer-pane',
     isBordered && 'manifest-document-layout__viewer-pane--bordered',
