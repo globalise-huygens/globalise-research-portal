@@ -7,13 +7,15 @@ import {
   ManifestMetadataSlice,
   defaultManifestMetadataSlice,
 } from './ManifestMetadataState';
+import { TocSlice, defaultTocSlice } from './TocSlice';
 
 export type DocumentState =
   & EntityHighlightSlice
   & LayoutElementsSlice
   & ManifestViewerSlice
   & SelectionSlice
-  & ManifestMetadataSlice;
+  & ManifestMetadataSlice
+  & TocSlice;
 
 export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultEntityHighlightSlice,
@@ -21,6 +23,7 @@ export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultManifestViewerSlice,
   ...defaultSelectionSlice,
   ...defaultManifestMetadataSlice,
+  ...defaultTocSlice,
 }));
 
 export const setState = useDocumentStore.setState;
