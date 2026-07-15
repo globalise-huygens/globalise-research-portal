@@ -16,7 +16,6 @@
     "@globalise/design": "*",
     "@globalise/common": "*",
     "@globalise/diplomatic": "*",
-    "@globalise/document": "*",
     "@globalise/facsimile": "*",
     "@globalise/line-by-line": "*",
     "openseadragon": "^5.0.1"

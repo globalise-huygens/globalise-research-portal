@@ -10,7 +10,6 @@
     { "path": "../common" },
     { "path": "../design" },
     { "path": "../diplomatic" },
-    { "path": "../document" },
     { "path": "../facsimile" },
     { "path": "../line-by-line" },
   ]

@@ -1,9 +1,8 @@
 import {
   initCanvases,
   useDocumentStore,
-  useIsLayoutElementsVisible,
+  useIsLayoutElementsVisible, useTranscriptionMode,
 } from '@globalise/common/document';
-import { useTranscriptionMode } from '@globalise/document';
 import { ControlBar } from '@globalise/facsimile';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';

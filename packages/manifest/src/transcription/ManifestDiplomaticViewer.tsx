@@ -1,5 +1,5 @@
 import { useSelectedCanvas } from '@globalise/common/document';
-import { useDiplomaticViewScale } from '@globalise/document';
+import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
