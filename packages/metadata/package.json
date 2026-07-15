@@ -15,8 +15,5 @@
   "dependencies": {
     "@globalise/common": "*",
     "@globalise/design": "*"
-  },
-  "devDependencies": {
-    "jsdom": "^29.1.1"
   }
 }
