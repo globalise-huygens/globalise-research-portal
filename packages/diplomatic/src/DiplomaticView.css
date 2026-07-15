@@ -4,6 +4,9 @@
     --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
     --diplomatic-structure: var(--color-parchment-700, #7e6149);
     --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
+    --diplomatic-structure-fill: rgb(185 155 127 / 0.08);
+    --diplomatic-structure-stroke: rgb(93 71 54 / 0.48);
+    --diplomatic-structure-text: rgb(93 71 54 / 0.72);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
     --diplomatic-muted: var(--color-neutral-600, #666666);
 
@@ -31,43 +34,43 @@
     }
 
     .entity.cidoc-actor {
-        --diplomatic-entity: #ffbdca;
-        --diplomatic-entity-strong: #9a4f60;
+        --diplomatic-entity: var(--color-entity-actor, #ffbdca);
+        --diplomatic-entity-strong: var(--color-entity-actor-strong, #9a4f60);
     }
 
     .entity.cidoc-appellation {
-        --diplomatic-entity: #fef3ba;
-        --diplomatic-entity-strong: #8a6f00;
+        --diplomatic-entity: var(--color-entity-appellation, #fef3ba);
+        --diplomatic-entity-strong: var(--color-entity-appellation-strong, #8a6f00);
     }
 
     .entity.cidoc-conceptual-object {
-        --diplomatic-entity: #fddc34;
-        --diplomatic-entity-strong: #856f00;
+        --diplomatic-entity: var(--color-entity-conceptual-object, #fddc34);
+        --diplomatic-entity-strong: var(--color-entity-conceptual-object-strong, #856f00);
     }
 
     .entity.cidoc-dimension {
-        --diplomatic-entity: #e6e4ec;
-        --diplomatic-entity-strong: #6d5f78;
+        --diplomatic-entity: var(--color-entity-dimension, #e6e4ec);
+        --diplomatic-entity-strong: var(--color-entity-dimension-strong, #6d5f78);
     }
 
     .entity.cidoc-physical-thing {
-        --diplomatic-entity: #e1ba9c;
-        --diplomatic-entity-strong: #7a563d;
+        --diplomatic-entity: var(--color-entity-physical-thing, #e1ba9c);
+        --diplomatic-entity-strong: var(--color-entity-physical-thing-strong, #7a563d);
     }
 
     .entity.cidoc-place {
-        --diplomatic-entity: #94cc7d;
-        --diplomatic-entity-strong: #3f6f31;
+        --diplomatic-entity: var(--color-entity-place, #94cc7d);
+        --diplomatic-entity-strong: var(--color-entity-place-strong, #3f6f31);
     }
 
     .entity.cidoc-time-span {
-        --diplomatic-entity: #86bcc8;
-        --diplomatic-entity-strong: #356a75;
+        --diplomatic-entity: var(--color-entity-time-span, #86bcc8);
+        --diplomatic-entity-strong: var(--color-entity-time-span-strong, #356a75);
     }
 
     .entity.cidoc-type {
-        --diplomatic-entity: #fab565;
-        --diplomatic-entity-strong: #8f5200;
+        --diplomatic-entity: var(--color-entity-type, #fab565);
+        --diplomatic-entity-strong: var(--color-entity-type-strong, #8f5200);
     }
 
     .entity.selected,
@@ -79,7 +82,7 @@
     .entity.selected {
         border-bottom-color: var(--diplomatic-entity-strong);
         background: color-mix(in srgb, var(--diplomatic-entity) 52%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-entity-strong);
+        box-shadow: inset 0 -2px 0 var(--diplomatic-entity-strong);
     }
 
     .line-numbers .line-number {
@@ -109,5 +112,10 @@
         paint-order: stroke;
         stroke: rgb(255 255 255 / 0.38);
         stroke-width: 2px;
+    }
+
+    .blocks polygon {
+        fill: var(--diplomatic-structure-fill);
+        stroke: var(--diplomatic-structure-stroke);
     }
 }

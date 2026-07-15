@@ -89,6 +89,25 @@
     --mint-800: #185c4b; /* text: white */
     --mint-900: #175346; /* text: white */
 
+    /* CIDOC CRM entity highlights. Pale fills preserve reading contrast;
+       strong colours provide a second, non-fill boundary cue. */
+    --entity-actor: #ffbdca;
+    --entity-actor-strong: #9a4f60;
+    --entity-appellation: #fef3ba;
+    --entity-appellation-strong: #8a6f00;
+    --entity-conceptual-object: #fddc34;
+    --entity-conceptual-object-strong: #856f00;
+    --entity-dimension: #e6e4ec;
+    --entity-dimension-strong: #6d5f78;
+    --entity-physical-thing: #e1ba9c;
+    --entity-physical-thing-strong: #7a563d;
+    --entity-place: #94cc7d;
+    --entity-place-strong: #3f6f31;
+    --entity-time-span: #86bcc8;
+    --entity-time-span-strong: #356a75;
+    --entity-type: #fab565;
+    --entity-type-strong: #8f5200;
+
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);
     --surface-light: var(--brand-white);
@@ -171,6 +190,22 @@
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
     --color-ring: var(--ring);
+    --color-entity-actor: var(--entity-actor);
+    --color-entity-actor-strong: var(--entity-actor-strong);
+    --color-entity-appellation: var(--entity-appellation);
+    --color-entity-appellation-strong: var(--entity-appellation-strong);
+    --color-entity-conceptual-object: var(--entity-conceptual-object);
+    --color-entity-conceptual-object-strong: var(--entity-conceptual-object-strong);
+    --color-entity-dimension: var(--entity-dimension);
+    --color-entity-dimension-strong: var(--entity-dimension-strong);
+    --color-entity-physical-thing: var(--entity-physical-thing);
+    --color-entity-physical-thing-strong: var(--entity-physical-thing-strong);
+    --color-entity-place: var(--entity-place);
+    --color-entity-place-strong: var(--entity-place-strong);
+    --color-entity-time-span: var(--entity-time-span);
+    --color-entity-time-span-strong: var(--entity-time-span-strong);
+    --color-entity-type: var(--entity-type);
+    --color-entity-type-strong: var(--entity-type-strong);
 
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;

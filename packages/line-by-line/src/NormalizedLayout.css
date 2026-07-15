@@ -14,6 +14,7 @@
     width: fit-content;
     padding: 0.75rem 1rem 1.25rem 0.25rem;
     color: var(--normalized-text);
+    font-family: var(--font-serif, "Noto Serif", serif);
 
     .text,
     .overlay {
@@ -100,49 +101,49 @@
     }
 
     .entity.cidoc-actor {
-        --normalized-entity: #ffbdca;
-        --normalized-entity-strong: #9a4f60;
+        --normalized-entity: var(--color-entity-actor, #ffbdca);
+        --normalized-entity-strong: var(--color-entity-actor-strong, #9a4f60);
     }
 
     .entity.cidoc-appellation {
-        --normalized-entity: #fef3ba;
-        --normalized-entity-strong: #8a6f00;
+        --normalized-entity: var(--color-entity-appellation, #fef3ba);
+        --normalized-entity-strong: var(--color-entity-appellation-strong, #8a6f00);
     }
 
     .entity.cidoc-conceptual-object {
-        --normalized-entity: #fddc34;
-        --normalized-entity-strong: #856f00;
+        --normalized-entity: var(--color-entity-conceptual-object, #fddc34);
+        --normalized-entity-strong: var(--color-entity-conceptual-object-strong, #856f00);
     }
 
     .entity.cidoc-dimension {
-        --normalized-entity: #e6e4ec;
-        --normalized-entity-strong: #6d5f78;
+        --normalized-entity: var(--color-entity-dimension, #e6e4ec);
+        --normalized-entity-strong: var(--color-entity-dimension-strong, #6d5f78);
     }
 
     .entity.cidoc-physical-thing {
-        --normalized-entity: #e1ba9c;
-        --normalized-entity-strong: #7a563d;
+        --normalized-entity: var(--color-entity-physical-thing, #e1ba9c);
+        --normalized-entity-strong: var(--color-entity-physical-thing-strong, #7a563d);
     }
 
     .entity.cidoc-place {
-        --normalized-entity: #94cc7d;
-        --normalized-entity-strong: #3f6f31;
+        --normalized-entity: var(--color-entity-place, #94cc7d);
+        --normalized-entity-strong: var(--color-entity-place-strong, #3f6f31);
     }
 
     .entity.cidoc-time-span {
-        --normalized-entity: #86bcc8;
-        --normalized-entity-strong: #356a75;
+        --normalized-entity: var(--color-entity-time-span, #86bcc8);
+        --normalized-entity-strong: var(--color-entity-time-span-strong, #356a75);
     }
 
     .entity.cidoc-type {
-        --normalized-entity: #fab565;
-        --normalized-entity-strong: #8f5200;
+        --normalized-entity: var(--color-entity-type, #fab565);
+        --normalized-entity-strong: var(--color-entity-type-strong, #8f5200);
     }
 
     .entity.selected {
         border-bottom-color: var(--normalized-entity-strong);
         background: color-mix(in srgb, var(--normalized-entity) 52%, transparent);
-        box-shadow: inset 0 -1px 0 var(--normalized-entity-strong);
+        box-shadow: inset 0 -2px 0 var(--normalized-entity-strong);
     }
 
     .word {
@@ -156,7 +157,7 @@
 
         &.selected {
             background: color-mix(in srgb, var(--normalized-selected) 18%, transparent);
-            box-shadow: inset 0 -1px 0 var(--normalized-selected);
+            box-shadow: inset 0 -2px 0 var(--normalized-selected);
         }
     }
 

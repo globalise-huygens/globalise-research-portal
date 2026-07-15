@@ -28,9 +28,9 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'rgba(93, 71, 54, 0.72)',
-      stroke: 'rgba(93, 71, 54, 0.48)',
-      fill: 'rgba(185, 155, 127, 0.08)',
+      text: 'var(--diplomatic-structure-text, rgba(93, 71, 54, 0.72))',
+      stroke: 'var(--diplomatic-structure-stroke, rgba(93, 71, 54, 0.48))',
+      fill: 'var(--diplomatic-structure-fill, rgba(185, 155, 127, 0.08))',
     },
   }: BlocksConfig,
 ) {
