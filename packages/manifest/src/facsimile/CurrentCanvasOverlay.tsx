@@ -34,7 +34,6 @@ export function CurrentCanvasOverlay() {
         aria-label={`Current scan ${name}`}
       >
         <span className="manifest-current-canvas__label" aria-hidden="true">
-          <span className="manifest-current-canvas__label-prefix">Current scan</span>
           {name}
         </span>
       </div>

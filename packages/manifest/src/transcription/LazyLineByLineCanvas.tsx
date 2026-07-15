@@ -34,10 +34,10 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
   );
 
   const canvasLabel = canvasName(canvasId);
-  const isDataReady = isCanvasReady && hasAnnotations;
   const hasAnnotationPages = !!annotationUrls.length;
-  const isLoading = !error && hasAnnotationPages && !isDataReady;
-  const isContentReady = !error && hasAnnotationPages && isDataReady;
+  const hasNoAnnotations = !hasAnnotationPages || (isCanvasReady && !hasAnnotations);
+  const isLoading = !error && hasAnnotationPages && !isCanvasReady;
+  const isContentReady = !error && isCanvasReady && hasAnnotations;
 
   return (
     <div
@@ -49,7 +49,7 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
     >
       <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
       {error && <Placeholder color="indianred">Error: {error}</Placeholder>}
-      {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
+      {hasNoAnnotations && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}
       {isContentReady && (
         <div style={{ fontSize: `${scale}%` }}>

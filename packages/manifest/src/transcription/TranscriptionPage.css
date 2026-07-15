@@ -11,11 +11,11 @@
 }
 
 .manifest-transcription-page[data-current="true"] {
-  outline-color: var(--color-vermilion-700, #b32d1d);
+  outline-color: var(--color-parchment-800, #5d4736);
   box-shadow:
     0 0 0 2px var(--color-parchment-50, #f8f5f2),
-    0 0 0 4px var(--color-vermilion-700, #b32d1d),
-    0 10px 28px rgb(78 65 53 / 0.18);
+    0 0 0 3px var(--color-parchment-800, #5d4736),
+    0 10px 28px rgb(78 65 53 / 0.14);
 }
 
 .manifest-transcription-page--line-by-line {
@@ -58,14 +58,14 @@
 }
 
 .manifest-transcription-page__label[data-current="true"] {
-  border-color: var(--color-vermilion-700, #b32d1d);
-  background: var(--color-vermilion-700, #b32d1d);
-  color: var(--color-brand-white, #fff);
+  border-color: var(--color-parchment-700, #7e6149);
+  background: var(--color-parchment-100, #f0ebe5);
+  color: var(--color-parchment-900, #4e4135);
 }
 
 .manifest-transcription-page__label[data-current="true"]
   .manifest-transcription-page__label-prefix {
-  color: var(--color-vermilion-50, #ffeeec);
+  color: var(--color-parchment-700, #7e6149);
 }
 
 @media (max-width: 767px) {
