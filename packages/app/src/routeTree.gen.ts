@@ -9,31 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DocumentRouteImport } from './routes/document'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
-import { Route as ManifestTranscriptionRouteImport } from './routes/manifest/transcription'
 import { Route as ManifestLayoutRouteImport } from './routes/manifest/layout'
-import { Route as ManifestFacsimileRouteImport } from './routes/manifest/facsimile'
 
-const DocumentRoute = DocumentRouteImport.update({
-  id: '/document',
-  path: '/document',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ManifestIndexRoute = ManifestIndexRouteImport.update({
-  id: '/manifest/',
-  path: '/manifest/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ManifestTranscriptionRoute = ManifestTranscriptionRouteImport.update({
-  id: '/manifest/transcription',
-  path: '/manifest/transcription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManifestLayoutRoute = ManifestLayoutRouteImport.update({
@@ -41,101 +22,40 @@ const ManifestLayoutRoute = ManifestLayoutRouteImport.update({
   path: '/manifest/layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ManifestFacsimileRoute = ManifestFacsimileRouteImport.update({
-  id: '/manifest/facsimile',
-  path: '/manifest/facsimile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/document': typeof DocumentRoute
-  '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
-  '/manifest/transcription': typeof ManifestTranscriptionRoute
-  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/document': typeof DocumentRoute
-  '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
-  '/manifest/transcription': typeof ManifestTranscriptionRoute
-  '/manifest': typeof ManifestIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/document': typeof DocumentRoute
-  '/manifest/facsimile': typeof ManifestFacsimileRoute
   '/manifest/layout': typeof ManifestLayoutRoute
-  '/manifest/transcription': typeof ManifestTranscriptionRoute
-  '/manifest/': typeof ManifestIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/document'
-    | '/manifest/facsimile'
-    | '/manifest/layout'
-    | '/manifest/transcription'
-    | '/manifest/'
+  fullPaths: '/' | '/manifest/layout'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/document'
-    | '/manifest/facsimile'
-    | '/manifest/layout'
-    | '/manifest/transcription'
-    | '/manifest'
-  id:
-    | '__root__'
-    | '/'
-    | '/document'
-    | '/manifest/facsimile'
-    | '/manifest/layout'
-    | '/manifest/transcription'
-    | '/manifest/'
+  to: '/' | '/manifest/layout'
+  id: '__root__' | '/' | '/manifest/layout'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DocumentRoute: typeof DocumentRoute
-  ManifestFacsimileRoute: typeof ManifestFacsimileRoute
   ManifestLayoutRoute: typeof ManifestLayoutRoute
-  ManifestTranscriptionRoute: typeof ManifestTranscriptionRoute
-  ManifestIndexRoute: typeof ManifestIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/document': {
-      id: '/document'
-      path: '/document'
-      fullPath: '/document'
-      preLoaderRoute: typeof DocumentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/manifest/': {
-      id: '/manifest/'
-      path: '/manifest'
-      fullPath: '/manifest/'
-      preLoaderRoute: typeof ManifestIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/manifest/transcription': {
-      id: '/manifest/transcription'
-      path: '/manifest/transcription'
-      fullPath: '/manifest/transcription'
-      preLoaderRoute: typeof ManifestTranscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manifest/layout': {
@@ -145,23 +65,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManifestLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/manifest/facsimile': {
-      id: '/manifest/facsimile'
-      path: '/manifest/facsimile'
-      fullPath: '/manifest/facsimile'
-      preLoaderRoute: typeof ManifestFacsimileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DocumentRoute: DocumentRoute,
-  ManifestFacsimileRoute: ManifestFacsimileRoute,
   ManifestLayoutRoute: ManifestLayoutRoute,
-  ManifestTranscriptionRoute: ManifestTranscriptionRoute,
-  ManifestIndexRoute: ManifestIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
