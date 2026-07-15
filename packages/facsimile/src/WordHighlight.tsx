@@ -38,6 +38,7 @@ export function WordHighlight(
       : 'transparent',
     strokeWidth: selected ? 2 : 1,
     cursor: 'pointer',
+    vectorEffect: 'non-scaling-stroke',
   };
 
   return (

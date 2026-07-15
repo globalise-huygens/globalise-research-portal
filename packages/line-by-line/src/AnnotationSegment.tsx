@@ -30,7 +30,7 @@ export function AnnotationSegment(
   }
 
   if (isWord(annotation)) {
-    return <WordSegment annotation={annotation}>
+    return <WordSegment canvasId={canvasId} annotation={annotation}>
       {children}
     </WordSegment>;
   }
@@ -38,15 +38,16 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>) {
-  const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
+function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
+  const isClicked = useDocumentStore((s) => s.clickedId === annotation.id);
+  const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (isSelected && ref.current) {
+    if (isClicked && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [isSelected]);
+  }, [isClicked]);
 
   return (
     <span

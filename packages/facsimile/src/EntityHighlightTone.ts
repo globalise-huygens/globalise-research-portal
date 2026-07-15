@@ -63,9 +63,9 @@ export function getEntityHighlightColors(
       };
     default:
       return {
-        fill: 'rgba(185, 155, 127, 0.24)',
-        hoverFill: 'rgba(185, 155, 127, 0.18)',
-        stroke: 'rgba(93, 71, 54, 0.9)',
+        fill: 'var(--color-selection-fill, rgb(41 191 204 / 0.22))',
+        hoverFill: 'var(--color-selection-fill-hover, rgb(41 191 204 / 0.14))',
+        stroke: 'var(--color-selection-stroke, #125e64)',
       };
   }
 }
