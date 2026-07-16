@@ -22,13 +22,13 @@ export function HandleField() {
   return (
     <Pair label={label}>
       <a
-        className="document-detail-overlay-link"
+        className="manifest-viewer-link"
         href={href}
         target="_blank"
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="document-detail-overlay-icon-small"/>
+        <IconExternalLink className="manifest-viewer-icon-small"/>
       </a>
     </Pair>
   );

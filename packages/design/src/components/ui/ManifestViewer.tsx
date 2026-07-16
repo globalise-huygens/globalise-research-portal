@@ -1,38 +1,38 @@
-import './DocumentDetailOverlayViewer.css';
+import './ManifestViewer.css';
 import * as React from 'react';
 import {
   DocumentDetailBody,
   DocumentDetailSplitViewer,
 } from './DocumentDetailLayout';
-import { DocumentDetailOverlay } from './DocumentDetailOverlay';
-import { DocumentDetailBottomBar } from './DocumentDetailOverlayBottomBar';
+import { ManifestViewerOverlay } from './ManifestViewerOverlay';
+import { ManifestViewerBottomBar } from './ManifestViewerBottomBar';
 import {
   CollapsedMetadataRail,
   MetadataSidebar,
-} from './DocumentDetailOverlaySidebar';
-import { DocumentDetailTopBar } from './DocumentDetailOverlayTopBar';
+} from './ManifestViewerSidebar';
+import { ManifestViewerTopBar } from './ManifestViewerTopBar';
 import type {
-  DocumentDetailOverlayContent,
-  DocumentDetailOverlayPaneKey,
-  DocumentDetailOverlayScan,
-  DocumentDetailOverlayScanRenderer,
-  DocumentDetailOverlaySidebarSectionId,
-} from './DocumentDetailOverlayTypes';
+  ManifestViewerContent,
+  ManifestViewerPaneKey,
+  ManifestViewerScan,
+  ManifestViewerScanRenderer,
+  ManifestViewerSidebarSectionId,
+} from './ManifestViewerTypes';
 import {
   ManuscriptPane,
   type TranscriptMode,
   TranscriptPane,
-} from './DocumentDetailOverlayViewerPanes';
+} from './ManifestViewerPanes';
 
-export type DocumentDetailOverlayViewerProps = {
-  content: DocumentDetailOverlayContent;
+export type ManifestViewerProps = {
+  content: ManifestViewerContent;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  renderScanPage?: DocumentDetailOverlayScanRenderer;
-  renderScanThumbnail?: DocumentDetailOverlayScanRenderer;
+  renderScanPage?: ManifestViewerScanRenderer;
+  renderScanThumbnail?: ManifestViewerScanRenderer;
 };
 
-function getInitialScan(content: DocumentDetailOverlayContent) {
+function getInitialScan(content: ManifestViewerContent) {
   const scans = getAllScans(content);
 
   return (
@@ -42,7 +42,7 @@ function getInitialScan(content: DocumentDetailOverlayContent) {
   );
 }
 
-function getAllScans(content: DocumentDetailOverlayContent) {
+function getAllScans(content: ManifestViewerContent) {
   if (content.tableOfContentsDocuments?.length) {
     return content.tableOfContentsDocuments.flatMap((document) =>
       document.scans.map((scan) => ({
@@ -57,8 +57,8 @@ function getAllScans(content: DocumentDetailOverlayContent) {
 }
 
 function getScanAtOffset(
-  scans: DocumentDetailOverlayScan[],
-  currentScan: DocumentDetailOverlayScan,
+  scans: ManifestViewerScan[],
+  currentScan: ManifestViewerScan,
   offset: number,
 ) {
   const currentIndex = scans.findIndex(
@@ -73,8 +73,8 @@ function getScanAtOffset(
 }
 
 function getDocumentScanTotal(
-  content: DocumentDetailOverlayContent,
-  currentScan: DocumentDetailOverlayScan,
+  content: ManifestViewerContent,
+  currentScan: ManifestViewerScan,
 ) {
   const currentDocument = content.tableOfContentsDocuments?.find((document) =>
     document.scans.some((scan) => scan.archiveScan === currentScan.archiveScan),
@@ -86,25 +86,25 @@ function getDocumentScanTotal(
 function renderDefaultScanPage({
   className,
   label,
-}: Parameters<DocumentDetailOverlayScanRenderer>[0]) {
+}: Parameters<ManifestViewerScanRenderer>[0]) {
   return (
     <div
       role="img"
       aria-label={label}
-      className={`document-detail-overlay-scan-page${className ? ` ${className}` : ''}`}
+      className={`manifest-viewer-scan-page${className ? ` ${className}` : ''}`}
     >
       <span>{label}</span>
     </div>
   );
 }
 
-export function DocumentDetailOverlayViewer({
+export function ManifestViewer({
   content,
   isOpen,
   onOpenChange,
   renderScanPage,
   renderScanThumbnail,
-}: DocumentDetailOverlayViewerProps) {
+}: ManifestViewerProps) {
   const [isWarningOpen, setIsWarningOpen] = React.useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
@@ -123,7 +123,7 @@ export function DocumentDetailOverlayViewer({
   const [isSearchNavigationVisible, setIsSearchNavigationVisible] =
     React.useState(true);
   const [expandedSections, setExpandedSections] = React.useState<
-    Record<DocumentDetailOverlaySidebarSectionId, boolean>
+    Record<ManifestViewerSidebarSectionId, boolean>
   >({
     inventory: true,
     contents: false,
@@ -131,7 +131,7 @@ export function DocumentDetailOverlayViewer({
     events: false,
   });
   const [lastOpenedSection, setLastOpenedSection] =
-    React.useState<DocumentDetailOverlaySidebarSectionId>('inventory');
+    React.useState<ManifestViewerSidebarSectionId>('inventory');
   const allScans = React.useMemo(() => getAllScans(content), [content]);
   const collapsedRailActiveSection = lastOpenedSection;
   const documentScanTotal = getDocumentScanTotal(content, currentScan);
@@ -147,7 +147,7 @@ export function DocumentDetailOverlayViewer({
   }, [content]);
 
   const setSectionExpanded = (
-    section: DocumentDetailOverlaySidebarSectionId,
+    section: ManifestViewerSidebarSectionId,
     isExpanded: boolean,
   ) => {
     if (isExpanded) {
@@ -157,7 +157,7 @@ export function DocumentDetailOverlayViewer({
     setExpandedSections((current) => ({ ...current, [section]: isExpanded }));
   };
 
-  const expandSidebar = (section?: DocumentDetailOverlaySidebarSectionId) => {
+  const expandSidebar = (section?: ManifestViewerSidebarSectionId) => {
     setIsSidebarOpen(true);
 
     if (section) {
@@ -166,7 +166,7 @@ export function DocumentDetailOverlayViewer({
     }
   };
 
-  const togglePane = (pane: DocumentDetailOverlayPaneKey) => {
+  const togglePane = (pane: ManifestViewerPaneKey) => {
     if (pane === 'scan') {
       setIsScanVisible((current) =>
         current && !isTextVisible ? current : !current,
@@ -220,18 +220,17 @@ export function DocumentDetailOverlayViewer({
   ];
 
   return (
-    <DocumentDetailOverlay
+    <ManifestViewerOverlay
       ariaLabel={`${content.inventory.title}: ${content.metadata.titles}`}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       isDismissable
       contentClassName="slot-full-bleed"
-      modalClassName="document-detail-overlay-rich-modal"
-      dialogClassName={`document-detail-overlay-rich-dialog${
+      dialogClassName={
         isSidebarOpen
-          ? ' document-detail-overlay-rich-dialog--sidebar-open'
-          : ' document-detail-overlay-rich-dialog--sidebar-collapsed'
-      }`}
+          ? 'manifest-viewer-dialog--sidebar-open'
+          : 'manifest-viewer-dialog--sidebar-collapsed'
+      }
     >
       {isSidebarOpen ? (
         <MetadataSidebar
@@ -252,7 +251,7 @@ export function DocumentDetailOverlayViewer({
         />
       ) : null}
 
-      <DocumentDetailTopBar
+      <ManifestViewerTopBar
         content={content}
         isSidebarOpen={isSidebarOpen}
         isScanVisible={isScanVisible}
@@ -273,14 +272,14 @@ export function DocumentDetailOverlayViewer({
       />
 
       <DocumentDetailBody
-        className={`document-detail-overlay-rich-body${
+        className={`manifest-viewer-body${
           isSidebarOpen
-            ? ' document-detail-overlay-rich-body--sidebar-open'
+            ? ' manifest-viewer-body--sidebar-open'
             : ''
         }`}
       >
         <DocumentDetailSplitViewer
-          className="document-detail-overlay-rich-split-viewer"
+          className="manifest-viewer-split-viewer"
           data-layout={
             isScanVisible && isTextVisible
               ? 'split'
@@ -295,7 +294,7 @@ export function DocumentDetailOverlayViewer({
         </DocumentDetailSplitViewer>
       </DocumentDetailBody>
 
-      <DocumentDetailBottomBar
+      <ManifestViewerBottomBar
         currentScan={currentScan}
         documentScanTotal={documentScanTotal}
         searchHit={currentSearchHit}
@@ -309,6 +308,6 @@ export function DocumentDetailOverlayViewer({
         onNextSearchHit={() => navigateSearchHit(1)}
         onClearSearchHits={() => setIsSearchNavigationVisible(false)}
       />
-    </DocumentDetailOverlay>
+    </ManifestViewerOverlay>
   );
 }

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type DocumentDetailOverlayScan = {
+export type ManifestViewerScan = {
   archiveScan: number;
   documentScan: number;
   identifier: string;
@@ -13,39 +13,39 @@ export type DocumentDetailOverlayScan = {
   selected?: boolean;
 };
 
-export type DocumentDetailOverlayScanRenderArgs = {
-  scan: DocumentDetailOverlayScan;
+export type ManifestViewerScanRenderArgs = {
+  scan: ManifestViewerScan;
   label: string;
   pageCount: 1 | 2;
   className?: string;
 };
 
-export type DocumentDetailOverlayScanRenderer = (
-  args: DocumentDetailOverlayScanRenderArgs,
+export type ManifestViewerScanRenderer = (
+  args: ManifestViewerScanRenderArgs,
 ) => ReactNode;
 
-export type DocumentDetailOverlayTocMetadata = [label: string, value: string, badge?: string][];
+export type ManifestViewerTocMetadata = [label: string, value: string, badge?: string][];
 
-export type DocumentDetailOverlayDocument = {
+export type ManifestViewerDocument = {
   id: string;
   title: string;
   hasResults?: boolean;
-  scans: DocumentDetailOverlayScan[];
-  metadata?: DocumentDetailOverlayTocMetadata;
+  scans: ManifestViewerScan[];
+  metadata?: ManifestViewerTocMetadata;
 };
 
-export type DocumentDetailOverlayInventoryMetadataItem = {
+export type ManifestViewerInventoryMetadataItem = {
   label: string;
   value: string;
 };
 
-export type DocumentDetailOverlayInventoryHierarchyItem = {
+export type ManifestViewerInventoryHierarchyItem = {
   level: number;
   label: string;
   isCurrent?: boolean;
 };
 
-export type DocumentDetailOverlayTagSubcategory = {
+export type ManifestViewerTagSubcategory = {
   id: string;
   label: string;
   count: number;
@@ -53,7 +53,7 @@ export type DocumentDetailOverlayTagSubcategory = {
   scanStride?: number;
 };
 
-export type DocumentDetailOverlayTagGroup = {
+export type ManifestViewerTagGroup = {
   id: string;
   label: string;
   count: number;
@@ -69,10 +69,10 @@ export type DocumentDetailOverlayTagGroup = {
     | 'quantity';
   firstScan?: number;
   scanStride?: number;
-  subcategories?: DocumentDetailOverlayTagSubcategory[];
+  subcategories?: ManifestViewerTagSubcategory[];
 };
 
-export type DocumentDetailOverlayIdentifiedEntity = {
+export type ManifestViewerIdentifiedEntity = {
   id: string;
   label: string;
   type: string;
@@ -90,7 +90,7 @@ export type DocumentDetailOverlayIdentifiedEntity = {
   scanStride?: number;
 };
 
-export type DocumentDetailOverlayContent = {
+export type ManifestViewerContent = {
   inventory: {
     title: string;
     year: string;
@@ -116,12 +116,12 @@ export type DocumentDetailOverlayContent = {
     entityCount: number;
     eventCount: number;
   };
-  tableOfContents: DocumentDetailOverlayScan[];
-  tableOfContentsDocuments?: DocumentDetailOverlayDocument[];
-  inventoryMetadata?: DocumentDetailOverlayInventoryMetadataItem[];
-  inventoryHierarchy?: DocumentDetailOverlayInventoryHierarchyItem[];
-  entityGroups?: DocumentDetailOverlayTagGroup[];
-  identifiedEntities?: DocumentDetailOverlayIdentifiedEntity[];
+  tableOfContents: ManifestViewerScan[];
+  tableOfContentsDocuments?: ManifestViewerDocument[];
+  inventoryMetadata?: ManifestViewerInventoryMetadataItem[];
+  inventoryHierarchy?: ManifestViewerInventoryHierarchyItem[];
+  entityGroups?: ManifestViewerTagGroup[];
+  identifiedEntities?: ManifestViewerIdentifiedEntity[];
   entityClassifiedTotal?: number;
   entityIdentifiedTotal?: number;
   transcriptLines: string[];
@@ -132,10 +132,10 @@ export type DocumentDetailOverlayContent = {
   };
 };
 
-export type DocumentDetailOverlaySidebarSectionId =
+export type ManifestViewerSidebarSectionId =
   | 'inventory'
   | 'contents'
   | 'entities'
   | 'events';
 
-export type DocumentDetailOverlayPaneKey = 'scan' | 'text';
+export type ManifestViewerPaneKey = 'scan' | 'text';

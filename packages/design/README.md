@@ -2,6 +2,8 @@
 
 Use a short kebab-case root class that describes the component or its function, such as `.entity-menu` or `.viewer-toolbar`. Do not add a package prefix.
 
+Components that belong to the complete manifest interface use `manifest-viewer-*`. Reusable parts keep their own functional root, such as `.viewer-toolbar` or `.entity-menu`.
+
 Internal parts use `data-slot` and are always scoped to the root class:
 
 ```css

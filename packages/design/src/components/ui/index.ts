@@ -160,7 +160,6 @@ export {
   DocumentDetailMetadataSidebarBadge,
   DocumentDetailMetadataSidebarButton,
   DocumentDetailNumberField,
-  DocumentDetailOverlay,
   DocumentDetailPanelHeader,
   DocumentDetailPopoverSurface,
   DocumentDetailRailButton,
@@ -188,9 +187,9 @@ export {
   sidebarCss,
   toolbarCss,
   tooltipCss,
-} from './DocumentDetailOverlay';
-export { DocumentDetailOverlayViewer } from './DocumentDetailOverlayViewer';
-export type { DocumentDetailOverlayViewerProps } from './DocumentDetailOverlayViewer';
+} from './Viewer';
+export { ManifestViewer } from './ManifestViewer';
+export type { ManifestViewerProps } from './ManifestViewer';
 export type {
   DocumentDetailBarGroupProps,
   DocumentDetailBodyProps,
@@ -207,7 +206,6 @@ export type {
   DocumentDetailMetadataSidebarButtonProps,
   DocumentDetailMetadataSidebarProps,
   DocumentDetailNumberFieldProps,
-  DocumentDetailOverlayProps,
   DocumentDetailPanelHeaderProps,
   DocumentDetailPopoverSurfaceProps,
   DocumentDetailRailButtonProps,
@@ -228,22 +226,24 @@ export type {
   DocumentDetailTranscriptLineProps,
   DocumentDetailViewerPaneProps,
   DocumentDetailViewerProps,
-} from './DocumentDetailOverlay';
+} from './Viewer';
+export { ManifestViewerOverlay } from './ManifestViewerOverlay';
+export type { ManifestViewerOverlayProps } from './ManifestViewerOverlay';
 export type {
-  DocumentDetailOverlayContent,
-  DocumentDetailOverlayDocument,
-  DocumentDetailOverlayIdentifiedEntity,
-  DocumentDetailOverlayInventoryHierarchyItem,
-  DocumentDetailOverlayInventoryMetadataItem,
-  DocumentDetailOverlayPaneKey,
-  DocumentDetailOverlayScan,
-  DocumentDetailOverlayScanRenderArgs,
-  DocumentDetailOverlayScanRenderer,
-  DocumentDetailOverlaySidebarSectionId,
-  DocumentDetailOverlayTagGroup,
-  DocumentDetailOverlayTagSubcategory,
-  DocumentDetailOverlayTocMetadata,
-} from './DocumentDetailOverlayTypes';
+  ManifestViewerContent,
+  ManifestViewerDocument,
+  ManifestViewerIdentifiedEntity,
+  ManifestViewerInventoryHierarchyItem,
+  ManifestViewerInventoryMetadataItem,
+  ManifestViewerPaneKey,
+  ManifestViewerScan,
+  ManifestViewerScanRenderArgs,
+  ManifestViewerScanRenderer,
+  ManifestViewerSidebarSectionId,
+  ManifestViewerTagGroup,
+  ManifestViewerTagSubcategory,
+  ManifestViewerTocMetadata,
+} from './ManifestViewerTypes';
 
 export { SearchBar, searchBarVariants } from './SearchBar';
 export type { SearchBarProps } from './SearchBar';

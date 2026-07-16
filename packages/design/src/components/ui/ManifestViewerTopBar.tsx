@@ -34,12 +34,12 @@ import {
   DocumentDetailTopBar as DocumentDetailTopBarPrimitive,
 } from './DocumentDetailLayout';
 import type {
-  DocumentDetailOverlayContent,
-  DocumentDetailOverlayTagGroup,
-} from './DocumentDetailOverlayTypes';
+  ManifestViewerContent,
+  ManifestViewerTagGroup,
+} from './ManifestViewerTypes';
 
-function getEntityIcon(icon: DocumentDetailOverlayTagGroup['icon']) {
-  const className = 'document-detail-overlay-icon';
+function getEntityIcon(icon: ManifestViewerTagGroup['icon']) {
+  const className = 'manifest-viewer-icon';
 
   switch (icon) {
     case 'person':
@@ -61,7 +61,7 @@ function getEntityIcon(icon: DocumentDetailOverlayTagGroup['icon']) {
   }
 }
 
-export function DocumentDetailTopBar({
+export function ManifestViewerTopBar({
   content,
   isSidebarOpen,
   isScanVisible,
@@ -78,7 +78,7 @@ export function DocumentDetailTopBar({
   onMiniWindowToggle,
   onClose,
 }: {
-  content: DocumentDetailOverlayContent;
+  content: ManifestViewerContent;
   isSidebarOpen: boolean;
   isScanVisible: boolean;
   isTextVisible: boolean;
@@ -125,16 +125,16 @@ export function DocumentDetailTopBar({
   );
 
   return (
-    <DocumentDetailTopBarPrimitive className="document-detail-overlay-rich-top-bar">
-      <DocumentDetailBarGroup className="document-detail-overlay-mode-group">
+    <DocumentDetailTopBarPrimitive className="manifest-viewer-top-bar">
+      <DocumentDetailBarGroup className="manifest-viewer-mode-group">
         <DocumentDetailIconButton
           aria-label={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           tooltip={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
-          icon={<IconSidebar className="document-detail-overlay-icon" />}
+          icon={<IconSidebar className="manifest-viewer-icon" />}
           isActive={isSidebarOpen}
           onPress={onSidebarToggle}
         />
-        <span aria-hidden="true" className="document-detail-overlay-divider" />
+        <span aria-hidden="true" className="manifest-viewer-divider" />
         <DocumentDetailSegmentedToggleGroup
           aria-label="Primary viewer mode controls"
           selectionMode="multiple"
@@ -173,7 +173,7 @@ export function DocumentDetailTopBar({
             }
             size="regular"
           >
-            <IconScan className="document-detail-overlay-icon" />
+            <IconScan className="manifest-viewer-icon" />
             <span>Scan</span>
           </DocumentDetailSegmentedToggleItem>
           <DocumentDetailSegmentedToggleItem
@@ -185,13 +185,13 @@ export function DocumentDetailTopBar({
             }
             size="regular"
           >
-            <IconTranscription className="document-detail-overlay-icon" />
+            <IconTranscription className="manifest-viewer-icon" />
             <span>Text</span>
           </DocumentDetailSegmentedToggleItem>
         </DocumentDetailSegmentedToggleGroup>
       </DocumentDetailBarGroup>
 
-      <DocumentDetailBarGroup className="document-detail-overlay-warning">
+      <DocumentDetailBarGroup className="manifest-viewer-warning">
         <ContentWarningControl
           warning={content.contentWarning}
           isOpen={isWarningOpen}
@@ -199,11 +199,11 @@ export function DocumentDetailTopBar({
         />
       </DocumentDetailBarGroup>
 
-      <DocumentDetailBarGroup className="document-detail-overlay-toolbar-actions">
+      <DocumentDetailBarGroup className="manifest-viewer-toolbar-actions">
         <DocumentDetailIconButton
           aria-label="Swap panes"
           tooltip="Swap scan and transcription"
-          icon={<IconSwap className="document-detail-overlay-icon" />}
+          icon={<IconSwap className="manifest-viewer-icon" />}
           isActive={isViewerOrderSwapped}
           onPress={onViewerOrderToggle}
           variant="quiet"
@@ -212,7 +212,7 @@ export function DocumentDetailTopBar({
           aria-label="Toggle mini window"
           tooltip="Toggle mini window"
           icon={
-            <IconPictureInPicture className="document-detail-overlay-icon" />
+            <IconPictureInPicture className="manifest-viewer-icon" />
           }
           isActive={isMiniWindowEnabled && !areBothPanesVisible}
           isDisabled={areBothPanesVisible}
@@ -222,21 +222,21 @@ export function DocumentDetailTopBar({
         <DocumentDetailIconButton
           aria-label="Toggle paired page"
           tooltip="Toggle paired page"
-          icon={<IconPairedPage className="document-detail-overlay-icon" />}
+          icon={<IconPairedPage className="manifest-viewer-icon" />}
           isActive={isPairedPageView && !areBothPanesVisible}
           isDisabled={areBothPanesVisible}
           onPress={onPairedPageToggle}
           variant="quiet"
         />
-        <span aria-hidden="true" className="document-detail-overlay-divider" />
+        <span aria-hidden="true" className="manifest-viewer-divider" />
         <DocumentDetailEntityHighlightMenu
           categories={entityHighlightCategories}
           selectedKeys={entityHighlightKeys}
           onSelectedKeysChange={setEntityHighlightKeys}
           triggerIcon={
-            <IconEntities className="document-detail-overlay-icon" />
+            <IconEntities className="manifest-viewer-icon" />
           }
-          triggerClassName="document-detail-overlay-icon-button document-detail-overlay-icon-button--quiet"
+          triggerClassName="manifest-viewer-icon-button manifest-viewer-icon-button--quiet"
           triggerLabel="Entity highlights"
           title="Entity highlights"
           allLabel="All entity highlights"
@@ -245,7 +245,7 @@ export function DocumentDetailTopBar({
         <DocumentDetailIconButton
           aria-label="Highlight event tags"
           tooltip="Highlight event tags"
-          icon={<IconEvents className="document-detail-overlay-icon" />}
+          icon={<IconEvents className="manifest-viewer-icon" />}
           isActive={isEventHighlightingEnabled}
           onPress={() => setIsEventHighlightingEnabled((current) => !current)}
           variant="quiet"
@@ -253,16 +253,16 @@ export function DocumentDetailTopBar({
         <DocumentDetailIconButton
           aria-label="Highlight layout elements"
           tooltip="Highlight layout elements and show line numbers"
-          icon={<IconLayoutElements className="document-detail-overlay-icon" />}
+          icon={<IconLayoutElements className="manifest-viewer-icon" />}
           isActive={isLayoutHighlightingEnabled}
           onPress={() => setIsLayoutHighlightingEnabled((current) => !current)}
           variant="quiet"
         />
-        <span aria-hidden="true" className="document-detail-overlay-divider" />
+        <span aria-hidden="true" className="manifest-viewer-divider" />
         <DocumentDetailIconButton
           aria-label="Close document detail"
           tooltip="Close"
-          icon={<IconClose className="document-detail-overlay-icon" />}
+          icon={<IconClose className="manifest-viewer-icon" />}
           onPress={onClose}
           variant="quiet"
         />

@@ -7,23 +7,23 @@ export const documentPreviewCss = `.design-preview {
   background: rgb(12 10 9 / 0.8);
   color: var(--color-brand-white);
   font-family: var(--font-sans);
-  padding: var(--overlay-document-viewer-inset-top)
-    var(--overlay-document-viewer-inset-x)
-    var(--overlay-document-viewer-inset-bottom);
+  padding: var(--viewer-inset-top)
+    var(--viewer-inset-x)
+    var(--viewer-inset-bottom);
 }
 
 .design-preview__modal {
   box-sizing: border-box;
   display: grid;
   width: 100%;
-  max-width: var(--overlay-document-viewer-frame-max-width);
+  max-width: var(--viewer-frame-max-width);
   margin-inline: auto;
 }
 
 .design-preview__dialog {
   box-sizing: border-box;
   width: 100%;
-  height: var(--overlay-document-viewer-frame-height);
+  height: var(--viewer-frame-height);
   overflow: hidden;
   background: var(--color-brand-black);
 }`;
@@ -33,7 +33,7 @@ export const toolbarCss = `.document-top-bar,
   box-sizing: border-box;
   z-index: 20;
   display: flex;
-  min-height: var(--overlay-document-viewer-top-bar-height);
+  min-height: var(--viewer-top-bar-height);
   flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
@@ -45,7 +45,7 @@ export const toolbarCss = `.document-top-bar,
 }
 
 .document-bottom-bar {
-  min-height: var(--overlay-document-viewer-bottom-bar-height);
+  min-height: var(--viewer-bottom-bar-height);
   border-top: 1px solid rgb(255 255 255 / 0.1);
   border-bottom: 0;
 }
@@ -256,7 +256,7 @@ export const popoverCss = `.document-popover {
 
 export const sidebarCss = `.document-sidebar {
   display: flex;
-  width: var(--overlay-document-viewer-sidebar-width);
+  width: var(--viewer-sidebar-width);
   height: 100%;
   flex-shrink: 0;
   flex-direction: column;

@@ -47,7 +47,7 @@ type LabelLiProps = {
 
 function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
   return (
-    <ol className="document-detail-overlay-inventory-hierarchy"
+    <ol className="manifest-viewer-inventory-hierarchy"
       data-depth={depth}>
       {nodes.map((node) => {
         const isLeaf = !node.children.length;
@@ -55,7 +55,7 @@ function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
           <li key={node.label} data-current={isLeaf}>
             {isLeaf && (
               <span
-                className="document-detail-overlay-inventory-current-chip"
+                className="manifest-viewer-inventory-current-chip"
               >
                 {current}
               </span>

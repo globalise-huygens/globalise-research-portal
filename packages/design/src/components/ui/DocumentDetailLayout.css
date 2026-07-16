@@ -14,12 +14,12 @@
   }
 
   .document-top-bar {
-    height: var(--overlay-document-viewer-top-bar-height);
+    height: var(--viewer-top-bar-height);
     border-bottom-width: 1px;
   }
 
   .document-bottom-bar {
-    height: var(--overlay-document-viewer-bottom-bar-height);
+    height: var(--viewer-bottom-bar-height);
     border-top-width: 1px;
   }
 
@@ -49,8 +49,8 @@
 
   .document-icon-rail {
     display: flex;
-    width: var(--overlay-document-viewer-rail-width);
-    min-width: var(--overlay-document-viewer-rail-width);
+    width: var(--viewer-rail-width);
+    min-width: var(--viewer-rail-width);
     flex-shrink: 0;
     flex-direction: column;
     align-items: center;
@@ -60,9 +60,9 @@
 
   .document-sidebar {
     display: flex;
-    width: var(--overlay-document-viewer-sidebar-width);
-    min-width: var(--overlay-document-viewer-sidebar-width);
-    max-width: var(--overlay-document-viewer-sidebar-width);
+    width: var(--viewer-sidebar-width);
+    min-width: var(--viewer-sidebar-width);
+    max-width: var(--viewer-sidebar-width);
     height: 100%;
     flex-shrink: 0;
     flex-direction: column;
@@ -151,7 +151,7 @@
 
   .document-side-panel {
     display: flex;
-    width: var(--overlay-document-viewer-side-panel-width);
+    width: var(--viewer-side-panel-width);
     flex-shrink: 0;
     flex-direction: column;
     gap: var(--section-gap);
@@ -227,14 +227,14 @@
     .document-top-bar {
       padding-top: env(safe-area-inset-top);
       height: calc(
-        var(--overlay-document-viewer-top-bar-height) + env(safe-area-inset-top)
+        var(--viewer-top-bar-height) + env(safe-area-inset-top)
       );
     }
 
     .document-bottom-bar {
       padding-bottom: max(var(--s4), env(safe-area-inset-bottom));
       min-height: calc(
-        var(--overlay-document-viewer-bottom-bar-height) +
+        var(--viewer-bottom-bar-height) +
           env(safe-area-inset-bottom)
       );
     }

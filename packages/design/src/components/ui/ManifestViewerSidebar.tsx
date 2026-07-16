@@ -31,24 +31,24 @@ import {
 import { DocumentDetailReferenceCard } from './DocumentDetailReferenceCard';
 import { DocumentDetailSidebarSection } from './DocumentDetailSidebarSection';
 import type {
-  DocumentDetailOverlayContent,
-  DocumentDetailOverlayDocument,
-  DocumentDetailOverlayIdentifiedEntity,
-  DocumentDetailOverlayScan,
-  DocumentDetailOverlayScanRenderer,
-  DocumentDetailOverlayTagGroup,
-} from './DocumentDetailOverlayTypes';
+  ManifestViewerContent,
+  ManifestViewerDocument,
+  ManifestViewerIdentifiedEntity,
+  ManifestViewerScan,
+  ManifestViewerScanRenderer,
+  ManifestViewerTagGroup,
+} from './ManifestViewerTypes';
 import { EntityTag } from './EntityTag.tsx';
 
 type SidebarSectionId = 'inventory' | 'contents' | 'entities' | 'events';
 
 type InventoryHierarchyNode = {
-  item: NonNullable<DocumentDetailOverlayContent['inventoryHierarchy']>[number];
+  item: NonNullable<ManifestViewerContent['inventoryHierarchy']>[number];
   children: InventoryHierarchyNode[];
 };
 
 function buildInventoryHierarchyTree(
-  items: NonNullable<DocumentDetailOverlayContent['inventoryHierarchy']>,
+  items: NonNullable<ManifestViewerContent['inventoryHierarchy']>,
 ) {
   const roots: InventoryHierarchyNode[] = [];
   const stack: InventoryHierarchyNode[] = [];
@@ -84,7 +84,7 @@ function InventoryHierarchyTree({
 }) {
   return (
     <ol
-      className="document-detail-overlay-inventory-hierarchy"
+      className="manifest-viewer-inventory-hierarchy"
       data-depth={String(depth)}
     >
       {nodes.map((node) => (
@@ -93,7 +93,7 @@ function InventoryHierarchyTree({
           data-current={node.item.isCurrent ? 'true' : 'false'}
         >
           {node.item.isCurrent ? (
-            <span className="document-detail-overlay-inventory-current-chip">
+            <span className="manifest-viewer-inventory-current-chip">
               {node.item.label}
             </span>
           ) : (
@@ -111,7 +111,7 @@ function InventoryHierarchyTree({
 function SidebarDisclosureIcon({ isExpanded }: { isExpanded: boolean }) {
   return (
     <IconExpandSection
-      className="document-detail-overlay-chevron document-detail-overlay-icon-medium"
+      className="manifest-viewer-chevron manifest-viewer-icon-medium"
       data-expanded={isExpanded ? 'true' : 'false'}
     />
   );
@@ -123,9 +123,9 @@ function SidebarScanCard({
   renderScanThumbnail,
   onSelect,
 }: {
-  scan: DocumentDetailOverlayScan;
+  scan: ManifestViewerScan;
   isSelected: boolean;
-  renderScanThumbnail: DocumentDetailOverlayScanRenderer;
+  renderScanThumbnail: ManifestViewerScanRenderer;
   onSelect: () => void;
 }) {
   const label = `Scan ${scan.archiveScan}`;
@@ -134,22 +134,22 @@ function SidebarScanCard({
   return (
     <DocumentDetailReferenceCard
       isSelected={isSelected}
-      className="document-detail-overlay-toc-card"
+      className="manifest-viewer-toc-card"
       data-current-scan={isSelected ? 'true' : 'false'}
       onClick={onSelect}
       thumbnail={renderScanThumbnail({ scan, label, pageCount })}
       heading={
-        <span className="document-detail-overlay-toc-heading">
+        <span className="manifest-viewer-toc-heading">
           Scan {scan.archiveScan}
           <span>| in doc. {scan.documentScan}</span>
-          <IconCopy className="document-detail-overlay-icon-small" />
+          <IconCopy className="manifest-viewer-icon-small" />
         </span>
       }
       snippet={scan.snippet}
       meta={
-        <span className="document-detail-overlay-toc-meta">
+        <span className="manifest-viewer-toc-meta">
           NA Identifier: {scan.identifier.replace('NL-HaNA_1.04.02_1664_', '')}
-          <IconExternalLink className="document-detail-overlay-icon-small" />
+          <IconExternalLink className="manifest-viewer-icon-small" />
         </span>
       }
     />
@@ -159,9 +159,9 @@ function SidebarScanCard({
 function TagGroupIcon({
   icon,
 }: {
-  icon: DocumentDetailOverlayTagGroup['icon'];
+  icon: ManifestViewerTagGroup['icon'];
 }) {
-  const className = 'document-detail-overlay-icon';
+  const className = 'manifest-viewer-icon';
 
   switch (icon) {
     case 'person':
@@ -183,7 +183,7 @@ function TagGroupIcon({
   }
 }
 
-function getDocuments(content: DocumentDetailOverlayContent) {
+function getDocuments(content: ManifestViewerContent) {
   if (content.tableOfContentsDocuments?.length) {
     return content.tableOfContentsDocuments;
   }
@@ -198,12 +198,12 @@ function getDocuments(content: DocumentDetailOverlayContent) {
   ];
 }
 
-function getDocumentHasResults(document: DocumentDetailOverlayDocument) {
+function getDocumentHasResults(document: ManifestViewerDocument) {
   return document.hasResults ?? document.scans.some((scan) => scan.hasResults);
 }
 
 function getDocumentByArchiveScan(
-  documents: DocumentDetailOverlayDocument[],
+  documents: ManifestViewerDocument[],
   archiveScan: number,
 ) {
   return documents.find((document) =>
@@ -220,13 +220,13 @@ function DocumentRow({
   onToggleExpanded,
   onSelectScan,
 }: {
-  document: DocumentDetailOverlayDocument;
+  document: ManifestViewerDocument;
   currentArchiveScan: number;
   hitsOnly: boolean;
   isExpanded: boolean;
-  renderScanThumbnail: DocumentDetailOverlayScanRenderer;
+  renderScanThumbnail: ManifestViewerScanRenderer;
   onToggleExpanded: () => void;
-  onSelectScan: (scan: DocumentDetailOverlayScan) => void;
+  onSelectScan: (scan: ManifestViewerScan) => void;
 }) {
   const isCurrentDocument = document.scans.some(
     (scan) => scan.archiveScan === currentArchiveScan,
@@ -240,19 +240,19 @@ function DocumentRow({
 
   return (
     <article
-      className="document-detail-overlay-toc-document"
+      className="manifest-viewer-toc-document"
       data-current={isCurrentDocument ? 'true' : 'false'}
       data-current-document={isCurrentDocument ? 'true' : 'false'}
       data-has-results={getDocumentHasResults(document) ? 'true' : 'false'}
     >
-      <div className="document-detail-overlay-toc-document-header">
+      <div className="manifest-viewer-toc-document-header">
         <button
           type="button"
-          className="document-detail-overlay-toc-document-button"
+          className="manifest-viewer-toc-document-button"
           aria-current={isCurrentDocument ? 'true' : undefined}
           onClick={() => selectedScan && onSelectScan(selectedScan)}
         >
-          <IconEntityDocument className="document-detail-overlay-icon" />
+          <IconEntityDocument className="manifest-viewer-icon" />
           <span>{document.title}</span>
           <small>
             {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
@@ -261,7 +261,7 @@ function DocumentRow({
         </button>
         <button
           type="button"
-          className="document-detail-overlay-toc-document-toggle"
+          className="manifest-viewer-toc-document-toggle"
           aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
           aria-expanded={isExpanded}
           onClick={onToggleExpanded}
@@ -271,7 +271,7 @@ function DocumentRow({
       </div>
 
       {isExpanded && document.metadata ? (
-        <dl className="document-detail-overlay-toc-document-metadata">
+        <dl className="manifest-viewer-toc-document-metadata">
           {document.metadata.map(([label, value, badge]) => (
             <div key={`${label}-${value}`}>
               <dt>{label}</dt>
@@ -285,7 +285,7 @@ function DocumentRow({
       ) : null}
 
       {isExpanded ? (
-        <div className="document-detail-overlay-toc-document-scans">
+        <div className="manifest-viewer-toc-document-scans">
           {visibleScans.map((scan) => (
             <SidebarScanCard
               key={scan.archiveScan}
@@ -312,7 +312,7 @@ function ClassifiedEntityGroup({
   onSelect,
   onToggleExpanded,
 }: {
-  group: DocumentDetailOverlayTagGroup;
+  group: ManifestViewerTagGroup;
   isExpanded: boolean;
   isActive: boolean;
   activeSubcategoryId?: string;
@@ -322,19 +322,19 @@ function ClassifiedEntityGroup({
   const hasSubcategories = Boolean(group.subcategories?.length);
 
   return (
-    <article className="document-detail-overlay-tag-group">
-      <div className="document-detail-overlay-tag-group-row">
+    <article className="manifest-viewer-tag-group">
+      <div className="manifest-viewer-tag-group-row">
         <button
           type="button"
-          className="document-detail-overlay-tag-group-button"
+          className="manifest-viewer-tag-group-button"
           data-active={isActive ? 'true' : 'false'}
           disabled={group.count <= 0}
           onClick={() => onSelect(`classified:${group.id}`, group.firstScan)}
         >
-          <span className="document-detail-overlay-tag-group-icon">
+          <span className="manifest-viewer-tag-group-icon">
             <TagGroupIcon icon={group.icon} />
           </span>
-          <span className="document-detail-overlay-tag-group-label">
+          <span className="manifest-viewer-tag-group-label">
             {group.label}
           </span>
           <b>{group.count}</b>
@@ -344,7 +344,7 @@ function ClassifiedEntityGroup({
             type="button"
             aria-label={`Toggle ${group.label} subcategories`}
             aria-expanded={isExpanded}
-            className="document-detail-overlay-tag-group-toggle"
+            className="manifest-viewer-tag-group-toggle"
             onClick={onToggleExpanded}
           >
             <SidebarDisclosureIcon isExpanded={isExpanded} />
@@ -353,12 +353,12 @@ function ClassifiedEntityGroup({
       </div>
 
       {hasSubcategories && isExpanded ? (
-        <div className="document-detail-overlay-tag-subcategories">
+        <div className="manifest-viewer-tag-subcategories">
           {group.subcategories?.map((subcategory) => (
             <button
               key={subcategory.id}
               type="button"
-              className="document-detail-overlay-tag-subcategory"
+              className="manifest-viewer-tag-subcategory"
               data-active={
                 activeSubcategoryId === subcategory.id ? 'true' : 'false'
               }
@@ -384,21 +384,21 @@ function IdentifiedEntityButton({
   isActive,
   onSelect,
 }: {
-  entity: DocumentDetailOverlayIdentifiedEntity;
+  entity: ManifestViewerIdentifiedEntity;
   isActive: boolean;
   onSelect: (targetId: string, firstScan?: number) => void;
 }) {
   return (
     <button
       type="button"
-      className="document-detail-overlay-tag-identified"
+      className="manifest-viewer-tag-identified"
       data-active={isActive ? 'true' : 'false'}
       onClick={() => onSelect(`identified:${entity.id}`, entity.firstScan)}
     >
-      <span className="document-detail-overlay-tag-group-icon">
+      <span className="manifest-viewer-tag-group-icon">
         <TagGroupIcon icon={entity.icon} />
       </span>
-      <span className="document-detail-overlay-tag-identified-label">
+      <span className="manifest-viewer-tag-identified-label">
         {entity.label}
       </span>
       <b>{entity.count}</b>
@@ -407,7 +407,7 @@ function IdentifiedEntityButton({
 }
 
 function sortIdentifiedEntities(
-  entities: DocumentDetailOverlayIdentifiedEntity[],
+  entities: ManifestViewerIdentifiedEntity[],
   sortMode: EntitySortMode,
   direction: EntitySortDirection,
 ) {
@@ -448,15 +448,15 @@ export function CollapsedMetadataRail({
   onExpand,
   activeSection,
 }: {
-  content: DocumentDetailOverlayContent;
+  content: ManifestViewerContent;
   onExpand: (section?: SidebarSectionId) => void;
   activeSection?: SidebarSectionId;
 }) {
   return (
-    <DocumentDetailIconRail className="document-detail-overlay-collapsed-rail">
+    <DocumentDetailIconRail className="manifest-viewer-collapsed-rail">
       <DocumentDetailRailButton
         aria-label="Open inventory metadata"
-        icon={<IconInventory className="document-detail-overlay-icon" />}
+        icon={<IconInventory className="manifest-viewer-icon" />}
         isActive={activeSection === 'inventory'}
         onPress={() => onExpand('inventory')}
       >
@@ -464,13 +464,13 @@ export function CollapsedMetadataRail({
       </DocumentDetailRailButton>
       <DocumentDetailRailButton
         aria-label="Open table of contents"
-        icon={<IconTableOfContent className="document-detail-overlay-icon" />}
+        icon={<IconTableOfContent className="manifest-viewer-icon" />}
         isActive={activeSection === 'contents'}
         onPress={() => onExpand('contents')}
       />
       <DocumentDetailRailButton
         aria-label="Open entity tags"
-        icon={<IconEntities className="document-detail-overlay-icon" />}
+        icon={<IconEntities className="manifest-viewer-icon" />}
         isActive={activeSection === 'entities'}
         onPress={() => onExpand('entities')}
       >
@@ -478,7 +478,7 @@ export function CollapsedMetadataRail({
       </DocumentDetailRailButton>
       <DocumentDetailRailButton
         aria-label="Open event tags"
-        icon={<IconEvents className="document-detail-overlay-icon" />}
+        icon={<IconEvents className="manifest-viewer-icon" />}
         isActive={activeSection === 'events'}
         onPress={() => onExpand('events')}
       >
@@ -496,12 +496,12 @@ export function MetadataSidebar({
   onSectionChange,
   onSelectScan,
 }: {
-  content: DocumentDetailOverlayContent;
+  content: ManifestViewerContent;
   currentArchiveScan: number;
   expandedSections: Record<SidebarSectionId, boolean>;
-  renderScanThumbnail: DocumentDetailOverlayScanRenderer;
+  renderScanThumbnail: ManifestViewerScanRenderer;
   onSectionChange: (section: SidebarSectionId, isExpanded: boolean) => void;
-  onSelectScan: (scan: DocumentDetailOverlayScan) => void;
+  onSelectScan: (scan: ManifestViewerScan) => void;
 }) {
   const [hitsOnly, setHitsOnly] = React.useState(false);
   const classifiedGroups = React.useMemo(
@@ -587,7 +587,7 @@ export function MetadataSidebar({
       return [{ type: 'All', entities: sortedIdentifiedEntities }];
     }
 
-    const grouped = new Map<string, DocumentDetailOverlayIdentifiedEntity[]>();
+    const grouped = new Map<string, ManifestViewerIdentifiedEntity[]>();
 
     sortedIdentifiedEntities.forEach((entity) => {
       const bucket = grouped.get(entity.type) ?? [];
@@ -733,7 +733,7 @@ export function MetadataSidebar({
     }
 
     scrollTocPanelToTarget(
-      '.document-detail-overlay-toc-document[data-current-document="true"] .document-detail-overlay-toc-document-button',
+      '.manifest-viewer-toc-document[data-current-document="true"] .manifest-viewer-toc-document-button',
     );
   };
 
@@ -755,7 +755,7 @@ export function MetadataSidebar({
     }
 
     scrollTocPanelToTarget(
-      '.document-detail-overlay-toc-card[data-current-scan="true"]',
+      '.manifest-viewer-toc-card[data-current-scan="true"]',
     );
   };
 
@@ -791,14 +791,14 @@ export function MetadataSidebar({
   };
 
   return (
-    <DocumentDetailMetadataSidebar className="document-detail-overlay-rich-sidebar">
+    <DocumentDetailMetadataSidebar className="manifest-viewer-sidebar">
       <DocumentDetailSidebarSection
-        className="document-detail-overlay-section-button"
+        className="manifest-viewer-section-button"
         data-expanded={expandedSections.inventory ? 'true' : 'false'}
-        icon={<IconInventory className="document-detail-overlay-icon-medium" />}
+        icon={<IconInventory className="manifest-viewer-icon-medium" />}
         title="Inventory"
         trailing={
-          <span className="document-detail-overlay-section-trailing">
+          <span className="manifest-viewer-section-trailing">
             <DocumentDetailMetadataSidebarBadge>
               {content.inventory.year}
             </DocumentDetailMetadataSidebarBadge>
@@ -810,7 +810,7 @@ export function MetadataSidebar({
           onSectionChange('inventory', isExpanded)
         }
       >
-        <div className="document-detail-overlay-metadata">
+        <div className="manifest-viewer-metadata">
           <dl>
             {inventoryMetadata.map((item) => (
               <div key={item.label}>
@@ -834,9 +834,9 @@ export function MetadataSidebar({
             <div>
               <dt>handle</dt>
               <dd>
-                <a href="#" className="document-detail-overlay-link">
+                <a href="#" className="manifest-viewer-link">
                   {content.metadata.handleLabel}
-                  <IconExternalLink className="document-detail-overlay-icon-small" />
+                  <IconExternalLink className="manifest-viewer-icon-small" />
                 </a>
               </dd>
             </div>
@@ -851,10 +851,10 @@ export function MetadataSidebar({
       </DocumentDetailSidebarSection>
 
       <DocumentDetailSidebarSection
-        className="document-detail-overlay-section-button document-detail-overlay-section-button--contents"
+        className="manifest-viewer-section-button manifest-viewer-section-button--contents"
         data-expanded={expandedSections.contents ? 'true' : 'false'}
         icon={
-          <IconTableOfContent className="document-detail-overlay-icon-medium" />
+          <IconTableOfContent className="manifest-viewer-icon-medium" />
         }
         title="Table of Contents"
         trailing={
@@ -865,39 +865,39 @@ export function MetadataSidebar({
           onSectionChange('contents', isExpanded)
         }
       >
-        <div className="document-detail-overlay-toc-panel" ref={tocPanelRef}>
-          <div className="document-detail-overlay-toc-controls">
+        <div className="manifest-viewer-toc-panel" ref={tocPanelRef}>
+          <div className="manifest-viewer-toc-controls">
             <DocumentDetailCheckbox
               isSelected={hitsOnly}
               onChange={setHitsOnly}
             >
               Hits only
             </DocumentDetailCheckbox>
-            <span className="document-detail-overlay-toc-jump-label">
+            <span className="manifest-viewer-toc-jump-label">
               Go to
             </span>
-            <div className="document-detail-overlay-toc-jump-actions">
+            <div className="manifest-viewer-toc-jump-actions">
               <button
                 type="button"
-                className="document-detail-overlay-toc-jump-button"
+                className="manifest-viewer-toc-jump-button"
                 aria-label="Jump to selected document in table of contents"
                 onClick={scrollToCurrentDocument}
               >
-                <IconEntityDocument className="document-detail-overlay-icon-small" />
+                <IconEntityDocument className="manifest-viewer-icon-small" />
                 <span>Doc</span>
               </button>
               <button
                 type="button"
-                className="document-detail-overlay-toc-jump-button"
+                className="manifest-viewer-toc-jump-button"
                 aria-label={`Jump to selected scan ${currentDocumentScan} in table of contents`}
                 onClick={scrollToCurrentScan}
               >
-                <IconScan className="document-detail-overlay-icon-small" />
+                <IconScan className="manifest-viewer-icon-small" />
                 <span>Scan {currentDocumentScan}</span>
               </button>
             </div>
           </div>
-          <div className="document-detail-overlay-toc-list" ref={tocListRef}>
+          <div className="manifest-viewer-toc-list" ref={tocListRef}>
             {visibleDocuments.map((document) => (
               <DocumentRow
                 key={document.id}
@@ -915,9 +915,9 @@ export function MetadataSidebar({
       </DocumentDetailSidebarSection>
 
       <DocumentDetailSidebarSection
-        className="document-detail-overlay-section-button"
+        className="manifest-viewer-section-button"
         data-expanded={expandedSections.entities ? 'true' : 'false'}
-        icon={<IconEntities className="document-detail-overlay-icon-medium" />}
+        icon={<IconEntities className="manifest-viewer-icon-medium" />}
         title="Entity tags"
         count={`(${content.tags.entityCount})`}
         trailing={
@@ -928,20 +928,20 @@ export function MetadataSidebar({
           onSectionChange('entities', isExpanded)
         }
       >
-        <div className="document-detail-overlay-tag-panel" ref={entityPanelRef}>
-          <section className="document-detail-overlay-tag-block">
-            <header className="document-detail-overlay-tag-block-header">
+        <div className="manifest-viewer-tag-panel" ref={entityPanelRef}>
+          <section className="manifest-viewer-tag-block">
+            <header className="manifest-viewer-tag-block-header">
               <button
                 type="button"
-                className="document-detail-overlay-tag-block-toggle"
+                className="manifest-viewer-tag-block-toggle"
                 data-expanded={isClassifiedSectionExpanded ? 'true' : 'false'}
                 aria-expanded={isClassifiedSectionExpanded}
                 onClick={() =>
                   setIsClassifiedSectionExpanded((current) => !current)
                 }
               >
-                <span className="document-detail-overlay-tag-block-title-row">
-                  <span className="document-detail-overlay-tag-block-title">
+                <span className="manifest-viewer-tag-block-title-row">
+                  <span className="manifest-viewer-tag-block-title">
                     Classified as
                   </span>
                   <span>{classifiedTotal}</span>
@@ -952,8 +952,8 @@ export function MetadataSidebar({
               </button>
             </header>
             {isClassifiedSectionExpanded ? (
-              <div className="document-detail-overlay-tag-block-content">
-                <div className="document-detail-overlay-tag-block-list">
+              <div className="manifest-viewer-tag-block-content">
+                <div className="manifest-viewer-tag-block-list">
                   {classifiedGroups.map((group) => (
                     <ClassifiedEntityGroup
                       key={group.id}
@@ -976,19 +976,19 @@ export function MetadataSidebar({
             ) : null}
           </section>
 
-          <section className="document-detail-overlay-tag-block document-detail-overlay-tag-block--identified">
-            <header className="document-detail-overlay-tag-block-header">
+          <section className="manifest-viewer-tag-block manifest-viewer-tag-block--identified">
+            <header className="manifest-viewer-tag-block-header">
               <button
                 type="button"
-                className="document-detail-overlay-tag-block-toggle"
+                className="manifest-viewer-tag-block-toggle"
                 data-expanded={isIdentifiedSectionExpanded ? 'true' : 'false'}
                 aria-expanded={isIdentifiedSectionExpanded}
                 onClick={() =>
                   setIsIdentifiedSectionExpanded((current) => !current)
                 }
               >
-                <span className="document-detail-overlay-tag-block-title-row">
-                  <span className="document-detail-overlay-tag-block-title">
+                <span className="manifest-viewer-tag-block-title-row">
+                  <span className="manifest-viewer-tag-block-title">
                     Identified as
                   </span>
                   <span>{identifiedTotal}</span>
@@ -1000,11 +1000,11 @@ export function MetadataSidebar({
             </header>
 
             {isIdentifiedSectionExpanded ? (
-              <div className="document-detail-overlay-tag-block-content">
-                <div className="document-detail-overlay-identified-controls">
-                  <div className="document-detail-overlay-identified-sort-row">
+              <div className="manifest-viewer-tag-block-content">
+                <div className="manifest-viewer-identified-controls">
+                  <div className="manifest-viewer-identified-sort-row">
                     <DocumentDetailSegmentedToggleGroup
-                      className="document-detail-overlay-identified-sort-toggle"
+                      className="manifest-viewer-identified-sort-toggle"
                       size="compact"
                       aria-label="Entity sort controls"
                       selectionMode="single"
@@ -1025,27 +1025,27 @@ export function MetadataSidebar({
                       <DocumentDetailSegmentedToggleItem
                         id="sequential"
                         size="compact"
-                        className="document-detail-overlay-identified-sort-item"
+                        className="manifest-viewer-identified-sort-item"
                       >
                         Sequential
                       </DocumentDetailSegmentedToggleItem>
                       <DocumentDetailSegmentedToggleItem
                         id="alphabet"
                         size="compact"
-                        className="document-detail-overlay-identified-sort-item"
+                        className="manifest-viewer-identified-sort-item"
                       >
                         Alphabet
                       </DocumentDetailSegmentedToggleItem>
                       <DocumentDetailSegmentedToggleItem
                         id="amount"
                         size="compact"
-                        className="document-detail-overlay-identified-sort-item"
+                        className="manifest-viewer-identified-sort-item"
                       >
                         Amount
                       </DocumentDetailSegmentedToggleItem>
                     </DocumentDetailSegmentedToggleGroup>
 
-                    <div className="document-detail-overlay-identified-options">
+                    <div className="manifest-viewer-identified-options">
                       <DocumentDetailCheckbox
                         isSelected={groupByType}
                         onChange={onGroupByTypeChange}
@@ -1054,7 +1054,7 @@ export function MetadataSidebar({
                       </DocumentDetailCheckbox>
                       <button
                         type="button"
-                        className="document-detail-overlay-identified-direction"
+                        className="manifest-viewer-identified-direction"
                         aria-label={
                           entitySortDirection === 'ascending'
                             ? 'Sort descending'
@@ -1069,7 +1069,7 @@ export function MetadataSidebar({
                         }
                       >
                         <IconSwap
-                          className="document-detail-overlay-icon"
+                          className="manifest-viewer-icon"
                           data-direction={entitySortDirection}
                         />
                       </button>
@@ -1077,14 +1077,14 @@ export function MetadataSidebar({
                   </div>
                 </div>
 
-                <div className="document-detail-overlay-tag-block-list document-detail-overlay-tag-block-list--identified">
+                <div className="manifest-viewer-tag-block-list manifest-viewer-tag-block-list--identified">
                   {groupedIdentifiedEntities.map((group) => (
                     <div
                       key={group.type}
-                      className="document-detail-overlay-identified-group"
+                      className="manifest-viewer-identified-group"
                     >
                       {groupByType ? (
-                        <h4 className="document-detail-overlay-identified-group-title">
+                        <h4 className="manifest-viewer-identified-group-title">
                           {group.type}
                         </h4>
                       ) : null}
@@ -1108,9 +1108,9 @@ export function MetadataSidebar({
       </DocumentDetailSidebarSection>
 
       <DocumentDetailSidebarSection
-        className="document-detail-overlay-section-button"
+        className="manifest-viewer-section-button"
         data-expanded={expandedSections.events ? 'true' : 'false'}
-        icon={<IconEvents className="document-detail-overlay-icon-medium" />}
+        icon={<IconEvents className="manifest-viewer-icon-medium" />}
         title="Event tags"
         count={`(${content.tags.eventCount})`}
         trailing={
@@ -1119,7 +1119,7 @@ export function MetadataSidebar({
         isExpanded={expandedSections.events}
         onExpandedChange={(isExpanded) => onSectionChange('events', isExpanded)}
       >
-        <div className="document-detail-overlay-empty-panel">
+        <div className="manifest-viewer-empty-panel">
           No event tags for this scan.
         </div>
       </DocumentDetailSidebarSection>
@@ -1127,7 +1127,7 @@ export function MetadataSidebar({
   );
 }
 function inventoryFallbackMetadata(
-  content: DocumentDetailOverlayContent,
+  content: ManifestViewerContent,
 ): [string, string][] {
   return [
     ['Title(s)', content.metadata.titles],

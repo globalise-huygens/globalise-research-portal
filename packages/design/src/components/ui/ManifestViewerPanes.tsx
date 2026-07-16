@@ -31,9 +31,9 @@ import {
 } from './DocumentDetailControls';
 import { DocumentDetailViewerPane } from './DocumentDetailLayout';
 import type {
-  DocumentDetailOverlayScan,
-  DocumentDetailOverlayScanRenderer,
-} from './DocumentDetailOverlayTypes';
+  ManifestViewerScan,
+  ManifestViewerScanRenderer,
+} from './ManifestViewerTypes';
 import {
   DocumentDetailFloatingToolbar,
   DocumentDetailPopoverSurface,
@@ -41,7 +41,7 @@ import {
 
 export type TranscriptMode = 'normalised' | 'diplomatic';
 
-function getScanRenderArgs(scan: DocumentDetailOverlayScan) {
+function getScanRenderArgs(scan: ManifestViewerScan) {
   return {
     scan,
     label: `Scan ${scan.archiveScan}`,
@@ -67,9 +67,9 @@ export function ManuscriptPane({
   renderScanPage,
   showMiniTranscript,
 }: {
-  currentScan: DocumentDetailOverlayScan;
+  currentScan: ManifestViewerScan;
   isVisible: boolean;
-  renderScanPage: DocumentDetailOverlayScanRenderer;
+  renderScanPage: ManifestViewerScanRenderer;
   showMiniTranscript?: boolean;
 }) {
   const [zoomPercent, setZoomPercent] = useState(100);
@@ -172,20 +172,20 @@ export function ManuscriptPane({
 
   return (
     <DocumentDetailViewerPane hidden={!isVisible}>
-      <DocumentDetailCanvas className="document-detail-overlay-manuscript-canvas">
-        <DocumentDetailFloatingToolbar className="document-detail-overlay-floating-toolbar">
-          <div className="document-detail-overlay-zoom-segmented">
+      <DocumentDetailCanvas className="manifest-viewer-manuscript-canvas">
+        <DocumentDetailFloatingToolbar className="manifest-viewer-floating-toolbar">
+          <div className="manifest-viewer-zoom-segmented">
             <DocumentDetailIconButton
               aria-label="Zoom out"
               tooltip="Zoom out"
-              icon={<IconZoomOut className="document-detail-overlay-icon" />}
+              icon={<IconZoomOut className="manifest-viewer-icon" />}
               onPress={() => applyZoomValue(zoomPercent - 10)}
               variant="quiet"
             />
-            <label className="document-detail-overlay-zoom-field">
+            <label className="manifest-viewer-zoom-field">
               <input
                 aria-label="Scan zoom percentage"
-                className="document-detail-overlay-zoom-field-input"
+                className="manifest-viewer-zoom-field-input"
                 inputMode="numeric"
                 maxLength={3}
                 value={zoomInput}
@@ -203,14 +203,14 @@ export function ManuscriptPane({
                   }
                 }}
               />
-              <span className="document-detail-overlay-zoom-field-suffix">
+              <span className="manifest-viewer-zoom-field-suffix">
                 %
               </span>
             </label>
             <DocumentDetailIconButton
               aria-label="Zoom in"
               tooltip="Zoom in"
-              icon={<IconZoomIn className="document-detail-overlay-icon" />}
+              icon={<IconZoomIn className="manifest-viewer-icon" />}
               onPress={() => applyZoomValue(zoomPercent + 10)}
               variant="quiet"
             />
@@ -218,14 +218,14 @@ export function ManuscriptPane({
           <DocumentDetailIconButton
             aria-label="Reset scan view"
             tooltip="Reset scan view"
-            icon={<IconReset className="document-detail-overlay-icon" />}
+            icon={<IconReset className="manifest-viewer-icon" />}
             onPress={resetScanAdjustments}
             variant="quiet"
           />
           <DocumentDetailIconButton
             aria-label="Rotate scan"
             tooltip="Rotate scan"
-            icon={<IconRotate className="document-detail-overlay-icon" />}
+            icon={<IconRotate className="manifest-viewer-icon" />}
             onPress={() => {
               setRotation((currentRotation) => (currentRotation + 90) % 360);
             }}
@@ -233,14 +233,14 @@ export function ManuscriptPane({
           />
           <div
             ref={settingsButtonContainerRef}
-            className="document-detail-overlay-scan-settings"
+            className="manifest-viewer-scan-settings"
           >
             <DocumentDetailIconButton
               aria-label="Scan settings"
               aria-controls={settingsPanelId}
               aria-expanded={isSettingsOpen}
               tooltip="Scan settings"
-              icon={<IconSetting className="document-detail-overlay-icon" />}
+              icon={<IconSetting className="manifest-viewer-icon" />}
               isActive={isSettingsOpen}
               onPress={() => setIsSettingsOpen((open) => !open)}
               variant="quiet"
@@ -249,21 +249,21 @@ export function ManuscriptPane({
               <div
                 ref={settingsPanelRef}
                 id={settingsPanelId}
-                className="document-detail-overlay-scan-settings-panel"
+                className="manifest-viewer-scan-settings-panel"
               >
                 <DocumentDetailPopoverSurface
                   variant="default"
-                  className="document-detail-overlay-scan-settings-surface"
+                  className="manifest-viewer-scan-settings-surface"
                 >
-                  <div className="document-detail-overlay-scan-settings-controls">
-                    <div className="document-detail-overlay-scan-settings-row">
-                      <div className="document-detail-overlay-scan-settings-label">
-                        <IconBrightness className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                  <div className="manifest-viewer-scan-settings-controls">
+                    <div className="manifest-viewer-scan-settings-row">
+                      <div className="manifest-viewer-scan-settings-label">
+                        <IconBrightness className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Brightness</span>
                       </div>
                       <input
                         aria-label="Brightness"
-                        className="document-detail-overlay-scan-settings-slider"
+                        className="manifest-viewer-scan-settings-slider"
                         type="range"
                         min={50}
                         max={150}
@@ -277,18 +277,18 @@ export function ManuscriptPane({
                           updateBrightness(event.currentTarget.value);
                         }}
                       />
-                      <span className="document-detail-overlay-scan-settings-value">
+                      <span className="manifest-viewer-scan-settings-value">
                         {brightness}%
                       </span>
                     </div>
-                    <div className="document-detail-overlay-scan-settings-row">
-                      <div className="document-detail-overlay-scan-settings-label">
-                        <IconContrast className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                    <div className="manifest-viewer-scan-settings-row">
+                      <div className="manifest-viewer-scan-settings-label">
+                        <IconContrast className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Contrast</span>
                       </div>
                       <input
                         aria-label="Contrast"
-                        className="document-detail-overlay-scan-settings-slider"
+                        className="manifest-viewer-scan-settings-slider"
                         type="range"
                         min={50}
                         max={150}
@@ -302,18 +302,18 @@ export function ManuscriptPane({
                           updateContrast(event.currentTarget.value);
                         }}
                       />
-                      <span className="document-detail-overlay-scan-settings-value">
+                      <span className="manifest-viewer-scan-settings-value">
                         {contrast}%
                       </span>
                     </div>
-                    <div className="document-detail-overlay-scan-settings-row">
-                      <div className="document-detail-overlay-scan-settings-label">
-                        <IconSaturation className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                    <div className="manifest-viewer-scan-settings-row">
+                      <div className="manifest-viewer-scan-settings-label">
+                        <IconSaturation className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Saturation</span>
                       </div>
                       <input
                         aria-label="Saturation"
-                        className="document-detail-overlay-scan-settings-slider"
+                        className="manifest-viewer-scan-settings-slider"
                         type="range"
                         min={0}
                         max={200}
@@ -327,18 +327,18 @@ export function ManuscriptPane({
                           updateSaturation(event.currentTarget.value);
                         }}
                       />
-                      <span className="document-detail-overlay-scan-settings-value">
+                      <span className="manifest-viewer-scan-settings-value">
                         {saturation}%
                       </span>
                     </div>
-                    <div className="document-detail-overlay-scan-settings-row document-detail-overlay-scan-settings-row--invert">
-                      <div className="document-detail-overlay-scan-settings-label">
-                        <IconInvert className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                    <div className="manifest-viewer-scan-settings-row manifest-viewer-scan-settings-row--invert">
+                      <div className="manifest-viewer-scan-settings-label">
+                        <IconInvert className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Invert</span>
                       </div>
                       <DocumentDetailCheckbox
                         aria-label="Invert scan image"
-                        className="document-detail-overlay-scan-settings-checkbox"
+                        className="manifest-viewer-scan-settings-checkbox"
                         isSelected={isInverted}
                         onChange={setIsInverted}
                       >
@@ -353,14 +353,14 @@ export function ManuscriptPane({
           <DocumentDetailIconButton
             aria-label="Download scan"
             tooltip="Download scan"
-            icon={<IconDownload className="document-detail-overlay-icon" />}
+            icon={<IconDownload className="manifest-viewer-icon" />}
             variant="quiet"
           />
         </DocumentDetailFloatingToolbar>
 
-        <div className="document-detail-overlay-page-frame">
+        <div className="manifest-viewer-page-frame">
           <div
-            className="document-detail-overlay-scan-filter"
+            className="manifest-viewer-scan-filter"
             style={{
               filter: scanFilter,
               transform: `rotate(${rotation}deg)`,
@@ -371,7 +371,7 @@ export function ManuscriptPane({
         </div>
 
         {showMiniTranscript && (
-          <div className="document-detail-overlay-mini-window">
+          <div className="manifest-viewer-mini-window">
             <span>Transcription</span>
             <div>
               {Array.from({ length: 8 }, (_, index) => (
@@ -394,10 +394,10 @@ export function TranscriptPane({
   onTranscriptModeChange,
   showMiniScan,
 }: {
-  currentScan: DocumentDetailOverlayScan;
+  currentScan: ManifestViewerScan;
   isVisible: boolean;
   lines: string[];
-  renderScanPage: DocumentDetailOverlayScanRenderer;
+  renderScanPage: ManifestViewerScanRenderer;
   transcriptMode: TranscriptMode;
   onTranscriptModeChange: (mode: TranscriptMode) => void;
   showMiniScan?: boolean;
@@ -507,14 +507,14 @@ export function TranscriptPane({
 
   return (
     <DocumentDetailViewerPane hidden={!isVisible}>
-      <DocumentDetailTranscriptCanvas className="document-detail-overlay-rich-transcript-canvas">
+      <DocumentDetailTranscriptCanvas className="manifest-viewer-transcript-canvas">
         <DocumentDetailFloatingToolbar
           align="end"
-          className="document-detail-overlay-floating-toolbar"
+          className="manifest-viewer-floating-toolbar"
         >
           <DocumentDetailSegmentedToggleGroup
             aria-label="Transcription view mode"
-            className="document-detail-overlay-transcript-mode-group"
+            className="manifest-viewer-transcript-mode-group"
             disallowEmptySelection
             selectionMode="single"
             selectedKeys={new Set([transcriptMode])}
@@ -532,29 +532,29 @@ export function TranscriptPane({
               aria-label="Show normalised transcription"
               size="compact"
             >
-              <IconTranscriptionNormalised className="document-detail-overlay-icon" />
+              <IconTranscriptionNormalised className="manifest-viewer-icon" />
             </DocumentDetailSegmentedToggleItem>
             <DocumentDetailSegmentedToggleItem
               id="diplomatic"
               aria-label="Show diplomatic transcription"
               size="compact"
             >
-              <IconTranscriptionDiplomatic className="document-detail-overlay-icon" />
+              <IconTranscriptionDiplomatic className="manifest-viewer-icon" />
             </DocumentDetailSegmentedToggleItem>
           </DocumentDetailSegmentedToggleGroup>
 
-          <div className="document-detail-overlay-zoom-segmented">
+          <div className="manifest-viewer-zoom-segmented">
             <DocumentDetailIconButton
               aria-label="Zoom out"
               tooltip="Zoom out"
-              icon={<IconZoomOut className="document-detail-overlay-icon" />}
+              icon={<IconZoomOut className="manifest-viewer-icon" />}
               onPress={() => applyZoomValue(zoomPercent - 10)}
               variant="quiet"
             />
-            <label className="document-detail-overlay-zoom-field">
+            <label className="manifest-viewer-zoom-field">
               <input
                 aria-label="Transcription zoom percentage"
-                className="document-detail-overlay-zoom-field-input"
+                className="manifest-viewer-zoom-field-input"
                 inputMode="numeric"
                 maxLength={3}
                 value={zoomInput}
@@ -572,14 +572,14 @@ export function TranscriptPane({
                   }
                 }}
               />
-              <span className="document-detail-overlay-zoom-field-suffix">
+              <span className="manifest-viewer-zoom-field-suffix">
                 %
               </span>
             </label>
             <DocumentDetailIconButton
               aria-label="Zoom in"
               tooltip="Zoom in"
-              icon={<IconZoomIn className="document-detail-overlay-icon" />}
+              icon={<IconZoomIn className="manifest-viewer-icon" />}
               onPress={() => applyZoomValue(zoomPercent + 10)}
               variant="quiet"
             />
@@ -587,7 +587,7 @@ export function TranscriptPane({
 
           <div
             ref={viewModeTriggerRef}
-            className="document-detail-overlay-toolbar-dropdown"
+            className="manifest-viewer-toolbar-dropdown"
           >
             <DocumentDetailIconButton
               aria-controls={viewModeMenuId}
@@ -595,7 +595,7 @@ export function TranscriptPane({
               aria-label="Transcript view modes"
               tooltip="View mode"
               icon={
-                <IconViewModeMenu className="document-detail-overlay-icon" />
+                <IconViewModeMenu className="manifest-viewer-icon" />
               }
               isActive={isViewModeMenuOpen}
               onPress={() => {
@@ -608,19 +608,19 @@ export function TranscriptPane({
               <div
                 ref={viewModePanelRef}
                 id={viewModeMenuId}
-                className="document-detail-overlay-transcript-menu-panel"
+                className="manifest-viewer-transcript-menu-panel"
               >
                 <DocumentDetailPopoverSurface
-                  className="document-detail-overlay-transcript-menu-surface"
+                  className="manifest-viewer-transcript-menu-surface"
                   size="compact"
                   variant="default"
                 >
-                  <div className="document-detail-overlay-transcript-menu-items">
+                  <div className="manifest-viewer-transcript-menu-items">
                     <DocumentDetailToolButton
                       aria-label="Table view"
-                      className="document-detail-overlay-transcript-menu-item"
+                      className="manifest-viewer-transcript-menu-item"
                       icon={
-                        <IconTableOfContent className="document-detail-overlay-icon" />
+                        <IconTableOfContent className="manifest-viewer-icon" />
                       }
                       isActive={transcriptViewMode === 'table'}
                       onPress={() => {
@@ -633,9 +633,9 @@ export function TranscriptPane({
                     </DocumentDetailToolButton>
                     <DocumentDetailToolButton
                       aria-label="Search transcript"
-                      className="document-detail-overlay-transcript-menu-item"
+                      className="manifest-viewer-transcript-menu-item"
                       icon={
-                        <IconSearch className="document-detail-overlay-icon" />
+                        <IconSearch className="manifest-viewer-icon" />
                       }
                       isActive={transcriptViewMode === 'search'}
                       onPress={() => {
@@ -655,21 +655,21 @@ export function TranscriptPane({
           <DocumentDetailIconButton
             aria-label="Reset transcription"
             tooltip="Reset transcription"
-            icon={<IconReset className="document-detail-overlay-icon" />}
+            icon={<IconReset className="manifest-viewer-icon" />}
             onPress={resetTranscriptAdjustments}
             variant="quiet"
           />
 
           <div
             ref={transcriptSettingsTriggerRef}
-            className="document-detail-overlay-toolbar-dropdown"
+            className="manifest-viewer-toolbar-dropdown"
           >
             <DocumentDetailIconButton
               aria-controls={transcriptSettingsId}
               aria-expanded={isTranscriptSettingsOpen}
               aria-label="Transcript settings"
               tooltip="Transcript settings"
-              icon={<IconSetting className="document-detail-overlay-icon" />}
+              icon={<IconSetting className="manifest-viewer-icon" />}
               isActive={isTranscriptSettingsOpen}
               onPress={() => {
                 setIsViewModeMenuOpen(false);
@@ -681,17 +681,17 @@ export function TranscriptPane({
               <div
                 ref={transcriptSettingsPanelRef}
                 id={transcriptSettingsId}
-                className="document-detail-overlay-transcript-settings-panel"
+                className="manifest-viewer-transcript-settings-panel"
               >
                 <DocumentDetailPopoverSurface
-                  className="document-detail-overlay-transcript-settings-surface"
+                  className="manifest-viewer-transcript-settings-surface"
                   size="default"
                   variant="default"
                 >
-                  <div className="document-detail-overlay-transcript-settings-controls">
+                  <div className="manifest-viewer-transcript-settings-controls">
                     <DocumentDetailSegmentedToggleGroup
                       aria-label="Transcript typeface"
-                      className="document-detail-overlay-transcript-type-group"
+                      className="manifest-viewer-transcript-type-group"
                       disallowEmptySelection
                       selectionMode="single"
                       selectedKeys={new Set([transcriptFontFamily])}
@@ -720,14 +720,14 @@ export function TranscriptPane({
                       </DocumentDetailSegmentedToggleItem>
                     </DocumentDetailSegmentedToggleGroup>
 
-                    <div className="document-detail-overlay-transcript-settings-row">
-                      <div className="document-detail-overlay-transcript-settings-label">
-                        <IconTextType className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                    <div className="manifest-viewer-transcript-settings-row">
+                      <div className="manifest-viewer-transcript-settings-label">
+                        <IconTextType className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Type size</span>
                       </div>
                       <input
                         aria-label="Transcript type size"
-                        className="document-detail-overlay-transcript-settings-slider"
+                        className="manifest-viewer-transcript-settings-slider"
                         max={24}
                         min={14}
                         step={1}
@@ -745,19 +745,19 @@ export function TranscriptPane({
                           );
                         }}
                       />
-                      <span className="document-detail-overlay-transcript-settings-value">
+                      <span className="manifest-viewer-transcript-settings-value">
                         {transcriptTextSize}px
                       </span>
                     </div>
 
-                    <div className="document-detail-overlay-transcript-settings-row">
-                      <div className="document-detail-overlay-transcript-settings-label">
-                        <IconTextSpacing className="document-detail-overlay-icon document-detail-overlay-icon-medium" />
+                    <div className="manifest-viewer-transcript-settings-row">
+                      <div className="manifest-viewer-transcript-settings-label">
+                        <IconTextSpacing className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Spacing</span>
                       </div>
                       <input
                         aria-label="Transcript spacing"
-                        className="document-detail-overlay-transcript-settings-slider"
+                        className="manifest-viewer-transcript-settings-slider"
                         max={2}
                         min={1.2}
                         step={0.05}
@@ -779,7 +779,7 @@ export function TranscriptPane({
                           );
                         }}
                       />
-                      <span className="document-detail-overlay-transcript-settings-value">
+                      <span className="manifest-viewer-transcript-settings-value">
                         {transcriptLineSpacing.toFixed(2)}x
                       </span>
                     </div>
@@ -792,14 +792,14 @@ export function TranscriptPane({
           <DocumentDetailIconButton
             aria-label="Download transcript"
             tooltip="Download transcript"
-            icon={<IconDownload className="document-detail-overlay-icon" />}
+            icon={<IconDownload className="manifest-viewer-icon" />}
             variant="quiet"
           />
         </DocumentDetailFloatingToolbar>
 
-        <div className="document-detail-overlay-transcript-scroll">
+        <div className="manifest-viewer-transcript-scroll">
           <div
-            className="document-detail-overlay-transcript-page"
+            className="manifest-viewer-transcript-page"
             data-mode={transcriptMode}
             data-view-mode={transcriptViewMode}
             style={transcriptPageStyle}
@@ -814,7 +814,7 @@ export function TranscriptPane({
         </div>
 
         {showMiniScan && (
-          <div className="document-detail-overlay-mini-window">
+          <div className="manifest-viewer-mini-window">
             <span>Scan</span>
             {renderScanPage(getScanRenderArgs(currentScan))}
           </div>

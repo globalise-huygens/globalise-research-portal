@@ -10,9 +10,9 @@ import {
   IconRight,
   IconRightLast,
 } from '../icons';
-import type { DocumentDetailOverlayScan } from './DocumentDetailOverlayTypes';
+import type { ManifestViewerScan } from './ManifestViewerTypes';
 
-export function DocumentDetailBottomBar({
+export function ManifestViewerBottomBar({
   currentScan,
   documentScanTotal,
   searchHit,
@@ -26,7 +26,7 @@ export function DocumentDetailBottomBar({
   onNextSearchHit,
   onClearSearchHits,
 }: {
-  currentScan: DocumentDetailOverlayScan;
+  currentScan: ManifestViewerScan;
   documentScanTotal: number;
   searchHit: number;
   searchHitTotal: number;
@@ -40,38 +40,38 @@ export function DocumentDetailBottomBar({
   onClearSearchHits: () => void;
 }) {
   return (
-    <DocumentDetailBottomBarPrimitive className="document-detail-overlay-rich-bottom-bar">
+    <DocumentDetailBottomBarPrimitive className="manifest-viewer-bottom-bar">
       <DocumentDetailBarGroup>
         <DocumentDetailIconButton
           aria-label="First scan"
           tooltip="Go to first scan"
-          icon={<IconLeftFirst className="document-detail-overlay-icon" />}
+          icon={<IconLeftFirst className="manifest-viewer-icon" />}
           onPress={onFirstScan}
           variant="quiet"
         />
         <DocumentDetailIconButton
           aria-label="Previous scan"
           tooltip="Go to previous scan"
-          icon={<IconLeft className="document-detail-overlay-icon" />}
+          icon={<IconLeft className="manifest-viewer-icon" />}
           onPress={onPreviousScan}
           variant="quiet"
         />
         <span>Scan {currentScan.archiveScan}</span>
-        <span className="document-detail-overlay-muted">|</span>
+        <span className="manifest-viewer-muted">|</span>
         <span>in doc.</span>
         <strong>{currentScan.documentScan}</strong>
         <span>of {documentScanTotal}</span>
         <DocumentDetailIconButton
           aria-label="Next scan"
           tooltip="Go to next scan"
-          icon={<IconRight className="document-detail-overlay-icon" />}
+          icon={<IconRight className="manifest-viewer-icon" />}
           onPress={onNextScan}
           variant="quiet"
         />
         <DocumentDetailIconButton
           aria-label="Last scan"
           tooltip="Go to last scan"
-          icon={<IconRightLast className="document-detail-overlay-icon" />}
+          icon={<IconRightLast className="manifest-viewer-icon" />}
           onPress={onLastScan}
           variant="quiet"
         />
@@ -79,11 +79,11 @@ export function DocumentDetailBottomBar({
 
       {isSearchNavigationVisible && (
         <DocumentDetailBarGroup>
-          <span className="document-detail-overlay-muted">|</span>
+          <span className="manifest-viewer-muted">|</span>
           <DocumentDetailIconButton
             aria-label="Previous search hit"
             tooltip="Previous search hit"
-            icon={<IconLeft className="document-detail-overlay-icon" />}
+            icon={<IconLeft className="manifest-viewer-icon" />}
             onPress={onPreviousSearchHit}
             variant="quiet"
           />
@@ -93,14 +93,14 @@ export function DocumentDetailBottomBar({
           <DocumentDetailIconButton
             aria-label="Clear search hits"
             tooltip="Clear search hit navigation"
-            icon={<IconClose className="document-detail-overlay-icon" />}
+            icon={<IconClose className="manifest-viewer-icon" />}
             onPress={onClearSearchHits}
             variant="quiet"
           />
           <DocumentDetailIconButton
             aria-label="Next search hit"
             tooltip="Next search hit"
-            icon={<IconRight className="document-detail-overlay-icon" />}
+            icon={<IconRight className="manifest-viewer-icon" />}
             onPress={onNextSearchHit}
             variant="quiet"
           />

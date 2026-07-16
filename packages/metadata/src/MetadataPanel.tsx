@@ -42,7 +42,7 @@ export function MetadataPanel() {
   }
 
   return (
-    <div className="document-detail-overlay-metadata">
+    <div className="manifest-viewer-metadata">
       <dl>
         <TitlesField />
         <PlacesField />

@@ -8,7 +8,7 @@ import {
   type ModalOverlayProps as AriaModalOverlayProps,
 } from 'react-aria-components';
 
-export type DocumentDetailOverlayProps = {
+export type ManifestViewerOverlayProps = {
   className?: string;
   modalClassName?: string;
   dialogClassName?: string;
@@ -20,16 +20,16 @@ export type DocumentDetailOverlayProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailOverlay = React.forwardRef<
+const ManifestViewerOverlay = React.forwardRef<
   HTMLDivElement,
-  DocumentDetailOverlayProps
+  ManifestViewerOverlayProps
 >(
   (
     {
       className,
       modalClassName,
       dialogClassName,
-      contentClassName = 'gds-document-detail-dialog-placement',
+      contentClassName = 'manifest-viewer-placement',
       ariaLabel,
       children,
       isDismissable = false,
@@ -45,15 +45,15 @@ const DocumentDetailOverlay = React.forwardRef<
         ref={ref}
         isOpen={isOpen}
         isDismissable={isDismissable}
-        className={cn('gds-document-detail-overlay', className)}
+        className={cn('manifest-viewer-overlay', className)}
         {...props}
       >
-        <AriaModal className={cn('gds-document-detail-modal', modalClassName)}>
+        <AriaModal className={cn('manifest-viewer-modal', modalClassName)}>
           <AriaDialog
             aria-label={ariaLabel}
             className={cn(
               contentClassName,
-              'gds-document-detail-dialog',
+              'manifest-viewer-dialog',
               dialogClassName,
             )}
           >
@@ -64,14 +64,6 @@ const DocumentDetailOverlay = React.forwardRef<
     );
   },
 );
-DocumentDetailOverlay.displayName = 'DocumentDetailOverlay';
+ManifestViewerOverlay.displayName = 'ManifestViewerOverlay';
 
-export { DocumentDetailOverlay };
-export * from './DocumentDetailCssRecipes';
-export * from './DocumentDetailCanvases';
-export * from './DocumentDetailControls';
-export * from './DocumentDetailEntityHighlightMenu';
-export * from './DocumentDetailLayout';
-export * from './DocumentDetailReferenceCard';
-export * from './DocumentDetailSidebarSection';
-export * from './DocumentDetailSurfaces';
+export { ManifestViewerOverlay };

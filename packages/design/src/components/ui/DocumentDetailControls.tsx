@@ -13,7 +13,6 @@ import {
   type ToggleButtonGroupProps as AriaToggleButtonGroupProps,
   type ToggleButtonProps as AriaToggleButtonProps,
 } from 'react-aria-components';
-import type { DocumentDetailOverlayContent } from './DocumentDetailOverlayTypes';
 import { IconArrowTopRight } from '../icons/IconArrowTopRight';
 import { IconContentWarning } from '../icons/IconContentWarning';
 import { DocumentDetailTooltip } from './DocumentDetailSurfaces';
@@ -357,8 +356,8 @@ function DocumentDetailIconButton({
     <DocumentDetailToolButton
       aria-label={ariaLabel}
       className={cn(
-        'document-detail-overlay-icon-button',
-        variant === 'quiet' && 'document-detail-overlay-icon-button--quiet',
+        'manifest-viewer-icon-button',
+        variant === 'quiet' && 'manifest-viewer-icon-button--quiet',
       )}
       icon={icon}
       isActive={isActive}
@@ -383,7 +382,7 @@ export function DocumentDetailZoomLabel({
   children?: React.ReactNode;
 }) {
   return (
-    <DocumentDetailToolButton className="document-detail-overlay-zoom-label">
+    <DocumentDetailToolButton className="manifest-viewer-zoom-label">
       {children}
     </DocumentDetailToolButton>
   );
@@ -394,7 +393,11 @@ export function ContentWarningControl({
   isOpen,
   onOpenChange,
 }: {
-  warning: DocumentDetailOverlayContent['contentWarning'];
+  warning: {
+    title: string;
+    body: string;
+    linkLabel: string;
+  };
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }) {

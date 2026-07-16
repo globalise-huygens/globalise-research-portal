@@ -255,36 +255,36 @@
         (var(--shell-gutter) * (var(--card-cols) - 1))
     );
 
-    --overlay-document-viewer-inset-x: var(--s24);
-    --overlay-document-viewer-inset-top: var(--s40);
-    --overlay-document-viewer-inset-bottom: var(--s24);
-    --overlay-document-viewer-frame-max-width: 100vw;
-    --overlay-document-viewer-top-bar-height: var(--s72);
-    --overlay-document-viewer-bottom-bar-height: var(--s56);
-    --overlay-document-viewer-rail-width: var(--rail);
-    --overlay-document-viewer-sidebar-width: clamp(
+    --viewer-inset-x: var(--s24);
+    --viewer-inset-top: var(--s40);
+    --viewer-inset-bottom: var(--s24);
+    --viewer-frame-max-width: 100vw;
+    --viewer-top-bar-height: var(--s72);
+    --viewer-bottom-bar-height: var(--s56);
+    --viewer-rail-width: var(--rail);
+    --viewer-sidebar-width: clamp(
       17rem,
       var(--sidebar-width),
       22rem
     );
-    --overlay-document-viewer-pane-gap: var(--shell-gutter);
-    --overlay-document-viewer-side-panel-width: clamp(19rem, 31vw, 34rem);
+    --viewer-pane-gap: var(--shell-gutter);
+    --viewer-side-panel-width: clamp(19rem, 31vw, 34rem);
 
-    --overlay-document-viewer-frame-height: calc(
-      100vh - var(--overlay-document-viewer-inset-top) -
-        var(--overlay-document-viewer-inset-bottom)
+    --viewer-frame-height: calc(
+      100vh - var(--viewer-inset-top) -
+        var(--viewer-inset-bottom)
     );
-    --overlay-document-viewer-frame-width: min(
-      calc(100vw - (var(--overlay-document-viewer-inset-x) * 2)),
-      var(--overlay-document-viewer-frame-max-width)
+    --viewer-frame-width: min(
+      calc(100vw - (var(--viewer-inset-x) * 2)),
+      var(--viewer-frame-max-width)
     );
-    --overlay-document-viewer-main-height: calc(
-      var(--overlay-document-viewer-frame-height) -
-        var(--overlay-document-viewer-top-bar-height) -
-        var(--overlay-document-viewer-bottom-bar-height)
+    --viewer-main-height: calc(
+      var(--viewer-frame-height) -
+        var(--viewer-top-bar-height) -
+        var(--viewer-bottom-bar-height)
     );
-    --overlay-document-viewer-pane-width: var(
-      --overlay-document-viewer-side-panel-width
+    --viewer-pane-width: var(
+      --viewer-side-panel-width
     );
     --overlay-object-card-inset-x: var(--s32);
     --overlay-object-card-inset-top: var(--s32);
@@ -323,21 +323,21 @@
 @media (max-width: 767px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: 0px;
-      --overlay-document-viewer-inset-top: 0px;
-      --overlay-document-viewer-inset-bottom: 0px;
-      --overlay-document-viewer-top-bar-height: var(--s56);
-      --overlay-document-viewer-bottom-bar-height: var(--s48);
-      --overlay-document-viewer-rail-width: 0px;
-      --overlay-document-viewer-sidebar-width: 100vw;
-      --overlay-document-viewer-frame-max-width: 100vw;
-      --overlay-document-viewer-side-panel-width: 100vw;
-      --overlay-document-viewer-pane-gap: var(--s8);
-      --overlay-document-viewer-frame-height: 100vh;
-      --overlay-document-viewer-frame-width: 100vw;
-      --overlay-document-viewer-main-height: calc(
-        100vh - var(--overlay-document-viewer-top-bar-height) -
-          var(--overlay-document-viewer-bottom-bar-height)
+      --viewer-inset-x: 0px;
+      --viewer-inset-top: 0px;
+      --viewer-inset-bottom: 0px;
+      --viewer-top-bar-height: var(--s56);
+      --viewer-bottom-bar-height: var(--s48);
+      --viewer-rail-width: 0px;
+      --viewer-sidebar-width: 100vw;
+      --viewer-frame-max-width: 100vw;
+      --viewer-side-panel-width: 100vw;
+      --viewer-pane-gap: var(--s8);
+      --viewer-frame-height: 100vh;
+      --viewer-frame-width: 100vw;
+      --viewer-main-height: calc(
+        100vh - var(--viewer-top-bar-height) -
+          var(--viewer-bottom-bar-height)
       );
     }
   }
@@ -351,18 +351,18 @@
       --shell-gutter: var(--s16);
       --overlay-inset: var(--s32);
 
-      --overlay-document-viewer-inset-x: var(--s24);
-      --overlay-document-viewer-inset-top: var(--s40);
-      --overlay-document-viewer-inset-bottom: var(--s24);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
+      --viewer-inset-x: var(--s24);
+      --viewer-inset-top: var(--s40);
+      --viewer-inset-bottom: var(--s24);
+      --viewer-top-bar-height: var(--s72);
+      --viewer-bottom-bar-height: var(--s56);
+      --viewer-rail-width: var(--rail);
+      --viewer-sidebar-width: clamp(
         17rem,
         var(--sidebar-width),
         22rem
       );
-      --overlay-document-viewer-frame-max-width: 100vw;
+      --viewer-frame-max-width: 100vw;
 
       --overlay-object-card-inset-x: var(--s48);
       --overlay-object-card-inset-top: var(--s48);
@@ -374,18 +374,18 @@
 @media (min-width: 1440px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s32);
-      --overlay-document-viewer-inset-top: var(--s48);
-      --overlay-document-viewer-inset-bottom: var(--s32);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
+      --viewer-inset-x: var(--s32);
+      --viewer-inset-top: var(--s48);
+      --viewer-inset-bottom: var(--s32);
+      --viewer-top-bar-height: var(--s72);
+      --viewer-bottom-bar-height: var(--s56);
+      --viewer-rail-width: var(--rail);
+      --viewer-sidebar-width: clamp(
         17rem,
         var(--sidebar-width),
         22rem
       );
-      --overlay-document-viewer-frame-max-width: 100vw;
+      --viewer-frame-max-width: 100vw;
 
       --overlay-object-card-inset-x: var(--s64);
       --overlay-object-card-inset-top: var(--s56);
@@ -397,18 +397,18 @@
 @media (min-width: 1920px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s48);
-      --overlay-document-viewer-inset-top: var(--s64);
-      --overlay-document-viewer-inset-bottom: var(--s48);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
+      --viewer-inset-x: var(--s48);
+      --viewer-inset-top: var(--s64);
+      --viewer-inset-bottom: var(--s48);
+      --viewer-top-bar-height: var(--s72);
+      --viewer-bottom-bar-height: var(--s56);
+      --viewer-rail-width: var(--rail);
+      --viewer-sidebar-width: clamp(
         17rem,
         var(--sidebar-width),
         22rem
       );
-      --overlay-document-viewer-frame-max-width: 100vw;
+      --viewer-frame-max-width: 100vw;
 
       --overlay-object-card-inset-x: var(--s96);
       --overlay-object-card-inset-top: var(--s88);
@@ -420,18 +420,18 @@
 @media (min-width: 2560px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s48);
-      --overlay-document-viewer-inset-top: var(--s80);
-      --overlay-document-viewer-inset-bottom: var(--s64);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
+      --viewer-inset-x: var(--s48);
+      --viewer-inset-top: var(--s80);
+      --viewer-inset-bottom: var(--s64);
+      --viewer-top-bar-height: var(--s72);
+      --viewer-bottom-bar-height: var(--s56);
+      --viewer-rail-width: var(--rail);
+      --viewer-sidebar-width: clamp(
         17rem,
         var(--sidebar-width),
         22rem
       );
-      --overlay-document-viewer-frame-max-width: 1920px;
+      --viewer-frame-max-width: 1920px;
 
       --overlay-object-card-inset-x: var(--s136);
       --overlay-object-card-inset-top: var(--s112);
