@@ -102,7 +102,6 @@
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
-        padding: 0 0.08em;
     }
 
     .entity.cidoc-actor {

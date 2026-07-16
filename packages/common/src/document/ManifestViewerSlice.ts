@@ -87,7 +87,7 @@ function createReadyCanvas(pages: AnnotationPage[]) {
     };
   }
 
-  const { id: pageId } = pageText;
+  const { id: pageId, text } = pageText;
   for (const id in mapped) {
     const item = mapped[id];
     if (!isEntity(item)) {
@@ -98,7 +98,7 @@ function createReadyCanvas(pages: AnnotationPage[]) {
       delete mapped[id];
     }
   }
-  const indexes = indexAnnotations(mapped, pageId);
+  const indexes = indexAnnotations(mapped, pageId, text);
 
   return {
     annotations: mapped,

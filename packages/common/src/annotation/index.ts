@@ -7,7 +7,11 @@ export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';
 export { findSvgPath } from './findSvgPath';
 export type { SvgPath } from './findSvgPath';
-export { findTextPositionSelector, isTextPositionSelector } from './findTextPositionSelector';
+export {
+  findTextPositionSelector,
+  findTextSelectorRange,
+  isTextPositionSelector,
+} from './findTextPositionSelector';
 export { isTextualBody } from './isTextualBody';
 export { isPage } from './isPage';
 export { findSourceLabel } from './findSourceLabel';

@@ -3,7 +3,7 @@ import {
   filterAnnotationsWithSelector,
   getEntityTypeClassName,
   type EntityVisualCategoryClassName,
-  findTextPositionSelector,
+  findTextSelectorRange,
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
   getPageText,
@@ -91,7 +91,7 @@ export function renderDiplomaticView(
   );
 
   const textSegments = segment(pageText, markedAnnos, (a) => {
-    const selector = findTextPositionSelector(a, pageAnnoId)
+    const selector = findTextSelectorRange(a, pageAnnoId, pageText)
       ?? orThrow('No selector');
     return { start: selector.start, end: selector.end };
   });
@@ -104,6 +104,7 @@ export function renderDiplomaticView(
   const { blockToLines, wordToBlock, wordToLine } = indexAnnotations(
     annotations,
     pageAnnoId,
+    pageText,
   );
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
