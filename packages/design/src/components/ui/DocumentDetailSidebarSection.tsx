@@ -46,35 +46,25 @@ function DocumentDetailSidebarSection({
   };
 
   return (
-    <section
-      className={cn('gds-document-detail-sidebar-section', className)}
-      {...props}
-    >
+    <section className={cn('document-sidebar-section', className)} {...props}>
       <AriaButton
         aria-expanded={isExpanded}
         aria-controls={panelId}
-        className="gds-document-detail-sidebar-section__button"
+        data-slot="button"
         onPress={() => setExpanded(!isExpanded)}
         {...buttonProps}
       >
-        <span className="gds-document-detail-sidebar-section__button-content">
-          {icon && <span className="gds-document-detail-icon">{icon}</span>}
-          <span className="gds-document-detail-sidebar-section__title">
-            {title}
-          </span>
+        <span data-slot="button-content">
+          {icon && <span data-slot="icon">{icon}</span>}
+          <span data-slot="title">{title}</span>
           {count && (
-            <span className="gds-document-detail-sidebar-section__count">
-              {count}
-            </span>
+            <span data-slot="count">{count}</span>
           )}
         </span>
         {trailing}
       </AriaButton>
       {isExpanded && (
-        <div
-          id={panelId}
-          className="gds-document-detail-sidebar-section__panel"
-        >
+        <div id={panelId} data-slot="panel">
           {children}
         </div>
       )}

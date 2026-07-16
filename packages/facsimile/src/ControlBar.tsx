@@ -1,4 +1,3 @@
-import { cn } from '@globalise/design';
 import { type ReactNode } from 'react';
 import './ControlBar.css';
 
@@ -9,7 +8,7 @@ type ControlBarProps = {
 
 export function ControlBar({ children, className }: ControlBarProps) {
   return (
-    <div className={cn('gds-document-detail-control-bar', className)}>
+    <div className={className}>
       {children}
     </div>
   );

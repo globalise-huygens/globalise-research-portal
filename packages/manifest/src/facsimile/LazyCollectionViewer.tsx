@@ -216,7 +216,7 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <ControlBar className="gds-document-detail-scan-toolbar">
+      <ControlBar className="viewer-toolbar">
         <FacsimileControls
           fullscreenRef={containerRef}
           onScanFilterChange={setScanFilter}

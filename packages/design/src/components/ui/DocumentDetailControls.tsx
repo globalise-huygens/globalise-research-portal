@@ -46,7 +46,7 @@ const DocumentDetailControl = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('gds-document-detail-control', className)}
+      className={cn('document-control', className)}
       data-active={isActive ? 'true' : 'false'}
       data-icon-only={isIconOnly ? 'true' : 'false'}
       {...props}
@@ -79,7 +79,7 @@ const DocumentDetailToolButton = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('gds-document-detail-tool-button', className)}
+      className={cn('document-tool-button', className)}
       data-active={isActive ? 'true' : 'false'}
       data-size={size}
       {...props}
@@ -99,7 +99,7 @@ function DocumentDetailSegmentedControl({
 }: DocumentDetailSegmentedControlProps) {
   return (
     <div
-      className={cn('gds-document-detail-segmented-control', className)}
+      className={cn('document-segmented-control', className)}
       {...props}
     />
   );
@@ -121,7 +121,7 @@ const DocumentDetailSegment = React.forwardRef<
 >(({ className, icon, isActive = false, children, ...props }, ref) => (
   <AriaButton
     ref={ref}
-    className={cn('gds-document-detail-segment', className)}
+    className={cn('document-segment', className)}
     data-active={isActive ? 'true' : 'false'}
     {...props}
   >
@@ -148,7 +148,7 @@ function DocumentDetailSegmentedToggleGroup({
 }: DocumentDetailSegmentedToggleGroupProps) {
   return (
     <AriaToggleButtonGroup
-      className={cn('gds-document-detail-segmented-toggle-group', className)}
+      className={cn('document-toggle-group', className)}
       data-size={size}
       {...props}
     >
@@ -173,7 +173,7 @@ const DocumentDetailSegmentedToggleItem = React.forwardRef<
 >(({ className, icon, size = 'regular', children, ...props }, ref) => (
   <AriaToggleButton
     ref={ref}
-    className={cn('gds-document-detail-segmented-toggle-item', className)}
+    className={cn('document-toggle', className)}
     data-size={size}
     {...props}
   >
@@ -200,23 +200,21 @@ const DocumentDetailCheckbox = React.forwardRef<
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   <AriaCheckbox
     ref={ref}
-    className={cn('gds-document-detail-checkbox', className)}
+    className={cn('document-checkbox', className)}
     {...props}
   >
     {({ isIndeterminate }) => (
       <>
         <span
-          className={cn(
-            'gds-document-detail-checkbox__indicator',
-            indicatorClassName,
-          )}
+          className={indicatorClassName}
           aria-hidden="true"
+          data-slot="indicator"
         >
           {isIndeterminate ? (
-            <span className="gds-document-detail-checkbox__indeterminate" />
+            <span data-slot="indeterminate" />
           ) : (
             <svg
-              className="gds-document-detail-checkbox__check"
+              data-slot="check"
               viewBox="0 -960 960 960"
               focusable="false"
               aria-hidden="true"
@@ -269,21 +267,19 @@ const DocumentDetailNumberField = React.forwardRef<
     return (
       <AriaNumberField
         ref={ref}
-        className={cn('gds-document-detail-number-field', className)}
+        className={cn('document-number-field', className)}
         minValue={minValue}
         step={step}
         value={value}
         {...props}
       >
         <AriaInput
-          className={cn(
-            'gds-document-detail-number-field__input',
-            inputClassName,
-          )}
+          className={inputClassName}
+          data-slot="input"
           style={{ width: `${widthDigits + 0.5}ch` }}
         />
         {suffix && (
-          <span className="gds-document-detail-number-field__suffix">
+          <span data-slot="suffix">
             {suffix}
           </span>
         )}
@@ -323,14 +319,14 @@ const DocumentDetailRailButton = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('gds-document-detail-rail-button', className)}
+      className={cn('document-rail-button', className)}
       data-active={isActive ? 'true' : 'false'}
       data-variant={variant}
       {...props}
     >
-      {icon}
+      {icon && <span data-slot="icon">{icon}</span>}
       {label && (
-        <span className="gds-document-detail-rail-button__label">{label}</span>
+        <span data-slot="label">{label}</span>
       )}
       {children}
     </AriaButton>
@@ -406,12 +402,12 @@ export function ContentWarningControl({
   const isPopoverOpen = isOpen || isHoverPreviewOpen;
 
   return (
-    <div>
+    <div className="content-warning">
       <DocumentDetailToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
-        className="document-detail-overlay-warning-button"
+        data-slot="button"
         icon={
-          <IconContentWarning className="document-detail-overlay-icon-medium" />
+          <IconContentWarning data-slot="icon" />
         }
         isActive={isOpen}
         onBlur={() => setIsHoverPreviewOpen(false)}
@@ -425,7 +421,7 @@ export function ContentWarningControl({
       </DocumentDetailToolButton>
       {isPopoverOpen && (
         <div
-          className="document-detail-overlay-warning-popover"
+          data-slot="popover"
           role="dialog"
           aria-label={warning.title}
         >
@@ -434,7 +430,7 @@ export function ContentWarningControl({
             <span>{warning.linkLabel}</span>
             <IconArrowTopRight
               aria-hidden="true"
-              className="document-detail-overlay-warning-link-icon"
+              data-slot="link-icon"
             />
           </a>
         </div>

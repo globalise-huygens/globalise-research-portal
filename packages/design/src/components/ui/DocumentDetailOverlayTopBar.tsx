@@ -61,61 +61,6 @@ function getEntityIcon(icon: DocumentDetailOverlayTagGroup['icon']) {
   }
 }
 
-function getEntityHighlightToneClasses(
-  icon: DocumentDetailOverlayTagGroup['icon'],
-) {
-  switch (icon) {
-    case 'person':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-person',
-        subRowClassName: 'gds-entity-highlight-menu__tone-person',
-        textClassName: 'gds-entity-highlight-menu__tone-text-person',
-      };
-    case 'organisation':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-organisation',
-        subRowClassName: 'gds-entity-highlight-menu__tone-organisation',
-        textClassName: 'gds-entity-highlight-menu__tone-text-organisation',
-      };
-    case 'ship':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-ship',
-        subRowClassName: 'gds-entity-highlight-menu__tone-ship',
-        textClassName: 'gds-entity-highlight-menu__tone-text-ship',
-      };
-    case 'commodity':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-commodity',
-        subRowClassName: 'gds-entity-highlight-menu__tone-commodity',
-        textClassName: 'gds-entity-highlight-menu__tone-text-commodity',
-      };
-    case 'date':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-date',
-        subRowClassName: 'gds-entity-highlight-menu__tone-date',
-        textClassName: 'gds-entity-highlight-menu__tone-text-date',
-      };
-    case 'place':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-place',
-        subRowClassName: 'gds-entity-highlight-menu__tone-place',
-        textClassName: 'gds-entity-highlight-menu__tone-text-place',
-      };
-    case 'document':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-document',
-        subRowClassName: 'gds-entity-highlight-menu__tone-document',
-        textClassName: 'gds-entity-highlight-menu__tone-text-document',
-      };
-    case 'quantity':
-      return {
-        rowClassName: 'gds-entity-highlight-menu__tone-quantity',
-        subRowClassName: 'gds-entity-highlight-menu__tone-quantity',
-        textClassName: 'gds-entity-highlight-menu__tone-text-quantity',
-      };
-  }
-}
-
 export function DocumentDetailTopBar({
   content,
   isSidebarOpen,
@@ -169,7 +114,7 @@ export function DocumentDetailTopBar({
           label: group.label,
           count: group.count,
           icon: getEntityIcon(group.icon),
-          ...getEntityHighlightToneClasses(group.icon),
+          tone: group.icon,
           subcategories: group.subcategories?.map((subcategory) => ({
             id: subcategory.id,
             label: subcategory.label,

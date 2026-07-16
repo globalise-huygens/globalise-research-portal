@@ -8,7 +8,7 @@ function DocumentDetailCanvas({
   ...props
 }: DocumentDetailCanvasProps) {
   return (
-    <div className={cn('gds-document-detail-canvas', className)} {...props} />
+    <div className={cn('document-canvas', className)} {...props} />
   );
 }
 
@@ -20,7 +20,7 @@ function DocumentDetailTranscriptCanvas({
 }: DocumentDetailTranscriptCanvasProps) {
   return (
     <div
-      className={cn('gds-document-detail-transcript-canvas', className)}
+      className={cn('transcription-canvas', className)}
       {...props}
     />
   );
@@ -39,14 +39,14 @@ function DocumentDetailTranscriptLine({
 }: DocumentDetailTranscriptLineProps) {
   return (
     <div
-      className={cn('gds-document-detail-transcript-line', className)}
+      className={cn('transcription-line', className)}
       {...props}
     >
-      <span className="gds-document-detail-transcript-line__index">
+      <span data-slot="index">
         {index}
       </span>
       <span
-        className="gds-document-detail-transcript-line__mark"
+        data-slot="mark"
         style={{ width }}
       />
     </div>

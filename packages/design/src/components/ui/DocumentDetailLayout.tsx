@@ -15,7 +15,7 @@ function DocumentDetailTopBar({
   return (
     <header
       className={cn(
-        'gds-document-detail-full-bleed gds-document-detail-top-bar',
+        'document-full-bleed document-top-bar',
         className,
       )}
       {...props}
@@ -29,7 +29,7 @@ function DocumentDetailBody({ className, ...props }: DocumentDetailBodyProps) {
   return (
     <div
       className={cn(
-        'gds-document-detail-full-bleed gds-document-detail-body',
+        'document-full-bleed document-body',
         className,
       )}
       {...props}
@@ -45,7 +45,7 @@ function DocumentDetailIconRail({
 }: DocumentDetailIconRailProps) {
   return (
     <nav
-      className={cn('gds-document-detail-icon-rail', className)}
+      className={cn('document-icon-rail', className)}
       {...props}
     />
   );
@@ -58,7 +58,7 @@ function DocumentDetailMetadataSidebar({
   ...props
 }: DocumentDetailMetadataSidebarProps) {
   return (
-    <nav className={cn('gds-document-detail-sidebar', className)} {...props} />
+    <nav className={cn('document-sidebar', className)} {...props} />
   );
 }
 
@@ -94,25 +94,25 @@ const DocumentDetailMetadataSidebarButton = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('gds-document-detail-sidebar-button', className)}
+      className={cn('document-sidebar-button', className)}
       data-variant={variant}
       {...props}
     >
-      <span className="gds-document-detail-sidebar-button__content">
-        {icon && <span className="gds-document-detail-icon">{icon}</span>}
+      <span data-slot="content">
+        {icon && <span data-slot="icon">{icon}</span>}
         {label && (
-          <span className="gds-document-detail-sidebar-button__label">
+          <span data-slot="label">
             {label}
           </span>
         )}
         {count && (
-          <span className="gds-document-detail-sidebar-button__count">
+          <span data-slot="count">
             {count}
           </span>
         )}
         {children}
       </span>
-      {trailing && <span className="gds-document-detail-icon">{trailing}</span>}
+      {trailing && <span data-slot="icon">{trailing}</span>}
     </AriaButton>
   ),
 );
@@ -127,7 +127,7 @@ function DocumentDetailMetadataSidebarBadge({
 }: DocumentDetailMetadataSidebarBadgeProps) {
   return (
     <span
-      className={cn('gds-document-detail-sidebar-badge', className)}
+      className={cn('document-sidebar-badge', className)}
       {...props}
     />
   );
@@ -141,7 +141,7 @@ function DocumentDetailSidePanel({
 }: DocumentDetailSidePanelProps) {
   return (
     <div
-      className={cn('gds-document-detail-side-panel', className)}
+      className={cn('document-side-panel', className)}
       {...props}
     />
   );
@@ -154,7 +154,7 @@ function DocumentDetailViewer({
   ...props
 }: DocumentDetailViewerProps) {
   return (
-    <div className={cn('gds-document-detail-viewer', className)} {...props} />
+    <div className={cn('document-viewer', className)} {...props} />
   );
 }
 
@@ -166,7 +166,7 @@ function DocumentDetailSplitViewer({
 }: DocumentDetailSplitViewerProps) {
   return (
     <div
-      className={cn('gds-document-detail-split-viewer', className)}
+      className={cn('document-split-viewer', className)}
       {...props}
     />
   );
@@ -188,7 +188,7 @@ function DocumentDetailViewerPane({
 }: DocumentDetailViewerPaneProps) {
   return (
     <div
-      className={cn('gds-document-detail-viewer-pane', className)}
+      className={cn('document-viewer-pane', className)}
       data-toolbar-floating={toolbarFloating ? 'true' : undefined}
       {...props}
     >
@@ -197,7 +197,7 @@ function DocumentDetailViewerPane({
           {toolbar}
         </DocumentDetailToolbar>
       )}
-      <div className="gds-document-detail-viewer-pane__content">{children}</div>
+      <div data-slot="content">{children}</div>
     </div>
   );
 }
@@ -210,7 +210,7 @@ function DocumentDetailBarGroup({
 }: DocumentDetailBarGroupProps) {
   return (
     <div
-      className={cn('gds-document-detail-bar-group', className)}
+      className={cn('document-bar-group', className)}
       {...props}
     />
   );
@@ -223,7 +223,7 @@ function DocumentDetailTitle({
   ...props
 }: DocumentDetailTitleProps) {
   return (
-    <div className={cn('gds-document-detail-title', className)} {...props} />
+    <div className={cn('document-title', className)} {...props} />
   );
 }
 
@@ -235,7 +235,7 @@ function DocumentDetailPanelHeader({
 }: DocumentDetailPanelHeaderProps) {
   return (
     <div
-      className={cn('gds-document-detail-panel-header', className)}
+      className={cn('document-panel-header', className)}
       {...props}
     />
   );
@@ -250,7 +250,7 @@ function DocumentDetailBottomBar({
   return (
     <footer
       className={cn(
-        'gds-document-detail-full-bleed gds-document-detail-bottom-bar',
+        'document-full-bleed document-bottom-bar',
         className,
       )}
       {...props}

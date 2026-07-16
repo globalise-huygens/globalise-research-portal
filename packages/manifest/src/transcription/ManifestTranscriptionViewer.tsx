@@ -65,7 +65,7 @@ export function ManifestTranscriptionViewer({
 
   return (
     <div className="manifest-document-layout__transcription-viewer">
-      <ControlBar className="gds-document-detail-scan-toolbar">
+      <ControlBar className="viewer-toolbar">
         <ManifestTranscriptionControls />
       </ControlBar>
       {content}

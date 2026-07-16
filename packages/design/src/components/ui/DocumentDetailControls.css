@@ -1,8 +1,8 @@
 @layer components {
-  .gds-document-detail-control,
-  .gds-document-detail-tool-button,
-  .gds-document-detail-segment,
-  .gds-document-detail-rail-button {
+  .document-control,
+  .document-tool-button,
+  .document-segment,
+  .document-rail-button {
     display: inline-flex;
     border: 0;
     align-items: center;
@@ -16,7 +16,7 @@
       color 75ms ease-out;
   }
 
-  .gds-document-detail-rail-button {
+  .document-rail-button {
     width: 100%;
     height: var(--s64);
     flex-direction: column;
@@ -26,7 +26,7 @@
     font-size: 10px;
   }
 
-  .gds-document-detail-rail-button .gds-document-detail-icon {
+  .document-rail-button > [data-slot="icon"] {
     display: flex;
     width: var(--s24);
     height: var(--s24);
@@ -34,39 +34,39 @@
     justify-content: center;
   }
 
-  .gds-document-detail-rail-button .gds-document-detail-icon svg {
+  .document-rail-button > [data-slot="icon"] svg {
     width: var(--s20);
     height: var(--s20);
   }
 
-  .gds-document-detail-rail-button[data-hovered],
-  .gds-document-detail-rail-button[data-active="true"] {
+  .document-rail-button[data-hovered],
+  .document-rail-button[data-active="true"] {
     background: var(--color-neutral-800);
   }
 
-  .gds-document-detail-rail-button[data-variant="accent"] {
+  .document-rail-button[data-variant="accent"] {
     background: var(--color-vermilion-500);
     color: var(--color-brand-black);
   }
 
-  .gds-document-detail-control[data-focus-visible],
-  .gds-document-detail-tool-button[data-focus-visible],
-  .gds-document-detail-segment[data-focus-visible],
-  .gds-document-detail-segmented-toggle-item[data-focus-visible],
-  .gds-document-detail-checkbox[data-focus-visible],
-  .gds-document-detail-rail-button[data-focus-visible],
-  .gds-document-detail-control:focus-visible,
-  .gds-document-detail-tool-button:focus-visible,
-  .gds-document-detail-segment:focus-visible,
-  .gds-document-detail-segmented-toggle-item:focus-visible,
-  .gds-document-detail-checkbox:focus-visible,
-  .gds-document-detail-rail-button:focus-visible {
+  .document-control[data-focus-visible],
+  .document-tool-button[data-focus-visible],
+  .document-segment[data-focus-visible],
+  .document-toggle[data-focus-visible],
+  .document-checkbox[data-focus-visible],
+  .document-rail-button[data-focus-visible],
+  .document-control:focus-visible,
+  .document-tool-button:focus-visible,
+  .document-segment:focus-visible,
+  .document-toggle:focus-visible,
+  .document-checkbox:focus-visible,
+  .document-rail-button:focus-visible {
     outline: none;
     outline-offset: 0;
     box-shadow: none;
   }
 
-  .gds-document-detail-control {
+  .document-control {
     height: var(--control);
     border: 1px solid rgb(255 255 255 / 0.2);
     color: var(--color-brand-white);
@@ -74,27 +74,27 @@
     font-weight: 500;
   }
 
-  .gds-document-detail-control[data-icon-only="true"] {
+  .document-control[data-icon-only="true"] {
     width: var(--control);
     padding-inline: 0;
   }
 
-  .gds-document-detail-control[data-icon-only="false"] {
+  .document-control[data-icon-only="false"] {
     gap: var(--s8);
     padding-inline: var(--s12);
   }
 
-  .gds-document-detail-control[data-hovered] {
+  .document-control[data-hovered] {
     border-color: rgb(255 255 255 / 0.4);
   }
 
-  .gds-document-detail-control[data-active="true"] {
+  .document-control[data-active="true"] {
     border-color: var(--color-vermilion-500);
     background: var(--color-vermilion-500);
     color: var(--color-brand-black);
   }
 
-  .gds-document-detail-tool-button {
+  .document-tool-button {
     min-width: var(--s32);
     height: var(--s36);
     gap: var(--s4);
@@ -104,50 +104,50 @@
     font-size: 0.75rem;
   }
 
-  .gds-document-detail-tool-button[data-size="compact"] {
+  .document-tool-button[data-size="compact"] {
     min-width: var(--s28);
     height: var(--s32);
     padding-inline: var(--s6);
   }
 
-  .gds-document-detail-tool-button[data-size="regular"] {
+  .document-tool-button[data-size="regular"] {
     min-width: var(--s32);
     height: var(--s36);
     padding-inline: var(--s8);
   }
 
-  .gds-document-detail-tool-button[data-size="touch"] {
+  .document-tool-button[data-size="touch"] {
     min-width: var(--s44);
     min-height: var(--s44);
     padding-inline: var(--s12);
   }
 
-  .gds-document-detail-tool-button[data-hovered] {
+  .document-tool-button[data-hovered] {
     background: rgb(255 255 255 / 0.1);
   }
 
-  .gds-document-detail-tool-button[data-active="false"] {
+  .document-tool-button[data-active="false"] {
     background: transparent;
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-tool-button[data-pressed] {
+  .document-tool-button[data-pressed] {
     background: rgb(255 255 255 / 0.15);
   }
 
-  .gds-document-detail-tool-button[data-active="true"] {
+  .document-tool-button[data-active="true"] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
     box-shadow: none;
   }
 
-  .gds-document-detail-tool-button[data-disabled] {
+  .document-tool-button[data-disabled] {
     opacity: 0.45;
     cursor: not-allowed;
   }
 
-  .gds-document-detail-segmented-control,
-  .gds-document-detail-segmented-toggle-group {
+  .document-segmented-control,
+  .document-toggle-group {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -156,38 +156,38 @@
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-segmented-control {
+  .document-segmented-control {
     height: var(--s36);
     gap: var(--s4);
     border-radius: 4px;
     padding: var(--s4);
   }
 
-  .gds-document-detail-segmented-toggle-group {
+  .document-toggle-group {
     gap: 0;
     padding: 0;
     background: transparent;
     box-shadow: none;
   }
 
-  .gds-document-detail-segmented-toggle-group[data-size="compact"] {
+  .document-toggle-group[data-size="compact"] {
     height: var(--s32);
     border-radius: 4px;
   }
 
-  .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+  .document-toggle-group[data-size="regular"] {
     height: var(--s40);
     border-radius: 4px;
   }
 
-  .gds-document-detail-segment,
-  .gds-document-detail-segmented-toggle-item {
+  .document-segment,
+  .document-toggle {
     flex-shrink: 0;
     white-space: nowrap;
     font-family: var(--font-sans);
   }
 
-  .gds-document-detail-segment {
+  .document-segment {
     height: var(--s28);
     gap: var(--s4);
     border-radius: 4px;
@@ -196,18 +196,18 @@
     font-size: 0.75rem;
   }
 
-  .gds-document-detail-segment[data-active="false"] {
+  .document-segment[data-active="false"] {
     background: transparent;
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-segment[data-active="true"] {
+  .document-segment[data-active="true"] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
     box-shadow: 0 1px 1px rgb(0 0 0 / 0.12);
   }
 
-  .gds-document-detail-segmented-toggle-item {
+  .document-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -222,24 +222,24 @@
       color 100ms ease-out;
   }
 
-  .gds-document-detail-segmented-toggle-item > svg {
+  .document-toggle > svg {
     width: var(--s16);
     height: var(--s16);
     flex-shrink: 0;
   }
 
-  .gds-document-detail-segmented-toggle-item:last-child {
+  .document-toggle:last-child {
     border-right: 1px solid rgb(255 255 255 / 0.7);
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
   }
 
-  .gds-document-detail-segmented-toggle-item:first-child {
+  .document-toggle:first-child {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-size="compact"] {
+  .document-toggle[data-size="compact"] {
     min-width: var(--s56);
     height: var(--s32);
     gap: var(--s4);
@@ -248,7 +248,7 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+  .document-toggle[data-size="regular"] {
     min-width: var(--s72);
     height: var(--s40);
     gap: var(--s8);
@@ -257,32 +257,32 @@
     line-height: 1.25rem;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-focus-visible],
-  .gds-document-detail-segmented-toggle-item:focus-visible {
+  .document-toggle[data-focus-visible],
+  .document-toggle:focus-visible {
     outline: none;
     box-shadow: none;
   }
 
-  .gds-document-detail-segmented-toggle-item[data-selected],
-  .gds-document-detail-segmented-toggle-item[aria-pressed="true"] {
+  .document-toggle[data-selected],
+  .document-toggle[aria-pressed="true"] {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
   }
 
-  .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
+  .document-toggle:not([data-selected]):not(
       [aria-pressed="true"]
     ) {
     color: rgb(255 255 255 / 0.65);
   }
 
-  .gds-document-detail-segmented-toggle-item:not([data-selected]):not(
+  .document-toggle:not([data-selected]):not(
       [aria-pressed="true"]
     )[data-hovered] {
     background: rgb(255 255 255 / 0.18);
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-checkbox {
+  .document-checkbox {
     display: inline-flex;
     min-width: 0;
     height: var(--s28);
@@ -297,16 +297,16 @@
     transition: color 75ms ease-out;
   }
 
-  .gds-document-detail-checkbox[data-hovered] {
+  .document-checkbox[data-hovered] {
     color: rgb(255 255 255 / 0.75);
   }
 
-  .gds-document-detail-checkbox[data-disabled] {
+  .document-checkbox[data-disabled] {
     cursor: not-allowed;
     color: rgb(255 255 255 / 0.3);
   }
 
-  .gds-document-detail-checkbox__indicator {
+  .document-checkbox > [data-slot="indicator"] {
     display: flex;
     box-sizing: border-box;
     width: 14px;
@@ -324,7 +324,7 @@
       box-shadow 75ms ease-out;
   }
 
-  .gds-document-detail-checkbox__check {
+  .document-checkbox [data-slot="check"] {
     display: block;
     width: 14px;
     height: 14px;
@@ -332,7 +332,7 @@
     opacity: 0;
   }
 
-  .gds-document-detail-checkbox__indeterminate {
+  .document-checkbox [data-slot="indeterminate"] {
     display: block;
     width: var(--s8);
     height: 2px;
@@ -340,29 +340,29 @@
     opacity: 0;
   }
 
-  .gds-document-detail-checkbox[data-selected]
-    .gds-document-detail-checkbox__indicator,
-  .gds-document-detail-checkbox[data-indeterminate]
-    .gds-document-detail-checkbox__indicator {
+  .document-checkbox[data-selected]
+    [data-slot="indicator"],
+  .document-checkbox[data-indeterminate]
+    [data-slot="indicator"] {
     border-color: var(--color-neutral-100);
     background: var(--color-neutral-100);
     color: var(--color-neutral-900);
   }
 
-  .gds-document-detail-checkbox[data-selected]
-    .gds-document-detail-checkbox__check,
-  .gds-document-detail-checkbox[data-indeterminate]
-    .gds-document-detail-checkbox__indeterminate {
+  .document-checkbox[data-selected]
+    [data-slot="check"],
+  .document-checkbox[data-indeterminate]
+    [data-slot="indeterminate"] {
     opacity: 1;
   }
 
-  .gds-document-detail-checkbox[data-disabled] .gds-document-detail-checkbox__indicator {
+  .document-checkbox[data-disabled] [data-slot="indicator"] {
     border-color: rgb(255 255 255 / 0.16);
     background: rgb(255 255 255 / 0.14);
     color: rgb(255 255 255 / 0.35);
   }
 
-  .gds-document-detail-number-field {
+  .document-number-field {
     display: inline-flex;
     height: var(--s16);
     align-items: baseline;
@@ -373,7 +373,7 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-number-field__input {
+  .document-number-field > [data-slot="input"] {
     display: inline-block;
     height: var(--s16);
     appearance: textfield;
@@ -391,35 +391,35 @@
     transition: background-color 75ms ease-out;
   }
 
-  .gds-document-detail-number-field__input::-webkit-inner-spin-button,
-  .gds-document-detail-number-field__input::-webkit-outer-spin-button {
+  .document-number-field > [data-slot="input"]::-webkit-inner-spin-button,
+  .document-number-field > [data-slot="input"]::-webkit-outer-spin-button {
     appearance: none;
   }
 
-  .gds-document-detail-number-field__input[data-hovered] {
+  .document-number-field > [data-slot="input"][data-hovered] {
     background: rgb(255 255 255 / 0.05);
   }
 
-  .gds-document-detail-number-field__input[data-focused] {
+  .document-number-field > [data-slot="input"][data-focused] {
     background: rgb(255 255 255 / 0.1);
   }
 
-  .gds-document-detail-number-field__input[data-focus-visible] {
+  .document-number-field > [data-slot="input"][data-focus-visible] {
     box-shadow: 0 0 0 1px rgb(185 155 127 / 0.5);
   }
 
-  .gds-document-detail-number-field__suffix {
+  .document-number-field > [data-slot="suffix"] {
     margin-left: 1px;
     color: var(--color-parchment-500);
     font-size: 0.75rem;
     line-height: 1rem;
   }
 
-  .gds-document-detail-rail-button__label {
+  .document-rail-button > [data-slot="label"] {
     line-height: 1;
   }
 
-  .gds-document-detail-scan-toolbar {
+  .viewer-toolbar {
     position: absolute;
     top: var(--s20);
     left: var(--s16);
@@ -438,7 +438,7 @@
     backdrop-filter: blur(2px);
   }
 
-  .gds-document-detail-scan-toolbar__zoom-segment {
+  .viewer-toolbar > [data-slot="zoom-segment"] {
     display: inline-flex;
     height: var(--s32);
     align-items: stretch;
@@ -448,7 +448,7 @@
     background: rgb(255 255 255 / 0.08);
   }
 
-  .gds-document-detail-scan-toolbar__button {
+  .viewer-toolbar [data-slot="button"] {
     width: var(--s36);
     min-width: var(--s36);
     height: var(--s32);
@@ -460,41 +460,42 @@
     padding-inline: 0;
   }
 
-  .gds-document-detail-scan-toolbar__button[data-hovered] {
+  .viewer-toolbar [data-slot="button"][data-hovered] {
     background: rgb(255 255 255 / 0.12);
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-scan-toolbar__button[data-pressed] {
+  .viewer-toolbar [data-slot="button"][data-pressed] {
     background: rgb(255 255 255 / 0.18);
   }
 
-  .gds-document-detail-scan-toolbar__button[data-focused],
-  .gds-document-detail-scan-toolbar__button[data-focus-visible],
-  .gds-document-detail-scan-toolbar__button:focus,
-  .gds-document-detail-scan-toolbar__button:focus-visible {
+  .viewer-toolbar [data-slot="button"][data-focused],
+  .viewer-toolbar [data-slot="button"][data-focus-visible],
+  .viewer-toolbar [data-slot="button"]:focus,
+  .viewer-toolbar [data-slot="button"]:focus-visible {
     outline: none;
     box-shadow: none;
   }
 
-  .gds-document-detail-scan-toolbar__button
-    .gds-document-detail-scan-toolbar__icon {
+  .viewer-toolbar [data-slot="button"] [data-slot="icon"] {
     width: var(--s20);
     height: var(--s20);
     flex-shrink: 0;
   }
 
-  .gds-document-detail-scan-toolbar__zoom-segment
-    .gds-document-detail-scan-toolbar__button:first-child {
+  .viewer-toolbar
+    [data-slot="zoom-segment"]
+    [data-slot="button"]:first-child {
     border-right: 1px solid rgb(255 255 255 / 0.14);
   }
 
-  .gds-document-detail-scan-toolbar__zoom-segment
-    .gds-document-detail-scan-toolbar__button:last-child {
+  .viewer-toolbar
+    [data-slot="zoom-segment"]
+    [data-slot="button"]:last-child {
     border-left: 1px solid rgb(255 255 255 / 0.14);
   }
 
-  .gds-document-detail-scan-toolbar__zoom-field {
+  .viewer-toolbar [data-slot="zoom-field"] {
     display: inline-grid;
     grid-template-columns: 3ch 1ch;
     box-sizing: border-box;
@@ -513,7 +514,7 @@
     text-align: center;
   }
 
-  .gds-document-detail-scan-toolbar__zoom-input {
+  .viewer-toolbar [data-slot="zoom-input"] {
     width: 3ch;
     height: 1rem;
     border: 0;
@@ -529,16 +530,16 @@
     text-align: right;
   }
 
-  .gds-document-detail-scan-toolbar__zoom-input::-webkit-inner-spin-button,
-  .gds-document-detail-scan-toolbar__zoom-input::-webkit-outer-spin-button {
+  .viewer-toolbar [data-slot="zoom-input"]::-webkit-inner-spin-button,
+  .viewer-toolbar [data-slot="zoom-input"]::-webkit-outer-spin-button {
     appearance: none;
   }
 
-  .gds-document-detail-scan-toolbar__zoom-input:focus {
+  .viewer-toolbar [data-slot="zoom-input"]:focus {
     background: rgb(255 255 255 / 0.1);
   }
 
-  .gds-document-detail-scan-toolbar__zoom-suffix {
+  .viewer-toolbar [data-slot="zoom-suffix"] {
     display: inline-flex;
     height: 1rem;
     align-items: center;
@@ -547,21 +548,21 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-scan-toolbar__divider {
+  .viewer-toolbar > [data-slot="divider"] {
     width: 1px;
     height: var(--s20);
     margin-inline: var(--s4);
     background: rgb(255 255 255 / 0.2);
   }
 
-  .gds-document-detail-scan-toolbar__settings {
+  .viewer-toolbar > [data-slot="settings"] {
     position: relative;
     display: inline-flex;
     height: var(--s32);
     align-items: center;
   }
 
-  .gds-document-detail-scan-toolbar__settings-panel {
+  .viewer-settings {
     position: fixed;
     z-index: 1000;
     width: min(320px, calc(100vw - var(--s24)));
@@ -575,7 +576,7 @@
     padding: var(--s12);
   }
 
-  .gds-document-detail-scan-toolbar__settings-row {
+  .viewer-settings > [data-slot="row"] {
     display: grid;
     grid-template-columns: 96px minmax(96px, 1fr) var(--s40);
     align-items: center;
@@ -583,7 +584,7 @@
     min-height: var(--s32);
   }
 
-  .gds-document-detail-scan-toolbar__settings-label {
+  .viewer-settings [data-slot="label"] {
     display: inline-flex;
     align-items: center;
     gap: var(--s6);
@@ -594,14 +595,14 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-scan-toolbar__settings-icon {
+  .viewer-settings [data-slot="settings-icon"] {
     width: var(--s20);
     height: var(--s20);
     flex-shrink: 0;
     color: var(--color-brand-white);
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider {
+  .viewer-settings [data-slot="slider"] {
     width: 100%;
     height: var(--s20);
     appearance: none;
@@ -609,7 +610,7 @@
     cursor: pointer;
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider::-webkit-slider-runnable-track {
+  .viewer-settings [data-slot="slider"]::-webkit-slider-runnable-track {
     height: var(--s4);
     border-radius: 0;
     background:
@@ -622,19 +623,19 @@
       );
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-track {
+  .viewer-settings [data-slot="slider"]::-moz-range-track {
     height: var(--s4);
     border-radius: 0;
     background: rgb(255 255 255 / 0.32);
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-progress {
+  .viewer-settings [data-slot="slider"]::-moz-range-progress {
     height: var(--s4);
     border-radius: 0;
     background: var(--color-brand-white);
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider::-webkit-slider-thumb {
+  .viewer-settings [data-slot="slider"]::-webkit-slider-thumb {
     width: var(--s12);
     height: var(--s12);
     appearance: none;
@@ -644,7 +645,7 @@
     margin-top: calc((var(--s4) - var(--s12)) / 2);
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider::-moz-range-thumb {
+  .viewer-settings [data-slot="slider"]::-moz-range-thumb {
     width: var(--s12);
     height: var(--s12);
     border: 0;
@@ -652,12 +653,12 @@
     background: var(--color-brand-white);
   }
 
-  .gds-document-detail-scan-toolbar__settings-slider:focus-visible {
+  .viewer-settings [data-slot="slider"]:focus-visible {
     outline: 2px solid var(--color-brand-white);
     outline-offset: var(--s4);
   }
 
-  .gds-document-detail-scan-toolbar__settings-value {
+  .viewer-settings [data-slot="value"] {
     color: rgb(255 255 255 / 0.88);
     font-family: var(--font-sans);
     font-size: 0.8125rem;
@@ -666,11 +667,11 @@
     text-align: right;
   }
 
-  .gds-document-detail-scan-toolbar__settings-row--invert {
+  .viewer-settings > [data-slot="row"][data-layout="stacked"] {
     grid-template-columns: 96px 1fr;
   }
 
-  .gds-document-detail-scan-toolbar__settings-checkbox {
+  .viewer-settings [data-slot="checkbox"] {
     display: inline-flex;
     align-items: center;
     gap: var(--s8);
@@ -680,7 +681,7 @@
     line-height: 1rem;
   }
 
-  .gds-document-detail-scan-toolbar__settings-checkbox input {
+  .viewer-settings [data-slot="checkbox"] input {
     width: var(--s16);
     height: var(--s16);
     margin: 0;
@@ -688,50 +689,50 @@
   }
 
   @media (max-width: 767px) {
-    .gds-document-detail-rail-button {
+    .document-rail-button {
       height: var(--s56);
       padding-inline: var(--s16);
     }
 
-    .gds-document-detail-tool-button {
+    .document-tool-button {
       min-width: var(--s40);
       min-height: var(--s40);
     }
 
-    .gds-document-detail-tool-button[data-size="touch"] {
+    .document-tool-button[data-size="touch"] {
       min-width: var(--s44);
       min-height: var(--s44);
     }
 
-    .gds-document-detail-segmented-toggle-group[data-size="regular"] {
+    .document-toggle-group[data-size="regular"] {
       height: var(--s40);
     }
 
-    .gds-document-detail-segmented-toggle-item[data-size="regular"] {
+    .document-toggle[data-size="regular"] {
       height: var(--s40);
       padding-inline: var(--s10);
     }
 
-    .gds-document-detail-scan-toolbar {
+    .viewer-toolbar {
       left: var(--s12);
       top: var(--s12);
       max-width: calc(100% - var(--s24));
     }
 
-    .gds-document-detail-scan-toolbar__settings-panel {
+    .viewer-settings {
       width: calc(100vw - var(--s24));
       max-height: calc(100vh - var(--s24));
       padding: var(--s12);
     }
 
-    .gds-document-detail-scan-toolbar__settings-row,
-    .gds-document-detail-scan-toolbar__settings-row--invert {
+    .viewer-settings > [data-slot="row"],
+    .viewer-settings > [data-slot="row"][data-layout="stacked"] {
       grid-template-columns: 1fr;
       gap: var(--s8);
       padding-block: var(--s8);
     }
 
-    .gds-document-detail-scan-toolbar__settings-value {
+    .viewer-settings [data-slot="value"] {
       text-align: left;
     }
   }

@@ -12,7 +12,7 @@ export function ManifestContentWarning() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="document-detail-overlay-warning manifest-document-layout__content-warning">
+    <div className="manifest-document-layout__content-warning">
       <ContentWarningControl
         warning={contentWarning}
         isOpen={isOpen}

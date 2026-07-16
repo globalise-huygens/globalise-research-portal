@@ -28,8 +28,8 @@ export const documentPreviewCss = `.design-preview {
   background: var(--color-brand-black);
 }`;
 
-export const toolbarCss = `.gds-document-detail-top-bar,
-.gds-document-detail-bottom-bar {
+export const toolbarCss = `.document-top-bar,
+.document-bottom-bar {
   box-sizing: border-box;
   z-index: 20;
   display: flex;
@@ -44,13 +44,13 @@ export const toolbarCss = `.gds-document-detail-top-bar,
   padding: 0 var(--s24);
 }
 
-.gds-document-detail-bottom-bar {
+.document-bottom-bar {
   min-height: var(--overlay-document-viewer-bottom-bar-height);
   border-top: 1px solid rgb(255 255 255 / 0.1);
   border-bottom: 0;
 }
 
-.gds-document-detail-bar-group {
+.document-bar-group {
   display: flex;
   min-width: 0;
   flex-shrink: 0;
@@ -58,12 +58,12 @@ export const toolbarCss = `.gds-document-detail-top-bar,
   gap: var(--s8);
 }
 
-.gds-document-detail-bar-group.center {
+.document-bar-group.center {
   flex: 1;
   justify-content: center;
 }
 
-.gds-document-detail-title {
+.document-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -71,7 +71,7 @@ export const toolbarCss = `.gds-document-detail-top-bar,
   line-height: 1.2;
 }
 
-.gds-document-detail-tool-button {
+.document-tool-button {
   box-sizing: border-box;
   display: inline-flex;
   min-width: var(--control);
@@ -94,41 +94,41 @@ export const toolbarCss = `.gds-document-detail-top-bar,
     opacity 120ms ease;
 }
 
-.gds-document-detail-tool-button:hover,
-.gds-document-detail-tool-button[data-hovered] {
+.document-tool-button:hover,
+.document-tool-button[data-hovered] {
   border-color: rgb(255 255 255 / 0.4);
   background: rgb(255 255 255 / 0.16);
 }
 
-.gds-document-detail-tool-button:focus-visible,
-.gds-document-detail-tool-button[data-focus-visible] {
+.document-tool-button:focus-visible,
+.document-tool-button[data-focus-visible] {
   outline: 2px solid var(--color-brand-turquoise);
   outline-offset: 2px;
 }
 
-.gds-document-detail-tool-button.active,
-.gds-document-detail-tool-button[data-selected] {
+.document-tool-button.active,
+.document-tool-button[data-selected] {
   border-color: var(--color-brand-white);
   background: var(--color-brand-white);
   color: var(--color-brand-black);
 }
 
 @media (max-width: 767px) {
-  .gds-document-detail-top-bar {
+  .document-top-bar {
     min-height: auto;
     flex-wrap: wrap;
     gap: var(--s8);
     padding-block: var(--s8);
   }
 
-  .gds-document-detail-bar-group.center {
+  .document-bar-group.center {
     order: 3;
     flex-basis: 100%;
     justify-content: flex-start;
   }
 }`;
 
-export const segmentedButtonsCss = `.gds-document-detail-segmented-toggle-group {
+export const segmentedButtonsCss = `.document-toggle-group {
   display: inline-flex;
   height: var(--s36);
   align-items: center;
@@ -138,7 +138,7 @@ export const segmentedButtonsCss = `.gds-document-detail-segmented-toggle-group 
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
 
-.gds-document-detail-segmented-toggle-group button {
+.document-toggle-group button {
   height: var(--s36);
   min-width: var(--s36);
   border: 0;
@@ -149,23 +149,23 @@ export const segmentedButtonsCss = `.gds-document-detail-segmented-toggle-group 
   padding: 0 var(--s12);
 }
 
-.gds-document-detail-segmented-toggle-group button:last-child {
+.document-toggle-group button:last-child {
   border-right: 0;
 }
 
-.gds-document-detail-segmented-toggle-group button > svg {
+.document-toggle-group button > svg {
   width: var(--s16);
   height: var(--s16);
   flex-shrink: 0;
 }
 
-.gds-document-detail-segmented-toggle-item[data-selected],
-.gds-document-detail-segmented-toggle-item[aria-pressed="true"] {
+.document-toggle[data-selected],
+.document-toggle[aria-pressed="true"] {
   background: var(--color-brand-white);
   color: var(--color-brand-black);
 }`;
 
-export const checkboxCss = `.gds-document-detail-checkbox {
+export const checkboxCss = `.document-checkbox {
   display: inline-flex;
   min-width: 0;
   height: var(--s28);
@@ -178,7 +178,7 @@ export const checkboxCss = `.gds-document-detail-checkbox {
   cursor: pointer;
 }
 
-.gds-document-detail-checkbox__indicator {
+.document-checkbox > [data-slot="indicator"] {
   display: flex;
   box-sizing: border-box;
   width: 14px;
@@ -196,7 +196,7 @@ export const checkboxCss = `.gds-document-detail-checkbox {
     box-shadow 75ms ease-out;
 }
 
-.gds-document-detail-checkbox__check {
+.document-checkbox [data-slot="check"] {
   display: block;
   width: 14px;
   height: 14px;
@@ -204,7 +204,7 @@ export const checkboxCss = `.gds-document-detail-checkbox {
   opacity: 0;
 }
 
-.gds-document-detail-checkbox__indeterminate {
+.document-checkbox [data-slot="indeterminate"] {
   display: block;
   width: var(--s8);
   height: 2px;
@@ -212,25 +212,25 @@ export const checkboxCss = `.gds-document-detail-checkbox {
   opacity: 0;
 }
 
-.gds-document-detail-checkbox[data-selected] .gds-document-detail-checkbox__indicator,
-.gds-document-detail-checkbox[data-indeterminate] .gds-document-detail-checkbox__indicator {
+.document-checkbox[data-selected] [data-slot="indicator"],
+.document-checkbox[data-indeterminate] [data-slot="indicator"] {
   border-color: var(--color-neutral-100);
   background: var(--color-neutral-100);
   color: var(--color-neutral-900);
 }
 
-.gds-document-detail-checkbox[data-selected] .gds-document-detail-checkbox__check,
-.gds-document-detail-checkbox[data-indeterminate] .gds-document-detail-checkbox__indeterminate {
+.document-checkbox[data-selected] [data-slot="check"],
+.document-checkbox[data-indeterminate] [data-slot="indeterminate"] {
   opacity: 1;
 }
 
-.gds-document-detail-checkbox[data-disabled] .gds-document-detail-checkbox__indicator {
+.document-checkbox[data-disabled] [data-slot="indicator"] {
   border-color: rgb(255 255 255 / 0.16);
   background: rgb(255 255 255 / 0.14);
   color: rgb(255 255 255 / 0.35);
 }`;
 
-export const popoverCss = `.gds-document-detail-popover-surface {
+export const popoverCss = `.document-popover {
   box-sizing: border-box;
   width: min(380px, calc(100vw - var(--s32)));
   border: 1px solid rgb(255 255 255 / 0.2);
@@ -241,20 +241,20 @@ export const popoverCss = `.gds-document-detail-popover-surface {
   box-shadow: 0 16px 32px rgb(0 0 0 / 0.36);
 }
 
-.gds-document-detail-popover-surface[data-size="compact"] {
+.document-popover[data-size="compact"] {
   width: min(260px, calc(100vw - var(--s32)));
 }
 
-.gds-document-detail-popover-surface[data-size="wide"] {
+.document-popover[data-size="wide"] {
   width: min(520px, calc(100vw - var(--s32)));
 }
 
-.gds-document-detail-popover-surface[data-variant="warning"] {
+.document-popover[data-variant="warning"] {
   border-color: rgb(239 68 68 / 0.35);
   color: var(--color-vermilion-500);
 }`;
 
-export const sidebarCss = `.gds-document-detail-sidebar {
+export const sidebarCss = `.document-sidebar {
   display: flex;
   width: var(--overlay-document-viewer-sidebar-width);
   height: 100%;
@@ -268,11 +268,11 @@ export const sidebarCss = `.gds-document-detail-sidebar {
   scrollbar-width: thin;
 }
 
-.gds-document-detail-sidebar-section {
+.document-sidebar-section {
   border-bottom: 1px solid rgb(255 255 255 / 0.1);
 }
 
-.gds-document-detail-sidebar-section__button {
+.document-sidebar-section > [data-slot="button"] {
   display: flex;
   width: 100%;
   height: var(--s64);
@@ -338,7 +338,7 @@ export const referencePanelCss = `.reference-panel {
   line-height: 1rem;
 }`;
 
-export const tooltipCss = `.gds-document-detail-tooltip {
+export const tooltipCss = `.document-tooltip {
   z-index: 50;
   max-width: 240px;
   overflow: hidden;

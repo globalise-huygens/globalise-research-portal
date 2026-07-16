@@ -35,7 +35,7 @@ export function FacsimileView(
         }}/>
       </div>
       <FacsimileOverlay canvasId={canvasId}/>
-      <ControlBar className="gds-document-detail-scan-toolbar">
+      <ControlBar className="viewer-toolbar">
         <FacsimileControls
           fullscreenRef={fullscreenRef}
           onScanFilterChange={setScanFilter}

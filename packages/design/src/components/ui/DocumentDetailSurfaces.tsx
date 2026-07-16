@@ -17,7 +17,7 @@ function DocumentDetailFloatingToolbar({
 }: DocumentDetailFloatingToolbarProps) {
   return (
     <div
-      className={cn('gds-document-detail-floating-toolbar', className)}
+      className={cn('document-floating-toolbar', className)}
       data-align={align}
       {...props}
     />
@@ -49,29 +49,29 @@ function DocumentDetailPopoverSurface({
 }: DocumentDetailPopoverSurfaceProps) {
   return (
     <div
-      className={cn('gds-document-detail-popover-surface', className)}
+      className={cn('document-popover', className)}
       data-size={size}
       data-variant={variant}
       {...props}
     >
       {(heading ?? icon) && (
-        <div className="gds-document-detail-popover-surface__header">
-          {icon && <span className="gds-document-detail-icon">{icon}</span>}
+        <div data-slot="header">
+          {icon && <span data-slot="icon">{icon}</span>}
           {heading && (
             <h2
               id={titleId}
-              className="gds-document-detail-popover-surface__heading"
+              data-slot="heading"
             >
               {heading}
             </h2>
           )}
         </div>
       )}
-      <div className="gds-document-detail-popover-surface__body">
+      <div data-slot="body">
         {children}
       </div>
       {footer && (
-        <div className="gds-document-detail-popover-surface__footer">
+        <div data-slot="footer">
           {footer}
         </div>
       )}
@@ -106,7 +106,7 @@ function DocumentDetailTooltip({
       <AriaTooltip
         placement={placement}
         offset={offset}
-        className={cn('gds-document-detail-tooltip', className)}
+        className={cn('document-tooltip', className)}
         {...props}
       >
         {label}
@@ -122,7 +122,7 @@ function DocumentDetailToolbar({
   ...props
 }: DocumentDetailToolbarProps) {
   return (
-    <div className={cn('gds-document-detail-toolbar', className)} {...props} />
+    <div className={cn('document-toolbar', className)} {...props} />
   );
 }
 

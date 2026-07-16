@@ -21,9 +21,7 @@ export type DocumentDetailEntityHighlightCategory = {
   label: string;
   count?: number;
   icon?: React.ReactNode;
-  rowClassName?: string;
-  subRowClassName?: string;
-  textClassName?: string;
+  tone?: string;
   subcategories?: DocumentDetailEntityHighlightSubcategory[];
 };
 
@@ -163,7 +161,7 @@ function DocumentDetailEntityHighlightMenu({
   }, []);
 
   return (
-    <div ref={rootRef} className={cn('gds-entity-highlight-menu', className)}>
+    <div ref={rootRef} className={cn('entity-menu', className)}>
       <DocumentDetailTooltip label={triggerLabel}>
         <DocumentDetailToolButton
           aria-expanded={isOpen}
@@ -190,18 +188,16 @@ function DocumentDetailEntityHighlightMenu({
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
-          className="gds-entity-highlight-menu__surface"
+          data-slot="surface"
         >
-          <h3 className="gds-entity-highlight-menu__title">{title}</h3>
+          <h3 data-slot="title">{title}</h3>
 
-          <div className="gds-entity-highlight-menu__content">
-            <div className="gds-entity-highlight-menu__all">
-              <div className="gds-entity-highlight-menu__all-copy">
-                <div className="gds-entity-highlight-menu__all-title">
-                  {allLabel}
-                </div>
+          <div data-slot="content">
+            <div data-slot="all">
+              <div data-slot="all-copy">
+                <div data-slot="all-title">{allLabel}</div>
                 {allDescription && (
-                  <div className="gds-entity-highlight-menu__all-description">
+                  <div data-slot="all-description">
                     {allDescription}
                   </div>
                 )}
@@ -214,7 +210,7 @@ function DocumentDetailEntityHighlightMenu({
               />
             </div>
 
-            <div className="gds-entity-highlight-menu__list">
+            <div data-slot="list">
               {categories.map((category) => {
                 const leafKeys = getLeafKeys(category);
                 const selectedCount = leafKeys.filter((key) =>
@@ -229,59 +225,37 @@ function DocumentDetailEntityHighlightMenu({
                   category.subcategories && category.subcategories.length > 0;
 
                 return (
-                  <div
-                    key={category.id}
-                    className="gds-entity-highlight-menu__category"
-                  >
+                  <div key={category.id} data-slot="category">
                     <div
-                      className={cn(
-                        'gds-entity-highlight-menu__category-row',
-                        category.rowClassName,
-                      )}
+                      data-slot="row"
+                      data-level="category"
+                      data-tone={category.tone}
                     >
-                      <div
-                        className={cn(
-                          'gds-entity-highlight-menu__category-label',
-                          category.textClassName,
-                        )}
-                      >
+                      <div data-slot="label">
                         {category.icon && (
-                          <span className="gds-entity-highlight-menu__icon">
+                          <span data-slot="icon">
                             {category.icon}
                           </span>
                         )}
-                        <span className="gds-entity-highlight-menu__category-label-text">
+                        <span data-slot="label-text">
                           {category.label}
                         </span>
                       </div>
                       {category.count !== undefined && (
-                        <span
-                          className={cn(
-                            'gds-entity-highlight-menu__count',
-                            category.textClassName,
-                          )}
-                        >
-                          {category.count}
-                        </span>
+                        <span data-slot="count">{category.count}</span>
                       )}
-                      <div className="gds-entity-highlight-menu__row-actions">
+                      <div data-slot="actions">
                         {hasSubcategories && (
                           <button
                             type="button"
                             aria-label={`Toggle ${category.label} subcategories`}
                             aria-expanded={isExpanded}
-                            className={cn(
-                              'gds-entity-highlight-menu__expand-button',
-                              category.textClassName,
-                            )}
+                            data-slot="expand"
                             onClick={() => toggleExpandedGroup(category.id)}
                           >
                             <IconExpandSection
                               aria-hidden="true"
-                              className={cn(
-                                'document-detail-overlay-chevron document-detail-overlay-icon',
-                                category.textClassName,
-                              )}
+                              data-slot="expand-icon"
                               data-expanded={isExpanded ? 'true' : 'false'}
                             />
                           </button>
@@ -299,7 +273,7 @@ function DocumentDetailEntityHighlightMenu({
                     </div>
 
                     {isExpanded && hasSubcategories && (
-                      <div className="gds-entity-highlight-menu__subcategories">
+                      <div data-slot="subcategories">
                         {category.subcategories?.map((subcategory) => {
                           const leafKey =
                             subcategory.id ??
@@ -308,23 +282,17 @@ function DocumentDetailEntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              className={cn(
-                                'gds-entity-highlight-menu__subcategory-row',
-                                category.subRowClassName,
-                              )}
+                              data-slot="row"
+                              data-level="subcategory"
+                              data-tone={category.tone}
                             >
-                              <div
-                                className={cn(
-                                  'gds-entity-highlight-menu__subcategory-label',
-                                  category.textClassName,
-                                )}
-                              >
+                              <div data-slot="label">
                                 {category.icon && (
-                                  <span className="gds-entity-highlight-menu__icon">
+                                  <span data-slot="icon">
                                     {category.icon}
                                   </span>
                                 )}
-                                <span className="gds-entity-highlight-menu__subcategory-label-text">
+                                <span data-slot="label-text">
                                   {subcategory.label}
                                 </span>
                               </div>

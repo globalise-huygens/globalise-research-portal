@@ -91,20 +91,20 @@ export function ManifestTranscriptionControls() {
           />
         </DocumentDetailTooltip>
       </DocumentDetailSegmentedToggleGroup>
-      <div className="gds-document-detail-scan-toolbar__zoom-segment">
+      <div data-slot="zoom-segment">
         <DocumentDetailToolButton
           aria-label="Zoom out transcription"
-          className="gds-document-detail-scan-toolbar__button"
+          data-slot="button"
           icon={
-            <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomOut data-slot="icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
         />
-        <label className="gds-document-detail-scan-toolbar__zoom-field">
+        <label data-slot="zoom-field">
           <input
             aria-label="Transcription zoom percentage, 30 to 200"
-            className="gds-document-detail-scan-toolbar__zoom-input"
+            data-slot="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -124,29 +124,29 @@ export function ManifestTranscriptionControls() {
           />
           <span
             aria-hidden="true"
-            className="gds-document-detail-scan-toolbar__zoom-suffix"
+            data-slot="zoom-suffix"
           >
             %
           </span>
         </label>
         <DocumentDetailToolButton
           aria-label="Zoom in transcription"
-          className="gds-document-detail-scan-toolbar__button"
+          data-slot="button"
           icon={
-            <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomIn data-slot="icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
       </div>
       <span
-        className="gds-document-detail-scan-toolbar__divider"
+        data-slot="divider"
         aria-hidden="true"
       />
       <DocumentDetailToolButton
         aria-label="Reset transcription zoom"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
+        data-slot="button"
+        icon={<IconReset data-slot="icon" />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
       />

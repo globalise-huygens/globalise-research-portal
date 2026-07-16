@@ -71,7 +71,7 @@ function ObjectCardActionTooltip({
       {children}
       <span
         aria-hidden="true"
-        className="gds-object-card__action-tooltip gds-document-detail-tooltip"
+        className="gds-object-card__action-tooltip document-tooltip"
       >
         {label}
       </span>

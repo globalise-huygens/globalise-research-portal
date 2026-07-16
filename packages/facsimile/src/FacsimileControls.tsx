@@ -314,7 +314,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Brightness',
       icon: (
-        <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconBrightness data-slot="settings-icon" />
       ),
       label: 'Brightness',
       max: 150,
@@ -325,7 +325,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Contrast',
       icon: (
-        <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconContrast data-slot="settings-icon" />
       ),
       label: 'Contrast',
       max: 150,
@@ -336,7 +336,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Saturation',
       icon: (
-        <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconSaturation data-slot="settings-icon" />
       ),
       label: 'Saturation',
       max: 200,
@@ -348,20 +348,20 @@ export function FacsimileControls({
 
   return (
     <>
-      <div className="gds-document-detail-scan-toolbar__zoom-segment">
+      <div data-slot="zoom-segment">
         <DocumentDetailToolButton
           aria-label="Zoom out"
-          className="gds-document-detail-scan-toolbar__button"
+          data-slot="button"
           icon={
-            <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomOut data-slot="icon" />
           }
           onPress={handleZoomOut}
           size="compact"
         />
-        <label className="gds-document-detail-scan-toolbar__zoom-field">
+        <label data-slot="zoom-field">
           <input
             aria-label="Scan zoom percentage, 10 to 400"
-            className="gds-document-detail-scan-toolbar__zoom-input"
+            data-slot="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -381,50 +381,50 @@ export function FacsimileControls({
           />
           <span
             aria-hidden="true"
-            className="gds-document-detail-scan-toolbar__zoom-suffix"
+            data-slot="zoom-suffix"
           >
             %
           </span>
         </label>
         <DocumentDetailToolButton
           aria-label="Zoom in"
-          className="gds-document-detail-scan-toolbar__button"
+          data-slot="button"
           icon={
-            <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomIn data-slot="icon" />
           }
           onPress={handleZoomIn}
           size="compact"
         />
       </div>
       <span
-        className="gds-document-detail-scan-toolbar__divider"
+        data-slot="divider"
         aria-hidden="true"
       />
       <DocumentDetailToolButton
         aria-label="Reset scan view"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
+        data-slot="button"
+        icon={<IconReset data-slot="icon" />}
         onPress={handleResetView}
         size="compact"
       />
       <DocumentDetailToolButton
         aria-label="Rotate scan"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconRotate className="gds-document-detail-scan-toolbar__icon" />}
+        data-slot="button"
+        icon={<IconRotate data-slot="icon" />}
         onPress={() => {
           rotate(90);
         }}
         size="compact"
       />
-      <div className="gds-document-detail-scan-toolbar__settings">
+      <div data-slot="settings">
         <DocumentDetailToolButton
           ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}
           aria-expanded={isSettingsOpen}
-          className="gds-document-detail-scan-toolbar__button"
+          data-slot="button"
           icon={
-            <IconSetting className="gds-document-detail-scan-toolbar__icon" />
+            <IconSetting data-slot="icon" />
           }
           isActive={isSettingsOpen}
           onPress={() => {
@@ -439,7 +439,7 @@ export function FacsimileControls({
       {isSettingsOpen && settingsPanelStyle && createPortal(
         <div
           id={settingsPanelId}
-          className="gds-document-detail-scan-toolbar__settings-panel"
+          className="viewer-settings"
           role="dialog"
           aria-label="Scan image settings"
           style={settingsPanelStyle}
@@ -454,12 +454,12 @@ export function FacsimileControls({
           {scanSettings.map((setting) => (
             <ScanSettingSlider key={setting.label} {...setting} />
           ))}
-          <div className="gds-document-detail-scan-toolbar__settings-row gds-document-detail-scan-toolbar__settings-row--invert">
-            <div className="gds-document-detail-scan-toolbar__settings-label">
-              <IconInvert className="gds-document-detail-scan-toolbar__settings-icon" />
+          <div data-slot="row" data-layout="stacked">
+            <div data-slot="label">
+              <IconInvert data-slot="settings-icon" />
               <span>Invert</span>
             </div>
-            <label className="gds-document-detail-scan-toolbar__settings-checkbox">
+            <label data-slot="checkbox">
               <input
                 type="checkbox"
                 checked={isInverted}
@@ -491,14 +491,14 @@ function ScanSettingSlider({
   }
 
   return (
-    <div className="gds-document-detail-scan-toolbar__settings-row">
-      <div className="gds-document-detail-scan-toolbar__settings-label">
+    <div data-slot="row">
+      <div data-slot="label">
         {icon}
         <span>{label}</span>
       </div>
       <input
         aria-label={ariaLabel}
-        className="gds-document-detail-scan-toolbar__settings-slider"
+        data-slot="slider"
         type="range"
         min={min}
         max={max}
@@ -512,7 +512,7 @@ function ScanSettingSlider({
           handleChange(event.currentTarget.value);
         }}
       />
-      <span className="gds-document-detail-scan-toolbar__settings-value">
+      <span data-slot="value">
         {value}%
       </span>
     </div>
