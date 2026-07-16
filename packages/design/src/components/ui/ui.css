@@ -3,7 +3,10 @@
 @import "./viewer/Layout.css";
 @import "./viewer/Surfaces.css";
 @import "./viewer/Controls.css";
-@import "./viewer/Components.css";
+@import "./viewer/Canvases.css";
+@import "./ReferencePanel.css";
+@import "./EntityPreviewCard.css";
+@import "./viewer/EntityHighlightMenu.css";
 @import "./viewer/legacy/Legacy.css";
 
 @layer components {

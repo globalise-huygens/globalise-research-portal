@@ -1,3 +1,73 @@
+@layer components {
+  .manifest-viewer-placement {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 1280px) {
+    .manifest-viewer-placement {
+      grid-column: 2 / span 14;
+    }
+  }
+
+  .manifest-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: rgb(12 10 9 / 0.8);
+    backdrop-filter: blur(2px);
+  }
+
+  .manifest-viewer-modal {
+    display: grid;
+    min-height: 100%;
+    width: 100%;
+    max-width: var(--viewer-frame-max-width);
+    grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
+    align-items: start;
+    gap: 0 var(--shell-gutter);
+    overflow-y: auto;
+    margin-inline: auto;
+    padding: var(--viewer-inset-top)
+      var(--viewer-inset-x)
+      var(--viewer-inset-bottom);
+  }
+
+  .manifest-viewer-dialog {
+    display: grid;
+    width: 100%;
+    height: var(--viewer-frame-height);
+    grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0 var(--shell-gutter);
+    overflow: hidden;
+    background: var(--color-brand-black);
+    outline: none;
+  }
+
+  @media (max-width: 767px) {
+    .manifest-viewer-overlay {
+      backdrop-filter: blur(1px);
+    }
+
+    .manifest-viewer-modal {
+      max-width: 100vw;
+      padding: 0;
+    }
+
+    .manifest-viewer-placement {
+      grid-column: 1 / -1;
+    }
+
+    .manifest-viewer-dialog {
+      height: 100vh;
+      min-height: 100vh;
+      gap: 0;
+    }
+  }
+}
+
 .manifest-viewer-modal {
   --manifest-viewer-sidebar-width: var(
     --viewer-sidebar-width

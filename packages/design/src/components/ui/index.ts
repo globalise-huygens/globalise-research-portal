@@ -144,6 +144,10 @@ export type {
   ReferencePanelProps,
 } from './ReferencePanel';
 
+/**
+ * @deprecated Import viewer primitives from `@globalise/design/viewer`.
+ * These names remain available here for compatibility.
+ */
 export {
   ContentWarningControl,
   ViewerBarGroup,
@@ -180,8 +184,17 @@ export {
   ViewerArea,
   ViewerPane,
 } from './viewer/compat';
+/**
+ * @deprecated Legacy viewer retained until its remaining behavior has been
+ * transferred. Compose the active viewer with `@globalise/design/viewer`.
+ */
 export { ManifestViewer } from './viewer/legacy/Root';
+/** @deprecated See `ManifestViewer`. */
 export type { ManifestViewerProps } from './viewer/legacy/Root';
+/**
+ * @deprecated Import viewer primitive types from `@globalise/design/viewer`.
+ * These names remain available here for compatibility.
+ */
 export type {
   ViewerBarGroupProps,
   ViewerBodyProps,
@@ -219,8 +232,11 @@ export type {
   ViewerPaneProps,
   ViewerAreaProps,
 } from './viewer/compat';
+/** @deprecated See `ManifestViewer`. */
 export { ManifestViewerOverlay } from './viewer/legacy/Overlay';
+/** @deprecated See `ManifestViewer`. */
 export type { ManifestViewerOverlayProps } from './viewer/legacy/Overlay';
+/** @deprecated Legacy viewer data types retained for compatibility. */
 export type {
   ManifestViewerContent,
   ManifestViewerDocument,
