@@ -59,11 +59,27 @@ export function useLineSegments(
       if (!segmentsByLine[lineId]) {
         segmentsByLine[lineId] = [];
       }
-      segmentsByLine[lineId].push(segment);
+      const lineSegment = word ? segment : beforeFirstLineBreak(segment);
+      if (lineSegment.value) {
+        segmentsByLine[lineId].push(lineSegment);
+      }
     }
 
     const lineIds = Object.keys(segmentsByLine);
 
     return { pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines };
   }, [annotations, indexes]);
+}
+
+function beforeFirstLineBreak(
+  segment: TextSegment<Annotation>,
+): TextSegment<Annotation> {
+  const breakIndex = segment.value.search(/[\r\n]/u);
+  if (breakIndex === -1) {
+    return segment;
+  }
+  return {
+    ...segment,
+    value: segment.value.slice(0, breakIndex),
+  };
 }

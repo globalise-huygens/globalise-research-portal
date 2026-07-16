@@ -76,6 +76,11 @@
         --diplomatic-entity-strong: var(--color-entity-type-strong, #8f5200);
     }
 
+    .entity:hover {
+        box-shadow: inset 0 0 0 1px var(--diplomatic-entity-strong);
+        cursor: pointer;
+    }
+
     .entity.selected,
     .selected {
         background: var(--diplomatic-selected);

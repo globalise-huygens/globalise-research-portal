@@ -144,6 +144,11 @@
         --normalized-entity-strong: var(--color-entity-type-strong, #8f5200);
     }
 
+    .entity:hover {
+        box-shadow: inset 0 0 0 1px var(--normalized-entity-strong);
+        cursor: pointer;
+    }
+
     .entity.selected {
         --normalized-selected-strong: var(--normalized-entity-strong);
     }
