@@ -110,7 +110,7 @@
 
     /* Project-neutral document structure: paragraphs, blocks and lines. */
     --layout-element-fill: rgb(128 219 227 / 0.1);
-    --layout-element-fill-strong: rgb(128 219 227 / 0.24);
+    --layout-element-fill-strong: rgb(128 219 227 / 0.14);
     --layout-element-stroke: rgb(18 94 100 / 0.5);
     --layout-element-stroke-strong: rgb(18 94 100 / 0.7);
     --layout-element-text: #125e64;

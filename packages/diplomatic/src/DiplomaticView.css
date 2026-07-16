@@ -5,7 +5,7 @@
     --diplomatic-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
     --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
     --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
-    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24));
+    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14));
     --diplomatic-structure-text: var(--color-layout-element-text, #125e64);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
 
@@ -25,7 +25,11 @@
         --diplomatic-entity: var(--color-brand-parchment, #b99b7f);
         --diplomatic-entity-strong: var(--color-parchment-800, #5d4736);
 
-        background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
+        background: color-mix(
+          in srgb,
+          var(--diplomatic-entity) 58%,
+          var(--manifest-transcription-page, #f8f5f2)
+        );
         border-radius: 2px;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
@@ -84,7 +88,6 @@
     }
 
     .entity.selected {
-        background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
         --diplomatic-selected-strong: var(--diplomatic-entity-strong);
     }
 
@@ -135,6 +138,7 @@
         paint-order: stroke;
         stroke: rgb(255 255 255 / 0.38);
         stroke-width: 2px;
+        opacity: 0.76;
     }
 
     .blocks .layout-block polygon {
@@ -151,5 +155,6 @@
 
     .blocks .layout-block[data-selected="true"] .block-label {
         fill: var(--diplomatic-structure-text);
+        opacity: 0.92;
     }
 }

@@ -5,7 +5,7 @@
     --normalized-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
     --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
     --normalized-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
-    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14));
     --normalized-text: var(--color-brand-black, #0c0a09);
 
     margin-left: 0.5em;
@@ -93,7 +93,11 @@
         --normalized-entity: var(--color-brand-parchment, #b99b7f);
         --normalized-entity-strong: var(--color-parchment-800, #5d4736);
 
-        background: color-mix(in srgb, var(--normalized-entity) 34%, transparent);
+        background: color-mix(
+          in srgb,
+          var(--normalized-entity) 58%,
+          var(--manifest-transcription-page, #f8f5f2)
+        );
         border-radius: 2px;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;

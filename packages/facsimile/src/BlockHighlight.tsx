@@ -18,7 +18,7 @@ export function BlockHighlight(
 
   const highlightStyle: HighlightStyle = {
     fill: selected
-      ? 'var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.24))'
+      ? 'var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14))'
       : 'var(--color-layout-element-fill, rgb(128 219 227 / 0.1))',
     stroke: selected || hovered
       ? 'var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7))'
