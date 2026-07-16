@@ -6,6 +6,7 @@ import {
 } from '@globalise/common/document';
 import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
+import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
 
 export type TocDocumentProps = {
@@ -55,6 +56,8 @@ export function TocDocument(
           </button>
         )}
       </div>
+
+      {isExpanded && <TocDocumentMetadata document={document}/>}
 
       {isExpanded && (
         <div className="document-detail-overlay-toc-document-scans">

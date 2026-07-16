@@ -1,16 +1,25 @@
 import { useMetadataValues } from '@globalise/common';
-import { Pair, Timespan } from '../common';
+import { EmptyPair, Pair, Timespan } from '../common';
+import type { FieldProps } from './FieldProps';
 
-export function TimespanField() {
-  const label = 'Timespan';
-  const begin = useMetadataValues(['produced_by', 'timespan', 'begin_of_the_begin'])[0];
-  const end = useMetadataValues(['produced_by', 'timespan', 'end_of_the_end'])[0];
-  if (!begin && !end) {
-    return null;
+const timespanPath = ['produced_by', 'timespan'];
+
+export function TimespanField({ url, label = 'Timespan', fallback }: FieldProps) {
+  const beginOfTheBegin = useMetadataValues(url, [...timespanPath, 'begin_of_the_begin'])[0];
+  const endOfTheBegin = useMetadataValues(url, [...timespanPath, 'end_of_the_begin'])[0];
+  const beginOfTheEnd = useMetadataValues(url, [...timespanPath, 'begin_of_the_end'])[0];
+  const endOfTheEnd = useMetadataValues(url, [...timespanPath, 'end_of_the_end'])[0];
+  if (!beginOfTheBegin && !endOfTheBegin && !beginOfTheEnd && !endOfTheEnd) {
+    return <EmptyPair label={label} fallback={fallback}/>;
   }
   return (
     <Pair label={label}>
-      <Timespan begin={begin} end={end}/>
+      <Timespan
+        beginOfTheBegin={beginOfTheBegin}
+        endOfTheBegin={endOfTheBegin}
+        beginOfTheEnd={beginOfTheEnd}
+        endOfTheEnd={endOfTheEnd}
+      />
     </Pair>
   );
 }

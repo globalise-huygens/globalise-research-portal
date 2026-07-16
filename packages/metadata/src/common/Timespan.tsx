@@ -1,31 +1,29 @@
+import { DateRange } from './DateRange.tsx';
+
 export type TimespanProps = {
-  begin?: string;
-  end?: string;
+  beginOfTheBegin?: string;
+  endOfTheBegin?: string;
+  beginOfTheEnd?: string;
+  endOfTheEnd?: string;
 };
 
-export function Timespan({ begin, end }: TimespanProps) {
+/**
+ * A timespan starts somewhere in a date range and ends in another one.
+ * When both inner boundaries are missing, begin and end are certain enough
+ * to render as a single date range.
+ */
+export function Timespan(
+  { beginOfTheBegin, endOfTheBegin, beginOfTheEnd, endOfTheEnd }: TimespanProps,
+) {
+  const isFuzzy = !!endOfTheBegin || !!beginOfTheEnd;
+  if (!isFuzzy) {
+    return <DateRange begin={beginOfTheBegin} end={endOfTheEnd}/>;
+  }
   return (
     <>
-      <span title={begin}>{formatDate(begin)}</span>
-      &nbsp;&ndash;&nbsp;
-      <span title={end}>{formatDate(end)}</span>
+      <DateRange begin={beginOfTheBegin} end={endOfTheBegin}/>
+      {' to '}
+      <DateRange begin={beginOfTheEnd} end={endOfTheEnd}/>
     </>
   );
-}
-
-function formatDate(value?: string): string {
-  if (!value) {
-    return '?';
-  }
-  const date = new Date(value);
-  if (isNaN(date.getTime())) {
-    return value;
-  }
-  return date.toLocaleDateString(undefined, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
 }

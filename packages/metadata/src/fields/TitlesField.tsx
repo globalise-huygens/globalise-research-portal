@@ -1,11 +1,11 @@
 import { useMetadataValues } from '@globalise/common';
-import { Joined, Pair } from '../common';
+import { EmptyPair, Joined, Pair } from '../common';
+import type { FieldProps } from './FieldProps';
 
-export function TitlesField() {
-  const label = 'Titles(s)';
-  const titles = useMetadataValues(['title', 'content']);
+export function TitlesField({ url, label = 'Titles(s)', fallback }: FieldProps) {
+  const titles = useMetadataValues(url, ['title', 'content']);
   if (!titles.length) {
-    return null;
+    return <EmptyPair label={label} fallback={fallback}/>;
   }
   return (
     <Pair label={label}>

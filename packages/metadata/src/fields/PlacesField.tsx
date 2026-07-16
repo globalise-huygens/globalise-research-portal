@@ -1,13 +1,13 @@
-import { url, useMetadataNodes } from '@globalise/common';
-import { Joined, Pair, PlaceTag } from '../common';
+import { url as urlOf, useMetadataNodes } from '@globalise/common';
+import { EmptyPair, Joined, Pair, PlaceTag } from '../common';
+import type { FieldProps } from './FieldProps';
 
-export function PlacesField() {
-  const label = 'Location(s)';
+export function PlacesField({ url, label = 'Location(s)', fallback }: FieldProps) {
 
-  const places = useMetadataNodes(['produced_by', 'took_place_at'])
-    .map((place) => ({ label: place._label ?? '', href: url(place) }));
+  const places = useMetadataNodes(url, ['produced_by', 'took_place_at'])
+    .map((place) => ({ label: place._label ?? '', href: urlOf(place) }));
   if (!places.length) {
-    return null;
+    return <EmptyPair label={label} fallback={fallback}/>;
   }
   return (
     <Pair label={label}>

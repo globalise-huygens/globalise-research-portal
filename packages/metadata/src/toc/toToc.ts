@@ -12,6 +12,8 @@ export type ManifestScan = {
 export type ManifestDocument = {
   id: string;
   label: string;
+  metadataUrl?: string;
+  tanapId?: string;
   scans: ManifestScan[];
 };
 
@@ -75,9 +77,14 @@ function toDocument(
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
     scans.push({ canvasId: canvasId, scanNumber, thumbnailUrl });
   }
+  const tanap = range.metadata.find(
+    (item) => getValue(item.label) === 'TANAP-id',
+  );
   return {
     id: range.id,
     label: getValue(range.label),
+    metadataUrl: range.seeAlso[0]?.id,
+    tanapId: tanap && getValue(tanap.value),
     scans,
   };
 }
