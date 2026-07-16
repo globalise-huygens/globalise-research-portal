@@ -1,8 +1,8 @@
 import {
-  DocumentDetailBarGroup,
-  DocumentDetailBottomBar as DocumentDetailBottomBarPrimitive,
-} from './DocumentDetailLayout';
-import { DocumentDetailIconButton } from './DocumentDetailControls';
+  ViewerBarGroup,
+  ViewerBottomBar as ViewerBottomBarPrimitive,
+} from './ViewerLayout';
+import { ManifestViewerIconButton } from './ManifestViewerControls';
 import {
   IconClose,
   IconLeft,
@@ -40,16 +40,16 @@ export function ManifestViewerBottomBar({
   onClearSearchHits: () => void;
 }) {
   return (
-    <DocumentDetailBottomBarPrimitive className="manifest-viewer-bottom-bar">
-      <DocumentDetailBarGroup>
-        <DocumentDetailIconButton
+    <ViewerBottomBarPrimitive className="manifest-viewer-bottom-bar">
+      <ViewerBarGroup>
+        <ManifestViewerIconButton
           aria-label="First scan"
           tooltip="Go to first scan"
           icon={<IconLeftFirst className="manifest-viewer-icon" />}
           onPress={onFirstScan}
           variant="quiet"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Previous scan"
           tooltip="Go to previous scan"
           icon={<IconLeft className="manifest-viewer-icon" />}
@@ -61,26 +61,26 @@ export function ManifestViewerBottomBar({
         <span>in doc.</span>
         <strong>{currentScan.documentScan}</strong>
         <span>of {documentScanTotal}</span>
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Next scan"
           tooltip="Go to next scan"
           icon={<IconRight className="manifest-viewer-icon" />}
           onPress={onNextScan}
           variant="quiet"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Last scan"
           tooltip="Go to last scan"
           icon={<IconRightLast className="manifest-viewer-icon" />}
           onPress={onLastScan}
           variant="quiet"
         />
-      </DocumentDetailBarGroup>
+      </ViewerBarGroup>
 
       {isSearchNavigationVisible && (
-        <DocumentDetailBarGroup>
+        <ViewerBarGroup>
           <span className="manifest-viewer-muted">|</span>
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Previous search hit"
             tooltip="Previous search hit"
             icon={<IconLeft className="manifest-viewer-icon" />}
@@ -90,22 +90,22 @@ export function ManifestViewerBottomBar({
           <span>search hits</span>
           <strong>{searchHit}</strong>
           <span>of {searchHitTotal}</span>
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Clear search hits"
             tooltip="Clear search hit navigation"
             icon={<IconClose className="manifest-viewer-icon" />}
             onPress={onClearSearchHits}
             variant="quiet"
           />
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Next search hit"
             tooltip="Next search hit"
             icon={<IconRight className="manifest-viewer-icon" />}
             onPress={onNextSearchHit}
             variant="quiet"
           />
-        </DocumentDetailBarGroup>
+        </ViewerBarGroup>
       )}
-    </DocumentDetailBottomBarPrimitive>
+    </ViewerBottomBarPrimitive>
   );
 }

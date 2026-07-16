@@ -4,7 +4,7 @@ import {
   useSelectedCanvas,
 } from '@globalise/common/document';
 import {
-  DocumentDetailBarGroup,
+  ViewerBarGroup,
   IconLeft,
   IconLeftFirst,
   IconRight,
@@ -79,7 +79,7 @@ export function ManifestCanvasNavigation() {
   }
 
   return (
-    <DocumentDetailBarGroup className="gap-s8">
+    <ViewerBarGroup className="gap-s8">
       <TooltipIconButton
         aria-label="First scan"
         tooltip="Go to first scan"
@@ -147,6 +147,6 @@ export function ManifestCanvasNavigation() {
         icon={<IconRightLast className="h-s16 w-s16" />}
         onPress={() => scrollTo(lastId)}
       />
-    </DocumentDetailBarGroup>
+    </ViewerBarGroup>
   );
 }

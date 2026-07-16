@@ -19,25 +19,25 @@ import {
 } from '../icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
-  DocumentDetailCanvas,
-  DocumentDetailTranscriptCanvas,
-} from './DocumentDetailCanvases';
+  ViewerCanvas,
+  TranscriptionCanvas,
+} from './ViewerCanvases';
 import {
-  DocumentDetailCheckbox,
-  DocumentDetailIconButton,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailToolButton,
-} from './DocumentDetailControls';
-import { DocumentDetailViewerPane } from './DocumentDetailLayout';
+  ViewerCheckbox,
+  ViewerToggleGroup,
+  ViewerToggle,
+  ViewerToolButton,
+} from './ViewerControls';
+import { ManifestViewerIconButton } from './ManifestViewerControls';
+import { ViewerPane } from './ViewerLayout';
 import type {
   ManifestViewerScan,
   ManifestViewerScanRenderer,
 } from './ManifestViewerTypes';
 import {
-  DocumentDetailFloatingToolbar,
-  DocumentDetailPopoverSurface,
-} from './DocumentDetailSurfaces';
+  ViewerFloatingToolbar,
+  ViewerPopover,
+} from './ViewerSurfaces';
 
 export type TranscriptMode = 'normalised' | 'diplomatic';
 
@@ -171,11 +171,11 @@ export function ManuscriptPane({
   }, [isSettingsOpen]);
 
   return (
-    <DocumentDetailViewerPane hidden={!isVisible}>
-      <DocumentDetailCanvas className="manifest-viewer-manuscript-canvas">
-        <DocumentDetailFloatingToolbar className="manifest-viewer-floating-toolbar">
+    <ViewerPane hidden={!isVisible}>
+      <ViewerCanvas className="manifest-viewer-manuscript-canvas">
+        <ViewerFloatingToolbar className="manifest-viewer-floating-toolbar">
           <div className="manifest-viewer-zoom-segmented">
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-label="Zoom out"
               tooltip="Zoom out"
               icon={<IconZoomOut className="manifest-viewer-icon" />}
@@ -207,7 +207,7 @@ export function ManuscriptPane({
                 %
               </span>
             </label>
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-label="Zoom in"
               tooltip="Zoom in"
               icon={<IconZoomIn className="manifest-viewer-icon" />}
@@ -215,14 +215,14 @@ export function ManuscriptPane({
               variant="quiet"
             />
           </div>
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Reset scan view"
             tooltip="Reset scan view"
             icon={<IconReset className="manifest-viewer-icon" />}
             onPress={resetScanAdjustments}
             variant="quiet"
           />
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Rotate scan"
             tooltip="Rotate scan"
             icon={<IconRotate className="manifest-viewer-icon" />}
@@ -235,7 +235,7 @@ export function ManuscriptPane({
             ref={settingsButtonContainerRef}
             className="manifest-viewer-scan-settings"
           >
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-label="Scan settings"
               aria-controls={settingsPanelId}
               aria-expanded={isSettingsOpen}
@@ -251,7 +251,7 @@ export function ManuscriptPane({
                 id={settingsPanelId}
                 className="manifest-viewer-scan-settings-panel"
               >
-                <DocumentDetailPopoverSurface
+                <ViewerPopover
                   variant="default"
                   className="manifest-viewer-scan-settings-surface"
                 >
@@ -336,27 +336,27 @@ export function ManuscriptPane({
                         <IconInvert className="manifest-viewer-icon manifest-viewer-icon-medium" />
                         <span>Invert</span>
                       </div>
-                      <DocumentDetailCheckbox
+                      <ViewerCheckbox
                         aria-label="Invert scan image"
                         className="manifest-viewer-scan-settings-checkbox"
                         isSelected={isInverted}
                         onChange={setIsInverted}
                       >
                         Invert scan image
-                      </DocumentDetailCheckbox>
+                      </ViewerCheckbox>
                     </div>
                   </div>
-                </DocumentDetailPopoverSurface>
+                </ViewerPopover>
               </div>
             )}
           </div>
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Download scan"
             tooltip="Download scan"
             icon={<IconDownload className="manifest-viewer-icon" />}
             variant="quiet"
           />
-        </DocumentDetailFloatingToolbar>
+        </ViewerFloatingToolbar>
 
         <div className="manifest-viewer-page-frame">
           <div
@@ -380,8 +380,8 @@ export function ManuscriptPane({
             </div>
           </div>
         )}
-      </DocumentDetailCanvas>
-    </DocumentDetailViewerPane>
+      </ViewerCanvas>
+    </ViewerPane>
   );
 }
 
@@ -506,13 +506,13 @@ export function TranscriptPane({
   }, [isViewModeMenuOpen, isTranscriptSettingsOpen]);
 
   return (
-    <DocumentDetailViewerPane hidden={!isVisible}>
-      <DocumentDetailTranscriptCanvas className="manifest-viewer-transcript-canvas">
-        <DocumentDetailFloatingToolbar
+    <ViewerPane hidden={!isVisible}>
+      <TranscriptionCanvas className="manifest-viewer-transcript-canvas">
+        <ViewerFloatingToolbar
           align="end"
           className="manifest-viewer-floating-toolbar"
         >
-          <DocumentDetailSegmentedToggleGroup
+          <ViewerToggleGroup
             aria-label="Transcription view mode"
             className="manifest-viewer-transcript-mode-group"
             disallowEmptySelection
@@ -527,24 +527,24 @@ export function TranscriptPane({
             }}
             size="compact"
           >
-            <DocumentDetailSegmentedToggleItem
+            <ViewerToggle
               id="normalised"
               aria-label="Show normalised transcription"
               size="compact"
             >
               <IconTranscriptionNormalised className="manifest-viewer-icon" />
-            </DocumentDetailSegmentedToggleItem>
-            <DocumentDetailSegmentedToggleItem
+            </ViewerToggle>
+            <ViewerToggle
               id="diplomatic"
               aria-label="Show diplomatic transcription"
               size="compact"
             >
               <IconTranscriptionDiplomatic className="manifest-viewer-icon" />
-            </DocumentDetailSegmentedToggleItem>
-          </DocumentDetailSegmentedToggleGroup>
+            </ViewerToggle>
+          </ViewerToggleGroup>
 
           <div className="manifest-viewer-zoom-segmented">
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-label="Zoom out"
               tooltip="Zoom out"
               icon={<IconZoomOut className="manifest-viewer-icon" />}
@@ -576,7 +576,7 @@ export function TranscriptPane({
                 %
               </span>
             </label>
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-label="Zoom in"
               tooltip="Zoom in"
               icon={<IconZoomIn className="manifest-viewer-icon" />}
@@ -589,7 +589,7 @@ export function TranscriptPane({
             ref={viewModeTriggerRef}
             className="manifest-viewer-toolbar-dropdown"
           >
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-controls={viewModeMenuId}
               aria-expanded={isViewModeMenuOpen}
               aria-label="Transcript view modes"
@@ -610,13 +610,13 @@ export function TranscriptPane({
                 id={viewModeMenuId}
                 className="manifest-viewer-transcript-menu-panel"
               >
-                <DocumentDetailPopoverSurface
+                <ViewerPopover
                   className="manifest-viewer-transcript-menu-surface"
                   size="compact"
                   variant="default"
                 >
                   <div className="manifest-viewer-transcript-menu-items">
-                    <DocumentDetailToolButton
+                    <ViewerToolButton
                       aria-label="Table view"
                       className="manifest-viewer-transcript-menu-item"
                       icon={
@@ -630,8 +630,8 @@ export function TranscriptPane({
                       size="compact"
                     >
                       Table view
-                    </DocumentDetailToolButton>
-                    <DocumentDetailToolButton
+                    </ViewerToolButton>
+                    <ViewerToolButton
                       aria-label="Search transcript"
                       className="manifest-viewer-transcript-menu-item"
                       icon={
@@ -645,14 +645,14 @@ export function TranscriptPane({
                       size="compact"
                     >
                       Search transcript
-                    </DocumentDetailToolButton>
+                    </ViewerToolButton>
                   </div>
-                </DocumentDetailPopoverSurface>
+                </ViewerPopover>
               </div>
             )}
           </div>
 
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Reset transcription"
             tooltip="Reset transcription"
             icon={<IconReset className="manifest-viewer-icon" />}
@@ -664,7 +664,7 @@ export function TranscriptPane({
             ref={transcriptSettingsTriggerRef}
             className="manifest-viewer-toolbar-dropdown"
           >
-            <DocumentDetailIconButton
+            <ManifestViewerIconButton
               aria-controls={transcriptSettingsId}
               aria-expanded={isTranscriptSettingsOpen}
               aria-label="Transcript settings"
@@ -683,13 +683,13 @@ export function TranscriptPane({
                 id={transcriptSettingsId}
                 className="manifest-viewer-transcript-settings-panel"
               >
-                <DocumentDetailPopoverSurface
+                <ViewerPopover
                   className="manifest-viewer-transcript-settings-surface"
                   size="default"
                   variant="default"
                 >
                   <div className="manifest-viewer-transcript-settings-controls">
-                    <DocumentDetailSegmentedToggleGroup
+                    <ViewerToggleGroup
                       aria-label="Transcript typeface"
                       className="manifest-viewer-transcript-type-group"
                       disallowEmptySelection
@@ -704,21 +704,21 @@ export function TranscriptPane({
                       }}
                       size="compact"
                     >
-                      <DocumentDetailSegmentedToggleItem
+                      <ViewerToggle
                         id="sans"
                         aria-label="Use sans serif"
                         size="compact"
                       >
                         Sans
-                      </DocumentDetailSegmentedToggleItem>
-                      <DocumentDetailSegmentedToggleItem
+                      </ViewerToggle>
+                      <ViewerToggle
                         id="serif"
                         aria-label="Use serif"
                         size="compact"
                       >
                         Serif
-                      </DocumentDetailSegmentedToggleItem>
-                    </DocumentDetailSegmentedToggleGroup>
+                      </ViewerToggle>
+                    </ViewerToggleGroup>
 
                     <div className="manifest-viewer-transcript-settings-row">
                       <div className="manifest-viewer-transcript-settings-label">
@@ -784,18 +784,18 @@ export function TranscriptPane({
                       </span>
                     </div>
                   </div>
-                </DocumentDetailPopoverSurface>
+                </ViewerPopover>
               </div>
             )}
           </div>
 
-          <DocumentDetailIconButton
+          <ManifestViewerIconButton
             aria-label="Download transcript"
             tooltip="Download transcript"
             icon={<IconDownload className="manifest-viewer-icon" />}
             variant="quiet"
           />
-        </DocumentDetailFloatingToolbar>
+        </ViewerFloatingToolbar>
 
         <div className="manifest-viewer-transcript-scroll">
           <div
@@ -819,7 +819,7 @@ export function TranscriptPane({
             {renderScanPage(getScanRenderArgs(currentScan))}
           </div>
         )}
-      </DocumentDetailTranscriptCanvas>
-    </DocumentDetailViewerPane>
+      </TranscriptionCanvas>
+    </ViewerPane>
   );
 }

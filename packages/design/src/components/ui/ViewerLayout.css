@@ -1,10 +1,10 @@
 @layer components {
-  .document-full-bleed {
+  .viewer-full-bleed {
     grid-column: 1 / -1;
   }
 
-  .document-top-bar,
-  .document-bottom-bar {
+  .viewer-top-bar,
+  .viewer-bottom-bar {
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -13,31 +13,31 @@
     color: var(--color-brand-white);
   }
 
-  .document-top-bar {
+  .viewer-top-bar {
     height: var(--viewer-top-bar-height);
     border-bottom-width: 1px;
   }
 
-  .document-bottom-bar {
+  .viewer-bottom-bar {
     height: var(--viewer-bottom-bar-height);
     border-top-width: 1px;
   }
 
-  .document-body {
+  .viewer-body {
     display: flex;
     min-height: 0;
     flex: 1 1 0%;
     overflow: hidden;
   }
 
-  .document-bar-group {
+  .viewer-bar-group {
     display: flex;
     min-width: 0;
     align-items: center;
     gap: var(--s12);
   }
 
-  .document-title {
+  .viewer-title {
     min-width: 0;
     padding-inline: var(--s16);
     text-align: center;
@@ -47,7 +47,7 @@
     line-height: 1rem;
   }
 
-  .document-icon-rail {
+  .viewer-icon-rail {
     display: flex;
     width: var(--viewer-rail-width);
     min-width: var(--viewer-rail-width);
@@ -58,7 +58,7 @@
     background: var(--color-neutral-900);
   }
 
-  .document-sidebar {
+  .viewer-sidebar {
     display: flex;
     width: var(--viewer-sidebar-width);
     min-width: var(--viewer-sidebar-width);
@@ -74,7 +74,7 @@
     scrollbar-width: thin;
   }
 
-  .document-sidebar-button {
+  .viewer-sidebar-button {
     display: flex;
     width: 100%;
     height: var(--s64);
@@ -88,35 +88,35 @@
     transition: background-color 75ms ease-out;
   }
 
-  .document-sidebar-button[data-hovered] {
+  .viewer-sidebar-button[data-hovered] {
     background: rgb(255 255 255 / 0.05);
   }
 
-  .document-sidebar-button[data-focus-visible] {
+  .viewer-sidebar-button[data-focus-visible] {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--color-ring);
   }
 
-  .document-sidebar-button[data-variant="warning"] {
+  .viewer-sidebar-button[data-variant="warning"] {
     border-color: rgb(255 84 61 / 0.25);
     color: var(--color-vermilion-500);
   }
 
-  .document-sidebar-button[data-variant="warning"]
+  .viewer-sidebar-button[data-variant="warning"]
     [data-slot="count"],
-  .document-sidebar-button[data-variant="warning"]
+  .viewer-sidebar-button[data-variant="warning"]
     [data-slot="icon"] {
     color: var(--color-vermilion-500);
   }
 
-  .document-sidebar-button > [data-slot="content"] {
+  .viewer-sidebar-button > [data-slot="content"] {
     display: flex;
     min-width: 0;
     align-items: center;
     gap: var(--s8);
   }
 
-  .document-sidebar-button [data-slot="label"] {
+  .viewer-sidebar-button [data-slot="label"] {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -126,7 +126,7 @@
     line-height: 1.25rem;
   }
 
-  .document-sidebar-button [data-slot="count"] {
+  .viewer-sidebar-button [data-slot="count"] {
     flex-shrink: 0;
     color: rgb(255 255 255 / 0.45);
     font-size: 1rem;
@@ -134,7 +134,7 @@
     line-height: 1.25rem;
   }
 
-  .document-sidebar-badge {
+  .viewer-sidebar-badge {
     display: inline-flex;
     min-width: var(--s28);
     height: var(--s20);
@@ -149,7 +149,7 @@
     line-height: 1;
   }
 
-  .document-side-panel {
+  .viewer-side-panel {
     display: flex;
     width: var(--viewer-side-panel-width);
     flex-shrink: 0;
@@ -163,13 +163,13 @@
     scrollbar-width: thin;
   }
 
-  .document-viewer {
+  .viewer-area {
     display: flex;
     min-width: 0;
     flex: 1 1 0%;
   }
 
-  .document-split-viewer {
+  .split-viewer {
     display: grid;
     min-width: 0;
     flex: 1 1 0%;
@@ -177,7 +177,7 @@
     overflow: hidden;
   }
 
-  .document-viewer-pane {
+  .viewer-pane {
     display: flex;
     min-width: 0;
     min-height: 0;
@@ -187,26 +187,26 @@
     border-right: 1px solid rgb(255 255 255 / 0.1);
   }
 
-  .document-viewer-pane[hidden] {
+  .viewer-pane[hidden] {
     display: none;
   }
 
-  .document-viewer-pane:last-child {
+  .viewer-pane:last-child {
     border-right: 0;
   }
 
-  .document-viewer-pane[data-toolbar-floating="true"] {
+  .viewer-pane[data-toolbar-floating="true"] {
     position: relative;
   }
 
-  .document-viewer-pane > [data-slot="content"] {
+  .viewer-pane > [data-slot="content"] {
     min-width: 0;
     min-height: 0;
     flex: 1 1 0%;
     overflow: hidden;
   }
 
-  .document-panel-header {
+  .viewer-panel-header {
     position: sticky;
     top: 0;
     z-index: 10;
@@ -218,20 +218,20 @@
   }
 
   @media (max-width: 767px) {
-    .document-top-bar,
-    .document-bottom-bar {
+    .viewer-top-bar,
+    .viewer-bottom-bar {
       padding-left: max(var(--s8), env(safe-area-inset-left));
       padding-right: max(var(--s8), env(safe-area-inset-right));
     }
 
-    .document-top-bar {
+    .viewer-top-bar {
       padding-top: env(safe-area-inset-top);
       height: calc(
         var(--viewer-top-bar-height) + env(safe-area-inset-top)
       );
     }
 
-    .document-bottom-bar {
+    .viewer-bottom-bar {
       padding-bottom: max(var(--s4), env(safe-area-inset-bottom));
       min-height: calc(
         var(--viewer-bottom-bar-height) +
@@ -239,37 +239,37 @@
       );
     }
 
-    .document-sidebar {
+    .viewer-sidebar {
       width: 100%;
       min-width: 100%;
       max-width: 100%;
       border-right: 0;
     }
 
-    .document-sidebar-button {
+    .viewer-sidebar-button {
       height: var(--s56);
       padding-inline: var(--s16);
     }
 
-    .document-sidebar-button [data-slot="label"],
-    .document-sidebar-button [data-slot="count"] {
+    .viewer-sidebar-button [data-slot="label"],
+    .viewer-sidebar-button [data-slot="count"] {
       font-size: 0.875rem;
       line-height: 1.125rem;
     }
   }
 
   @media (min-width: 1024px) {
-    .document-split-viewer {
+    .split-viewer {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .document-title {
+    .viewer-title {
       font-size: 0.875rem;
       line-height: 1.25rem;
     }
 
-    .document-sidebar-button [data-slot="label"],
-    .document-sidebar-button [data-slot="count"] {
+    .viewer-sidebar-button [data-slot="label"],
+    .viewer-sidebar-button [data-slot="count"] {
       font-size: 1.125rem;
       line-height: 1.25rem;
     }

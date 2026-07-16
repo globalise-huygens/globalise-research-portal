@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {
-  DocumentDetailMetadataSidebar,
-  DocumentDetailMetadataSidebarButton,
-  DocumentDetailMetadataSidebarBadge,
+  ViewerMetadataSidebar,
+  ViewerMetadataSidebarButton,
+  ViewerMetadataSidebarBadge,
 } from '@globalise/design';
 import { sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
@@ -16,14 +16,14 @@ export function ExpandedMetadataSidebar({
   onToggleSection: (sectionId: string) => void;
 }) {
   return (
-    <DocumentDetailMetadataSidebar className="manifest-document-layout__expanded-sidebar">
+    <ViewerMetadataSidebar className="manifest-document-layout__expanded-sidebar">
       {sideBarPanels.map((item) => {
         const isExpanded = expandedSections.has(item.id);
         const panelId: (typeof sideBarPanels)[number]['id'] = item.id;
 
         return (
           <React.Fragment key={item.id}>
-            <DocumentDetailMetadataSidebarButton
+            <ViewerMetadataSidebarButton
               aria-controls={panelId}
               aria-expanded={isExpanded}
               className="manifest-document-layout__sidebar-button"
@@ -34,11 +34,11 @@ export function ExpandedMetadataSidebar({
               onPress={() => onToggleSection(item.id)}
             >
               {item.badge && (
-                <DocumentDetailMetadataSidebarBadge>
+                <ViewerMetadataSidebarBadge>
                   {item.badge}
-                </DocumentDetailMetadataSidebarBadge>
+                </ViewerMetadataSidebarBadge>
               )}
-            </DocumentDetailMetadataSidebarButton>
+            </ViewerMetadataSidebarButton>
 
             {isExpanded && (
               <div
@@ -55,6 +55,6 @@ export function ExpandedMetadataSidebar({
           </React.Fragment>
         );
       })}
-    </DocumentDetailMetadataSidebar>
+    </ViewerMetadataSidebar>
   );
 }

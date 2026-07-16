@@ -1,23 +1,23 @@
 import { cn } from '../../lib';
 import * as React from 'react';
 
-export type DocumentDetailCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type ViewerCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailCanvas({
+function ViewerCanvas({
   className,
   ...props
-}: DocumentDetailCanvasProps) {
+}: ViewerCanvasProps) {
   return (
-    <div className={cn('document-canvas', className)} {...props} />
+    <div className={cn('viewer-canvas', className)} {...props} />
   );
 }
 
-export type DocumentDetailTranscriptCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type TranscriptionCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailTranscriptCanvas({
+function TranscriptionCanvas({
   className,
   ...props
-}: DocumentDetailTranscriptCanvasProps) {
+}: TranscriptionCanvasProps) {
   return (
     <div
       className={cn('transcription-canvas', className)}
@@ -26,17 +26,17 @@ function DocumentDetailTranscriptCanvas({
   );
 }
 
-export type DocumentDetailTranscriptLineProps = {
+export type TranscriptionLineProps = {
   index: number;
   width?: React.CSSProperties['width'];
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailTranscriptLine({
+function TranscriptionLine({
   className,
   index,
   width = '70%',
   ...props
-}: DocumentDetailTranscriptLineProps) {
+}: TranscriptionLineProps) {
   return (
     <div
       className={cn('transcription-line', className)}
@@ -54,7 +54,7 @@ function DocumentDetailTranscriptLine({
 }
 
 export {
-  DocumentDetailCanvas,
-  DocumentDetailTranscriptCanvas,
-  DocumentDetailTranscriptLine,
+  ViewerCanvas,
+  TranscriptionCanvas,
+  TranscriptionLine,
 };

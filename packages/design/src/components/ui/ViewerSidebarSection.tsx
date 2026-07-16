@@ -5,7 +5,7 @@ import {
   type ButtonProps as AriaButtonProps,
 } from 'react-aria-components';
 
-export type DocumentDetailSidebarSectionProps = {
+export type ViewerSidebarSectionProps = {
   title: React.ReactNode;
   icon?: React.ReactNode;
   count?: React.ReactNode;
@@ -19,7 +19,7 @@ export type DocumentDetailSidebarSectionProps = {
   'title'
 >;
 
-function DocumentDetailSidebarSection({
+function ViewerSidebarSection({
   className,
   title,
   icon,
@@ -31,7 +31,7 @@ function DocumentDetailSidebarSection({
   buttonProps,
   children,
   ...props
-}: DocumentDetailSidebarSectionProps) {
+}: ViewerSidebarSectionProps) {
   const panelId = React.useId();
   const [uncontrolledExpanded, setUncontrolledExpanded] =
     React.useState(defaultExpanded);
@@ -46,7 +46,7 @@ function DocumentDetailSidebarSection({
   };
 
   return (
-    <section className={cn('document-sidebar-section', className)} {...props}>
+    <section className={cn('viewer-sidebar-section', className)} {...props}>
       <AriaButton
         aria-expanded={isExpanded}
         aria-controls={panelId}
@@ -72,4 +72,4 @@ function DocumentDetailSidebarSection({
   );
 }
 
-export { DocumentDetailSidebarSection };
+export { ViewerSidebarSection };

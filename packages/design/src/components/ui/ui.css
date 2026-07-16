@@ -1,8 +1,8 @@
-@import "./DocumentDetailReferenceCard.css";
-@import "./DocumentDetailSidebarSection.css";
-@import "./DocumentDetailLayout.css";
-@import "./DocumentDetailSurfaces.css";
-@import "./DocumentDetailControls.css";
+@import "./ViewerReferenceCard.css";
+@import "./ViewerSidebarSection.css";
+@import "./ViewerLayout.css";
+@import "./ViewerSurfaces.css";
+@import "./ViewerControls.css";
 @import "./ViewerComponents.css";
 @import "./ManifestViewer.css";
 

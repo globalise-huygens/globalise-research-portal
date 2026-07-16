@@ -15,9 +15,8 @@ import {
 } from 'react-aria-components';
 import { IconArrowTopRight } from '../icons/IconArrowTopRight';
 import { IconContentWarning } from '../icons/IconContentWarning';
-import { DocumentDetailTooltip } from './DocumentDetailSurfaces';
 
-export type DocumentDetailControlProps = {
+export type ViewerControlProps = {
   className?: string;
   icon?: React.ReactNode;
   isIconOnly?: boolean;
@@ -28,9 +27,9 @@ export type DocumentDetailControlProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailControl = React.forwardRef<
+const ViewerControl = React.forwardRef<
   HTMLButtonElement,
-  DocumentDetailControlProps
+  ViewerControlProps
 >(
   (
     {
@@ -45,7 +44,7 @@ const DocumentDetailControl = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('document-control', className)}
+      className={cn('viewer-control', className)}
       data-active={isActive ? 'true' : 'false'}
       data-icon-only={isIconOnly ? 'true' : 'false'}
       {...props}
@@ -55,9 +54,9 @@ const DocumentDetailControl = React.forwardRef<
     </AriaButton>
   ),
 );
-DocumentDetailControl.displayName = 'DocumentDetailControl';
+ViewerControl.displayName = 'ViewerControl';
 
-export type DocumentDetailToolButtonProps = {
+export type ViewerToolButtonProps = {
   className?: string;
   icon?: React.ReactNode;
   isActive?: boolean;
@@ -68,9 +67,9 @@ export type DocumentDetailToolButtonProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailToolButton = React.forwardRef<
+const ViewerToolButton = React.forwardRef<
   HTMLButtonElement,
-  DocumentDetailToolButtonProps
+  ViewerToolButtonProps
 >(
   (
     { className, icon, isActive = false, size = 'regular', children, ...props },
@@ -78,7 +77,7 @@ const DocumentDetailToolButton = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('document-tool-button', className)}
+      className={cn('viewer-tool-button', className)}
       data-active={isActive ? 'true' : 'false'}
       data-size={size}
       {...props}
@@ -88,23 +87,23 @@ const DocumentDetailToolButton = React.forwardRef<
     </AriaButton>
   ),
 );
-DocumentDetailToolButton.displayName = 'DocumentDetailToolButton';
+ViewerToolButton.displayName = 'ViewerToolButton';
 
-export type DocumentDetailSegmentedControlProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type ViewerSegmentedControlProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailSegmentedControl({
+function ViewerSegmentedControl({
   className,
   ...props
-}: DocumentDetailSegmentedControlProps) {
+}: ViewerSegmentedControlProps) {
   return (
     <div
-      className={cn('document-segmented-control', className)}
+      className={cn('viewer-segmented-control', className)}
       {...props}
     />
   );
 }
 
-export type DocumentDetailSegmentProps = {
+export type ViewerSegmentProps = {
   className?: string;
   icon?: React.ReactNode;
   isActive?: boolean;
@@ -114,13 +113,13 @@ export type DocumentDetailSegmentProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailSegment = React.forwardRef<
+const ViewerSegment = React.forwardRef<
   HTMLButtonElement,
-  DocumentDetailSegmentProps
+  ViewerSegmentProps
 >(({ className, icon, isActive = false, children, ...props }, ref) => (
   <AriaButton
     ref={ref}
-    className={cn('document-segment', className)}
+    className={cn('viewer-segment', className)}
     data-active={isActive ? 'true' : 'false'}
     {...props}
   >
@@ -128,9 +127,9 @@ const DocumentDetailSegment = React.forwardRef<
     {children && <span>{children}</span>}
   </AriaButton>
 ));
-DocumentDetailSegment.displayName = 'DocumentDetailSegment';
+ViewerSegment.displayName = 'ViewerSegment';
 
-export type DocumentDetailSegmentedToggleGroupProps = {
+export type ViewerToggleGroupProps = {
   className?: string;
   size?: 'compact' | 'regular';
   children?: React.ReactNode;
@@ -139,15 +138,15 @@ export type DocumentDetailSegmentedToggleGroupProps = {
   'className' | 'style'
 >;
 
-function DocumentDetailSegmentedToggleGroup({
+function ViewerToggleGroup({
   className,
   size = 'regular',
   children,
   ...props
-}: DocumentDetailSegmentedToggleGroupProps) {
+}: ViewerToggleGroupProps) {
   return (
     <AriaToggleButtonGroup
-      className={cn('document-toggle-group', className)}
+      className={cn('viewer-toggle-group', className)}
       data-size={size}
       {...props}
     >
@@ -156,7 +155,7 @@ function DocumentDetailSegmentedToggleGroup({
   );
 }
 
-export type DocumentDetailSegmentedToggleItemProps = {
+export type ViewerToggleProps = {
   className?: string;
   icon?: React.ReactNode;
   size?: 'compact' | 'regular';
@@ -166,13 +165,13 @@ export type DocumentDetailSegmentedToggleItemProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailSegmentedToggleItem = React.forwardRef<
+const ViewerToggle = React.forwardRef<
   HTMLButtonElement,
-  DocumentDetailSegmentedToggleItemProps
+  ViewerToggleProps
 >(({ className, icon, size = 'regular', children, ...props }, ref) => (
   <AriaToggleButton
     ref={ref}
-    className={cn('document-toggle', className)}
+    className={cn('viewer-toggle', className)}
     data-size={size}
     {...props}
   >
@@ -180,10 +179,10 @@ const DocumentDetailSegmentedToggleItem = React.forwardRef<
     {children && <span>{children}</span>}
   </AriaToggleButton>
 ));
-DocumentDetailSegmentedToggleItem.displayName =
-  'DocumentDetailSegmentedToggleItem';
+ViewerToggle.displayName =
+  'ViewerToggle';
 
-export type DocumentDetailCheckboxProps = {
+export type ViewerCheckboxProps = {
   className?: string;
   indicatorClassName?: string;
   children?: React.ReactNode;
@@ -192,14 +191,14 @@ export type DocumentDetailCheckboxProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailCheckbox = React.forwardRef<
+const ViewerCheckbox = React.forwardRef<
   HTMLLabelElement,
-  DocumentDetailCheckboxProps
+  ViewerCheckboxProps
 >(({ className, indicatorClassName, children, ...props }, ref) => (
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   <AriaCheckbox
     ref={ref}
-    className={cn('document-checkbox', className)}
+    className={cn('viewer-checkbox', className)}
     {...props}
   >
     {({ isIndeterminate }) => (
@@ -227,9 +226,9 @@ const DocumentDetailCheckbox = React.forwardRef<
     )}
   </AriaCheckbox>
 ));
-DocumentDetailCheckbox.displayName = 'DocumentDetailCheckbox';
+ViewerCheckbox.displayName = 'ViewerCheckbox';
 
-export type DocumentDetailNumberFieldProps = {
+export type ViewerNumberFieldProps = {
   className?: string;
   inputClassName?: string;
   suffix?: React.ReactNode;
@@ -239,9 +238,9 @@ export type DocumentDetailNumberFieldProps = {
   'children' | 'className' | 'style' | 'formatOptions'
 >;
 
-const DocumentDetailNumberField = React.forwardRef<
+const ViewerNumberField = React.forwardRef<
   HTMLDivElement,
-  DocumentDetailNumberFieldProps
+  ViewerNumberFieldProps
 >(
   (
     {
@@ -266,7 +265,7 @@ const DocumentDetailNumberField = React.forwardRef<
     return (
       <AriaNumberField
         ref={ref}
-        className={cn('document-number-field', className)}
+        className={cn('viewer-number-field', className)}
         minValue={minValue}
         step={step}
         value={value}
@@ -286,9 +285,9 @@ const DocumentDetailNumberField = React.forwardRef<
     );
   },
 );
-DocumentDetailNumberField.displayName = 'DocumentDetailNumberField';
+ViewerNumberField.displayName = 'ViewerNumberField';
 
-export type DocumentDetailRailButtonProps = {
+export type ViewerRailButtonProps = {
   className?: string;
   icon?: React.ReactNode;
   label?: React.ReactNode;
@@ -300,9 +299,9 @@ export type DocumentDetailRailButtonProps = {
   'children' | 'className' | 'style'
 >;
 
-const DocumentDetailRailButton = React.forwardRef<
+const ViewerRailButton = React.forwardRef<
   HTMLButtonElement,
-  DocumentDetailRailButtonProps
+  ViewerRailButtonProps
 >(
   (
     {
@@ -318,7 +317,7 @@ const DocumentDetailRailButton = React.forwardRef<
   ) => (
     <AriaButton
       ref={ref}
-      className={cn('document-rail-button', className)}
+      className={cn('viewer-rail-button', className)}
       data-active={isActive ? 'true' : 'false'}
       data-variant={variant}
       {...props}
@@ -331,62 +330,7 @@ const DocumentDetailRailButton = React.forwardRef<
     </AriaButton>
   ),
 );
-DocumentDetailRailButton.displayName = 'DocumentDetailRailButton';
-
-export type DocumentDetailIconButtonProps = {
-  'aria-label': string;
-  tooltip?: React.ReactNode;
-  icon: React.ReactNode;
-  isActive?: boolean;
-  isDisabled?: boolean;
-  onPress?: () => void;
-  variant?: 'chrome' | 'quiet';
-};
-
-function DocumentDetailIconButton({
-  'aria-label': ariaLabel,
-  tooltip,
-  icon,
-  isActive,
-  isDisabled,
-  onPress,
-  variant = 'chrome',
-}: DocumentDetailIconButtonProps) {
-  const button = (
-    <DocumentDetailToolButton
-      aria-label={ariaLabel}
-      className={cn(
-        'manifest-viewer-icon-button',
-        variant === 'quiet' && 'manifest-viewer-icon-button--quiet',
-      )}
-      icon={icon}
-      isActive={isActive}
-      isDisabled={isDisabled}
-      onPress={onPress}
-      size="compact"
-    />
-  );
-
-  if (!tooltip) {
-    return button;
-  }
-
-  return (
-    <DocumentDetailTooltip label={tooltip}>{button}</DocumentDetailTooltip>
-  );
-}
-
-export function DocumentDetailZoomLabel({
-  children = '100 %',
-}: {
-  children?: React.ReactNode;
-}) {
-  return (
-    <DocumentDetailToolButton className="manifest-viewer-zoom-label">
-      {children}
-    </DocumentDetailToolButton>
-  );
-}
+ViewerRailButton.displayName = 'ViewerRailButton';
 
 export function ContentWarningControl({
   warning,
@@ -406,7 +350,7 @@ export function ContentWarningControl({
 
   return (
     <div className="content-warning">
-      <DocumentDetailToolButton
+      <ViewerToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
         data-slot="button"
         icon={
@@ -421,7 +365,7 @@ export function ContentWarningControl({
         size="compact"
       >
         {warning.title}
-      </DocumentDetailToolButton>
+      </ViewerToolButton>
       {isPopoverOpen && (
         <div
           data-slot="popover"
@@ -443,14 +387,13 @@ export function ContentWarningControl({
 }
 
 export {
-  DocumentDetailCheckbox,
-  DocumentDetailControl,
-  DocumentDetailIconButton,
-  DocumentDetailNumberField,
-  DocumentDetailRailButton,
-  DocumentDetailSegment,
-  DocumentDetailSegmentedControl,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailToolButton,
+  ViewerCheckbox,
+  ViewerControl,
+  ViewerNumberField,
+  ViewerRailButton,
+  ViewerSegment,
+  ViewerSegmentedControl,
+  ViewerToggleGroup,
+  ViewerToggle,
+  ViewerToolButton,
 };

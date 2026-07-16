@@ -21,18 +21,18 @@ import {
 import * as React from 'react';
 import {
   ContentWarningControl,
-  DocumentDetailIconButton,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-} from './DocumentDetailControls';
+  ViewerToggleGroup,
+  ViewerToggle,
+} from './ViewerControls';
+import { ManifestViewerIconButton } from './ManifestViewerControls';
 import {
-  type DocumentDetailEntityHighlightCategory,
-  DocumentDetailEntityHighlightMenu,
-} from '../ui';
+  type EntityHighlightCategory,
+  EntityHighlightMenu,
+} from './EntityHighlightMenu';
 import {
-  DocumentDetailBarGroup,
-  DocumentDetailTopBar as DocumentDetailTopBarPrimitive,
-} from './DocumentDetailLayout';
+  ViewerBarGroup,
+  ViewerTopBar as ViewerTopBarPrimitive,
+} from './ViewerLayout';
 import type {
   ManifestViewerContent,
   ManifestViewerTagGroup,
@@ -104,7 +104,7 @@ export function ManifestViewerTopBar({
   const areBothPanesVisible = isScanVisible && isTextVisible;
 
   const entityHighlightCategories = React.useMemo<
-    DocumentDetailEntityHighlightCategory[]
+    EntityHighlightCategory[]
   >(
     () =>
       (content.entityGroups ?? [])
@@ -125,9 +125,9 @@ export function ManifestViewerTopBar({
   );
 
   return (
-    <DocumentDetailTopBarPrimitive className="manifest-viewer-top-bar">
-      <DocumentDetailBarGroup className="manifest-viewer-mode-group">
-        <DocumentDetailIconButton
+    <ViewerTopBarPrimitive className="manifest-viewer-top-bar">
+      <ViewerBarGroup className="manifest-viewer-mode-group">
+        <ManifestViewerIconButton
           aria-label={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           tooltip={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           icon={<IconSidebar className="manifest-viewer-icon" />}
@@ -135,7 +135,7 @@ export function ManifestViewerTopBar({
           onPress={onSidebarToggle}
         />
         <span aria-hidden="true" className="manifest-viewer-divider" />
-        <DocumentDetailSegmentedToggleGroup
+        <ViewerToggleGroup
           aria-label="Primary viewer mode controls"
           selectionMode="multiple"
           disallowEmptySelection
@@ -166,7 +166,7 @@ export function ManifestViewerTopBar({
             }
           }}
         >
-          <DocumentDetailSegmentedToggleItem
+          <ViewerToggle
             id="scan"
             aria-label={
               isScanVisible ? 'Close scan viewer' : 'Open scan viewer'
@@ -175,8 +175,8 @@ export function ManifestViewerTopBar({
           >
             <IconScan className="manifest-viewer-icon" />
             <span>Scan</span>
-          </DocumentDetailSegmentedToggleItem>
-          <DocumentDetailSegmentedToggleItem
+          </ViewerToggle>
+          <ViewerToggle
             id="text"
             aria-label={
               isTextVisible
@@ -187,20 +187,20 @@ export function ManifestViewerTopBar({
           >
             <IconTranscription className="manifest-viewer-icon" />
             <span>Text</span>
-          </DocumentDetailSegmentedToggleItem>
-        </DocumentDetailSegmentedToggleGroup>
-      </DocumentDetailBarGroup>
+          </ViewerToggle>
+        </ViewerToggleGroup>
+      </ViewerBarGroup>
 
-      <DocumentDetailBarGroup className="manifest-viewer-warning">
+      <ViewerBarGroup className="manifest-viewer-warning">
         <ContentWarningControl
           warning={content.contentWarning}
           isOpen={isWarningOpen}
           onOpenChange={onWarningOpenChange}
         />
-      </DocumentDetailBarGroup>
+      </ViewerBarGroup>
 
-      <DocumentDetailBarGroup className="manifest-viewer-toolbar-actions">
-        <DocumentDetailIconButton
+      <ViewerBarGroup className="manifest-viewer-toolbar-actions">
+        <ManifestViewerIconButton
           aria-label="Swap panes"
           tooltip="Swap scan and transcription"
           icon={<IconSwap className="manifest-viewer-icon" />}
@@ -208,7 +208,7 @@ export function ManifestViewerTopBar({
           onPress={onViewerOrderToggle}
           variant="quiet"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Toggle mini window"
           tooltip="Toggle mini window"
           icon={
@@ -219,7 +219,7 @@ export function ManifestViewerTopBar({
           onPress={onMiniWindowToggle}
           variant="quiet"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Toggle paired page"
           tooltip="Toggle paired page"
           icon={<IconPairedPage className="manifest-viewer-icon" />}
@@ -229,7 +229,7 @@ export function ManifestViewerTopBar({
           variant="quiet"
         />
         <span aria-hidden="true" className="manifest-viewer-divider" />
-        <DocumentDetailEntityHighlightMenu
+        <EntityHighlightMenu
           categories={entityHighlightCategories}
           selectedKeys={entityHighlightKeys}
           onSelectedKeysChange={setEntityHighlightKeys}
@@ -242,7 +242,7 @@ export function ManifestViewerTopBar({
           allLabel="All entity highlights"
           allDescription="Toggle entity classes to preview matching highlights in the transcription text"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Highlight event tags"
           tooltip="Highlight event tags"
           icon={<IconEvents className="manifest-viewer-icon" />}
@@ -250,7 +250,7 @@ export function ManifestViewerTopBar({
           onPress={() => setIsEventHighlightingEnabled((current) => !current)}
           variant="quiet"
         />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Highlight layout elements"
           tooltip="Highlight layout elements and show line numbers"
           icon={<IconLayoutElements className="manifest-viewer-icon" />}
@@ -259,14 +259,14 @@ export function ManifestViewerTopBar({
           variant="quiet"
         />
         <span aria-hidden="true" className="manifest-viewer-divider" />
-        <DocumentDetailIconButton
+        <ManifestViewerIconButton
           aria-label="Close document detail"
           tooltip="Close"
           icon={<IconClose className="manifest-viewer-icon" />}
           onPress={onClose}
           variant="quiet"
         />
-      </DocumentDetailBarGroup>
-    </DocumentDetailTopBarPrimitive>
+      </ViewerBarGroup>
+    </ViewerTopBarPrimitive>
   );
 }

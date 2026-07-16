@@ -1,7 +1,7 @@
 import { cn } from '../../lib';
 import * as React from 'react';
 
-export type DocumentDetailReferenceCardProps = {
+export type ViewerReferenceCardProps = {
   isSelected?: boolean;
   thumbnail?: React.ReactNode;
   heading: React.ReactNode;
@@ -11,9 +11,9 @@ export type DocumentDetailReferenceCardProps = {
   footer?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-const DocumentDetailReferenceCard = React.forwardRef<
+const ViewerReferenceCard = React.forwardRef<
   HTMLDivElement,
-  DocumentDetailReferenceCardProps
+  ViewerReferenceCardProps
 >(
   (
     {
@@ -32,37 +32,37 @@ const DocumentDetailReferenceCard = React.forwardRef<
     <div
       ref={ref}
       aria-current={isSelected ? 'true' : undefined}
-      className={cn('gds-document-detail-reference-card', className)}
+      className={cn('viewer-reference-card', className)}
       {...props}
     >
-      <div className="gds-document-detail-reference-card__layout">
+      <div data-slot="layout">
         {thumbnail && (
-          <div className="gds-document-detail-reference-card__thumbnail">
+          <div data-slot="thumbnail">
             {thumbnail}
           </div>
         )}
 
-        <div className="gds-document-detail-reference-card__body">
-          <div className="gds-document-detail-reference-card__header">
-            <div className="gds-document-detail-reference-card__heading">
+        <div data-slot="body">
+          <div data-slot="header">
+            <div data-slot="heading">
               {heading}
             </div>
             {actions}
           </div>
 
           {snippet && (
-            <div className="gds-document-detail-reference-card__snippet">
+            <div data-slot="snippet">
               {snippet}
             </div>
           )}
 
           {meta && (
-            <div className="gds-document-detail-reference-card__meta">
+            <div data-slot="meta">
               {meta}
             </div>
           )}
           {footer && (
-            <div className="gds-document-detail-reference-card__footer">
+            <div data-slot="footer">
               {footer}
             </div>
           )}
@@ -71,6 +71,6 @@ const DocumentDetailReferenceCard = React.forwardRef<
     </div>
   ),
 );
-DocumentDetailReferenceCard.displayName = 'DocumentDetailReferenceCard';
+ViewerReferenceCard.displayName = 'ViewerReferenceCard';
 
-export { DocumentDetailReferenceCard };
+export { ViewerReferenceCard };

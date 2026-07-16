@@ -2,9 +2,9 @@ import { IconArrowTopRight } from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
 import {
-  DocumentDetailPopoverSurface,
-  DocumentDetailTooltip,
-} from './DocumentDetailSurfaces';
+  ViewerPopover,
+  ViewerTooltip,
+} from './ViewerSurfaces';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
@@ -275,14 +275,14 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   const categoryLabel = getEntityBadgeLabel(data.kind);
 
   return (
-    <DocumentDetailPopoverSurface
+    <ViewerPopover
       size="compact"
       className={cn('gds-entity-preview-card', className)}
     >
       <div className="gds-entity-preview-card__header">
         <div className="gds-entity-preview-card__identity">
           <div className="gds-entity-preview-card__leading-row">
-            <DocumentDetailTooltip
+            <ViewerTooltip
               label={`Category: ${categoryLabel}`}
               placement="top"
             >
@@ -303,7 +303,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                   </span>
                 )}
               </span>
-            </DocumentDetailTooltip>
+            </ViewerTooltip>
             {automationBadges.map((badge) => (
               <EntityBadge
                 key={badge}
@@ -354,7 +354,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
           ))}
         </dl>
       )}
-    </DocumentDetailPopoverSurface>
+    </ViewerPopover>
   );
 }
 

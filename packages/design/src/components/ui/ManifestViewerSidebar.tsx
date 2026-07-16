@@ -18,18 +18,18 @@ import {
 } from '../icons';
 import * as React from 'react';
 import {
-  DocumentDetailCheckbox,
-  DocumentDetailRailButton,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-} from './DocumentDetailControls';
+  ViewerCheckbox,
+  ViewerRailButton,
+  ViewerToggleGroup,
+  ViewerToggle,
+} from './ViewerControls';
 import {
-  DocumentDetailIconRail,
-  DocumentDetailMetadataSidebar,
-  DocumentDetailMetadataSidebarBadge,
-} from './DocumentDetailLayout';
-import { DocumentDetailReferenceCard } from './DocumentDetailReferenceCard';
-import { DocumentDetailSidebarSection } from './DocumentDetailSidebarSection';
+  ViewerIconRail,
+  ViewerMetadataSidebar,
+  ViewerMetadataSidebarBadge,
+} from './ViewerLayout';
+import { ViewerReferenceCard } from './ViewerReferenceCard';
+import { ViewerSidebarSection } from './ViewerSidebarSection';
 import type {
   ManifestViewerContent,
   ManifestViewerDocument,
@@ -132,7 +132,7 @@ function SidebarScanCard({
   const pageCount = scan.pages?.length === 2 ? 2 : 1;
 
   return (
-    <DocumentDetailReferenceCard
+    <ViewerReferenceCard
       isSelected={isSelected}
       className="manifest-viewer-toc-card"
       data-current-scan={isSelected ? 'true' : 'false'}
@@ -261,7 +261,7 @@ function DocumentRow({
         </button>
         <button
           type="button"
-          className="manifest-viewer-toc-document-toggle"
+          className="manifest-viewer-toc-viewer-toggle"
           aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
           aria-expanded={isExpanded}
           onClick={onToggleExpanded}
@@ -453,38 +453,38 @@ export function CollapsedMetadataRail({
   activeSection?: SidebarSectionId;
 }) {
   return (
-    <DocumentDetailIconRail className="manifest-viewer-collapsed-rail">
-      <DocumentDetailRailButton
+    <ViewerIconRail className="manifest-viewer-collapsed-rail">
+      <ViewerRailButton
         aria-label="Open inventory metadata"
         icon={<IconInventory className="manifest-viewer-icon" />}
         isActive={activeSection === 'inventory'}
         onPress={() => onExpand('inventory')}
       >
         {content.inventory.year}
-      </DocumentDetailRailButton>
-      <DocumentDetailRailButton
+      </ViewerRailButton>
+      <ViewerRailButton
         aria-label="Open table of contents"
         icon={<IconTableOfContent className="manifest-viewer-icon" />}
         isActive={activeSection === 'contents'}
         onPress={() => onExpand('contents')}
       />
-      <DocumentDetailRailButton
+      <ViewerRailButton
         aria-label="Open entity tags"
         icon={<IconEntities className="manifest-viewer-icon" />}
         isActive={activeSection === 'entities'}
         onPress={() => onExpand('entities')}
       >
         {content.tags.entityCount}
-      </DocumentDetailRailButton>
-      <DocumentDetailRailButton
+      </ViewerRailButton>
+      <ViewerRailButton
         aria-label="Open event tags"
         icon={<IconEvents className="manifest-viewer-icon" />}
         isActive={activeSection === 'events'}
         onPress={() => onExpand('events')}
       >
         {content.tags.eventCount}
-      </DocumentDetailRailButton>
-    </DocumentDetailIconRail>
+      </ViewerRailButton>
+    </ViewerIconRail>
   );
 }
 
@@ -791,17 +791,17 @@ export function MetadataSidebar({
   };
 
   return (
-    <DocumentDetailMetadataSidebar className="manifest-viewer-sidebar">
-      <DocumentDetailSidebarSection
+    <ViewerMetadataSidebar className="manifest-viewer-sidebar">
+      <ViewerSidebarSection
         className="manifest-viewer-section-button"
         data-expanded={expandedSections.inventory ? 'true' : 'false'}
         icon={<IconInventory className="manifest-viewer-icon-medium" />}
         title="Inventory"
         trailing={
           <span className="manifest-viewer-section-trailing">
-            <DocumentDetailMetadataSidebarBadge>
+            <ViewerMetadataSidebarBadge>
               {content.inventory.year}
-            </DocumentDetailMetadataSidebarBadge>
+            </ViewerMetadataSidebarBadge>
             <SidebarDisclosureIcon isExpanded={expandedSections.inventory} />
           </span>
         }
@@ -848,9 +848,9 @@ export function MetadataSidebar({
             <InventoryHierarchyTree nodes={inventoryHierarchyTree} />
           ) : null}
         </div>
-      </DocumentDetailSidebarSection>
+      </ViewerSidebarSection>
 
-      <DocumentDetailSidebarSection
+      <ViewerSidebarSection
         className="manifest-viewer-section-button manifest-viewer-section-button--contents"
         data-expanded={expandedSections.contents ? 'true' : 'false'}
         icon={
@@ -867,12 +867,12 @@ export function MetadataSidebar({
       >
         <div className="manifest-viewer-toc-panel" ref={tocPanelRef}>
           <div className="manifest-viewer-toc-controls">
-            <DocumentDetailCheckbox
+            <ViewerCheckbox
               isSelected={hitsOnly}
               onChange={setHitsOnly}
             >
               Hits only
-            </DocumentDetailCheckbox>
+            </ViewerCheckbox>
             <span className="manifest-viewer-toc-jump-label">
               Go to
             </span>
@@ -912,9 +912,9 @@ export function MetadataSidebar({
             ))}
           </div>
         </div>
-      </DocumentDetailSidebarSection>
+      </ViewerSidebarSection>
 
-      <DocumentDetailSidebarSection
+      <ViewerSidebarSection
         className="manifest-viewer-section-button"
         data-expanded={expandedSections.entities ? 'true' : 'false'}
         icon={<IconEntities className="manifest-viewer-icon-medium" />}
@@ -1003,7 +1003,7 @@ export function MetadataSidebar({
               <div className="manifest-viewer-tag-block-content">
                 <div className="manifest-viewer-identified-controls">
                   <div className="manifest-viewer-identified-sort-row">
-                    <DocumentDetailSegmentedToggleGroup
+                    <ViewerToggleGroup
                       className="manifest-viewer-identified-sort-toggle"
                       size="compact"
                       aria-label="Entity sort controls"
@@ -1022,36 +1022,36 @@ export function MetadataSidebar({
                         }
                       }}
                     >
-                      <DocumentDetailSegmentedToggleItem
+                      <ViewerToggle
                         id="sequential"
                         size="compact"
                         className="manifest-viewer-identified-sort-item"
                       >
                         Sequential
-                      </DocumentDetailSegmentedToggleItem>
-                      <DocumentDetailSegmentedToggleItem
+                      </ViewerToggle>
+                      <ViewerToggle
                         id="alphabet"
                         size="compact"
                         className="manifest-viewer-identified-sort-item"
                       >
                         Alphabet
-                      </DocumentDetailSegmentedToggleItem>
-                      <DocumentDetailSegmentedToggleItem
+                      </ViewerToggle>
+                      <ViewerToggle
                         id="amount"
                         size="compact"
                         className="manifest-viewer-identified-sort-item"
                       >
                         Amount
-                      </DocumentDetailSegmentedToggleItem>
-                    </DocumentDetailSegmentedToggleGroup>
+                      </ViewerToggle>
+                    </ViewerToggleGroup>
 
                     <div className="manifest-viewer-identified-options">
-                      <DocumentDetailCheckbox
+                      <ViewerCheckbox
                         isSelected={groupByType}
                         onChange={onGroupByTypeChange}
                       >
                         Type
-                      </DocumentDetailCheckbox>
+                      </ViewerCheckbox>
                       <button
                         type="button"
                         className="manifest-viewer-identified-direction"
@@ -1105,9 +1105,9 @@ export function MetadataSidebar({
             ) : null}
           </section>
         </div>
-      </DocumentDetailSidebarSection>
+      </ViewerSidebarSection>
 
-      <DocumentDetailSidebarSection
+      <ViewerSidebarSection
         className="manifest-viewer-section-button"
         data-expanded={expandedSections.events ? 'true' : 'false'}
         icon={<IconEvents className="manifest-viewer-icon-medium" />}
@@ -1122,8 +1122,8 @@ export function MetadataSidebar({
         <div className="manifest-viewer-empty-panel">
           No event tags for this scan.
         </div>
-      </DocumentDetailSidebarSection>
-    </DocumentDetailMetadataSidebar>
+      </ViewerSidebarSection>
+    </ViewerMetadataSidebar>
   );
 }
 function inventoryFallbackMetadata(

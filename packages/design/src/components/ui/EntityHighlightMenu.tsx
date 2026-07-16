@@ -2,31 +2,31 @@ import { cn } from '../../lib';
 import * as React from 'react';
 import { IconExpandSection } from '../icons/IconExpandSection';
 import {
-  DocumentDetailCheckbox,
-  DocumentDetailToolButton,
-} from './DocumentDetailControls';
+  ViewerCheckbox,
+  ViewerToolButton,
+} from './ViewerControls';
 import {
-  DocumentDetailPopoverSurface,
-  DocumentDetailTooltip,
-} from './DocumentDetailSurfaces';
+  ViewerPopover,
+  ViewerTooltip,
+} from './ViewerSurfaces';
 
-export type DocumentDetailEntityHighlightSubcategory = {
+export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
   count?: number;
 };
 
-export type DocumentDetailEntityHighlightCategory = {
+export type EntityHighlightCategory = {
   id: string;
   label: string;
   count?: number;
   icon?: React.ReactNode;
   tone?: string;
-  subcategories?: DocumentDetailEntityHighlightSubcategory[];
+  subcategories?: EntityHighlightSubcategory[];
 };
 
-export type DocumentDetailEntityHighlightMenuProps = {
-  categories: DocumentDetailEntityHighlightCategory[];
+export type EntityHighlightMenuProps = {
+  categories: EntityHighlightCategory[];
   selectedKeys: Set<string>;
   onSelectedKeysChange: React.Dispatch<React.SetStateAction<Set<string>>>;
   triggerIcon?: React.ReactNode;
@@ -38,7 +38,7 @@ export type DocumentDetailEntityHighlightMenuProps = {
   className?: string;
 };
 
-function getLeafKeys(category: DocumentDetailEntityHighlightCategory) {
+function getLeafKeys(category: EntityHighlightCategory) {
   if (!category.subcategories || category.subcategories.length === 0) {
     return [category.id];
   }
@@ -48,7 +48,7 @@ function getLeafKeys(category: DocumentDetailEntityHighlightCategory) {
   );
 }
 
-function DocumentDetailEntityHighlightMenu({
+function EntityHighlightMenu({
   categories,
   selectedKeys,
   onSelectedKeysChange,
@@ -59,7 +59,7 @@ function DocumentDetailEntityHighlightMenu({
   allLabel = 'All entity highlights',
   allDescription = 'Select or clear every classified entity highlight',
   className,
-}: DocumentDetailEntityHighlightMenuProps) {
+}: EntityHighlightMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
     () => new Set(),
@@ -126,7 +126,7 @@ function DocumentDetailEntityHighlightMenu({
   );
 
   const toggleCategory = React.useCallback(
-    (category: DocumentDetailEntityHighlightCategory, isSelected: boolean) => {
+    (category: EntityHighlightCategory, isSelected: boolean) => {
       const categoryLeafKeys = getLeafKeys(category);
 
       onSelectedKeysChange((current) => {
@@ -162,8 +162,8 @@ function DocumentDetailEntityHighlightMenu({
 
   return (
     <div ref={rootRef} className={cn('entity-menu', className)}>
-      <DocumentDetailTooltip label={triggerLabel}>
-        <DocumentDetailToolButton
+      <ViewerTooltip label={triggerLabel}>
+        <ViewerToolButton
           aria-expanded={isOpen}
           aria-label={
             hasAnySelection ? `Open ${triggerLabel}` : `Enable ${triggerLabel}`
@@ -181,10 +181,10 @@ function DocumentDetailEntityHighlightMenu({
             setIsOpen((current) => !current);
           }}
         />
-      </DocumentDetailTooltip>
+      </ViewerTooltip>
 
       {isOpen && (
-        <DocumentDetailPopoverSurface
+        <ViewerPopover
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
@@ -202,7 +202,7 @@ function DocumentDetailEntityHighlightMenu({
                   </div>
                 )}
               </div>
-              <DocumentDetailCheckbox
+              <ViewerCheckbox
                 aria-label="Toggle all entity highlights"
                 isSelected={areAllHighlightsSelected}
                 isIndeterminate={areHighlightsPartiallySelected}
@@ -260,7 +260,7 @@ function DocumentDetailEntityHighlightMenu({
                             />
                           </button>
                         )}
-                        <DocumentDetailCheckbox
+                        <ViewerCheckbox
                           aria-label={`Toggle ${category.label} entity highlights`}
                           isDisabled={(category.count ?? 1) <= 0}
                           isSelected={isSelected}
@@ -296,7 +296,7 @@ function DocumentDetailEntityHighlightMenu({
                                   {subcategory.label}
                                 </span>
                               </div>
-                              <DocumentDetailCheckbox
+                              <ViewerCheckbox
                                 aria-label={`Toggle ${subcategory.label} entity highlights`}
                                 isSelected={selectedKeys.has(leafKey)}
                                 onChange={(nextSelected) =>
@@ -313,10 +313,10 @@ function DocumentDetailEntityHighlightMenu({
               })}
             </div>
           </div>
-        </DocumentDetailPopoverSurface>
+        </ViewerPopover>
       )}
     </div>
   );
 }
 
-export { DocumentDetailEntityHighlightMenu };
+export { EntityHighlightMenu };

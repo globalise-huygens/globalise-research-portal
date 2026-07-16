@@ -23,7 +23,7 @@ function ReferencePanelActionTooltip({
       {children}
       <span
         aria-hidden="true"
-        className="gds-reference-panel-item__action-tooltip document-tooltip"
+        className="gds-reference-panel-item__action-tooltip viewer-tooltip"
       >
         {label}
       </span>

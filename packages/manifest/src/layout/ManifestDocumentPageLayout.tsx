@@ -3,16 +3,16 @@
 import './ManifestDocumentPageLayout.css';
 import {
   cn,
-  DocumentDetailBarGroup,
-  DocumentDetailBody,
-  DocumentDetailBottomBar,
-  DocumentDetailCanvas,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailTooltip,
-  DocumentDetailTopBar,
-  DocumentDetailTranscriptCanvas,
-  DocumentDetailViewerPane,
+  ViewerBarGroup,
+  ViewerBody,
+  ViewerBottomBar,
+  ViewerCanvas,
+  ViewerToggleGroup,
+  ViewerToggle,
+  ViewerTooltip,
+  ViewerTopBar,
+  TranscriptionCanvas,
+  ViewerPane as ViewerPaneSurface,
   IconScan,
   IconSidebar,
   IconSwap,
@@ -53,17 +53,17 @@ function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   );
 
   return (
-    <DocumentDetailViewerPane className={paneClassName}>
+    <ViewerPaneSurface className={paneClassName}>
       {type === 'scan' ? (
-        <DocumentDetailCanvas className={canvasClassName}>
+        <ViewerCanvas className={canvasClassName}>
           {children}
-        </DocumentDetailCanvas>
+        </ViewerCanvas>
       ) : (
-        <DocumentDetailTranscriptCanvas className={canvasClassName}>
+        <TranscriptionCanvas className={canvasClassName}>
           {children}
-        </DocumentDetailTranscriptCanvas>
+        </TranscriptionCanvas>
       )}
-    </DocumentDetailViewerPane>
+    </ViewerPaneSurface>
   );
 }
 
@@ -171,8 +171,8 @@ export function ManifestDocumentPageLayout({
         </div>
 
         <div className="manifest-document-layout__main">
-          <DocumentDetailTopBar className="manifest-document-layout__top-bar">
-            <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--left">
+          <ViewerTopBar className="manifest-document-layout__top-bar">
+            <ViewerBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--left">
               <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
@@ -192,7 +192,7 @@ export function ManifestDocumentPageLayout({
 
               {topLeft}
 
-              <DocumentDetailSegmentedToggleGroup
+              <ViewerToggleGroup
                 aria-label="Primary viewer mode controls"
                 selectionMode="multiple"
                 selectedKeys={selectedKeys}
@@ -205,12 +205,12 @@ export function ManifestDocumentPageLayout({
                   setIsTextVisible(next.has('text'));
                 }}
               >
-                <DocumentDetailTooltip
+                <ViewerTooltip
                   label={
                     isScanVisible ? 'Closes scan viewer' : 'Opens scan viewer'
                   }
                 >
-                  <DocumentDetailSegmentedToggleItem
+                  <ViewerToggle
                     id="scan"
                     aria-label={
                       isScanVisible ? 'Close scan viewer' : 'Open scan viewer'
@@ -220,16 +220,16 @@ export function ManifestDocumentPageLayout({
                     }
                   >
                     Scan
-                  </DocumentDetailSegmentedToggleItem>
-                </DocumentDetailTooltip>
-                <DocumentDetailTooltip
+                  </ViewerToggle>
+                </ViewerTooltip>
+                <ViewerTooltip
                   label={
                     isTextVisible
                       ? 'Closes transcription viewer'
                       : 'Opens transcription viewer'
                   }
                 >
-                  <DocumentDetailSegmentedToggleItem
+                  <ViewerToggle
                     id="text"
                     aria-label={
                       isTextVisible
@@ -241,17 +241,17 @@ export function ManifestDocumentPageLayout({
                     }
                   >
                     Text
-                  </DocumentDetailSegmentedToggleItem>
-                </DocumentDetailTooltip>
-              </DocumentDetailSegmentedToggleGroup>
-            </DocumentDetailBarGroup>
+                  </ViewerToggle>
+                </ViewerTooltip>
+              </ViewerToggleGroup>
+            </ViewerBarGroup>
 
             <div className="manifest-document-layout__top-bar-center">
               <ManifestContentWarning />
               {topCenter}
             </div>
 
-            <DocumentDetailBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
+            <ViewerBarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
               <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
@@ -266,10 +266,10 @@ export function ManifestDocumentPageLayout({
               <ManifestEntityHighlightMenu />
               <ManifestLayoutElementsToggle />
               {topRight}
-            </DocumentDetailBarGroup>
-          </DocumentDetailTopBar>
+            </ViewerBarGroup>
+          </ViewerTopBar>
 
-          <DocumentDetailBody>
+          <ViewerBody>
             {isScanVisible && isTextVisible ? (
               <div className="manifest-document-layout__split-viewer">
                 <SplitPaneLayout>
@@ -279,11 +279,11 @@ export function ManifestDocumentPageLayout({
             ) : (
               (scanPane ?? transcriptionPane)
             )}
-          </DocumentDetailBody>
+          </ViewerBody>
 
-          <DocumentDetailBottomBar className="manifest-document-layout__bottom-bar">
+          <ViewerBottomBar className="manifest-document-layout__bottom-bar">
             {bottom}
-          </DocumentDetailBottomBar>
+          </ViewerBottomBar>
         </div>
       </div>
     </div>

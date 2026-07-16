@@ -4,6 +4,8 @@ Use a short kebab-case root class that describes the component or its function, 
 
 Components that belong to the complete manifest interface use `manifest-viewer-*`. Reusable parts keep their own functional root, such as `.viewer-toolbar` or `.entity-menu`.
 
+TypeScript follows the same boundary: `ManifestViewer` is the composed feature, while shared components use `Viewer*` or a direct functional name.
+
 Internal parts use `data-slot` and are always scoped to the root class:
 
 ```css

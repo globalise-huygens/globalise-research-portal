@@ -46,7 +46,7 @@
     outline: none;
   }
 
-  .document-canvas {
+  .viewer-canvas {
     position: relative;
     box-sizing: border-box;
     display: flex;
@@ -58,7 +58,7 @@
     padding: var(--panel-pad);
   }
 
-  .document-canvas.bg-neutral-500 {
+  .viewer-canvas.bg-neutral-500 {
     background: var(--color-neutral-500);
   }
 
@@ -379,7 +379,7 @@
     padding: var(--s16);
   }
 
-  .gds-entity-preview-card .document-popover > [data-slot="body"] {
+  .gds-entity-preview-card .viewer-popover > [data-slot="body"] {
     display: grid;
     gap: var(--s16);
     font-size: inherit;
@@ -815,12 +815,12 @@
       gap: 0;
     }
 
-    .document-sidebar-section [data-slot="title"] {
+    .viewer-sidebar-section [data-slot="title"] {
       font-size: 0.875rem;
       line-height: 1.125rem;
     }
 
-    .document-sidebar-section [data-slot="count"] {
+    .viewer-sidebar-section [data-slot="count"] {
       font-size: 0.875rem;
       line-height: 1.125rem;
     }

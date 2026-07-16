@@ -1,8 +1,8 @@
 import {
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailToolButton,
-  DocumentDetailTooltip,
+  ViewerToggleGroup,
+  ViewerToggle,
+  ViewerToolButton,
+  ViewerTooltip,
   IconReset,
   IconTranscriptionDiplomatic,
   IconTranscriptionNormalised,
@@ -59,15 +59,15 @@ export function ManifestTranscriptionControls() {
 
   return (
     <div className="manifest-document-layout__transcription-toolbar">
-      <DocumentDetailSegmentedToggleGroup
+      <ViewerToggleGroup
         aria-label="Transcription mode controls"
         className="manifest-document-layout__transcription-mode-group"
         selectionMode="single"
         selectedKeys={[transcriptionMode]}
         size="compact"
       >
-        <DocumentDetailTooltip label="Line by line transcription">
-          <DocumentDetailSegmentedToggleItem
+        <ViewerTooltip label="Line by line transcription">
+          <ViewerToggle
             id="line-by-line"
             aria-label="Line by line transcription"
             className="manifest-document-layout__transcription-mode-item"
@@ -77,9 +77,9 @@ export function ManifestTranscriptionControls() {
             onPress={() => setTranscriptionMode('line-by-line')}
             size="compact"
           />
-        </DocumentDetailTooltip>
-        <DocumentDetailTooltip label="Diplomatic transcription">
-          <DocumentDetailSegmentedToggleItem
+        </ViewerTooltip>
+        <ViewerTooltip label="Diplomatic transcription">
+          <ViewerToggle
             id="diplomatic"
             aria-label="Diplomatic transcription"
             className="manifest-document-layout__transcription-mode-item"
@@ -89,10 +89,10 @@ export function ManifestTranscriptionControls() {
             onPress={() => setTranscriptionMode('diplomatic')}
             size="compact"
           />
-        </DocumentDetailTooltip>
-      </DocumentDetailSegmentedToggleGroup>
+        </ViewerTooltip>
+      </ViewerToggleGroup>
       <div data-slot="zoom-segment">
-        <DocumentDetailToolButton
+        <ViewerToolButton
           aria-label="Zoom out transcription"
           data-slot="button"
           icon={
@@ -129,7 +129,7 @@ export function ManifestTranscriptionControls() {
             %
           </span>
         </label>
-        <DocumentDetailToolButton
+        <ViewerToolButton
           aria-label="Zoom in transcription"
           data-slot="button"
           icon={
@@ -143,7 +143,7 @@ export function ManifestTranscriptionControls() {
         data-slot="divider"
         aria-hidden="true"
       />
-      <DocumentDetailToolButton
+      <ViewerToolButton
         aria-label="Reset transcription zoom"
         data-slot="button"
         icon={<IconReset data-slot="icon" />}

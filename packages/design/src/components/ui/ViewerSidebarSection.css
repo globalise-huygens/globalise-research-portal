@@ -1,9 +1,9 @@
 @layer components {
-  .document-sidebar-section {
+  .viewer-sidebar-section {
     border-bottom: 1px solid rgb(255 255 255 / 0.1);
   }
 
-  .document-sidebar-section > [data-slot="button"] {
+  .viewer-sidebar-section > [data-slot="button"] {
     display: flex;
     width: 100%;
     height: var(--s64);
@@ -18,27 +18,27 @@
     transition: background-color 75ms ease-out;
   }
 
-  .document-sidebar-section > [data-slot="button"][data-hovered] {
+  .viewer-sidebar-section > [data-slot="button"][data-hovered] {
     background: rgb(255 255 255 / 0.05);
   }
 
-  .document-sidebar-section > [data-slot="button"][data-focus-visible] {
+  .viewer-sidebar-section > [data-slot="button"][data-focus-visible] {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--color-ring);
   }
 
-  .document-sidebar-section [data-slot="button-content"] {
+  .viewer-sidebar-section [data-slot="button-content"] {
     display: flex;
     min-width: 0;
     align-items: center;
     gap: var(--s8);
   }
 
-  .document-sidebar-section [data-slot="icon"] {
+  .viewer-sidebar-section [data-slot="icon"] {
     flex-shrink: 0;
   }
 
-  .document-sidebar-section [data-slot="title"] {
+  .viewer-sidebar-section [data-slot="title"] {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -48,7 +48,7 @@
     line-height: 1.25rem;
   }
 
-  .document-sidebar-section [data-slot="count"] {
+  .viewer-sidebar-section [data-slot="count"] {
     flex-shrink: 0;
     color: rgb(255 255 255 / 0.45);
     font-size: 1rem;
@@ -56,19 +56,19 @@
     line-height: 1.25rem;
   }
 
-  .document-sidebar-section > [data-slot="panel"] {
+  .viewer-sidebar-section > [data-slot="panel"] {
     padding-inline: var(--panel-pad);
     padding-bottom: var(--panel-pad);
   }
 
   @media (max-width: 767px) {
-    .document-sidebar-section > [data-slot="button"] {
+    .viewer-sidebar-section > [data-slot="button"] {
       height: var(--s56);
       padding-inline: var(--s16);
     }
 
-    .document-sidebar-section [data-slot="title"],
-    .document-sidebar-section [data-slot="count"] {
+    .viewer-sidebar-section [data-slot="title"],
+    .viewer-sidebar-section [data-slot="count"] {
       font-size: 0.875rem;
       line-height: 1.125rem;
     }

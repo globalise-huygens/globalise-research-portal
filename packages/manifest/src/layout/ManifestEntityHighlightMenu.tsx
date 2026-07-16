@@ -8,9 +8,9 @@ import {
   useEntityHighlightCategories,
 } from '@globalise/common/document';
 import {
-  DocumentDetailEntityHighlightMenu,
+  EntityHighlightMenu,
   IconEntities,
-  type DocumentDetailEntityHighlightCategory,
+  type EntityHighlightCategory,
 } from '@globalise/design';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
@@ -19,7 +19,7 @@ const iconClassName = 'manifest-document-layout__toolbar-icon';
 
 const entityCategoryConfig: Record<
   EntityVisualCategoryClassName,
-  DocumentDetailEntityHighlightCategory
+  EntityHighlightCategory
 > = {
   'cidoc-actor': {
     id: 'cidoc-actor',
@@ -92,7 +92,7 @@ export function ManifestEntityHighlightMenu() {
   );
 
   return (
-    <DocumentDetailEntityHighlightMenu
+    <EntityHighlightMenu
       categories={categories}
       selectedKeys={selectedKeys}
       onSelectedKeysChange={handleSelectedKeysChange}

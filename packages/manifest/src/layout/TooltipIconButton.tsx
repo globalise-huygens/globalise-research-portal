@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { DocumentDetailTooltip, DocumentDetailToolButton } from '@globalise/design';
+import { ViewerTooltip, ViewerToolButton } from '@globalise/design';
 
 export function TooltipIconButton({
   tooltip,
   tooltipPlacement = 'bottom',
   ...buttonProps
-}: React.ComponentProps<typeof DocumentDetailToolButton> & {
+}: React.ComponentProps<typeof ViewerToolButton> & {
   tooltip: React.ReactNode;
-  tooltipPlacement?: React.ComponentProps<typeof DocumentDetailTooltip>['placement'];
+  tooltipPlacement?: React.ComponentProps<typeof ViewerTooltip>['placement'];
 }) {
   return (
-    <DocumentDetailTooltip label={tooltip} placement={tooltipPlacement}>
-      <DocumentDetailToolButton {...buttonProps} />
-    </DocumentDetailTooltip>
+    <ViewerTooltip label={tooltip} placement={tooltipPlacement}>
+      <ViewerToolButton {...buttonProps} />
+    </ViewerTooltip>
   );
 }

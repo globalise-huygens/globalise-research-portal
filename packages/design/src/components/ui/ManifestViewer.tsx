@@ -1,9 +1,9 @@
 import './ManifestViewer.css';
 import * as React from 'react';
 import {
-  DocumentDetailBody,
-  DocumentDetailSplitViewer,
-} from './DocumentDetailLayout';
+  ViewerBody,
+  SplitViewer,
+} from './ViewerLayout';
 import { ManifestViewerOverlay } from './ManifestViewerOverlay';
 import { ManifestViewerBottomBar } from './ManifestViewerBottomBar';
 import {
@@ -271,14 +271,14 @@ export function ManifestViewer({
         onClose={() => onOpenChange(false)}
       />
 
-      <DocumentDetailBody
+      <ViewerBody
         className={`manifest-viewer-body${
           isSidebarOpen
             ? ' manifest-viewer-body--sidebar-open'
             : ''
         }`}
       >
-        <DocumentDetailSplitViewer
+        <SplitViewer
           className="manifest-viewer-split-viewer"
           data-layout={
             isScanVisible && isTextVisible
@@ -291,8 +291,8 @@ export function ManifestViewer({
           data-paired-page={isPairedPageView ? 'true' : 'false'}
         >
           {isViewerOrderSwapped ? [...panes].reverse() : panes}
-        </DocumentDetailSplitViewer>
-      </DocumentDetailBody>
+        </SplitViewer>
+      </ViewerBody>
 
       <ManifestViewerBottomBar
         currentScan={currentScan}

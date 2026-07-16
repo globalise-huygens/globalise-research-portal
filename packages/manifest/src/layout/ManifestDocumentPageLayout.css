@@ -294,7 +294,7 @@
   overflow: hidden;
 }
 
-.manifest-document-layout__main > .document-body,
+.manifest-document-layout__main > .viewer-body,
 .manifest-document-layout__split-viewer {
   min-height: 0;
 }
@@ -339,7 +339,7 @@
   min-height: 0;
 }
 
-.document-canvas.manifest-document-layout__canvas {
+.viewer-canvas.manifest-document-layout__canvas {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -349,7 +349,7 @@
   overflow: hidden;
 }
 
-.document-canvas.manifest-document-layout__canvas > * {
+.viewer-canvas.manifest-document-layout__canvas > * {
   min-height: 0;
 }
 
@@ -426,7 +426,7 @@
   line-height: var(--s28);
 }
 
-.manifest-document-layout__sidebar-button .document-sidebar-badge {
+.manifest-document-layout__sidebar-button .viewer-sidebar-badge {
   height: var(--s28);
   min-width: var(--s40);
   border-color: var(--color-neutral-500);

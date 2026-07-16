@@ -6,25 +6,25 @@ import {
   TooltipTrigger as AriaTooltipTrigger,
 } from 'react-aria-components';
 
-export type DocumentDetailFloatingToolbarProps = {
+export type ViewerFloatingToolbarProps = {
   align?: 'start' | 'end';
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailFloatingToolbar({
+function ViewerFloatingToolbar({
   align = 'start',
   className,
   ...props
-}: DocumentDetailFloatingToolbarProps) {
+}: ViewerFloatingToolbarProps) {
   return (
     <div
-      className={cn('document-floating-toolbar', className)}
+      className={cn('viewer-floating-toolbar', className)}
       data-align={align}
       {...props}
     />
   );
 }
 
-export type DocumentDetailPopoverSurfaceProps = {
+export type ViewerPopoverProps = {
   variant?: 'default' | 'warning' | 'accent';
   size?: 'compact' | 'default' | 'wide';
   icon?: React.ReactNode;
@@ -36,7 +36,7 @@ export type DocumentDetailPopoverSurfaceProps = {
   'title'
 >;
 
-function DocumentDetailPopoverSurface({
+function ViewerPopover({
   className,
   variant = 'default',
   size = 'default',
@@ -46,10 +46,10 @@ function DocumentDetailPopoverSurface({
   footer,
   children,
   ...props
-}: DocumentDetailPopoverSurfaceProps) {
+}: ViewerPopoverProps) {
   return (
     <div
-      className={cn('document-popover', className)}
+      className={cn('viewer-popover', className)}
       data-size={size}
       data-variant={variant}
       {...props}
@@ -79,7 +79,7 @@ function DocumentDetailPopoverSurface({
   );
 }
 
-export type DocumentDetailTooltipProps = {
+export type ViewerTooltipProps = {
   children: React.ReactNode;
   label: React.ReactNode;
   className?: string;
@@ -90,7 +90,7 @@ export type DocumentDetailTooltipProps = {
   'children' | 'className'
 >;
 
-function DocumentDetailTooltip({
+function ViewerTooltip({
   children,
   label,
   className,
@@ -99,14 +99,14 @@ function DocumentDetailTooltip({
   placement = 'bottom',
   offset = 8,
   ...props
-}: DocumentDetailTooltipProps) {
+}: ViewerTooltipProps) {
   return (
     <AriaTooltipTrigger delay={delay} closeDelay={closeDelay}>
       {children}
       <AriaTooltip
         placement={placement}
         offset={offset}
-        className={cn('document-tooltip', className)}
+        className={cn('viewer-tooltip', className)}
         {...props}
       >
         {label}
@@ -115,20 +115,20 @@ function DocumentDetailTooltip({
   );
 }
 
-export type DocumentDetailToolbarProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type ViewerDockedToolbarProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-function DocumentDetailToolbar({
+function ViewerDockedToolbar({
   className,
   ...props
-}: DocumentDetailToolbarProps) {
+}: ViewerDockedToolbarProps) {
   return (
-    <div className={cn('document-toolbar', className)} {...props} />
+    <div className={cn('viewer-docked-toolbar', className)} {...props} />
   );
 }
 
 export {
-  DocumentDetailFloatingToolbar,
-  DocumentDetailPopoverSurface,
-  DocumentDetailToolbar,
-  DocumentDetailTooltip,
+  ViewerFloatingToolbar,
+  ViewerPopover,
+  ViewerDockedToolbar,
+  ViewerTooltip,
 };
