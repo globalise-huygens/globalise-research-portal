@@ -12,6 +12,7 @@ import {
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 const defaultManifest =
@@ -26,6 +27,7 @@ const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
 export function ManifestPage() {
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
   const [manifestUrl, setManifestUrl] = useState(
@@ -60,6 +62,7 @@ export function ManifestPage() {
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
         <ManifestDocumentPageLayout
+          onClose={() => void navigate({ to: '/' })}
           topLeft={
             <ManifestDropdown
               manifests={allManifests}

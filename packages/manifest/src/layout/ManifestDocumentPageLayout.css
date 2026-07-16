@@ -136,6 +136,14 @@
   font-size: var(--text-xs);
 }
 
+.manifest-document-layout__top-bar-divider--vertical {
+  width: 1px;
+  height: var(--s24);
+  flex: 0 0 1px;
+  margin-inline: var(--s4);
+  background: rgb(255 255 255 / 0.24);
+}
+
 .manifest-document-layout__top-bar-center {
   display: flex;
   flex: 1 1 0%;
