@@ -4,7 +4,7 @@ import {
   DocumentDetailMetadataSidebarButton,
   DocumentDetailMetadataSidebarBadge,
 } from '@globalise/design';
-import {SideBarId, sideBarPanels} from './sideBarPanels.tsx';
+import { SideBarId, sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
 

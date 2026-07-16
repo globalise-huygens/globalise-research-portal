@@ -13,6 +13,7 @@ import {
   DocumentDetailTopBar,
   DocumentDetailTranscriptCanvas,
   DocumentDetailViewerPane,
+  IconClose,
   IconScan,
   IconSidebar,
   IconSwap,
@@ -35,6 +36,7 @@ type Props = {
   scan?: React.ReactNode;
   transcription?: React.ReactNode;
   bottom?: React.ReactNode;
+  onClose?: () => void;
 };
 
 type ViewerPaneProps = {
@@ -74,6 +76,7 @@ export function ManifestDocumentPageLayout({
   scan,
   transcription,
   bottom,
+  onClose,
 }: Props) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
     () =>
@@ -266,6 +269,23 @@ export function ManifestDocumentPageLayout({
               <ManifestEntityHighlightMenu />
               <ManifestLayoutElementsToggle />
               {topRight}
+              {onClose && (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="manifest-document-layout__top-bar-divider manifest-document-layout__top-bar-divider--vertical"
+                  />
+                  <TooltipIconButton
+                    aria-label="Close manifest viewer"
+                    tooltip="Close manifest viewer"
+                    className={TOP_BAR_BUTTON}
+                    icon={
+                      <IconClose className="manifest-document-layout__toolbar-icon" />
+                    }
+                    onPress={onClose}
+                  />
+                </>
+              )}
             </DocumentDetailBarGroup>
           </DocumentDetailTopBar>
 
