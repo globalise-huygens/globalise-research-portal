@@ -761,7 +761,7 @@
   line-height: var(--s16);
 }
 
-.manifest-viewer-toc-viewer-toggle {
+.manifest-viewer-toc-toggle {
   display: flex;
   width: var(--s32);
   min-width: var(--s32);
@@ -774,7 +774,7 @@
   cursor: pointer;
 }
 
-.manifest-viewer-toc-viewer-toggle:hover {
+.manifest-viewer-toc-toggle:hover {
   background: rgb(255 255 255 / 0.05);
 }
 

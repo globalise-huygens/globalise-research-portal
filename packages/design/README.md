@@ -2,9 +2,11 @@
 
 Use a short kebab-case root class that describes the component or its function, such as `.entity-menu` or `.viewer-toolbar`. Do not add a package prefix.
 
-Components that belong to the complete manifest interface use `manifest-viewer-*`. Reusable parts keep their own functional root, such as `.viewer-toolbar` or `.entity-menu`.
+Reusable parts keep their own functional root, such as `.viewer-toolbar` or `.entity-menu`. Application layout styles stay with the manifest package; retained legacy styles remain isolated under `viewer/legacy`.
 
-TypeScript follows the same boundary: `ManifestViewer` is the composed feature, while shared components use `Viewer*` or a direct functional name.
+The design package provides viewer building blocks; the manifest package composes them with manifest data and application behavior.
+
+Viewer components live in `src/components/ui/viewer` and are available from `@globalise/design/viewer` with short names such as `TopBar` and `ToolButton`. The `legacy` folder keeps viewer behavior that has not yet been transferred; do not add new work there.
 
 Internal parts use `data-slot` and are always scoped to the root class:
 

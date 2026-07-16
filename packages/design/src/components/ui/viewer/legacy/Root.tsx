@@ -1,28 +1,28 @@
-import './ManifestViewer.css';
+import './Legacy.css';
 import * as React from 'react';
 import {
   ViewerBody,
   SplitViewer,
-} from './ViewerLayout';
-import { ManifestViewerOverlay } from './ManifestViewerOverlay';
-import { ManifestViewerBottomBar } from './ManifestViewerBottomBar';
+} from '../Layout';
+import { ManifestViewerOverlay } from './Overlay';
+import { ManifestViewerBottomBar } from './BottomBar';
 import {
   CollapsedMetadataRail,
   MetadataSidebar,
-} from './ManifestViewerSidebar';
-import { ManifestViewerTopBar } from './ManifestViewerTopBar';
+} from './Sidebar';
+import { ManifestViewerTopBar } from './TopBar';
 import type {
   ManifestViewerContent,
   ManifestViewerPaneKey,
   ManifestViewerScan,
   ManifestViewerScanRenderer,
   ManifestViewerSidebarSectionId,
-} from './ManifestViewerTypes';
+} from './Types';
 import {
   ManuscriptPane,
   type TranscriptMode,
   TranscriptPane,
-} from './ManifestViewerPanes';
+} from './Panes';
 
 export type ManifestViewerProps = {
   content: ManifestViewerContent;

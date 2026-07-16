@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   IconCopy,
   IconEntities,
@@ -15,21 +16,8 @@ import {
   IconScan,
   IconSwap,
   IconTableOfContent,
-} from '../icons';
-import * as React from 'react';
-import {
-  ViewerCheckbox,
-  ViewerRailButton,
-  ViewerToggleGroup,
-  ViewerToggle,
-} from './ViewerControls';
-import {
-  ViewerIconRail,
-  ViewerMetadataSidebar,
-  ViewerMetadataSidebarBadge,
-} from './ViewerLayout';
-import { ViewerReferenceCard } from './ViewerReferenceCard';
-import { ViewerSidebarSection } from './ViewerSidebarSection';
+} from '../../../icons';
+import { EntityTag } from '../../EntityTag.tsx';
 import type {
   ManifestViewerContent,
   ManifestViewerDocument,
@@ -37,8 +25,20 @@ import type {
   ManifestViewerScan,
   ManifestViewerScanRenderer,
   ManifestViewerTagGroup,
-} from './ManifestViewerTypes';
-import { EntityTag } from './EntityTag.tsx';
+} from './Types';
+import {
+  ViewerCheckbox,
+  ViewerRailButton,
+  ViewerToggle,
+  ViewerToggleGroup,
+} from '../Controls';
+import {
+  ViewerIconRail,
+  ViewerMetadataSidebar,
+  ViewerMetadataSidebarBadge,
+} from '../Layout';
+import { ViewerReferenceCard } from '../ReferenceCard';
+import { ViewerSidebarSection } from '../SidebarSection';
 
 type SidebarSectionId = 'inventory' | 'contents' | 'entities' | 'events';
 
@@ -156,11 +156,7 @@ function SidebarScanCard({
   );
 }
 
-function TagGroupIcon({
-  icon,
-}: {
-  icon: ManifestViewerTagGroup['icon'];
-}) {
+function TagGroupIcon({ icon }: { icon: ManifestViewerTagGroup['icon'] }) {
   const className = 'manifest-viewer-icon';
 
   switch (icon) {
@@ -261,7 +257,7 @@ function DocumentRow({
         </button>
         <button
           type="button"
-          className="manifest-viewer-toc-viewer-toggle"
+          className="manifest-viewer-toc-toggle"
           aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
           aria-expanded={isExpanded}
           onClick={onToggleExpanded}
@@ -334,9 +330,7 @@ function ClassifiedEntityGroup({
           <span className="manifest-viewer-tag-group-icon">
             <TagGroupIcon icon={group.icon} />
           </span>
-          <span className="manifest-viewer-tag-group-label">
-            {group.label}
-          </span>
+          <span className="manifest-viewer-tag-group-label">{group.label}</span>
           <b>{group.count}</b>
         </button>
         {hasSubcategories ? (
@@ -853,9 +847,7 @@ export function MetadataSidebar({
       <ViewerSidebarSection
         className="manifest-viewer-section-button manifest-viewer-section-button--contents"
         data-expanded={expandedSections.contents ? 'true' : 'false'}
-        icon={
-          <IconTableOfContent className="manifest-viewer-icon-medium" />
-        }
+        icon={<IconTableOfContent className="manifest-viewer-icon-medium" />}
         title="Table of Contents"
         trailing={
           <SidebarDisclosureIcon isExpanded={expandedSections.contents} />
@@ -867,15 +859,10 @@ export function MetadataSidebar({
       >
         <div className="manifest-viewer-toc-panel" ref={tocPanelRef}>
           <div className="manifest-viewer-toc-controls">
-            <ViewerCheckbox
-              isSelected={hitsOnly}
-              onChange={setHitsOnly}
-            >
+            <ViewerCheckbox isSelected={hitsOnly} onChange={setHitsOnly}>
               Hits only
             </ViewerCheckbox>
-            <span className="manifest-viewer-toc-jump-label">
-              Go to
-            </span>
+            <span className="manifest-viewer-toc-jump-label">Go to</span>
             <div className="manifest-viewer-toc-jump-actions">
               <button
                 type="button"

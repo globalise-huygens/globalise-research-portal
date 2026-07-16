@@ -1,4 +1,4 @@
-import { ContentWarningControl } from '@globalise/design';
+import { ContentWarningControl } from '@globalise/design/viewer';
 import { useState } from 'react';
 
 const contentWarning = {

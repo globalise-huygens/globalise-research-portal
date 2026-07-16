@@ -179,9 +179,9 @@ export {
   TranscriptionLine,
   ViewerArea,
   ViewerPane,
-} from './Viewer';
-export { ManifestViewer } from './ManifestViewer';
-export type { ManifestViewerProps } from './ManifestViewer';
+} from './viewer/compat';
+export { ManifestViewer } from './viewer/legacy/Root';
+export type { ManifestViewerProps } from './viewer/legacy/Root';
 export type {
   ViewerBarGroupProps,
   ViewerBodyProps,
@@ -218,9 +218,9 @@ export type {
   TranscriptionLineProps,
   ViewerPaneProps,
   ViewerAreaProps,
-} from './Viewer';
-export { ManifestViewerOverlay } from './ManifestViewerOverlay';
-export type { ManifestViewerOverlayProps } from './ManifestViewerOverlay';
+} from './viewer/compat';
+export { ManifestViewerOverlay } from './viewer/legacy/Overlay';
+export type { ManifestViewerOverlayProps } from './viewer/legacy/Overlay';
 export type {
   ManifestViewerContent,
   ManifestViewerDocument,
@@ -235,7 +235,7 @@ export type {
   ManifestViewerTagGroup,
   ManifestViewerTagSubcategory,
   ManifestViewerTocMetadata,
-} from './ManifestViewerTypes';
+} from './viewer/legacy/Types';
 
 export { SearchBar, searchBarVariants } from './SearchBar';
 export type { SearchBarProps } from './SearchBar';

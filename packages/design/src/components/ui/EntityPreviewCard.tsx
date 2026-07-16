@@ -4,7 +4,7 @@ import * as React from 'react';
 import {
   ViewerPopover,
   ViewerTooltip,
-} from './ViewerSurfaces';
+} from './viewer/Surfaces';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';

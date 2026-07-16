@@ -1,14 +1,14 @@
-import { cn } from '../../lib';
+import { cn } from '../../../lib';
 import * as React from 'react';
-import { IconExpandSection } from '../icons/IconExpandSection';
+import { IconExpandSection } from '../../icons/IconExpandSection';
 import {
   ViewerCheckbox,
   ViewerToolButton,
-} from './ViewerControls';
+} from './Controls';
 import {
   ViewerPopover,
   ViewerTooltip,
-} from './ViewerSurfaces';
+} from './Surfaces';
 
 export type EntityHighlightSubcategory = {
   id?: string;

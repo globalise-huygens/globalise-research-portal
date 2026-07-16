@@ -17,26 +17,26 @@ import {
   IconSwap,
   IconTableOfContent,
   IconTranscription,
-} from '../icons';
+} from '../../../icons';
 import * as React from 'react';
 import {
   ContentWarningControl,
   ViewerToggleGroup,
   ViewerToggle,
-} from './ViewerControls';
-import { ManifestViewerIconButton } from './ManifestViewerControls';
+} from '../Controls';
+import { ManifestViewerIconButton } from './Controls';
 import {
   type EntityHighlightCategory,
   EntityHighlightMenu,
-} from './EntityHighlightMenu';
+} from '../EntityHighlightMenu';
 import {
   ViewerBarGroup,
   ViewerTopBar as ViewerTopBarPrimitive,
-} from './ViewerLayout';
+} from '../Layout';
 import type {
   ManifestViewerContent,
   ManifestViewerTagGroup,
-} from './ManifestViewerTypes';
+} from './Types';
 
 function getEntityIcon(icon: ManifestViewerTagGroup['icon']) {
   const className = 'manifest-viewer-icon';

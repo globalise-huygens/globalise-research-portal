@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ViewerIconRail, ViewerRailButton } from '@globalise/design';
+import { IconRail, RailButton } from '@globalise/design/viewer';
 import { sideBarPanels } from './sideBarPanels.tsx';
 
 export function CollapsedMetadataRail({
@@ -8,9 +8,9 @@ export function CollapsedMetadataRail({
   onExpandSection: (sectionId: string) => void;
 }) {
   return (
-    <ViewerIconRail className="manifest-document-layout__collapsed-rail">
+    <IconRail className="manifest-document-layout__collapsed-rail">
       {sideBarPanels.map((item) => (
-        <ViewerRailButton
+        <RailButton
           key={item.id}
           aria-label={`Expand ${item.label}`}
           className="manifest-document-layout__rail-button"
@@ -19,6 +19,6 @@ export function CollapsedMetadataRail({
           onPress={() => onExpandSection(item.id)}
         />
       ))}
-    </ViewerIconRail>
+    </IconRail>
   );
 }

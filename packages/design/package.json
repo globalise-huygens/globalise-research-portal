@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "sideEffects": [
-    "*.css"
+    "**/*.css"
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./viewer": "./src/components/ui/viewer/index.ts",
     "./styles.css": "./src/styles.css",
     "./inline-icon.css": "./src/components/icons/inline-icon.css"
   },

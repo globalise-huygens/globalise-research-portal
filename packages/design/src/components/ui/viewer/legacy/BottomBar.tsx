@@ -1,16 +1,16 @@
 import {
   ViewerBarGroup,
   ViewerBottomBar as ViewerBottomBarPrimitive,
-} from './ViewerLayout';
-import { ManifestViewerIconButton } from './ManifestViewerControls';
+} from '../Layout';
+import { ManifestViewerIconButton } from './Controls';
 import {
   IconClose,
   IconLeft,
   IconLeftFirst,
   IconRight,
   IconRightLast,
-} from '../icons';
-import type { ManifestViewerScan } from './ManifestViewerTypes';
+} from '../../../icons';
+import type { ManifestViewerScan } from './Types';
 
 export function ManifestViewerBottomBar({
   currentScan,

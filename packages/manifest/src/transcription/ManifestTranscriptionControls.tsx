@@ -1,14 +1,16 @@
 import {
-  ViewerToggleGroup,
-  ViewerToggle,
-  ViewerToolButton,
-  ViewerTooltip,
   IconReset,
   IconTranscriptionDiplomatic,
   IconTranscriptionNormalised,
   IconZoomIn,
   IconZoomOut,
 } from '@globalise/design';
+import {
+  ToggleGroup,
+  Toggle,
+  ToolButton,
+  Tooltip,
+} from '@globalise/design/viewer';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
@@ -59,15 +61,15 @@ export function ManifestTranscriptionControls() {
 
   return (
     <div className="manifest-document-layout__transcription-toolbar">
-      <ViewerToggleGroup
+      <ToggleGroup
         aria-label="Transcription mode controls"
         className="manifest-document-layout__transcription-mode-group"
         selectionMode="single"
         selectedKeys={[transcriptionMode]}
         size="compact"
       >
-        <ViewerTooltip label="Line by line transcription">
-          <ViewerToggle
+        <Tooltip label="Line by line transcription">
+          <Toggle
             id="line-by-line"
             aria-label="Line by line transcription"
             className="manifest-document-layout__transcription-mode-item"
@@ -77,9 +79,9 @@ export function ManifestTranscriptionControls() {
             onPress={() => setTranscriptionMode('line-by-line')}
             size="compact"
           />
-        </ViewerTooltip>
-        <ViewerTooltip label="Diplomatic transcription">
-          <ViewerToggle
+        </Tooltip>
+        <Tooltip label="Diplomatic transcription">
+          <Toggle
             id="diplomatic"
             aria-label="Diplomatic transcription"
             className="manifest-document-layout__transcription-mode-item"
@@ -89,10 +91,10 @@ export function ManifestTranscriptionControls() {
             onPress={() => setTranscriptionMode('diplomatic')}
             size="compact"
           />
-        </ViewerTooltip>
-      </ViewerToggleGroup>
+        </Tooltip>
+      </ToggleGroup>
       <div data-slot="zoom-segment">
-        <ViewerToolButton
+        <ToolButton
           aria-label="Zoom out transcription"
           data-slot="button"
           icon={
@@ -129,7 +131,7 @@ export function ManifestTranscriptionControls() {
             %
           </span>
         </label>
-        <ViewerToolButton
+        <ToolButton
           aria-label="Zoom in transcription"
           data-slot="button"
           icon={
@@ -143,7 +145,7 @@ export function ManifestTranscriptionControls() {
         data-slot="divider"
         aria-hidden="true"
       />
-      <ViewerToolButton
+      <ToolButton
         aria-label="Reset transcription zoom"
         data-slot="button"
         icon={<IconReset data-slot="icon" />}

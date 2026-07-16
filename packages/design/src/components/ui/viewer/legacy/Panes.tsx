@@ -16,28 +16,28 @@ import {
   IconViewModeMenu,
   IconZoomIn,
   IconZoomOut,
-} from '../icons';
+} from '../../../icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   ViewerCanvas,
   TranscriptionCanvas,
-} from './ViewerCanvases';
+} from '../Canvases';
 import {
   ViewerCheckbox,
   ViewerToggleGroup,
   ViewerToggle,
   ViewerToolButton,
-} from './ViewerControls';
-import { ManifestViewerIconButton } from './ManifestViewerControls';
-import { ViewerPane } from './ViewerLayout';
+} from '../Controls';
+import { ManifestViewerIconButton } from './Controls';
+import { ViewerPane } from '../Layout';
 import type {
   ManifestViewerScan,
   ManifestViewerScanRenderer,
-} from './ManifestViewerTypes';
+} from './Types';
 import {
   ViewerFloatingToolbar,
   ViewerPopover,
-} from './ViewerSurfaces';
+} from '../Surfaces';
 
 export type TranscriptMode = 'normalised' | 'diplomatic';
 

@@ -7,11 +7,11 @@ import {
   setEntityHighlightCategories,
   useEntityHighlightCategories,
 } from '@globalise/common/document';
+import { IconEntities } from '@globalise/design';
 import {
   EntityHighlightMenu,
-  IconEntities,
   type EntityHighlightCategory,
-} from '@globalise/design';
+} from '@globalise/design/viewer';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 

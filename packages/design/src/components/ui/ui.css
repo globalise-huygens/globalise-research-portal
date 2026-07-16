@@ -1,10 +1,10 @@
-@import "./ViewerReferenceCard.css";
-@import "./ViewerSidebarSection.css";
-@import "./ViewerLayout.css";
-@import "./ViewerSurfaces.css";
-@import "./ViewerControls.css";
-@import "./ViewerComponents.css";
-@import "./ManifestViewer.css";
+@import "./viewer/ReferenceCard.css";
+@import "./viewer/SidebarSection.css";
+@import "./viewer/Layout.css";
+@import "./viewer/Surfaces.css";
+@import "./viewer/Controls.css";
+@import "./viewer/Components.css";
+@import "./viewer/legacy/Legacy.css";
 
 @layer components {
   .gds-button {

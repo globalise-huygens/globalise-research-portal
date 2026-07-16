@@ -2,7 +2,6 @@ import {
   IconBrightness,
   IconContrast,
   IconInvert,
-  ViewerToolButton,
   IconReset,
   IconRotate,
   IconSaturation,
@@ -10,6 +9,7 @@ import {
   IconZoomIn,
   IconZoomOut,
 } from '@globalise/design';
+import { ToolButton } from '@globalise/design/viewer';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, type Rect } from 'openseadragon';
 import {
@@ -349,7 +349,7 @@ export function FacsimileControls({
   return (
     <>
       <div data-slot="zoom-segment">
-        <ViewerToolButton
+        <ToolButton
           aria-label="Zoom out"
           data-slot="button"
           icon={
@@ -386,7 +386,7 @@ export function FacsimileControls({
             %
           </span>
         </label>
-        <ViewerToolButton
+        <ToolButton
           aria-label="Zoom in"
           data-slot="button"
           icon={
@@ -400,14 +400,14 @@ export function FacsimileControls({
         data-slot="divider"
         aria-hidden="true"
       />
-      <ViewerToolButton
+      <ToolButton
         aria-label="Reset scan view"
         data-slot="button"
         icon={<IconReset data-slot="icon" />}
         onPress={handleResetView}
         size="compact"
       />
-      <ViewerToolButton
+      <ToolButton
         aria-label="Rotate scan"
         data-slot="button"
         icon={<IconRotate data-slot="icon" />}
@@ -417,7 +417,7 @@ export function FacsimileControls({
         size="compact"
       />
       <div data-slot="settings">
-        <ViewerToolButton
+        <ToolButton
           ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}

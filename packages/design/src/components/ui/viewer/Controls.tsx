@@ -1,4 +1,4 @@
-import { cn } from '../../lib';
+import { cn } from '../../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,
@@ -13,8 +13,8 @@ import {
   type ToggleButtonGroupProps as AriaToggleButtonGroupProps,
   type ToggleButtonProps as AriaToggleButtonProps,
 } from 'react-aria-components';
-import { IconArrowTopRight } from '../icons/IconArrowTopRight';
-import { IconContentWarning } from '../icons/IconContentWarning';
+import { IconArrowTopRight } from '../../icons/IconArrowTopRight';
+import { IconContentWarning } from '../../icons/IconContentWarning';
 
 export type ViewerControlProps = {
   className?: string;

@@ -4,12 +4,12 @@ import {
   useSelectedCanvas,
 } from '@globalise/common/document';
 import {
-  ViewerBarGroup,
   IconLeft,
   IconLeftFirst,
   IconRight,
   IconRightLast,
 } from '@globalise/design';
+import { BarGroup } from '@globalise/design/viewer';
 import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 import { Point } from 'openseadragon';
 import { useState } from 'react';
@@ -79,7 +79,7 @@ export function ManifestCanvasNavigation() {
   }
 
   return (
-    <ViewerBarGroup className="gap-s8">
+    <BarGroup className="gap-s8">
       <TooltipIconButton
         aria-label="First scan"
         tooltip="Go to first scan"
@@ -147,6 +147,6 @@ export function ManifestCanvasNavigation() {
         icon={<IconRightLast className="h-s16 w-s16" />}
         onPress={() => scrollTo(lastId)}
       />
-    </ViewerBarGroup>
+    </BarGroup>
   );
 }

@@ -1,10 +1,10 @@
-import { cn } from '../../lib';
+import { cn } from '../../../lib';
 import * as React from 'react';
 import {
   Button as AriaButton,
   type ButtonProps as AriaButtonProps,
 } from 'react-aria-components';
-import { ViewerDockedToolbar } from './ViewerSurfaces';
+import { ViewerDockedToolbar } from './Surfaces';
 
 export type ViewerTopBarProps = {} & React.HTMLAttributes<HTMLElement>;
 

@@ -1,7 +1,7 @@
-import { cn } from '../../lib';
+import { cn } from '../../../../lib';
 import * as React from 'react';
-import { ViewerToolButton } from './ViewerControls';
-import { ViewerTooltip } from './ViewerSurfaces';
+import { ViewerToolButton } from '../Controls';
+import { ViewerTooltip } from '../Surfaces';
 
 export type ManifestViewerIconButtonProps = {
   'aria-label': string;
