@@ -17,6 +17,7 @@ import {
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
+  Point,
   px,
   renderOriginalLayout,
 } from '@knaw-huc/original-layout';
@@ -179,15 +180,25 @@ export function renderDiplomaticView(
     const lineCount = Object.values(annotations)
       .filter((a) => a.textGranularity === 'line').length;
     const digitCount = String(lineCount).length;
-    const lineNumberGap = scale(30);
-    const lineNumberWidth = lineNumberGap + scale(30 * digitCount);
+    const lineNumberFontSize = Math.max(10, scale(50));
+    const lineNumberGap = Math.max(6, scale(20));
+    const lineNumberTextWidth = lineNumberFontSize * digitCount * 0.65;
+    const lineNumberWidth = lineNumberGap + lineNumberTextWidth;
 
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks } = renderBlocks(annotations, $layoutView, { scale, offset });
+    const { $blocks, $svg, blockCorners, blockMarkerXs } = renderBlocks(
+      annotations,
+      $layoutView,
+      { scale, offset },
+    );
     const lineNumbers = renderLineNumbers(annotations, $view, {
-      scale, gap: lineNumberGap, offset: {
+      scale,
+      gap: lineNumberGap,
+      fontSize: lineNumberFontSize,
+      blockMarkerXs,
+      offset: {
         left: offset.left + lineNumberWidth,
         top: offset.top,
       },
@@ -207,7 +218,43 @@ export function renderDiplomaticView(
     for (const [blockId, $block] of Object.entries($blocks)) {
       $block.on('mouseenter', () => onHover(blockId));
       $block.on('mouseleave', () => onHover(null));
+      $block.on('focus', () => onHover(blockId));
+      $block.on('blur', () => onHover(null));
+      $block.on('click', () => onClick(blockId));
+      $block.on('keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onClick(blockId);
+        }
+      });
     }
+
+    let hoveredLayoutBlockId: Id | null = null;
+    $layoutView.addEventListener('pointermove', (event) => {
+      if ((event.target as Element).closest('.segment')) {
+        hoveredLayoutBlockId = null;
+        return;
+      }
+      const svgRect = $svg.node()?.getBoundingClientRect();
+      if (!svgRect) {
+        return;
+      }
+      const pointer: Point = [
+        event.clientX - svgRect.left,
+        event.clientY - svgRect.top,
+      ];
+      const nextBlockId = Object.entries(blockCorners)
+        .find(([, corners]) => isPointInPolygon(pointer, corners))?.[0]
+        ?? null;
+      if (nextBlockId !== hoveredLayoutBlockId) {
+        hoveredLayoutBlockId = nextBlockId;
+        onHover(nextBlockId);
+      }
+    });
+    $layoutView.addEventListener('pointerleave', () => {
+      hoveredLayoutBlockId = null;
+      onHover(null);
+    });
 
     selectBlock = (id: Id) => {
       const $block = $blocks[id];
@@ -279,6 +326,21 @@ export function renderDiplomaticView(
       selectedIds.push(...ids);
     },
   };
+}
+
+function isPointInPolygon(point: Point, polygon: Point[]) {
+  const [x, y] = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, yi] = polygon[i];
+    const [xj, yj] = polygon[j];
+    const crosses = yi > y !== yj > y
+      && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+    if (crosses) {
+      inside = !inside;
+    }
+  }
+  return inside;
 }
 
 function markJoinedSegments($segments: HTMLSpanElement[]) {

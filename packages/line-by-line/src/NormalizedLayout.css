@@ -68,14 +68,18 @@
     }
 
     .block-group {
-        border-left: 1px solid var(--normalized-structure);
-        background: var(--normalized-structure-fill);
+        border-left: 1px solid transparent;
+        background: transparent;
         padding-left: 0.35rem;
 
-        &.selected {
+        &:focus {
+            outline: none;
+        }
+
+        &:hover,
+        &.selected,
+        &:focus-visible {
             border-left-color: var(--normalized-structure-strong);
-            background: var(--normalized-structure-fill-strong);
-            box-shadow: inset 1px 0 0 var(--normalized-structure-strong);
         }
     }
 

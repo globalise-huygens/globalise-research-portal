@@ -10,7 +10,6 @@ import { createBlockBoundaries } from './createBlockBoundaries.ts';
 import { Offset } from '@knaw-huc/original-layout';
 
 type BlockColors = {
-  text: string;
   stroke: string;
   fill: string;
 };
@@ -28,7 +27,6 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'var(--color-layout-element-text, #125e64)',
       stroke: 'var(--color-layout-element-stroke, rgb(18 94 100 / 0.5))',
       fill: 'var(--color-layout-element-fill, rgb(128 219 227 / 0.1))',
     },
@@ -46,10 +44,6 @@ export function renderBlocks(
   const words = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
-  const blocks = Object.fromEntries(
-    Object.entries(annotations).filter(([, a]) => a.textGranularity === 'block'),
-  );
-
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(
@@ -59,16 +53,26 @@ export function renderBlocks(
       return [id, padded];
     }),
   );
+  const blockMarkerXs: Record<string, number> = {};
   const $blocks: Record<string, D3El<SVGGElement>> = Object.fromEntries(
     Object.entries(blockCorners).map(([id, corners]) => {
-      const block = blocks[id];
-      const label = findSourceLabel(block);
+      const block = annotations[id];
+      const label = block ? findSourceLabel(block) : 'Layout element';
       const $highlight = $svg.append('g')
         .attr('class', 'layout-block')
-        .attr('data-selected', 'false');
+        .attr('data-selected', 'false')
+        .attr('aria-label', label)
+        .attr('role', 'group')
+        .attr('tabindex', 0);
+
+      const blockTopLeft = corners[0];
+      const blockBottomLeft = corners[3];
+      const markerX = blockTopLeft[0] - Math.max(12, scale(50));
+      blockMarkerXs[id] = markerX;
 
       $highlight
         .append('polygon')
+        .attr('class', 'block-boundary')
         .attr('points', createPath(corners))
         .attr('fill', colors.fill)
         .attr('stroke', colors.stroke)
@@ -76,19 +80,36 @@ export function renderBlocks(
         .attr('stroke-linejoin', 'miter')
         .attr('vector-effect', 'non-scaling-stroke');
 
-      const blockTopLeft = corners[0];
+      $highlight
+        .append('line')
+        .attr('class', 'block-hit-area')
+        .attr('x1', markerX)
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', markerX)
+        .attr('y2', blockBottomLeft[1])
+        .attr('vector-effect', 'non-scaling-stroke');
+
+      $highlight
+        .append('line')
+        .attr('class', 'block-marker')
+        .attr('x1', markerX)
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', markerX)
+        .attr('y2', blockBottomLeft[1])
+        .attr('vector-effect', 'non-scaling-stroke');
+
       $highlight
         .append('text')
         .attr('class', 'block-label')
         .attr('dominant-baseline', 'hanging')
-        .attr('x', blockTopLeft[0] + scale(30))
-        .attr('y', blockTopLeft[1] + scale(30))
-        .style('font-size', px(scale(60)))
-        .attr('fill', colors.text)
+        .attr('x', markerX + Math.max(4, scale(16)))
+        .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
+        .style('font-size', px(Math.max(9, scale(42))))
         .text(label);
+
       return [id, $highlight];
     }),
   );
 
-  return { $blocks };
+  return { $blocks, $svg, blockCorners, blockMarkerXs };
 }

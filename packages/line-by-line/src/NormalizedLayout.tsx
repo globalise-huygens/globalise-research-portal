@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
-import { Id } from '@globalise/common/annotation';
-import { useIsSelectedInTranscription } from '@globalise/common/document';
+import { Annotation, findSourceLabel, Id } from '@globalise/common/annotation';
+import {
+  setHovered,
+  useIsSelectedInTranscription,
+} from '@globalise/common/document';
 import { SegmentedLine } from './SegmentedLine';
 import { LineSegments } from './useLineSegments';
 
@@ -8,12 +11,13 @@ import './NormalizedLayout.css';
 
 type Props = {
   canvasId: string;
+  annotations: Record<Id, Annotation>;
   lineSegments: LineSegments;
   showLayoutElements: boolean;
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  { canvasId, lineSegments, showLayoutElements }: Props,
+  { canvasId, annotations, lineSegments, showLayoutElements }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
 
@@ -39,10 +43,12 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
           <BlockGroup
             key={blockId}
             canvasId={canvasId}
+            annotation={annotations[blockId]}
             blockId={blockId}
             lineIds={lineIds}
             segmentsByLine={segmentsByLine}
             lineNumberStart={blockLineNumberStarts[i] + 1}
+            showLayoutElements={showLayoutElements}
           />
         ))}
       </div>
@@ -52,21 +58,46 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 
 type BlockGroupProps = {
   canvasId: string;
+  annotation?: Annotation;
   blockId: Id;
   lineIds: Id[];
   segmentsByLine: LineSegments['segmentsByLine'];
   lineNumberStart: number;
+  showLayoutElements: boolean;
 };
 
 function BlockGroup(
-  { canvasId, blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
+  {
+    canvasId,
+    annotation,
+    blockId,
+    lineIds,
+    segmentsByLine,
+    lineNumberStart,
+    showLayoutElements,
+  }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInTranscription(canvasId, blockId);
+  const renderedLineCount = lineIds.filter((id) => segmentsByLine[id]).length;
+  const lineNumberEnd = lineNumberStart + renderedLineCount - 1;
+  const layoutLabel = annotation
+    ? findSourceLabel(annotation)
+    : 'Layout element';
+  const lineRange = lineNumberStart === lineNumberEnd
+    ? `line ${lineNumberStart}`
+    : `lines ${lineNumberStart} to ${lineNumberEnd}`;
 
   let count = 0;
 
   return (
-    <div className={`block-group ${isSelected ? 'selected' : ''}`}>
+    <div
+      aria-label={`${layoutLabel}, ${lineRange}`}
+      className={`block-group ${isSelected ? 'selected' : ''}`}
+      onBlur={() => setHovered(null)}
+      onFocus={() => setHovered(blockId)}
+      role="group"
+      tabIndex={showLayoutElements ? 0 : undefined}
+    >
       {lineIds.map((lineId) => {
         const segments = segmentsByLine[lineId];
         if (!segments) {

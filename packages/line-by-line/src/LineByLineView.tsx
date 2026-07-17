@@ -18,6 +18,7 @@ export const LineByLineView = React.memo(function LineByLineView(
   return (
     <NormalizedLayout
       canvasId={canvasId}
+      annotations={annotations}
       lineSegments={lineSegments}
       showLayoutElements={showLayoutElements}
     />
