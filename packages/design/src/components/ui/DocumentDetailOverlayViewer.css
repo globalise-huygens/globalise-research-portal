@@ -838,6 +838,13 @@
   border-bottom: 1px solid rgb(255 255 255 / 0.12);
 }
 
+.gds-document-detail-reference-card {
+  width: 100%;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
 .document-detail-overlay-toc-card.gds-document-detail-reference-card::before {
   top: var(--s12);
   bottom: var(--s12);

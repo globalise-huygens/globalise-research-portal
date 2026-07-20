@@ -9,10 +9,10 @@ export type DocumentDetailReferenceCardProps = {
   snippet?: React.ReactNode;
   actions?: React.ReactNode;
   footer?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLButtonElement>;
 
 const DocumentDetailReferenceCard = React.forwardRef<
-  HTMLDivElement,
+  HTMLButtonElement,
   DocumentDetailReferenceCardProps
 >(
   (
@@ -29,7 +29,8 @@ const DocumentDetailReferenceCard = React.forwardRef<
     },
     ref,
   ) => (
-    <div
+    <button
+      type='button'
       ref={ref}
       aria-current={isSelected ? 'true' : undefined}
       className={cn('gds-document-detail-reference-card', className)}
@@ -68,7 +69,7 @@ const DocumentDetailReferenceCard = React.forwardRef<
           )}
         </div>
       </div>
-    </div>
+    </button>
   ),
 );
 DocumentDetailReferenceCard.displayName = 'DocumentDetailReferenceCard';
