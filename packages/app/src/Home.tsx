@@ -6,6 +6,7 @@ export function Home() {
     <ul>
       <li><Link to="/search">Search</Link></li>
       <li><Link to="/manifest">Manifest viewer</Link></li>
+      <li><Link to="/object-card">Object card</Link></li>
     </ul>
   </>
   );
