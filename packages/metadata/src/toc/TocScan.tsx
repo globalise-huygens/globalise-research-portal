@@ -5,12 +5,11 @@ import { dataCurrentScan } from './useScrollToThumb.ts';
 
 export type TocScanProps = {
   scan: ManifestScan;
-  documentScan: number;
   isSelected: boolean;
 };
 
 export function TocScan(
-  { scan, documentScan, isSelected }: TocScanProps,
+  { scan, isSelected }: TocScanProps,
 ) {
   const thumbnail = scan.thumbnailUrl && (
     <img
@@ -23,7 +22,6 @@ export function TocScan(
 
   const heading = <span className="document-detail-overlay-toc-heading">
     Scan {scan.scanNumber}
-    <span>| in doc. {documentScan}</span>
   </span>;
 
   return (

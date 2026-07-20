@@ -61,11 +61,10 @@ export function TocDocument(
 
       {isExpanded && (
         <div className="document-detail-overlay-toc-document-scans">
-          {document.scans.map((scan, i) => (
+          {document.scans.map((scan) => (
             <TocScan
               key={scan.canvasId}
               scan={scan}
-              documentScan={i + 1}
               isSelected={scan.canvasId === selectedCanvasId}
             />
           ))}
