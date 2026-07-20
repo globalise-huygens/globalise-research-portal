@@ -6,10 +6,6 @@ export type EmptyPairProps = {
   fallback?: ReactNode;
 };
 
-/**
- * Render a fallback when a field has no value,
- * or nothing when no fallback is provided.
- */
 export function EmptyPair({ label, fallback }: EmptyPairProps) {
   if (!fallback) {
     return null;

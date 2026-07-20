@@ -7,11 +7,6 @@ export type TimespanProps = {
   endOfTheEnd?: string;
 };
 
-/**
- * A timespan starts somewhere in a date range and ends in another one.
- * When both inner boundaries are missing, begin and end are certain enough
- * to render as a single date range.
- */
 export function Timespan(
   { beginOfTheBegin, endOfTheBegin, beginOfTheEnd, endOfTheEnd }: TimespanProps,
 ) {

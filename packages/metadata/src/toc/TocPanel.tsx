@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
+import { useScrollToThumb } from './useScrollToThumb.ts';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -10,6 +11,9 @@ import { TocDocument } from './TocDocument.tsx';
 export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
+  const tocListRef = useRef<HTMLDivElement>(null);
+
+  useScrollToThumb(tocListRef);
 
   const currentDocumentId = useMemo(
     () => documents.find(
@@ -38,7 +42,7 @@ export function TocPanel() {
 
   return (
     <div className="document-detail-overlay-toc-panel">
-      <div className="document-detail-overlay-toc-list">
+      <div className="document-detail-overlay-toc-list" ref={tocListRef}>
         {documents.map((document) => (
           <TocDocument
             key={document.id}
