@@ -36,19 +36,34 @@ export function ManifestPage() {
 
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(
-    () =>
-      useDocumentStore.subscribe((state, prev) => {
-        const { selectedCanvasId } = state;
-        if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
-          return;
-        }
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.set(CANVAS, selectedCanvasId);
-        history.replaceState({}, '', newUrl);
-      }),
-    [],
-  );
+  useEffect(syncCanvasParam, []);
+  function syncCanvasParam() {
+    useDocumentStore.subscribe((state, prev) => {
+      const { selectedCanvasId } = state;
+      if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
+        return;
+      }
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set(CANVAS, selectedCanvasId);
+      history.replaceState({}, '', newUrl);
+    });
+  }
+
+  useEffect(navigateToObjectCard, []);
+  function navigateToObjectCard() {
+    useDocumentStore.subscribe((state, prev) => {
+      const currentClickedId = state.clickedId;
+      const prevClickedId = prev.clickedId;
+      if (!currentClickedId || currentClickedId === prevClickedId) {
+        return;
+      }
+      const cid = state.selectedCanvasId;
+      const annos = cid && state.canvases[cid].annotations;
+      const clickedAnno = annos && typeof annos === 'object' && annos[currentClickedId]; 
+      console.log('navigateToObjectCard', { currentClickedId,cid, annos, clickedAnno });
+      navigate('/object-card' /*TODO and set param here*/);
+    });
+  }
 
   function handleManifestChange(url: string) {
     setManifestUrl(url);
@@ -82,7 +97,7 @@ export function ManifestPage() {
               onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
             />
           }
-          bottom={<ManifestCanvasNavigation />}
+          bottom={<ManifestCanvasNavigation/>}
         />
       </ManifestLoader>
     </ViewerProvider>
