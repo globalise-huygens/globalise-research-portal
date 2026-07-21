@@ -5,6 +5,18 @@ import {
   IconEntities,
   IconEvents,
 } from '@globalise/design';
+import { ReactNode } from 'react';
+
+export type SideBarId = 'inventory' | 'toc' | 'entities' | 'events';
+
+export type SideBarPanel = {
+  id: SideBarId
+  icon: ReactNode,
+  label: string,
+  railLabel?: string,
+  badge?: string
+  count?: string,
+};
 
 export const sideBarPanels = [
   {
@@ -15,12 +27,12 @@ export const sideBarPanels = [
     icon: <IconInventory className="manifest-document-layout__sidebar-icon" />,
   },
   {
-    id: 'table-of-contents',
+    id: 'toc',
     label: 'Table of Contents',
     icon: <IconTableOfContent className="manifest-document-layout__sidebar-icon" />,
   },
   {
-    id: 'entity-tags',
+    id: 'entities',
     label: 'Entity tags',
     count: '(376)',
     railLabel: '376',
@@ -33,4 +45,4 @@ export const sideBarPanels = [
     railLabel: '0',
     icon: <IconEvents className="manifest-document-layout__sidebar-icon" />,
   },
-];
+] satisfies SideBarPanel[];

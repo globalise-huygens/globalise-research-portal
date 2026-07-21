@@ -2,41 +2,74 @@ import { useMemo } from 'react';
 import { findByPath, isLinkedArtNode, LinkedArtNode } from '../linkedart';
 import { fetchJson } from '../util/fetchJson';
 import { setState, useDocumentStore } from './DocumentStore';
-import { emptyMetadataState, MetadataState } from './ManifestMetadataState';
 import { asArray } from '../util/asArray.ts';
+
+export type MetadataState = {
+  root: LinkedArtNode | null;
+  isLoading: boolean;
+  isReady: boolean;
+  error: string | null;
+};
+
+/**
+ * Linked art metadata, keyed by url:
+ * a manifest has one curated holding, but many documents.
+ */
+export type MetadataSlice = {
+  metadata: Record<string, MetadataState>;
+};
+
+export const emptyMetadataState: MetadataState = {
+  root: null,
+  isLoading: false,
+  isReady: false,
+  error: null,
+};
+
+export const defaultMetadataSlice: MetadataSlice = {
+  metadata: {},
+};
 
 const emptyNodes: LinkedArtNode[] = [];
 
 export async function loadMetadata(url: string) {
-  const { metadata } = useDocumentStore.getState();
-  const isSameUrl = metadata.url === url;
-  if (isSameUrl && (metadata.isReady || metadata.isLoading || metadata.error)) {
+  const existing = useDocumentStore.getState().metadata[url];
+  if (existing && (existing.isReady || existing.isLoading || existing.error)) {
     return;
   }
-  setState({ metadata: { ...emptyMetadataState, url, isLoading: true } });
+  setMetadata(url, { ...emptyMetadataState, isLoading: true });
 
   try {
     const root = await fetchJson<unknown>(url);
     if (!isLinkedArtNode(root)) {
       throw new Error('No linked art document');
     }
-    setState({ metadata: { ...emptyMetadataState, url, root, isReady: true } });
+    setMetadata(url, { ...emptyMetadataState, root, isReady: true });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
-    setState({ metadata: { ...emptyMetadataState, url, error } });
+    setMetadata(url, { ...emptyMetadataState, error });
   }
 }
 
-export function useMetadata(): MetadataState {
-  return useDocumentStore((s) => s.metadata);
+function setMetadata(url: string, state: MetadataState) {
+  setState((s) => ({ metadata: { ...s.metadata, [url]: state } }));
 }
 
-export function useMetadataRoot(): LinkedArtNode | null {
-  return useDocumentStore((s) => s.metadata.root);
+export function useMetadata(url?: string): MetadataState {
+  return useDocumentStore(
+    (s) => (url ? s.metadata[url] : null) ?? emptyMetadataState,
+  );
 }
 
-export function useMetadataNodes(propNamePath: string[]): LinkedArtNode[] {
-  const root = useMetadataRoot();
+export function useMetadataRoot(url?: string): LinkedArtNode | null {
+  return useMetadata(url).root;
+}
+
+export function useMetadataNodes(
+  url: string | undefined,
+  propNamePath: string[],
+): LinkedArtNode[] {
+  const root = useMetadataRoot(url);
   const path = propNamePath.join('.');
   return useMemo(
     () => root ? findByPath(root, propNamePath) : emptyNodes,
@@ -44,8 +77,11 @@ export function useMetadataNodes(propNamePath: string[]): LinkedArtNode[] {
   );
 }
 
-export function useMetadataValues(propNamePath: string[]): string[] {
-  const parents = useMetadataNodes(propNamePath.slice(0, -1));
+export function useMetadataValues(
+  url: string | undefined,
+  propNamePath: string[],
+): string[] {
+  const parents = useMetadataNodes(url, propNamePath.slice(0, -1));
   const propName = propNamePath[propNamePath.length - 1];
 
   return useMemo(() => {

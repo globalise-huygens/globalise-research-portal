@@ -6,7 +6,7 @@ import {
 import { Point } from 'openseadragon';
 import type { CanvasId } from '@globalise/common/document';
 
-export function useScrollTo() {
+export function useScrollToFacsimile() {
   const viewer = useViewer();
   const context = useLazyCollectionViewerContext();
 
