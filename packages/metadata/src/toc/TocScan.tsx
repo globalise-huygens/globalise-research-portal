@@ -20,14 +20,14 @@ export function TocScan(
     />
   );
 
-  const heading = <span className="manifest-viewer-toc-heading">
+  const heading = <span data-slot="toc-heading">
     Scan {scan.scanNumber}
   </span>;
 
   return (
     <ReferenceCard
       isSelected={isSelected}
-      className="manifest-viewer-toc-card"
+      className="toc-card"
       {...{ [dataCurrentScan]: isSelected }}
       onClick={() => setSelectedCanvas(scan.canvasId, 'external')}
       heading={heading}

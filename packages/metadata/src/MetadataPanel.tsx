@@ -4,7 +4,6 @@ import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   HandleField, MemberOfField, PlacesField, TimespanField, TitlesField,
 } from './fields';
-import '@globalise/design/inline-icon.css';
 
 /**
  * Metadata panel renders linked art metadata of a manifest.
@@ -42,7 +41,7 @@ export function MetadataPanel() {
   }
 
   return (
-    <div className="manifest-viewer-metadata">
+    <div className="metadata-panel">
       <dl>
         <TitlesField url={curatedHoldingUrl} />
         <PlacesField url={curatedHoldingUrl} />

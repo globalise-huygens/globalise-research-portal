@@ -32,7 +32,7 @@ export function TocDocumentMetadata({ document }: TocDocumentMetadataProps) {
   }
 
   return (
-    <dl className="manifest-viewer-toc-document-metadata">
+    <dl className="toc-document-metadata">
       <TypeField url={metadataUrl} fallback={fallback}/>
       <CreatorField url={metadataUrl} fallback={fallback}/>
       <TimespanField url={metadataUrl} label="Date" fallback={fallback}/>

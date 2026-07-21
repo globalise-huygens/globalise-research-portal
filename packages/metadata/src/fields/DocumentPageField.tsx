@@ -15,13 +15,13 @@ export function DocumentPageField({ url, label = 'Document', fallback }: FieldPr
   return (
     <Pair label={label}>
       <a
-        className="manifest-viewer-link"
+        className="metadata-link"
         href={url}
         target="_blank"
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="manifest-viewer-icon-small"/>
+        <IconExternalLink data-slot="icon"/>
       </a>
     </Pair>
   );

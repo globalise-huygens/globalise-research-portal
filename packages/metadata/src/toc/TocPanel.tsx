@@ -34,15 +34,15 @@ export function TocPanel() {
 
   if (!documents.length) {
     return (
-      <div className="manifest-viewer-empty-panel">
+      <div className="toc-empty">
         No table of contents for manifest.
       </div>
     );
   }
 
   return (
-    <div className="manifest-viewer-toc-panel">
-      <div className="manifest-viewer-toc-list" ref={tocListRef}>
+    <div className="toc-panel">
+      <div data-slot="list" ref={tocListRef}>
         {documents.map((document) => (
           <TocDocument
             key={document.id}
