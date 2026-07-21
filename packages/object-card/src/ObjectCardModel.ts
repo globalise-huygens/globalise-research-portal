@@ -1,4 +1,4 @@
-import { isUrl } from '@globalise/common';
+import {isUrl} from '@globalise/common';
 
 export type LangValue = {
   '@language': string;
@@ -10,20 +10,6 @@ export type ConceptRef = {
   type: string;
   _label?: string;
   prefLabel?: LangValue[];
-};
-
-export type SkosConcept = {
-  id: string;
-  type: string;
-  _label?: string;
-  'dcterms:title'?: LangValue[];
-  prefLabel?: LangValue[];
-  altLabel?: LangValue[];
-  hasTopConcept?: ConceptRef[];
-  broader?: ConceptRef[];
-  narrower?: ConceptRef[];
-  inScheme?: ConceptRef[];
-  topConceptOf?: ConceptRef[];
 };
 
 export function conceptLabel(concept: ConceptRef): string {

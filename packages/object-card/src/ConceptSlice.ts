@@ -1,25 +1,11 @@
 import { fetchJson } from '@globalise/common';
-import { SkosConcept, getSkosUrl } from './ObjectCardModel.ts';
+import { getSkosUrl } from './ObjectCardModel.ts';
 import { useObjectCardStore, setState } from './ObjectCardStore.ts';
-
-export type ConceptState = {
-  uri: string | null;
-  concept: SkosConcept | null;
-  isLoading: boolean;
-  isReady: boolean;
-  error: string | null;
-};
+import { ConceptState, emptyConceptState } from './ConceptState.ts';
+import {SkosConcept} from "./SchemesState.ts";
 
 export type ConceptSlice = {
   concept: ConceptState;
-};
-
-export const emptyConceptState: ConceptState = {
-  uri: null,
-  concept: null,
-  isLoading: false,
-  isReady: false,
-  error: null,
 };
 
 export async function loadConcept(uri: string) {

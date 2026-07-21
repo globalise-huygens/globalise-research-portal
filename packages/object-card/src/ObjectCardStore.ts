@@ -1,25 +1,12 @@
 import { create } from 'zustand';
-import type { ConceptSlice, ConceptState } from './ConceptSlice.ts';
-import type { SchemesSlice, SchemesState } from './SchemesSlice.ts';
+import type { ConceptSlice } from './ConceptSlice.ts';
+import type { SchemesSlice } from './SchemesSlice.ts';
+import { emptyConceptState } from './ConceptState.ts';
+import { emptySchemesState } from './SchemesState.ts';
 
 export type ObjectCardState =
   & ConceptSlice
   & SchemesSlice;
-
-export const emptyConceptState: ConceptState = {
-  uri: null,
-  concept: null,
-  isLoading: false,
-  isReady: false,
-  error: null,
-};
-
-export const emptySchemesState: SchemesState = {
-  schemes: [],
-  isLoading: false,
-  isReady: false,
-  error: null,
-};
 
 export const useObjectCardStore = create<ObjectCardState>(() => ({
   concept: { ...emptyConceptState },
