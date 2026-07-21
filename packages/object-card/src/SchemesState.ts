@@ -26,8 +26,21 @@ export type SkosConcept = {
   prefLabel?: LangValue[];
   altLabel?: LangValue[];
   hasTopConcept?: ConceptRef[];
+
+  /**
+   * Relations:
+   */
   broader?: ConceptRef[];
   narrower?: ConceptRef[];
+  related?: ConceptRef[];
+
+  /**
+   * TODO: External relations
+   * - relatedMatch
+   * - closeMatch
+   * - exactMatch
+   */
+
   inScheme?: ConceptRef[];
   topConceptOf?: ConceptRef[];
 };

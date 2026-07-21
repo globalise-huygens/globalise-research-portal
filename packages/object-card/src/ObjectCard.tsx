@@ -37,6 +37,7 @@ export function ObjectCard() {
       <ConceptList title="hasTopConcept" concepts={concept.hasTopConcept} />
       <ConceptList title="broader" concepts={concept.broader} />
       <ConceptList title="narrower" concepts={concept.narrower} />
+      <ConceptList title="related" concepts={concept.related} />
     </div>
   );
 }

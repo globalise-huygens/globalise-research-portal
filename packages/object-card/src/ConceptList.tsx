@@ -5,7 +5,7 @@ type ConceptListProps = { title: string; concepts?: ConceptRef[] };
 
 export function ConceptList({ title, concepts }: ConceptListProps) {
   if (!concepts?.length) {
-    return <h2 className="inactive">{title}</h2>;
+    return <h2 title="No data" className="inactive">{title}</h2>;
   }
   return (
     <>
