@@ -93,12 +93,12 @@ export function ManifestTranscriptionControls() {
           />
         </Tooltip>
       </ToggleGroup>
-      <div className="zoom-segment">
+      <div className="zoom-controls">
         <ToolButton
           aria-label="Zoom out transcription"
-          className="button"
+          className="toolbar-button"
           icon={
-            <IconZoomOut className="icon" />
+            <IconZoomOut className="toolbar-icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
@@ -133,22 +133,22 @@ export function ManifestTranscriptionControls() {
         </label>
         <ToolButton
           aria-label="Zoom in transcription"
-          className="button"
+          className="toolbar-button"
           icon={
-            <IconZoomIn className="icon" />
+            <IconZoomIn className="toolbar-icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
       </div>
       <span
-        className="divider"
+        className="toolbar-divider"
         aria-hidden="true"
       />
       <ToolButton
         aria-label="Reset transcription zoom"
-        className="button"
-        icon={<IconReset className="icon" />}
+        className="toolbar-button"
+        icon={<IconReset className="toolbar-icon" />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
       />

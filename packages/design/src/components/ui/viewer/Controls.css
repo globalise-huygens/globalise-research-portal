@@ -438,7 +438,7 @@
     backdrop-filter: blur(2px);
   }
 
-  .viewer-toolbar > .zoom-segment {
+  .viewer-toolbar .zoom-controls {
     display: inline-flex;
     height: var(--s32);
     align-items: stretch;
@@ -448,7 +448,7 @@
     background: rgb(255 255 255 / 0.08);
   }
 
-  .viewer-toolbar .button {
+  .viewer-toolbar .toolbar-button {
     width: var(--s36);
     min-width: var(--s36);
     height: var(--s32);
@@ -460,38 +460,38 @@
     padding-inline: 0;
   }
 
-  .viewer-toolbar .button[data-hovered] {
+  .viewer-toolbar .toolbar-button[data-hovered] {
     background: rgb(255 255 255 / 0.12);
     color: var(--color-brand-white);
   }
 
-  .viewer-toolbar .button[data-pressed] {
+  .viewer-toolbar .toolbar-button[data-pressed] {
     background: rgb(255 255 255 / 0.18);
   }
 
-  .viewer-toolbar .button[data-focused],
-  .viewer-toolbar .button[data-focus-visible],
-  .viewer-toolbar .button:focus,
-  .viewer-toolbar .button:focus-visible {
+  .viewer-toolbar .toolbar-button[data-focused],
+  .viewer-toolbar .toolbar-button[data-focus-visible],
+  .viewer-toolbar .toolbar-button:focus,
+  .viewer-toolbar .toolbar-button:focus-visible {
     outline: none;
     box-shadow: none;
   }
 
-  .viewer-toolbar .button .icon {
+  .viewer-toolbar .toolbar-icon {
     width: var(--s20);
     height: var(--s20);
     flex-shrink: 0;
   }
 
   .viewer-toolbar
-    .zoom-segment
-    .button:first-child {
+    .zoom-controls
+    .toolbar-button:first-child {
     border-right: 1px solid rgb(255 255 255 / 0.14);
   }
 
   .viewer-toolbar
-    .zoom-segment
-    .button:last-child {
+    .zoom-controls
+    .toolbar-button:last-child {
     border-left: 1px solid rgb(255 255 255 / 0.14);
   }
 
@@ -548,14 +548,14 @@
     line-height: 1rem;
   }
 
-  .viewer-toolbar > .divider {
+  .viewer-toolbar .toolbar-divider {
     width: 1px;
     height: var(--s20);
     margin-inline: var(--s4);
     background: rgb(255 255 255 / 0.2);
   }
 
-  .viewer-toolbar > .settings {
+  .viewer-toolbar .toolbar-settings {
     position: relative;
     display: inline-flex;
     height: var(--s32);

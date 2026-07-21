@@ -348,12 +348,12 @@ export function FacsimileControls({
 
   return (
     <>
-      <div className="zoom-segment">
+      <div className="zoom-controls">
         <ToolButton
           aria-label="Zoom out"
-          className="button"
+          className="toolbar-button"
           icon={
-            <IconZoomOut className="icon" />
+            <IconZoomOut className="toolbar-icon" />
           }
           onPress={handleZoomOut}
           size="compact"
@@ -388,43 +388,43 @@ export function FacsimileControls({
         </label>
         <ToolButton
           aria-label="Zoom in"
-          className="button"
+          className="toolbar-button"
           icon={
-            <IconZoomIn className="icon" />
+            <IconZoomIn className="toolbar-icon" />
           }
           onPress={handleZoomIn}
           size="compact"
         />
       </div>
       <span
-        className="divider"
+        className="toolbar-divider"
         aria-hidden="true"
       />
       <ToolButton
         aria-label="Reset scan view"
-        className="button"
-        icon={<IconReset className="icon" />}
+        className="toolbar-button"
+        icon={<IconReset className="toolbar-icon" />}
         onPress={handleResetView}
         size="compact"
       />
       <ToolButton
         aria-label="Rotate scan"
-        className="button"
-        icon={<IconRotate className="icon" />}
+        className="toolbar-button"
+        icon={<IconRotate className="toolbar-icon" />}
         onPress={() => {
           rotate(90);
         }}
         size="compact"
       />
-      <div className="settings">
+      <div className="toolbar-settings">
         <ToolButton
           ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}
           aria-expanded={isSettingsOpen}
-          className="button"
+          className="toolbar-button"
           icon={
-            <IconSetting className="icon" />
+            <IconSetting className="toolbar-icon" />
           }
           isActive={isSettingsOpen}
           onPress={() => {
