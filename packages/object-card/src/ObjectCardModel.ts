@@ -22,6 +22,8 @@ export type SkosConcept = {
   hasTopConcept?: ConceptRef[];
   broader?: ConceptRef[];
   narrower?: ConceptRef[];
+  inScheme?: ConceptRef[];
+  topConceptOf?: ConceptRef[];
 };
 
 export function conceptLabel(concept: ConceptRef): string {

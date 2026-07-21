@@ -34,7 +34,14 @@ export async function loadConcept(uri: string) {
   try {
     const url = getSkosUrl(uri);
     const loaded = await fetchJson<SkosConcept>(url);
-    setState({ concept: { ...emptyConceptState, uri, concept: loaded, isReady: true } });
+    setState({
+      concept: {
+        ...emptyConceptState,
+        uri,
+        concept: loaded,
+        isReady: true,
+      },
+    });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
     setState({ concept: { ...emptyConceptState, uri, error } });
@@ -43,4 +50,17 @@ export async function loadConcept(uri: string) {
 
 export function useConcept(): ConceptState {
   return useObjectCardStore((s) => s.concept);
+}
+
+export function useCurrentSchemeId(): string | null {
+  return useObjectCardStore((s) => {
+    const concept = s.concept.concept;
+    if (!concept) {
+      return null;
+    }
+    if (concept.type === 'skos:ConceptScheme') {
+      return concept.id;
+    }
+    return concept.inScheme?.[0]?.id ?? null;
+  });
 }

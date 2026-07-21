@@ -1,0 +1,14 @@
+.object-card {
+    h2.inactive {
+        color: grey;
+
+        & + h2.inactive {
+            margin-top: -1rem;
+        }
+    }
+
+    .concept-list {
+        line-height: 2rem;
+    }
+}
+
