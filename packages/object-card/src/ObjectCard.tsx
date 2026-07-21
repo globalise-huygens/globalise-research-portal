@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import {getSkosUrl, loadObjectCard, useObjectCard} from './ObjectCardStore.ts';
-import { ConceptRef, LangValue, conceptLabel } from './ObjectCardModel.ts';
+import { getSkosUrl, loadObjectCard, useObjectCard } from './ObjectCardStore.ts';
+import { conceptLabel, ConceptRef, LangValue } from './ObjectCardModel.ts';
 import { IconExternalLink } from '@globalise/design';
 
 export function ObjectCard() {
@@ -42,7 +41,7 @@ type LabelListProps = { title: string; values?: LangValue[] };
 
 function LabelList({ title, values }: LabelListProps) {
   if (!values?.length) {
-    return null;
+    return <h2 style={{ color: 'gray' }}>{title}</h2>;
   }
   return (
     <>
@@ -62,7 +61,7 @@ type ConceptListProps = { title: string; concepts?: ConceptRef[] };
 
 function ConceptList({ title, concepts }: ConceptListProps) {
   if (!concepts?.length) {
-    return null;
+    return <h2 style={{ color: 'gray' }}>{title}</h2>;
   }
   return (
     <>
