@@ -1,36 +1,30 @@
 import { useEffect } from 'react';
-import { loadObjectCard, useObjectCard } from './ObjectCardStore.ts';
+import {getSkosUrl, loadObjectCard, useObjectCard} from './ObjectCardStore.ts';
 import { ConceptRef, LangValue, conceptLabel } from './ObjectCardModel.ts';
 import { IconExternalLink } from '@globalise/design';
 
-type Props = {
-  uri: string;
-};
+export function ObjectCard() {
+  const { uri, concept, isLoading, isReady, error } = useObjectCard();
 
-export function ObjectCard({ uri }: Props) {
-  const { url, concept, isLoading, isReady, error } = useObjectCard();
-
-  useEffect(() => {
-    void loadObjectCard(uri);
-  }, [uri]);
+  if (!uri) {
+    return <div>No URI</div>;
+  }
+  const url = uri && getSkosUrl(uri);
 
   if (error) {
     return <div>Error: {error}</div>;
   }
+
   if (isLoading || !isReady || !concept) {
     return <div>Loading...</div>;
   }
+
   console.log(ObjectCard.name, { uri, concept });
   return (
     <div>
       <h1>{concept._label ?? concept.id}</h1>
       <p>
-        {concept.type}
-        {' '}|{' '}
-        {!!url && <a
-          href={url}
-          target="_blank"
-        >
+        {concept.type} | {!!url && <a href={url} target="_blank">
           Source <IconExternalLink className="inline-icon"/>
         </a>}
       </p>

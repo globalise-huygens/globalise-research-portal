@@ -3,7 +3,7 @@ import { fetchJson, isUrl } from '@globalise/common';
 import { SkosConcept } from './ObjectCardModel.ts';
 
 export type ObjectCardState = {
-  url: string | null;
+  uri: string | null;
   concept: SkosConcept | null;
   isLoading: boolean;
   isReady: boolean;
@@ -15,7 +15,7 @@ export type ObjectCardSlice = {
 };
 
 export const emptyObjectCardState: ObjectCardState = {
-  url: null,
+  uri: null,
   concept: null,
   isLoading: false,
   isReady: false,
@@ -33,23 +33,24 @@ export const useObjectCardStore = create<ObjectCardSlice>(
 const setState = useObjectCardStore.setState;
 
 export async function loadObjectCard(uri: string) {
-  const url = getSkosUrl(uri);
   const { objectCard } = useObjectCardStore.getState();
-  const isUrlEqual = objectCard.url === url;
+  const isUrlEqual = objectCard.uri === uri;
+
   const isUrlLoaded = objectCard.isReady
     || objectCard.isLoading
     || objectCard.error;
   if (isUrlEqual && isUrlLoaded) {
     return;
   }
-  setState({ objectCard: { ...emptyObjectCardState, url, isLoading: true } });
+  setState({ objectCard: { ...emptyObjectCardState, uri, isLoading: true } });
 
   try {
+    const url = getSkosUrl(uri);
     const concept = await fetchJson<SkosConcept>(url);
-    setState({ objectCard: { ...emptyObjectCardState, url, concept, isReady: true } });
+    setState({ objectCard: { ...emptyObjectCardState, uri, concept, isReady: true } });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
-    setState({ objectCard: { ...emptyObjectCardState, url, error } });
+    setState({ objectCard: { ...emptyObjectCardState, uri, error } });
   }
 }
 

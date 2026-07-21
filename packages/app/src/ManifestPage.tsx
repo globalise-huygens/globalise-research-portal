@@ -40,7 +40,7 @@ export function ManifestPage() {
     () =>
       useDocumentStore.subscribe((state, prev) => {
         const { selectedCanvasId } = state;
-        if (selectedCanvasId === prev.selectedCanvasId || !selectedCanvasId) {
+        if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
           return;
         }
         const newUrl = new URL(window.location.href);
