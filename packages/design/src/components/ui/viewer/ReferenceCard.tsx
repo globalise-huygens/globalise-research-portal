@@ -9,10 +9,10 @@ export type ViewerReferenceCardProps = {
   snippet?: React.ReactNode;
   actions?: React.ReactNode;
   footer?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLButtonElement>;
 
 const ViewerReferenceCard = React.forwardRef<
-  HTMLDivElement,
+  HTMLButtonElement,
   ViewerReferenceCardProps
 >(
   (
@@ -29,7 +29,8 @@ const ViewerReferenceCard = React.forwardRef<
     },
     ref,
   ) => (
-    <div
+    <button
+      type="button"
       ref={ref}
       aria-current={isSelected ? 'true' : undefined}
       className={cn('viewer-reference-card', className)}
@@ -68,7 +69,7 @@ const ViewerReferenceCard = React.forwardRef<
           )}
         </div>
       </div>
-    </div>
+    </button>
   ),
 );
 ViewerReferenceCard.displayName = 'ViewerReferenceCard';

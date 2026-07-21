@@ -14,7 +14,7 @@
     "@globalise/common": "*",
     "@globalise/design": "*",
     "@iiif/helpers": "^1.5.9",
-    "@knaw-huc/osd-iiif-viewer": "^0.3.0"
+    "@knaw-huc/osd-iiif-viewer": "^0.3.1"
   },
   "peerDependencies": {
     "react": ">=18",

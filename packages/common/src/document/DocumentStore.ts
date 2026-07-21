@@ -3,24 +3,24 @@ import { EntityHighlightSlice, defaultEntityHighlightSlice } from './EntityHighl
 import { LayoutElementsSlice, defaultLayoutElementsSlice } from './LayoutElementsSlice';
 import { ManifestViewerSlice, defaultManifestViewerSlice } from './ManifestViewerSlice';
 import { SelectionSlice, defaultSelectionSlice } from './SelectionSlice';
-import {
-  ManifestMetadataSlice,
-  defaultManifestMetadataSlice,
-} from './ManifestMetadataState';
+import { TocSlice, defaultTocSlice } from './TocSlice';
+import { defaultMetadataSlice, MetadataSlice } from './ManifestMetadataSlice.ts';
 
 export type DocumentState =
   & EntityHighlightSlice
   & LayoutElementsSlice
   & ManifestViewerSlice
   & SelectionSlice
-  & ManifestMetadataSlice;
+  & MetadataSlice
+  & TocSlice;
 
 export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultEntityHighlightSlice,
   ...defaultLayoutElementsSlice,
   ...defaultManifestViewerSlice,
   ...defaultSelectionSlice,
-  ...defaultManifestMetadataSlice,
+  ...defaultMetadataSlice,
+  ...defaultTocSlice,
 }));
 
 export const setState = useDocumentStore.setState;

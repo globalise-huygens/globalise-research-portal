@@ -13,7 +13,7 @@ import {
 import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { getCanvasIndex } from './canvasIndexAttribute.ts';
 import { LazyDiplomaticCanvas } from './LazyDiplomaticCanvas.tsx';
-import { useScrollToSelectedCanvas } from './useScrollToSelectedCanvas.tsx';
+import { useScrollToTranscription } from './useScrollToTranscription.tsx';
 
 type CanvasInfo = {
   canvasId: string;
@@ -78,7 +78,7 @@ export function ManifestDiplomaticViewer({
   const lastScrolledCanvas = useRef<number | null>(initialCanvas);
   const { id: selectedCanvasId } = useSelectedCanvas();
 
-  useScrollToSelectedCanvas(scrollRef, canvasListRef, containerWidth);
+  useScrollToTranscription(scrollRef, canvasListRef, containerWidth);
 
   useEffect(observeCanvases, [onCanvasChange, canvasInfos, containerWidth]);
   function observeCanvases() {

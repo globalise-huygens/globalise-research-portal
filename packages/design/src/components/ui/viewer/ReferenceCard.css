@@ -1,8 +1,15 @@
 @layer components {
   .viewer-reference-card {
     position: relative;
+    width: 100%;
+    border: 0;
     border-bottom: 1px solid rgb(255 255 255 / 0.2);
+    background: none;
     padding: var(--s12);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     transition: background-color 75ms ease-out;
   }
 

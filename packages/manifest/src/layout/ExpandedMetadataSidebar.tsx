@@ -4,9 +4,9 @@ import {
   MetadataSidebarButton,
   MetadataSidebarBadge,
 } from '@globalise/design/viewer';
-import { sideBarPanels } from './sideBarPanels.tsx';
+import { SideBarId, sideBarPanels } from './sideBarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
-import { MetadataPanel } from '@globalise/metadata';
+import { MetadataPanel, TocPanel } from '@globalise/metadata';
 
 export function ExpandedMetadataSidebar({
   expandedSections,
@@ -19,7 +19,7 @@ export function ExpandedMetadataSidebar({
     <MetadataSidebar className="manifest-document-layout__expanded-sidebar">
       {sideBarPanels.map((item) => {
         const isExpanded = expandedSections.has(item.id);
-        const panelId: (typeof sideBarPanels)[number]['id'] = item.id;
+        const panelId: SideBarId = item.id;
 
         return (
           <React.Fragment key={item.id}>
@@ -49,6 +49,9 @@ export function ExpandedMetadataSidebar({
               >
                 {panelId === 'inventory' && (
                   <MetadataPanel />
+                )}
+                {panelId === 'toc' && (
+                  <TocPanel />
                 )}
               </div>
             )}

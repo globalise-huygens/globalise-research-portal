@@ -2,10 +2,9 @@ import { useEffect, useMemo } from 'react';
 import { loadMetadata, useMetadata } from '@globalise/common';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
-  MemberOfField, PlacesField, TimespanField, TitlesField,
+  HandleField, MemberOfField, PlacesField, TimespanField, TitlesField,
 } from './fields';
 import '@globalise/design/inline-icon.css';
-import { HandleField } from './fields/HandleField.tsx';
 
 /**
  * Metadata panel renders linked art metadata of a manifest.
@@ -14,7 +13,6 @@ import { HandleField } from './fields/HandleField.tsx';
  */
 export function MetadataPanel() {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
-  const { isReady, error } = useMetadata();
 
   const curatedHoldingUrl = useMemo(() => {
     if (!isManifestReady) {
@@ -23,6 +21,8 @@ export function MetadataPanel() {
     const manifest = vault.get({ id: manifestId, type: 'Manifest' });
     return manifest.seeAlso[0]?.id;
   }, [isManifestReady, manifestId]);
+
+  const { isReady, error } = useMetadata(curatedHoldingUrl);
 
   useEffect(() => {
     if (curatedHoldingUrl) {
@@ -44,12 +44,12 @@ export function MetadataPanel() {
   return (
     <div className="manifest-viewer-metadata">
       <dl>
-        <TitlesField />
-        <PlacesField />
-        <TimespanField />
-        <HandleField />
+        <TitlesField url={curatedHoldingUrl} />
+        <PlacesField url={curatedHoldingUrl} />
+        <TimespanField url={curatedHoldingUrl} />
+        <HandleField url={curatedHoldingUrl} />
       </dl>
-      <MemberOfField/>
+      <MemberOfField url={curatedHoldingUrl}/>
     </div>
   );
 }
