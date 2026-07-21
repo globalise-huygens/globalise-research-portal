@@ -10,7 +10,7 @@ export type TocDocumentMetadataProps = {
   document: ManifestDocument;
 };
 
-const missingValue = '-';
+const missingValue = null;
 const loadingValue = 'loading...';
 
 /**
@@ -37,7 +37,7 @@ export function TocDocumentMetadata({ document }: TocDocumentMetadataProps) {
       <CreatorField url={metadataUrl} fallback={fallback}/>
       <TimespanField url={metadataUrl} label="Date" fallback={fallback}/>
       <PlacesField url={metadataUrl} label="Location" fallback={fallback}/>
-      <Pair label="TANAP">{document.tanapId ?? missingValue}</Pair>
+      {document.tanapId && <Pair label="TANAP">{document.tanapId}</Pair>}
       <DocumentPageField url={metadataUrl} fallback={fallback}/>
     </dl>
   );
