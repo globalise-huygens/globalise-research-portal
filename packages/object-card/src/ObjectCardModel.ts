@@ -1,3 +1,5 @@
+import { isUrl } from '@globalise/common';
+
 export type LangValue = {
   '@language': string;
   '@value': string;
@@ -28,4 +30,12 @@ export function conceptLabel(concept: ConceptRef): string {
   }
   const first = concept.prefLabel?.[0];
   return first ? first['@value'] : concept.id;
+}
+
+export function getSkosUrl(uri: string): string {
+  const result = `${uri}.json`;
+  if (!isUrl(result)) {
+    throw new Error(`Could not create url from uri ${uri}`);
+  }
+  return result;
 }

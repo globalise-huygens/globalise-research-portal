@@ -61,7 +61,7 @@ export function ManifestPage() {
       const annos = cid && state.canvases[cid].annotations;
       const clickedAnno = annos && typeof annos === 'object' && annos[currentClickedId]; 
       console.log('navigateToObjectCard', { currentClickedId,cid, annos, clickedAnno });
-      navigate('/object-card' /*TODO and set param here*/);
+      // navigate('/object-card' /*TODO and set param here*/);
     });
   }
 

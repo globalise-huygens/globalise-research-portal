@@ -1,9 +1,14 @@
-import { getSkosUrl, loadObjectCard, useObjectCard } from './ObjectCardStore.ts';
-import { conceptLabel, ConceptRef, LangValue } from './ObjectCardModel.ts';
+import {
+  conceptLabel,
+  ConceptRef,
+  getSkosUrl,
+  LangValue,
+} from './ObjectCardModel.ts';
 import { IconExternalLink } from '@globalise/design';
+import { loadConcept, useConcept } from './ConceptSlice.ts';
 
 export function ObjectCard() {
-  const { uri, concept, isLoading, isReady, error } = useObjectCard();
+  const { uri, concept, isLoading, isReady, error } = useConcept();
 
   if (!uri) {
     return <div>No URI</div>;
@@ -69,7 +74,7 @@ function ConceptList({ title, concepts }: ConceptListProps) {
       <ul>
         {concepts.map((concept) => (
           <li key={concept.id}>
-            <button onClick={() => void loadObjectCard(concept.id)}>
+            <button onClick={() => void loadConcept(concept.id)}>
               {conceptLabel(concept)}
             </button>
           </li>

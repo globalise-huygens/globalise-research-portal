@@ -1,6 +1,7 @@
-import { ObjectCard, useObjectCardStore, loadObjectCard } from '@globalise/object-card';
+import { ObjectCard, SchemeList, useObjectCardStore } from '@globalise/object-card';
 import '@globalise/design/styles.css';
 import { useEffect } from 'react';
+import { loadConcept } from '@globalise/object-card';
 
 const DEFAULT_URI =
   'https://data.globalise.huygens.knaw.nl/' +
@@ -16,21 +17,26 @@ export function ObjectCardPage() {
       .get(CONCEPT)
       ?? DEFAULT_URI;
     setConceptParam(uri);
-    loadObjectCard(uri).catch(console.error);
+    loadConcept(uri).catch(console.error);
   }
 
   useEffect(syncConceptParam, []);
   function syncConceptParam() {
     return useObjectCardStore.subscribe((state, prev) => {
-      const { uri } = state.objectCard;
-      if (!uri || uri === prev.objectCard.uri) {
+      const { uri } = state.concept;
+      if (!uri || uri === prev.concept.uri) {
         return;
       }
       setConceptParam(uri);
     });
   }
 
-  return <ObjectCard />;
+  return (
+    <>
+      <SchemeList />
+      <ObjectCard />
+    </>
+  );
 }
 
 function setConceptParam(uri: string) {
