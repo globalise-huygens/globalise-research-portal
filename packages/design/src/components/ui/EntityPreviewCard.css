@@ -12,7 +12,7 @@
     padding: var(--s16);
   }
 
-  .gds-entity-preview-card .viewer-popover > .body {
+  .gds-entity-preview-card .popover > .body {
     display: grid;
     gap: var(--s16);
     font-size: inherit;

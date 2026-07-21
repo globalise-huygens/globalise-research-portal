@@ -3,7 +3,7 @@ import {
   useDocumentStore,
   useIsLayoutElementsVisible, useTranscriptionMode,
 } from '@globalise/common/document';
-import { ControlBar } from '@globalise/facsimile';
+import { FloatingToolbar } from '@globalise/design';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useState } from 'react';
@@ -64,10 +64,10 @@ export function ManifestTranscriptionViewer({
     );
 
   return (
-    <div className="manifest-document-layout__transcription-viewer">
-      <ControlBar className="viewer-toolbar">
+    <div className="transcription-viewer">
+      <FloatingToolbar>
         <ManifestTranscriptionControls />
-      </ControlBar>
+      </FloatingToolbar>
       {content}
     </div>
   );

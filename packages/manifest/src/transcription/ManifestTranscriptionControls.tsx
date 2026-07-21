@@ -4,13 +4,11 @@ import {
   IconTranscriptionNormalised,
   IconZoomIn,
   IconZoomOut,
-} from '@globalise/design';
-import {
-  ToggleGroup,
   Toggle,
+  ToggleGroup,
   ToolButton,
   Tooltip,
-} from '@globalise/design/viewer';
+} from '@globalise/design';
 import {
   setDiplomaticViewScale,
   setTranscriptionMode,
@@ -60,10 +58,10 @@ export function ManifestTranscriptionControls() {
   }
 
   return (
-    <div className="manifest-document-layout__transcription-toolbar">
+    <div className="transcription-toolbar">
       <ToggleGroup
         aria-label="Transcription mode controls"
-        className="manifest-document-layout__transcription-mode-group"
+        className="transcription-mode-group"
         selectionMode="single"
         selectedKeys={[transcriptionMode]}
         size="compact"
@@ -72,9 +70,9 @@ export function ManifestTranscriptionControls() {
           <Toggle
             id="line-by-line"
             aria-label="Line by line transcription"
-            className="manifest-document-layout__transcription-mode-item"
+            className="transcription-mode-item"
             icon={
-              <IconTranscriptionNormalised className="manifest-document-layout__transcription-mode-icon" />
+              <IconTranscriptionNormalised className="transcription-mode-icon" />
             }
             onPress={() => setTranscriptionMode('line-by-line')}
             size="compact"
@@ -84,9 +82,9 @@ export function ManifestTranscriptionControls() {
           <Toggle
             id="diplomatic"
             aria-label="Diplomatic transcription"
-            className="manifest-document-layout__transcription-mode-item"
+            className="transcription-mode-item"
             icon={
-              <IconTranscriptionDiplomatic className="manifest-document-layout__transcription-mode-icon" />
+              <IconTranscriptionDiplomatic className="transcription-mode-icon" />
             }
             onPress={() => setTranscriptionMode('diplomatic')}
             size="compact"
@@ -96,9 +94,8 @@ export function ManifestTranscriptionControls() {
       <div className="zoom-controls">
         <ToolButton
           aria-label="Zoom out transcription"
-          className="toolbar-button"
           icon={
-            <IconZoomOut className="toolbar-icon" />
+            <IconZoomOut />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
@@ -133,9 +130,8 @@ export function ManifestTranscriptionControls() {
         </label>
         <ToolButton
           aria-label="Zoom in transcription"
-          className="toolbar-button"
           icon={
-            <IconZoomIn className="toolbar-icon" />
+            <IconZoomIn />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
@@ -147,8 +143,7 @@ export function ManifestTranscriptionControls() {
       />
       <ToolButton
         aria-label="Reset transcription zoom"
-        className="toolbar-button"
-        icon={<IconReset className="toolbar-icon" />}
+        icon={<IconReset />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
       />

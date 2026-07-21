@@ -25,7 +25,6 @@ export function TocDocument(
     <article
       className="toc-document"
       data-current={isCurrent}
-      data-current-document={isCurrent}
     >
       <div className="header">
         <button

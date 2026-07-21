@@ -8,8 +8,8 @@ import {
   IconSetting,
   IconZoomIn,
   IconZoomOut,
+  ToolButton,
 } from '@globalise/design';
-import { ToolButton } from '@globalise/design/viewer';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, type Rect } from 'openseadragon';
 import {
@@ -24,8 +24,9 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import './ScanSettings.css';
 
-type FacsimileControlBarProps = {
+type FacsimileControlsProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
   onScanFilterChange?: (filter: string) => void;
 };
@@ -103,7 +104,7 @@ function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
 export function FacsimileControls({
   fullscreenRef,
   onScanFilterChange,
-}: FacsimileControlBarProps) {
+}: FacsimileControlsProps) {
   const viewer = useViewer();
   const { home, rotate, rotation } = useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
@@ -351,9 +352,8 @@ export function FacsimileControls({
       <div className="zoom-controls">
         <ToolButton
           aria-label="Zoom out"
-          className="toolbar-button"
           icon={
-            <IconZoomOut className="toolbar-icon" />
+            <IconZoomOut />
           }
           onPress={handleZoomOut}
           size="compact"
@@ -388,9 +388,8 @@ export function FacsimileControls({
         </label>
         <ToolButton
           aria-label="Zoom in"
-          className="toolbar-button"
           icon={
-            <IconZoomIn className="toolbar-icon" />
+            <IconZoomIn />
           }
           onPress={handleZoomIn}
           size="compact"
@@ -402,44 +401,37 @@ export function FacsimileControls({
       />
       <ToolButton
         aria-label="Reset scan view"
-        className="toolbar-button"
-        icon={<IconReset className="toolbar-icon" />}
+        icon={<IconReset />}
         onPress={handleResetView}
         size="compact"
       />
       <ToolButton
         aria-label="Rotate scan"
-        className="toolbar-button"
-        icon={<IconRotate className="toolbar-icon" />}
+        icon={<IconRotate />}
         onPress={() => {
           rotate(90);
         }}
         size="compact"
       />
-      <div className="toolbar-settings">
-        <ToolButton
-          ref={settingsButtonRef}
-          aria-label="Scan image settings"
-          aria-controls={settingsPanelId}
-          aria-expanded={isSettingsOpen}
-          className="toolbar-button"
-          icon={
-            <IconSetting className="toolbar-icon" />
+      <ToolButton
+        ref={settingsButtonRef}
+        aria-label="Scan image settings"
+        aria-controls={settingsPanelId}
+        aria-expanded={isSettingsOpen}
+        icon={<IconSetting />}
+        isActive={isSettingsOpen}
+        onPress={() => {
+          if (isSettingsOpen) {
+            setSettingsPanelStyle(null);
           }
-          isActive={isSettingsOpen}
-          onPress={() => {
-            if (isSettingsOpen) {
-              setSettingsPanelStyle(null);
-            }
-            setIsSettingsOpen((open) => !open);
-          }}
-          size="compact"
-        />
-      </div>
+          setIsSettingsOpen((open) => !open);
+        }}
+        size="compact"
+      />
       {isSettingsOpen && settingsPanelStyle && createPortal(
         <div
           id={settingsPanelId}
-          className="viewer-settings"
+          className="scan-settings"
           role="dialog"
           aria-label="Scan image settings"
           style={settingsPanelStyle}

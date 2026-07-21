@@ -9,7 +9,6 @@ import {
   IconRight,
   IconRightLast,
 } from '@globalise/design';
-import { BarGroup } from '@globalise/design/viewer';
 import { useViewer } from '@knaw-huc/osd-iiif-viewer';
 import { Point } from 'openseadragon';
 import { useState } from 'react';
@@ -79,7 +78,7 @@ export function ManifestCanvasNavigation() {
   }
 
   return (
-    <BarGroup className="gap-s8">
+    <div className="bar-group">
       <TooltipIconButton
         aria-label="First scan"
         tooltip="Go to first scan"
@@ -99,11 +98,11 @@ export function ManifestCanvasNavigation() {
         onPress={() => scrollTo(prevId)}
       />
 
-      <span className="manifest-document-layout__scan-position">
+      <span className="scan-position">
         <span>Scan</span>
         <input
           aria-label={`Current scan number, 1 to ${totalScans}`}
-          className="manifest-document-layout__scan-position-input"
+          className="scan-position-input"
           inputMode="numeric"
           maxLength={String(totalScans).length}
           pattern="[0-9]*"
@@ -147,6 +146,6 @@ export function ManifestCanvasNavigation() {
         icon={<IconRightLast className="h-s16 w-s16" />}
         onPress={() => scrollTo(lastId)}
       />
-    </BarGroup>
+    </div>
   );
 }

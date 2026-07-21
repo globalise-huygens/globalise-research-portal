@@ -11,11 +11,11 @@ import { IconEntities } from '@globalise/design';
 import {
   EntityHighlightMenu,
   type EntityHighlightCategory,
-} from '@globalise/design/viewer';
+} from './EntityHighlightMenu';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 
-const iconClassName = 'manifest-document-layout__toolbar-icon';
+const iconClassName = 'toolbar-icon';
 
 const entityCategoryConfig: Record<
   EntityVisualCategoryClassName,

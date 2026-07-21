@@ -4,5 +4,7 @@ export { ManifestTranscriptionViewer } from './transcription/ManifestTranscripti
 export { ManifestTranscriptionControls } from './transcription/ManifestTranscriptionControls';
 export { ManifestDropdown } from './dropdown/ManifestDropdown';
 export { useCollectionManifests } from './dropdown/useCollectionManifests';
+export { ManifestViewer } from './ManifestViewer';
+export type { ManifestViewerProps } from './ManifestViewer';
 
 export * from './layout';

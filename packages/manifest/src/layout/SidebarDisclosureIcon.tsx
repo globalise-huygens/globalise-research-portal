@@ -6,8 +6,8 @@ export function SidebarDisclosureIcon({ isExpanded = false }: { isExpanded?: boo
     <IconExpandSection
       className={
         isExpanded
-          ? 'manifest-document-layout__sidebar-disclosure manifest-document-layout__sidebar-disclosure--expanded'
-          : 'manifest-document-layout__sidebar-disclosure'
+          ? 'sidebar-disclosure expanded'
+          : 'sidebar-disclosure'
       }
     />
   );

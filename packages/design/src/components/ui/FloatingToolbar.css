@@ -1,0 +1,145 @@
+@layer components {
+  .floating-toolbar {
+    position: absolute;
+    top: var(--s20);
+    left: var(--s16);
+    z-index: 20;
+    display: inline-flex;
+    width: fit-content;
+    height: var(--s40);
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    background: rgb(12 10 9 / 0.72);
+    padding-inline: var(--s4);
+    color: var(--color-brand-white);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+    backdrop-filter: blur(2px);
+  }
+
+  .floating-toolbar[data-align="end"] {
+    right: var(--s24);
+    left: auto;
+  }
+
+  .floating-toolbar .zoom-controls {
+    display: inline-flex;
+    height: var(--s32);
+    align-items: stretch;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .floating-toolbar .tool-button {
+    width: var(--s36);
+    min-width: var(--s36);
+    height: var(--s32);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgb(255 255 255 / 0.78);
+    box-shadow: none;
+    padding-inline: 0;
+  }
+
+  .floating-toolbar .tool-button[data-hovered] {
+    background: rgb(255 255 255 / 0.12);
+    color: var(--color-brand-white);
+  }
+
+  .floating-toolbar .tool-button[data-pressed] {
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  .floating-toolbar .tool-button:focus,
+  .floating-toolbar .tool-button:focus-visible,
+  .floating-toolbar .tool-button[data-focused],
+  .floating-toolbar .tool-button[data-focus-visible] {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .floating-toolbar .tool-button > svg {
+    width: var(--s20);
+    height: var(--s20);
+    flex-shrink: 0;
+  }
+
+  .floating-toolbar .zoom-controls .tool-button:first-child {
+    border-right: 1px solid rgb(255 255 255 / 0.14);
+  }
+
+  .floating-toolbar .zoom-controls .tool-button:last-child {
+    border-left: 1px solid rgb(255 255 255 / 0.14);
+  }
+
+  .floating-toolbar .zoom-field {
+    display: inline-grid;
+    box-sizing: border-box;
+    min-width: var(--s64);
+    height: var(--s32);
+    grid-template-columns: 3ch 1ch;
+    align-items: center;
+    justify-content: center;
+    column-gap: var(--s2);
+    background: rgb(255 255 255 / 0.06);
+    padding-inline: var(--s6);
+    color: var(--color-parchment-500);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1rem;
+    text-align: center;
+  }
+
+  .floating-toolbar .zoom-input {
+    width: 3ch;
+    height: 1rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    appearance: textfield;
+    background: transparent;
+    padding: 0;
+    color: var(--color-parchment-500);
+    font: inherit;
+    line-height: 1rem;
+    outline: none;
+    text-align: right;
+  }
+
+  .floating-toolbar .zoom-input::-webkit-inner-spin-button,
+  .floating-toolbar .zoom-input::-webkit-outer-spin-button {
+    appearance: none;
+  }
+
+  .floating-toolbar .zoom-input:focus {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .floating-toolbar .zoom-suffix {
+    display: inline-flex;
+    height: 1rem;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--color-parchment-500);
+    line-height: 1rem;
+  }
+
+  .floating-toolbar .toolbar-divider {
+    width: 1px;
+    height: var(--s20);
+    margin-inline: var(--s4);
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  @media (max-width: 767px) {
+    .floating-toolbar {
+      top: var(--s12);
+      left: var(--s12);
+      max-width: calc(100% - var(--s24));
+    }
+  }
+}

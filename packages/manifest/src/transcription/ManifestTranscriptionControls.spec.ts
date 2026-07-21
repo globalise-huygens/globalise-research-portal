@@ -16,12 +16,10 @@ describe('ManifestTranscriptionControls', () => {
       createElement(ManifestTranscriptionControls),
     );
 
-    expect(markup).toContain(
-      'class="manifest-document-layout__transcription-toolbar"',
-    );
+    expect(markup).toContain('class="transcription-toolbar"');
     expect(markup).toContain('class="zoom-controls"');
-    expect(markup).toContain('viewer-tool-button toolbar-button');
-    expect(markup).toContain('class="toolbar-icon"');
+    expect(markup).toContain('class="tool-button"');
+    expect(markup).toContain('<svg');
     expect(markup).toContain('class="toolbar-divider"');
     expect(markup).not.toContain('class="button"');
     expect(markup).not.toContain('class="icon"');

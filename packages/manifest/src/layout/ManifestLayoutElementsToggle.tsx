@@ -19,7 +19,7 @@ export function ManifestLayoutElementsToggle() {
       isActive={isVisible}
       className={TOP_BAR_BUTTON}
       icon={
-        <IconLayoutElements className="manifest-document-layout__toolbar-icon" />
+        <IconLayoutElements className="toolbar-icon" />
       }
       onPress={() => setLayoutElementsVisible(!isVisible)}
     />

@@ -1,29 +1,56 @@
-# Design CSS
+# Design components and CSS
 
-Use a short kebab-case root class that describes the component or its function, such as `.entity-menu` or `.facsimile-canvas`. Do not add a package prefix.
+The design package contains reusable, presentational UI primitives. Components that know about manifests, scans, transcriptions, metadata, or application layout belong to the package that owns that feature.
 
-Reusable parts keep their own functional root, such as `.viewer-toolbar` or `.entity-menu`. Use a `viewer-` root only for shell primitives that genuinely apply to every viewer mode. Name mode-specific components explicitly, such as `.facsimile-canvas` and `.transcription-canvas`.
+## Ownership
 
-Application layout styles stay with the manifest package; retained legacy styles remain isolated under `viewer/legacy`.
+- `@globalise/design` owns reusable controls and surfaces such as `ToolButton`, `Toggle`, `Checkbox`, `FloatingToolbar`, `Popover`, and `Tooltip`.
+- `@globalise/manifest` owns `ManifestViewer`, its shell, content warning, metadata sidebar, and manifest-specific controls.
+- `@globalise/facsimile` and `@globalise/transcription` own mode-specific UI. Use explicit names such as `FacsimileTooltip` when a generic name would hide that ownership.
+- `@globalise/metadata` owns the metadata panel and table of contents, including its scan cards.
 
-The design package provides viewer building blocks; the manifest package composes them with manifest data and application behavior.
+Keep the design component hierarchy flat under `src/components/ui`. Do not create a generic `viewer`, `legacy`, or category-bucket directory such as `surfaces`. A file name should identify the component it implements.
 
-Viewer components live in `src/components/ui/viewer` and are available from `@globalise/design/viewer` with short names such as `TopBar` and `ToolButton`. The `legacy` folder keeps viewer behavior that has not yet been transferred; do not add new work there.
+## Component names
 
-Prefer semantic descendant selectors when the HTML element expresses the part clearly:
+Name a component for the concept it represents, not its position in a particular page. Use the shortest unambiguous name within the owning package:
+
+```text
+ManifestViewer       feature-specific composition
+FloatingToolbar      reusable visual primitive
+FacsimileTooltip     feature-specific tooltip
+Popover              reusable surface
+```
+
+Avoid vague container names such as `Surface`, `Wrapper`, or `Layout` unless that is the component's actual public responsibility. Avoid compatibility aliases when the old component has no live consumers.
+
+## CSS names
+
+Give each standalone component a short kebab-case root class without a package prefix:
+
+```css
+.floating-toolbar { /* ... */ }
+.entity-menu { /* ... */ }
+.manifest-viewer { /* ... */ }
+```
+
+For internal parts, use a short ordinary class scoped beneath the component root:
+
+```css
+.manifest-viewer .top-bar { /* ... */ }
+.entity-menu .content { /* ... */ }
+```
+
+Prefer semantic descendants when the element already expresses the part:
 
 ```css
 .entity-menu h3 { /* ... */ }
 ```
 
-Otherwise, give the part a short ordinary class and scope it to the component root:
+Use ARIA attributes, pseudo-classes, and semantic `data-*` attributes for state or variants. Do not add a `data-*` attribute merely as a styling or query hook when an existing class or ARIA state expresses the same meaning.
 
-```css
-.entity-menu .content { /* ... */ }
-```
+Existing `gds-` and BEM names may be migrated when their component is actively changed. Do not mix old and new naming systems inside one component.
 
-Reserve semantic `data-*`, ARIA attributes, and pseudo-classes for variants and state. A `data-*` attribute should communicate meaning such as tone, level, selection, or expansion; it should not only replace a class. Keep application-specific layout classes in the application package.
+## Public CSS
 
-`src/styles.css` is the public stylesheet entry. `src/styles/globals.css` contains tokens and shared defaults, `src/components/ui/ui.css` collects general component styles, and a separate `ComponentName.css` is useful when a component family has enough styles to stand on its own.
-
-Some older components still use `gds-` and BEM names. Migrate those when the component is actively changed instead of mixing old and new names in the same component.
+`src/styles.css` is the public stylesheet entry. `src/styles/globals.css` contains shared tokens and defaults, while `src/components/ui/ui.css` collects component styles. A component with meaningful standalone styling should keep it in a matching `ComponentName.css` file.

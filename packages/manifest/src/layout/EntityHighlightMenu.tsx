@@ -1,14 +1,13 @@
-import { cn } from '../../../lib';
 import * as React from 'react';
-import { IconExpandSection } from '../../icons/IconExpandSection';
 import {
-  ViewerCheckbox,
-  ViewerToolButton,
-} from './Controls';
-import {
-  ViewerPopover,
-  ViewerTooltip,
-} from './Surfaces';
+  Checkbox,
+  cn,
+  IconExpandSection,
+  Popover,
+  ToolButton,
+  Tooltip,
+} from '@globalise/design';
+import './EntityHighlightMenu.css';
 
 export type EntityHighlightSubcategory = {
   id?: string;
@@ -162,8 +161,8 @@ function EntityHighlightMenu({
 
   return (
     <div ref={rootRef} className={cn('entity-menu', className)}>
-      <ViewerTooltip label={triggerLabel}>
-        <ViewerToolButton
+      <Tooltip label={triggerLabel}>
+        <ToolButton
           aria-expanded={isOpen}
           aria-label={
             hasAnySelection ? `Open ${triggerLabel}` : `Enable ${triggerLabel}`
@@ -181,10 +180,10 @@ function EntityHighlightMenu({
             setIsOpen((current) => !current);
           }}
         />
-      </ViewerTooltip>
+      </Tooltip>
 
       {isOpen && (
-        <ViewerPopover
+        <Popover
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
@@ -202,7 +201,7 @@ function EntityHighlightMenu({
                   </div>
                 )}
               </div>
-              <ViewerCheckbox
+              <Checkbox
                 aria-label="Toggle all entity highlights"
                 isSelected={areAllHighlightsSelected}
                 isIndeterminate={areHighlightsPartiallySelected}
@@ -259,7 +258,7 @@ function EntityHighlightMenu({
                             />
                           </button>
                         )}
-                        <ViewerCheckbox
+                        <Checkbox
                           aria-label={`Toggle ${category.label} entity highlights`}
                           isDisabled={(category.count ?? 1) <= 0}
                           isSelected={isSelected}
@@ -295,7 +294,7 @@ function EntityHighlightMenu({
                                   {subcategory.label}
                                 </span>
                               </div>
-                              <ViewerCheckbox
+                              <Checkbox
                                 aria-label={`Toggle ${subcategory.label} entity highlights`}
                                 isSelected={selectedKeys.has(leafKey)}
                                 onChange={(nextSelected) =>
@@ -312,7 +311,7 @@ function EntityHighlightMenu({
               })}
             </div>
           </div>
-        </ViewerPopover>
+        </Popover>
       )}
     </div>
   );

@@ -1,0 +1,32 @@
+.canvas-navigation .controls {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  background: white;
+  padding: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.canvas-navigation .controls:hover {
+  opacity: 1;
+}
+
+.canvas-navigation .controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 0.2rem;
+  background: #f0f0f0;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.canvas-navigation .controls button:disabled {
+  color: grey;
+  opacity: 1;
+}

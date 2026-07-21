@@ -7,10 +7,10 @@ import {
 } from '@globalise/design';
 import { ReactNode } from 'react';
 
-export type SideBarId = 'inventory' | 'toc' | 'entities' | 'events';
+export type SidebarId = 'inventory' | 'toc' | 'entities' | 'events';
 
-export type SideBarPanel = {
-  id: SideBarId
+export type SidebarPanel = {
+  id: SidebarId
   icon: ReactNode,
   label: string,
   railLabel?: string,
@@ -18,31 +18,31 @@ export type SideBarPanel = {
   count?: string,
 };
 
-export const sideBarPanels = [
+export const sidebarPanels = [
   {
     id: 'inventory',
     label: 'Inventory',
     badge: '1664',
     railLabel: '1664',
-    icon: <IconInventory className="manifest-document-layout__sidebar-icon" />,
+    icon: <IconInventory className="sidebar-icon" />,
   },
   {
     id: 'toc',
     label: 'Table of Contents',
-    icon: <IconTableOfContent className="manifest-document-layout__sidebar-icon" />,
+    icon: <IconTableOfContent className="sidebar-icon" />,
   },
   {
     id: 'entities',
     label: 'Entity tags',
     count: '(376)',
     railLabel: '376',
-    icon: <IconEntities className="manifest-document-layout__sidebar-icon" />,
+    icon: <IconEntities className="sidebar-icon" />,
   },
   {
     id: 'events',
     label: 'Event tags',
     count: '(0)',
     railLabel: '0',
-    icon: <IconEvents className="manifest-document-layout__sidebar-icon" />,
+    icon: <IconEvents className="sidebar-icon" />,
   },
-] satisfies SideBarPanel[];
+] satisfies SidebarPanel[];

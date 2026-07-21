@@ -144,115 +144,28 @@ export type {
   ReferencePanelProps,
 } from './ReferencePanel';
 
-/**
- * @deprecated Import viewer primitives from `@globalise/design/viewer`.
- * These names remain available here for compatibility.
- */
 export {
-  ContentWarningControl,
-  ViewerBarGroup,
-  ViewerBody,
-  ViewerBottomBar,
-  ViewerCanvas,
-  ViewerCheckbox,
-  ViewerControl,
-  EntityHighlightMenu,
-  ViewerFloatingToolbar,
-  ViewerIconRail,
-  ViewerMetadataSidebar,
-  ViewerMetadataSidebarBadge,
-  ViewerMetadataSidebarButton,
-  ViewerNumberField,
-  ViewerPanelHeader,
-  ViewerPopover,
-  ViewerRailButton,
-  ViewerReferenceCard,
-  ViewerSegment,
-  ViewerSegmentedControl,
-  ViewerToggleGroup,
-  ViewerToggle,
-  ViewerSidebarSection,
-  ViewerSidePanel,
-  SplitViewer,
-  ViewerTitle,
-  ViewerDockedToolbar,
-  ViewerToolButton,
-  ViewerTooltip,
-  ViewerTopBar,
-  TranscriptionCanvas,
-  TranscriptionLine,
-  ViewerArea,
-  ViewerPane,
-} from './viewer/compat';
-/**
- * @deprecated Legacy viewer retained until its remaining behavior has been
- * transferred. Compose the active viewer with `@globalise/design/viewer`.
- */
-export { ManifestViewer } from './viewer/legacy/Root';
-/** @deprecated See `ManifestViewer`. */
-export type { ManifestViewerProps } from './viewer/legacy/Root';
-/**
- * @deprecated Import viewer primitive types from `@globalise/design/viewer`.
- * These names remain available here for compatibility.
- */
+  Checkbox,
+  Toggle,
+  ToggleGroup,
+  ToolButton,
+} from './Controls';
 export type {
-  ViewerBarGroupProps,
-  ViewerBodyProps,
-  ViewerBottomBarProps,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  ViewerCanvasProps,
-  ViewerCheckboxProps,
-  ViewerControlProps,
-  EntityHighlightCategory,
-  EntityHighlightMenuProps,
-  EntityHighlightSubcategory,
-  ViewerFloatingToolbarProps,
-  ViewerIconRailProps,
-  ViewerMetadataSidebarBadgeProps,
-  ViewerMetadataSidebarButtonProps,
-  ViewerMetadataSidebarProps,
-  ViewerNumberFieldProps,
-  ViewerPanelHeaderProps,
-  ViewerPopoverProps,
-  ViewerRailButtonProps,
-  ViewerReferenceCardProps,
-  ViewerSegmentedControlProps,
-  ViewerToggleGroupProps,
-  ViewerToggleProps,
-  ViewerSegmentProps,
-  ViewerSidebarSectionProps,
-  ViewerSidePanelProps,
-  SplitViewerProps,
-  ViewerTitleProps,
-  ViewerDockedToolbarProps,
-  ViewerToolButtonProps,
-  ViewerTooltipProps,
-  ViewerTopBarProps,
-  TranscriptionCanvasProps,
-  TranscriptionLineProps,
-  ViewerPaneProps,
-  ViewerAreaProps,
-} from './viewer/compat';
-/** @deprecated See `ManifestViewer`. */
-export { ManifestViewerOverlay } from './viewer/legacy/Overlay';
-/** @deprecated See `ManifestViewer`. */
-export type { ManifestViewerOverlayProps } from './viewer/legacy/Overlay';
-/** @deprecated Legacy viewer data types retained for compatibility. */
-export type {
-  ManifestViewerContent,
-  ManifestViewerDocument,
-  ManifestViewerIdentifiedEntity,
-  ManifestViewerInventoryHierarchyItem,
-  ManifestViewerInventoryMetadataItem,
-  ManifestViewerPaneKey,
-  ManifestViewerScan,
-  ManifestViewerScanRenderArgs,
-  ManifestViewerScanRenderer,
-  ManifestViewerSidebarSectionId,
-  ManifestViewerTagGroup,
-  ManifestViewerTagSubcategory,
-  ManifestViewerTocMetadata,
-} from './viewer/legacy/Types';
+  CheckboxProps,
+  ToggleGroupProps,
+  ToggleProps,
+  ToolButtonProps,
+} from './Controls';
+
+export { FloatingToolbar } from './FloatingToolbar';
+export type { FloatingToolbarProps } from './FloatingToolbar';
+
+export { Popover } from './Popover';
+export type { PopoverProps } from './Popover';
+
+export { Tooltip } from './Tooltip';
+export type { TooltipProps } from './Tooltip';
+
 
 export { SearchBar, searchBarVariants } from './SearchBar';
 export type { SearchBarProps } from './SearchBar';

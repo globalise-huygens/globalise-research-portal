@@ -1,13 +1,9 @@
-@import "./viewer/ReferenceCard.css";
-@import "./viewer/SidebarSection.css";
-@import "./viewer/Layout.css";
-@import "./viewer/Surfaces.css";
-@import "./viewer/Controls.css";
-@import "./viewer/Canvases.css";
+@import "./Controls.css";
+@import "./FloatingToolbar.css";
+@import "./Popover.css";
+@import "./Tooltip.css";
 @import "./ReferencePanel.css";
 @import "./EntityPreviewCard.css";
-@import "./viewer/EntityHighlightMenu.css";
-@import "./viewer/legacy/Legacy.css";
 
 @layer components {
   .gds-button {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Tooltip, ToolButton } from '@globalise/design/viewer';
+import { Tooltip, ToolButton } from '@globalise/design';
 
 export function TooltipIconButton({
   tooltip,

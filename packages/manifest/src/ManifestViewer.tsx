@@ -1,6 +1,6 @@
 'use client';
 
-import './ManifestDocumentPageLayout.css';
+import './ManifestViewer.css';
 import {
   cn,
   IconClose,
@@ -8,30 +8,21 @@ import {
   IconSidebar,
   IconSwap,
   IconTranscription,
-} from '@globalise/design';
-import {
-  BarGroup,
-  Body,
-  BottomBar,
-  FacsimileCanvas,
-  ToggleGroup,
   Toggle,
+  ToggleGroup,
   Tooltip,
-  TopBar,
-  TranscriptionCanvas,
-  Pane as PaneSurface,
-} from '@globalise/design/viewer';
+} from '@globalise/design';
 import * as React from 'react';
-import { TOP_BAR_BUTTON } from './buttonClasses';
-import { CollapsedMetadataRail } from './CollapsedMetadataRail';
-import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
-import { ManifestContentWarning } from './ManifestContentWarning';
-import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
-import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
-import { TooltipIconButton } from './TooltipIconButton';
-import { SplitPaneLayout } from './splitpane';
+import { TOP_BAR_BUTTON } from './layout/buttonClasses';
+import { CollapsedMetadataRail } from './layout/CollapsedMetadataRail';
+import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
+import { ManifestContentWarning } from './layout/ManifestContentWarning';
+import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMenu';
+import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
+import { SplitPaneLayout } from './layout/splitpane';
+import { TooltipIconButton } from './layout/TooltipIconButton';
 
-type Props = {
+export type ManifestViewerProps = {
   topLeft?: React.ReactNode;
   topCenter?: React.ReactNode;
   topRight?: React.ReactNode;
@@ -50,28 +41,16 @@ type ViewerPaneProps = {
 const mobileLayoutQuery = '(max-width: 767px)';
 
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
-  const canvasClassName = 'manifest-document-layout__canvas';
-  const paneClassName = cn(
-    'manifest-document-layout__viewer-pane',
-    isBordered && 'manifest-document-layout__viewer-pane--bordered',
-  );
+  const paneClassName = cn('pane', isBordered && 'bordered');
 
   return (
-    <PaneSurface className={paneClassName}>
-      {type === 'scan' ? (
-        <FacsimileCanvas className={canvasClassName}>
-          {children}
-        </FacsimileCanvas>
-      ) : (
-        <TranscriptionCanvas className={canvasClassName}>
-          {children}
-        </TranscriptionCanvas>
-      )}
-    </PaneSurface>
+    <section className={paneClassName} data-view={type}>
+      <div className="canvas">{children}</div>
+    </section>
   );
 }
 
-export function ManifestDocumentPageLayout({
+export function ManifestViewer({
   topLeft,
   topCenter,
   topRight,
@@ -79,7 +58,7 @@ export function ManifestDocumentPageLayout({
   transcription,
   bottom,
   onClose,
-}: Props) {
+}: ManifestViewerProps) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
     () =>
       typeof window === 'undefined' ||
@@ -155,14 +134,14 @@ export function ManifestDocumentPageLayout({
     ];
 
   return (
-    <div className="gds manifest-document-layout">
+    <div className="gds manifest-viewer">
       <div
-        className="manifest-document-layout__frame"
+        className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
       >
         <div
           id="document-detail-sidebar"
-          className="manifest-document-layout__sidebar"
+          className="sidebar"
           data-expanded={isSidebarExpanded ? 'true' : 'false'}
         >
           {isSidebarExpanded ? (
@@ -175,9 +154,9 @@ export function ManifestDocumentPageLayout({
           )}
         </div>
 
-        <div className="manifest-document-layout__main">
-          <TopBar className="manifest-document-layout__top-bar">
-            <BarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--left">
+        <div className="main">
+          <header className="top-bar">
+            <div className="top-bar-group left">
               <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
@@ -187,11 +166,11 @@ export function ManifestDocumentPageLayout({
                 tooltip={isSidebarExpanded ? 'Closes sidebar' : 'Opens sidebar'}
                 isActive={isSidebarExpanded}
                 className={TOP_BAR_BUTTON}
-                icon={<IconSidebar className="manifest-document-layout__toolbar-icon" />}
+                icon={<IconSidebar className="toolbar-icon" />}
                 onPress={() => setIsSidebarExpanded((v) => !v)}
               />
 
-              <span className="manifest-document-layout__top-bar-divider">
+              <span className="top-bar-divider">
                 |
               </span>
 
@@ -221,7 +200,7 @@ export function ManifestDocumentPageLayout({
                       isScanVisible ? 'Close scan viewer' : 'Open scan viewer'
                     }
                     icon={
-                      <IconScan className="manifest-document-layout__segmented-icon" />
+                      <IconScan className="segmented-icon" />
                     }
                   >
                     Scan
@@ -242,21 +221,21 @@ export function ManifestDocumentPageLayout({
                         : 'Open transcription viewer'
                     }
                     icon={
-                      <IconTranscription className="manifest-document-layout__segmented-icon" />
+                      <IconTranscription className="segmented-icon" />
                     }
                   >
                     Text
                   </Toggle>
                 </Tooltip>
               </ToggleGroup>
-            </BarGroup>
+            </div>
 
-            <div className="manifest-document-layout__top-bar-center">
+            <div className="top-bar-center">
               <ManifestContentWarning />
               {topCenter}
             </div>
 
-            <BarGroup className="manifest-document-layout__top-bar-group manifest-document-layout__top-bar-group--right">
+            <div className="top-bar-group right">
               <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
@@ -264,7 +243,7 @@ export function ManifestDocumentPageLayout({
                 isDisabled={!isScanVisible || !isTextVisible}
                 className={TOP_BAR_BUTTON}
                 icon={
-                  <IconSwap className="manifest-document-layout__toolbar-icon" />
+                  <IconSwap className="toolbar-icon" />
                 }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />
@@ -275,25 +254,25 @@ export function ManifestDocumentPageLayout({
                 <>
                   <span
                     aria-hidden="true"
-                    className="manifest-document-layout__top-bar-divider manifest-document-layout__top-bar-divider--vertical"
+                    className="top-bar-divider vertical"
                   />
                   <TooltipIconButton
                     aria-label="Close manifest viewer"
                     tooltip="Close manifest viewer"
                     className={TOP_BAR_BUTTON}
                     icon={
-                      <IconClose className="manifest-document-layout__toolbar-icon" />
+                      <IconClose className="toolbar-icon" />
                     }
                     onPress={onClose}
                   />
                 </>
               )}
-            </BarGroup>
-          </TopBar>
+            </div>
+          </header>
 
-          <Body>
+          <main className="body">
             {isScanVisible && isTextVisible ? (
-              <div className="manifest-document-layout__split-viewer">
+              <div className="split-viewer">
                 <SplitPaneLayout>
                   {splitPanes}
                 </SplitPaneLayout>
@@ -301,11 +280,11 @@ export function ManifestDocumentPageLayout({
             ) : (
               (scanPane ?? transcriptionPane)
             )}
-          </Body>
+          </main>
 
-          <BottomBar className="manifest-document-layout__bottom-bar">
+          <footer className="bottom-bar">
             {bottom}
-          </BottomBar>
+          </footer>
         </div>
       </div>
     </div>

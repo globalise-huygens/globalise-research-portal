@@ -236,7 +236,6 @@
     --card-gutter: var(--s16);
 
     --panel-pad: var(--s24);
-    --viewer-pad: var(--s16);
     --section-gap: var(--s24);
     --row-gap: var(--s12);
     --overlay-inset: var(--s16);
@@ -255,37 +254,6 @@
         (var(--shell-gutter) * (var(--card-cols) - 1))
     );
 
-    --viewer-inset-x: var(--s24);
-    --viewer-inset-top: var(--s40);
-    --viewer-inset-bottom: var(--s24);
-    --viewer-frame-max-width: 100vw;
-    --viewer-top-bar-height: var(--s72);
-    --viewer-bottom-bar-height: var(--s56);
-    --viewer-rail-width: var(--rail);
-    --viewer-sidebar-width: clamp(
-      17rem,
-      var(--sidebar-width),
-      22rem
-    );
-    --viewer-pane-gap: var(--shell-gutter);
-    --viewer-side-panel-width: clamp(19rem, 31vw, 34rem);
-
-    --viewer-frame-height: calc(
-      100vh - var(--viewer-inset-top) -
-        var(--viewer-inset-bottom)
-    );
-    --viewer-frame-width: min(
-      calc(100vw - (var(--viewer-inset-x) * 2)),
-      var(--viewer-frame-max-width)
-    );
-    --viewer-main-height: calc(
-      var(--viewer-frame-height) -
-        var(--viewer-top-bar-height) -
-        var(--viewer-bottom-bar-height)
-    );
-    --viewer-pane-width: var(
-      --viewer-side-panel-width
-    );
     --overlay-object-card-inset-x: var(--s32);
     --overlay-object-card-inset-top: var(--s32);
     --overlay-object-card-inset-bottom: var(--s32);
@@ -320,29 +288,6 @@
   }
 }
 
-@media (max-width: 767px) {
-  @layer base {
-    :root {
-      --viewer-inset-x: 0px;
-      --viewer-inset-top: 0px;
-      --viewer-inset-bottom: 0px;
-      --viewer-top-bar-height: var(--s56);
-      --viewer-bottom-bar-height: var(--s48);
-      --viewer-rail-width: 0px;
-      --viewer-sidebar-width: 100vw;
-      --viewer-frame-max-width: 100vw;
-      --viewer-side-panel-width: 100vw;
-      --viewer-pane-gap: var(--s8);
-      --viewer-frame-height: 100vh;
-      --viewer-frame-width: 100vw;
-      --viewer-main-height: calc(
-        100vh - var(--viewer-top-bar-height) -
-          var(--viewer-bottom-bar-height)
-      );
-    }
-  }
-}
-
 @media (min-width: 1280px) {
   @layer base {
     :root {
@@ -350,19 +295,6 @@
       --shell-margin: var(--s32);
       --shell-gutter: var(--s16);
       --overlay-inset: var(--s32);
-
-      --viewer-inset-x: var(--s24);
-      --viewer-inset-top: var(--s40);
-      --viewer-inset-bottom: var(--s24);
-      --viewer-top-bar-height: var(--s72);
-      --viewer-bottom-bar-height: var(--s56);
-      --viewer-rail-width: var(--rail);
-      --viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --viewer-frame-max-width: 100vw;
 
       --overlay-object-card-inset-x: var(--s48);
       --overlay-object-card-inset-top: var(--s48);
@@ -374,19 +306,6 @@
 @media (min-width: 1440px) {
   @layer base {
     :root {
-      --viewer-inset-x: var(--s32);
-      --viewer-inset-top: var(--s48);
-      --viewer-inset-bottom: var(--s32);
-      --viewer-top-bar-height: var(--s72);
-      --viewer-bottom-bar-height: var(--s56);
-      --viewer-rail-width: var(--rail);
-      --viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --viewer-frame-max-width: 100vw;
-
       --overlay-object-card-inset-x: var(--s64);
       --overlay-object-card-inset-top: var(--s56);
       --overlay-object-card-inset-bottom: var(--s56);
@@ -397,19 +316,6 @@
 @media (min-width: 1920px) {
   @layer base {
     :root {
-      --viewer-inset-x: var(--s48);
-      --viewer-inset-top: var(--s64);
-      --viewer-inset-bottom: var(--s48);
-      --viewer-top-bar-height: var(--s72);
-      --viewer-bottom-bar-height: var(--s56);
-      --viewer-rail-width: var(--rail);
-      --viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --viewer-frame-max-width: 100vw;
-
       --overlay-object-card-inset-x: var(--s96);
       --overlay-object-card-inset-top: var(--s88);
       --overlay-object-card-inset-bottom: var(--s88);
@@ -420,19 +326,6 @@
 @media (min-width: 2560px) {
   @layer base {
     :root {
-      --viewer-inset-x: var(--s48);
-      --viewer-inset-top: var(--s80);
-      --viewer-inset-bottom: var(--s64);
-      --viewer-top-bar-height: var(--s72);
-      --viewer-bottom-bar-height: var(--s56);
-      --viewer-rail-width: var(--rail);
-      --viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --viewer-frame-max-width: 1920px;
-
       --overlay-object-card-inset-x: var(--s136);
       --overlay-object-card-inset-top: var(--s112);
       --overlay-object-card-inset-bottom: var(--s112);
