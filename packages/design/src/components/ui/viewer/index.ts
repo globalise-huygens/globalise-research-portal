@@ -1,10 +1,10 @@
 export {
-  ViewerCanvas as Canvas,
+  FacsimileCanvas,
   TranscriptionCanvas,
   TranscriptionLine,
 } from './Canvases';
 export type {
-  ViewerCanvasProps as CanvasProps,
+  FacsimileCanvasProps,
   TranscriptionCanvasProps,
   TranscriptionLineProps,
 } from './Canvases';

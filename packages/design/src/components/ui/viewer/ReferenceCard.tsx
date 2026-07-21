@@ -36,34 +36,34 @@ const ViewerReferenceCard = React.forwardRef<
       className={cn('viewer-reference-card', className)}
       {...props}
     >
-      <div data-slot="layout">
+      <div className="layout">
         {thumbnail && (
-          <div data-slot="thumbnail">
+          <div className="thumbnail">
             {thumbnail}
           </div>
         )}
 
-        <div data-slot="body">
-          <div data-slot="header">
-            <div data-slot="heading">
+        <div className="body">
+          <div className="header">
+            <div className="heading">
               {heading}
             </div>
             {actions}
           </div>
 
           {snippet && (
-            <div data-slot="snippet">
+            <div className="snippet">
               {snippet}
             </div>
           )}
 
           {meta && (
-            <div data-slot="meta">
+            <div className="meta">
               {meta}
             </div>
           )}
           {footer && (
-            <div data-slot="footer">
+            <div className="footer">
               {footer}
             </div>
           )}

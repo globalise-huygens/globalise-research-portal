@@ -1,14 +1,14 @@
 import { cn } from '../../../lib';
 import * as React from 'react';
 
-export type ViewerCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type FacsimileCanvasProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-function ViewerCanvas({
+function FacsimileCanvas({
   className,
   ...props
-}: ViewerCanvasProps) {
+}: FacsimileCanvasProps) {
   return (
-    <div className={cn('viewer-canvas', className)} {...props} />
+    <div className={cn('facsimile-canvas', className)} {...props} />
   );
 }
 
@@ -42,11 +42,11 @@ function TranscriptionLine({
       className={cn('transcription-line', className)}
       {...props}
     >
-      <span data-slot="index">
+      <span className="index">
         {index}
       </span>
       <span
-        data-slot="mark"
+        className="mark"
         style={{ width }}
       />
     </div>
@@ -54,7 +54,12 @@ function TranscriptionLine({
 }
 
 export {
-  ViewerCanvas,
+  FacsimileCanvas,
   TranscriptionCanvas,
   TranscriptionLine,
 };
+
+/** @deprecated Use `FacsimileCanvasProps`. */
+export type ViewerCanvasProps = FacsimileCanvasProps;
+/** @deprecated Use `FacsimileCanvas`. */
+export { FacsimileCanvas as ViewerCanvas };

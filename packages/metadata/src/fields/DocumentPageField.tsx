@@ -21,7 +21,7 @@ export function DocumentPageField({ url, label = 'Document', fallback }: FieldPr
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink data-slot="icon"/>
+        <IconExternalLink className="icon"/>
       </a>
     </Pair>
   );

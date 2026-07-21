@@ -204,15 +204,14 @@ const ViewerCheckbox = React.forwardRef<
     {({ isIndeterminate }) => (
       <>
         <span
-          className={indicatorClassName}
+          className={cn('indicator', indicatorClassName)}
           aria-hidden="true"
-          data-slot="indicator"
         >
           {isIndeterminate ? (
-            <span data-slot="indeterminate" />
+            <span className="indeterminate" />
           ) : (
             <svg
-              data-slot="check"
+              className="check"
               viewBox="0 -960 960 960"
               focusable="false"
               aria-hidden="true"
@@ -272,12 +271,11 @@ const ViewerNumberField = React.forwardRef<
         {...props}
       >
         <AriaInput
-          className={inputClassName}
-          data-slot="input"
+          className={cn('input', inputClassName)}
           style={{ width: `${widthDigits + 0.5}ch` }}
         />
         {suffix && (
-          <span data-slot="suffix">
+          <span className="suffix">
             {suffix}
           </span>
         )}
@@ -322,9 +320,9 @@ const ViewerRailButton = React.forwardRef<
       data-variant={variant}
       {...props}
     >
-      {icon && <span data-slot="icon">{icon}</span>}
+      {icon && <span className="icon">{icon}</span>}
       {label && (
-        <span data-slot="label">{label}</span>
+        <span className="label">{label}</span>
       )}
       {children}
     </AriaButton>
@@ -352,9 +350,9 @@ export function ContentWarningControl({
     <div className="content-warning">
       <ViewerToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
-        data-slot="button"
+        className="button"
         icon={
-          <IconContentWarning data-slot="icon" />
+          <IconContentWarning className="icon" />
         }
         isActive={isOpen}
         onBlur={() => setIsHoverPreviewOpen(false)}
@@ -368,7 +366,7 @@ export function ContentWarningControl({
       </ViewerToolButton>
       {isPopoverOpen && (
         <div
-          data-slot="popover"
+          className="popover"
           role="dialog"
           aria-label={warning.title}
         >
@@ -377,7 +375,7 @@ export function ContentWarningControl({
             <span>{warning.linkLabel}</span>
             <IconArrowTopRight
               aria-hidden="true"
-              data-slot="link-icon"
+              className="link-icon"
             />
           </a>
         </div>

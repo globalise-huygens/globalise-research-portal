@@ -42,7 +42,7 @@ export function TocPanel() {
 
   return (
     <div className="toc-panel">
-      <div data-slot="list" ref={tocListRef}>
+      <div className="list" ref={tocListRef}>
         {documents.map((document) => (
           <TocDocument
             key={document.id}

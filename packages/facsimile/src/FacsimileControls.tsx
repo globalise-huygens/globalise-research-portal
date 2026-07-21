@@ -314,7 +314,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Brightness',
       icon: (
-        <IconBrightness data-slot="settings-icon" />
+        <IconBrightness className="settings-icon" />
       ),
       label: 'Brightness',
       max: 150,
@@ -325,7 +325,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Contrast',
       icon: (
-        <IconContrast data-slot="settings-icon" />
+        <IconContrast className="settings-icon" />
       ),
       label: 'Contrast',
       max: 150,
@@ -336,7 +336,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Saturation',
       icon: (
-        <IconSaturation data-slot="settings-icon" />
+        <IconSaturation className="settings-icon" />
       ),
       label: 'Saturation',
       max: 200,
@@ -348,20 +348,20 @@ export function FacsimileControls({
 
   return (
     <>
-      <div data-slot="zoom-segment">
+      <div className="zoom-segment">
         <ToolButton
           aria-label="Zoom out"
-          data-slot="button"
+          className="button"
           icon={
-            <IconZoomOut data-slot="icon" />
+            <IconZoomOut className="icon" />
           }
           onPress={handleZoomOut}
           size="compact"
         />
-        <label data-slot="zoom-field">
+        <label className="zoom-field">
           <input
             aria-label="Scan zoom percentage, 10 to 400"
-            data-slot="zoom-input"
+            className="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -381,50 +381,50 @@ export function FacsimileControls({
           />
           <span
             aria-hidden="true"
-            data-slot="zoom-suffix"
+            className="zoom-suffix"
           >
             %
           </span>
         </label>
         <ToolButton
           aria-label="Zoom in"
-          data-slot="button"
+          className="button"
           icon={
-            <IconZoomIn data-slot="icon" />
+            <IconZoomIn className="icon" />
           }
           onPress={handleZoomIn}
           size="compact"
         />
       </div>
       <span
-        data-slot="divider"
+        className="divider"
         aria-hidden="true"
       />
       <ToolButton
         aria-label="Reset scan view"
-        data-slot="button"
-        icon={<IconReset data-slot="icon" />}
+        className="button"
+        icon={<IconReset className="icon" />}
         onPress={handleResetView}
         size="compact"
       />
       <ToolButton
         aria-label="Rotate scan"
-        data-slot="button"
-        icon={<IconRotate data-slot="icon" />}
+        className="button"
+        icon={<IconRotate className="icon" />}
         onPress={() => {
           rotate(90);
         }}
         size="compact"
       />
-      <div data-slot="settings">
+      <div className="settings">
         <ToolButton
           ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}
           aria-expanded={isSettingsOpen}
-          data-slot="button"
+          className="button"
           icon={
-            <IconSetting data-slot="icon" />
+            <IconSetting className="icon" />
           }
           isActive={isSettingsOpen}
           onPress={() => {
@@ -454,12 +454,12 @@ export function FacsimileControls({
           {scanSettings.map((setting) => (
             <ScanSettingSlider key={setting.label} {...setting} />
           ))}
-          <div data-slot="row" data-layout="stacked">
-            <div data-slot="label">
-              <IconInvert data-slot="settings-icon" />
+          <div className="row" data-layout="stacked">
+            <div className="label">
+              <IconInvert className="settings-icon" />
               <span>Invert</span>
             </div>
-            <label data-slot="checkbox">
+            <label className="checkbox">
               <input
                 type="checkbox"
                 checked={isInverted}
@@ -491,14 +491,14 @@ function ScanSettingSlider({
   }
 
   return (
-    <div data-slot="row">
-      <div data-slot="label">
+    <div className="row">
+      <div className="label">
         {icon}
         <span>{label}</span>
       </div>
       <input
         aria-label={ariaLabel}
-        data-slot="slider"
+        className="slider"
         type="range"
         min={min}
         max={max}
@@ -512,7 +512,7 @@ function ScanSettingSlider({
           handleChange(event.currentTarget.value);
         }}
       />
-      <span data-slot="value">
+      <span className="value">
         {value}%
       </span>
     </div>

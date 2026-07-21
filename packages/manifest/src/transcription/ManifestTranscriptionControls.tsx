@@ -93,20 +93,20 @@ export function ManifestTranscriptionControls() {
           />
         </Tooltip>
       </ToggleGroup>
-      <div data-slot="zoom-segment">
+      <div className="zoom-segment">
         <ToolButton
           aria-label="Zoom out transcription"
-          data-slot="button"
+          className="button"
           icon={
-            <IconZoomOut data-slot="icon" />
+            <IconZoomOut className="icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
         />
-        <label data-slot="zoom-field">
+        <label className="zoom-field">
           <input
             aria-label="Transcription zoom percentage, 30 to 200"
-            data-slot="zoom-input"
+            className="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -126,29 +126,29 @@ export function ManifestTranscriptionControls() {
           />
           <span
             aria-hidden="true"
-            data-slot="zoom-suffix"
+            className="zoom-suffix"
           >
             %
           </span>
         </label>
         <ToolButton
           aria-label="Zoom in transcription"
-          data-slot="button"
+          className="button"
           icon={
-            <IconZoomIn data-slot="icon" />
+            <IconZoomIn className="icon" />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
       </div>
       <span
-        data-slot="divider"
+        className="divider"
         aria-hidden="true"
       />
       <ToolButton
         aria-label="Reset transcription zoom"
-        data-slot="button"
-        icon={<IconReset data-slot="icon" />}
+        className="button"
+        icon={<IconReset className="icon" />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
       />

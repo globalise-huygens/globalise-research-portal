@@ -13,7 +13,7 @@ import {
   BarGroup,
   Body,
   BottomBar,
-  Canvas,
+  FacsimileCanvas,
   ToggleGroup,
   Toggle,
   Tooltip,
@@ -59,9 +59,9 @@ function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   return (
     <PaneSurface className={paneClassName}>
       {type === 'scan' ? (
-        <Canvas className={canvasClassName}>
+        <FacsimileCanvas className={canvasClassName}>
           {children}
-        </Canvas>
+        </FacsimileCanvas>
       ) : (
         <TranscriptionCanvas className={canvasClassName}>
           {children}

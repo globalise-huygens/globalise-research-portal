@@ -27,15 +27,15 @@ export function TocDocument(
       data-current={isCurrent}
       data-current-document={isCurrent}
     >
-      <div data-slot="header">
+      <div className="header">
         <button
           type="button"
-          data-slot="select"
+          className="select"
           aria-current={isCurrent || undefined}
           disabled={!firstScan}
           onClick={() => setSelectedCanvas(firstScan.canvasId, 'external')}
         >
-          <IconEntityDocument data-slot="document-icon"/>
+          <IconEntityDocument className="document-icon"/>
           <span>{document.label}</span>
           <small>
             {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
@@ -44,14 +44,13 @@ export function TocDocument(
         {!!firstScan && (
           <button
             type="button"
-            data-slot="toggle"
+            className="toggle"
             aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
             aria-expanded={isExpanded}
             onClick={() => toggleTocDocument(document.id)}
           >
             <IconExpandSection
-              data-slot="disclosure-icon"
-              data-expanded={isExpanded}
+              className="disclosure-icon"
             />
           </button>
         )}
@@ -60,7 +59,7 @@ export function TocDocument(
       {isExpanded && <TocDocumentMetadata document={document}/>}
 
       {isExpanded && (
-        <div data-slot="scans">
+        <div className="scans">
           {document.scans.map((scan) => (
             <TocScan
               key={scan.canvasId}

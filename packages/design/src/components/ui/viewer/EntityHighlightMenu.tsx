@@ -188,16 +188,16 @@ function EntityHighlightMenu({
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
-          data-slot="surface"
+          className="surface"
         >
-          <h3 data-slot="title">{title}</h3>
+          <h3>{title}</h3>
 
-          <div data-slot="content">
-            <div data-slot="all">
-              <div data-slot="all-copy">
-                <div data-slot="all-title">{allLabel}</div>
+          <div className="content">
+            <div className="all">
+              <div className="all-copy">
+                <div className="all-title">{allLabel}</div>
                 {allDescription && (
-                  <div data-slot="all-description">
+                  <div className="all-description">
                     {allDescription}
                   </div>
                 )}
@@ -210,7 +210,7 @@ function EntityHighlightMenu({
               />
             </div>
 
-            <div data-slot="list">
+            <div className="list">
               {categories.map((category) => {
                 const leafKeys = getLeafKeys(category);
                 const selectedCount = leafKeys.filter((key) =>
@@ -225,38 +225,37 @@ function EntityHighlightMenu({
                   category.subcategories && category.subcategories.length > 0;
 
                 return (
-                  <div key={category.id} data-slot="category">
+                  <div key={category.id} className="category">
                     <div
-                      data-slot="row"
+                      className="row"
                       data-level="category"
                       data-tone={category.tone}
                     >
-                      <div data-slot="label">
+                      <div className="label">
                         {category.icon && (
-                          <span data-slot="icon">
+                          <span className="icon">
                             {category.icon}
                           </span>
                         )}
-                        <span data-slot="label-text">
+                        <span className="label-text">
                           {category.label}
                         </span>
                       </div>
                       {category.count !== undefined && (
-                        <span data-slot="count">{category.count}</span>
+                        <span className="count">{category.count}</span>
                       )}
-                      <div data-slot="actions">
+                      <div className="actions">
                         {hasSubcategories && (
                           <button
                             type="button"
                             aria-label={`Toggle ${category.label} subcategories`}
                             aria-expanded={isExpanded}
-                            data-slot="expand"
+                            className="expand"
                             onClick={() => toggleExpandedGroup(category.id)}
                           >
                             <IconExpandSection
                               aria-hidden="true"
-                              data-slot="expand-icon"
-                              data-expanded={isExpanded ? 'true' : 'false'}
+                              className="expand-icon"
                             />
                           </button>
                         )}
@@ -273,7 +272,7 @@ function EntityHighlightMenu({
                     </div>
 
                     {isExpanded && hasSubcategories && (
-                      <div data-slot="subcategories">
+                      <div className="subcategories">
                         {category.subcategories?.map((subcategory) => {
                           const leafKey =
                             subcategory.id ??
@@ -282,17 +281,17 @@ function EntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              data-slot="row"
+                              className="row"
                               data-level="subcategory"
                               data-tone={category.tone}
                             >
-                              <div data-slot="label">
+                              <div className="label">
                                 {category.icon && (
-                                  <span data-slot="icon">
+                                  <span className="icon">
                                     {category.icon}
                                   </span>
                                 )}
-                                <span data-slot="label-text">
+                                <span className="label-text">
                                   {subcategory.label}
                                 </span>
                               </div>

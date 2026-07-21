@@ -19,7 +19,7 @@ import {
 } from '../../../icons';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
-  ViewerCanvas,
+  FacsimileCanvas,
   TranscriptionCanvas,
 } from '../Canvases';
 import {
@@ -172,7 +172,7 @@ export function ManuscriptPane({
 
   return (
     <ViewerPane hidden={!isVisible}>
-      <ViewerCanvas className="manifest-viewer-manuscript-canvas">
+      <FacsimileCanvas className="manifest-viewer-manuscript-canvas">
         <ViewerFloatingToolbar className="manifest-viewer-floating-toolbar">
           <div className="manifest-viewer-zoom-segmented">
             <ManifestViewerIconButton
@@ -380,7 +380,7 @@ export function ManuscriptPane({
             </div>
           </div>
         )}
-      </ViewerCanvas>
+      </FacsimileCanvas>
     </ViewerPane>
   );
 }

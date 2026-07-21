@@ -20,7 +20,7 @@ export function TocScan(
     />
   );
 
-  const heading = <span data-slot="toc-heading">
+  const heading = <span className="toc-heading">
     Scan {scan.scanNumber}
   </span>;
 

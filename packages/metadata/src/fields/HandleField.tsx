@@ -28,7 +28,7 @@ export function HandleField({ url, label = 'Handle', fallback }: FieldProps) {
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink data-slot="icon"/>
+        <IconExternalLink className="icon"/>
       </a>
     </Pair>
   );

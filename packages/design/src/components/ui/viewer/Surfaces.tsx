@@ -55,23 +55,23 @@ function ViewerPopover({
       {...props}
     >
       {(heading ?? icon) && (
-        <div data-slot="header">
-          {icon && <span data-slot="icon">{icon}</span>}
+        <div className="header">
+          {icon && <span className="icon">{icon}</span>}
           {heading && (
             <h2
               id={titleId}
-              data-slot="heading"
+              className="heading"
             >
               {heading}
             </h2>
           )}
         </div>
       )}
-      <div data-slot="body">
+      <div className="body">
         {children}
       </div>
       {footer && (
-        <div data-slot="footer">
+        <div className="footer">
           {footer}
         </div>
       )}

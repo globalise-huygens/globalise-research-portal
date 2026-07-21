@@ -55,7 +55,7 @@ function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
           <li key={node.label} data-current={isLeaf}>
             {isLeaf && (
               <span
-                data-slot="current"
+                className="current"
               >
                 {current}
               </span>

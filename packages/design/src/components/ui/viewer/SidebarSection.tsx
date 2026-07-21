@@ -50,21 +50,21 @@ function ViewerSidebarSection({
       <AriaButton
         aria-expanded={isExpanded}
         aria-controls={panelId}
-        data-slot="button"
+        className="button"
         onPress={() => setExpanded(!isExpanded)}
         {...buttonProps}
       >
-        <span data-slot="button-content">
-          {icon && <span data-slot="icon">{icon}</span>}
-          <span data-slot="title">{title}</span>
+        <span className="button-content">
+          {icon && <span className="icon">{icon}</span>}
+          <span className="title">{title}</span>
           {count && (
-            <span data-slot="count">{count}</span>
+            <span className="count">{count}</span>
           )}
         </span>
         {trailing}
       </AriaButton>
       {isExpanded && (
-        <div id={panelId} data-slot="panel">
+        <div id={panelId} className="panel">
           {children}
         </div>
       )}

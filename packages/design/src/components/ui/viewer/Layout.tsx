@@ -98,21 +98,21 @@ const ViewerMetadataSidebarButton = React.forwardRef<
       data-variant={variant}
       {...props}
     >
-      <span data-slot="content">
-        {icon && <span data-slot="icon">{icon}</span>}
+      <span className="content">
+        {icon && <span className="icon">{icon}</span>}
         {label && (
-          <span data-slot="label">
+          <span className="label">
             {label}
           </span>
         )}
         {count && (
-          <span data-slot="count">
+          <span className="count">
             {count}
           </span>
         )}
         {children}
       </span>
-      {trailing && <span data-slot="icon">{trailing}</span>}
+      {trailing && <span className="icon">{trailing}</span>}
     </AriaButton>
   ),
 );
@@ -197,7 +197,7 @@ function ViewerPane({
           {toolbar}
         </ViewerDockedToolbar>
       )}
-      <div data-slot="content">{children}</div>
+      <div className="content">{children}</div>
     </div>
   );
 }

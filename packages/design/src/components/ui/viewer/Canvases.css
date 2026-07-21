@@ -1,5 +1,5 @@
 @layer components {
-  .viewer-canvas {
+  .facsimile-canvas {
     position: relative;
     box-sizing: border-box;
     display: flex;
@@ -11,7 +11,7 @@
     padding: var(--panel-pad);
   }
 
-  .viewer-canvas.bg-neutral-500 {
+  .facsimile-canvas.bg-neutral-500 {
     background: var(--color-neutral-500);
   }
 
@@ -45,7 +45,7 @@
     gap: var(--s8);
   }
 
-  .transcription-line > [data-slot="index"] {
+  .transcription-line > .index {
     width: var(--s16);
     flex-shrink: 0;
     text-align: right;
@@ -55,7 +55,7 @@
     line-height: 1;
   }
 
-  .transcription-line > [data-slot="mark"] {
+  .transcription-line > .mark {
     height: var(--s4);
     max-width: 100%;
     flex-shrink: 0;
