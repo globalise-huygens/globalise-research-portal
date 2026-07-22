@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { FloatingToolbar } from '@globalise/design';
 import { Viewer } from '@knaw-huc/osd-iiif-viewer';
-import { ControlBar } from './ControlBar';
 import { FacsimileControls } from './FacsimileControls.tsx';
 import { CanvasControls } from './CanvasControls.tsx';
 import { FacsimileOverlay } from './FacsimileOverlay.tsx';
@@ -26,7 +26,7 @@ export function FacsimileView(
       style={{ position: 'relative', width: '100%', height: '100%', ...style }}
     >
       <div
-        className="facsimile-view__scan"
+        className="scan"
         style={{ filter: scanFilter || undefined }}
       >
         <Viewer options={{
@@ -35,12 +35,12 @@ export function FacsimileView(
         }}/>
       </div>
       <FacsimileOverlay canvasId={canvasId}/>
-      <ControlBar className="gds-document-detail-scan-toolbar">
+      <FloatingToolbar>
         <FacsimileControls
           fullscreenRef={fullscreenRef}
           onScanFilterChange={setScanFilter}
         />
-      </ControlBar>
+      </FloatingToolbar>
       {showNavigation && <CanvasControls/>}
     </div>
   );

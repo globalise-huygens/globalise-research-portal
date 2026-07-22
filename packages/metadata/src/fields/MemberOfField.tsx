@@ -5,10 +5,11 @@ import {
   useMetadataNodes, useMetadataRoot,
 } from '@globalise/common';
 import { LabelHierarchy } from '../common';
+import type { FieldProps } from './FieldProps';
 
-export function MemberOfField() {
-  const root = useMetadataRoot();
-  const labelPaths = useMetadataNodes(['member_of']).flatMap(toParentLabels);
+export function MemberOfField({ url }: FieldProps) {
+  const root = useMetadataRoot(url);
+  const labelPaths = useMetadataNodes(url, ['member_of']).flatMap(toParentLabels);
 
   if (!root || !labelPaths.length) {
     return null;

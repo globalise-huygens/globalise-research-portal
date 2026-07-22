@@ -1,13 +1,13 @@
 import {
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailToolButton,
-  DocumentDetailTooltip,
   IconReset,
   IconTranscriptionDiplomatic,
   IconTranscriptionNormalised,
   IconZoomIn,
   IconZoomOut,
+  Toggle,
+  ToggleGroup,
+  ToolButton,
+  Tooltip,
 } from '@globalise/design';
 import {
   setDiplomaticViewScale,
@@ -58,53 +58,52 @@ export function ManifestTranscriptionControls() {
   }
 
   return (
-    <div className="manifest-document-layout__transcription-toolbar">
-      <DocumentDetailSegmentedToggleGroup
+    <div className="transcription-toolbar">
+      <ToggleGroup
         aria-label="Transcription mode controls"
-        className="manifest-document-layout__transcription-mode-group"
+        className="transcription-mode-group"
         selectionMode="single"
         selectedKeys={[transcriptionMode]}
         size="compact"
       >
-        <DocumentDetailTooltip label="Line by line transcription">
-          <DocumentDetailSegmentedToggleItem
+        <Tooltip label="Line by line transcription">
+          <Toggle
             id="line-by-line"
             aria-label="Line by line transcription"
-            className="manifest-document-layout__transcription-mode-item"
+            className="transcription-mode-item"
             icon={
-              <IconTranscriptionNormalised className="manifest-document-layout__transcription-mode-icon" />
+              <IconTranscriptionNormalised className="transcription-mode-icon" />
             }
             onPress={() => setTranscriptionMode('line-by-line')}
             size="compact"
           />
-        </DocumentDetailTooltip>
-        <DocumentDetailTooltip label="Diplomatic transcription">
-          <DocumentDetailSegmentedToggleItem
+        </Tooltip>
+        <Tooltip label="Diplomatic transcription">
+          <Toggle
             id="diplomatic"
             aria-label="Diplomatic transcription"
-            className="manifest-document-layout__transcription-mode-item"
+            className="transcription-mode-item"
             icon={
-              <IconTranscriptionDiplomatic className="manifest-document-layout__transcription-mode-icon" />
+              <IconTranscriptionDiplomatic className="transcription-mode-icon" />
             }
             onPress={() => setTranscriptionMode('diplomatic')}
             size="compact"
           />
-        </DocumentDetailTooltip>
-      </DocumentDetailSegmentedToggleGroup>
-      <div className="gds-document-detail-scan-toolbar__zoom-segment">
-        <DocumentDetailToolButton
+        </Tooltip>
+      </ToggleGroup>
+      <div className="zoom-controls">
+        <ToolButton
           aria-label="Zoom out transcription"
-          className="gds-document-detail-scan-toolbar__button"
           icon={
-            <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomOut />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
         />
-        <label className="gds-document-detail-scan-toolbar__zoom-field">
+        <label className="zoom-field">
           <input
             aria-label="Transcription zoom percentage, 30 to 200"
-            className="gds-document-detail-scan-toolbar__zoom-input"
+            className="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -124,29 +123,27 @@ export function ManifestTranscriptionControls() {
           />
           <span
             aria-hidden="true"
-            className="gds-document-detail-scan-toolbar__zoom-suffix"
+            className="zoom-suffix"
           >
             %
           </span>
         </label>
-        <DocumentDetailToolButton
+        <ToolButton
           aria-label="Zoom in transcription"
-          className="gds-document-detail-scan-toolbar__button"
           icon={
-            <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomIn />
           }
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
       </div>
       <span
-        className="gds-document-detail-scan-toolbar__divider"
+        className="toolbar-divider"
         aria-hidden="true"
       />
-      <DocumentDetailToolButton
+      <ToolButton
         aria-label="Reset transcription zoom"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
+        icon={<IconReset />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
       />

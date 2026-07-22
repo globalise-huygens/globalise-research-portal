@@ -11,7 +11,7 @@ export function TranscriptionPlaceholder(
 ) {
   return (
     <div
-      className="manifest-transcription-placeholder"
+      className="transcription-placeholder"
       style={{ background, color }}
     >
       {children}

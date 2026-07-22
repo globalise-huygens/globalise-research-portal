@@ -1,5 +1,5 @@
 import { useManifest, useViewerReady } from '@knaw-huc/osd-iiif-viewer';
-import { useScrollTo } from './useScrollTo.tsx';
+import { useScrollToFacsimile } from './useScrollToFacsimile.tsx';
 import { getValue } from '@iiif/helpers/i18n';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
@@ -7,7 +7,7 @@ import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 export function ManifestFacsimileControls() {
   const ready = useViewerReady();
   const { vault } = useManifest();
-  const scrollTo = useScrollTo();
+  const scrollTo = useScrollToFacsimile();
 
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const { id: selectedCanvasId } = useSelectedCanvas();

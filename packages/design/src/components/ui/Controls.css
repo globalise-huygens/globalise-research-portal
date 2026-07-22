@@ -1,0 +1,286 @@
+@layer components {
+  .tool-button {
+    display: inline-flex;
+    border: 0;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: var(--font-sans);
+    transition:
+      background-color 75ms ease-out,
+      border-color 75ms ease-out,
+      color 75ms ease-out;
+  }
+
+  .tool-button[data-focus-visible],
+  .toggle[data-focus-visible],
+  .checkbox-control[data-focus-visible],
+  .tool-button:focus-visible,
+  .toggle:focus-visible,
+  .checkbox-control:focus-visible {
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+
+  .tool-button {
+    min-width: var(--s32);
+    height: var(--s36);
+    gap: var(--s4);
+    border-radius: 4px;
+    padding-inline: var(--s8);
+    color: var(--color-brand-white);
+    font-size: 0.75rem;
+  }
+
+  .tool-button[data-size="compact"] {
+    min-width: var(--s28);
+    height: var(--s32);
+    padding-inline: var(--s6);
+  }
+
+  .tool-button[data-size="regular"] {
+    min-width: var(--s32);
+    height: var(--s36);
+    padding-inline: var(--s8);
+  }
+
+  .tool-button[data-size="touch"] {
+    min-width: var(--s44);
+    min-height: var(--s44);
+    padding-inline: var(--s12);
+  }
+
+  .tool-button[data-hovered] {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .tool-button[data-active="false"] {
+    background: transparent;
+    color: var(--color-brand-white);
+  }
+
+  .tool-button[data-pressed] {
+    background: rgb(255 255 255 / 0.15);
+  }
+
+  .tool-button[data-active="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+    box-shadow: none;
+  }
+
+  .tool-button[data-disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .toggle-group {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.1);
+    color: var(--color-brand-white);
+  }
+
+  .toggle-group {
+    gap: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .toggle-group[data-size="compact"] {
+    height: var(--s32);
+    border-radius: 4px;
+  }
+
+  .toggle-group[data-size="regular"] {
+    height: var(--s40);
+    border-radius: 4px;
+  }
+
+  .toggle {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+  }
+
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-right: 0;
+    background: rgb(255 255 255 / 0.12);
+    color: rgb(255 255 255 / 0.82);
+    outline: none;
+    box-shadow: none;
+    transition:
+      background-color 100ms ease-out,
+      color 100ms ease-out;
+  }
+
+  .toggle > svg {
+    width: var(--s16);
+    height: var(--s16);
+    flex-shrink: 0;
+  }
+
+  .toggle:last-child {
+    border-right: 1px solid rgb(255 255 255 / 0.7);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  .toggle:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .toggle[data-size="compact"] {
+    min-width: var(--s56);
+    height: var(--s32);
+    gap: var(--s4);
+    padding-inline: var(--s8);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .toggle[data-size="regular"] {
+    min-width: var(--s72);
+    height: var(--s40);
+    gap: var(--s8);
+    padding-inline: var(--s12);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .toggle[data-focus-visible],
+  .toggle:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .toggle[data-selected],
+  .toggle[aria-pressed="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+  }
+
+  .toggle:not([data-selected]):not(
+      [aria-pressed="true"]
+    ) {
+    color: rgb(255 255 255 / 0.65);
+  }
+
+  .toggle:not([data-selected]):not(
+      [aria-pressed="true"]
+    )[data-hovered] {
+    background: rgb(255 255 255 / 0.18);
+    color: var(--color-brand-white);
+  }
+
+  .checkbox-control {
+    display: inline-flex;
+    min-width: 0;
+    height: var(--s28);
+    cursor: pointer;
+    align-items: center;
+    gap: var(--s8);
+    padding-inline: 2px;
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+    transition: color 75ms ease-out;
+  }
+
+  .checkbox-control[data-hovered] {
+    color: rgb(255 255 255 / 0.75);
+  }
+
+  .checkbox-control[data-disabled] {
+    cursor: not-allowed;
+    color: rgb(255 255 255 / 0.3);
+  }
+
+  .checkbox-control > .indicator {
+    display: flex;
+    box-sizing: border-box;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(255 255 255 / 0.38);
+    background: var(--color-neutral-700);
+    color: transparent;
+    transition:
+      background-color 75ms ease-out,
+      border-color 75ms ease-out,
+      color 75ms ease-out,
+      box-shadow 75ms ease-out;
+  }
+
+  .checkbox-control .check {
+    display: block;
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    opacity: 0;
+  }
+
+  .checkbox-control .indeterminate {
+    display: block;
+    width: var(--s8);
+    height: 2px;
+    background: currentColor;
+    opacity: 0;
+  }
+
+  .checkbox-control[data-selected]
+    .indicator,
+  .checkbox-control[data-indeterminate]
+    .indicator {
+    border-color: var(--color-neutral-100);
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+  }
+
+  .checkbox-control[data-selected]
+    .check,
+  .checkbox-control[data-indeterminate]
+    .indeterminate {
+    opacity: 1;
+  }
+
+  .checkbox-control[data-disabled] .indicator {
+    border-color: rgb(255 255 255 / 0.16);
+    background: rgb(255 255 255 / 0.14);
+    color: rgb(255 255 255 / 0.35);
+  }
+
+  @media (max-width: 767px) {
+    .tool-button {
+      min-width: var(--s40);
+      min-height: var(--s40);
+    }
+
+    .tool-button[data-size="touch"] {
+      min-width: var(--s44);
+      min-height: var(--s44);
+    }
+
+    .toggle-group[data-size="regular"] {
+      height: var(--s40);
+    }
+
+    .toggle[data-size="regular"] {
+      height: var(--s40);
+      padding-inline: var(--s10);
+    }
+  }
+}

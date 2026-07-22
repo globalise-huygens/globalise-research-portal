@@ -1,4 +1,4 @@
-import './TranscriptionPage.css';
+import './PageLabel.css';
 
 type Props = {
   label: string | number;
@@ -8,10 +8,10 @@ type Props = {
 export function PageLabel({ label, isCurrent = false }: Props) {
   return (
     <span
-      className="manifest-transcription-page__label"
+      className="page-label"
       data-current={isCurrent ? 'true' : 'false'}
     >
-      <span className="manifest-transcription-page__label-prefix">
+      <span className="prefix">
         {isCurrent ? 'Current page' : 'Page'}
       </span>
       {label}

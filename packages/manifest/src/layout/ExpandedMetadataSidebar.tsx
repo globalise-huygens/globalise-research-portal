@@ -1,12 +1,7 @@
 import * as React from 'react';
-import {
-  DocumentDetailMetadataSidebar,
-  DocumentDetailMetadataSidebarButton,
-  DocumentDetailMetadataSidebarBadge,
-} from '@globalise/design';
-import { sideBarPanels } from './sideBarPanels.tsx';
+import { SidebarId, sidebarPanels } from './sidebar-panels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
-import { MetadataPanel } from '@globalise/metadata';
+import { MetadataPanel, TocPanel } from '@globalise/metadata';
 
 export function ExpandedMetadataSidebar({
   expandedSections,
@@ -16,45 +11,43 @@ export function ExpandedMetadataSidebar({
   onToggleSection: (sectionId: string) => void;
 }) {
   return (
-    <DocumentDetailMetadataSidebar className="manifest-document-layout__expanded-sidebar">
-      {sideBarPanels.map((item) => {
+    <nav className="expanded-sidebar" aria-label="Document information">
+      {sidebarPanels.map((item) => {
         const isExpanded = expandedSections.has(item.id);
-        const panelId: (typeof sideBarPanels)[number]['id'] = item.id;
+        const panelId: SidebarId = item.id;
 
         return (
           <React.Fragment key={item.id}>
-            <DocumentDetailMetadataSidebarButton
+            <button
+              type="button"
               aria-controls={panelId}
               aria-expanded={isExpanded}
-              className="manifest-document-layout__sidebar-button"
-              icon={item.icon}
-              label={item.label}
-              count={item.count}
-              trailing={<SidebarDisclosureIcon isExpanded={isExpanded} />}
-              onPress={() => onToggleSection(item.id)}
+              className="sidebar-button"
+              onClick={() => onToggleSection(item.id)}
             >
-              {item.badge && (
-                <DocumentDetailMetadataSidebarBadge>
-                  {item.badge}
-                </DocumentDetailMetadataSidebarBadge>
-              )}
-            </DocumentDetailMetadataSidebarButton>
+              <span className="content">
+                <span className="icon">{item.icon}</span>
+                <span className="label">{item.label}</span>
+                {item.count && <span className="count">{item.count}</span>}
+                {item.badge && <span className="badge">{item.badge}</span>}
+              </span>
+              <SidebarDisclosureIcon isExpanded={isExpanded} />
+            </button>
 
             {isExpanded && (
               <div
                 id={panelId}
                 role="region"
                 aria-label={`${item.label} details`}
-                className="manifest-document-layout__sidebar-panel"
+                className="sidebar-panel"
               >
-                {panelId === 'inventory' && (
-                  <MetadataPanel />
-                )}
+                {panelId === 'inventory' && <MetadataPanel />}
+                {panelId === 'toc' && <TocPanel />}
               </div>
             )}
           </React.Fragment>
         );
       })}
-    </DocumentDetailMetadataSidebar>
+    </nav>
   );
 }

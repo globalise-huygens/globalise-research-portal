@@ -7,69 +7,59 @@ import {
   setEntityHighlightCategories,
   useEntityHighlightCategories,
 } from '@globalise/common/document';
+import { IconEntities } from '@globalise/design';
 import {
-  DocumentDetailEntityHighlightMenu,
-  IconEntities,
-  type DocumentDetailEntityHighlightCategory,
-} from '@globalise/design';
+  EntityHighlightMenu,
+  type EntityHighlightCategory,
+} from './EntityHighlightMenu';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 
-const iconClassName = 'manifest-document-layout__toolbar-icon';
+const iconClassName = 'toolbar-icon';
 
 const entityCategoryConfig: Record<
   EntityVisualCategoryClassName,
-  DocumentDetailEntityHighlightCategory
+  EntityHighlightCategory
 > = {
   'cidoc-actor': {
     id: 'cidoc-actor',
     label: 'Actors',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-actor',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-actor',
+    tone: 'cidoc-actor',
   },
   'cidoc-appellation': {
     id: 'cidoc-appellation',
     label: 'Appellations',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-appellation',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-appellation',
+    tone: 'cidoc-appellation',
   },
   'cidoc-conceptual-object': {
     id: 'cidoc-conceptual-object',
     label: 'Conceptual objects',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-conceptual-object',
-    textClassName:
-      'gds-entity-highlight-menu__tone-text-cidoc-conceptual-object',
+    tone: 'cidoc-conceptual-object',
   },
   'cidoc-dimension': {
     id: 'cidoc-dimension',
     label: 'Dimensions',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-dimension',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-dimension',
+    tone: 'cidoc-dimension',
   },
   'cidoc-physical-thing': {
     id: 'cidoc-physical-thing',
     label: 'Physical things',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-physical-thing',
-    textClassName:
-      'gds-entity-highlight-menu__tone-text-cidoc-physical-thing',
+    tone: 'cidoc-physical-thing',
   },
   'cidoc-place': {
     id: 'cidoc-place',
     label: 'Places',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-place',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-place',
+    tone: 'cidoc-place',
   },
   'cidoc-time-span': {
     id: 'cidoc-time-span',
     label: 'Time spans',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-time-span',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-time-span',
+    tone: 'cidoc-time-span',
   },
   'cidoc-type': {
     id: 'cidoc-type',
     label: 'Types',
-    rowClassName: 'gds-entity-highlight-menu__tone-cidoc-type',
-    textClassName: 'gds-entity-highlight-menu__tone-text-cidoc-type',
+    tone: 'cidoc-type',
   },
 };
 
@@ -102,7 +92,7 @@ export function ManifestEntityHighlightMenu() {
   );
 
   return (
-    <DocumentDetailEntityHighlightMenu
+    <EntityHighlightMenu
       categories={categories}
       selectedKeys={selectedKeys}
       onSelectedKeysChange={handleSelectedKeysChange}

@@ -3,6 +3,7 @@ export * from './EntityHighlightSlice';
 export * from './LayoutElementsSlice';
 export * from './ManifestViewerSlice';
 export * from './SelectionSlice';
+export * from './TocSlice';
 export { useSelectedIdsForCanvas } from './useSelectedIdsForCanvas';
 export { useCanvasPages } from './useCanvasPages';
 export { useDocumentLifecycle } from './useDocumentLifeCycle';

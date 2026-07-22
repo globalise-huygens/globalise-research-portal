@@ -145,105 +145,27 @@ export type {
 } from './ReferencePanel';
 
 export {
-  checkboxCss,
-  ContentWarningControl,
-  DocumentDetailBarGroup,
-  DocumentDetailBody,
-  DocumentDetailBottomBar,
-  DocumentDetailCanvas,
-  DocumentDetailCheckbox,
-  DocumentDetailControl,
-  DocumentDetailEntityHighlightMenu,
-  DocumentDetailFloatingToolbar,
-  DocumentDetailIconRail,
-  DocumentDetailMetadataSidebar,
-  DocumentDetailMetadataSidebarBadge,
-  DocumentDetailMetadataSidebarButton,
-  DocumentDetailNumberField,
-  DocumentDetailOverlay,
-  DocumentDetailPanelHeader,
-  DocumentDetailPopoverSurface,
-  DocumentDetailRailButton,
-  DocumentDetailReferenceCard,
-  DocumentDetailSegment,
-  DocumentDetailSegmentedControl,
-  DocumentDetailSegmentedToggleGroup,
-  DocumentDetailSegmentedToggleItem,
-  DocumentDetailSidebarSection,
-  DocumentDetailSidePanel,
-  DocumentDetailSplitViewer,
-  DocumentDetailTitle,
-  DocumentDetailToolbar,
-  DocumentDetailToolButton,
-  DocumentDetailTooltip,
-  DocumentDetailTopBar,
-  DocumentDetailTranscriptCanvas,
-  DocumentDetailTranscriptLine,
-  DocumentDetailViewer,
-  DocumentDetailViewerPane,
-  documentPreviewCss,
-  popoverCss,
-  referencePanelCss,
-  segmentedButtonsCss,
-  sidebarCss,
-  toolbarCss,
-  tooltipCss,
-} from './DocumentDetailOverlay';
-export { DocumentDetailOverlayViewer } from './DocumentDetailOverlayViewer';
-export type { DocumentDetailOverlayViewerProps } from './DocumentDetailOverlayViewer';
+  Checkbox,
+  Toggle,
+  ToggleGroup,
+  ToolButton,
+} from './Controls';
 export type {
-  DocumentDetailBarGroupProps,
-  DocumentDetailBodyProps,
-  DocumentDetailBottomBarProps,
-  DocumentDetailCanvasProps,
-  DocumentDetailCheckboxProps,
-  DocumentDetailControlProps,
-  DocumentDetailEntityHighlightCategory,
-  DocumentDetailEntityHighlightMenuProps,
-  DocumentDetailEntityHighlightSubcategory,
-  DocumentDetailFloatingToolbarProps,
-  DocumentDetailIconRailProps,
-  DocumentDetailMetadataSidebarBadgeProps,
-  DocumentDetailMetadataSidebarButtonProps,
-  DocumentDetailMetadataSidebarProps,
-  DocumentDetailNumberFieldProps,
-  DocumentDetailOverlayProps,
-  DocumentDetailPanelHeaderProps,
-  DocumentDetailPopoverSurfaceProps,
-  DocumentDetailRailButtonProps,
-  DocumentDetailReferenceCardProps,
-  DocumentDetailSegmentedControlProps,
-  DocumentDetailSegmentedToggleGroupProps,
-  DocumentDetailSegmentedToggleItemProps,
-  DocumentDetailSegmentProps,
-  DocumentDetailSidebarSectionProps,
-  DocumentDetailSidePanelProps,
-  DocumentDetailSplitViewerProps,
-  DocumentDetailTitleProps,
-  DocumentDetailToolbarProps,
-  DocumentDetailToolButtonProps,
-  DocumentDetailTooltipProps,
-  DocumentDetailTopBarProps,
-  DocumentDetailTranscriptCanvasProps,
-  DocumentDetailTranscriptLineProps,
-  DocumentDetailViewerPaneProps,
-  DocumentDetailViewerProps,
-} from './DocumentDetailOverlay';
-export type {
-  DocumentDetailOverlayContent,
-  DocumentDetailOverlayDocument,
-  DocumentDetailOverlayIdentifiedEntity,
-  DocumentDetailOverlayInventoryHierarchyItem,
-  DocumentDetailOverlayInventoryMetadataItem,
-  DocumentDetailOverlayPaneKey,
-  DocumentDetailOverlayScan,
-  DocumentDetailOverlayScanRenderArgs,
-  DocumentDetailOverlayScanRenderer,
-  DocumentDetailOverlaySidebarSectionId,
-  DocumentDetailOverlayTagGroup,
-  DocumentDetailOverlayTagSubcategory,
-  DocumentDetailOverlayTocMetadata,
-} from './DocumentDetailOverlayTypes';
+  CheckboxProps,
+  ToggleGroupProps,
+  ToggleProps,
+  ToolButtonProps,
+} from './Controls';
+
+export { FloatingToolbar } from './FloatingToolbar';
+export type { FloatingToolbarProps } from './FloatingToolbar';
+
+export { Popover } from './Popover';
+export type { PopoverProps } from './Popover';
+
+export { Tooltip } from './Tooltip';
+export type { TooltipProps } from './Tooltip';
+
 
 export { SearchBar, searchBarVariants } from './SearchBar';
 export type { SearchBarProps } from './SearchBar';

@@ -26,8 +26,8 @@ import { orThrow } from '@globalise/common';
 import {
   BlockHighlight,
   type EntityHighlightTone,
-  Tooltip,
-  TooltipProps,
+  FacsimileTooltip,
+  FacsimileTooltipProps,
   WordHighlight,
 } from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
@@ -46,7 +46,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const isTileLoaded = lazyCollectionViewerStore(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
-  const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
+  const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
   const highlightedEntityCategories = useEntityHighlightCategories();
   const showLayoutElements = useIsLayoutElementsVisible();
@@ -209,7 +209,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           ))}
         </svg>
       </Overlay>
-      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
+      {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
 });

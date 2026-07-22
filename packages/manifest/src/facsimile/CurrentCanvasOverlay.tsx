@@ -28,12 +28,12 @@ export function CurrentCanvasOverlay() {
   return (
     <Overlay location={location}>
       <div
-        className="manifest-current-canvas"
+        className="current-canvas"
         role="group"
         aria-current="page"
         aria-label={`Current scan ${name}`}
       >
-        <span className="manifest-current-canvas__label" aria-hidden="true">
+        <span className="label" aria-hidden="true">
           {name}
         </span>
       </div>

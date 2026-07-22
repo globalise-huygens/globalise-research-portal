@@ -7,7 +7,7 @@ import {
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
 import { Highlight } from './Highlight.tsx';
-import { TooltipProps } from './Tooltip.tsx';
+import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import { Id } from '@globalise/common/annotation';
 import {
   EntityHighlightTone,
@@ -22,7 +22,7 @@ type WordHighlightProps = {
   tone?: EntityHighlightTone;
   joinedBefore?: boolean;
   joinedAfter?: boolean;
-  setTooltip: (tooltip: TooltipProps | null) => void;
+  setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export function WordHighlight(

@@ -1,0 +1,613 @@
+@import "@globalise/design/styles.css";
+
+.manifest-viewer {
+  --manifest-sidebar-expanded-width: clamp(17rem, var(--sidebar-width), 22rem);
+  --manifest-sidebar-collapsed-width: var(--rail);
+  --manifest-sidebar-width: var(--manifest-sidebar-expanded-width);
+  --manifest-top-bar-height: var(--s56);
+  --manifest-bottom-bar-height: var(--s56);
+  --manifest-viewer-chrome: var(--color-neutral-900);
+  --manifest-viewer-workspace: var(--color-parchment-300);
+  --manifest-scan-workspace: var(--manifest-viewer-workspace);
+  --manifest-transcription-workspace: var(--manifest-viewer-workspace);
+  --manifest-transcription-page: var(--color-parchment-50);
+  --manifest-transcription-page-border: var(--color-brand-white);
+  --manifest-transcription-text: var(--color-brand-black);
+
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
+  column-gap: var(--shell-gutter);
+  overflow: hidden;
+  background: var(--manifest-viewer-chrome);
+  font-family: var(--font-sans);
+  padding-inline: 0;
+}
+
+.manifest-viewer .frame {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: var(--manifest-sidebar-width) minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--manifest-viewer-chrome);
+  transition: grid-template-columns 150ms ease-out;
+}
+
+.manifest-viewer .frame[data-sidebar-expanded="false"] {
+  --manifest-sidebar-width: var(--manifest-sidebar-collapsed-width);
+}
+
+.manifest-viewer .sidebar {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-column: 1;
+  min-width: 0;
+  min-height: 0;
+  width: var(--manifest-sidebar-width);
+  overflow: hidden;
+  background: var(--manifest-viewer-chrome);
+  transition: width 150ms ease-out;
+}
+
+.manifest-viewer .sidebar[data-expanded="true"] {
+  width: var(--manifest-sidebar-expanded-width);
+}
+
+.manifest-viewer .sidebar[data-expanded="false"] {
+  width: var(--manifest-sidebar-collapsed-width);
+}
+
+.manifest-viewer .main {
+  display: grid;
+  grid-column: 2;
+  grid-template-rows:
+    var(--manifest-top-bar-height) minmax(0, 1fr)
+    var(--manifest-bottom-bar-height);
+  min-width: 0;
+  min-height: 0;
+}
+
+.manifest-viewer .top-bar {
+  display: flex;
+  flex-shrink: 0;
+  height: var(--manifest-top-bar-height);
+  align-items: center;
+  border-bottom: 0;
+  background: var(--color-neutral-900);
+  color: var(--color-brand-white);
+  padding-left: var(--s16);
+  padding-right: var(--s24);
+}
+
+.manifest-viewer .top-bar-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex: 1 1 0%;
+  gap: var(--s8);
+}
+
+.manifest-viewer .top-bar-group.left {
+  justify-content: flex-start;
+}
+
+.manifest-viewer .top-bar-group.right {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.manifest-viewer .transcription-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s8);
+}
+
+.manifest-viewer .transcription-mode-group {
+  height: var(--s32);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.manifest-viewer .transcription-mode-item {
+  min-width: 0;
+  border-color: rgb(255 255 255 / 0.2);
+  background: transparent;
+  color: rgb(255 255 255 / 0.78);
+  padding-inline: var(--s10);
+}
+
+.manifest-viewer .transcription-mode-item[data-selected],
+.manifest-viewer .transcription-mode-item[aria-pressed="true"] {
+  background: var(--color-brand-white);
+  color: var(--color-brand-black);
+}
+
+.manifest-viewer .transcription-mode-item span {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-viewer .transcription-mode-icon {
+  width: var(--s16);
+  height: var(--s16);
+  flex-shrink: 0;
+}
+
+.manifest-viewer .top-bar-divider {
+  color: rgb(255 255 255 / 0.7);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+
+.manifest-viewer .top-bar-divider.vertical {
+  width: 1px;
+  height: var(--s24);
+  flex: 0 0 1px;
+  margin-inline: var(--s4);
+  background: rgb(255 255 255 / 0.24);
+}
+
+.manifest-viewer .top-bar-center {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.manifest-viewer .content-warning {
+  position: relative;
+  width: fit-content;
+  min-width: 0;
+}
+
+.manifest-viewer .content-warning > .tool-button {
+  height: var(--s32);
+  gap: var(--s6);
+  border-radius: 3px;
+  padding-inline: var(--s10);
+  font-size: var(--text-xs);
+  line-height: var(--s16);
+}
+
+.manifest-viewer .content-warning > .tool-button > svg {
+  width: var(--s16);
+  height: var(--s16);
+}
+
+.manifest-viewer .content-warning > .details {
+  position: absolute;
+  z-index: 1200;
+  top: calc(100% + var(--s8));
+  left: 50%;
+  width: min(23rem, calc(100vw - var(--s32)));
+  transform: translateX(-50%);
+  border: 1px solid rgb(255 84 61 / 0.7);
+  background: var(--color-neutral-900);
+  padding: var(--s12);
+  color: var(--color-brand-vermilion);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+}
+
+.manifest-viewer .content-warning > .tool-button {
+  color: var(--color-brand-vermilion);
+}
+
+.manifest-viewer .content-warning > .details p,
+.manifest-viewer .content-warning > .details a {
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+.manifest-viewer .content-warning > .details p {
+  margin: 0;
+}
+
+.manifest-viewer .content-warning > .details a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s6);
+  margin-top: var(--s10);
+  color: var(--color-brand-vermilion);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.manifest-viewer .content-warning > .details svg {
+  width: var(--s16);
+  height: var(--s16);
+}
+
+.manifest-viewer .top-button {
+  min-width: var(--s36);
+  height: var(--s36);
+  padding-inline: 0;
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
+}
+
+.manifest-viewer .top-button > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.manifest-viewer .bottom-bar {
+  display: flex;
+  flex-shrink: 0;
+  height: var(--manifest-bottom-bar-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--s8);
+  border-top: 0;
+  font-family: var(--font-sans);
+  background: var(--color-neutral-900);
+  color: var(--color-brand-white);
+}
+
+.manifest-viewer .bar-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--s8);
+}
+
+.manifest-viewer .bottom-button {
+  min-width: var(--s24);
+  height: var(--s24);
+  border-radius: 3px;
+  color: var(--color-neutral-300);
+  padding-inline: var(--s4);
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
+}
+
+.manifest-viewer .bottom-button[data-hovered] {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.manifest-viewer .bottom-button[data-pressed] {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.manifest-viewer .bottom-button[data-focus-visible] {
+  box-shadow: inset 0 0 0 1px var(--color-ring);
+}
+
+.manifest-viewer .bottom-button[data-disabled] {
+  opacity: 0.4;
+}
+
+.manifest-viewer .scan-position {
+  display: inline-flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--s8);
+  color: var(--color-neutral-300);
+  font-size: var(--text-xs);
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.manifest-viewer .scan-position-input {
+  min-width: 2ch;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-brand-parchment);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  padding: 0;
+  text-align: center;
+  appearance: textfield;
+}
+
+.manifest-viewer .scan-position-input::-webkit-inner-spin-button,
+.manifest-viewer .scan-position-input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.manifest-viewer .scan-position-input:focus {
+  outline: 1px solid var(--color-brand-parchment);
+  outline-offset: 2px;
+}
+
+.manifest-viewer .bottom-button > svg,
+.manifest-viewer .toolbar-icon {
+  width: var(--s16);
+  height: var(--s16);
+}
+
+.manifest-viewer .segmented-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.manifest-viewer .split-viewer {
+  display: flex;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.manifest-viewer .body,
+.manifest-viewer .split-viewer {
+  min-height: 0;
+}
+
+.manifest-viewer .body {
+  display: flex;
+  flex: 1 1 0%;
+  overflow: hidden;
+}
+
+.manifest-viewer .split-viewer .split-pane-layout,
+.manifest-viewer .split-viewer .split-pane {
+  width: 100%;
+  height: 100%;
+}
+
+/* react-split-pane sizes these wrappers with inline dimensions. Keep the
+   viewer itself stretched inside those wrappers so OpenSeadragon and the
+   transcription scroller can measure a non-zero viewport. */
+.manifest-viewer .split-viewer .split-pane-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.manifest-viewer .split-viewer .split-pane-pane > .pane {
+  width: 100%;
+  height: 100%;
+}
+
+.manifest-viewer .pane {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 0;
+}
+
+.manifest-viewer .pane.bordered {
+  border-right: 1px solid var(--manifest-viewer-chrome);
+}
+
+.manifest-viewer .canvas {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--manifest-transcription-text);
+}
+
+.manifest-viewer .transcription-viewer {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  background: var(--manifest-transcription-workspace);
+  color: var(--manifest-transcription-text);
+}
+
+.manifest-viewer .pane[data-view="scan"] .canvas {
+  align-items: stretch;
+  justify-content: stretch;
+  background: var(--manifest-scan-workspace);
+  padding: 0;
+}
+
+.manifest-viewer .pane[data-view="scan"] .openseadragon-container {
+  background: var(--manifest-scan-workspace) !important;
+}
+
+.manifest-viewer .pane[data-view="scan"] .canvas > * {
+  min-height: 0;
+}
+
+.manifest-viewer .pane[data-view="transcription"] .canvas {
+  background: var(--manifest-transcription-workspace);
+  padding: 0;
+}
+
+.manifest-viewer .transcription-viewer > div:last-child {
+  scrollbar-color: var(--color-parchment-600) var(--manifest-transcription-workspace);
+  scrollbar-width: thin;
+}
+
+.manifest-viewer .collapsed-rail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-right: 0;
+  background: var(--color-neutral-900);
+}
+
+.manifest-viewer .rail-button {
+  display: inline-flex;
+  width: 100%;
+  height: var(--s64);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  border: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  background: var(--color-neutral-900);
+  color: var(--color-brand-white);
+  font-family: var(--font-sans);
+  font-size: 10px;
+}
+
+.manifest-viewer .rail-button:hover,
+.manifest-viewer .rail-button:focus-visible {
+  background: var(--color-neutral-800);
+}
+
+.manifest-viewer .rail-button .icon,
+.manifest-viewer .rail-button .icon svg {
+  width: var(--s20);
+  height: var(--s20);
+}
+
+.manifest-viewer .expanded-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 0;
+  background: var(--color-neutral-900);
+}
+
+.manifest-viewer .sidebar-button {
+  display: flex;
+  width: 100%;
+  height: var(--s64);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s16);
+  flex-shrink: 0;
+  border: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  background: var(--color-neutral-900);
+  box-shadow: none;
+  outline: none;
+  padding-inline: var(--s24);
+  font-family: var(--font-sans);
+  color: var(--color-brand-white);
+}
+
+.manifest-viewer .sidebar-button:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.manifest-viewer .sidebar-button:focus-visible {
+  outline: none;
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 3px 0 0 var(--color-neutral-500);
+}
+
+.manifest-viewer .sidebar-button .content {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--s8);
+}
+
+.manifest-viewer .sidebar-button .label {
+  color: var(--color-brand-white);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--s28);
+}
+
+.manifest-viewer .sidebar-button .count {
+  color: var(--color-neutral-500);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--s28);
+}
+
+.manifest-viewer .sidebar-button .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--s28);
+  min-width: var(--s40);
+  border: 1px solid var(--color-neutral-500);
+  background: var(--color-neutral-700);
+  color: var(--color-brand-white);
+  font-size: var(--text-base);
+}
+
+.manifest-viewer .sidebar-panel {
+  min-height: 0;
+  flex: 1 1 0%;
+  overflow: hidden auto;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  background: var(--color-neutral-800);
+  color: var(--color-brand-white);
+  font-family: var(--font-sans);
+  scrollbar-color: var(--color-neutral-600) transparent;
+  scrollbar-width: thin;
+}
+
+.manifest-viewer .sidebar-icon,
+.manifest-viewer .sidebar-disclosure {
+  width: var(--s20);
+  height: var(--s20);
+}
+
+.manifest-viewer .sidebar-disclosure {
+  color: currentColor;
+  transition: transform 100ms ease-out;
+}
+
+.manifest-viewer .sidebar-disclosure.expanded {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 767px) {
+  .manifest-viewer {
+    --manifest-sidebar-expanded-width: 100vw;
+    --manifest-sidebar-collapsed-width: 0px;
+    --manifest-top-bar-height: var(--s56);
+    --manifest-bottom-bar-height: var(--s48);
+
+    padding-inline: 0;
+  }
+
+  .manifest-viewer .frame {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .manifest-viewer .sidebar {
+    position: absolute;
+    top: var(--manifest-top-bar-height);
+    bottom: var(--manifest-bottom-bar-height);
+    left: 0;
+    width: var(--manifest-sidebar-width);
+    /* Keep floating viewer controls behind the expanded mobile sidebar. */
+    z-index: 30;
+  }
+
+  .manifest-viewer .main {
+    grid-column: 1;
+  }
+
+  .manifest-viewer .top-bar,
+  .manifest-viewer .bottom-bar {
+    position: relative;
+    z-index: 20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifest-viewer .sidebar,
+  .manifest-viewer .frame,
+  .manifest-viewer .sidebar-disclosure {
+    transition: none;
+  }
+}

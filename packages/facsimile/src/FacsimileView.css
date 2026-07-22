@@ -1,15 +1,10 @@
 .facsimile-view {
-    .facsimile-view__scan {
+    .scan {
         width: 100%;
         height: 100%;
     }
 
-    > .control-bar {
-        top: 0.5rem;
-        left: 0.5rem;
-    }
-
-    .navigation {
+    .canvas-navigation {
         position: absolute;
         bottom: 0.5rem;
         left: 50%;
@@ -20,14 +15,6 @@
         align-items: center;
         gap: 0.5rem;
         font-family: monospace;
-
-        .control-bar {
-            position: relative;
-
-            button {
-                justify-content: center;
-            }
-        }
 
         .info {
             background: rgba(255, 255, 255, 0.66);

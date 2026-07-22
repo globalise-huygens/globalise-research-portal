@@ -3,7 +3,8 @@ import {
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { ControlBar, FacsimileControls } from '@globalise/facsimile';
+import { FloatingToolbar } from '@globalise/design';
+import { FacsimileControls } from '@globalise/facsimile';
 import {
   useManifest,
   useViewer,
@@ -216,12 +217,12 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <ControlBar className="gds-document-detail-scan-toolbar">
+      <FloatingToolbar>
         <FacsimileControls
           fullscreenRef={containerRef}
           onScanFilterChange={setScanFilter}
         />
-      </ControlBar>
+      </FloatingToolbar>
       <div
         ref={containerRef}
         style={{

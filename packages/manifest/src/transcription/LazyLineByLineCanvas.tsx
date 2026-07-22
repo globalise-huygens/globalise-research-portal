@@ -8,6 +8,7 @@ import {
 import { canvasName } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
 import { PageLabel } from './PageLabel.tsx';
+import './TranscriptionPage.css';
 
 type Props = {
   canvasId: string;
@@ -41,8 +42,8 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 
   return (
     <div
-      className="manifest-transcription-page manifest-transcription-page--line-by-line"
-      data-current={isCurrentCanvas ? 'true' : 'false'}
+      className="transcription-page"
+      data-view="line-by-line"
       aria-current={isCurrentCanvas ? 'page' : undefined}
       aria-label={`Transcription page ${canvasLabel}`}
       role="group"

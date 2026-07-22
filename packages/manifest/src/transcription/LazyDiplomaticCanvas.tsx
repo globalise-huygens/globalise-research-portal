@@ -13,6 +13,7 @@ import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import { PageLabel } from './PageLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import './TranscriptionPage.css';
 
 type Props = {
   canvasId: string;
@@ -73,8 +74,8 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   return (
     <div
       {...{ [canvasIndexAttribute]: index }}
-      className="manifest-transcription-page manifest-transcription-page--diplomatic"
-      data-current={isCurrentCanvas ? 'true' : 'false'}
+      className="transcription-page"
+      data-view="diplomatic"
       aria-current={isCurrentCanvas ? 'page' : undefined}
       aria-label={`Transcription page ${canvasLabel}`}
       role="group"

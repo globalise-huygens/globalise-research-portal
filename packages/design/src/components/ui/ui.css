@@ -1,10 +1,9 @@
-@import "./DocumentDetailReferenceCard.css";
-@import "./DocumentDetailSidebarSection.css";
-@import "./DocumentDetailLayout.css";
-@import "./DocumentDetailSurfaces.css";
-@import "./DocumentDetailControls.css";
-@import "./DocumentDetailOverlay.css";
-@import "./DocumentDetailOverlayViewer.css";
+@import "./Controls.css";
+@import "./FloatingToolbar.css";
+@import "./Popover.css";
+@import "./Tooltip.css";
+@import "./ReferencePanel.css";
+@import "./EntityPreviewCard.css";
 
 @layer components {
   .gds-button {

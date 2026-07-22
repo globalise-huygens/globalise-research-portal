@@ -9,8 +9,7 @@
     "preview": "vite preview"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./layout": "./src/layout/ManifestDocumentPageLayout.tsx"
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@globalise/design": "*",
