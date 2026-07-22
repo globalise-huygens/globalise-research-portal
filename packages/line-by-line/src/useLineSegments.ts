@@ -5,6 +5,7 @@ import {
   findTextSelectorRange,
   getPageText,
   Id,
+  indexLineNumbers,
   isEntity,
 } from '@globalise/common/annotation';
 import {
@@ -19,6 +20,7 @@ export type LineSegments = {
   segmentsByLine: Record<Id, TextSegment<Annotation>[]>;
   linesToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
+  lineNumberById: Record<Id, number>;
 };
 
 export function useLineSegments(
@@ -45,6 +47,7 @@ export function useLineSegments(
       lineToBlock,
       blockToLines,
     } = indexes;
+    const lineNumberById = indexLineNumbers(annotations);
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
     let lastLineId: Id | null = null;
@@ -67,7 +70,14 @@ export function useLineSegments(
 
     const lineIds = Object.keys(segmentsByLine);
 
-    return { pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines };
+    return {
+      pageText,
+      lineIds,
+      segmentsByLine,
+      linesToBlock: lineToBlock,
+      blockToLines,
+      lineNumberById,
+    };
   }, [annotations, indexes]);
 }
 

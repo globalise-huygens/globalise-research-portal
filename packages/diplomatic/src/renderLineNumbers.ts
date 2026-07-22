@@ -1,4 +1,10 @@
-import { Annotation, findSvgPath, findResourceTarget, parseSvgPath } from '@globalise/common/annotation';
+import {
+  Annotation,
+  findSvgPath,
+  findResourceTarget,
+  indexLineNumbers,
+  parseSvgPath,
+} from '@globalise/common/annotation';
 import { Id } from '@knaw-huc/original-layout';
 import { Rect } from '@knaw-huc/original-layout';
 import { calcBoundingBox } from '@knaw-huc/original-layout';
@@ -30,6 +36,7 @@ export function renderLineNumbers(
   const lineAnnos = Object.values(annotations).filter(
     (a) => a.textGranularity === 'line',
   );
+  const lineNumberById = indexLineNumbers(annotations);
   const wordAnnos = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
@@ -51,7 +58,7 @@ export function renderLineNumbers(
   }
   const $lineNumbers: Record<Id, HTMLSpanElement> = {};
 
-  for (const [i, line] of lineAnnos.entries()) {
+  for (const line of lineAnnos) {
     const words = wordsByLine.get(line.id);
     if (!words) {
       console.debug('Line without words:', line.id);
@@ -64,7 +71,7 @@ export function renderLineNumbers(
     const $lineNumber = document.createElement('span');
     $container.appendChild($lineNumber);
     $lineNumber.classList.add('line-number');
-    $lineNumber.textContent = `${i + 1}`;
+    $lineNumber.textContent = `${lineNumberById[line.id]}`;
     Object.assign($lineNumber.style, {
       left: px((markerX ?? leftMostWord.left) - gap),
       top: px(leftMostWord.top + leftMostWord.height / 2),

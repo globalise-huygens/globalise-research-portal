@@ -1,4 +1,5 @@
 export { indexAnnotations } from './indexAnnotations.ts';
+export { indexLineNumbers } from './indexLineNumbers.ts';
 export { filterAnnotationsWithSelector } from './filterAnnotationsWithSelector.ts';
 
 export * from './AnnoModel';

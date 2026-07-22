@@ -20,19 +20,9 @@ type Props = {
 export const NormalizedLayout = React.memo(function NormalizedLayout(
   { canvasId, annotations, lineSegments, showLayoutElements }: Props,
 ) {
-  const { segmentsByLine, blockToLines } = lineSegments;
+  const { segmentsByLine, blockToLines, lineNumberById } = lineSegments;
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
-
-  const blockLineNumberStarts = useMemo(() => {
-    const starts: number[] = [];
-    let count = 0;
-    for (const [, lineIds] of blockEntries) {
-      starts.push(count);
-      count += lineIds.filter((id) => segmentsByLine[id]).length;
-    }
-    return starts;
-  }, [blockEntries, segmentsByLine]);
 
   return (
     <div
@@ -49,7 +39,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
       }}
     >
       <div className="text">
-        {blockEntries.map(([blockId, lineIds], i) => (
+        {blockEntries.map(([blockId, lineIds]) => (
           <BlockGroup
             key={blockId}
             canvasId={canvasId}
@@ -57,7 +47,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
             blockId={blockId}
             lineIds={lineIds}
             segmentsByLine={segmentsByLine}
-            lineNumberStart={blockLineNumberStarts[i] + 1}
+            lineNumberById={lineNumberById}
             showLayoutElements={showLayoutElements}
           />
         ))}
@@ -72,7 +62,7 @@ type BlockGroupProps = {
   blockId: Id;
   lineIds: Id[];
   segmentsByLine: LineSegments['segmentsByLine'];
-  lineNumberStart: number;
+  lineNumberById: Record<Id, number>;
   showLayoutElements: boolean;
 };
 
@@ -83,21 +73,27 @@ function BlockGroup(
     blockId,
     lineIds,
     segmentsByLine,
-    lineNumberStart,
+    lineNumberById,
     showLayoutElements,
   }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInTranscription(canvasId, blockId);
-  const renderedLineCount = lineIds.filter((id) => segmentsByLine[id]).length;
-  const lineNumberEnd = lineNumberStart + renderedLineCount - 1;
+  const renderedLineIds = lineIds.filter((id) => segmentsByLine[id]);
+
+  if (!renderedLineIds.length) {
+    return null;
+  }
+
+  const lineNumberStart = lineNumberById[renderedLineIds[0]];
+  const lineNumberEnd = lineNumberById[
+    renderedLineIds[renderedLineIds.length - 1]
+  ];
   const layoutLabel = annotation
     ? findSourceLabel(annotation)
     : 'Layout element';
   const lineRange = lineNumberStart === lineNumberEnd
     ? `line ${lineNumberStart}`
     : `lines ${lineNumberStart} to ${lineNumberEnd}`;
-
-  let count = 0;
 
   return (
     <div
@@ -113,18 +109,14 @@ function BlockGroup(
           {layoutLabel}
         </span>
       )}
-      {lineIds.map((lineId) => {
+      {renderedLineIds.map((lineId) => {
         const segments = segmentsByLine[lineId];
-        if (!segments) {
-          return null;
-        }
-        count++;
         return (
           <SegmentedLine
             key={lineId}
             canvasId={canvasId}
             lineId={lineId}
-            lineNumber={lineNumberStart + count - 1}
+            lineNumber={lineNumberById[lineId]}
             blockId={blockId}
             segments={segments}
           />
