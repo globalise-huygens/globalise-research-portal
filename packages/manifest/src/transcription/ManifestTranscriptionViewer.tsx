@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
 import { ManifestTranscriptionControls } from './ManifestTranscriptionControls.tsx';
+import './ManifestTranscriptionViewer.css';
 
 type Props = {
   initialCanvasId?: string;

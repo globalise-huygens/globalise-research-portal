@@ -413,14 +413,6 @@
   color: var(--manifest-transcription-text);
 }
 
-.manifest-viewer .transcription-viewer {
-  position: relative;
-  height: 100%;
-  min-height: 0;
-  background: var(--manifest-transcription-workspace);
-  color: var(--manifest-transcription-text);
-}
-
 .manifest-viewer .pane[data-view="scan"] .canvas {
   align-items: stretch;
   justify-content: stretch;
@@ -439,42 +431,6 @@
 .manifest-viewer .pane[data-view="transcription"] .canvas {
   background: var(--manifest-transcription-workspace);
   padding: 0;
-}
-
-.manifest-viewer .transcription-scroll {
-  scrollbar-color:
-    var(--manifest-transcription-scrollbar-thumb)
-    var(--manifest-transcription-scrollbar-track);
-  scrollbar-gutter: stable;
-  scrollbar-width: auto;
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-track,
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-corner {
-  background: var(--manifest-transcription-scrollbar-track);
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-track {
-  box-shadow: inset 1px 0 0 var(--color-parchment-400);
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-thumb {
-  border: 3px solid var(--manifest-transcription-scrollbar-track);
-  border-radius: 1px;
-  background: var(--manifest-transcription-scrollbar-thumb);
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--manifest-transcription-scrollbar-thumb-hover);
-}
-
-.manifest-viewer .transcription-scroll::-webkit-scrollbar-thumb:active {
-  background: var(--manifest-transcription-scrollbar-thumb-active);
 }
 
 .manifest-viewer .collapsed-rail {

@@ -36,11 +36,6 @@
   }
 }
 
-.transcription-scroll {
-  height: 100%;
-  overflow: auto;
-}
-
 .transcription-message {
   color: var(--color-neutral-600, #666);
   font-style: italic;
@@ -48,19 +43,6 @@
 
   &[data-tone="error"] {
     color: var(--color-vermilion-700, #b32d1d);
-  }
-}
-
-.transcription-scans {
-  &[data-view="diplomatic"] {
-    box-sizing: border-box;
-    display: flex;
-    width: calc(100% - clamp(1rem, 4vw, 3rem));
-    max-width: 44rem;
-    margin: 0 auto;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding-block: 0.5rem;
   }
 }
 
