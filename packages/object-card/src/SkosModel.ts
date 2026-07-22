@@ -7,7 +7,7 @@ export type LangValue = {
 
 export type SkosConcept = {
   id: string;
-  type: string;
+  type: string | string[];
   _label?: string;
   'dcterms:title'?: LangValue[];
   prefLabel?: LangValue[];

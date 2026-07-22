@@ -6,6 +6,7 @@ import { ConceptList } from './ConceptList.tsx';
 import { LabelList } from './LabelList.tsx';
 import { MatchList } from './MatchList.tsx';
 import { Reference } from './Reference.tsx';
+import { asArray } from '@globalise/common';
 
 export function ObjectCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -28,7 +29,7 @@ export function ObjectCard() {
     <div className="object-card">
       <h1>{concept._label ?? concept.id}</h1>
       <p>
-        {concept.type} | {!!url && <a href={url} target="_blank">
+        Type: {asArray(concept.type).join(', ')} | {!!url && <a href={url} target="_blank">
           raw <IconExternalLink className="inline-icon"/>
         </a>}
         {concept.source && <> | <a href={concept.source['@value']} target="_blank">
@@ -42,7 +43,7 @@ export function ObjectCard() {
       <LabelList title="definition" values={concept.definition} />
       <ConceptList title="hasTopConcept" concepts={concept.hasTopConcept} />
       <ConceptList title="broader" concepts={concept.broader} childKey="broader" />
-      <ConceptList title="narrower" concepts={concept.narrower} />
+      <ConceptList title="narrower" concepts={concept.narrower} childKey="narrower"/>
       <ConceptList title="related" concepts={concept.related} />
       <MatchList title="closeMatch" matches={concept.closeMatch} />
       <MatchList title="narrowMatch" matches={concept.narrowMatch} />
