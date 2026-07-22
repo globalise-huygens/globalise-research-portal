@@ -135,7 +135,7 @@
     }
 
     .line-numbers .line-number.is-visible {
-        color: var(--diplomatic-text);
+        color: var(--diplomatic-structure-text);
         font-weight: 700;
     }
 

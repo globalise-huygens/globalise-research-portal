@@ -108,6 +108,11 @@ function BlockGroup(
       role="group"
       tabIndex={showLayoutElements ? 0 : undefined}
     >
+      {showLayoutElements && (
+        <span className="layout-element-label" aria-hidden="true">
+          {layoutLabel}
+        </span>
+      )}
       {lineIds.map((lineId) => {
         const segments = segmentsByLine[lineId];
         if (!segments) {

@@ -113,7 +113,7 @@
     --layout-element-fill-strong: rgb(77 77 77 / 0.13);
     --layout-element-stroke: rgb(77 77 77 / 0.62);
     --layout-element-stroke-strong: rgb(38 38 38 / 0.82);
-    --layout-element-text: #4d4d4d;
+    --layout-element-text: var(--turquoise-800);
     --layout-element-halo: rgb(255 255 255 / 0.78);
 
     /* Cross-view selection links scan regions to transcription text. */
