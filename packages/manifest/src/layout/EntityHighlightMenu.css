@@ -196,42 +196,42 @@
   }
 
   .entity-menu [data-tone="cidoc-actor"] {
-    --entity-menu-fill: rgb(255 189 202 / 0.18);
-    --entity-menu-text: rgb(255 210 220 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-actor) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-actor) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-appellation"] {
-    --entity-menu-fill: rgb(254 243 186 / 0.18);
-    --entity-menu-text: rgb(254 243 186 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-appellation) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-appellation) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-conceptual-object"] {
-    --entity-menu-fill: rgb(253 220 52 / 0.18);
-    --entity-menu-text: rgb(255 235 150 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-conceptual-object) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-conceptual-object) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-dimension"] {
-    --entity-menu-fill: rgb(230 228 236 / 0.18);
-    --entity-menu-text: rgb(230 228 236 / 0.9);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-dimension) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-dimension) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-physical-thing"] {
-    --entity-menu-fill: rgb(225 186 156 / 0.18);
-    --entity-menu-text: rgb(235 205 180 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-physical-thing) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-physical-thing) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-place"] {
-    --entity-menu-fill: rgb(148 204 125 / 0.18);
-    --entity-menu-text: rgb(190 255 220 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-place) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-place) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-time-span"] {
-    --entity-menu-fill: rgb(134 188 200 / 0.18);
-    --entity-menu-text: rgb(190 235 245 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-time-span) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-time-span) 96%, transparent);
   }
 
   .entity-menu [data-tone="cidoc-type"] {
-    --entity-menu-fill: rgb(250 181 101 / 0.18);
-    --entity-menu-text: rgb(255 220 170 / 0.96);
+    --entity-menu-fill: color-mix(in srgb, var(--color-entity-type) 18%, transparent);
+    --entity-menu-text: color-mix(in srgb, var(--color-entity-type) 96%, transparent);
   }
 }
