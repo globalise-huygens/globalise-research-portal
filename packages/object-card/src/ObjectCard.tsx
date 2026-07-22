@@ -1,12 +1,8 @@
-import { getSkosUrl } from './SkosModel.ts';
 import { IconExternalLink } from '@globalise/design';
-import { useConcept } from './ConceptSlice.ts';
 import './ObjectCard.css';
-import { ConceptList } from './ConceptList.tsx';
-import { LabelList } from './LabelList.tsx';
-import { MatchList } from './MatchList.tsx';
-import { Reference } from './Reference.tsx';
 import { asArray } from '@globalise/common';
+import { getSkosUrl, useConcept } from './skos';
+import { ConceptList, LabelList, MatchList, Reference } from './skos';
 
 export function ObjectCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
