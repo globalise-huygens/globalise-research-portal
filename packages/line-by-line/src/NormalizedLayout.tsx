@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Annotation, findSourceLabel, Id } from '@globalise/common/annotation';
 import {
+  copySelectedTranscriptionLines,
   setHovered,
   useIsSelectedInTranscription,
 } from '@globalise/common/document';
@@ -37,6 +38,15 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
     <div
       className="normalized-view"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
+      onCopy={(event) => {
+        if (showLayoutElements) {
+          copySelectedTranscriptionLines(
+            event,
+            event.currentTarget,
+            lineSegments.pageText,
+          );
+        }
+      }}
     >
       <div className="text">
         {blockEntries.map(([blockId, lineIds], i) => (

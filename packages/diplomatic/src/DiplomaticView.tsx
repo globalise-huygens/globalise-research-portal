@@ -14,8 +14,13 @@ import './DiplomaticView.css';
 import {
   Annotation,
   type EntityVisualCategoryClassName,
+  getPageText,
 } from '@globalise/common/annotation';
-import { setHovered, toggleClicked } from '@globalise/common/document';
+import {
+  copySelectedTranscriptionLines,
+  setHovered,
+  toggleClicked,
+} from '@globalise/common/document';
 import { debounce } from 'lodash';
 
 export type DiplomaticViewProps = {
@@ -48,6 +53,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const [width, setWidth] = useState(0);
 
   const setWidthDebounced = useMemo(() => debounce(setWidth, 50), []);
+  const pageText = useMemo(() => getPageText(annotations).text, [annotations]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(setWidthOnObservedResize, []);
@@ -98,5 +104,19 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     viewRef.current?.setSelected(...selected);
   }, [selected]);
 
-  return <div ref={containerRef} style={style} />;
+  return (
+    <div
+      ref={containerRef}
+      onCopy={(event) => {
+        if (showBlocks) {
+          copySelectedTranscriptionLines(
+            event,
+            event.currentTarget,
+            pageText,
+          );
+        }
+      }}
+      style={style}
+    />
+  );
 }

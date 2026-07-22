@@ -18,11 +18,12 @@ import { NestedSegment } from './NestedSegment';
 type TextProps = {
   canvasId: string;
   blockId: Id | null;
+  lineNumber: number;
   segments: TextSegment<Annotation>[];
 };
 
 export function SegmentedText(
-  { canvasId, blockId, segments }: TextProps,
+  { canvasId, blockId, lineNumber, segments }: TextProps,
 ) {
   const highlightedEntityCategories = useEntityHighlightCategories();
 
@@ -45,6 +46,8 @@ export function SegmentedText(
       return (
         <span
           key={segment.index}
+          data-copy-line-number={lineNumber}
+          data-copy-text-start={segment.start}
           onMouseEnter={(e) => {
             e.stopPropagation();
             setHovered(hoverId);

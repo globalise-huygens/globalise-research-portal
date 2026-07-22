@@ -107,6 +107,11 @@ export function renderDiplomaticView(
     pageAnnoId,
     pageText,
   );
+  const lineNumberById = new Map(
+    Object.values(annotations)
+      .filter((annotation) => annotation.textGranularity === 'line')
+      .map((annotation, index) => [annotation.id, index + 1]),
+  );
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {
@@ -123,7 +128,13 @@ export function renderDiplomaticView(
       const $segment = document.createElement('span');
       $segments.push($segment);
       $segment.classList.add('segment');
-      $segment.dataset.lineId = wordToLine[wordId] ?? '';
+      const lineId = wordToLine[wordId] ?? '';
+      const lineNumber = lineNumberById.get(lineId);
+      $segment.dataset.lineId = lineId;
+      if (lineNumber) {
+        $segment.dataset.copyLineNumber = `${lineNumber}`;
+        $segment.dataset.copyTextStart = `${segment.start}`;
+      }
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
       const visualCategory = entityAnno
