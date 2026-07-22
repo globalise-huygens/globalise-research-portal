@@ -6,7 +6,7 @@
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: center;
-  background: var(--manifest-transcription-page, #f8f5f2);
+  background: var(--manifest-transcription-sheet, #f8f5f2);
   color: var(--color-brand-black, #0c0a09);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.875rem;

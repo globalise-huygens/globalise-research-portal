@@ -154,7 +154,7 @@
         background: color-mix(
           in srgb,
           var(--normalized-entity) 68%,
-          var(--manifest-transcription-page, #f8f5f2)
+          var(--manifest-transcription-sheet, #f8f5f2)
         );
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;

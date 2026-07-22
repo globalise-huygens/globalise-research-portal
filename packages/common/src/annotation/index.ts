@@ -28,3 +28,4 @@ export { isSvgSelector } from './isSvgSelector';
 export { findPageText, getPageText } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';
+export { scanLabel, scanNumber } from './scanLabel';

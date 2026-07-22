@@ -5,10 +5,10 @@ import {
   usePages,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { canvasName } from '@globalise/common/annotation';
+import { scanNumber } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
-import { PageLabel } from './PageLabel.tsx';
-import './TranscriptionPage.css';
+import { ScanLabel } from './ScanLabel.tsx';
+import './TranscriptionScan.css';
 
 type Props = {
   canvasId: string;
@@ -34,7 +34,7 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
     [canvasId, annotationUrls],
   );
 
-  const canvasLabel = canvasName(canvasId);
+  const number = scanNumber(canvasId);
   const hasAnnotationPages = !!annotationUrls.length;
   const hasNoAnnotations = !hasAnnotationPages || (isCanvasReady && !hasAnnotations);
   const isLoading = !error && hasAnnotationPages && !isCanvasReady;
@@ -42,13 +42,13 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 
   return (
     <div
-      className="transcription-page"
+      className="transcription-scan"
       data-view="line-by-line"
-      aria-current={isCurrentCanvas ? 'page' : undefined}
-      aria-label={`Transcription page ${canvasLabel}`}
+      aria-current={isCurrentCanvas ? 'true' : undefined}
+      aria-label={`Transcription scan ${number}`}
       role="group"
     >
-      <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
+      <ScanLabel number={number} isCurrent={isCurrentCanvas} />
       {error && <Placeholder tone="error">Error: {error}</Placeholder>}
       {hasNoAnnotations && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}

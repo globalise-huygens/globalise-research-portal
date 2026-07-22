@@ -252,7 +252,7 @@ export function ManifestDiplomaticViewer({
     <div ref={scrollRef} className="transcription-scroll">
       <div
         ref={canvasListRef}
-        className="transcription-pages"
+        className="transcription-scans"
         data-view="diplomatic"
       >
         {containerWidth &&

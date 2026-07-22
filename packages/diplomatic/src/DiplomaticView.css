@@ -41,7 +41,7 @@
         background: color-mix(
           in srgb,
           var(--diplomatic-entity) 68%,
-          var(--manifest-transcription-page, #f8f5f2)
+          var(--manifest-transcription-sheet, #f8f5f2)
         );
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
@@ -183,7 +183,7 @@
         opacity: 0;
         paint-order: stroke;
         pointer-events: none;
-        stroke: var(--manifest-transcription-page, #f8f5f2);
+        stroke: var(--manifest-transcription-sheet, #f8f5f2);
         stroke-linejoin: round;
         stroke-width: 3px;
         transition: opacity 100ms ease-out;

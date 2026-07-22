@@ -1,4 +1,4 @@
-.page-label {
+.scan-label {
   position: absolute;
   top: 0.625rem;
   right: 0.625rem;
@@ -9,7 +9,7 @@
   border: 1px solid var(--color-parchment-400, #c3ac98);
   background: color-mix(
     in srgb,
-    var(--manifest-transcription-page, #f8f5f2) 92%,
+    var(--manifest-transcription-sheet, #f8f5f2) 92%,
     transparent
   );
   color: var(--color-parchment-800, #5d4736);
@@ -31,31 +31,13 @@
     color: var(--color-brand-white, #fff);
 
     .prefix {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-  }
-
-  @media (max-width: 767px) {
-    .prefix {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      clip-path: inset(50%);
-      white-space: nowrap;
+      color: rgb(255 255 255 / 0.78);
     }
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .page-label {
+  .scan-label {
     transition:
       background-color 120ms ease-out,
       box-shadow 120ms ease-out;

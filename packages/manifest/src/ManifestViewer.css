@@ -10,8 +10,8 @@
   --manifest-viewer-workspace: var(--color-parchment-300);
   --manifest-scan-workspace: var(--manifest-viewer-workspace);
   --manifest-transcription-workspace: var(--manifest-viewer-workspace);
-  --manifest-transcription-page: var(--color-parchment-50);
-  --manifest-transcription-page-border: var(--color-brand-white);
+  --manifest-transcription-sheet: var(--color-parchment-50);
+  --manifest-transcription-sheet-border: var(--color-brand-white);
   --manifest-transcription-text: var(--color-brand-black);
   --manifest-transcription-scrollbar-track: var(--color-parchment-200);
   --manifest-transcription-scrollbar-thumb: var(--color-parchment-700);
