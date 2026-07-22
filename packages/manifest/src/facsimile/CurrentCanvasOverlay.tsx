@@ -29,7 +29,7 @@ export function CurrentCanvasOverlay() {
   return (
     <Overlay location={location}>
       <div
-        className="current-canvas"
+        className="current-canvas-overlay"
         role="group"
         aria-current="true"
         aria-label={`Current ${label}`}

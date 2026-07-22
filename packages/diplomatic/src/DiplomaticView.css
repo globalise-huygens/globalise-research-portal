@@ -1,4 +1,4 @@
-.original-layout {
+.diplomatic-view {
     --diplomatic-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
     --diplomatic-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --diplomatic-selected-strong: var(--color-selection-stroke, #125e64);

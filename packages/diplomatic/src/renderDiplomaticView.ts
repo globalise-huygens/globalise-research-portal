@@ -58,7 +58,9 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  $view.classList.add('original-layout');
+  // `original-layout` is required by the rendering dependency; the second
+  // class owns the GLOBALISE-specific viewer styles.
+  $view.classList.add('original-layout', 'diplomatic-view');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
