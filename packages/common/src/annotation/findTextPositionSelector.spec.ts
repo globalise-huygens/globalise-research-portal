@@ -28,12 +28,38 @@ describe('findTextSelectorRange', () => {
       'Pieter Both / Pieter Both',
     )).toEqual({ start: 14, end: 25 });
   });
+
+  it('uses quote context to disambiguate repeated text', () => {
+    const annotation = annotationWithSelectors(
+      7,
+      18,
+      'Pieter Both',
+      { prefix: ' / ' },
+    );
+
+    expect(findTextSelectorRange(
+      annotation,
+      targetId,
+      'Pieter Both / Pieter Both',
+    )).toEqual({ start: 14, end: 25 });
+  });
+
+  it('keeps the supplied position when repeated text is equally near', () => {
+    const annotation = annotationWithSelectors(7, 18, 'Pieter Both');
+
+    expect(findTextSelectorRange(
+      annotation,
+      targetId,
+      'Pieter Both / Pieter Both',
+    )).toEqual({ type: 'TextPositionSelector', start: 7, end: 18 });
+  });
 });
 
 function annotationWithSelectors(
   start: number,
   end: number,
   exact: string,
+  context: { prefix?: string; suffix?: string } = {},
 ): Annotation {
   return {
     id: 'entity',
@@ -43,7 +69,7 @@ function annotationWithSelectors(
       type: 'SpecificResource',
       source: { id: targetId, type: 'Annotation' },
       selector: [
-        { type: 'TextQuoteSelector', exact },
+        { type: 'TextQuoteSelector', exact, ...context },
         { type: 'TextPositionSelector', start, end },
       ],
     }],

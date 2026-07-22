@@ -12,7 +12,11 @@ export type TextSelectorRange = {
 type TextQuoteSelector = {
   type: 'TextQuoteSelector';
   exact: string;
+  prefix?: string;
+  suffix?: string;
 };
+
+const MAX_QUOTE_CORRECTION_DISTANCE = 64;
 
 export function findTextPositionSelector(
   annotation: Annotation,
@@ -41,9 +45,9 @@ export function findTextSelectorRange(
     return position;
   }
 
-  const correctedStart = findNearestQuoteStart(
+  const correctedStart = findQuoteStart(
     text,
-    quote.exact,
+    quote,
     position.start,
   );
   if (correctedStart === undefined) {
@@ -91,31 +95,64 @@ function isTextQuoteSelector(toTest: unknown): toTest is TextQuoteSelector {
     && 'type' in toTest
     && toTest.type === 'TextQuoteSelector'
     && 'exact' in toTest
-    && typeof toTest.exact === 'string';
+    && typeof toTest.exact === 'string'
+    && (!('prefix' in toTest) || typeof toTest.prefix === 'string')
+    && (!('suffix' in toTest) || typeof toTest.suffix === 'string');
 }
 
-function findNearestQuoteStart(
+function findQuoteStart(
   text: string,
-  exact: string,
+  quote: TextQuoteSelector,
   expectedStart: number,
 ): number | undefined {
-  let nearest: number | undefined;
-  let nearestDistance = Number.POSITIVE_INFINITY;
+  const candidates: number[] = [];
   let fromIndex = 0;
 
-  while (fromIndex <= text.length - exact.length) {
-    const found = text.indexOf(exact, fromIndex);
+  while (fromIndex <= text.length - quote.exact.length) {
+    const found = text.indexOf(quote.exact, fromIndex);
     if (found === -1) {
       break;
     }
-    const distance = Math.abs(found - expectedStart);
-    if (distance < nearestDistance) {
-      nearest = found;
-      nearestDistance = distance;
+    if (Math.abs(found - expectedStart) <= MAX_QUOTE_CORRECTION_DISTANCE) {
+      candidates.push(found);
     }
     fromIndex = found + 1;
   }
-  return nearestDistance <= 64 ? nearest : undefined;
+
+  const contextualCandidates = candidates.filter((start) =>
+    matchesQuoteContext(text, quote, start),
+  );
+  const hasContext = quote.prefix !== undefined || quote.suffix !== undefined;
+  const eligibleCandidates = hasContext
+    ? contextualCandidates
+    : candidates;
+
+  if (!eligibleCandidates.length) {
+    return;
+  }
+
+  const nearestDistance = Math.min(
+    ...eligibleCandidates.map((start) => Math.abs(start - expectedStart)),
+  );
+  const nearestCandidates = eligibleCandidates.filter(
+    (start) => Math.abs(start - expectedStart) === nearestDistance,
+  );
+
+  return nearestCandidates.length === 1 ? nearestCandidates[0] : undefined;
+}
+
+function matchesQuoteContext(
+  text: string,
+  quote: TextQuoteSelector,
+  start: number,
+) {
+  const prefixMatches = quote.prefix === undefined
+    || text.slice(Math.max(0, start - quote.prefix.length), start) === quote.prefix;
+  const end = start + quote.exact.length;
+  const suffixMatches = quote.suffix === undefined
+    || text.slice(end, end + quote.suffix.length) === quote.suffix;
+
+  return prefixMatches && suffixMatches;
 }
 
 export function isTextPositionSelector(
