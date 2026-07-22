@@ -108,10 +108,17 @@
         font-weight: 600;
         letter-spacing: 0.015em;
         line-height: 0.875rem;
-        opacity: 0.86;
+        opacity: 0;
         text-overflow: ellipsis;
         user-select: none;
+        visibility: hidden;
         white-space: nowrap;
+    }
+
+    .block-group:hover > .layout-element-label,
+    .block-group:focus-visible > .layout-element-label {
+        opacity: 0.86;
+        visibility: visible;
     }
 
     .block-group:first-child .layout-element-label {
