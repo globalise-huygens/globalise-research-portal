@@ -74,7 +74,7 @@ export function ManifestTranscriptionViewer({
         }
       }}
     >
-      <FloatingToolbar>
+      <FloatingToolbar aria-label="Transcription controls">
         <ManifestTranscriptionControls />
       </FloatingToolbar>
       {content}
