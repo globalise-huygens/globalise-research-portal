@@ -11,7 +11,7 @@ import './EntityHighlightMenu.css';
 export type EntityHighlightCategory = {
   id: string;
   label: string;
-  tone?: string;
+  tone: string;
 };
 
 export type EntityHighlightMenuProps = {
@@ -154,8 +154,7 @@ function EntityHighlightMenu({
               {categories.map((category) => (
                 <div
                   key={category.id}
-                  className="row"
-                  data-tone={category.tone}
+                  className={cn('row', category.tone)}
                 >
                   <div className="label">
                     <span className="label-text">

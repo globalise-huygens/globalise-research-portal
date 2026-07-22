@@ -60,8 +60,12 @@
 
     .row {
       grid-template-columns: minmax(0, 1fr) auto;
-      background: var(--entity-menu-fill, transparent);
-      color: var(--entity-menu-text, var(--color-brand-white));
+      background: color-mix(
+        in srgb,
+        var(--entity-highlight-fill, transparent) 18%,
+        transparent
+      );
+      color: var(--entity-highlight-fill, var(--color-brand-white));
     }
 
     .all-title,
@@ -96,44 +100,5 @@
       white-space: nowrap;
     }
 
-    [data-tone="cidoc-actor"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-actor) 18%, transparent);
-      --entity-menu-text: var(--color-entity-actor-light);
-    }
-
-    [data-tone="cidoc-appellation"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-appellation) 18%, transparent);
-      --entity-menu-text: var(--color-entity-appellation-light);
-    }
-
-    [data-tone="cidoc-conceptual-object"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-conceptual-object) 18%, transparent);
-      --entity-menu-text: var(--color-entity-conceptual-object-light);
-    }
-
-    [data-tone="cidoc-dimension"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-dimension) 18%, transparent);
-      --entity-menu-text: var(--color-entity-dimension-light);
-    }
-
-    [data-tone="cidoc-physical-thing"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-physical-thing) 18%, transparent);
-      --entity-menu-text: var(--color-entity-physical-thing-light);
-    }
-
-    [data-tone="cidoc-place"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-place) 18%, transparent);
-      --entity-menu-text: var(--color-entity-place-light);
-    }
-
-    [data-tone="cidoc-time-span"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-time-span) 18%, transparent);
-      --entity-menu-text: var(--color-entity-time-span-light);
-    }
-
-    [data-tone="cidoc-type"] {
-      --entity-menu-fill: color-mix(in srgb, var(--color-entity-type) 18%, transparent);
-      --entity-menu-text: var(--color-entity-type-light);
-    }
   }
 }
