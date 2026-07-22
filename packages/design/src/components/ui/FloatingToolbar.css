@@ -53,14 +53,6 @@
     background: rgb(255 255 255 / 0.18);
   }
 
-  .floating-toolbar .tool-button:focus,
-  .floating-toolbar .tool-button:focus-visible,
-  .floating-toolbar .tool-button[data-focused],
-  .floating-toolbar .tool-button[data-focus-visible] {
-    outline: none;
-    box-shadow: none;
-  }
-
   .floating-toolbar .tool-button > svg {
     width: var(--s20);
     height: var(--s20);

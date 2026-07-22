@@ -19,8 +19,8 @@
   .tool-button:focus-visible,
   .toggle:focus-visible,
   .checkbox-control:focus-visible {
-    outline: none;
-    outline-offset: 0;
+    outline: 2px solid var(--color-ring, #fff);
+    outline-offset: -2px;
     box-shadow: none;
   }
 
@@ -69,6 +69,15 @@
     background: var(--color-brand-white);
     color: var(--color-brand-black);
     box-shadow: none;
+  }
+
+  .tool-button[data-active="true"][data-focus-visible],
+  .tool-button[data-active="true"]:focus-visible,
+  .toggle[data-selected][data-focus-visible],
+  .toggle[data-selected]:focus-visible,
+  .toggle[aria-pressed="true"][data-focus-visible],
+  .toggle[aria-pressed="true"]:focus-visible {
+    outline-color: var(--color-selection-stroke, #125e64);
   }
 
   .tool-button[data-disabled] {
@@ -156,12 +165,6 @@
     padding-inline: var(--s12);
     font-size: 0.875rem;
     line-height: 1.25rem;
-  }
-
-  .toggle[data-focus-visible],
-  .toggle:focus-visible {
-    outline: none;
-    box-shadow: none;
   }
 
   .toggle[data-selected],
