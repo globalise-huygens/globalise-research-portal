@@ -11,14 +11,15 @@ export function CurrentCanvasOverlay() {
   const { isInit, id } = useSelectedCanvas();
 
   const lazyCanvas = lazyCanvases.find((c) => c.canvasId === id);
+  const canvasY = lazyCanvas?.y;
+  const canvasHeight = lazyCanvas?.height;
 
   const location = useMemo(() => {
-    if (!lazyCanvas) {
+    if (canvasY === undefined || canvasHeight === undefined) {
       return null;
     }
-    return new Rect(0, lazyCanvas.y, 1, lazyCanvas.height);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lazyCanvas?.y, lazyCanvas?.height]);
+    return new Rect(0, canvasY, 1, canvasHeight);
+  }, [canvasY, canvasHeight]);
 
   if (!isInit || !location) {
     return null;
