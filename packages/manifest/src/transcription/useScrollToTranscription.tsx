@@ -25,5 +25,12 @@ export function useScrollToTranscription(
     if (child instanceof HTMLElement && !isCentered(scrollContainer, child)) {
       child.scrollIntoView({ block: 'center', behavior: 'auto' });
     }
-  }, [selectedCanvasId, selectedCanvas, containerWidth, scrollRef, canvasListRef]);
+  }, [
+    selectedCanvasId,
+    selectedCanvasSource,
+    selectedCanvas,
+    containerWidth,
+    scrollRef,
+    canvasListRef,
+  ]);
 }
