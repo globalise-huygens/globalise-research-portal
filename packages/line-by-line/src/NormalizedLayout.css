@@ -148,57 +148,53 @@
     }
 
     .entity {
-        --normalized-entity: var(--color-brand-parchment, #b99b7f);
+        --normalized-entity-fill: var(--color-parchment-100, #f0ebe5);
         --normalized-entity-strong: var(--color-parchment-800, #5d4736);
 
-        background: color-mix(
-          in srgb,
-          var(--normalized-entity) 68%,
-          var(--manifest-transcription-sheet, #f8f5f2)
-        );
+        background: var(--normalized-entity-fill);
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
     }
 
     .entity.cidoc-actor {
-        --normalized-entity: var(--color-entity-actor, #ffbdca);
-        --normalized-entity-strong: var(--color-entity-actor-strong, #9a4f60);
+        --normalized-entity-fill: var(--color-entity-actor-light, #ffcac3);
+        --normalized-entity-strong: var(--color-entity-actor-strong, #8c2e22);
     }
 
     .entity.cidoc-appellation {
-        --normalized-entity: var(--color-entity-appellation, #d5c4ea);
-        --normalized-entity-strong: var(--color-entity-appellation-strong, #6f4e8c);
+        --normalized-entity-fill: var(--color-entity-appellation-light, #f2f2f2);
+        --normalized-entity-strong: var(--color-entity-appellation-strong, #464646);
     }
 
     .entity.cidoc-conceptual-object {
-        --normalized-entity: var(--color-entity-conceptual-object, #fddc34);
-        --normalized-entity-strong: var(--color-entity-conceptual-object-strong, #856f00);
+        --normalized-entity-fill: var(--color-entity-conceptual-object-light, #f4e3bd);
+        --normalized-entity-strong: var(--color-entity-conceptual-object-strong, #72531a);
     }
 
     .entity.cidoc-dimension {
-        --normalized-entity: var(--color-entity-dimension, #d7dadd);
+        --normalized-entity-fill: var(--color-entity-dimension-light, #d7dadd);
         --normalized-entity-strong: var(--color-entity-dimension-strong, #596168);
     }
 
     .entity.cidoc-physical-thing {
-        --normalized-entity: var(--color-entity-physical-thing, #e1ba9c);
-        --normalized-entity-strong: var(--color-entity-physical-thing-strong, #7a563d);
+        --normalized-entity-fill: var(--color-entity-physical-thing-light, #f9f0d7);
+        --normalized-entity-strong: var(--color-entity-physical-thing-strong, #665546);
     }
 
     .entity.cidoc-place {
-        --normalized-entity: var(--color-entity-place, #94cc7d);
-        --normalized-entity-strong: var(--color-entity-place-strong, #3f6f31);
+        --normalized-entity-fill: var(--color-entity-place-light, #c1ede4);
+        --normalized-entity-strong: var(--color-entity-place-strong, #1e6d5c);
     }
 
     .entity.cidoc-time-span {
-        --normalized-entity: var(--color-entity-time-span, #86bcc8);
-        --normalized-entity-strong: var(--color-entity-time-span-strong, #356a75);
+        --normalized-entity-fill: var(--color-entity-time-span-light, #bdebef);
+        --normalized-entity-strong: var(--color-entity-time-span-strong, #176970);
     }
 
     .entity.cidoc-type {
-        --normalized-entity: var(--color-entity-type, #fab565);
-        --normalized-entity-strong: var(--color-entity-type-strong, #8f5200);
+        --normalized-entity-fill: var(--color-entity-type-light, #d8d8db);
+        --normalized-entity-strong: var(--color-entity-type-strong, #2b2b2b);
     }
 
     .entity:hover {

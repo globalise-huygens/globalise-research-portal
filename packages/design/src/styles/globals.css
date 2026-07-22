@@ -89,24 +89,31 @@
     --mint-800: #185c4b; /* text: white */
     --mint-900: #175346; /* text: white */
 
-    /* CIDOC CRM entity highlights. Pale fills preserve reading contrast;
-       strong colours provide a second, non-fill boundary cue. */
-    --entity-actor: #ffbdca;
-    --entity-actor-strong: #9a4f60;
-    --entity-appellation: #d5c4ea;
-    --entity-appellation-strong: #6f4e8c;
-    --entity-conceptual-object: #fddc34;
-    --entity-conceptual-object-strong: #856f00;
+    /* CIDOC CRM entity colours: category, annotation fill, active border. */
+    --entity-actor: #ff543d;
+    --entity-actor-light: #ffcac3;
+    --entity-actor-strong: #8c2e22;
+    --entity-appellation: #aaaaaa;
+    --entity-appellation-light: #f2f2f2;
+    --entity-appellation-strong: #464646;
+    --entity-conceptual-object: #d9a441;
+    --entity-conceptual-object-light: #f4e3bd;
+    --entity-conceptual-object-strong: #72531a;
     --entity-dimension: #d7dadd;
+    --entity-dimension-light: #d7dadd;
     --entity-dimension-strong: #596168;
-    --entity-physical-thing: #e1ba9c;
-    --entity-physical-thing-strong: #7a563d;
-    --entity-place: #94cc7d;
-    --entity-place-strong: #3f6f31;
-    --entity-time-span: #86bcc8;
-    --entity-time-span-strong: #356a75;
-    --entity-type: #fab565;
-    --entity-type-strong: #8f5200;
+    --entity-physical-thing: #b99b7f;
+    --entity-physical-thing-light: #f9f0d7;
+    --entity-physical-thing-strong: #665546;
+    --entity-place: #36c6a7;
+    --entity-place-light: #c1ede4;
+    --entity-place-strong: #1e6d5c;
+    --entity-time-span: #29bfcc;
+    --entity-time-span-light: #bdebef;
+    --entity-time-span-strong: #176970;
+    --entity-type: #5b5b5b;
+    --entity-type-light: #d8d8db;
+    --entity-type-strong: #2b2b2b;
 
     /* Project-neutral document structure: paragraphs, blocks and lines. */
     --layout-element-fill: rgb(77 77 77 / 0.08);
@@ -208,20 +215,28 @@
     --color-muted-foreground: var(--muted-foreground);
     --color-ring: var(--ring);
     --color-entity-actor: var(--entity-actor);
+    --color-entity-actor-light: var(--entity-actor-light);
     --color-entity-actor-strong: var(--entity-actor-strong);
     --color-entity-appellation: var(--entity-appellation);
+    --color-entity-appellation-light: var(--entity-appellation-light);
     --color-entity-appellation-strong: var(--entity-appellation-strong);
     --color-entity-conceptual-object: var(--entity-conceptual-object);
+    --color-entity-conceptual-object-light: var(--entity-conceptual-object-light);
     --color-entity-conceptual-object-strong: var(--entity-conceptual-object-strong);
     --color-entity-dimension: var(--entity-dimension);
+    --color-entity-dimension-light: var(--entity-dimension-light);
     --color-entity-dimension-strong: var(--entity-dimension-strong);
     --color-entity-physical-thing: var(--entity-physical-thing);
+    --color-entity-physical-thing-light: var(--entity-physical-thing-light);
     --color-entity-physical-thing-strong: var(--entity-physical-thing-strong);
     --color-entity-place: var(--entity-place);
+    --color-entity-place-light: var(--entity-place-light);
     --color-entity-place-strong: var(--entity-place-strong);
     --color-entity-time-span: var(--entity-time-span);
+    --color-entity-time-span-light: var(--entity-time-span-light);
     --color-entity-time-span-strong: var(--entity-time-span-strong);
     --color-entity-type: var(--entity-type);
+    --color-entity-type-light: var(--entity-type-light);
     --color-entity-type-strong: var(--entity-type-strong);
     --color-layout-element-fill: var(--layout-element-fill);
     --color-layout-element-fill-strong: var(--layout-element-fill-strong);
