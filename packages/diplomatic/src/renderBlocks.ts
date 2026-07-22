@@ -46,10 +46,13 @@ export function renderBlocks(
   );
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
+  const leftTextClearance = Math.max(12, scale(50));
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
       const padded = scale.path(padCorners(corners, padding));
+      padded[0] = [padded[0][0] - leftTextClearance, padded[0][1]];
+      padded[3] = [padded[3][0] - leftTextClearance, padded[3][1]];
       return [id, padded];
     }),
   );
