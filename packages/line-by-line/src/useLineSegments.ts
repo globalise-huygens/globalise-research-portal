@@ -16,9 +16,7 @@ import { useCanvasIndexes } from '@globalise/common/document';
 
 export type LineSegments = {
   pageText: string;
-  lineIds: Id[];
   segmentsByLine: Record<Id, TextSegment<Annotation>[]>;
-  linesToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
   lineNumberById: Record<Id, number>;
 };
@@ -44,7 +42,6 @@ export function useLineSegments(
     });
     const {
       wordToLine,
-      lineToBlock,
       blockToLines,
     } = indexes;
     const lineNumberById = indexLineNumbers(annotations);
@@ -68,13 +65,9 @@ export function useLineSegments(
       }
     }
 
-    const lineIds = Object.keys(segmentsByLine);
-
     return {
       pageText,
-      lineIds,
       segmentsByLine,
-      linesToBlock: lineToBlock,
       blockToLines,
       lineNumberById,
     };

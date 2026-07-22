@@ -24,7 +24,6 @@ import {
 import { debounce } from 'lodash';
 
 export type DiplomaticViewProps = {
-  id?: string
   annotations: Record<Id, Annotation>;
   page: { width: number; height: number };
   fit?: ViewFit;

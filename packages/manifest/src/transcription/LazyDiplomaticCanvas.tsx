@@ -117,7 +117,6 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
           <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
-              id={canvasId}
               annotations={annotations}
               selected={selectedIds}
               page={partOf}
