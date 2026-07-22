@@ -129,7 +129,6 @@ function EntityHighlightMenu({
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
-          className="surface"
         >
           <h3>{title}</h3>
 

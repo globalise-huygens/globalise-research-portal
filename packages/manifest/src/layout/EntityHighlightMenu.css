@@ -1,139 +1,139 @@
 @layer components {
   .entity-menu {
     position: relative;
-  }
 
-  .entity-menu > .surface {
-    position: absolute;
-    top: calc(100% + var(--s8));
-    right: 0;
-    z-index: 40;
-    display: flex;
-    width: 260px;
-    flex-direction: column;
-    gap: var(--s8);
-    border-color: rgb(255 255 255 / 0.1);
-    border-radius: 0;
-    background: var(--color-neutral-800);
-    padding: var(--s12);
-    box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
-  }
+    > .popover {
+      position: absolute;
+      top: calc(100% + var(--s8));
+      right: 0;
+      z-index: 40;
+      display: flex;
+      width: 260px;
+      flex-direction: column;
+      gap: var(--s8);
+      border-color: rgb(255 255 255 / 0.1);
+      border-radius: 0;
+      background: var(--color-neutral-800);
+      padding: var(--s12);
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
+    }
 
-  .entity-menu h3 {
-    color: var(--color-brand-white);
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
+    h3 {
+      color: var(--color-brand-white);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
 
-  .entity-menu .content,
-  .entity-menu .list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s6);
-  }
+    .content,
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s6);
+    }
 
-  .entity-menu .list {
-    max-height: 304px;
-    overflow-y: auto;
-    padding-right: var(--s4);
-    scrollbar-color: var(--color-neutral-600) transparent;
-    scrollbar-width: thin;
-  }
+    .list {
+      max-height: 304px;
+      overflow-y: auto;
+      padding-right: var(--s4);
+      scrollbar-color: var(--color-neutral-600) transparent;
+      scrollbar-width: thin;
+    }
 
-  .entity-menu .all,
-  .entity-menu .row {
-    display: grid;
-    align-items: center;
-    gap: var(--s6);
-    border: 0;
-    padding: var(--s6) var(--s8);
-  }
+    .all,
+    .row {
+      display: grid;
+      align-items: center;
+      gap: var(--s6);
+      border: 0;
+      padding: var(--s6) var(--s8);
+    }
 
-  .entity-menu .all {
-    grid-template-columns: minmax(0, 1fr) auto;
-    background: rgb(255 255 255 / 0.035);
-  }
+    .all {
+      grid-template-columns: minmax(0, 1fr) auto;
+      background: rgb(255 255 255 / 0.035);
+    }
 
-  .entity-menu .all-copy {
-    min-width: 0;
-  }
+    .all-copy {
+      min-width: 0;
+    }
 
-  .entity-menu .row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    background: var(--entity-menu-fill, transparent);
-    color: var(--entity-menu-text, var(--color-brand-white));
-  }
+    .row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      background: var(--entity-menu-fill, transparent);
+      color: var(--entity-menu-text, var(--color-brand-white));
+    }
 
-  .entity-menu .all-title,
-  .entity-menu .label {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    line-height: 0.75rem;
-    text-transform: uppercase;
-  }
+    .all-title,
+    .label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      line-height: 0.75rem;
+      text-transform: uppercase;
+    }
 
-  .entity-menu .all-title {
-    color: var(--color-brand-white);
-  }
+    .all-title {
+      color: var(--color-brand-white);
+    }
 
-  .entity-menu .all-description {
-    color: rgb(255 255 255 / 0.45);
-    font-size: 10px;
-    line-height: 0.75rem;
-  }
+    .all-description {
+      color: rgb(255 255 255 / 0.45);
+      font-size: 10px;
+      line-height: 0.75rem;
+    }
 
-  .entity-menu .label {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: var(--s8);
-  }
+    .label {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: var(--s8);
+    }
 
-  .entity-menu .label-text {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+    .label-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-  .entity-menu [data-tone="cidoc-actor"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-actor) 18%, transparent);
-    --entity-menu-text: var(--color-entity-actor-light);
-  }
+    [data-tone="cidoc-actor"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-actor) 18%, transparent);
+      --entity-menu-text: var(--color-entity-actor-light);
+    }
 
-  .entity-menu [data-tone="cidoc-appellation"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-appellation) 18%, transparent);
-    --entity-menu-text: var(--color-entity-appellation-light);
-  }
+    [data-tone="cidoc-appellation"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-appellation) 18%, transparent);
+      --entity-menu-text: var(--color-entity-appellation-light);
+    }
 
-  .entity-menu [data-tone="cidoc-conceptual-object"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-conceptual-object) 18%, transparent);
-    --entity-menu-text: var(--color-entity-conceptual-object-light);
-  }
+    [data-tone="cidoc-conceptual-object"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-conceptual-object) 18%, transparent);
+      --entity-menu-text: var(--color-entity-conceptual-object-light);
+    }
 
-  .entity-menu [data-tone="cidoc-dimension"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-dimension) 18%, transparent);
-    --entity-menu-text: var(--color-entity-dimension-light);
-  }
+    [data-tone="cidoc-dimension"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-dimension) 18%, transparent);
+      --entity-menu-text: var(--color-entity-dimension-light);
+    }
 
-  .entity-menu [data-tone="cidoc-physical-thing"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-physical-thing) 18%, transparent);
-    --entity-menu-text: var(--color-entity-physical-thing-light);
-  }
+    [data-tone="cidoc-physical-thing"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-physical-thing) 18%, transparent);
+      --entity-menu-text: var(--color-entity-physical-thing-light);
+    }
 
-  .entity-menu [data-tone="cidoc-place"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-place) 18%, transparent);
-    --entity-menu-text: var(--color-entity-place-light);
-  }
+    [data-tone="cidoc-place"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-place) 18%, transparent);
+      --entity-menu-text: var(--color-entity-place-light);
+    }
 
-  .entity-menu [data-tone="cidoc-time-span"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-time-span) 18%, transparent);
-    --entity-menu-text: var(--color-entity-time-span-light);
-  }
+    [data-tone="cidoc-time-span"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-time-span) 18%, transparent);
+      --entity-menu-text: var(--color-entity-time-span-light);
+    }
 
-  .entity-menu [data-tone="cidoc-type"] {
-    --entity-menu-fill: color-mix(in srgb, var(--color-entity-type) 18%, transparent);
-    --entity-menu-text: var(--color-entity-type-light);
+    [data-tone="cidoc-type"] {
+      --entity-menu-fill: color-mix(in srgb, var(--color-entity-type) 18%, transparent);
+      --entity-menu-text: var(--color-entity-type-light);
+    }
   }
 }
