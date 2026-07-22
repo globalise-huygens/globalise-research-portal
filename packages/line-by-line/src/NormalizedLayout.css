@@ -105,8 +105,6 @@
           var(--normalized-entity) 68%,
           var(--manifest-transcription-page, #f8f5f2)
         );
-        border-radius: 2px;
-        box-shadow: inset 0 -1px 0 var(--normalized-entity-strong);
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
@@ -162,7 +160,6 @@
     }
 
     .word {
-        border-radius: 2px;
         cursor: pointer;
 
         &:hover {
