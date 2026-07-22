@@ -11,6 +11,13 @@
 
     color: var(--diplomatic-text);
 
+    &::selection,
+    *::selection {
+        background-color: var(--color-text-selection-fill, #abe7ec);
+        color: var(--color-text-selection-text, #0c0a09);
+        text-shadow: none;
+    }
+
     .segment {
         cursor: pointer;
     }

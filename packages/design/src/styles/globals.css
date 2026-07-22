@@ -121,6 +121,10 @@
     --selection-fill-hover: rgb(41 191 204 / 0.14);
     --selection-stroke: #125e64;
 
+    /* Native text selection stays readable over transcription highlights. */
+    --text-selection-fill: var(--turquoise-200);
+    --text-selection-text: var(--brand-black);
+
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);
     --surface-light: var(--brand-white);
@@ -228,6 +232,8 @@
     --color-selection-fill: var(--selection-fill);
     --color-selection-fill-hover: var(--selection-fill-hover);
     --color-selection-stroke: var(--selection-stroke);
+    --color-text-selection-fill: var(--text-selection-fill);
+    --color-text-selection-text: var(--text-selection-text);
 
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;

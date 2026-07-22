@@ -18,6 +18,13 @@
     color: var(--normalized-text);
     font-family: var(--font-serif, "Noto Serif", serif);
 
+    &::selection,
+    *::selection {
+        background-color: var(--color-text-selection-fill, #abe7ec);
+        color: var(--color-text-selection-text, #0c0a09);
+        text-shadow: none;
+    }
+
     .text,
     .overlay {
         grid-area: 1 / 1;
