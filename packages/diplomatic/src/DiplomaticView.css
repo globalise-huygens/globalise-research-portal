@@ -96,6 +96,8 @@
     .entity.selected,
     .selected {
         background: var(--diplomatic-selected);
+        margin-inline: -0.08em;
+        padding-inline: 0.08em;
         box-shadow:
           inset 0 1px 0 var(--diplomatic-selected-strong),
           inset 0 -1px 0 var(--diplomatic-selected-strong),
