@@ -67,7 +67,7 @@ export function renderBlocks(
 
       const blockTopLeft = corners[0];
       const blockBottomLeft = corners[3];
-      const markerX = blockTopLeft[0] - Math.max(12, scale(50));
+      const markerX = blockTopLeft[0];
       blockMarkerXs[id] = markerX;
 
       $highlight
