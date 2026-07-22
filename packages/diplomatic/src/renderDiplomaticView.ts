@@ -83,7 +83,11 @@ export function renderDiplomaticView(
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
   const fragments = wordAnnos.map(createFragment);
-  const originalLayout = renderOriginalLayout($layoutView, fragments, config);
+  const originalLayout = renderOriginalLayout(
+    $layoutView,
+    fragments,
+    mergedConfig,
+  );
   const { $fragments, scale, offset } = originalLayout;
 
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);

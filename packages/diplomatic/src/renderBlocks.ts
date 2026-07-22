@@ -1,13 +1,16 @@
 import { Annotation, findSourceLabel } from '@globalise/common/annotation';
-import { Point } from '@knaw-huc/original-layout';
-import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
-import { createPath } from '@knaw-huc/original-layout';
-import { Scale } from '@knaw-huc/original-layout';
-import { select } from 'd3-selection';
-import { px } from '@knaw-huc/original-layout';
-import { D3El } from '@knaw-huc/original-layout';
+import {
+  calcBoundingCorners,
+  createPath,
+  D3El,
+  Offset,
+  padCorners,
+  Point,
+  px,
+  Scale,
+} from '@knaw-huc/original-layout';
 import { createBlockBoundaries } from './createBlockBoundaries.ts';
-import { Offset } from '@knaw-huc/original-layout';
+import { select } from 'd3-selection';
 
 type BlockColors = {
   stroke: string;
@@ -65,7 +68,7 @@ export function renderBlocks(
         .attr('class', 'layout-block')
         .attr('data-selected', 'false')
         .attr('aria-label', label)
-        .attr('role', 'group')
+        .attr('role', 'button')
         .attr('tabindex', 0);
 
       const blockTopLeft = corners[0];
