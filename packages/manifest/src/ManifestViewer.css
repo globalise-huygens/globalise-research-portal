@@ -334,7 +334,9 @@
 }
 
 .manifest-viewer .split-viewer {
+  position: relative;
   display: flex;
+  height: 100%;
   flex: 1 1 0%;
   min-width: 0;
   min-height: 0;
@@ -348,6 +350,8 @@
 
 .manifest-viewer .body {
   display: flex;
+  width: 100%;
+  height: 100%;
   flex: 1 1 0%;
   overflow: hidden;
 }
@@ -356,6 +360,11 @@
 .manifest-viewer .split-viewer .split-pane {
   width: 100%;
   height: 100%;
+}
+
+.manifest-viewer .split-viewer .split-pane-layout {
+  position: absolute;
+  inset: 0;
 }
 
 /* react-split-pane sizes these wrappers with inline dimensions. Keep the
@@ -568,12 +577,10 @@
   transform: rotate(180deg);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .manifest-viewer {
-    --manifest-sidebar-expanded-width: 100vw;
+    --manifest-sidebar-expanded-width: min(22rem, 100vw);
     --manifest-sidebar-collapsed-width: 0px;
-    --manifest-top-bar-height: var(--s56);
-    --manifest-bottom-bar-height: var(--s48);
 
     padding-inline: 0;
   }
@@ -601,6 +608,69 @@
   .manifest-viewer .bottom-bar {
     position: relative;
     z-index: 20;
+  }
+}
+
+@media (max-width: 767px) {
+  .manifest-viewer {
+    --manifest-top-bar-height: var(--s96);
+    --manifest-bottom-bar-height: var(--s48);
+  }
+
+  .manifest-viewer .top-bar {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: repeat(2, var(--s40));
+    gap: 0 var(--s4);
+    padding-block: var(--s8);
+    padding-inline: var(--s4);
+  }
+
+  .manifest-viewer .top-bar-group {
+    flex: 0 1 auto;
+    gap: var(--s2);
+  }
+
+  .manifest-viewer .top-bar-group.left {
+    grid-column: 1;
+    grid-row: 1;
+    overflow: hidden;
+  }
+
+  .manifest-viewer .top-bar-group.right {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .manifest-viewer .top-bar-center {
+    grid-column: 2;
+    grid-row: 1;
+    flex: 0 0 auto;
+  }
+
+  .manifest-viewer .manifest-dropdown,
+  .manifest-viewer .top-bar-divider,
+  .manifest-viewer .top-bar .toggle > span,
+  .manifest-viewer .content-warning > .tool-button > span {
+    display: none;
+  }
+
+  .manifest-viewer .top-bar .toggle[data-size="regular"] {
+    min-width: var(--s40);
+    padding-inline: 0;
+  }
+
+  .manifest-viewer .content-warning > .details {
+    position: fixed;
+    top: calc(var(--manifest-top-bar-height) + var(--s8));
+    right: var(--s16);
+    left: var(--s16);
+    width: auto;
+    transform: none;
   }
 }
 
