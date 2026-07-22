@@ -8,6 +8,7 @@ type Props = {
 export function ScanLabel({ number, isCurrent = false }: Props) {
   return (
     <span
+      aria-hidden="true"
       className="scan-label"
       data-current={isCurrent ? 'true' : 'false'}
     >
