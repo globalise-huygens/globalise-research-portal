@@ -61,7 +61,6 @@ export function renderLineNumbers(
   for (const line of lineAnnos) {
     const words = wordsByLine.get(line.id);
     if (!words) {
-      console.debug('Line without words:', line.id);
       continue;
     }
 

@@ -211,8 +211,8 @@ export function renderDiplomaticView(
   }
 
   const selectedBlocks = new Set<Id>();
-  let selectBlock: (id: Id) => void = () => console.warn('Not implemented');
-  let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
+  let selectBlock: (id: Id) => void = noop;
+  let deselectBlock: (id: Id) => void = noop;
 
   if (showBlocks) {
     const lineCount = Object.values(annotations)
@@ -303,7 +303,7 @@ export function renderDiplomaticView(
         return;
       }
       selectedBlocks.add(id);
-      const lines = blockToLines[id];
+      const lines = blockToLines[id] ?? [];
       showBlock($block, lines);
     };
     deselectBlock = (id: Id) => {
@@ -315,7 +315,7 @@ export function renderDiplomaticView(
         return;
       }
       selectedBlocks.delete(id);
-      const lines = blockToLines[id];
+      const lines = blockToLines[id] ?? [];
       hideBlock($block, lines);
     };
   }
