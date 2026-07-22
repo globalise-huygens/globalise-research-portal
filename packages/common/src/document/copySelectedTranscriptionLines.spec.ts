@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import {
   copySelectedTranscriptionLines,
   formatSelectedTranscriptionLines,
+  registerTranscriptionCopySource,
 } from './copySelectedTranscriptionLines';
 
 describe('formatSelectedTranscriptionLines', () => {
@@ -44,6 +45,7 @@ describe('copySelectedTranscriptionLines', () => {
       '<span data-copy-line-number="2" data-copy-text-start="18">line</span>',
     ].join('');
     document.body.appendChild(root);
+    registerTranscriptionCopySource(root, 'first line\nsecond line');
 
     const markedParts = root.querySelectorAll('span');
     const firstText = markedParts[0].firstChild;
@@ -63,7 +65,6 @@ describe('copySelectedTranscriptionLines', () => {
     const handled = copySelectedTranscriptionLines(
       { clipboardData: { setData }, preventDefault },
       root,
-      'first line\nsecond line',
     );
 
     expect(handled).toBe(true);
@@ -72,5 +73,44 @@ describe('copySelectedTranscriptionLines', () => {
       '1\tfirst line\n2\tsecond line',
     );
     expect(preventDefault).toHaveBeenCalledOnce();
+  });
+
+  it('copies numbered lines across transcription scans', () => {
+    const viewer = document.createElement('div');
+    const firstScan = document.createElement('div');
+    const secondScan = document.createElement('div');
+    firstScan.innerHTML =
+      '<span data-copy-line-number="1" data-copy-text-start="0">first</span>';
+    secondScan.innerHTML =
+      '<span data-copy-line-number="1" data-copy-text-start="0">second</span>';
+    viewer.append(firstScan, secondScan);
+    document.body.appendChild(viewer);
+    registerTranscriptionCopySource(firstScan, 'first');
+    registerTranscriptionCopySource(secondScan, 'second');
+
+    const firstText = firstScan.querySelector('span')?.firstChild;
+    const secondText = secondScan.querySelector('span')?.firstChild;
+    const selection = document.getSelection();
+    if (!firstText || !secondText || !selection) {
+      throw new Error('Could not create a cross-scan DOM selection');
+    }
+    const range = document.createRange();
+    range.setStart(firstText, 0);
+    range.setEnd(secondText, 6);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const setData = vi.fn();
+    const preventDefault = vi.fn();
+    const handled = copySelectedTranscriptionLines(
+      { clipboardData: { setData }, preventDefault },
+      viewer,
+    );
+
+    expect(handled).toBe(true);
+    expect(setData).toHaveBeenCalledWith(
+      'text/plain',
+      '1\tfirst\n1\tsecond',
+    );
   });
 });

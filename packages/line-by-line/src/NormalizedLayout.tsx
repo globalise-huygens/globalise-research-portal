@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Annotation, findSourceLabel, Id } from '@globalise/common/annotation';
 import {
-  copySelectedTranscriptionLines,
+  registerTranscriptionCopySource,
   setHovered,
   useIsSelectedInTranscription,
 } from '@globalise/common/document';
@@ -21,22 +21,22 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
   { canvasId, annotations, lineSegments, showLayoutElements }: Props,
 ) {
   const { segmentsByLine, blockToLines, lineNumberById } = lineSegments;
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
 
+  useEffect(() => {
+    const root = rootRef.current;
+    return root
+      ? registerTranscriptionCopySource(root, lineSegments.pageText)
+      : undefined;
+  }, [lineSegments.pageText]);
+
   return (
     <div
+      ref={rootRef}
       className="normalized-view"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
-      onCopy={(event) => {
-        if (showLayoutElements) {
-          copySelectedTranscriptionLines(
-            event,
-            event.currentTarget,
-            lineSegments.pageText,
-          );
-        }
-      }}
     >
       <div className="text">
         {blockEntries.map(([blockId, lineIds]) => (

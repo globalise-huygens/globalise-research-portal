@@ -9,10 +9,25 @@ type CopyEvent = {
   preventDefault: () => void;
 };
 
+const copySourceSelector = '[data-transcription-copy-source]';
+const sourceTextByRoot = new WeakMap<HTMLElement, string>();
+
+export function registerTranscriptionCopySource(
+  root: HTMLElement,
+  sourceText: string,
+) {
+  root.dataset.transcriptionCopySource = 'true';
+  sourceTextByRoot.set(root, sourceText);
+
+  return () => {
+    delete root.dataset.transcriptionCopySource;
+    sourceTextByRoot.delete(root);
+  };
+}
+
 export function copySelectedTranscriptionLines(
   event: CopyEvent,
   root: HTMLElement,
-  sourceText: string,
 ) {
   if (!event.clipboardData) {
     return false;
@@ -33,7 +48,10 @@ export function copySelectedTranscriptionLines(
     return false;
   }
 
-  const selectedRanges: SelectedTranscriptionRange[] = [];
+  const selectedRangesBySource = new Map<
+    HTMLElement,
+    SelectedTranscriptionRange[]
+  >();
   const parts = root.querySelectorAll<HTMLElement>(
     '[data-copy-line-number][data-copy-text-start]',
   );
@@ -51,15 +69,26 @@ export function copySelectedTranscriptionLines(
       }
       const selected = selectedRangeWithin(part, range, sourceStart);
       if (selected) {
+        const sourceRoot = part.closest<HTMLElement>(copySourceSelector);
+        if (!sourceRoot || !sourceTextByRoot.has(sourceRoot)) {
+          continue;
+        }
+        const selectedRanges = selectedRangesBySource.get(sourceRoot) ?? [];
         selectedRanges.push({ lineNumber, ...selected });
+        selectedRangesBySource.set(sourceRoot, selectedRanges);
       }
     }
   }
 
-  const copiedText = formatSelectedTranscriptionLines(
-    sourceText,
-    selectedRanges,
-  );
+  const copiedText = [...selectedRangesBySource]
+    .map(([sourceRoot, selectedRanges]) =>
+      formatSelectedTranscriptionLines(
+        sourceTextByRoot.get(sourceRoot) ?? '',
+        selectedRanges,
+      ),
+    )
+    .filter(Boolean)
+    .join('\n');
   if (!copiedText) {
     return false;
   }

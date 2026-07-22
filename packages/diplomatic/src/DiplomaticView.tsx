@@ -17,7 +17,7 @@ import {
   getPageText,
 } from '@globalise/common/annotation';
 import {
-  copySelectedTranscriptionLines,
+  registerTranscriptionCopySource,
   setHovered,
   toggleClicked,
 } from '@globalise/common/document';
@@ -54,6 +54,13 @@ export function DiplomaticView(props: DiplomaticViewProps) {
 
   const setWidthDebounced = useMemo(() => debounce(setWidth, 50), []);
   const pageText = useMemo(() => getPageText(annotations).text, [annotations]);
+
+  useEffect(() => {
+    const root = containerRef.current;
+    return root
+      ? registerTranscriptionCopySource(root, pageText)
+      : undefined;
+  }, [pageText]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(setWidthOnObservedResize, []);
@@ -107,15 +114,6 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   return (
     <div
       ref={containerRef}
-      onCopy={(event) => {
-        if (showBlocks) {
-          copySelectedTranscriptionLines(
-            event,
-            event.currentTarget,
-            pageText,
-          );
-        }
-      }}
       style={style}
     />
   );

@@ -1,4 +1,5 @@
 import {
+  copySelectedTranscriptionLines,
   initCanvases,
   setTranscriptionMode,
   useDocumentStore,
@@ -83,7 +84,14 @@ export function ManifestTranscriptionViewer({
     );
 
   return (
-    <div className="transcription-viewer">
+    <div
+      className="transcription-viewer"
+      onCopy={(event) => {
+        if (showLayoutElements) {
+          copySelectedTranscriptionLines(event, event.currentTarget);
+        }
+      }}
+    >
       <FloatingToolbar>
         <ManifestTranscriptionControls />
       </FloatingToolbar>
