@@ -268,6 +268,7 @@
     --text-7xl: 4.5rem;
 
     /* ── Layout system (4px base, 8px major rhythm) ───────────────── */
+    --s2: 2px;
     --s4: 4px;
     --s6: 6px;
     --s8: 8px;
