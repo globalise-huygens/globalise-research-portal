@@ -24,7 +24,6 @@ type Props = {
   index: number;
   scaleFactor: number;
   isVisible: boolean;
-  renderDistance: number;
   showLayoutElements: boolean;
 };
 
@@ -37,7 +36,6 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   index,
   scaleFactor,
   isVisible,
-  renderDistance,
   showLayoutElements,
 }: Props) {
   const annotations = useAnnotations(canvasId);
@@ -47,10 +45,6 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
   const isCurrentCanvas = selectedIndex === index;
-  const isInRenderRangeByDistance =
-    selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
-
-  const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
   useEffect(() => {
     if (isVisible && annotationUrls.length) {
@@ -92,7 +86,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
         visibility: isVisible ? 'visible' : 'hidden',
       }}
     >
-      {isInRenderRange && error && (
+      {isVisible && error && (
         <TranscriptionPlaceholder
           tone="error"
         >
@@ -100,13 +94,13 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
           Error: {error}
         </TranscriptionPlaceholder>
       )}
-      {isInRenderRange && hasNoAnnotations && (
+      {isVisible && hasNoAnnotations && (
         <TranscriptionPlaceholder>
           <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
-      {isInRenderRange && isLoading && (
+      {isVisible && isLoading && (
         <TranscriptionPlaceholder>
           <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           Loading...
