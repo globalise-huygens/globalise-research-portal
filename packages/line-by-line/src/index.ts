@@ -1,3 +1,3 @@
 export { useVisibleLines } from './useVisibleLines';
 export { LineByLineView } from './LineByLineView';
-export type { LineByLineLayoutProps } from './LineByLineView.tsx';
+export type { LineByLineViewProps } from './LineByLineView.tsx';

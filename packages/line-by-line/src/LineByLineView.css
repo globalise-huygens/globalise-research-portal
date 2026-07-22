@@ -1,11 +1,11 @@
-.normalized-view {
-    --normalized-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
-    --normalized-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
-    --normalized-selected-strong: var(--color-selection-stroke, #125e64);
-    --normalized-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
-    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
-    --normalized-structure-text: var(--color-layout-element-text, #125e64);
-    --normalized-text: var(--color-brand-black, #0c0a09);
+.line-by-line-view {
+    --line-by-line-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
+    --line-by-line-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
+    --line-by-line-selected-strong: var(--color-selection-stroke, #125e64);
+    --line-by-line-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
+    --line-by-line-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
+    --line-by-line-structure-text: var(--color-layout-element-text, #125e64);
+    --line-by-line-text: var(--color-brand-black, #0c0a09);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
     --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
 
@@ -15,7 +15,7 @@
     display: grid;
     width: fit-content;
     padding: 0.75rem 1rem 1.25rem 0.25rem;
-    color: var(--normalized-text);
+    color: var(--line-by-line-text);
     font-family: var(--font-serif, "Noto Serif", serif);
 
     &::selection,
@@ -50,7 +50,7 @@
             min-width: 2.35rem;
             margin-right: 0.65em;
             margin-left: 0.15em;
-            color: var(--normalized-structure-text);
+            color: var(--line-by-line-structure-text);
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
               monospace;
             font-size: 0.72em;
@@ -68,7 +68,7 @@
     }
 
     .line:hover .line-number {
-        color: var(--normalized-structure-text);
+        color: var(--line-by-line-structure-text);
         font-weight: 700;
     }
 
@@ -79,7 +79,7 @@
     .block-group {
         border-left: 2px solid color-mix(
           in srgb,
-          var(--normalized-structure-text) 38%,
+          var(--line-by-line-structure-text) 38%,
           transparent
         );
         background: transparent;
@@ -91,13 +91,13 @@
 
         &:hover,
         &:focus-visible {
-            background: var(--normalized-structure-fill);
-            border-left-color: var(--normalized-structure-text);
+            background: var(--line-by-line-structure-fill);
+            border-left-color: var(--line-by-line-structure-text);
         }
 
         &.selected {
-            background: var(--normalized-structure-fill-strong);
-            border-left-color: var(--normalized-structure-text);
+            background: var(--line-by-line-structure-fill-strong);
+            border-left-color: var(--line-by-line-structure-text);
         }
     }
 
@@ -107,7 +107,7 @@
         max-width: calc(100% - 0.5rem);
         margin: 0.6rem 0 0.1rem 0.35rem;
         overflow: hidden;
-        color: var(--normalized-structure-text);
+        color: var(--line-by-line-structure-text);
         font-family: var(--font-sans, system-ui, sans-serif);
         font-size: 0.625rem;
         font-weight: 600;
@@ -131,7 +131,7 @@
     }
 
     .block-group.selected .line-number {
-        color: var(--normalized-structure-text);
+        color: var(--line-by-line-structure-text);
         font-weight: 700;
     }
 
@@ -145,7 +145,7 @@
         background: var(--entity-highlight-fill);
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
-        color: var(--normalized-text);
+        color: var(--line-by-line-text);
     }
 
     .entity:hover {
@@ -161,25 +161,25 @@
         }
 
         .word {
-            background: var(--normalized-selected-hover);
-            box-shadow: inset 0 0 0 1px var(--normalized-selected-strong);
+            background: var(--line-by-line-selected-hover);
+            box-shadow: inset 0 0 0 1px var(--line-by-line-selected-strong);
         }
     }
 
     .entity.selected {
-        --normalized-selected-strong: var(--entity-highlight-stroke);
+        --line-by-line-selected-strong: var(--entity-highlight-stroke);
     }
 
     .word {
         cursor: pointer;
 
         &:hover {
-            background: var(--normalized-selected-hover);
-            box-shadow: inset 0 0 0 1px var(--normalized-selected-strong);
+            background: var(--line-by-line-selected-hover);
+            box-shadow: inset 0 0 0 1px var(--line-by-line-selected-strong);
         }
 
         &.selected {
-            background: var(--normalized-selected);
+            background: var(--line-by-line-selected);
         }
     }
 
@@ -188,30 +188,30 @@
         margin-inline: -0.08em;
         padding-inline: 0.08em;
         box-shadow:
-          inset 0 1px 0 var(--normalized-selected-strong),
-          inset 0 -1px 0 var(--normalized-selected-strong),
-          inset 1px 0 0 var(--normalized-selected-strong),
-          inset -1px 0 0 var(--normalized-selected-strong);
+          inset 0 1px 0 var(--line-by-line-selected-strong),
+          inset 0 -1px 0 var(--line-by-line-selected-strong),
+          inset 1px 0 0 var(--line-by-line-selected-strong),
+          inset -1px 0 0 var(--line-by-line-selected-strong);
     }
 
     .selected.joined-before {
         box-shadow:
-          inset 0 1px 0 var(--normalized-selected-strong),
-          inset 0 -1px 0 var(--normalized-selected-strong),
-          inset -1px 0 0 var(--normalized-selected-strong);
+          inset 0 1px 0 var(--line-by-line-selected-strong),
+          inset 0 -1px 0 var(--line-by-line-selected-strong),
+          inset -1px 0 0 var(--line-by-line-selected-strong);
     }
 
     .selected.joined-after {
         box-shadow:
-          inset 0 1px 0 var(--normalized-selected-strong),
-          inset 0 -1px 0 var(--normalized-selected-strong),
-          inset 1px 0 0 var(--normalized-selected-strong);
+          inset 0 1px 0 var(--line-by-line-selected-strong),
+          inset 0 -1px 0 var(--line-by-line-selected-strong),
+          inset 1px 0 0 var(--line-by-line-selected-strong);
     }
 
     .selected.joined-before.joined-after {
         box-shadow:
-          inset 0 1px 0 var(--normalized-selected-strong),
-          inset 0 -1px 0 var(--normalized-selected-strong);
+          inset 0 1px 0 var(--line-by-line-selected-strong),
+          inset 0 -1px 0 var(--line-by-line-selected-strong);
     }
 
 }
