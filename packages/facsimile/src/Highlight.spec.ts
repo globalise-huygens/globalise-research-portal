@@ -34,20 +34,6 @@ describe('Highlight', () => {
     );
   });
 
-  it('uses the same partial outline for joined highlight halos', () => {
-    const markup = renderHighlight({
-      fill: 'pink',
-      stroke: 'red',
-      strokeWidth: 1,
-      haloStroke: 'white',
-      omitLeftStroke: true,
-    });
-
-    expect(markup.match(/<path/g)).toHaveLength(2);
-    expect(markup).toContain('stroke="white" stroke-width="3"');
-    expect(markup).toContain('stroke="red" stroke-width="1"');
-  });
-
   it('exposes clickable highlights to keyboard users', () => {
     const markup = renderHighlight(
       { fill: 'transparent' },

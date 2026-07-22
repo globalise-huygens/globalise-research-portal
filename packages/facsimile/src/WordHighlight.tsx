@@ -20,8 +20,6 @@ type WordHighlightProps = {
   points: string;
   text: string;
   tone?: EntityHighlightTone;
-  joinedBefore?: boolean;
-  joinedAfter?: boolean;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
@@ -32,8 +30,6 @@ export function WordHighlight(
     points,
     text,
     tone,
-    joinedBefore,
-    joinedAfter,
     setTooltip,
   }: WordHighlightProps,
 ) {
@@ -54,8 +50,6 @@ export function WordHighlight(
     haloStrokeWidth: 3,
     cursor: 'pointer',
     vectorEffect: 'non-scaling-stroke',
-    omitLeftStroke: selected && joinedBefore,
-    omitRightStroke: selected && joinedAfter,
   };
 
   return (
