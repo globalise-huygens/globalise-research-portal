@@ -8,6 +8,7 @@ import {
 import { scanNumber } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
 import { ScanLabel } from './ScanLabel.tsx';
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import './TranscriptionScan.css';
 
 type Props = {
@@ -49,9 +50,17 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
       role="group"
     >
       <ScanLabel number={number} isCurrent={isCurrentCanvas} />
-      {error && <Placeholder tone="error">Error: {error}</Placeholder>}
-      {hasNoAnnotations && <Placeholder>No transcription</Placeholder>}
-      {isLoading && <Placeholder>Loading...</Placeholder>}
+      {error && (
+        <TranscriptionPlaceholder tone="error">
+          Error: {error}
+        </TranscriptionPlaceholder>
+      )}
+      {hasNoAnnotations && (
+        <TranscriptionPlaceholder>No transcription</TranscriptionPlaceholder>
+      )}
+      {isLoading && (
+        <TranscriptionPlaceholder>Loading...</TranscriptionPlaceholder>
+      )}
       {isContentReady && (
         <div style={{ fontSize: `${scale}%` }}>
           <LineByLineView
@@ -64,19 +73,3 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
     </div>
   );
 });
-
-function Placeholder(
-  {
-    tone = 'default',
-    children,
-  }: {
-    tone?: 'default' | 'error';
-    children: React.ReactNode;
-  },
-) {
-  return (
-    <div className="transcription-message" data-tone={tone}>
-      {children}
-    </div>
-  );
-}

@@ -34,20 +34,8 @@
       padding: 2.75rem 1rem 1.5rem;
     }
   }
-}
 
-.transcription-message {
-  color: var(--color-neutral-600, #666);
-  font-style: italic;
-  padding: 1rem;
-
-  &[data-tone="error"] {
-    color: var(--color-vermilion-700, #b32d1d);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .transcription-scan {
+  @media (prefers-reduced-motion: no-preference) {
     transition:
       outline-color 120ms ease-out,
       box-shadow 120ms ease-out;
