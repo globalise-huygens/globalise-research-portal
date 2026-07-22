@@ -3,6 +3,7 @@ import {
   Annotation,
   type EntityVisualCategoryClassName,
   getEntityClassifiedAsClassName,
+  getEntityClassifiedAsLabel,
   Id,
   isEntity,
   isWord,
@@ -36,18 +37,29 @@ export function SegmentedText(
       const nextAnnotationIds = new Set(
         segments[index + 1]?.annotations.map((annotation) => annotation.id),
       );
-      const hoverId = selectAnnotation(
+      const interactiveAnnotation = selectAnnotation(
         segment.annotations,
         highlightedEntityCategories,
-      )
-        ?? blockId
-        ?? null;
+      );
+      const interactionId = interactiveAnnotation?.id ?? null;
+      const hoverId = interactionId ?? blockId ?? null;
+      const isFirstInteractionSegment = interactionId
+        ? !previousAnnotationIds.has(interactionId)
+        : false;
 
       return (
         <span
           key={segment.index}
+          aria-label={interactiveAnnotation
+            ? getInteractionLabel(interactiveAnnotation, body)
+            : undefined}
+          className={interactiveAnnotation ? 'interactive-segment' : undefined}
           data-copy-line-number={lineNumber}
           data-copy-text-start={segment.start}
+          role={interactiveAnnotation ? 'button' : undefined}
+          tabIndex={isFirstInteractionSegment ? 0 : undefined}
+          onBlur={() => { setHovered(blockId); }}
+          onFocus={() => { setHovered(hoverId); }}
           onMouseEnter={(e) => {
             e.stopPropagation();
             setHovered(hoverId);
@@ -57,9 +69,18 @@ export function SegmentedText(
             setHovered(blockId);
           }}
           onClick={(e) => {
-            if (hoverId && hoverId !== blockId) {
+            if (interactionId) {
               e.stopPropagation();
-              toggleClicked(hoverId);
+              toggleClicked(interactionId);
+            }
+          }}
+          onKeyDown={(event) => {
+            if (
+              interactionId
+              && (event.key === 'Enter' || event.key === ' ')
+            ) {
+              event.preventDefault();
+              toggleClicked(interactionId);
             }
           }}
         >
@@ -87,16 +108,22 @@ export function SegmentedText(
 function selectAnnotation(
   annotations: Annotation[],
   highlightedEntityCategories: Set<EntityVisualCategoryClassName>,
-): Id | undefined {
+): Annotation | undefined {
   const entity = annotations.find((a) =>
     isEntity(a) &&
     highlightedEntityCategories.has(getEntityClassifiedAsClassName(a)),
   );
   if (entity) {
-    return entity.id;
+    return entity;
   }
   const word = annotations.find((a) => isWord(a));
   if (word) {
-    return word.id;
+    return word;
   }
+}
+
+function getInteractionLabel(annotation: Annotation, text: string) {
+  return isEntity(annotation)
+    ? `${getEntityClassifiedAsLabel(annotation)}: ${text}`
+    : `Word: ${text}`;
 }

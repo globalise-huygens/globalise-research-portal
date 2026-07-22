@@ -2,6 +2,7 @@ import { Overlay, useImageInfo } from '@knaw-huc/osd-iiif-viewer';
 import { useMemo, useState } from 'react';
 import {
   findSvgPath,
+  findSourceLabel,
   findTextualBodyValue,
   isBlock,
   isWord,
@@ -42,6 +43,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
       .filter(isBlock)
       .map((a) => ({
         id: a.id,
+        label: findSourceLabel(a),
         path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       }));
   }, [annotations]);
@@ -57,11 +59,12 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
           viewBox={`0 0 ${imageInfo.size.x} ${imageInfo.size.y}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
-          {blocks.map(({ id, path }) => (
+          {blocks.map(({ id, label, path }) => (
             <BlockHighlight
               key={id}
               canvasId={canvasId}
               id={id}
+              label={label}
               points={path}
             />
           ))}

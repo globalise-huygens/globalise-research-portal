@@ -110,6 +110,30 @@ export function renderDiplomaticView(
   );
   const lineNumberById = indexLineNumbers(annotations);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const keyboardInteractionIds = new Set<Id>();
+
+  function makeSegmentInteractive(
+    $segment: HTMLSpanElement,
+    id: Id,
+    label: string,
+    blurId: Id | null,
+  ) {
+    $segment.setAttribute('aria-label', label);
+    $segment.setAttribute('role', 'button');
+    $segment.tabIndex = keyboardInteractionIds.has(id) ? -1 : 0;
+    keyboardInteractionIds.add(id);
+    $segment.addEventListener('click', () => onClick(id));
+    $segment.addEventListener('mouseenter', () => onHover(id));
+    $segment.addEventListener('mouseleave', () => onHover(blurId));
+    $segment.addEventListener('focus', () => onHover(id));
+    $segment.addEventListener('blur', () => onHover(blurId));
+    $segment.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        onClick(id);
+      }
+    });
+  }
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -163,14 +187,20 @@ export function renderDiplomaticView(
         }
         $entityToSegments[entityAnno.id].push($segment);
 
-        $segment.addEventListener('click', () => onClick(entityAnno.id));
-        $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
-        $segment.addEventListener('mouseleave', () => onHover(null));
+        makeSegmentInteractive(
+          $segment,
+          entityAnno.id,
+          `${getEntityClassifiedAsLabel(entityAnno)}: ${$segment.textContent}`,
+          null,
+        );
       } else {
         const blockId = wordToBlock[wordId];
-        $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => onHover(wordId));
-        $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
+        makeSegmentInteractive(
+          $segment,
+          wordId,
+          `Word: ${$segment.textContent}`,
+          blockId ?? null,
+        );
       }
     }
     $word.replaceChildren(...$segments);

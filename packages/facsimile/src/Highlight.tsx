@@ -5,7 +5,9 @@ import { HighlightStyle } from './HighlightStyle.tsx';
 type HighlightProps = {
   points: string;
   highlightStyle: HighlightStyle;
+  ariaLabel?: string;
   onClick?: () => void;
+  onFocusChange?: (focused: boolean) => void;
   onHover?: (hovering: boolean, event: React.MouseEvent) => void;
 };
 
@@ -13,7 +15,9 @@ export function Highlight(
   {
     points,
     highlightStyle,
-    onClick = noop,
+    ariaLabel,
+    onClick,
+    onFocusChange,
     onHover = noop,
   }: HighlightProps) {
   const {
@@ -30,6 +34,7 @@ export function Highlight(
   const partialStroke = stroke && (omitLeftStroke || omitRightStroke)
     ? getPartialStrokePath(points, omitLeftStroke, omitRightStroke)
     : null;
+  const isFocusable = onClick !== undefined || onFocusChange !== undefined;
 
   return (
     <>
@@ -55,13 +60,24 @@ export function Highlight(
         )
       )}
       <polygon
+        aria-label={ariaLabel}
         points={points}
         fill={fill}
         stroke={partialStroke ? 'none' : (stroke ?? 'none')}
         strokeWidth={strokeWidth ?? 0}
         vectorEffect={vectorEffect}
         style={{ pointerEvents: 'auto', cursor: cursor ?? 'default' }}
-        onClick={() => { onClick(); }}
+        role={onClick ? 'button' : isFocusable ? 'group' : undefined}
+        tabIndex={isFocusable ? 0 : undefined}
+        onBlur={() => { onFocusChange?.(false); }}
+        onClick={() => { onClick?.(); }}
+        onFocus={() => { onFocusChange?.(true); }}
+        onKeyDown={(event) => {
+          if (onClick && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault();
+            onClick();
+          }
+        }}
         onMouseEnter={(e) => { onHover(true, e); }}
         onMouseMove={(e) => { onHover(true, e); }}
         onMouseLeave={(e) => { onHover(false, e); }}

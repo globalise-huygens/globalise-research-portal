@@ -194,6 +194,19 @@
         cursor: pointer;
     }
 
+    .interactive-segment:focus-visible {
+        outline: none;
+
+        .entity {
+            box-shadow: inset 0 0 0 1px var(--normalized-entity-strong);
+        }
+
+        .word {
+            background: var(--normalized-selected-hover);
+            box-shadow: inset 0 0 0 1px var(--normalized-selected-strong);
+        }
+    }
+
     .entity.selected {
         --normalized-selected-strong: var(--normalized-entity-strong);
     }

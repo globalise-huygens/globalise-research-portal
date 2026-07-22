@@ -60,9 +60,17 @@ export function WordHighlight(
 
   return (
     <Highlight
+      ariaLabel={text}
       points={points}
       highlightStyle={highlightStyle}
       onClick={() => toggleClicked(id)}
+      onFocusChange={(focused) => {
+        setHoveredLocal(focused);
+        setHovered(focused ? id : null);
+        if (!focused) {
+          setTooltip(null);
+        }
+      }}
       onHover={(hovering, e) => {
         setHoveredLocal(hovering);
         setHovered(hovering ? id : null);
