@@ -23,8 +23,8 @@ export function ObjectCardPage() {
   useEffect(syncConceptParam, []);
   function syncConceptParam() {
     return useObjectCardStore.subscribe((state, prev) => {
-      const { uri } = state.concept;
-      if (!uri || uri === prev.concept.uri) {
+      const { uri } = state.conceptState;
+      if (!uri || uri === prev.conceptState.uri) {
         return;
       }
       setConceptParam(uri);

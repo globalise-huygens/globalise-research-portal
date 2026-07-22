@@ -9,8 +9,8 @@ export type ObjectCardState =
   & SchemesSlice;
 
 export const useObjectCardStore = create<ObjectCardState>(() => ({
-  concept: { ...emptyConceptState },
-  schemes: { ...emptySchemesState },
+  conceptState: { ...emptyConceptState },
+  schemeState: { ...emptySchemesState },
 }));
 
 export const setState = useObjectCardStore.setState;

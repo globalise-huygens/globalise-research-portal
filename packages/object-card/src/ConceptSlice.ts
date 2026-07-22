@@ -5,23 +5,23 @@ import { ConceptState, emptyConceptState } from './ConceptState.ts';
 import {SkosConcept} from "./SchemesState.ts";
 
 export type ConceptSlice = {
-  concept: ConceptState;
+  conceptState: ConceptState;
 };
 
 export async function loadConcept(uri: string) {
-  const { concept } = useObjectCardStore.getState();
-  const isUrlEqual = concept.uri === uri;
-  const isUrlLoaded = concept.isReady || concept.isLoading || concept.error;
+  const { conceptState } = useObjectCardStore.getState();
+  const isUrlEqual = conceptState.uri === uri;
+  const isUrlLoaded = conceptState.isReady || conceptState.isLoading || conceptState.error;
   if (isUrlEqual && isUrlLoaded) {
     return;
   }
-  setState({ concept: { ...emptyConceptState, uri, isLoading: true } });
+  setState({ conceptState: { ...emptyConceptState, uri, isLoading: true } });
 
   try {
     const url = getSkosUrl(uri);
     const loaded = await fetchJson<SkosConcept>(url);
     setState({
-      concept: {
+      conceptState: {
         ...emptyConceptState,
         uri,
         concept: loaded,
@@ -30,17 +30,17 @@ export async function loadConcept(uri: string) {
     });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
-    setState({ concept: { ...emptyConceptState, uri, error } });
+    setState({ conceptState: { ...emptyConceptState, uri, error } });
   }
 }
 
 export function useConcept(): ConceptState {
-  return useObjectCardStore((s) => s.concept);
+  return useObjectCardStore((s) => s.conceptState);
 }
 
 export function useCurrentSchemeId(): string | null {
   return useObjectCardStore((s) => {
-    const concept = s.concept.concept;
+    const concept = s.conceptState.concept;
     if (!concept) {
       return null;
     }
