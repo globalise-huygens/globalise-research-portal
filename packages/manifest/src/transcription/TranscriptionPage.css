@@ -41,6 +41,16 @@
   overflow: auto;
 }
 
+.transcription-message {
+  color: var(--color-neutral-600, #666);
+  font-style: italic;
+  padding: 1rem;
+
+  &[data-tone="error"] {
+    color: var(--color-vermilion-700, #b32d1d);
+  }
+}
+
 .transcription-pages {
   &[data-view="diplomatic"] {
     box-sizing: border-box;

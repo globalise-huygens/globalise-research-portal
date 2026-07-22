@@ -15,4 +15,9 @@
   line-height: 1.75;
   padding: 5rem 1rem;
   text-align: center;
+
+  &[data-tone="error"] {
+    background: var(--color-vermilion-50, #ffeeec);
+    color: var(--color-vermilion-700, #b32d1d);
+  }
 }

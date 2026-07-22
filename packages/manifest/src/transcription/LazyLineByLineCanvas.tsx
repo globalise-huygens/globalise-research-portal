@@ -49,7 +49,7 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
       role="group"
     >
       <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
-      {error && <Placeholder color="indianred">Error: {error}</Placeholder>}
+      {error && <Placeholder tone="error">Error: {error}</Placeholder>}
       {hasNoAnnotations && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}
       {isContentReady && (
@@ -66,14 +66,16 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 });
 
 function Placeholder(
-  { color, children }: { color?: string; children: React.ReactNode },
+  {
+    tone = 'default',
+    children,
+  }: {
+    tone?: 'default' | 'error';
+    children: React.ReactNode;
+  },
 ) {
   return (
-    <div style={{
-      padding: '1rem',
-      color: color ?? 'grey',
-      fontStyle: 'italic',
-    }}>
+    <div className="transcription-message" data-tone={tone}>
       {children}
     </div>
   );

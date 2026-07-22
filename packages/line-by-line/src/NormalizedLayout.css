@@ -6,6 +6,7 @@
     --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
     --normalized-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
     --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14));
+    --normalized-structure-text: var(--color-layout-element-text, #125e64);
     --normalized-text: var(--color-brand-black, #0c0a09);
 
     margin-left: 0.5em;
@@ -42,7 +43,7 @@
             min-width: 2.35rem;
             margin-right: 0.65em;
             margin-left: 0.15em;
-            color: var(--normalized-structure);
+            color: var(--normalized-structure-text);
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
               monospace;
             font-size: 0.72em;
@@ -60,7 +61,8 @@
     }
 
     .line:hover .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--normalized-text);
+        font-weight: 700;
     }
 
     &[data-layout-elements-visible="false"] .line-number {
@@ -84,7 +86,8 @@
     }
 
     .block-group.selected .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--normalized-text);
+        font-weight: 700;
     }
 
     &[data-layout-elements-visible="false"] .block-group {

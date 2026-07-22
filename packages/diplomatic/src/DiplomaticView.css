@@ -117,7 +117,7 @@
 
     .line-numbers .line-number {
         position: absolute;
-        color: var(--diplomatic-structure);
+        color: var(--diplomatic-structure-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-variant-numeric: tabular-nums;
@@ -130,7 +130,8 @@
     }
 
     .line-numbers .line-number.is-visible {
-        color: var(--diplomatic-structure-strong);
+        color: var(--diplomatic-text);
+        font-weight: 700;
     }
 
     .line-numbers {

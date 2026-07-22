@@ -94,8 +94,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
     >
       {isInRenderRange && error && (
         <TranscriptionPlaceholder
-          color="indianred"
-          background="rgb(248 243 243)"
+          tone="error"
         >
           <PageLabel label={canvasLabel} isCurrent={isCurrentCanvas} />
           Error: {error}
