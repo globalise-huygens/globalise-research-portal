@@ -1,4 +1,4 @@
-import { getSkosUrl } from './ObjectCardModel.ts';
+import { getSkosUrl } from './SkosModel.ts';
 import { IconExternalLink } from '@globalise/design';
 import { useConcept } from './ConceptSlice.ts';
 import './ObjectCard.css';
@@ -41,7 +41,7 @@ export function ObjectCard() {
       <LabelList title="altLabel" values={concept.altLabel} />
       <LabelList title="definition" values={concept.definition} />
       <ConceptList title="hasTopConcept" concepts={concept.hasTopConcept} />
-      <ConceptList title="broader" concepts={concept.broader} />
+      <ConceptList title="broader" concepts={concept.broader} childKey="broader" />
       <ConceptList title="narrower" concepts={concept.narrower} />
       <ConceptList title="related" concepts={concept.related} />
       <MatchList title="closeMatch" matches={concept.closeMatch} />

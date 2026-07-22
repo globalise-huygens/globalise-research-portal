@@ -1,4 +1,4 @@
-import { LangValue } from './ObjectCardModel.ts';
+import { LangValue } from './SkosModel.ts';
 
 type LabelListProps = { title: string; values?: LangValue[] };
 
@@ -10,8 +10,8 @@ export function LabelList({ title, values }: LabelListProps) {
     <>
       <h2>{title}</h2>
       <ul>
-        {values.map((value) => (
-          <li key={`${value['@language']}-${value['@value']}`}>
+        {values.map((value, i) => (
+          <li key={i}>
             <strong>{value['@language']}</strong>: {value['@value']}
           </li>
         ))}

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { loadSchemes, useSchemes } from './SchemesSlice.ts';
 import { loadConcept, useCurrentSchemeId } from './ConceptSlice.ts';
-import { conceptLabel } from './ObjectCardModel.ts';
+import { conceptLabel } from './SkosModel.ts';
 
 export function SchemeList() {
   const { schemes, isLoading, isReady, error } = useSchemes();

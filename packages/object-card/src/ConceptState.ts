@@ -1,4 +1,4 @@
-import { SkosConcept } from './SchemesState.ts';
+import { SkosConcept } from './SkosModel.ts';
 
 export type ConceptState = {
   uri: string | null;

@@ -1,7 +1,7 @@
 import { fetchJson } from '@globalise/common';
-import { getSkosUrl } from './ObjectCardModel.ts';
 import { useObjectCardStore, setState } from './ObjectCardStore.ts';
 import { emptySchemesState, SchemeBundle, SchemesState } from './SchemesState.ts';
+import { getSkosUrl } from './SkosModel.ts';
 
 export const schemesUri =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:schemes';

@@ -1,8 +1,8 @@
 import { fetchJson } from '@globalise/common';
-import { getSkosUrl } from './ObjectCardModel.ts';
+import { getSkosUrl } from './SkosModel.ts';
 import { useObjectCardStore, setState } from './ObjectCardStore.ts';
 import { ConceptState, emptyConceptState } from './ConceptState.ts';
-import {SkosConcept} from "./SchemesState.ts";
+import { SkosConcept } from './SkosModel.ts';
 
 export type ConceptSlice = {
   conceptState: ConceptState;

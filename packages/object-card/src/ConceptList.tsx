@@ -1,9 +1,13 @@
-import { loadConcept } from './ConceptSlice.ts';
-import { conceptLabel, ConceptRef } from './ObjectCardModel.ts';
+import { ConceptNode, RelationKey } from './ConceptNode.tsx';
+import { SkosConcept } from './SkosModel.ts';
 
-type ConceptListProps = { title: string; concepts?: ConceptRef[] };
+type ConceptListProps = {
+  title: string;
+  concepts?: SkosConcept[];
+  childKey?: RelationKey;
+};
 
-export function ConceptList({ title, concepts }: ConceptListProps) {
+export function ConceptList({ title, concepts, childKey }: ConceptListProps) {
   if (!concepts?.length) {
     return <h2 title="No data" className="inactive">{title}</h2>;
   }
@@ -12,11 +16,7 @@ export function ConceptList({ title, concepts }: ConceptListProps) {
       <h2>{title}</h2>
       <ul className="concept-list">
         {concepts.map((concept) => (
-          <li key={concept.id}>
-            <button onClick={() => void loadConcept(concept.id)}>
-              {conceptLabel(concept)}
-            </button>
-          </li>
+          <ConceptNode key={concept.id} concept={concept} childKey={childKey} />
         ))}
       </ul>
     </>
