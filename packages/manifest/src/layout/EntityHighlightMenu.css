@@ -27,9 +27,7 @@
   }
 
   .entity-menu .content,
-  .entity-menu .list,
-  .entity-menu .category,
-  .entity-menu .subcategories {
+  .entity-menu .list {
     display: flex;
     flex-direction: column;
     gap: var(--s6);
@@ -97,62 +95,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .entity-menu .count {
-    font-size: 10px;
-    line-height: 0.75rem;
-  }
-
-  .entity-menu .actions {
-    display: flex;
-    align-items: center;
-    gap: var(--s4);
-  }
-
-  .entity-menu .expand {
-    display: flex;
-    width: var(--s20);
-    height: var(--s20);
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: 2px;
-    background: transparent;
-    padding: 0;
-    color: inherit;
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    transition: background-color 75ms ease-out;
-  }
-
-  .entity-menu .expand:hover {
-    background: rgb(12 10 9 / 0.15);
-  }
-
-  .entity-menu .expand:focus-visible {
-    outline: none;
-    outline-offset: 0;
-    box-shadow: none;
-  }
-
-  .entity-menu .subcategories {
-    margin-left: var(--s16);
-  }
-
-  .entity-menu .icon {
-    flex-shrink: 0;
-  }
-
-  .entity-menu .expand-icon {
-    width: var(--s16);
-    height: var(--s16);
-    transition: transform 120ms ease-out;
-  }
-
-  .entity-menu .expand[aria-expanded="true"] .expand-icon {
-    transform: rotate(180deg);
   }
 
   .entity-menu [data-tone="cidoc-actor"] {
