@@ -61,29 +61,29 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       : undefined;
   }, [pageText]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(setWidthOnObservedResize, []);
-  function setWidthOnObservedResize() {
+  useEffect(() => {
     const $view = containerRef.current;
     if (!$view) {
       return;
     }
     const resizeObserver = new ResizeObserver(([viewEvent]) => {
-      const observedWidth = viewEvent.contentRect.width;
-      if (observedWidth !== width) {
-        setWidthDebounced(observedWidth);
-      }
+      setWidthDebounced(viewEvent.contentRect.width);
     });
     resizeObserver.observe($view);
-    return () => resizeObserver.disconnect();
-  }
+    return () => {
+      resizeObserver.disconnect();
+      setWidthDebounced.cancel();
+    };
+  }, [setWidthDebounced]);
 
+  // Selection is updated independently below, without rebuilding the view.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(createDiplomaticView, [
     annotations,
     page,
     fit,
     showBlocks,
+    showScanMargin,
     highlightedEntityCategories,
     width,
   ]);
