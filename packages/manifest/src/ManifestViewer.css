@@ -606,62 +606,62 @@
   .manifest-viewer {
     --manifest-top-bar-height: var(--s96);
     --manifest-bottom-bar-height: var(--s48);
-  }
 
-  .manifest-viewer .top-bar {
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: repeat(2, var(--s40));
-    gap: 0 var(--s4);
-    padding-block: var(--s8);
-    padding-inline: var(--s4);
-  }
+    .top-bar {
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: repeat(2, var(--s40));
+      gap: 0 var(--s4);
+      padding-block: var(--s8);
+      padding-inline: var(--s4);
+    }
 
-  .manifest-viewer .top-bar-group {
-    flex: 0 1 auto;
-    gap: var(--s2);
-  }
+    .top-bar-group {
+      flex: 0 1 auto;
+      gap: var(--s2);
 
-  .manifest-viewer .top-bar-group.left {
-    grid-column: 1;
-    grid-row: 1;
-    overflow: hidden;
-  }
+      &.left {
+        grid-column: 1;
+        grid-row: 1;
+        overflow: hidden;
+      }
 
-  .manifest-viewer .top-bar-group.right {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    flex: 0 0 auto;
-    width: 100%;
-    min-width: 0;
-  }
+      &.right {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+      }
+    }
 
-  .manifest-viewer .top-bar-center {
-    grid-column: 2;
-    grid-row: 1;
-    flex: 0 0 auto;
-  }
+    .top-bar-center {
+      grid-column: 2;
+      grid-row: 1;
+      flex: 0 0 auto;
+    }
 
-  .manifest-viewer .manifest-dropdown,
-  .manifest-viewer .top-bar-divider,
-  .manifest-viewer .top-bar .toggle > span,
-  .manifest-viewer .content-warning > .tool-button > span {
-    display: none;
-  }
+    .manifest-dropdown,
+    .top-bar-divider,
+    .top-bar .toggle > span,
+    .content-warning > .tool-button > span {
+      display: none;
+    }
 
-  .manifest-viewer .top-bar .toggle[data-size="regular"] {
-    min-width: var(--s40);
-    padding-inline: 0;
-  }
+    .top-bar .toggle[data-size="regular"] {
+      min-width: var(--s40);
+      padding-inline: 0;
+    }
 
-  .manifest-viewer .content-warning > .details {
-    position: fixed;
-    top: calc(var(--manifest-top-bar-height) + var(--s8));
-    right: var(--s16);
-    left: var(--s16);
-    width: auto;
-    transform: none;
+    .content-warning > .details {
+      position: fixed;
+      top: calc(var(--manifest-top-bar-height) + var(--s8));
+      right: var(--s16);
+      left: var(--s16);
+      width: auto;
+      transform: none;
+    }
   }
 }
 
