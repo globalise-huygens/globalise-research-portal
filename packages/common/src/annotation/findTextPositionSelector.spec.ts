@@ -53,6 +53,14 @@ describe('findTextSelectorRange', () => {
       'Pieter Both / Pieter Both',
     )).toEqual({ type: 'TextPositionSelector', start: 7, end: 18 });
   });
+
+  it('does not jump to a matching quote elsewhere in the transcription', () => {
+    const annotation = annotationWithSelectors(0, 11, 'Pieter Both');
+    const text = `${' '.repeat(65)}Pieter Both`;
+
+    expect(findTextSelectorRange(annotation, targetId, text))
+      .toEqual({ type: 'TextPositionSelector', start: 0, end: 11 });
+  });
 });
 
 function annotationWithSelectors(

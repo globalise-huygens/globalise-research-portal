@@ -16,13 +16,15 @@ type TextQuoteSelector = {
   suffix?: string;
 };
 
+// Only repair local drift. A distant match may be a different occurrence of
+// the same words elsewhere in the transcription.
 const MAX_QUOTE_CORRECTION_DISTANCE = 64;
 
 export function findTextPositionSelector(
   annotation: Annotation,
   targetId: Id,
 ): TextPositionSelector | undefined {
-  const resourceTarget = findResourceTarget(annotation, targetId);
+  const resourceTarget = findTargetForSource(annotation, targetId);
   if (!resourceTarget) {
     return;
   }
@@ -45,11 +47,7 @@ export function findTextSelectorRange(
     return position;
   }
 
-  const correctedStart = findQuoteStart(
-    text,
-    quote,
-    position.start,
-  );
+  const correctedStart = findQuoteStart(text, quote, position.start);
   if (correctedStart === undefined) {
     return position;
   }
@@ -63,7 +61,7 @@ function findTextQuoteSelector(
   annotation: Annotation,
   targetId: Id,
 ): TextQuoteSelector | undefined {
-  const resourceTarget = findResourceTarget(annotation, targetId);
+  const resourceTarget = findTargetForSource(annotation, targetId);
   if (!resourceTarget) {
     return;
   }
@@ -71,7 +69,7 @@ function findTextQuoteSelector(
     TextQuoteSelector | undefined;
 }
 
-function findResourceTarget(
+function findTargetForSource(
   annotation: Annotation,
   targetId: Id,
 ): SpecificResourceTarget | undefined {
