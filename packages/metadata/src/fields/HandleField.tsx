@@ -22,13 +22,13 @@ export function HandleField({ url, label = 'Handle', fallback }: FieldProps) {
   return (
     <Pair label={label}>
       <a
-        className="document-detail-overlay-link"
+        className="metadata-link"
         href={href}
         target="_blank"
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="document-detail-overlay-icon-small"/>
+        <IconExternalLink className="icon"/>
       </a>
     </Pair>
   );

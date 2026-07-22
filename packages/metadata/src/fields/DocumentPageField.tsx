@@ -15,13 +15,13 @@ export function DocumentPageField({ url, label = 'Document', fallback }: FieldPr
   return (
     <Pair label={label}>
       <a
-        className="document-detail-overlay-link"
+        className="metadata-link"
         href={url}
         target="_blank"
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="document-detail-overlay-icon-small"/>
+        <IconExternalLink className="icon"/>
       </a>
     </Pair>
   );

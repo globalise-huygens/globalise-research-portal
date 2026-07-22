@@ -236,7 +236,6 @@
     --card-gutter: var(--s16);
 
     --panel-pad: var(--s24);
-    --viewer-pad: var(--s16);
     --section-gap: var(--s24);
     --row-gap: var(--s12);
     --overlay-inset: var(--s16);
@@ -255,37 +254,6 @@
         (var(--shell-gutter) * (var(--card-cols) - 1))
     );
 
-    --overlay-document-viewer-inset-x: var(--s24);
-    --overlay-document-viewer-inset-top: var(--s40);
-    --overlay-document-viewer-inset-bottom: var(--s24);
-    --overlay-document-viewer-frame-max-width: 100vw;
-    --overlay-document-viewer-top-bar-height: var(--s72);
-    --overlay-document-viewer-bottom-bar-height: var(--s56);
-    --overlay-document-viewer-rail-width: var(--rail);
-    --overlay-document-viewer-sidebar-width: clamp(
-      17rem,
-      var(--sidebar-width),
-      22rem
-    );
-    --overlay-document-viewer-pane-gap: var(--shell-gutter);
-    --overlay-document-viewer-side-panel-width: clamp(19rem, 31vw, 34rem);
-
-    --overlay-document-viewer-frame-height: calc(
-      100vh - var(--overlay-document-viewer-inset-top) -
-        var(--overlay-document-viewer-inset-bottom)
-    );
-    --overlay-document-viewer-frame-width: min(
-      calc(100vw - (var(--overlay-document-viewer-inset-x) * 2)),
-      var(--overlay-document-viewer-frame-max-width)
-    );
-    --overlay-document-viewer-main-height: calc(
-      var(--overlay-document-viewer-frame-height) -
-        var(--overlay-document-viewer-top-bar-height) -
-        var(--overlay-document-viewer-bottom-bar-height)
-    );
-    --overlay-document-viewer-pane-width: var(
-      --overlay-document-viewer-side-panel-width
-    );
     --overlay-object-card-inset-x: var(--s32);
     --overlay-object-card-inset-top: var(--s32);
     --overlay-object-card-inset-bottom: var(--s32);
@@ -320,29 +288,6 @@
   }
 }
 
-@media (max-width: 767px) {
-  @layer base {
-    :root {
-      --overlay-document-viewer-inset-x: 0px;
-      --overlay-document-viewer-inset-top: 0px;
-      --overlay-document-viewer-inset-bottom: 0px;
-      --overlay-document-viewer-top-bar-height: var(--s56);
-      --overlay-document-viewer-bottom-bar-height: var(--s48);
-      --overlay-document-viewer-rail-width: 0px;
-      --overlay-document-viewer-sidebar-width: 100vw;
-      --overlay-document-viewer-frame-max-width: 100vw;
-      --overlay-document-viewer-side-panel-width: 100vw;
-      --overlay-document-viewer-pane-gap: var(--s8);
-      --overlay-document-viewer-frame-height: 100vh;
-      --overlay-document-viewer-frame-width: 100vw;
-      --overlay-document-viewer-main-height: calc(
-        100vh - var(--overlay-document-viewer-top-bar-height) -
-          var(--overlay-document-viewer-bottom-bar-height)
-      );
-    }
-  }
-}
-
 @media (min-width: 1280px) {
   @layer base {
     :root {
@@ -350,19 +295,6 @@
       --shell-margin: var(--s32);
       --shell-gutter: var(--s16);
       --overlay-inset: var(--s32);
-
-      --overlay-document-viewer-inset-x: var(--s24);
-      --overlay-document-viewer-inset-top: var(--s40);
-      --overlay-document-viewer-inset-bottom: var(--s24);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --overlay-document-viewer-frame-max-width: 100vw;
 
       --overlay-object-card-inset-x: var(--s48);
       --overlay-object-card-inset-top: var(--s48);
@@ -374,19 +306,6 @@
 @media (min-width: 1440px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s32);
-      --overlay-document-viewer-inset-top: var(--s48);
-      --overlay-document-viewer-inset-bottom: var(--s32);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --overlay-document-viewer-frame-max-width: 100vw;
-
       --overlay-object-card-inset-x: var(--s64);
       --overlay-object-card-inset-top: var(--s56);
       --overlay-object-card-inset-bottom: var(--s56);
@@ -397,19 +316,6 @@
 @media (min-width: 1920px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s48);
-      --overlay-document-viewer-inset-top: var(--s64);
-      --overlay-document-viewer-inset-bottom: var(--s48);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --overlay-document-viewer-frame-max-width: 100vw;
-
       --overlay-object-card-inset-x: var(--s96);
       --overlay-object-card-inset-top: var(--s88);
       --overlay-object-card-inset-bottom: var(--s88);
@@ -420,19 +326,6 @@
 @media (min-width: 2560px) {
   @layer base {
     :root {
-      --overlay-document-viewer-inset-x: var(--s48);
-      --overlay-document-viewer-inset-top: var(--s80);
-      --overlay-document-viewer-inset-bottom: var(--s64);
-      --overlay-document-viewer-top-bar-height: var(--s72);
-      --overlay-document-viewer-bottom-bar-height: var(--s56);
-      --overlay-document-viewer-rail-width: var(--rail);
-      --overlay-document-viewer-sidebar-width: clamp(
-        17rem,
-        var(--sidebar-width),
-        22rem
-      );
-      --overlay-document-viewer-frame-max-width: 1920px;
-
       --overlay-object-card-inset-x: var(--s136);
       --overlay-object-card-inset-top: var(--s112);
       --overlay-object-card-inset-bottom: var(--s112);

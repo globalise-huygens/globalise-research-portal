@@ -1,7 +1,5 @@
 import { setSelectedCanvas } from '@globalise/common/document';
-import { DocumentDetailReferenceCard } from '@globalise/design';
 import type { ManifestScan } from './toToc';
-import { dataCurrentScan } from './useScrollToThumb.ts';
 
 export type TocScanProps = {
   scan: ManifestScan;
@@ -20,18 +18,17 @@ export function TocScan(
     />
   );
 
-  const heading = <span className="document-detail-overlay-toc-heading">
-    Scan {scan.scanNumber}
-  </span>;
-
   return (
-    <DocumentDetailReferenceCard
-      isSelected={isSelected}
-      className="document-detail-overlay-toc-card"
-      {...{ [dataCurrentScan]: isSelected }}
+    <button
+      type="button"
+      className="toc-card"
+      aria-current={isSelected ? 'true' : undefined}
       onClick={() => setSelectedCanvas(scan.canvasId, 'external')}
-      heading={heading}
-      thumbnail={thumbnail}
-    />
+    >
+      <span className="layout">
+        {thumbnail && <span className="thumbnail">{thumbnail}</span>}
+        <span className="toc-heading">Scan {scan.scanNumber}</span>
+      </span>
+    </button>
   );
 }

@@ -2,13 +2,13 @@ import {
   IconBrightness,
   IconContrast,
   IconInvert,
-  DocumentDetailToolButton,
   IconReset,
   IconRotate,
   IconSaturation,
   IconSetting,
   IconZoomIn,
   IconZoomOut,
+  ToolButton,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, type Rect } from 'openseadragon';
@@ -24,8 +24,9 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import './ScanSettings.css';
 
-type FacsimileControlBarProps = {
+type FacsimileControlsProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
   onScanFilterChange?: (filter: string) => void;
 };
@@ -103,7 +104,7 @@ function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
 export function FacsimileControls({
   fullscreenRef,
   onScanFilterChange,
-}: FacsimileControlBarProps) {
+}: FacsimileControlsProps) {
   const viewer = useViewer();
   const { home, rotate, rotation } = useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
@@ -314,7 +315,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Brightness',
       icon: (
-        <IconBrightness className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconBrightness className="settings-icon" />
       ),
       label: 'Brightness',
       max: 150,
@@ -325,7 +326,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Contrast',
       icon: (
-        <IconContrast className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconContrast className="settings-icon" />
       ),
       label: 'Contrast',
       max: 150,
@@ -336,7 +337,7 @@ export function FacsimileControls({
     {
       ariaLabel: 'Saturation',
       icon: (
-        <IconSaturation className="gds-document-detail-scan-toolbar__settings-icon" />
+        <IconSaturation className="settings-icon" />
       ),
       label: 'Saturation',
       max: 200,
@@ -348,20 +349,19 @@ export function FacsimileControls({
 
   return (
     <>
-      <div className="gds-document-detail-scan-toolbar__zoom-segment">
-        <DocumentDetailToolButton
+      <div className="zoom-controls">
+        <ToolButton
           aria-label="Zoom out"
-          className="gds-document-detail-scan-toolbar__button"
           icon={
-            <IconZoomOut className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomOut />
           }
           onPress={handleZoomOut}
           size="compact"
         />
-        <label className="gds-document-detail-scan-toolbar__zoom-field">
+        <label className="zoom-field">
           <input
             aria-label="Scan zoom percentage, 10 to 400"
-            className="gds-document-detail-scan-toolbar__zoom-input"
+            className="zoom-input"
             inputMode="numeric"
             maxLength={3}
             pattern="[0-9]*"
@@ -381,65 +381,57 @@ export function FacsimileControls({
           />
           <span
             aria-hidden="true"
-            className="gds-document-detail-scan-toolbar__zoom-suffix"
+            className="zoom-suffix"
           >
             %
           </span>
         </label>
-        <DocumentDetailToolButton
+        <ToolButton
           aria-label="Zoom in"
-          className="gds-document-detail-scan-toolbar__button"
           icon={
-            <IconZoomIn className="gds-document-detail-scan-toolbar__icon" />
+            <IconZoomIn />
           }
           onPress={handleZoomIn}
           size="compact"
         />
       </div>
       <span
-        className="gds-document-detail-scan-toolbar__divider"
+        className="toolbar-divider"
         aria-hidden="true"
       />
-      <DocumentDetailToolButton
+      <ToolButton
         aria-label="Reset scan view"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconReset className="gds-document-detail-scan-toolbar__icon" />}
+        icon={<IconReset />}
         onPress={handleResetView}
         size="compact"
       />
-      <DocumentDetailToolButton
+      <ToolButton
         aria-label="Rotate scan"
-        className="gds-document-detail-scan-toolbar__button"
-        icon={<IconRotate className="gds-document-detail-scan-toolbar__icon" />}
+        icon={<IconRotate />}
         onPress={() => {
           rotate(90);
         }}
         size="compact"
       />
-      <div className="gds-document-detail-scan-toolbar__settings">
-        <DocumentDetailToolButton
-          ref={settingsButtonRef}
-          aria-label="Scan image settings"
-          aria-controls={settingsPanelId}
-          aria-expanded={isSettingsOpen}
-          className="gds-document-detail-scan-toolbar__button"
-          icon={
-            <IconSetting className="gds-document-detail-scan-toolbar__icon" />
+      <ToolButton
+        ref={settingsButtonRef}
+        aria-label="Scan image settings"
+        aria-controls={settingsPanelId}
+        aria-expanded={isSettingsOpen}
+        icon={<IconSetting />}
+        isActive={isSettingsOpen}
+        onPress={() => {
+          if (isSettingsOpen) {
+            setSettingsPanelStyle(null);
           }
-          isActive={isSettingsOpen}
-          onPress={() => {
-            if (isSettingsOpen) {
-              setSettingsPanelStyle(null);
-            }
-            setIsSettingsOpen((open) => !open);
-          }}
-          size="compact"
-        />
-      </div>
+          setIsSettingsOpen((open) => !open);
+        }}
+        size="compact"
+      />
       {isSettingsOpen && settingsPanelStyle && createPortal(
         <div
           id={settingsPanelId}
-          className="gds-document-detail-scan-toolbar__settings-panel"
+          className="scan-settings"
           role="dialog"
           aria-label="Scan image settings"
           style={settingsPanelStyle}
@@ -454,12 +446,12 @@ export function FacsimileControls({
           {scanSettings.map((setting) => (
             <ScanSettingSlider key={setting.label} {...setting} />
           ))}
-          <div className="gds-document-detail-scan-toolbar__settings-row gds-document-detail-scan-toolbar__settings-row--invert">
-            <div className="gds-document-detail-scan-toolbar__settings-label">
-              <IconInvert className="gds-document-detail-scan-toolbar__settings-icon" />
+          <div className="row" data-layout="stacked">
+            <div className="label">
+              <IconInvert className="settings-icon" />
               <span>Invert</span>
             </div>
-            <label className="gds-document-detail-scan-toolbar__settings-checkbox">
+            <label className="checkbox">
               <input
                 type="checkbox"
                 checked={isInverted}
@@ -491,14 +483,14 @@ function ScanSettingSlider({
   }
 
   return (
-    <div className="gds-document-detail-scan-toolbar__settings-row">
-      <div className="gds-document-detail-scan-toolbar__settings-label">
+    <div className="row">
+      <div className="label">
         {icon}
         <span>{label}</span>
       </div>
       <input
         aria-label={ariaLabel}
-        className="gds-document-detail-scan-toolbar__settings-slider"
+        className="slider"
         type="range"
         min={min}
         max={max}
@@ -512,7 +504,7 @@ function ScanSettingSlider({
           handleChange(event.currentTarget.value);
         }}
       />
-      <span className="gds-document-detail-scan-toolbar__settings-value">
+      <span className="value">
         {value}%
       </span>
     </div>

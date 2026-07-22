@@ -5,7 +5,7 @@ import {
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestCanvasNavigation,
-  ManifestDocumentPageLayout,
+  ManifestViewer,
   ManifestDropdown,
   ManifestFacsimileViewer,
   ManifestTranscriptionViewer,
@@ -61,7 +61,7 @@ export function ManifestPage() {
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
-        <ManifestDocumentPageLayout
+        <ManifestViewer
           onClose={() => void navigate({ to: '/' })}
           topLeft={
             <ManifestDropdown

@@ -23,19 +23,18 @@ export function TocDocument(
 
   return (
     <article
-      className="document-detail-overlay-toc-document"
+      className="toc-document"
       data-current={isCurrent}
-      data-current-document={isCurrent}
     >
-      <div className="document-detail-overlay-toc-document-header">
+      <div className="header">
         <button
           type="button"
-          className="document-detail-overlay-toc-document-button"
+          className="select"
           aria-current={isCurrent || undefined}
           disabled={!firstScan}
           onClick={() => setSelectedCanvas(firstScan.canvasId, 'external')}
         >
-          <IconEntityDocument className="document-detail-overlay-icon"/>
+          <IconEntityDocument className="document-icon"/>
           <span>{document.label}</span>
           <small>
             {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
@@ -44,14 +43,13 @@ export function TocDocument(
         {!!firstScan && (
           <button
             type="button"
-            className="document-detail-overlay-toc-document-toggle"
+            className="toggle"
             aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
             aria-expanded={isExpanded}
             onClick={() => toggleTocDocument(document.id)}
           >
             <IconExpandSection
-              className="document-detail-overlay-chevron document-detail-overlay-icon-medium"
-              data-expanded={isExpanded}
+              className="disclosure-icon"
             />
           </button>
         )}
@@ -60,7 +58,7 @@ export function TocDocument(
       {isExpanded && <TocDocumentMetadata document={document}/>}
 
       {isExpanded && (
-        <div className="document-detail-overlay-toc-document-scans">
+        <div className="scans">
           {document.scans.map((scan) => (
             <TocScan
               key={scan.canvasId}

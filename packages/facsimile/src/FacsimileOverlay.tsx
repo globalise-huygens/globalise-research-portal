@@ -11,7 +11,7 @@ import {
   CanvasId,
   useAnnotations,
 } from '@globalise/common/document';
-import { Tooltip, TooltipProps } from './Tooltip';
+import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
 import { WordHighlight } from './WordHighlight.tsx';
 import { orThrow } from '@globalise/common';
@@ -19,7 +19,7 @@ import { orThrow } from '@globalise/common';
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations(canvasId);
-  const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
+  const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
 
   const words = useMemo(() => {
     if (!annotations) {
@@ -77,7 +77,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
           ))}
         </svg>
       </Overlay>
-      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
+      {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
 }

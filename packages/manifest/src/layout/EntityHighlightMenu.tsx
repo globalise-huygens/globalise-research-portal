@@ -1,34 +1,31 @@
-import { cn } from '../../lib';
 import * as React from 'react';
-import { IconExpandSection } from '../icons/IconExpandSection';
 import {
-  DocumentDetailCheckbox,
-  DocumentDetailToolButton,
-} from './DocumentDetailControls';
-import {
-  DocumentDetailPopoverSurface,
-  DocumentDetailTooltip,
-} from './DocumentDetailSurfaces';
+  Checkbox,
+  cn,
+  IconExpandSection,
+  Popover,
+  ToolButton,
+  Tooltip,
+} from '@globalise/design';
+import './EntityHighlightMenu.css';
 
-export type DocumentDetailEntityHighlightSubcategory = {
+export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
   count?: number;
 };
 
-export type DocumentDetailEntityHighlightCategory = {
+export type EntityHighlightCategory = {
   id: string;
   label: string;
   count?: number;
   icon?: React.ReactNode;
-  rowClassName?: string;
-  subRowClassName?: string;
-  textClassName?: string;
-  subcategories?: DocumentDetailEntityHighlightSubcategory[];
+  tone?: string;
+  subcategories?: EntityHighlightSubcategory[];
 };
 
-export type DocumentDetailEntityHighlightMenuProps = {
-  categories: DocumentDetailEntityHighlightCategory[];
+export type EntityHighlightMenuProps = {
+  categories: EntityHighlightCategory[];
   selectedKeys: Set<string>;
   onSelectedKeysChange: React.Dispatch<React.SetStateAction<Set<string>>>;
   triggerIcon?: React.ReactNode;
@@ -40,7 +37,7 @@ export type DocumentDetailEntityHighlightMenuProps = {
   className?: string;
 };
 
-function getLeafKeys(category: DocumentDetailEntityHighlightCategory) {
+function getLeafKeys(category: EntityHighlightCategory) {
   if (!category.subcategories || category.subcategories.length === 0) {
     return [category.id];
   }
@@ -50,7 +47,7 @@ function getLeafKeys(category: DocumentDetailEntityHighlightCategory) {
   );
 }
 
-function DocumentDetailEntityHighlightMenu({
+function EntityHighlightMenu({
   categories,
   selectedKeys,
   onSelectedKeysChange,
@@ -61,7 +58,7 @@ function DocumentDetailEntityHighlightMenu({
   allLabel = 'All entity highlights',
   allDescription = 'Select or clear every classified entity highlight',
   className,
-}: DocumentDetailEntityHighlightMenuProps) {
+}: EntityHighlightMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
     () => new Set(),
@@ -128,7 +125,7 @@ function DocumentDetailEntityHighlightMenu({
   );
 
   const toggleCategory = React.useCallback(
-    (category: DocumentDetailEntityHighlightCategory, isSelected: boolean) => {
+    (category: EntityHighlightCategory, isSelected: boolean) => {
       const categoryLeafKeys = getLeafKeys(category);
 
       onSelectedKeysChange((current) => {
@@ -163,9 +160,9 @@ function DocumentDetailEntityHighlightMenu({
   }, []);
 
   return (
-    <div ref={rootRef} className={cn('gds-entity-highlight-menu', className)}>
-      <DocumentDetailTooltip label={triggerLabel}>
-        <DocumentDetailToolButton
+    <div ref={rootRef} className={cn('entity-menu', className)}>
+      <Tooltip label={triggerLabel}>
+        <ToolButton
           aria-expanded={isOpen}
           aria-label={
             hasAnySelection ? `Open ${triggerLabel}` : `Enable ${triggerLabel}`
@@ -183,30 +180,28 @@ function DocumentDetailEntityHighlightMenu({
             setIsOpen((current) => !current);
           }}
         />
-      </DocumentDetailTooltip>
+      </Tooltip>
 
       {isOpen && (
-        <DocumentDetailPopoverSurface
+        <Popover
           role="dialog"
           aria-label={typeof title === 'string' ? title : triggerLabel}
           size="compact"
-          className="gds-entity-highlight-menu__surface"
+          className="surface"
         >
-          <h3 className="gds-entity-highlight-menu__title">{title}</h3>
+          <h3>{title}</h3>
 
-          <div className="gds-entity-highlight-menu__content">
-            <div className="gds-entity-highlight-menu__all">
-              <div className="gds-entity-highlight-menu__all-copy">
-                <div className="gds-entity-highlight-menu__all-title">
-                  {allLabel}
-                </div>
+          <div className="content">
+            <div className="all">
+              <div className="all-copy">
+                <div className="all-title">{allLabel}</div>
                 {allDescription && (
-                  <div className="gds-entity-highlight-menu__all-description">
+                  <div className="all-description">
                     {allDescription}
                   </div>
                 )}
               </div>
-              <DocumentDetailCheckbox
+              <Checkbox
                 aria-label="Toggle all entity highlights"
                 isSelected={areAllHighlightsSelected}
                 isIndeterminate={areHighlightsPartiallySelected}
@@ -214,7 +209,7 @@ function DocumentDetailEntityHighlightMenu({
               />
             </div>
 
-            <div className="gds-entity-highlight-menu__list">
+            <div className="list">
               {categories.map((category) => {
                 const leafKeys = getLeafKeys(category);
                 const selectedCount = leafKeys.filter((key) =>
@@ -229,64 +224,41 @@ function DocumentDetailEntityHighlightMenu({
                   category.subcategories && category.subcategories.length > 0;
 
                 return (
-                  <div
-                    key={category.id}
-                    className="gds-entity-highlight-menu__category"
-                  >
+                  <div key={category.id} className="category">
                     <div
-                      className={cn(
-                        'gds-entity-highlight-menu__category-row',
-                        category.rowClassName,
-                      )}
+                      className="row"
+                      data-level="category"
+                      data-tone={category.tone}
                     >
-                      <div
-                        className={cn(
-                          'gds-entity-highlight-menu__category-label',
-                          category.textClassName,
-                        )}
-                      >
+                      <div className="label">
                         {category.icon && (
-                          <span className="gds-entity-highlight-menu__icon">
+                          <span className="icon">
                             {category.icon}
                           </span>
                         )}
-                        <span className="gds-entity-highlight-menu__category-label-text">
+                        <span className="label-text">
                           {category.label}
                         </span>
                       </div>
                       {category.count !== undefined && (
-                        <span
-                          className={cn(
-                            'gds-entity-highlight-menu__count',
-                            category.textClassName,
-                          )}
-                        >
-                          {category.count}
-                        </span>
+                        <span className="count">{category.count}</span>
                       )}
-                      <div className="gds-entity-highlight-menu__row-actions">
+                      <div className="actions">
                         {hasSubcategories && (
                           <button
                             type="button"
                             aria-label={`Toggle ${category.label} subcategories`}
                             aria-expanded={isExpanded}
-                            className={cn(
-                              'gds-entity-highlight-menu__expand-button',
-                              category.textClassName,
-                            )}
+                            className="expand"
                             onClick={() => toggleExpandedGroup(category.id)}
                           >
                             <IconExpandSection
                               aria-hidden="true"
-                              className={cn(
-                                'document-detail-overlay-chevron document-detail-overlay-icon',
-                                category.textClassName,
-                              )}
-                              data-expanded={isExpanded ? 'true' : 'false'}
+                              className="expand-icon"
                             />
                           </button>
                         )}
-                        <DocumentDetailCheckbox
+                        <Checkbox
                           aria-label={`Toggle ${category.label} entity highlights`}
                           isDisabled={(category.count ?? 1) <= 0}
                           isSelected={isSelected}
@@ -299,7 +271,7 @@ function DocumentDetailEntityHighlightMenu({
                     </div>
 
                     {isExpanded && hasSubcategories && (
-                      <div className="gds-entity-highlight-menu__subcategories">
+                      <div className="subcategories">
                         {category.subcategories?.map((subcategory) => {
                           const leafKey =
                             subcategory.id ??
@@ -308,27 +280,21 @@ function DocumentDetailEntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              className={cn(
-                                'gds-entity-highlight-menu__subcategory-row',
-                                category.subRowClassName,
-                              )}
+                              className="row"
+                              data-level="subcategory"
+                              data-tone={category.tone}
                             >
-                              <div
-                                className={cn(
-                                  'gds-entity-highlight-menu__subcategory-label',
-                                  category.textClassName,
-                                )}
-                              >
+                              <div className="label">
                                 {category.icon && (
-                                  <span className="gds-entity-highlight-menu__icon">
+                                  <span className="icon">
                                     {category.icon}
                                   </span>
                                 )}
-                                <span className="gds-entity-highlight-menu__subcategory-label-text">
+                                <span className="label-text">
                                   {subcategory.label}
                                 </span>
                               </div>
-                              <DocumentDetailCheckbox
+                              <Checkbox
                                 aria-label={`Toggle ${subcategory.label} entity highlights`}
                                 isSelected={selectedKeys.has(leafKey)}
                                 onChange={(nextSelected) =>
@@ -345,10 +311,10 @@ function DocumentDetailEntityHighlightMenu({
               })}
             </div>
           </div>
-        </DocumentDetailPopoverSurface>
+        </Popover>
       )}
     </div>
   );
 }
 
-export { DocumentDetailEntityHighlightMenu };
+export { EntityHighlightMenu };

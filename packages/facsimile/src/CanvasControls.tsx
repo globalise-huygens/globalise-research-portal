@@ -1,6 +1,7 @@
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useCanvasNavigation } from './useCanvasNavigation';
+import './CanvasControls.css';
 
 export function CanvasControls() {
   const {
@@ -19,9 +20,9 @@ export function CanvasControls() {
   }
 
   return (
-    <div className="navigation">
+    <div className="canvas-navigation">
       <span className="info">{label}&nbsp;{position}</span>
-      <div className="control-bar">
+      <div className="controls">
         <button onClick={prev} disabled={!hasPrev}>
           <NavigateBeforeIcon/>
         </button>

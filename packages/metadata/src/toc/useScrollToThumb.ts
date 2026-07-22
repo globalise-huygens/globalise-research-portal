@@ -3,8 +3,6 @@ import { isCentered } from '@globalise/common';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { debounce } from 'lodash';
 
-export const dataCurrentScan = 'data-current-scan';
-
 const scrollDebounce = 100; // ms
 
 export function useScrollToThumb(listRef: RefObject<HTMLDivElement | null>) {
@@ -30,7 +28,7 @@ export function useScrollToThumb(listRef: RefObject<HTMLDivElement | null>) {
 
 function scrollToSelectedThumb(list: HTMLDivElement) {
   const target = list.querySelector<HTMLElement>(
-    `[${dataCurrentScan}="true"]`,
+    '.toc-card[aria-current="true"]',
   );
   if (target && !isCentered(list, target)) {
     target.scrollIntoView({ block: 'center', behavior: 'smooth' });

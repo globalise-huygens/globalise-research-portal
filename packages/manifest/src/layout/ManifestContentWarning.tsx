@@ -1,4 +1,8 @@
-import { ContentWarningControl } from '@globalise/design';
+import {
+  IconArrowTopRight,
+  IconContentWarning,
+  ToolButton,
+} from '@globalise/design';
 import { useState } from 'react';
 
 const contentWarning = {
@@ -10,14 +14,37 @@ const contentWarning = {
 
 export function ManifestContentWarning() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHoverPreviewOpen, setIsHoverPreviewOpen] = useState(false);
+  const isDetailsOpen = isOpen || isHoverPreviewOpen;
 
   return (
-    <div className="document-detail-overlay-warning manifest-document-layout__content-warning">
-      <ContentWarningControl
-        warning={contentWarning}
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      />
+    <div className="content-warning">
+      <ToolButton
+        aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
+        icon={<IconContentWarning />}
+        isActive={isOpen}
+        onBlur={() => setIsHoverPreviewOpen(false)}
+        onFocus={() => setIsHoverPreviewOpen(true)}
+        onMouseEnter={() => setIsHoverPreviewOpen(true)}
+        onMouseLeave={() => setIsHoverPreviewOpen(false)}
+        onPress={() => setIsOpen((open) => !open)}
+        size="compact"
+      >
+        {contentWarning.title}
+      </ToolButton>
+      {isDetailsOpen && (
+        <div
+          className="details"
+          role="dialog"
+          aria-label={contentWarning.title}
+        >
+          <p>{contentWarning.body}</p>
+          <a href="#">
+            <span>{contentWarning.linkLabel}</span>
+            <IconArrowTopRight aria-hidden="true" />
+          </a>
+        </div>
+      )}
     </div>
   );
 }
