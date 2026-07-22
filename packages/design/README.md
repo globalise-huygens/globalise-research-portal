@@ -14,8 +14,20 @@ for css:
 
 - each component gets one short kebab-case root, like `.manifest-viewer`, `.floating-toolbar`, or `.entity-menu`
 - parts inside it can stay short because they are scoped: `.manifest-viewer .top-bar`, `.entity-menu .content`
+- keep child selectors nested inside their component root where possible. this keeps the css that belongs together in one place instead of repeating the root all through the file (see example below)
 - if the html already explains the part, just use that: `.entity-menu h3`
 - use aria, pseudo-classes, or `data-*` for real state. not only as another styling hook
 - do not mix the old BEM / `gds-` naming and the new naming inside the same component. older files can be cleaned up when we actually work on them
+
+```css
+.manifest-viewer {
+  .top-bar {
+    /* ... */
+  }
+  .sidebar {
+    /* ... */
+  }
+}
+```
 
 `src/styles.css` stays the public css entry. shared tokens are in `src/styles/globals.css`, general component css is collected by `src/components/ui/ui.css`, and a component can have its own matching css file when needed
