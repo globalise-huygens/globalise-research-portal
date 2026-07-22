@@ -26,6 +26,7 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/routeTree.gen.ts',
       '**/*.config.{js,ts,mjs,cjs}',
+      '**/public/mockServiceWorker.js',
       'eslint.config.js',
     ],
   },
