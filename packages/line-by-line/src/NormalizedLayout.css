@@ -2,16 +2,8 @@
     --normalized-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
     --normalized-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --normalized-selected-strong: var(--color-selection-stroke, #125e64);
-    --normalized-structure-fill: color-mix(
-      in srgb,
-      var(--color-brand-turquoise, #29bfcc) 8%,
-      transparent
-    );
-    --normalized-structure-fill-strong: color-mix(
-      in srgb,
-      var(--color-brand-turquoise, #29bfcc) 13%,
-      transparent
-    );
+    --normalized-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
     --normalized-structure-text: var(--color-layout-element-text, #125e64);
     --normalized-text: var(--color-brand-black, #0c0a09);
 
