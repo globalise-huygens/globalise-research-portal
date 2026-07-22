@@ -5,7 +5,7 @@ import { loadConcept } from '@globalise/object-card';
 
 const DEFAULT_URI =
   'https://data.globalise.huygens.knaw.nl/' +
-  'hdl:20.500.14722/thesaurus:225cef07-5b8e-4a8b-a141-2471a0cffce8';
+  'hdl:20.500.14722/thesaurus:00caf575-0d33-49f0-83d7-3f550c681355';
 
 const CONCEPT = 'concept';
 

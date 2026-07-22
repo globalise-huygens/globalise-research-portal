@@ -4,6 +4,8 @@ import { useConcept } from './ConceptSlice.ts';
 import './ObjectCard.css';
 import { ConceptList } from './ConceptList.tsx';
 import { LabelList } from './LabelList.tsx';
+import { MatchList } from './MatchList.tsx';
+import { Reference } from './Reference.tsx';
 
 export function ObjectCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -27,18 +29,25 @@ export function ObjectCard() {
       <h1>{concept._label ?? concept.id}</h1>
       <p>
         {concept.type} | {!!url && <a href={url} target="_blank">
-          Source <IconExternalLink className="inline-icon"/>
+          raw <IconExternalLink className="inline-icon"/>
         </a>}
+        {concept.source && <> | <a href={concept.source['@value']} target="_blank">
+          {concept.source['@value']} <IconExternalLink className="inline-icon"/>
+        </a></>}
       </p>
       <ConceptList title="inScheme" concepts={concept.inScheme} />
       <LabelList title="prefLabel" values={concept.prefLabel} />
       <LabelList title="dcterms:title" values={concept['dcterms:title']} />
       <LabelList title="altLabel" values={concept.altLabel} />
+      <LabelList title="definition" values={concept.definition} />
       <ConceptList title="hasTopConcept" concepts={concept.hasTopConcept} />
       <ConceptList title="broader" concepts={concept.broader} />
       <ConceptList title="narrower" concepts={concept.narrower} />
       <ConceptList title="related" concepts={concept.related} />
+      <MatchList title="closeMatch" matches={concept.closeMatch} />
+      <MatchList title="narrowMatch" matches={concept.narrowMatch} />
+      <MatchList title="exactMatch" matches={concept.exactMatch} />
+      <Reference title="references" value={concept.references} />
     </div>
   );
 }
-

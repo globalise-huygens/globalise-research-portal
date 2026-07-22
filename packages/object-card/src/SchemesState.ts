@@ -25,7 +25,11 @@ export type SkosConcept = {
   'dcterms:title'?: LangValue[];
   prefLabel?: LangValue[];
   altLabel?: LangValue[];
+  definition?: LangValue[];
   hasTopConcept?: ConceptRef[];
+
+  references?: LangValue;
+  source?: LangValue;
 
   /**
    * Relations:
@@ -35,11 +39,11 @@ export type SkosConcept = {
   related?: ConceptRef[];
 
   /**
-   * TODO: External relations
-   * - relatedMatch
-   * - closeMatch
-   * - exactMatch
+   * External relations:
    */
+  closeMatch?: string[];
+  narrowMatch?: string[];
+  exactMatch?: string[];
 
   inScheme?: ConceptRef[];
   topConceptOf?: ConceptRef[];
