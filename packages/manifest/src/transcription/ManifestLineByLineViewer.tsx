@@ -147,6 +147,7 @@ export function ManifestLineByLineViewer({
   return (
     <Virtuoso
       ref={virtuosoRef}
+      className="transcription-scroll"
       style={{ height: '100%' }}
       totalCount={canvasInfos.length}
       defaultItemHeight={DEFAULT_ITEM_HEIGHT}
