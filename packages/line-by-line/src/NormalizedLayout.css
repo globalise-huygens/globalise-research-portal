@@ -102,10 +102,11 @@
 
         background: color-mix(
           in srgb,
-          var(--normalized-entity) 58%,
+          var(--normalized-entity) 68%,
           var(--manifest-transcription-page, #f8f5f2)
         );
         border-radius: 2px;
+        box-shadow: inset 0 -1px 0 var(--normalized-entity-strong);
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
@@ -117,8 +118,8 @@
     }
 
     .entity.cidoc-appellation {
-        --normalized-entity: var(--color-entity-appellation, #fef3ba);
-        --normalized-entity-strong: var(--color-entity-appellation-strong, #8a6f00);
+        --normalized-entity: var(--color-entity-appellation, #d5c4ea);
+        --normalized-entity-strong: var(--color-entity-appellation-strong, #6f4e8c);
     }
 
     .entity.cidoc-conceptual-object {
@@ -127,8 +128,8 @@
     }
 
     .entity.cidoc-dimension {
-        --normalized-entity: var(--color-entity-dimension, #e6e4ec);
-        --normalized-entity-strong: var(--color-entity-dimension-strong, #6d5f78);
+        --normalized-entity: var(--color-entity-dimension, #d7dadd);
+        --normalized-entity-strong: var(--color-entity-dimension-strong, #596168);
     }
 
     .entity.cidoc-physical-thing {

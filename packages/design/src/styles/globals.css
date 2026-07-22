@@ -93,12 +93,12 @@
        strong colours provide a second, non-fill boundary cue. */
     --entity-actor: #ffbdca;
     --entity-actor-strong: #9a4f60;
-    --entity-appellation: #fef3ba;
-    --entity-appellation-strong: #8a6f00;
+    --entity-appellation: #d5c4ea;
+    --entity-appellation-strong: #6f4e8c;
     --entity-conceptual-object: #fddc34;
     --entity-conceptual-object-strong: #856f00;
-    --entity-dimension: #e6e4ec;
-    --entity-dimension-strong: #6d5f78;
+    --entity-dimension: #d7dadd;
+    --entity-dimension-strong: #596168;
     --entity-physical-thing: #e1ba9c;
     --entity-physical-thing-strong: #7a563d;
     --entity-place: #94cc7d;
