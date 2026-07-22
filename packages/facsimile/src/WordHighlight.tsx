@@ -48,6 +48,10 @@ export function WordHighlight(
     stroke: selected || hovered ? colors.stroke
       : 'transparent',
     strokeWidth: 1,
+    haloStroke: selected || hovered
+      ? 'rgb(255 255 255 / 0.9)'
+      : undefined,
+    haloStrokeWidth: 3,
     cursor: 'pointer',
     vectorEffect: 'non-scaling-stroke',
     omitLeftStroke: selected && joinedBefore,

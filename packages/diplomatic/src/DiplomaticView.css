@@ -2,11 +2,11 @@
     --diplomatic-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
     --diplomatic-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --diplomatic-selected-strong: var(--color-selection-stroke, #125e64);
-    --diplomatic-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
-    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
-    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
-    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14));
-    --diplomatic-structure-text: var(--color-layout-element-text, #125e64);
+    --diplomatic-structure: var(--color-layout-element-stroke, rgb(77 77 77 / 0.62));
+    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, rgb(38 38 38 / 0.82));
+    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(77 77 77 / 0.08));
+    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(77 77 77 / 0.13));
+    --diplomatic-structure-text: var(--color-layout-element-text, #4d4d4d);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
 
     color: var(--diplomatic-text);

@@ -109,11 +109,12 @@
     --entity-type-strong: #8f5200;
 
     /* Project-neutral document structure: paragraphs, blocks and lines. */
-    --layout-element-fill: rgb(128 219 227 / 0.1);
-    --layout-element-fill-strong: rgb(128 219 227 / 0.14);
-    --layout-element-stroke: rgb(18 94 100 / 0.5);
-    --layout-element-stroke-strong: rgb(18 94 100 / 0.7);
-    --layout-element-text: #125e64;
+    --layout-element-fill: rgb(77 77 77 / 0.08);
+    --layout-element-fill-strong: rgb(77 77 77 / 0.13);
+    --layout-element-stroke: rgb(77 77 77 / 0.62);
+    --layout-element-stroke-strong: rgb(38 38 38 / 0.82);
+    --layout-element-text: #4d4d4d;
+    --layout-element-halo: rgb(255 255 255 / 0.78);
 
     /* Cross-view selection links scan regions to transcription text. */
     --selection-fill: rgb(41 191 204 / 0.22);
@@ -223,6 +224,7 @@
     --color-layout-element-stroke: var(--layout-element-stroke);
     --color-layout-element-stroke-strong: var(--layout-element-stroke-strong);
     --color-layout-element-text: var(--layout-element-text);
+    --color-layout-element-halo: var(--layout-element-halo);
     --color-selection-fill: var(--selection-fill);
     --color-selection-fill-hover: var(--selection-fill-hover);
     --color-selection-stroke: var(--selection-stroke);

@@ -2,11 +2,11 @@
     --normalized-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
     --normalized-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --normalized-selected-strong: var(--color-selection-stroke, #125e64);
-    --normalized-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.5));
-    --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(18 94 100 / 0.7));
-    --normalized-structure-fill: var(--color-layout-element-fill, rgb(128 219 227 / 0.1));
-    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(128 219 227 / 0.14));
-    --normalized-structure-text: var(--color-layout-element-text, #125e64);
+    --normalized-structure: var(--color-layout-element-stroke, rgb(77 77 77 / 0.62));
+    --normalized-structure-strong: var(--color-layout-element-stroke-strong, rgb(38 38 38 / 0.82));
+    --normalized-structure-fill: var(--color-layout-element-fill, rgb(77 77 77 / 0.08));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(77 77 77 / 0.13));
+    --normalized-structure-text: var(--color-layout-element-text, #4d4d4d);
     --normalized-text: var(--color-brand-black, #0c0a09);
 
     margin-left: 0.5em;

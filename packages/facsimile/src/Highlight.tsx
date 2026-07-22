@@ -20,6 +20,8 @@ export function Highlight(
     fill,
     stroke,
     strokeWidth,
+    haloStroke,
+    haloStrokeWidth,
     cursor,
     vectorEffect,
     omitLeftStroke,
@@ -31,6 +33,27 @@ export function Highlight(
 
   return (
     <>
+      {haloStroke && (
+        partialStroke ? (
+          <path
+            d={partialStroke}
+            fill="none"
+            stroke={haloStroke}
+            strokeWidth={haloStrokeWidth ?? (strokeWidth ?? 0) + 2}
+            vectorEffect={vectorEffect}
+            style={{ pointerEvents: 'none' }}
+          />
+        ) : (
+          <polygon
+            points={points}
+            fill="none"
+            stroke={haloStroke}
+            strokeWidth={haloStrokeWidth ?? (strokeWidth ?? 0) + 2}
+            vectorEffect={vectorEffect}
+            style={{ pointerEvents: 'none' }}
+          />
+        )
+      )}
       <polygon
         points={points}
         fill={fill}
