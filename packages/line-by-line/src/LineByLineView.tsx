@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 import { Annotation, findSourceLabel, Id } from '@globalise/common/annotation';
-import {
-  setHovered,
-  useIsSelectedInTranscription,
-} from '@globalise/common/document';
+import { useIsSelectedInTranscription } from '@globalise/common/document';
 import { SegmentedLine } from './SegmentedLine';
 import { LineSegments, useLineSegments } from './useLineSegments';
 
@@ -73,25 +70,12 @@ function BlockGroup(
     return null;
   }
 
-  const lineNumberStart = lineNumberById[renderedLineIds[0]];
-  const lineNumberEnd = lineNumberById[
-    renderedLineIds[renderedLineIds.length - 1]
-  ];
   const layoutLabel = annotation
     ? findSourceLabel(annotation)
     : 'Layout element';
-  const lineRange = lineNumberStart === lineNumberEnd
-    ? `line ${lineNumberStart}`
-    : `lines ${lineNumberStart} to ${lineNumberEnd}`;
-
   return (
     <div
-      aria-label={`${layoutLabel}, ${lineRange}`}
       className={`block-group ${isSelected ? 'selected' : ''}`}
-      onBlur={() => setHovered(null)}
-      onFocus={() => setHovered(blockId)}
-      role="group"
-      tabIndex={showLayoutElements ? 0 : undefined}
     >
       {showLayoutElements && (
         <span className="layout-element-label" aria-hidden="true">

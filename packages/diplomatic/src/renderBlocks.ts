@@ -66,10 +66,7 @@ export function renderBlocks(
       const label = block ? findSourceLabel(block) : 'Layout element';
       const $highlight = $svg.append('g')
         .attr('class', 'layout-block')
-        .attr('data-selected', 'false')
-        .attr('aria-label', label)
-        .attr('role', 'button')
-        .attr('tabindex', 0);
+        .attr('data-selected', 'false');
 
       const blockTopLeft = corners[0];
       const blockBottomLeft = corners[3];

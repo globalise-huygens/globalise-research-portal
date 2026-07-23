@@ -23,8 +23,7 @@
         cursor: pointer;
     }
 
-    .segment:hover,
-    .segment:focus-visible {
+    .segment:hover {
         background: var(--diplomatic-selected-hover);
         box-shadow: inset 0 0 0 1px var(--diplomatic-selected-strong);
         outline: none;
@@ -37,8 +36,7 @@
         color: var(--diplomatic-text);
     }
 
-    .entity:hover,
-    .entity:focus-visible {
+    .entity:hover {
         box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
         cursor: pointer;
     }
@@ -147,12 +145,7 @@
         user-select: text;
     }
 
-    .blocks .layout-block:focus {
-        outline: none;
-    }
-
-    .blocks .layout-block:hover polygon,
-    .blocks .layout-block:focus-visible polygon {
+    .blocks .layout-block:hover polygon {
         fill: var(--diplomatic-structure-fill);
         stroke: transparent;
     }
@@ -163,14 +156,12 @@
     }
 
     .blocks .layout-block:hover .block-marker,
-    .blocks .layout-block:focus-visible .block-marker,
     .blocks .layout-block[data-selected="true"] .block-marker {
         stroke: var(--diplomatic-structure-strong);
         stroke-width: 2px;
     }
 
     .blocks .layout-block:hover .block-label,
-    .blocks .layout-block:focus-visible .block-label,
     .blocks .layout-block[data-selected="true"] .block-label {
         opacity: 0.9;
     }

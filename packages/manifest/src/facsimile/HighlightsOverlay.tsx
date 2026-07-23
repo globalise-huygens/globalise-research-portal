@@ -156,12 +156,11 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
-          {visibleBlocks.map(({ id, label, path }) => (
+          {visibleBlocks.map(({ id, path }) => (
             <BlockHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
               id={id}
-              label={label}
               points={path}
             />
           ))}

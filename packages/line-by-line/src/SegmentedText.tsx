@@ -3,7 +3,6 @@ import {
   Annotation,
   type EntityVisualCategoryClassName,
   getEntityClassifiedAsClassName,
-  getEntityClassifiedAsLabel,
   Id,
   isEntity,
   isWord,
@@ -36,27 +35,14 @@ export function SegmentedText(
       const nextAnnotationIds = new Set(
         segments[index + 1]?.annotations.map((annotation) => annotation.id),
       );
-      const interactiveAnnotation = selectAnnotation(
+      const hoverId = selectAnnotation(
         segment.annotations,
         highlightedEntityCategories,
-      );
-      const interactionId = interactiveAnnotation?.id ?? null;
-      const hoverId = interactionId ?? blockId ?? null;
-      const isFirstInteractionSegment = interactionId
-        ? !previousAnnotationIds.has(interactionId)
-        : false;
+      ) ?? blockId ?? null;
 
       return (
         <span
           key={segment.index}
-          aria-label={interactiveAnnotation
-            ? getInteractionLabel(interactiveAnnotation, body)
-            : undefined}
-          className={interactiveAnnotation ? 'interactive-segment' : undefined}
-          role={interactiveAnnotation ? 'button' : undefined}
-          tabIndex={isFirstInteractionSegment ? 0 : undefined}
-          onBlur={() => { setHovered(blockId); }}
-          onFocus={() => { setHovered(hoverId); }}
           onMouseEnter={(e) => {
             e.stopPropagation();
             setHovered(hoverId);
@@ -66,18 +52,9 @@ export function SegmentedText(
             setHovered(blockId);
           }}
           onClick={(e) => {
-            if (interactionId) {
+            if (hoverId && hoverId !== blockId) {
               e.stopPropagation();
-              toggleClicked(interactionId);
-            }
-          }}
-          onKeyDown={(event) => {
-            if (
-              interactionId
-              && (event.key === 'Enter' || event.key === ' ')
-            ) {
-              event.preventDefault();
-              toggleClicked(interactionId);
+              toggleClicked(hoverId);
             }
           }}
         >
@@ -105,22 +82,16 @@ export function SegmentedText(
 function selectAnnotation(
   annotations: Annotation[],
   highlightedEntityCategories: Set<EntityVisualCategoryClassName>,
-): Annotation | undefined {
+): Id | undefined {
   const entity = annotations.find((a) =>
     isEntity(a) &&
     highlightedEntityCategories.has(getEntityClassifiedAsClassName(a)),
   );
   if (entity) {
-    return entity;
+    return entity.id;
   }
   const word = annotations.find((a) => isWord(a));
   if (word) {
-    return word;
+    return word.id;
   }
-}
-
-function getInteractionLabel(annotation: Annotation, text: string) {
-  return isEntity(annotation)
-    ? `${getEntityClassifiedAsLabel(annotation)}: ${text}`
-    : `Word: ${text}`;
 }

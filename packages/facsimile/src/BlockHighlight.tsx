@@ -7,12 +7,11 @@ import { getBlockHighlightStyle } from './BlockHighlightStyle.ts';
 type BlockHighlightProps = {
   canvasId: CanvasId;
   id: Id;
-  label: string;
   points: string;
 };
 
 export function BlockHighlight(
-  { canvasId, id, label, points }: BlockHighlightProps,
+  { canvasId, id, points }: BlockHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
@@ -21,13 +20,8 @@ export function BlockHighlight(
 
   return (
     <Highlight
-      ariaLabel={label}
       points={points}
       highlightStyle={highlightStyle}
-      onFocusChange={(focused) => {
-        setHoveredLocal(focused);
-        setHovered(focused ? id : null);
-      }}
       onHover={(hovering) => {
         setHoveredLocal(hovering);
         setHovered(hovering ? id : null);

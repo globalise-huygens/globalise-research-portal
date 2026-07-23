@@ -34,14 +34,4 @@ describe('Highlight', () => {
     );
   });
 
-  it('exposes clickable highlights to keyboard users', () => {
-    const markup = renderHighlight(
-      { fill: 'transparent' },
-      { ariaLabel: 'banda', onClick: () => undefined },
-    );
-
-    expect(markup).toContain('aria-label="banda"');
-    expect(markup).toContain('role="button"');
-    expect(markup).toContain('tabindex="0"');
-  });
 });

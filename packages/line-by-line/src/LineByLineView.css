@@ -85,12 +85,7 @@
         background: transparent;
         padding-left: 0.35rem;
 
-        &:focus {
-            outline: none;
-        }
-
-        &:hover,
-        &:focus-visible {
+        &:hover {
             background: var(--line-by-line-structure-fill);
             border-left-color: var(--line-by-line-structure-text);
         }
@@ -120,8 +115,7 @@
         white-space: nowrap;
     }
 
-    .block-group:hover > .layout-element-label,
-    .block-group:focus-visible > .layout-element-label {
+    .block-group:hover > .layout-element-label {
         opacity: 0.86;
         visibility: visible;
     }
@@ -151,19 +145,6 @@
     .entity:hover {
         box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
         cursor: pointer;
-    }
-
-    .interactive-segment:focus-visible {
-        outline: none;
-
-        .entity {
-            box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
-        }
-
-        .word {
-            background: var(--line-by-line-selected-hover);
-            box-shadow: inset 0 0 0 1px var(--line-by-line-selected-strong);
-        }
     }
 
     .entity.selected {

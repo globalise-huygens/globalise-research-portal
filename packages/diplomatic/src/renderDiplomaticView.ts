@@ -112,34 +112,14 @@ export function renderDiplomaticView(
     pageAnnoId,
   );
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
-  const keyboardInteractionIds = new Set<Id>();
-
   function makeSegmentInteractive(
     $segment: HTMLSpanElement,
     id: Id,
-    label: string,
     blurId: Id | null,
   ) {
-    const isKeyboardTarget = !keyboardInteractionIds.has(id);
-    if (isKeyboardTarget) {
-      $segment.setAttribute('aria-label', label);
-      $segment.setAttribute('role', 'button');
-      $segment.tabIndex = 0;
-    }
-    keyboardInteractionIds.add(id);
     $segment.addEventListener('click', () => onClick(id));
     $segment.addEventListener('mouseenter', () => onHover(id));
     $segment.addEventListener('mouseleave', () => onHover(blurId));
-    if (isKeyboardTarget) {
-      $segment.addEventListener('focus', () => onHover(id));
-      $segment.addEventListener('blur', () => onHover(blurId));
-      $segment.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onClick(id);
-        }
-      });
-    }
   }
 
   for (const wordGroup of groupedByWord) {
@@ -192,7 +172,6 @@ export function renderDiplomaticView(
         makeSegmentInteractive(
           $segment,
           entityAnno.id,
-          `${getEntityClassifiedAsLabel(entityAnno)}: ${$segment.textContent}`,
           null,
         );
       } else {
@@ -200,7 +179,6 @@ export function renderDiplomaticView(
         makeSegmentInteractive(
           $segment,
           wordId,
-          `Word: ${$segment.textContent}`,
           blockId ?? null,
         );
       }
@@ -257,15 +235,7 @@ export function renderDiplomaticView(
     for (const [blockId, $block] of Object.entries($blocks)) {
       $block.on('mouseenter', () => onHover(blockId));
       $block.on('mouseleave', () => onHover(null));
-      $block.on('focus', () => onHover(blockId));
-      $block.on('blur', () => onHover(null));
       $block.on('click', () => onClick(blockId));
-      $block.on('keydown', (event: KeyboardEvent) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onClick(blockId);
-        }
-      });
     }
 
     selectBlock = (id: Id) => {
@@ -302,8 +272,6 @@ export function renderDiplomaticView(
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
       $segments?.forEach(($r) => { $r.classList.add('selected'); });
-    } else {
-      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
@@ -317,8 +285,6 @@ export function renderDiplomaticView(
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
       $segments?.forEach(($r) => $r.classList.remove('selected'));
-    } else {
-      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
