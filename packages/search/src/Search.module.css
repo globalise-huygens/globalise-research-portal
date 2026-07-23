@@ -1,0 +1,11 @@
+.search {
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    line-height: 1.5;
+
+    button {
+        box-sizing: border-box;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
