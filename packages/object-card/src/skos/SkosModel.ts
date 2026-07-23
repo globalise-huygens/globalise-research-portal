@@ -29,10 +29,12 @@ export type SkosConcept = {
   /**
    * External relations:
    */
-  closeMatch?: string[];
-  narrowMatch?: string[];
-  exactMatch?: string[];
+  closeMatch?: SkosMatch[];
+  narrowMatch?: SkosMatch[];
+  exactMatch?: SkosMatch[];
 };
+
+export type SkosMatch = SkosConcept | string;
 
 export function conceptLabel(concept: SkosConcept): string {
   if (concept._label) {
@@ -48,4 +50,20 @@ export function getSkosUrl(uri: string): string {
     throw new Error(`Could not create url from uri ${uri}`);
   }
   return result;
+}
+
+export function matchUri(match: SkosMatch): string {
+  if (typeof match === 'string') {
+    return match;
+  }
+  return match.id;
+}
+
+export function matchLabel(match: SkosMatch): string {
+  if (typeof match === 'string') {
+    return match;
+  }
+  return match.prefLabel?.[0]['@value']
+    ?? match._label
+    ?? match.id;
 }
