@@ -62,22 +62,20 @@ export function ManifestLineByLineViewer({
   useEffect(scrollToSelectedCanvas, [
     selectedCanvasId,
     selectedCanvasSource,
-    canvasInfos,
   ]);
 
   function scrollToSelectedCanvas() {
     if (selectedCanvasId === lastSelectedCanvasId.current) {
       return;
     }
+    lastSelectedCanvasId.current = selectedCanvasId;
     if (selectedCanvasSource === 'transcription' || !selectedCanvasId) {
-      lastSelectedCanvasId.current = selectedCanvasId;
       return;
     }
     const index = canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId);
     if (index === -1) {
       return;
     }
-    lastSelectedCanvasId.current = selectedCanvasId;
     virtuosoRef.current?.scrollToIndex({
       index,
       align: 'start',

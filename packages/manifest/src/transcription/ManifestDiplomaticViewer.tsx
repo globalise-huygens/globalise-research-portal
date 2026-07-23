@@ -27,6 +27,9 @@ type Props = {
   onCanvasChange: (canvasId: string) => void;
 };
 
+const MIN_CANVASES_TO_RENDER = 4;
+const MAX_VIEWPORTS_TO_RENDER = 2;
+
 export function ManifestDiplomaticViewer({
   initialCanvasId,
   showLayoutElements,
@@ -40,6 +43,7 @@ export function ManifestDiplomaticViewer({
   const suppressCanvasChangeRef = useRef(false);
   const previousScaleRef = useRef(scaleFactor);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const [visibleCanvases, setVisibleCanvases] = useState<Set<number>>(
     new Set(),
   );
@@ -87,10 +91,13 @@ export function ManifestDiplomaticViewer({
       for (const entry of entries) {
         if (entry.target === canvasList) {
           setContainerWidth(entry.contentRect.width);
+        } else if (entry.target === scrollContainer) {
+          setViewportHeight(entry.contentRect.height);
         }
       }
     });
     resizeObserver.observe(canvasList);
+    resizeObserver.observe(scrollContainer);
 
     const selectedCanvasObserver = new IntersectionObserver(
       (canvasEvents) => {
@@ -161,6 +168,23 @@ export function ManifestDiplomaticViewer({
       visibleCanvasesObserver.disconnect();
     };
   }
+
+  const renderDistance = useMemo(() => {
+    if (!viewportHeight || !canvasInfos.length || !containerWidth) {
+      return MIN_CANVASES_TO_RENDER;
+    }
+    const sample = canvasInfos[0];
+    const aspectRatio = sample.height / sample.width;
+    const displayedHeight = aspectRatio * containerWidth * scaleFactor;
+    if (!displayedHeight) {
+      return MIN_CANVASES_TO_RENDER;
+    }
+    const canvasesPerViewport = viewportHeight / displayedHeight;
+    return Math.max(
+      MIN_CANVASES_TO_RENDER,
+      Math.ceil(MAX_VIEWPORTS_TO_RENDER * canvasesPerViewport),
+    );
+  }, [viewportHeight, canvasInfos, containerWidth, scaleFactor]);
 
   useEffect(initCanvasScroll, [
     canvasInfos.length,
@@ -243,6 +267,7 @@ export function ManifestDiplomaticViewer({
               annotationUrls={info.annotationUrls}
               index={i}
               isVisible={visibleCanvases.has(i)}
+              renderDistance={renderDistance}
               showLayoutElements={showLayoutElements}
             />
           ))}

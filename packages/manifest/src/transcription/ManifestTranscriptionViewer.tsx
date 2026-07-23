@@ -1,5 +1,6 @@
 import {
   initCanvases,
+  setTranscriptionMode,
   useDocumentStore,
   useIsLayoutElementsVisible, useTranscriptionMode,
 } from '@globalise/common/document';
@@ -25,6 +26,24 @@ export function ManifestTranscriptionViewer({
   const transcriptionMode = useTranscriptionMode();
   const showLayoutElements = useIsLayoutElementsVisible();
   const [storeReady, setStoreReady] = useState(false);
+
+  useEffect(preferReadableMobileTranscription, []);
+  function preferReadableMobileTranscription() {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const selectLineByLineOnMobile = ({ matches }: MediaQueryListEvent) => {
+      if (matches) {
+        setTranscriptionMode('line-by-line');
+      }
+    };
+
+    if (mediaQuery.matches) {
+      setTranscriptionMode('line-by-line');
+    }
+    mediaQuery.addEventListener('change', selectLineByLineOnMobile);
+    return () => {
+      mediaQuery.removeEventListener('change', selectLineByLineOnMobile);
+    };
+  }
 
   const canvasIds = useMemo(() => {
     if (!manifestId || !isManifestReady) {
