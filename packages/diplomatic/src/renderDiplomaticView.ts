@@ -7,7 +7,6 @@ import {
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
   getPageText,
-  indexLineNumbers,
   indexAnnotations,
   isEntity,
   toClassName,
@@ -112,7 +111,6 @@ export function renderDiplomaticView(
     annotations,
     pageAnnoId,
   );
-  const lineNumberById = indexLineNumbers(annotations);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
   const keyboardInteractionIds = new Set<Id>();
 
@@ -122,21 +120,26 @@ export function renderDiplomaticView(
     label: string,
     blurId: Id | null,
   ) {
-    $segment.setAttribute('aria-label', label);
-    $segment.setAttribute('role', 'button');
-    $segment.tabIndex = keyboardInteractionIds.has(id) ? -1 : 0;
+    const isKeyboardTarget = !keyboardInteractionIds.has(id);
+    if (isKeyboardTarget) {
+      $segment.setAttribute('aria-label', label);
+      $segment.setAttribute('role', 'button');
+      $segment.tabIndex = 0;
+    }
     keyboardInteractionIds.add(id);
     $segment.addEventListener('click', () => onClick(id));
     $segment.addEventListener('mouseenter', () => onHover(id));
     $segment.addEventListener('mouseleave', () => onHover(blurId));
-    $segment.addEventListener('focus', () => onHover(id));
-    $segment.addEventListener('blur', () => onHover(blurId));
-    $segment.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onClick(id);
-      }
-    });
+    if (isKeyboardTarget) {
+      $segment.addEventListener('focus', () => onHover(id));
+      $segment.addEventListener('blur', () => onHover(blurId));
+      $segment.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onClick(id);
+        }
+      });
+    }
   }
 
   for (const wordGroup of groupedByWord) {
@@ -154,12 +157,7 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       const lineId = wordToLine[wordId] ?? '';
-      const lineNumber = lineNumberById[lineId];
       $segment.dataset.lineId = lineId;
-      if (lineNumber) {
-        $segment.dataset.copyLineNumber = `${lineNumber}`;
-        $segment.dataset.copyTextStart = `${segment.start}`;
-      }
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
       const visualCategory = entityAnno
@@ -214,7 +212,6 @@ export function renderDiplomaticView(
     markJoinedSegments($segments);
   }
 
-  const selectedBlocks = new Set<Id>();
   let selectBlock: (id: Id) => void = noop;
   let deselectBlock: (id: Id) => void = noop;
 
@@ -276,10 +273,9 @@ export function renderDiplomaticView(
       if (!$block) {
         return;
       }
-      if (selectedBlocks.has(id)) {
+      if ($block.attr('data-selected') === 'true') {
         return;
       }
-      selectedBlocks.add(id);
       const lines = blockToLines[id] ?? [];
       showBlock($block, lines);
     };
@@ -288,10 +284,9 @@ export function renderDiplomaticView(
       if (!$block) {
         return;
       }
-      if (!selectedBlocks.has(id)) {
+      if ($block.attr('data-selected') !== 'true') {
         return;
       }
-      selectedBlocks.delete(id);
       const lines = blockToLines[id] ?? [];
       hideBlock($block, lines);
     };
