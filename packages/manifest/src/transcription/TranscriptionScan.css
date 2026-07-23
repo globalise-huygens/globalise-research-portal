@@ -3,15 +3,15 @@
   box-sizing: border-box;
   background: var(--manifest-transcription-sheet, #f8f5f2);
   color: var(--manifest-transcription-text, #0c0a09);
-  outline: 1px solid var(--manifest-transcription-sheet-border, #7e6149);
-  outline-offset: -1px;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
   box-shadow:
+    inset 0 0 0 1px var(--manifest-transcription-sheet-border, #7e6149),
     0 1px 2px rgb(78 65 53 / 0.16),
     0 8px 24px rgb(78 65 53 / 0.1);
 
   &[aria-current="true"] {
     outline-color: var(--color-selection-stroke, #125e64);
-    outline-width: 2px;
     box-shadow:
       0 0 0 1px var(--color-brand-white, #fff),
       0 8px 22px rgb(78 65 53 / 0.14);
