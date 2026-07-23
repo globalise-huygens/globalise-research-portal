@@ -33,13 +33,14 @@
                 }
 
                 svg {
-                    width: 0.75rem;
-                    height: 0.75rem;
+                    width: 1rem;
+                    height: 1rem;
                     fill: oklch(20.5% 0 0);
+                    rotate: 90deg;
                 }
 
                 &.expanded svg {
-                    rotate: 180deg;
+                    rotate: 270deg;
                 }
             }
         }

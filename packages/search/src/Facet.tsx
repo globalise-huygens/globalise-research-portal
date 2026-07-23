@@ -1,5 +1,5 @@
 import { type ReactNode, useContext } from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { IconRight } from '@globalise/design';
 import { Disclosure, DisclosurePanel, Button, DisclosureStateContext } from 'react-aria-components';
 import classes from './Facet.module.css';
 
@@ -37,7 +37,7 @@ function FacetHeader({ label }: { label: string }) {
         <Button slot="trigger"
           aria-label={isExpanded ? 'Close' : 'Open'}
           className={`${classes.toggle} ${!isExpanded ? classes.expanded : ''}`}>
-          <ChevronDownIcon/>
+          <IconRight/>
         </Button>
       </div>
     </div>
