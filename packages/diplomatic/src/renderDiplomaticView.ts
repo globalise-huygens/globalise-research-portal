@@ -18,7 +18,6 @@ import {
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
-  Point,
   px,
   renderOriginalLayout,
 } from '@knaw-huc/original-layout';
@@ -231,7 +230,7 @@ export function renderDiplomaticView(
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks, $svg, blockCorners, blockMarkerXs } = renderBlocks(
+    const { $blocks, blockMarkerXs } = renderBlocks(
       annotations,
       $layoutView,
       { scale, offset },
@@ -271,33 +270,6 @@ export function renderDiplomaticView(
         }
       });
     }
-
-    let hoveredLayoutBlockId: Id | null = null;
-    $layoutView.addEventListener('pointermove', (event) => {
-      if ((event.target as Element).closest('.segment')) {
-        hoveredLayoutBlockId = null;
-        return;
-      }
-      const svgRect = $svg.node()?.getBoundingClientRect();
-      if (!svgRect) {
-        return;
-      }
-      const pointer: Point = [
-        event.clientX - svgRect.left,
-        event.clientY - svgRect.top,
-      ];
-      const nextBlockId = Object.entries(blockCorners)
-        .find(([, corners]) => isPointInPolygon(pointer, corners))?.[0]
-        ?? null;
-      if (nextBlockId !== hoveredLayoutBlockId) {
-        hoveredLayoutBlockId = nextBlockId;
-        onHover(nextBlockId);
-      }
-    });
-    $layoutView.addEventListener('pointerleave', () => {
-      hoveredLayoutBlockId = null;
-      onHover(null);
-    });
 
     selectBlock = (id: Id) => {
       const $block = $blocks[id];
@@ -369,21 +341,6 @@ export function renderDiplomaticView(
       selectedIds.push(...ids);
     },
   };
-}
-
-function isPointInPolygon(point: Point, polygon: Point[]) {
-  const [x, y] = point;
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const [xi, yi] = polygon[i];
-    const [xj, yj] = polygon[j];
-    const crosses = yi > y !== yj > y
-      && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-    if (crosses) {
-      inside = !inside;
-    }
-  }
-  return inside;
 }
 
 function markJoinedSegments($segments: HTMLSpanElement[]) {

@@ -117,5 +117,5 @@ export function renderBlocks(
     }),
   );
 
-  return { $blocks, $svg, blockCorners, blockMarkerXs };
+  return { $blocks, blockMarkerXs };
 }
