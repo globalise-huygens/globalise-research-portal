@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { segment, TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  findTextSelectorRange,
+  findTextPositionSelector,
   getPageText,
   Id,
   indexLineNumbers,
@@ -36,7 +36,7 @@ export function useLineSegments(
     const entityAnnos = Object.values(annotations).filter(isEntity);
     const annos = filterAnnotationsWithSelector([...wordAnnos, ...entityAnnos], pageAnnoId);
     const segments = segment(pageText, annos, (a) => {
-      const selector = findTextSelectorRange(a, pageAnnoId, pageText)
+      const selector = findTextPositionSelector(a, pageAnnoId)
         ?? orThrow('No selector');
       return { start: selector.start, end: selector.end };
     });

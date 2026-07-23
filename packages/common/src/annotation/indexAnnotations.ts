@@ -2,7 +2,7 @@ import { Id } from './Id';
 import { Annotation } from './AnnoModel';
 import { isEntity } from './EntityModel';
 import { findResourceTarget } from './findResourceTarget.ts';
-import { findTextSelectorRange } from './findTextPositionSelector';
+import { findTextPositionSelector } from './findTextPositionSelector';
 import { orThrow } from '../util/orThrow.ts';
 
 export type AnnotationIndexes = {
@@ -17,7 +17,6 @@ export type AnnotationIndexes = {
 export function indexAnnotations(
   annotations: Record<Id, Annotation>,
   pageAnnoId: Id,
-  pageText: string,
 ): AnnotationIndexes {
   const wordToLine: Record<Id, Id> = {};
   const lineToBlock: Record<Id, Id> = {};
@@ -57,7 +56,7 @@ export function indexAnnotations(
   for (const annotation of Object.values(annotations)) {
     if (annotation.textGranularity === 'word') {
       const { start, end } =
-        findTextSelectorRange(annotation, pageAnnoId, pageText) ??
+        findTextPositionSelector(annotation, pageAnnoId) ??
       orThrow('No selector');
       wordSelectors.push({ id: annotation.id, start, end });
     }
@@ -70,7 +69,7 @@ export function indexAnnotations(
       }
 
       const { start, end } =
-        findTextSelectorRange(entity, pageAnnoId, pageText)
+        findTextPositionSelector(entity, pageAnnoId)
       ?? orThrow('No selector');
       const overlapping = wordSelectors
         .filter((word) => word.start < end && word.end > start)

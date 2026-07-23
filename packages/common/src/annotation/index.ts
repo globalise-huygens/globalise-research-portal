@@ -10,7 +10,6 @@ export { findSvgPath } from './findSvgPath';
 export type { SvgPath } from './findSvgPath';
 export {
   findTextPositionSelector,
-  findTextSelectorRange,
   isTextPositionSelector,
 } from './findTextPositionSelector';
 export { isTextualBody } from './isTextualBody';
