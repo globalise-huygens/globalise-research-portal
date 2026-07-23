@@ -20,5 +20,10 @@
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.168.6"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

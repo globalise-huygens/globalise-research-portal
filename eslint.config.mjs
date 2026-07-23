@@ -3,6 +3,7 @@ import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import router from '@tanstack/eslint-plugin-router';
+import query from '@tanstack/eslint-plugin-query';
 import unusedImports from 'eslint-plugin-unused-imports';
 import stylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
@@ -15,6 +16,7 @@ const reactPackages = [
   'packages/facsimile/**/*.{ts,tsx}',
   'packages/line-by-line/**/*.{ts,tsx}',
   'packages/manifest/**/*.{ts,tsx}',
+  'packages/search/**/*.{ts,tsx}',
 ];
 
 export default tseslint.config(
@@ -24,6 +26,7 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/routeTree.gen.ts',
       '**/*.config.{js,ts,mjs,cjs}',
+      '**/public/mockServiceWorker.js',
       'eslint.config.js',
     ],
   },
@@ -50,7 +53,6 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/consistent-type-definitions": ['warn', 'type'],
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       '@stylistic/semi': ['error', 'always'],
       'curly': ['error', 'all'],
@@ -77,6 +79,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off', // Unnecessary optional chain on a non-nullish value
       '@typescript-eslint/no-unsafe-argument': 'off', //Unsafe argument of type `any` assigned to a parameter of type `Error`
       '@typescript-eslint/no-dynamic-delete': 'off', // Do not delete dynamically computed property keys
+      '@typescript-eslint/no-unsafe-member-access': 'off', // Allow CSS modules
     },
   },
 
@@ -98,6 +101,7 @@ export default tseslint.config(
     ],
     plugins: {
       '@tanstack/router': router,
+      '@tanstack/query': query,
     },
     rules: {
       ...router.configs.recommended.rules,
