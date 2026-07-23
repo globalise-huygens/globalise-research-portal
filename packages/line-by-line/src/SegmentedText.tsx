@@ -19,12 +19,11 @@ import { NestedSegment } from './NestedSegment';
 type TextProps = {
   canvasId: string;
   blockId: Id | null;
-  lineNumber: number;
   segments: TextSegment<Annotation>[];
 };
 
 export function SegmentedText(
-  { canvasId, blockId, lineNumber, segments }: TextProps,
+  { canvasId, blockId, segments }: TextProps,
 ) {
   const highlightedEntityCategories = useEntityHighlightCategories();
 
@@ -54,8 +53,6 @@ export function SegmentedText(
             ? getInteractionLabel(interactiveAnnotation, body)
             : undefined}
           className={interactiveAnnotation ? 'interactive-segment' : undefined}
-          data-copy-line-number={lineNumber}
-          data-copy-text-start={segment.start}
           role={interactiveAnnotation ? 'button' : undefined}
           tabIndex={isFirstInteractionSegment ? 0 : undefined}
           onBlur={() => { setHovered(blockId); }}

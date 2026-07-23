@@ -14,10 +14,8 @@ import './DiplomaticView.css';
 import {
   Annotation,
   type EntityVisualCategoryClassName,
-  getPageText,
 } from '@globalise/common/annotation';
 import {
-  registerTranscriptionCopySource,
   setHovered,
   toggleClicked,
 } from '@globalise/common/document';
@@ -52,15 +50,6 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const [width, setWidth] = useState(0);
 
   const setWidthDebounced = useMemo(() => debounce(setWidth, 50), []);
-  const pageText = useMemo(() => getPageText(annotations).text, [annotations]);
-
-  useEffect(() => {
-    const root = containerRef.current;
-    return root
-      ? registerTranscriptionCopySource(root, pageText)
-      : undefined;
-  }, [pageText]);
-
   useEffect(() => {
     const $view = containerRef.current;
     if (!$view) {

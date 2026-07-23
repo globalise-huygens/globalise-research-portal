@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Annotation, findSourceLabel, Id } from '@globalise/common/annotation';
 import {
-  registerTranscriptionCopySource,
   setHovered,
   useIsSelectedInTranscription,
 } from '@globalise/common/document';
@@ -21,20 +20,10 @@ export const LineByLineView = React.memo(function LineByLineView(
 ) {
   const lineSegments = useLineSegments(canvasId, annotations);
   const { segmentsByLine, blockToLines, lineNumberById } = lineSegments;
-  const rootRef = useRef<HTMLDivElement>(null);
-
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    return root
-      ? registerTranscriptionCopySource(root, lineSegments.pageText)
-      : undefined;
-  }, [lineSegments.pageText]);
 
   return (
     <div
-      ref={rootRef}
       className="line-by-line-view"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
     >

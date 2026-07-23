@@ -33,7 +33,6 @@ export const SegmentedLine = memo(function SegmentedLine(
         <SegmentedText
           canvasId={canvasId}
           blockId={blockId}
-          lineNumber={lineNumber}
           segments={segments}
         />
       </span>
