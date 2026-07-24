@@ -9,6 +9,7 @@ import {
   IconZoomIn,
   IconZoomOut,
   ToolButton,
+  Tooltip,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, type Rect } from 'openseadragon';
@@ -350,14 +351,16 @@ export function FacsimileControls({
   return (
     <>
       <div className="zoom-controls">
-        <ToolButton
-          aria-label="Zoom out"
-          icon={
-            <IconZoomOut />
-          }
-          onPress={handleZoomOut}
-          size="compact"
-        />
+        <Tooltip label="Zoom out to see more of the scan">
+          <ToolButton
+            aria-label="Zoom out"
+            icon={
+              <IconZoomOut />
+            }
+            onPress={handleZoomOut}
+            size="compact"
+          />
+        </Tooltip>
         <label className="zoom-field">
           <input
             aria-label="Scan zoom percentage, 10 to 400"
@@ -386,48 +389,56 @@ export function FacsimileControls({
             %
           </span>
         </label>
-        <ToolButton
-          aria-label="Zoom in"
-          icon={
-            <IconZoomIn />
-          }
-          onPress={handleZoomIn}
-          size="compact"
-        />
+        <Tooltip label="Zoom in to inspect more detail in the scan">
+          <ToolButton
+            aria-label="Zoom in"
+            icon={
+              <IconZoomIn />
+            }
+            onPress={handleZoomIn}
+            size="compact"
+          />
+        </Tooltip>
       </div>
       <span
         className="toolbar-divider"
         aria-hidden="true"
       />
-      <ToolButton
-        aria-label="Reset scan view"
-        icon={<IconReset />}
-        onPress={handleResetView}
-        size="compact"
-      />
-      <ToolButton
-        aria-label="Rotate scan"
-        icon={<IconRotate />}
-        onPress={() => {
-          rotate(90);
-        }}
-        size="compact"
-      />
-      <ToolButton
-        ref={settingsButtonRef}
-        aria-label="Scan image settings"
-        aria-controls={settingsPanelId}
-        aria-expanded={isSettingsOpen}
-        icon={<IconSetting />}
-        isActive={isSettingsOpen}
-        onPress={() => {
-          if (isSettingsOpen) {
-            setSettingsPanelStyle(null);
-          }
-          setIsSettingsOpen((open) => !open);
-        }}
-        size="compact"
-      />
+      <Tooltip label="Reset scan position, zoom, and rotation">
+        <ToolButton
+          aria-label="Reset scan view"
+          icon={<IconReset />}
+          onPress={handleResetView}
+          size="compact"
+        />
+      </Tooltip>
+      <Tooltip label="Rotate scan 90 degrees clockwise">
+        <ToolButton
+          aria-label="Rotate scan"
+          icon={<IconRotate />}
+          onPress={() => {
+            rotate(90);
+          }}
+          size="compact"
+        />
+      </Tooltip>
+      <Tooltip label="Adjust scan brightness, contrast, saturation, and inversion">
+        <ToolButton
+          ref={settingsButtonRef}
+          aria-label="Scan image settings"
+          aria-controls={settingsPanelId}
+          aria-expanded={isSettingsOpen}
+          icon={<IconSetting />}
+          isActive={isSettingsOpen}
+          onPress={() => {
+            if (isSettingsOpen) {
+              setSettingsPanelStyle(null);
+            }
+            setIsSettingsOpen((open) => !open);
+          }}
+          size="compact"
+        />
+      </Tooltip>
       {isSettingsOpen && settingsPanelStyle && createPortal(
         <div
           id={settingsPanelId}

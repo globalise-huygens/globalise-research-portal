@@ -163,7 +163,7 @@ export function ManifestViewer({
                 aria-label={
                   isSidebarExpanded ? 'Close sidebar' : 'Open sidebar'
                 }
-                tooltip={isSidebarExpanded ? 'Closes sidebar' : 'Opens sidebar'}
+                tooltip={isSidebarExpanded ? 'Hide sidebar' : 'Show sidebar'}
                 isActive={isSidebarExpanded}
                 className={TOP_BAR_BUTTON}
                 icon={<IconSidebar className="toolbar-icon" />}
@@ -190,9 +190,7 @@ export function ManifestViewer({
                 }}
               >
                 <Tooltip
-                  label={
-                    isScanVisible ? 'Closes scan viewer' : 'Opens scan viewer'
-                  }
+                  label={isScanVisible ? 'Hide scan viewer' : 'Show scan viewer'}
                 >
                   <Toggle
                     id="scan"
@@ -207,11 +205,9 @@ export function ManifestViewer({
                   </Toggle>
                 </Tooltip>
                 <Tooltip
-                  label={
-                    isTextVisible
-                      ? 'Closes transcription viewer'
-                      : 'Opens transcription viewer'
-                  }
+                  label={isTextVisible
+                    ? 'Hide transcription viewer'
+                    : 'Show transcription viewer'}
                 >
                   <Toggle
                     id="text"
