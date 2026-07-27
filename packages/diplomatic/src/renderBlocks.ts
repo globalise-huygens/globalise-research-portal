@@ -70,8 +70,8 @@ export function renderBlocks(
 
       const blockTopLeft = corners[0];
       const blockBottomLeft = corners[3];
-      const markerX = blockTopLeft[0];
-      blockMarkerXs[id] = markerX;
+      const blockLeftEdgeX = blockTopLeft[0];
+      blockMarkerXs[id] = blockLeftEdgeX;
 
       $highlight
         .append('polygon')
@@ -85,19 +85,19 @@ export function renderBlocks(
 
       $highlight
         .append('line')
-        .attr('class', 'block-hit-area')
-        .attr('x1', markerX)
+        .attr('class', 'block-left-edge-hit-area')
+        .attr('x1', blockLeftEdgeX)
         .attr('y1', blockTopLeft[1])
-        .attr('x2', markerX)
+        .attr('x2', blockLeftEdgeX)
         .attr('y2', blockBottomLeft[1])
         .attr('vector-effect', 'non-scaling-stroke');
 
       $highlight
         .append('line')
-        .attr('class', 'block-marker')
-        .attr('x1', markerX)
+        .attr('class', 'block-left-edge')
+        .attr('x1', blockLeftEdgeX)
         .attr('y1', blockTopLeft[1])
-        .attr('x2', markerX)
+        .attr('x2', blockLeftEdgeX)
         .attr('y2', blockBottomLeft[1])
         .attr('vector-effect', 'non-scaling-stroke');
 
@@ -105,7 +105,7 @@ export function renderBlocks(
         .append('text')
         .attr('class', 'block-label')
         .attr('dominant-baseline', 'hanging')
-        .attr('x', markerX + Math.max(4, scale(16)))
+        .attr('x', blockLeftEdgeX + Math.max(4, scale(16)))
         .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
         .style('font-size', px(Math.max(9, scale(42))))
         .text(label);

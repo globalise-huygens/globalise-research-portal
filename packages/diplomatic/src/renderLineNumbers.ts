@@ -65,14 +65,14 @@ export function renderLineNumbers(
     }
 
     const leftMostWord = findLeftMostWord(words, scale);
-    const markerX = blockMarkerXs[lineToBlock[line.id]];
+    const blockLeftEdgeX = blockMarkerXs[lineToBlock[line.id]];
 
     const $lineNumber = document.createElement('span');
     $container.appendChild($lineNumber);
     $lineNumber.classList.add('line-number');
     $lineNumber.textContent = `${lineNumberById[line.id]}`;
     Object.assign($lineNumber.style, {
-      left: px((markerX ?? leftMostWord.left) - gap),
+      left: px((blockLeftEdgeX ?? leftMostWord.left) - gap),
       top: px(leftMostWord.top + leftMostWord.height / 2),
       transform: 'translate(-100%, -50%)',
       fontSize: px(fontSize),

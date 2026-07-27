@@ -113,14 +113,14 @@
         transition: fill 100ms ease-out;
     }
 
-    .blocks .layout-block .block-hit-area {
+    .blocks .layout-block .block-left-edge-hit-area {
         cursor: pointer;
         pointer-events: stroke;
         stroke: transparent;
         stroke-width: 12px;
     }
 
-    .blocks .layout-block .block-marker {
+    .blocks .layout-block .block-left-edge {
         stroke: transparent;
         stroke-width: 1px;
         pointer-events: none;
@@ -155,8 +155,8 @@
         stroke: transparent;
     }
 
-    .blocks .layout-block:hover .block-marker,
-    .blocks .layout-block[data-selected="true"] .block-marker {
+    .blocks .layout-block:hover .block-left-edge,
+    .blocks .layout-block[data-selected="true"] .block-left-edge {
         stroke: var(--diplomatic-structure-strong);
         stroke-width: 2px;
     }
