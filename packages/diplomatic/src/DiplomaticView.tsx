@@ -15,13 +15,11 @@ import {
   Annotation,
   type EntityVisualCategoryClassName,
 } from '@globalise/common/annotation';
-import {
-  setHovered,
-  toggleClicked,
-} from '@globalise/common/document';
+import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
 
 export type DiplomaticViewProps = {
+  id?: string
   annotations: Record<Id, Annotation>;
   page: { width: number; height: number };
   fit?: ViewFit;
@@ -50,29 +48,30 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const [width, setWidth] = useState(0);
 
   const setWidthDebounced = useMemo(() => debounce(setWidth, 50), []);
-  useEffect(() => {
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(setWidthOnObservedResize, []);
+  function setWidthOnObservedResize() {
     const $view = containerRef.current;
     if (!$view) {
       return;
     }
     const resizeObserver = new ResizeObserver(([viewEvent]) => {
-      setWidthDebounced(viewEvent.contentRect.width);
+      const observedWidth = viewEvent.contentRect.width;
+      if (observedWidth !== width) {
+        setWidthDebounced(observedWidth);
+      }
     });
     resizeObserver.observe($view);
-    return () => {
-      resizeObserver.disconnect();
-      setWidthDebounced.cancel();
-    };
-  }, [setWidthDebounced]);
+    return () => resizeObserver.disconnect();
+  }
 
-  // Selection is updated independently below, without rebuilding the view.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(createDiplomaticView, [
     annotations,
     page,
     fit,
     showBlocks,
-    showScanMargin,
     highlightedEntityCategories,
     width,
   ]);
@@ -99,10 +98,5 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     viewRef.current?.setSelected(...selected);
   }, [selected]);
 
-  return (
-    <div
-      ref={containerRef}
-      style={style}
-    />
-  );
+  return <div ref={containerRef} style={style} />;
 }

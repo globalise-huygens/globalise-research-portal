@@ -5,7 +5,6 @@ import {
   findTextPositionSelector,
   getPageText,
   Id,
-  indexLineNumbers,
   isEntity,
 } from '@globalise/common/annotation';
 import {
@@ -16,9 +15,10 @@ import { useCanvasIndexes } from '@globalise/common/document';
 
 export type LineSegments = {
   pageText: string;
+  lineIds: Id[];
   segmentsByLine: Record<Id, TextSegment<Annotation>[]>;
+  linesToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
-  lineNumberById: Record<Id, number>;
 };
 
 export function useLineSegments(
@@ -42,9 +42,9 @@ export function useLineSegments(
     });
     const {
       wordToLine,
+      lineToBlock,
       blockToLines,
     } = indexes;
-    const lineNumberById = indexLineNumbers(annotations);
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
     let lastLineId: Id | null = null;
@@ -59,30 +59,11 @@ export function useLineSegments(
       if (!segmentsByLine[lineId]) {
         segmentsByLine[lineId] = [];
       }
-      const lineSegment = word ? segment : beforeFirstLineBreak(segment);
-      if (lineSegment.value) {
-        segmentsByLine[lineId].push(lineSegment);
-      }
+      segmentsByLine[lineId].push(segment);
     }
 
-    return {
-      pageText,
-      segmentsByLine,
-      blockToLines,
-      lineNumberById,
-    };
-  }, [annotations, indexes]);
-}
+    const lineIds = Object.keys(segmentsByLine);
 
-function beforeFirstLineBreak(
-  segment: TextSegment<Annotation>,
-): TextSegment<Annotation> {
-  const breakIndex = segment.value.search(/[\r\n]/u);
-  if (breakIndex === -1) {
-    return segment;
-  }
-  return {
-    ...segment,
-    value: segment.value.slice(0, breakIndex),
-  };
+    return { pageText, lineIds, segmentsByLine, linesToBlock: lineToBlock, blockToLines };
+  }, [annotations, indexes]);
 }

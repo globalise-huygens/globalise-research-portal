@@ -42,7 +42,6 @@ export function SplitPaneLayout({ children }: DocumentLayoutProps) {
   return (
     <div className="split-pane-layout">
       <SplitPane
-        key={direction}
         direction={direction}
         dividerSize={direction === 'horizontal'
           ? splitterThickness.horizontalLayout

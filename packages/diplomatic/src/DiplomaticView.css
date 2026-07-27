@@ -1,4 +1,4 @@
-.diplomatic-view {
+.original-layout {
     --diplomatic-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
     --diplomatic-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
     --diplomatic-selected-strong: var(--color-selection-stroke, #125e64);
@@ -25,7 +25,9 @@
 
     .segment:hover {
         background: var(--diplomatic-selected-hover);
-        box-shadow: inset 0 0 0 1px var(--diplomatic-selected-strong);
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong);
         outline: none;
     }
 
@@ -37,7 +39,9 @@
     }
 
     .entity:hover {
-        box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
+        box-shadow:
+          inset 0 1px 0 var(--entity-highlight-stroke),
+          inset 0 -1px 0 var(--entity-highlight-stroke);
         cursor: pointer;
     }
 
@@ -81,68 +85,43 @@
         pointer-events: none;
     }
 
-    .blocks {
-        pointer-events: none;
-    }
-
-    .blocks .layout-block polygon {
+    .blocks > g polygon {
         fill: transparent;
-        pointer-events: none;
         stroke: transparent;
         stroke-width: 1px;
         transition: fill 100ms ease-out;
     }
 
-    .blocks .layout-block .block-left-edge-hit-area {
-        cursor: pointer;
-        pointer-events: stroke;
-        stroke: transparent;
-        stroke-width: 12px;
-    }
-
-    .blocks .layout-block .block-left-edge {
-        stroke: transparent;
-        stroke-width: 1px;
-        pointer-events: none;
-    }
-
-    .blocks .layout-block .block-label {
+    .blocks .block-label {
         fill: var(--diplomatic-structure-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-weight: 600;
-        opacity: 0;
         paint-order: stroke;
-        pointer-events: none;
         stroke: var(--manifest-transcription-sheet, #f8f5f2);
         stroke-linejoin: round;
         stroke-width: 3px;
-        transition: opacity 100ms ease-out;
         user-select: none;
+    }
+
+    .blocks .block-left-edge {
+        stroke: var(--diplomatic-structure-strong);
+        stroke-width: 2px;
+        vector-effect: non-scaling-stroke;
     }
 
     .text {
         user-select: text;
     }
 
-    .blocks .layout-block:hover polygon {
+    .blocks > g:hover polygon {
         fill: var(--diplomatic-structure-fill);
         stroke: transparent;
     }
 
-    .blocks .layout-block[data-selected="true"] polygon {
+    .blocks > g[opacity="1"] polygon {
         fill: var(--diplomatic-structure-fill-strong);
         stroke: transparent;
     }
 
-    .blocks .layout-block:hover .block-left-edge,
-    .blocks .layout-block[data-selected="true"] .block-left-edge {
-        stroke: var(--diplomatic-structure-strong);
-        stroke-width: 2px;
-    }
-
-    .blocks .layout-block:hover .block-label,
-    .blocks .layout-block[data-selected="true"] .block-label {
-        opacity: 0.9;
-    }
 }

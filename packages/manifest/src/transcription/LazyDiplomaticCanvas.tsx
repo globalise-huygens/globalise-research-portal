@@ -65,10 +65,10 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
     Number.isFinite(height) &&
     height > 0;
   const number = scanNumber(canvasId);
-  const hasAnnotationPages = !!annotationUrls.length;
-  const hasNoAnnotations = !hasAnnotationPages || (isCanvasReady && !hasAnnotations);
-  const isLoading = !error && hasAnnotationPages && !isCanvasReady;
-  const isContentReady = !error && isCanvasReady && hasAnnotations;
+  const isDataReady = isCanvasReady && hasAnnotations;
+  const hasNoAnnotations = !annotationUrls.length;
+  const isLoading = !error && !!annotationUrls.length && !isDataReady;
+  const isContentReady = !error && !hasNoAnnotations && isDataReady;
 
   return (
     <div

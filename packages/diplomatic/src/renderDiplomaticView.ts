@@ -56,9 +56,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  // `original-layout` is required by the rendering dependency; the second
-  // class owns the GLOBALISE-specific viewer styles.
-  $view.classList.add('original-layout', 'diplomatic-view');
+  $view.classList.add('original-layout');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
@@ -81,11 +79,7 @@ export function renderDiplomaticView(
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
   const fragments = wordAnnos.map(createFragment);
-  const originalLayout = renderOriginalLayout(
-    $layoutView,
-    fragments,
-    mergedConfig,
-  );
+  const originalLayout = renderOriginalLayout($layoutView, fragments, config);
   const { $fragments, scale, offset } = originalLayout;
 
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
@@ -107,20 +101,8 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock } = indexAnnotations(
-    annotations,
-    pageAnnoId,
-  );
+  const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
-  function makeSegmentInteractive(
-    $segment: HTMLSpanElement,
-    id: Id,
-    blurId: Id | null,
-  ) {
-    $segment.addEventListener('click', () => onClick(id));
-    $segment.addEventListener('mouseenter', () => onHover(id));
-    $segment.addEventListener('mouseleave', () => onHover(blurId));
-  }
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -167,25 +149,22 @@ export function renderDiplomaticView(
         }
         $entityToSegments[entityAnno.id].push($segment);
 
-        makeSegmentInteractive(
-          $segment,
-          entityAnno.id,
-          null,
-        );
+        $segment.addEventListener('click', () => onClick(entityAnno.id));
+        $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
+        $segment.addEventListener('mouseleave', () => onHover(null));
       } else {
         const blockId = wordToBlock[wordId];
-        makeSegmentInteractive(
-          $segment,
-          wordId,
-          blockId ?? null,
-        );
+        $segment.addEventListener('click', () => onClick(wordId));
+        $segment.addEventListener('mouseenter', () => onHover(wordId));
+        $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
       }
     }
     $word.replaceChildren(...$segments);
   }
 
-  let selectBlock: (id: Id) => void = noop;
-  let deselectBlock: (id: Id) => void = noop;
+  const selectedBlocks = new Set<Id>();
+  let selectBlock: (id: Id) => void = () => console.warn('Not implemented');
+  let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
 
   if (showBlocks) {
     const lineCount = Object.values(annotations)
@@ -217,19 +196,18 @@ export function renderDiplomaticView(
     const { showLine, hideLine } = lineNumbers;
 
     function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('data-selected', 'true');
+      $block.attr('opacity', 1);
       lines.forEach((l) => showLine(l));
     }
 
     function hideBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('data-selected', 'false');
+      $block.attr('opacity', 0);
       lines.forEach((l) => hideLine(l));
     }
 
     for (const [blockId, $block] of Object.entries($blocks)) {
       $block.on('mouseenter', () => onHover(blockId));
       $block.on('mouseleave', () => onHover(null));
-      $block.on('click', () => onClick(blockId));
     }
 
     selectBlock = (id: Id) => {
@@ -237,10 +215,11 @@ export function renderDiplomaticView(
       if (!$block) {
         return;
       }
-      if ($block.attr('data-selected') === 'true') {
+      if (selectedBlocks.has(id)) {
         return;
       }
-      const lines = blockToLines[id] ?? [];
+      selectedBlocks.add(id);
+      const lines = blockToLines[id];
       showBlock($block, lines);
     };
     deselectBlock = (id: Id) => {
@@ -248,10 +227,11 @@ export function renderDiplomaticView(
       if (!$block) {
         return;
       }
-      if ($block.attr('data-selected') !== 'true') {
+      if (!selectedBlocks.has(id)) {
         return;
       }
-      const lines = blockToLines[id] ?? [];
+      selectedBlocks.delete(id);
+      const lines = blockToLines[id];
       hideBlock($block, lines);
     };
   }
@@ -266,6 +246,8 @@ export function renderDiplomaticView(
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
       $segments?.forEach(($r) => { $r.classList.add('selected'); });
+    } else {
+      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
@@ -279,6 +261,8 @@ export function renderDiplomaticView(
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
       $segments?.forEach(($r) => $r.classList.remove('selected'));
+    } else {
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 

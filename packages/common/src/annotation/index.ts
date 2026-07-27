@@ -25,7 +25,7 @@ export { getBody } from './getBody';
 export { assertTextualBody } from './assertTextualBody';
 export { isSpecificResourceTarget } from './isSpecificResourceTarget';
 export { isSvgSelector } from './isSvgSelector';
-export { findPageText, getPageText } from './getPageText';
+export { getPageText } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';
 export { scanLabel, scanNumber } from './scanLabel';

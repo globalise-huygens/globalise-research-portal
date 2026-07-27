@@ -19,7 +19,7 @@ import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './layout/ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
-import { layoutBreakpoint, SplitPaneLayout } from './layout/splitpane';
+import { SplitPaneLayout } from './layout/splitpane';
 import { TooltipIconButton } from './layout/TooltipIconButton';
 
 export type ManifestViewerProps = {
@@ -38,7 +38,7 @@ type ViewerPaneProps = {
   type: 'scan' | 'transcription';
 };
 
-const compactLayoutQuery = `(max-width: ${layoutBreakpoint}px)`;
+const mobileLayoutQuery = '(max-width: 767px)';
 
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   const paneClassName = cn('pane', isBordered && 'bordered');
@@ -62,7 +62,7 @@ export function ManifestViewer({
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
     () =>
       typeof window === 'undefined' ||
-      !window.matchMedia(compactLayoutQuery).matches,
+      !window.matchMedia(mobileLayoutQuery).matches,
   );
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
@@ -73,7 +73,7 @@ export function ManifestViewer({
   );
 
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia(compactLayoutQuery);
+    const mediaQuery = window.matchMedia(mobileLayoutQuery);
     const collapseSidebarOnMobile = ({ matches }: MediaQueryListEvent) => {
       if (matches) {
         setIsSidebarExpanded(false);

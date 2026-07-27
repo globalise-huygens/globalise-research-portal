@@ -2,8 +2,8 @@ import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
   AnnotationPage,
-  findPageText,
   findTextPositionSelector,
+  getPageText,
   Id,
   isEntity,
   PartOf,
@@ -77,17 +77,7 @@ function createReadyCanvas(pages: AnnotationPage[]) {
     }
   }
 
-  const pageText = findPageText(mapped);
-  const partOf = pages[0]?.partOf ?? null;
-  if (!pageText) {
-    return {
-      ...emptyCanvasState,
-      isReady: true,
-      partOf,
-    };
-  }
-
-  const { id: pageId } = pageText;
+  const { id: pageId } = getPageText(mapped);
   for (const id in mapped) {
     const item = mapped[id];
     if (!isEntity(item)) {
@@ -98,6 +88,7 @@ function createReadyCanvas(pages: AnnotationPage[]) {
       delete mapped[id];
     }
   }
+  const partOf = pages[0]?.partOf ?? null;
   const indexes = indexAnnotations(mapped, pageId);
 
   return {
