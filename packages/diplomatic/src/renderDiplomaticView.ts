@@ -107,7 +107,7 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock, wordToLine } = indexAnnotations(
+  const { blockToLines, wordToBlock } = indexAnnotations(
     annotations,
     pageAnnoId,
   );
@@ -136,8 +136,6 @@ export function renderDiplomaticView(
       const $segment = document.createElement('span');
       $segments.push($segment);
       $segment.classList.add('segment');
-      const lineId = wordToLine[wordId] ?? '';
-      $segment.dataset.lineId = lineId;
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
       const visualCategory = entityAnno
@@ -184,10 +182,6 @@ export function renderDiplomaticView(
       }
     }
     $word.replaceChildren(...$segments);
-  }
-
-  for (const $segments of Object.values($entityToSegments)) {
-    markJoinedSegments($segments);
   }
 
   let selectBlock: (id: Id) => void = noop;
@@ -302,19 +296,4 @@ export function renderDiplomaticView(
       selectedIds.push(...ids);
     },
   };
-}
-
-function markJoinedSegments($segments: HTMLSpanElement[]) {
-  for (let index = 0; index < $segments.length; index++) {
-    const $segment = $segments[index];
-    const previous = $segments[index - 1];
-    const next = $segments[index + 1];
-    const lineId = $segment.dataset.lineId;
-    if (lineId && previous?.dataset.lineId === lineId) {
-      $segment.classList.add('joined-before');
-    }
-    if (lineId && next?.dataset.lineId === lineId) {
-      $segment.classList.add('joined-after');
-    }
-  }
 }
