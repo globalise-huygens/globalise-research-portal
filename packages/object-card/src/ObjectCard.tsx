@@ -20,7 +20,6 @@ export function ObjectCard() {
     return <div>Loading...</div>;
   }
 
-  console.log(ObjectCard.name, { uri, concept });
   return (
     <div className="object-card">
       <h1>{concept._label ?? concept.id}</h1>
