@@ -37,7 +37,7 @@ export function ManifestPage() {
   useEffect(syncCanvasParam, []);
 
   function syncCanvasParam() {
-    useDocumentStore.subscribe((state, prev) => {
+    return useDocumentStore.subscribe((state, prev) => {
       const { selectedCanvasId } = state;
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
@@ -51,7 +51,7 @@ export function ManifestPage() {
   useEffect(navigateToObjectCard, []);
 
   function navigateToObjectCard() {
-    useDocumentStore.subscribe((state, prev) => {
+    return useDocumentStore.subscribe((state, prev) => {
       const currentClickedId = state.clickedId;
       const prevClickedId = prev.clickedId;
       if (!currentClickedId || currentClickedId === prevClickedId) {
