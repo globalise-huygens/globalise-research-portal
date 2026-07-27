@@ -232,19 +232,23 @@ const setSelectedFacsimileCanvas = debounce(
   (canvasId: CanvasId) => setAfterPaneSyncThreshold(canvasId, 'facsimile'), 100);
 
 export function usePages(canvasId: CanvasId) {
-  return useDocumentStore(useShallow((s) => {
-    const canvas = s.canvases[canvasId];
-    const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
-    const hasAnnotations = isReady && !!Object.keys(canvas.annotations ?? {}).length;
+  return useDocumentStore(useShallow(
+    (state) => getCanvasAnnotationPages(state, canvasId),
+  ));
+}
 
-    return {
-      canvasId,
-      hasAnnotations,
-      isLoading: canvas?.isLoading ?? false,
-      error: canvas?.error ?? null,
-      isReady,
-    };
-  }));
+export function getCanvasAnnotationPages(s: DocumentState, canvasId: CanvasId) {
+  const canvas = s.canvases[canvasId];
+  const isReady = !!(canvas && !canvas.isLoading && !canvas.error && canvas.annotations);
+  const hasAnnotations = isReady && !!Object.keys(canvas.annotations ?? {}).length;
+
+  return {
+    canvasId,
+    hasAnnotations,
+    isLoading: canvas?.isLoading ?? false,
+    error: canvas?.error ?? null,
+    isReady,
+  };
 }
 
 export function useLoadCanvas() {

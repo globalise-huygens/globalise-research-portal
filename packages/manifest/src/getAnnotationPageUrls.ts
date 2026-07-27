@@ -1,7 +1,7 @@
 export function getAnnotationPageUrls(
-  canvas: { annotations?: { id: string; type: string }[] },
+  annotations: { id: string; type: string }[],
 ): string[] {
-  return (canvas.annotations ?? [])
+  return annotations
     .filter((a) => a.type === 'AnnotationPage')
     .map((a) => a.id);
 }

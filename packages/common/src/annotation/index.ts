@@ -1,5 +1,5 @@
 export { indexAnnotations } from './indexAnnotations.ts';
-export { filterAnnotationsWithSelector } from './filterAnnotationsWithSelector.ts';
+export { filterByTextSelectorOrLog } from './filterByTextSelectorOrLog.ts';
 
 export * from './AnnoModel';
 export * from './EntityModel';

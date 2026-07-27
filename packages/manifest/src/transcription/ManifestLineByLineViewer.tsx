@@ -47,7 +47,7 @@ export function ManifestLineByLineViewer({
       const canvas: CanvasNormalized = vault.get(item);
       return {
         canvasId: canvas.id,
-        annotationUrls: getAnnotationPageUrls(canvas),
+        annotationUrls: getAnnotationPageUrls(canvas.annotations),
       };
     });
   }, [vault, manifestId, isManifestReady]);

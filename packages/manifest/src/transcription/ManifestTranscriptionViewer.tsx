@@ -1,7 +1,8 @@
 import {
-  initCanvases,
+  initCanvases, logTextSelector,
   useDocumentStore,
-  useIsLayoutElementsVisible, useTranscriptionMode,
+  useIsLayoutElementsVisible,
+  useTranscriptionMode,
 } from '@globalise/common/document';
 import { FloatingToolbar } from '@globalise/design';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
@@ -9,12 +10,17 @@ import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
-import { ManifestTranscriptionControls } from './ManifestTranscriptionControls.tsx';
+import {
+  ManifestTranscriptionControls,
+} from './ManifestTranscriptionControls.tsx';
 
 type Props = {
   initialCanvasId?: string;
   onCanvasChange: (canvasId: string) => void;
 };
+
+const annotationId = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:entities:NL-HaNA_1.04.02_1053_0005#annotation:435';
+logTextSelector(annotationId);
 
 export function ManifestTranscriptionViewer({
   initialCanvasId,

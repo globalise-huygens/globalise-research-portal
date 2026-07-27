@@ -7,4 +7,5 @@ export * from './TocSlice';
 export { useSelectedIdsForCanvas } from './useSelectedIdsForCanvas';
 export { useCanvasPages } from './useCanvasPages';
 export { useDocumentLifecycle } from './useDocumentLifeCycle';
+export { logTextSelector } from './logTextSelector.ts';
 export * from './SettingsStore';

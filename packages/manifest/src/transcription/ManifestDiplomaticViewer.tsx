@@ -60,7 +60,7 @@ export function ManifestDiplomaticViewer({
         canvasId: canvas.id,
         width: canvas.width,
         height: canvas.height,
-        annotationUrls: getAnnotationPageUrls(canvas),
+        annotationUrls: getAnnotationPageUrls(canvas.annotations),
       };
     });
   }, [vault, manifestId, isManifestReady]);

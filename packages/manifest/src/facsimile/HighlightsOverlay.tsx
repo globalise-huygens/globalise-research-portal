@@ -58,7 +58,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       return [];
     }
     const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
-    return getAnnotationPageUrls(canvas);
+    return getAnnotationPageUrls(canvas.annotations);
   }, [vault, lazyCanvas.canvasId]);
 
   useEffect(() => {
