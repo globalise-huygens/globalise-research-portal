@@ -3,10 +3,13 @@ import {
   loadCanvasAnnotationPages,
   useAnnotations,
   usePages,
+  useSelectedCanvas,
 } from '@globalise/common/document';
-import { canvasName } from '@globalise/common/annotation';
+import { scanNumber } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
-import { PageLabel } from './PageLabel.tsx';
+import { ScanLabel } from './ScanLabel.tsx';
+import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import './TranscriptionScan.css';
 
 type Props = {
   canvasId: string;
@@ -20,6 +23,8 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
+  const { id: selectedCanvasId } = useSelectedCanvas();
+  const isCurrentCanvas = selectedCanvasId === canvasId;
 
   useEffect(
     () => {
@@ -30,24 +35,33 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
     [canvasId, annotationUrls],
   );
 
-  const canvasLabel = canvasName(canvasId);
-  const isDataReady = isCanvasReady && hasAnnotations;
+  const number = scanNumber(canvasId);
   const hasAnnotationPages = !!annotationUrls.length;
+  const isDataReady = isCanvasReady && hasAnnotations;
+  const hasNoAnnotations = !hasAnnotationPages;
   const isLoading = !error && hasAnnotationPages && !isDataReady;
   const isContentReady = !error && hasAnnotationPages && isDataReady;
 
   return (
-    <div style={{
-      position: 'relative',
-      margin: '0 auto',
-      maxWidth: '50rem',
-      padding: '1rem',
-      borderTop: '1px solid #eee',
-    }}>
-      <PageLabel label={canvasLabel}/>
-      {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
-      {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
-      {isLoading && <Placeholder>Loading...</Placeholder>}
+    <div
+      className="transcription-scan"
+      data-view="line-by-line"
+      aria-current={isCurrentCanvas ? 'true' : undefined}
+      aria-label={`Transcription scan ${number}`}
+      role="group"
+    >
+      <ScanLabel number={number} isCurrent={isCurrentCanvas} />
+      {error && (
+        <TranscriptionPlaceholder tone="error">
+          Error: {error}
+        </TranscriptionPlaceholder>
+      )}
+      {hasNoAnnotations && (
+        <TranscriptionPlaceholder>No transcription</TranscriptionPlaceholder>
+      )}
+      {isLoading && (
+        <TranscriptionPlaceholder>Loading...</TranscriptionPlaceholder>
+      )}
       {isContentReady && (
         <div style={{ fontSize: `${scale}%` }}>
           <LineByLineView
@@ -60,17 +74,3 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
     </div>
   );
 });
-
-function Placeholder(
-  { color, children }: { color?: string; children: React.ReactNode },
-) {
-  return (
-    <div style={{
-      padding: '1rem',
-      color: color ?? 'grey',
-      fontStyle: 'italic',
-    }}>
-      {children}
-    </div>
-  );
-}

@@ -1,18 +1,17 @@
 import './TranscriptionPlaceholder.css';
 
 export type PlaceholderProps = {
-  color?: string;
-  background?: string;
+  tone?: 'default' | 'error';
   children?: React.ReactNode;
 };
 
 export function TranscriptionPlaceholder(
-  { color, background, children }: PlaceholderProps,
+  { tone = 'default', children }: PlaceholderProps,
 ) {
   return (
     <div
-      className="manifest-transcription-placeholder"
-      style={{ background, color }}
+      className="transcription-placeholder"
+      data-tone={tone}
     >
       {children}
     </div>

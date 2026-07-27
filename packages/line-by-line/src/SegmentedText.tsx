@@ -27,14 +27,18 @@ export function SegmentedText(
   const highlightedEntityCategories = useEntityHighlightCategories();
 
   return <>
-    {segments.map((segment) => {
+    {segments.map((segment, index) => {
       const body = segment.value;
+      const previousAnnotationIds = new Set(
+        segments[index - 1]?.annotations.map((annotation) => annotation.id),
+      );
+      const nextAnnotationIds = new Set(
+        segments[index + 1]?.annotations.map((annotation) => annotation.id),
+      );
       const hoverId = selectAnnotation(
         segment.annotations,
         highlightedEntityCategories,
-      )
-        ?? blockId
-        ?? null;
+      ) ?? blockId ?? null;
 
       return (
         <span
@@ -60,6 +64,8 @@ export function SegmentedText(
               <AnnotationSegment
                 canvasId={canvasId}
                 annotation={annotation}
+                joinedBefore={previousAnnotationIds.has(annotation.id)}
+                joinedAfter={nextAnnotationIds.has(annotation.id)}
               >
                 {children}
               </AnnotationSegment>

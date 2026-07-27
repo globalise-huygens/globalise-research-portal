@@ -140,7 +140,7 @@ export function ManifestViewer({
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
       >
         <div
-          id="document-detail-sidebar"
+          id="manifest-sidebar"
           className="sidebar"
           data-expanded={isSidebarExpanded ? 'true' : 'false'}
         >
@@ -158,7 +158,7 @@ export function ManifestViewer({
           <header className="top-bar">
             <div className="top-bar-group left">
               <TooltipIconButton
-                aria-controls="document-detail-sidebar"
+                aria-controls="manifest-sidebar"
                 aria-expanded={isSidebarExpanded}
                 aria-label={
                   isSidebarExpanded ? 'Close sidebar' : 'Open sidebar'

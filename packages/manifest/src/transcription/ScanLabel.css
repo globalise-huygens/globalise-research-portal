@@ -1,0 +1,45 @@
+.scan-label {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  border: 1px solid var(--color-parchment-400, #c3ac98);
+  background: color-mix(
+    in srgb,
+    var(--manifest-transcription-sheet, #f8f5f2) 92%,
+    transparent
+  );
+  color: var(--color-parchment-800, #5d4736);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1rem;
+  padding: 0.2rem 0.4rem;
+
+  .prefix {
+    color: var(--color-parchment-700, #7e6149);
+    font-weight: 400;
+  }
+
+  &[data-current="true"] {
+    border-color: var(--color-brand-white, #fff);
+    background: var(--color-selection-stroke, #125e64);
+    color: var(--color-brand-white, #fff);
+
+    .prefix {
+      color: rgb(255 255 255 / 0.78);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scan-label {
+    transition:
+      background-color 120ms ease-out,
+      box-shadow 120ms ease-out;
+  }
+}

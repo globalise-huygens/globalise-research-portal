@@ -217,7 +217,7 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <FloatingToolbar>
+      <FloatingToolbar aria-label="Scan controls">
         <FacsimileControls
           fullscreenRef={containerRef}
           onScanFilterChange={setScanFilter}

@@ -1,4 +1,4 @@
-import { canvasName } from '@globalise/common/annotation';
+import { scanNumber } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
@@ -11,8 +11,9 @@ import {
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
-import { PageLabel } from './PageLabel.tsx';
+import { ScanLabel } from './ScanLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import './TranscriptionScan.css';
 
 type Props = {
   canvasId: string;
@@ -45,9 +46,9 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
+  const isCurrentCanvas = selectedIndex === index;
   const isInRenderRangeByDistance =
     selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
-
   const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
     width > 0 &&
     Number.isFinite(height) &&
     height > 0;
-  const canvasLabel = canvasName(canvasId);
+  const number = scanNumber(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
   const isLoading = !error && !!annotationUrls.length && !isDataReady;
@@ -72,6 +73,11 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   return (
     <div
       {...{ [canvasIndexAttribute]: index }}
+      className="transcription-scan"
+      data-view="diplomatic"
+      aria-current={isCurrentCanvas ? 'true' : undefined}
+      aria-label={`Transcription scan ${number}`}
+      role="group"
       style={{
         position: 'relative',
         width,
@@ -87,31 +93,29 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
     >
       {isInRenderRange && error && (
         <TranscriptionPlaceholder
-          color="indianred"
-          background="rgb(248 243 243)"
+          tone="error"
         >
-          <PageLabel label={canvasLabel} />
+          <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           Loading...
         </TranscriptionPlaceholder>
       )}
       {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
-          <PageLabel label={canvasLabel} />
+          <ScanLabel number={number} isCurrent={isCurrentCanvas} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
-              id={canvasId}
               annotations={annotations}
               selected={selectedIds}
               page={partOf}

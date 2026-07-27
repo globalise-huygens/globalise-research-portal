@@ -3,6 +3,7 @@ import { Rect } from 'openseadragon';
 import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
+  findSourceLabel,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
   type Annotation,
@@ -110,6 +111,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     .filter(isBlock)
     .map((a) => ({
       id: a.id,
+      label: findSourceLabel(a),
       path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
     })), [annotations]);
 

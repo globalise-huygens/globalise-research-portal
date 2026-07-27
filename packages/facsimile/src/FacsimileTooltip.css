@@ -1,7 +1,17 @@
 .facsimile-tooltip {
-    position: fixed;
-    width: 10em;
-    padding: 0.5em;
-    font-size: 0.8em;
-    background-color: rgba(255, 255, 255, 0.5);
+  position: fixed;
+  z-index: 1200;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(15rem, calc(100vw - 1rem));
+  border: 1px solid var(--color-neutral-600, #666);
+  background: rgb(38 38 38 / 0.98);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
+  color: var(--color-brand-white, #fff);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  padding: 0.5rem 0.625rem;
+  pointer-events: none;
 }

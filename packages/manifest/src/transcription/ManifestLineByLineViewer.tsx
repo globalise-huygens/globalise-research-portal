@@ -59,7 +59,10 @@ export function ManifestLineByLineViewer({
 
   const lastSelectedCanvasId = useRef(selectedCanvasId);
 
-  useEffect(scrollToSelectedCanvas, [selectedCanvasId, selectedCanvasSource]);
+  useEffect(scrollToSelectedCanvas, [
+    selectedCanvasId,
+    selectedCanvasSource,
+  ]);
 
   function scrollToSelectedCanvas() {
     if (selectedCanvasId === lastSelectedCanvasId.current) {
@@ -147,6 +150,7 @@ export function ManifestLineByLineViewer({
   return (
     <Virtuoso
       ref={virtuosoRef}
+      className="transcription-scroll"
       style={{ height: '100%' }}
       totalCount={canvasInfos.length}
       defaultItemHeight={DEFAULT_ITEM_HEIGHT}

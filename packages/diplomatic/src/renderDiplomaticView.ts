@@ -170,15 +170,25 @@ export function renderDiplomaticView(
     const lineCount = Object.values(annotations)
       .filter((a) => a.textGranularity === 'line').length;
     const digitCount = String(lineCount).length;
-    const lineNumberGap = scale(30);
-    const lineNumberWidth = lineNumberGap + scale(30 * digitCount);
+    const lineNumberFontSize = Math.max(10, scale(50));
+    const lineNumberGap = Math.max(6, scale(20));
+    const lineNumberTextWidth = lineNumberFontSize * digitCount * 0.65;
+    const lineNumberWidth = lineNumberGap + lineNumberTextWidth;
 
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks } = renderBlocks(annotations, $layoutView, { scale, offset });
+    const { $blocks, blockMarkerXs } = renderBlocks(
+      annotations,
+      $layoutView,
+      { scale, offset },
+    );
     const lineNumbers = renderLineNumbers(annotations, $view, {
-      scale, gap: lineNumberGap, offset: {
+      scale,
+      gap: lineNumberGap,
+      fontSize: lineNumberFontSize,
+      blockMarkerXs,
+      offset: {
         left: offset.left + lineNumberWidth,
         top: offset.top,
       },

@@ -35,7 +35,7 @@ export function FacsimileView(
         }}/>
       </div>
       <FacsimileOverlay canvasId={canvasId}/>
-      <FloatingToolbar>
+      <FloatingToolbar aria-label="Scan controls">
         <FacsimileControls
           fullscreenRef={fullscreenRef}
           onScanFilterChange={setScanFilter}

@@ -6,6 +6,17 @@
   --manifest-sidebar-width: var(--manifest-sidebar-expanded-width);
   --manifest-top-bar-height: var(--s56);
   --manifest-bottom-bar-height: var(--s56);
+  --manifest-viewer-chrome: var(--color-neutral-900);
+  --manifest-viewer-workspace: var(--color-parchment-300);
+  --manifest-scan-workspace: var(--manifest-viewer-workspace);
+  --manifest-transcription-workspace: var(--manifest-viewer-workspace);
+  --manifest-transcription-sheet: var(--color-parchment-50);
+  --manifest-transcription-sheet-border: var(--color-brand-white);
+  --manifest-transcription-text: var(--color-brand-black);
+  --manifest-transcription-scrollbar-track: var(--color-parchment-200);
+  --manifest-transcription-scrollbar-thumb: var(--color-parchment-700);
+  --manifest-transcription-scrollbar-thumb-hover: var(--color-parchment-800);
+  --manifest-transcription-scrollbar-thumb-active: var(--color-parchment-900);
 
   box-sizing: border-box;
   display: grid;
@@ -14,7 +25,7 @@
   grid-template-columns: repeat(var(--shell-cols), minmax(0, 1fr));
   column-gap: var(--shell-gutter);
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   font-family: var(--font-sans);
   padding-inline: 0;
 }
@@ -27,7 +38,7 @@
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   transition: grid-template-columns 150ms ease-out;
 }
 
@@ -44,7 +55,7 @@
   min-height: 0;
   width: var(--manifest-sidebar-width);
   overflow: hidden;
-  background: var(--color-neutral-900);
+  background: var(--manifest-viewer-chrome);
   transition: width 150ms ease-out;
 }
 
@@ -327,7 +338,9 @@
 }
 
 .manifest-viewer .split-viewer {
+  position: relative;
   display: flex;
+  height: 100%;
   flex: 1 1 0%;
   min-width: 0;
   min-height: 0;
@@ -341,6 +354,8 @@
 
 .manifest-viewer .body {
   display: flex;
+  width: 100%;
+  height: 100%;
   flex: 1 1 0%;
   overflow: hidden;
 }
@@ -349,6 +364,11 @@
 .manifest-viewer .split-viewer .split-pane {
   width: 100%;
   height: 100%;
+}
+
+.manifest-viewer .split-viewer .split-pane-layout {
+  position: absolute;
+  inset: 0;
 }
 
 /* react-split-pane sizes these wrappers with inline dimensions. Keep the
@@ -377,7 +397,7 @@
 }
 
 .manifest-viewer .pane.bordered {
-  border-right: 1px solid var(--color-brand-black);
+  border-right: 1px solid var(--manifest-viewer-chrome);
 }
 
 .manifest-viewer .canvas {
@@ -390,19 +410,18 @@
   flex: 1 1 0%;
   flex-direction: column;
   overflow: hidden;
-  background: var(--color-neutral-500);
-}
-
-.manifest-viewer .transcription-viewer {
-  position: relative;
-  height: 100%;
-  min-height: 0;
+  color: var(--manifest-transcription-text);
 }
 
 .manifest-viewer .pane[data-view="scan"] .canvas {
   align-items: stretch;
   justify-content: stretch;
+  background: var(--manifest-scan-workspace);
   padding: 0;
+}
+
+.manifest-viewer .pane[data-view="scan"] .openseadragon-container {
+  background: var(--manifest-scan-workspace) !important;
 }
 
 .manifest-viewer .pane[data-view="scan"] .canvas > * {
@@ -410,6 +429,7 @@
 }
 
 .manifest-viewer .pane[data-view="transcription"] .canvas {
+  background: var(--manifest-transcription-workspace);
   padding: 0;
 }
 
@@ -548,12 +568,10 @@
   transform: rotate(180deg);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .manifest-viewer {
-    --manifest-sidebar-expanded-width: 100vw;
+    --manifest-sidebar-expanded-width: min(22rem, 100vw);
     --manifest-sidebar-collapsed-width: 0px;
-    --manifest-top-bar-height: var(--s56);
-    --manifest-bottom-bar-height: var(--s48);
 
     padding-inline: 0;
   }
@@ -581,6 +599,69 @@
   .manifest-viewer .bottom-bar {
     position: relative;
     z-index: 20;
+  }
+}
+
+@media (max-width: 767px) {
+  .manifest-viewer {
+    --manifest-top-bar-height: var(--s96);
+    --manifest-bottom-bar-height: var(--s48);
+
+    .top-bar {
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: repeat(2, var(--s40));
+      gap: 0 var(--s4);
+      padding-block: var(--s8);
+      padding-inline: var(--s4);
+    }
+
+    .top-bar-group {
+      flex: 0 1 auto;
+      gap: var(--s2);
+
+      &.left {
+        grid-column: 1;
+        grid-row: 1;
+        overflow: hidden;
+      }
+
+      &.right {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+      }
+    }
+
+    .top-bar-center {
+      grid-column: 2;
+      grid-row: 1;
+      flex: 0 0 auto;
+    }
+
+    .manifest-dropdown,
+    .top-bar-divider,
+    .top-bar .toggle > span,
+    .content-warning > .tool-button > span {
+      display: none;
+    }
+
+    .top-bar .toggle[data-size="regular"] {
+      min-width: var(--s40);
+      padding-inline: 0;
+    }
+
+    .content-warning > .details {
+      position: fixed;
+      top: calc(var(--manifest-top-bar-height) + var(--s8));
+      right: var(--s16);
+      left: var(--s16);
+      width: auto;
+      transform: none;
+    }
   }
 }
 

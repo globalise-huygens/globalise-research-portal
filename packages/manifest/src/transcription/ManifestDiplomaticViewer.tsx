@@ -3,7 +3,6 @@ import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
-  CSSProperties,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -170,6 +169,23 @@ export function ManifestDiplomaticViewer({
     };
   }
 
+  const renderDistance = useMemo(() => {
+    if (!viewportHeight || !canvasInfos.length || !containerWidth) {
+      return MIN_CANVASES_TO_RENDER;
+    }
+    const sample = canvasInfos[0];
+    const aspectRatio = sample.height / sample.width;
+    const displayedHeight = aspectRatio * containerWidth * scaleFactor;
+    if (!displayedHeight) {
+      return MIN_CANVASES_TO_RENDER;
+    }
+    const canvasesPerViewport = viewportHeight / displayedHeight;
+    return Math.max(
+      MIN_CANVASES_TO_RENDER,
+      Math.ceil(MAX_VIEWPORTS_TO_RENDER * canvasesPerViewport),
+    );
+  }, [viewportHeight, canvasInfos, containerWidth, scaleFactor]);
+
   useEffect(initCanvasScroll, [
     canvasInfos.length,
     initialCanvas,
@@ -232,34 +248,13 @@ export function ManifestDiplomaticViewer({
     };
   }
 
-  const renderDistance = useMemo(() => {
-    if (!viewportHeight || !canvasInfos.length || !containerWidth) {
-      return MIN_CANVASES_TO_RENDER;
-    }
-    const sample = canvasInfos[0];
-    const aspectRatio = sample.height / sample.width;
-    const displayedHeight = aspectRatio * containerWidth * scaleFactor;
-    if (!displayedHeight) {
-      return MIN_CANVASES_TO_RENDER;
-    }
-    const canvasesPerViewport = viewportHeight / displayedHeight;
-    return Math.max(
-      MIN_CANVASES_TO_RENDER,
-      Math.ceil(MAX_VIEWPORTS_TO_RENDER * canvasesPerViewport),
-    );
-  }, [viewportHeight, canvasInfos, containerWidth, scaleFactor]);
-
-  const containerStyle: CSSProperties = {
-    maxWidth: 800,
-    margin: '0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  };
-
   return (
-    <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
-      <div ref={canvasListRef} style={{ ...containerStyle }}>
+    <div ref={scrollRef} className="transcription-scroll">
+      <div
+        ref={canvasListRef}
+        className="transcription-scans"
+        data-view="diplomatic"
+      >
         {containerWidth &&
           canvasInfos.map((info, i) => (
             <LazyDiplomaticCanvas

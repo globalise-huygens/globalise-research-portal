@@ -18,19 +18,31 @@ type AnnotationProps = {
   canvasId: string;
   annotation: Annotation;
   children: ReactNode;
+  joinedBefore?: boolean;
+  joinedAfter?: boolean;
 };
 
 export function AnnotationSegment(
-  { canvasId, annotation, children }: AnnotationProps,
+  { canvasId, annotation, children, joinedBefore, joinedAfter }: AnnotationProps,
 ) {
   if (isEntity(annotation)) {
-    return <EntitySegment canvasId={canvasId} annotation={annotation}>
+    return <EntitySegment
+      canvasId={canvasId}
+      annotation={annotation}
+      joinedBefore={joinedBefore}
+      joinedAfter={joinedAfter}
+    >
       {children}
     </EntitySegment>;
   }
 
   if (isWord(annotation)) {
-    return <WordSegment annotation={annotation}>
+    return <WordSegment
+      canvasId={canvasId}
+      annotation={annotation}
+      joinedBefore={joinedBefore}
+      joinedAfter={joinedAfter}
+    >
       {children}
     </WordSegment>;
   }
@@ -38,7 +50,9 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>) {
+function WordSegment(
+  { annotation, children, joinedBefore, joinedAfter }: AnnotationProps,
+) {
   const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -51,14 +65,16 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
   return (
     <span
       ref={ref}
-      className={`word${isSelected ? ' selected' : ''}`}
+      className={getSegmentClassName('word', isSelected, joinedBefore, joinedAfter)}
     >
       {children}
     </span>
   );
 }
 
-function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
+function EntitySegment(
+  { canvasId, annotation, children, joinedBefore, joinedAfter }: AnnotationProps,
+) {
   const label = getEntityClassifiedAsLabel(annotation);
   const classifiedAs = getEntityClassifiedAsClassName(annotation);
   const category = getEntityTypeClassName(annotation);
@@ -71,10 +87,24 @@ function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
 
   return (
     <span
-      className={`entity ${category} ${classifiedAs} ${toClassName(label)}${isSelected ? ' selected' : ''}`}
+      className={`${getSegmentClassName('entity', isSelected, joinedBefore, joinedAfter)} ${category} ${classifiedAs} ${toClassName(label)}`}
       title={`${label} | ${annotation.id}`}
     >
       {children}
     </span>
   );
+}
+
+function getSegmentClassName(
+  base: string,
+  selected: boolean,
+  joinedBefore?: boolean,
+  joinedAfter?: boolean,
+): string {
+  return [
+    base,
+    selected && 'selected',
+    joinedBefore && 'joined-before',
+    joinedAfter && 'joined-after',
+  ].filter(Boolean).join(' ');
 }

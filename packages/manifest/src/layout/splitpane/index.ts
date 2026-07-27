@@ -1,1 +1,1 @@
-export { SplitPaneLayout } from './SplitPaneLayout';
+export { layoutBreakpoint, SplitPaneLayout } from './SplitPaneLayout';

@@ -1,0 +1,43 @@
+.transcription-scan {
+  position: relative;
+  box-sizing: border-box;
+  background: var(--manifest-transcription-sheet, #f8f5f2);
+  color: var(--manifest-transcription-text, #0c0a09);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  box-shadow:
+    inset 0 0 0 1px var(--manifest-transcription-sheet-border, #7e6149),
+    0 1px 2px rgb(78 65 53 / 0.16),
+    0 8px 24px rgb(78 65 53 / 0.1);
+
+  &[aria-current="true"] {
+    outline-color: var(--color-selection-stroke, #125e64);
+    box-shadow:
+      0 0 0 1px var(--color-brand-white, #fff),
+      0 8px 22px rgb(78 65 53 / 0.14);
+  }
+
+  &[data-view="line-by-line"] {
+    max-width: 44rem;
+    min-height: 12rem;
+    margin: 0.5rem auto;
+    padding: 2.75rem 2rem 2rem;
+  }
+
+  &[data-view="diplomatic"] {
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 767px) {
+    &[data-view="line-by-line"] {
+      margin: 0.5rem;
+      padding: 2.75rem 1rem 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      outline-color 120ms ease-out,
+      box-shadow 120ms ease-out;
+  }
+}

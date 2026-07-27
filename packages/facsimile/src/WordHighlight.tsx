@@ -24,7 +24,14 @@ type WordHighlightProps = {
 };
 
 export function WordHighlight(
-  { canvasId, id, points, text, tone, setTooltip }: WordHighlightProps,
+  {
+    canvasId,
+    id,
+    points,
+    text,
+    tone,
+    setTooltip,
+  }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
@@ -36,8 +43,13 @@ export function WordHighlight(
         : 'transparent',
     stroke: selected || hovered ? colors.stroke
       : 'transparent',
-    strokeWidth: selected ? 2 : 1,
+    strokeWidth: 1,
+    haloStroke: selected || hovered
+      ? 'rgb(255 255 255 / 0.9)'
+      : undefined,
+    haloStrokeWidth: 3,
     cursor: 'pointer',
+    vectorEffect: 'non-scaling-stroke',
   };
 
   return (

@@ -1,16 +1,18 @@
 import { Annotation, findSourceLabel } from '@globalise/common/annotation';
-import { Point } from '@knaw-huc/original-layout';
-import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
-import { createPath } from '@knaw-huc/original-layout';
-import { Scale } from '@knaw-huc/original-layout';
-import { select } from 'd3-selection';
-import { px } from '@knaw-huc/original-layout';
-import { D3El } from '@knaw-huc/original-layout';
+import {
+  calcBoundingCorners,
+  createPath,
+  D3El,
+  Offset,
+  padCorners,
+  Point,
+  px,
+  Scale,
+} from '@knaw-huc/original-layout';
 import { createBlockBoundaries } from './createBlockBoundaries.ts';
-import { Offset } from '@knaw-huc/original-layout';
+import { select } from 'd3-selection';
 
 type BlockColors = {
-  text: string;
   stroke: string;
   fill: string;
 };
@@ -28,9 +30,8 @@ export function renderBlocks(
     scale,
     offset,
     colors = {
-      text: 'rgba(93, 71, 54, 0.72)',
-      stroke: 'rgba(93, 71, 54, 0.48)',
-      fill: 'rgba(185, 155, 127, 0.08)',
+      stroke: 'var(--color-layout-element-stroke, rgb(18 94 100 / 0.38))',
+      fill: 'var(--color-layout-element-fill, rgb(41 191 204 / 0.08))',
     },
   }: BlocksConfig,
 ) {
@@ -46,27 +47,35 @@ export function renderBlocks(
   const words = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
-  const blocks = Object.fromEntries(
-    Object.entries(annotations).filter(([, a]) => a.textGranularity === 'block'),
-  );
-
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
+  const leftTextClearance = Math.max(12, scale(50));
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
       const padded = scale.path(padCorners(corners, padding));
+      padded[0] = [padded[0][0] - leftTextClearance, padded[0][1]];
+      padded[3] = [padded[3][0] - leftTextClearance, padded[3][1]];
       return [id, padded];
     }),
   );
+  const blockMarkerXs: Record<string, number> = {};
   const $blocks: Record<string, D3El<SVGGElement>> = Object.fromEntries(
     Object.entries(blockCorners).map(([id, corners]) => {
-      const block = blocks[id];
-      const label = findSourceLabel(block);
-      const $highlight = $svg.append('g').attr('opacity', 0);
+      const block = annotations[id];
+      const label = block ? findSourceLabel(block) : 'Layout element';
+      const $highlight = $svg.append('g')
+        .attr('class', 'layout-block')
+        .attr('data-selected', 'false');
+
+      const blockTopLeft = corners[0];
+      const blockBottomLeft = corners[3];
+      const blockLeftEdgeX = blockTopLeft[0];
+      blockMarkerXs[id] = blockLeftEdgeX;
 
       $highlight
         .append('polygon')
+        .attr('class', 'block-boundary')
         .attr('points', createPath(corners))
         .attr('fill', colors.fill)
         .attr('stroke', colors.stroke)
@@ -74,19 +83,36 @@ export function renderBlocks(
         .attr('stroke-linejoin', 'miter')
         .attr('vector-effect', 'non-scaling-stroke');
 
-      const blockTopLeft = corners[0];
+      $highlight
+        .append('line')
+        .attr('class', 'block-left-edge-hit-area')
+        .attr('x1', blockLeftEdgeX)
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', blockLeftEdgeX)
+        .attr('y2', blockBottomLeft[1])
+        .attr('vector-effect', 'non-scaling-stroke');
+
+      $highlight
+        .append('line')
+        .attr('class', 'block-left-edge')
+        .attr('x1', blockLeftEdgeX)
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', blockLeftEdgeX)
+        .attr('y2', blockBottomLeft[1])
+        .attr('vector-effect', 'non-scaling-stroke');
+
       $highlight
         .append('text')
         .attr('class', 'block-label')
         .attr('dominant-baseline', 'hanging')
-        .attr('x', blockTopLeft[0] + scale(30))
-        .attr('y', blockTopLeft[1] + scale(30))
-        .style('font-size', px(scale(60)))
-        .attr('fill', colors.text)
+        .attr('x', blockLeftEdgeX + Math.max(4, scale(16)))
+        .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
+        .style('font-size', px(Math.max(9, scale(42))))
         .text(label);
+
       return [id, $highlight];
     }),
   );
 
-  return { $blocks };
+  return { $blocks, blockMarkerXs };
 }

@@ -1,90 +1,70 @@
 .original-layout {
-    --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
-    --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
-    --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
-    --diplomatic-structure: var(--color-parchment-700, #7e6149);
-    --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
+    --diplomatic-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
+    --diplomatic-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
+    --diplomatic-selected-strong: var(--color-selection-stroke, #125e64);
+    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, #125e64);
+    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
+    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
+    --diplomatic-structure-text: var(--color-layout-element-text, #125e64);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
-    --diplomatic-muted: var(--color-neutral-600, #666666);
+    --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
+    --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
 
     color: var(--diplomatic-text);
 
+    &::selection,
+    *::selection {
+        background-color: var(--color-text-selection-fill, #abe7ec);
+        color: var(--color-text-selection-text, #0c0a09);
+        text-shadow: none;
+    }
+
     .segment {
-        border-radius: 2px;
         cursor: pointer;
     }
 
     .segment:hover {
-        background: color-mix(in srgb, var(--diplomatic-annotation) 18%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-annotation-strong);
+        background: var(--diplomatic-selected-hover);
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong);
+        outline: none;
     }
 
     .entity {
-        --diplomatic-entity: var(--color-brand-parchment, #b99b7f);
-        --diplomatic-entity-strong: var(--color-parchment-800, #5d4736);
-
-        border-bottom: 1px solid var(--diplomatic-entity-strong);
-        background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
+        background: var(--entity-highlight-fill);
+        -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--diplomatic-text);
-        padding: 0 0.08em;
     }
 
-    .entity.cidoc-actor {
-        --diplomatic-entity: #ffbdca;
-        --diplomatic-entity-strong: #9a4f60;
-    }
-
-    .entity.cidoc-appellation {
-        --diplomatic-entity: #fef3ba;
-        --diplomatic-entity-strong: #8a6f00;
-    }
-
-    .entity.cidoc-conceptual-object {
-        --diplomatic-entity: #fddc34;
-        --diplomatic-entity-strong: #856f00;
-    }
-
-    .entity.cidoc-dimension {
-        --diplomatic-entity: #e6e4ec;
-        --diplomatic-entity-strong: #6d5f78;
-    }
-
-    .entity.cidoc-physical-thing {
-        --diplomatic-entity: #e1ba9c;
-        --diplomatic-entity-strong: #7a563d;
-    }
-
-    .entity.cidoc-place {
-        --diplomatic-entity: #94cc7d;
-        --diplomatic-entity-strong: #3f6f31;
-    }
-
-    .entity.cidoc-time-span {
-        --diplomatic-entity: #86bcc8;
-        --diplomatic-entity-strong: #356a75;
-    }
-
-    .entity.cidoc-type {
-        --diplomatic-entity: #fab565;
-        --diplomatic-entity-strong: #8f5200;
+    .entity:hover {
+        box-shadow:
+          inset 0 1px 0 var(--entity-highlight-stroke),
+          inset 0 -1px 0 var(--entity-highlight-stroke);
+        cursor: pointer;
     }
 
     .entity.selected,
     .selected {
-        background: color-mix(in srgb, var(--diplomatic-selected) 18%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-selected);
+        background: var(--diplomatic-selected);
+        margin-inline: -0.08em;
+        padding-inline: 0.08em;
+        box-shadow:
+          inset 0 1px 0 var(--diplomatic-selected-strong),
+          inset 0 -1px 0 var(--diplomatic-selected-strong),
+          inset 1px 0 0 var(--diplomatic-selected-strong),
+          inset -1px 0 0 var(--diplomatic-selected-strong);
     }
 
     .entity.selected {
-        border-bottom-color: var(--diplomatic-entity-strong);
-        background: color-mix(in srgb, var(--diplomatic-entity) 52%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-entity-strong);
+        background: var(--entity-highlight-fill);
+        --diplomatic-selected-strong: var(--entity-highlight-stroke);
     }
 
     .line-numbers .line-number {
         position: absolute;
-        color: color-mix(in srgb, var(--diplomatic-structure) 72%, var(--diplomatic-muted));
+        color: var(--diplomatic-structure-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-variant-numeric: tabular-nums;
@@ -97,17 +77,51 @@
     }
 
     .line-numbers .line-number.is-visible {
-        color: var(--diplomatic-structure-strong);
+        color: var(--diplomatic-structure-text);
+        font-weight: 700;
     }
 
-    .block-label {
-        fill: color-mix(in srgb, var(--diplomatic-structure-strong) 84%, transparent);
+    .line-numbers {
+        pointer-events: none;
+    }
+
+    .blocks > g polygon {
+        fill: transparent;
+        stroke: transparent;
+        stroke-width: 1px;
+        transition: fill 100ms ease-out;
+    }
+
+    .blocks .block-label {
+        fill: var(--diplomatic-structure-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           monospace;
         font-weight: 600;
-        letter-spacing: 0;
         paint-order: stroke;
-        stroke: rgb(255 255 255 / 0.38);
-        stroke-width: 2px;
+        stroke: var(--manifest-transcription-sheet, #f8f5f2);
+        stroke-linejoin: round;
+        stroke-width: 3px;
+        user-select: none;
     }
+
+    .blocks .block-left-edge {
+        stroke: var(--diplomatic-structure-strong);
+        stroke-width: 2px;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .text {
+        user-select: text;
+    }
+
+    .blocks > g:hover polygon {
+        fill: var(--diplomatic-structure-fill);
+        stroke: transparent;
+    }
+
+    .blocks > g[opacity="1"] polygon {
+        fill: var(--diplomatic-structure-fill-strong);
+        stroke: transparent;
+    }
+
 }

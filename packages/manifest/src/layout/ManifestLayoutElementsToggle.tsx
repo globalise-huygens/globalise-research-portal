@@ -6,7 +6,7 @@ import { IconLayoutElements } from '@globalise/design';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 import { TooltipIconButton } from './TooltipIconButton';
 
-const tooltip = 'Highlight layout elements and show line numbers';
+const tooltip = 'Highlight layout elements and show labels and line numbers';
 
 export function ManifestLayoutElementsToggle() {
   const isVisible = useIsLayoutElementsVisible();

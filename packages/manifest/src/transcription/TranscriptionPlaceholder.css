@@ -1,4 +1,4 @@
-.manifest-transcription-placeholder {
+.transcription-placeholder {
   position: relative;
   display: flex;
   width: 100%;
@@ -6,7 +6,7 @@
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: center;
-  background: var(--color-neutral-500, #737373);
+  background: var(--manifest-transcription-sheet, #f8f5f2);
   color: var(--color-brand-black, #0c0a09);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.875rem;
@@ -15,4 +15,9 @@
   line-height: 1.75;
   padding: 5rem 1rem;
   text-align: center;
+
+  &[data-tone="error"] {
+    background: var(--color-vermilion-50, #ffeeec);
+    color: var(--color-vermilion-700, #b32d1d);
+  }
 }
