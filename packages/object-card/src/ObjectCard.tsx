@@ -41,7 +41,6 @@ export function ObjectCard() {
       </p>
       <ConceptList title="inScheme" concepts={concept.inScheme} />
       <LabelList title="prefLabel" values={concept.prefLabel} />
-      <LabelList title="dcterms:title" values={concept['dcterms:title']} />
       <LabelList title="altLabel" values={concept.altLabel} />
       <LabelList title="definition" values={concept.definition} />
       <ConceptList title="hasTopConcept" concepts={concept.hasTopConcept} />
