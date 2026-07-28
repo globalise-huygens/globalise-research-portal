@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { loadSchemes, useSchemes } from './SchemesSlice.ts';
 import { loadConcept, useCurrentSchemeId } from './ConceptSlice.ts';
-import { conceptLabel } from './SkosModel.ts';
+import { getConceptLabel } from './SkosModel.ts';
 
 export function SchemeList() {
   const { schemes, isLoading, isReady, error } = useSchemes();
@@ -32,7 +32,7 @@ export function SchemeList() {
               aria-current={isCurrent || undefined}
             >
               {isCurrent ?
-                <strong>{conceptLabel(scheme)}</strong> : conceptLabel(scheme)}
+                <strong>{getConceptLabel(scheme)}</strong> : getConceptLabel(scheme)}
             </button>
           </span>
         );

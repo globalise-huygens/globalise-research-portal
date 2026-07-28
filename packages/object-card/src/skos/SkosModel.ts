@@ -35,12 +35,18 @@ export type SkosConcept = {
 
 export type SkosMatch = SkosConcept | string;
 
-export function conceptLabel(concept: SkosConcept): string {
-  if (concept._label) {
-    return concept._label;
-  }
-  const first = concept.prefLabel?.[0];
-  return first ? first['@value'] : concept.id;
+export function getConceptLabel(concept: SkosConcept) {
+  return (
+    // Pick english by default:
+    concept.prefLabel.find((l) => l['@language'] === 'en')?.['@value']
+    // Use dutch when missing:
+    ?? concept.prefLabel.find((l) => l['@language'] === 'nl')?.['@value']
+    // Any other label when present:
+    ?? concept.prefLabel[0]
+    // Or dev _label when no prefLabel:
+    ?? concept._label
+    ?? ''
+  );
 }
 
 /**

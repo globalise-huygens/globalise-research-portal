@@ -1,5 +1,5 @@
 import { loadConcept } from './ConceptSlice.ts';
-import { conceptLabel, SkosConcept } from './SkosModel.ts';
+import { getConceptLabel, SkosConcept } from './SkosModel.ts';
 
 export type RelationKey =
   | 'broader'
@@ -16,7 +16,7 @@ export function ConceptNode({ concept, childKey }: ConceptNodeProps) {
   return (
     <li>
       <button onClick={() => void loadConcept(concept.id)}>
-        {conceptLabel(concept)}
+        {getConceptLabel(concept)}
       </button>
       {!!children?.length && (
         <ul className="concept-list">
