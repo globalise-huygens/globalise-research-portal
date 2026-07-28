@@ -13,6 +13,7 @@ export type SkosConcept = {
   altLabel?: LangValue[];
   definition?: LangValue[];
   references?: LangValue;
+  hiddenLabel?: LangValue[];
   source?: LangValue;
   notation?: string | string[];
 
