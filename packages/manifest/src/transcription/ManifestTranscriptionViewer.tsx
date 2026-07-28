@@ -1,5 +1,5 @@
 import {
-  initCanvases, logTextSelector,
+  initCanvases,
   useDocumentStore,
   useIsLayoutElementsVisible,
   useTranscriptionMode,
@@ -18,9 +18,6 @@ type Props = {
   initialCanvasId?: string;
   onCanvasChange: (canvasId: string) => void;
 };
-
-const annotationId = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:entities:NL-HaNA_1.04.02_1053_0005#annotation:435';
-logTextSelector(annotationId);
 
 export function ManifestTranscriptionViewer({
   initialCanvasId,

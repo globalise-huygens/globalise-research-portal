@@ -22,11 +22,8 @@ export function logTextSelector(annotationId: Id) {
     if (!annotations) {
       return;
     }
-    const annotation = annotations[annotationId];
-    const {
-      error,
-      hasAnnotations,
-    } = getCanvasAnnotationPages(state, canvasId);
+
+    const { error, hasAnnotations } = getCanvasAnnotationPages(state, canvasId);
 
     if (error || !hasAnnotations) {
       return;
@@ -36,6 +33,12 @@ export function logTextSelector(annotationId: Id) {
     if (!text) {
       return;
     }
+
+    const annotation = annotations[annotationId];
+    if(!annotation?.target) {
+      return;
+    }
+
     const selector = findTextPositionSelector(annotation, pageId);
     if (!selector) {
       return;
@@ -43,7 +46,7 @@ export function logTextSelector(annotationId: Id) {
     const annoTextSlice = text.slice(selector.start, selector.end);
 
     isLogged = true;
-    console.debug(logTextSelector.name, {
+    console.info(logTextSelector.name, {
       canvasId,
       annotationId,
       pageId,
