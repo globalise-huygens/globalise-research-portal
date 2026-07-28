@@ -20,9 +20,17 @@ export function ObjectCard() {
     return <div>Loading...</div>;
   }
 
+  const title =
+    // Pick english by default:
+    concept.prefLabel.find((l) => l['@language'] === 'en')?.['@value']
+    // Use dutch when missing:
+    ?? concept.prefLabel.find((l) => l['@language'] === 'nl')?.['@value']
+    // Use dev label:
+    ?? concept._label ?? '';
+
   return (
     <div className="object-card">
-      <h1>{concept._label ?? concept.id}</h1>
+      <h1>{title}</h1>
       <p>
         Type: {asArray(concept.type).join(', ')} | {!!url && <a href={url} target="_blank">
           raw <IconExternalLink className="inline-icon"/>

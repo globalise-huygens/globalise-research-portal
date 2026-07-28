@@ -10,7 +10,7 @@ export type SkosConcept = {
   type: string | string[];
   _label?: string;
   'dcterms:title'?: LangValue[];
-  prefLabel?: LangValue[];
+  prefLabel: LangValue[];
   altLabel?: LangValue[];
   definition?: LangValue[];
   references?: LangValue;
