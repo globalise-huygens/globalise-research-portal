@@ -1,7 +1,11 @@
-import { ObjectCard, SchemeList, useObjectCardStore } from '@globalise/object-card';
+import {
+  loadConcept,
+  ObjectCard,
+  SchemeList,
+  useObjectCardStore,
+} from '@globalise/object-card';
 import '@globalise/design/styles.css';
 import { useEffect } from 'react';
-import { loadConcept } from '@globalise/object-card';
 
 const DEFAULT_URI =
   'https://data.globalise.huygens.knaw.nl/' +
@@ -13,13 +17,21 @@ export function ObjectCardPage() {
 
   useEffect(initLoadObjectCard, []);
   function initLoadObjectCard() {
-    const uri = new URLSearchParams(location.search)
-      .get(CONCEPT)
-      ?? DEFAULT_URI;
-    setConceptParam(uri);
+    const uri = getUriFromUrl();
+    setConceptParam(uri, 'replace');
     loadConcept(uri).catch(console.error);
   }
-
+  
+  useEffect(handleHistoryNav, []);
+  function handleHistoryNav() {
+    const onPopState = () => {
+      const uri = getUriFromUrl();
+      loadConcept(uri).catch(console.error);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }
+  
   useEffect(syncConceptParam, []);
   function syncConceptParam() {
     return useObjectCardStore.subscribe((state, prev) => {
@@ -27,7 +39,7 @@ export function ObjectCardPage() {
       if (!uri || uri === prev.conceptState.uri) {
         return;
       }
-      setConceptParam(uri);
+      setConceptParam(uri, 'push');
     });
   }
 
@@ -40,12 +52,22 @@ export function ObjectCardPage() {
   );
 }
 
-function setConceptParam(uri: string) {
+function getUriFromUrl() {
+  return new URLSearchParams(location.search)
+    .get(CONCEPT)
+    ?? DEFAULT_URI;
+}
+
+function setConceptParam(uri: string, mode: 'push' | 'replace') {
   const url = new URL(window.location.href);
   const urlParamUri = url.searchParams.get(CONCEPT);
   if (urlParamUri === uri) {
     return;
   }
   url.searchParams.set(CONCEPT, uri);
-  history.replaceState({}, '', url);
+  if (mode === 'push') {
+    history.pushState({}, '', url);
+  } else {
+    history.replaceState({}, '', url);
+  }
 }

@@ -3,6 +3,7 @@ import './ObjectCard.css';
 import { asArray } from '@globalise/common';
 import { getSkosUrl, useConcept } from './skos';
 import { ConceptList, LabelList, MatchList, Reference } from './skos';
+import { OpenConcept } from './OpenConcept.tsx';
 
 export function ObjectCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -30,6 +31,7 @@ export function ObjectCard() {
 
   return (
     <div className="object-card">
+      <OpenConcept />
       <h1>{title}</h1>
       <p>
         Type: {asArray(concept.type).join(', ')} | {!!url && <a href={url} target="_blank">

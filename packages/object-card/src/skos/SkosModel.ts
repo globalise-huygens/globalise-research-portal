@@ -43,6 +43,9 @@ export function conceptLabel(concept: SkosConcept): string {
   return first ? first['@value'] : concept.id;
 }
 
+/**
+ * Convert ID URI into a URL by adding `.json`
+ */
 export function getSkosUrl(uri: string): string {
   const result = `${uri}.json`;
   if (!isUrl(result)) {
