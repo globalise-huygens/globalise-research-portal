@@ -258,7 +258,8 @@ export function ManifestDiplomaticViewer({
   };
 
   return (
-    <div ref={scrollRef} style={{ overflow: 'auto', height: '100%' }}>
+    <div ref={scrollRef} className="transcription-scroll"
+      style={{ overflow: 'auto', height: '100%' }}>
       <div ref={canvasListRef} style={{ ...containerStyle }}>
         {containerWidth &&
           canvasInfos.map((info, i) => (

@@ -402,7 +402,12 @@
 .manifest-viewer .pane[data-view="scan"] .canvas {
   align-items: stretch;
   justify-content: stretch;
+  background: var(--color-parchment-300);
   padding: 0;
+}
+
+.manifest-viewer .pane[data-view="scan"] .openseadragon-container {
+  background: var(--color-parchment-300) !important;
 }
 
 .manifest-viewer .pane[data-view="scan"] .canvas > * {
@@ -410,7 +415,29 @@
 }
 
 .manifest-viewer .pane[data-view="transcription"] .canvas {
+  background: var(--color-parchment-300);
   padding: 0;
+}
+
+.manifest-viewer .transcription-scroll {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  padding-inline: 0.5rem;
+  scrollbar-color: var(--color-parchment-700) var(--color-parchment-200);
+}
+
+.manifest-viewer .transcription-scroll::-webkit-scrollbar {
+  width: 0.875rem;
+}
+
+.manifest-viewer .transcription-scroll::-webkit-scrollbar-track {
+  background: var(--color-parchment-200);
+}
+
+.manifest-viewer .transcription-scroll::-webkit-scrollbar-thumb {
+  border: 3px solid var(--color-parchment-200);
+  background: var(--color-parchment-700);
 }
 
 .manifest-viewer .collapsed-rail {

@@ -76,6 +76,8 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
         position: 'relative',
         width,
         height,
+        background: 'var(--color-parchment-50)',
+        boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
         contentVisibility: 'auto',
         containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,
 

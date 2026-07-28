@@ -6,7 +6,7 @@
   box-sizing: border-box;
   align-items: flex-start;
   justify-content: center;
-  background: var(--color-neutral-500, #737373);
+  background: var(--color-parchment-50);
   color: var(--color-brand-black, #0c0a09);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.875rem;
