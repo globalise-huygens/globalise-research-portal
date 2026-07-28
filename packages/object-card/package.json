@@ -12,7 +12,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@globalise/common": "*",
     "@globalise/design": "*",
-    "@globalise/common": "*"
+    "dompurify": "^3.4.12"
   }
 }
