@@ -29,16 +29,18 @@ export function ObjectCard() {
   }
 
   const title = getConceptLabel(concept);
+  const notation = concept.notation;
 
   return (
     <div className="object-card">
       <OpenConcept/>
       <h1>{title}</h1>
       <p>
-        Type: {asArray(concept.type).join(', ')} | {!!url &&
-        <a href={url} target="_blank">
+        Type: {asArray(concept.type).join(', ')}
+        {!!notation?.length && <> | <span>notation: {asArray(notation).join(', ')}</span></>}
+        {!!url && <> | <a href={url} target="_blank">
           raw <IconExternalLink className="inline-icon"/>
-        </a>}
+        </a></>}
         {concept.source && <> | <a href={concept.source['@value']}
           target="_blank">
           {concept.source['@value']} <IconExternalLink className="inline-icon"/>

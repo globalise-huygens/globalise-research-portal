@@ -14,6 +14,7 @@ export type SkosConcept = {
   definition?: LangValue[];
   references?: LangValue;
   source?: LangValue;
+  notation?: string | string[];
 
   /**
    * Relations:
@@ -35,7 +36,7 @@ export type SkosConcept = {
 
 export type SkosMatch = SkosConcept | string;
 
-export function getConceptLabel(concept: SkosConcept) {
+export function getConceptLabel(concept: SkosConcept): string {
   return (
     // Pick english by default:
     concept.prefLabel.find((l) => l['@language'] === 'en')?.['@value']
