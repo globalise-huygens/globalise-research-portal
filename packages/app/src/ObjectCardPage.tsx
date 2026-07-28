@@ -34,6 +34,7 @@ export function ObjectCardPage() {
   return (
     <>
       <SchemeList />
+      <hr />
       <ObjectCard />
     </>
   );

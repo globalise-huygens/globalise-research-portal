@@ -20,12 +20,13 @@ export function SchemeList() {
 
   return (
     <>
-      <h1>Schemes</h1>
+      <span className="list-label">Schemes: </span>
       {schemes.map((scheme) => {
         const isCurrent = scheme.id === currentSchemeId;
         return (
           <span key={scheme.id}
-            style={{ paddingRight: '0.25rem', lineHeight: '2rem' }}>
+            style={{ paddingRight: '0.25rem', lineHeight: '2rem' }}
+          >
             <button
               onClick={() => void loadConcept(scheme.id)}
               aria-current={isCurrent || undefined}
