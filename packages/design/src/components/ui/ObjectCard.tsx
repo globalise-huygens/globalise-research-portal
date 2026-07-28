@@ -24,7 +24,7 @@ const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
   ({ className, ...props }, ref) => (
     <AriaDialog
       ref={ref}
-      className={cn('gds-object-card', className)}
+      className={cn('object-card', className)}
       {...props}
     />
   ),
@@ -40,7 +40,7 @@ function ObjectCardTitle({ className, ...props }: ObjectCardTitleProps) {
     <AriaHeading
       slot="title"
       level={2}
-      className={cn('gds-object-card__title', className)}
+      className={cn('title', className)}
       {...props}
     />
   );
@@ -67,11 +67,11 @@ function ObjectCardActionTooltip({
   }
 
   return (
-    <span className="gds-object-card__action-with-tooltip">
+    <span className="action-with-tooltip">
       {children}
       <span
         aria-hidden="true"
-        className="gds-object-card__action-tooltip tooltip"
+        className="action-tooltip tooltip"
       >
         {label}
       </span>
@@ -88,19 +88,19 @@ function ObjectCardHeader({
   const hasActions = Boolean(actions ?? onClose);
 
   return (
-    <header className={cn('gds-object-card__header', className)}>
-      <div className="gds-object-card__header-main">{children}</div>
+    <header className={cn('header', className)}>
+      <div className="header-main">{children}</div>
       {hasActions && (
-        <div className="gds-object-card__header-actions">
+        <div className="header-actions">
           {actions}
           {onClose && (
             <ObjectCardActionTooltip label="Close">
               <AriaButton
                 onPress={onClose}
                 aria-label="Close"
-                className="gds-object-card__close"
+                className="close"
               >
-                <IconClose className="gds-object-card__close-icon"/>
+                <IconClose className="close-icon"/>
               </AriaButton>
             </ObjectCardActionTooltip>
           )}
@@ -117,7 +117,7 @@ export type ObjectCardStatsProps = {
 
 function ObjectCardStats({ className, children }: ObjectCardStatsProps) {
   return (
-    <div className={cn('gds-object-card__stats', className)}>{children}</div>
+    <div className={cn('stats', className)}>{children}</div>
   );
 }
 
@@ -128,7 +128,7 @@ export type ObjectCardStatProps = {
 
 function ObjectCardStat({ className, children }: ObjectCardStatProps) {
   return (
-    <span className={cn('gds-object-card__stat', className)}>{children}</span>
+    <span className={cn('stat', className)}>{children}</span>
   );
 }
 
@@ -139,14 +139,14 @@ export type ObjectCardBodyProps = {
 
 function ObjectCardBody({ className, children }: ObjectCardBodyProps) {
   return (
-    <div className={cn('gds-object-card__body', className)}>{children}</div>
+    <div className={cn('body', className)}>{children}</div>
   );
 }
 
 type ObjectCardPanelSide = 'left' | 'right';
 
 function objectCardPanelVariants({ className }: { className?: string } = {}) {
-  return cn('gds-object-card__panel', className);
+  return cn('panel', className);
 }
 
 export type ObjectCardPanelProps = {
@@ -182,7 +182,7 @@ function ObjectCardSection({
   return (
     <Group
       aria-labelledby={title ? headingId : undefined}
-      className={cn('gds-object-card__section', className)}
+      className={cn('section', className)}
       data-has-title={title ? 'true' : 'false'}
       data-sticky={sticky ? 'true' : undefined}
     >
@@ -190,13 +190,13 @@ function ObjectCardSection({
         <AriaHeading
           level={3}
           id={headingId}
-          className="gds-object-card__section-heading"
+          className="section-heading"
         >
           {title}
         </AriaHeading>
       )}
       {scrollable ? (
-        <div className="gds-object-card__section-scroll">{children}</div>
+        <div className="section-scroll">{children}</div>
       ) : (
         children
       )}
@@ -216,9 +216,9 @@ function ObjectCardProperty({
   className,
 }: ObjectCardPropertyProps) {
   return (
-    <div className={cn('gds-object-card__property', className)}>
-      <dt className="gds-object-card__property-label">{label}</dt>
-      <dd className="gds-object-card__property-value">{value}</dd>
+    <div className={cn('property', className)}>
+      <dt className="property-label">{label}</dt>
+      <dd className="property-value">{value}</dd>
     </div>
   );
 }
@@ -232,7 +232,7 @@ function ObjectCardPropertyList({
 }: ObjectCardPropertyListProps) {
   return (
     <dl
-      className={cn('gds-object-card__property-list', className)}
+      className={cn('property-list', className)}
       {...props}
     />
   );
@@ -252,8 +252,8 @@ const ObjectCardExternalLink = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   const content = (
     <>
-      <span className="gds-object-card__external-link-label">{children}</span>
-      <IconExternalLink className="gds-object-card__external-link-icon"/>
+      <span className="external-link-label">{children}</span>
+      <IconExternalLink className="external-link-icon"/>
     </>
   );
 
@@ -262,7 +262,7 @@ const ObjectCardExternalLink = React.forwardRef<
       ref={ref}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn('gds-object-card__external-link', className)}
+      className={cn('external-link', className)}
       {...props}
     >
       {content}
@@ -282,12 +282,12 @@ function ObjectCardListItem({
   href,
   children,
 }: ObjectCardListItemProps) {
-  const classes = cn('gds-object-card__list-item', className);
+  const classes = cn('list-item', className);
 
   if (href) {
     return (
       <AriaLink href={href} className={classes}>
-        <IconArrowTopRight className="gds-object-card__list-item-icon"/>
+        <IconArrowTopRight className="list-item-icon"/>
         {children}
       </AriaLink>
     );
@@ -303,9 +303,9 @@ export type ObjectCardFooterProps = {
 
 function ObjectCardFooter({ className, children }: ObjectCardFooterProps) {
   return (
-    <div className={cn('gds-object-card__footer', className)}>
-      <AriaSeparator className="gds-object-card__footer-divider"/>
-      <div className="gds-object-card__footer-content">{children}</div>
+    <div className={cn('footer', className)}>
+      <AriaSeparator className="footer-divider"/>
+      <div className="footer-content">{children}</div>
     </div>
   );
 }
@@ -313,7 +313,7 @@ function ObjectCardFooter({ className, children }: ObjectCardFooterProps) {
 type ObjectCardActionVariant = 'default' | 'more';
 
 function objectCardActionVariants({ className }: { className?: string } = {}) {
-  return cn('gds-object-card__action', className);
+  return cn('action', className);
 }
 
 export type ObjectCardActionProps = {
@@ -343,7 +343,7 @@ const ObjectCardAction = React.forwardRef<
       data-variant={variant ?? 'default'}
       {...props}
     >
-      {icon && <span className="gds-object-card__action-icon">{icon}</span>}
+      {icon && <span className="action-icon">{icon}</span>}
       {children && <span>{children}</span>}
     </AriaButton>
   );
