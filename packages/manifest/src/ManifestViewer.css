@@ -420,10 +420,6 @@
 }
 
 .manifest-viewer .transcription-scroll {
-  box-sizing: border-box;
-  height: 100%;
-  overflow: auto;
-  padding-inline: 0.5rem;
   scrollbar-color: var(--color-parchment-700) var(--color-parchment-200);
 }
 
