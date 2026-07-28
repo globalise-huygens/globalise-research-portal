@@ -62,13 +62,6 @@ const emptyCanvasState: CanvasState = {
   error: null,
 };
 
-export const defaultManifestViewerSlice: ManifestViewerSlice = {
-  selectedCanvasId: null,
-  selectedCanvasSource: 'external',
-  selectedCanvasAt: 0,
-  canvases: {},
-};
-
 function createReadyCanvas(pages: AnnotationPage[]) {
   const mapped: Record<Id, Annotation> = {};
   for (const page of pages) {

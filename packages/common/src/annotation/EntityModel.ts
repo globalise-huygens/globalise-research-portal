@@ -22,6 +22,7 @@ const entityTypes = [
 ] as const;
 
 export type EntityType = (typeof entityTypes)[number];
+
 export const entityVisualCategories = [
   'cidoc-actor',
   'cidoc-appellation',
