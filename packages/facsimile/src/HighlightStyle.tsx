@@ -3,4 +3,5 @@ export type HighlightStyle = {
   stroke?: string;
   strokeWidth?: number;
   cursor?: string;
+  mixBlendMode?: 'multiply';
 };

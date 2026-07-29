@@ -1,12 +1,14 @@
 .original-layout {
-    --diplomatic-selected: color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 22%, transparent);
-    --diplomatic-selected-strong: var(--color-turquoise-800, #125e64);
+    --diplomatic-selected: color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 26%, transparent);
     --diplomatic-structure: var(--color-parchment-700, #7e6149);
     --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
     --diplomatic-muted: var(--color-neutral-600, #666666);
+    --entity-highlight-color: var(--color-brand-parchment, #b99b7f);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
-    --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
+    --entity-highlight-hover-weight: 40%;
+    --entity-highlight-selected-weight: 60%;
+    --entity-highlight-text: var(--color-brand-black, #0c0a09);
 
     color: var(--diplomatic-text);
 
@@ -25,19 +27,24 @@
         background: var(--diplomatic-selected);
         margin-inline: -0.08em;
         padding-inline: 0.08em;
-        box-shadow: inset 0 0 0 1px var(--diplomatic-selected-strong);
     }
 
     .entity:hover {
-        background: var(--entity-highlight-fill);
-        box-shadow:
-          inset 0 1px 0 var(--entity-highlight-stroke),
-          inset 0 -1px 0 var(--entity-highlight-stroke);
+        background: color-mix(
+          in srgb,
+          var(--entity-highlight-color) var(--entity-highlight-hover-weight),
+          var(--entity-highlight-fill)
+        );
+        color: var(--entity-highlight-text);
     }
 
     .entity.selected {
-        background: var(--entity-highlight-fill);
-        box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
+        background: color-mix(
+          in srgb,
+          var(--entity-highlight-color) var(--entity-highlight-selected-weight),
+          var(--entity-highlight-fill)
+        );
+        color: var(--entity-highlight-text);
     }
 
     .line-numbers .line-number {
