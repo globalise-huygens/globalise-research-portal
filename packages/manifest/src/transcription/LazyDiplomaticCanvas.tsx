@@ -1,4 +1,3 @@
-import { canvasName } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
@@ -11,7 +10,7 @@ import {
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
-import { PageLabel } from './PageLabel.tsx';
+import { CanvasLabel } from '../CanvasLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 
 type Props = {
@@ -27,7 +26,7 @@ type Props = {
   showLayoutElements: boolean;
 };
 
-export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
+export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   canvasId,
   canvasWidth,
   canvasHeight,
@@ -45,6 +44,7 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
+  const isCurrentCanvas = selectedIndex === index;
   const isInRenderRangeByDistance =
     selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
 
@@ -63,7 +63,6 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
     width > 0 &&
     Number.isFinite(height) &&
     height > 0;
-  const canvasLabel = canvasName(canvasId);
   const isDataReady = isCanvasReady && hasAnnotations;
   const hasNoAnnotations = !annotationUrls.length;
   const isLoading = !error && !!annotationUrls.length && !isDataReady;
@@ -92,25 +91,25 @@ export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
           color="indianred"
           background="rgb(248 243 243)"
         >
-          <PageLabel label={canvasLabel} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <PageLabel label={canvasLabel} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Loading...
         </TranscriptionPlaceholder>
       )}
       {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
-          <PageLabel label={canvasLabel} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
               id={canvasId}

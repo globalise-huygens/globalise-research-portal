@@ -6,6 +6,8 @@
     --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
     --diplomatic-muted: var(--color-neutral-600, #666666);
+    --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
+    --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
 
     color: var(--diplomatic-text);
 
@@ -20,54 +22,11 @@
     }
 
     .entity {
-        --diplomatic-entity: var(--color-brand-parchment, #b99b7f);
-        --diplomatic-entity-strong: var(--color-parchment-800, #5d4736);
-
-        border-bottom: 1px solid var(--diplomatic-entity-strong);
-        background: color-mix(in srgb, var(--diplomatic-entity) 34%, transparent);
+        border-bottom: 1px solid var(--entity-highlight-stroke);
+        background: var(--entity-highlight-fill);
         box-decoration-break: clone;
         color: var(--diplomatic-text);
         padding: 0 0.08em;
-    }
-
-    .entity.cidoc-actor {
-        --diplomatic-entity: #ffbdca;
-        --diplomatic-entity-strong: #9a4f60;
-    }
-
-    .entity.cidoc-appellation {
-        --diplomatic-entity: #fef3ba;
-        --diplomatic-entity-strong: #8a6f00;
-    }
-
-    .entity.cidoc-conceptual-object {
-        --diplomatic-entity: #fddc34;
-        --diplomatic-entity-strong: #856f00;
-    }
-
-    .entity.cidoc-dimension {
-        --diplomatic-entity: #e6e4ec;
-        --diplomatic-entity-strong: #6d5f78;
-    }
-
-    .entity.cidoc-physical-thing {
-        --diplomatic-entity: #e1ba9c;
-        --diplomatic-entity-strong: #7a563d;
-    }
-
-    .entity.cidoc-place {
-        --diplomatic-entity: #94cc7d;
-        --diplomatic-entity-strong: #3f6f31;
-    }
-
-    .entity.cidoc-time-span {
-        --diplomatic-entity: #86bcc8;
-        --diplomatic-entity-strong: #356a75;
-    }
-
-    .entity.cidoc-type {
-        --diplomatic-entity: #fab565;
-        --diplomatic-entity-strong: #8f5200;
     }
 
     .entity.selected,
@@ -77,9 +36,9 @@
     }
 
     .entity.selected {
-        border-bottom-color: var(--diplomatic-entity-strong);
-        background: color-mix(in srgb, var(--diplomatic-entity) 52%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-entity-strong);
+        border-bottom-color: var(--entity-highlight-stroke);
+        background: var(--entity-highlight-fill);
+        box-shadow: inset 0 -1px 0 var(--entity-highlight-stroke);
     }
 
     .line-numbers .line-number {
