@@ -76,8 +76,7 @@ function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
     window.innerWidth - width - SETTINGS_PANEL_MARGIN,
   );
   const belowTop = buttonRect.bottom + SETTINGS_PANEL_GAP;
-  const availableBelow =
-    window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
+  const availableBelow = window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
   const availableAbove =
     buttonRect.top - SETTINGS_PANEL_GAP - SETTINGS_PANEL_MARGIN;
 
@@ -172,9 +171,9 @@ export function FacsimileControls({
         if (!initialView) {
           return;
         }
-        setZoomPercent(Math.round(
-          (viewer.viewport.getZoom() / initialView.zoom) * 100,
-        ));
+        setZoomPercent(
+          Math.round((viewer.viewport.getZoom() / initialView.zoom) * 100),
+        );
       });
     };
 
@@ -233,11 +232,7 @@ export function FacsimileControls({
       const { viewport } = viewer;
       const initialView = getInitialView();
       const baseZoom = initialView?.zoom ?? viewport.getZoom();
-      viewport.zoomTo(
-        baseZoom * (requestedZoomPercent / 100),
-        undefined,
-        true,
-      );
+      viewport.zoomTo(baseZoom * (requestedZoomPercent / 100), undefined, true);
       viewport.applyConstraints(true);
       const actualZoomPercent = Math.round(
         (viewport.getZoom() / baseZoom) * 100,
@@ -343,9 +338,7 @@ export function FacsimileControls({
       <div className="zoom-controls">
         <ToolButton
           aria-label="Zoom out"
-          icon={
-            <IconZoomOut />
-          }
+          icon={<IconZoomOut />}
           onPress={handleZoomOut}
           size="compact"
         />
@@ -370,26 +363,18 @@ export function FacsimileControls({
               }
             }}
           />
-          <span
-            aria-hidden="true"
-            className="zoom-suffix"
-          >
+          <span aria-hidden="true" className="zoom-suffix">
             %
           </span>
         </label>
         <ToolButton
           aria-label="Zoom in"
-          icon={
-            <IconZoomIn />
-          }
+          icon={<IconZoomIn />}
           onPress={handleZoomIn}
           size="compact"
         />
       </div>
-      <span
-        className="toolbar-divider"
-        aria-hidden="true"
-      />
+      <span className="toolbar-divider" aria-hidden="true" />
       <ToolButton
         aria-label="Reset scan view"
         icon={<IconReset />}
@@ -419,41 +404,43 @@ export function FacsimileControls({
         }}
         size="compact"
       />
-      {isSettingsOpen && settingsPanelStyle && createPortal(
-        <div
-          id={settingsPanelId}
-          className="scan-settings"
-          role="dialog"
-          aria-label="Scan image settings"
-          style={settingsPanelStyle}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape') {
-              setSettingsPanelStyle(null);
-              setIsSettingsOpen(false);
-              settingsButtonRef.current?.focus();
-            }
-          }}
-        >
-          {scanSettings.map((setting) => (
-            <ScanSettingSlider key={setting.label} {...setting} />
-          ))}
-          <label className="row checkbox-row">
-            <SettingIcon label="Invert">
-              <IconInvert />
-            </SettingIcon>
-            <input
-              aria-label="Invert scan image"
-              className="checkbox"
-              type="checkbox"
-              checked={isInverted}
-              onChange={(event) => {
-                setIsInverted(event.currentTarget.checked);
-              }}
-            />
-          </label>
-        </div>,
-        document.body,
-      )}
+      {isSettingsOpen &&
+        settingsPanelStyle &&
+        createPortal(
+          <div
+            id={settingsPanelId}
+            className="scan-settings"
+            role="dialog"
+            aria-label="Scan image settings"
+            style={settingsPanelStyle}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                setSettingsPanelStyle(null);
+                setIsSettingsOpen(false);
+                settingsButtonRef.current?.focus();
+              }
+            }}
+          >
+            {scanSettings.map((setting) => (
+              <ScanSettingSlider key={setting.label} {...setting} />
+            ))}
+            <label className="row checkbox-row">
+              <SettingsIcon label="Invert">
+                <IconInvert />
+              </SettingsIcon>
+              <input
+                aria-label="Invert scan image"
+                className="checkbox"
+                type="checkbox"
+                checked={isInverted}
+                onChange={(event) => {
+                  setIsInverted(event.currentTarget.checked);
+                }}
+              />
+            </label>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
@@ -472,9 +459,7 @@ function ScanSettingSlider({
 
   return (
     <div className="row">
-      <SettingIcon label={label}>
-        {icon}
-      </SettingIcon>
+      <SettingsIcon label={label}>{icon}</SettingsIcon>
       <input
         aria-label={label}
         className="slider"
@@ -491,20 +476,24 @@ function ScanSettingSlider({
           handleChange(event.currentTarget.value);
         }}
       />
-      <span className="value">
-        {value}%
-      </span>
+      <span className="value">{value}%</span>
     </div>
   );
 }
 
-function SettingIcon(
-  { children, label }: { children: ReactNode; label: string },
-) {
+function SettingsIcon({
+  children,
+  label,
+}: {
+  children: ReactNode;
+  label: string;
+}) {
   return (
     <span className="icon">
       {children}
-      <span aria-hidden="true" className="tooltip">{label}</span>
+      <span aria-hidden="true" className="tooltip">
+        {label}
+      </span>
     </span>
   );
 }
