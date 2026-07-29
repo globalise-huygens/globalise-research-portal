@@ -1,7 +1,8 @@
 .normalized-view {
-    --normalized-selected: var(--color-selection-fill, rgb(41 191 204 / 0.22));
-    --normalized-selected-hover: var(--color-selection-fill-hover, rgb(41 191 204 / 0.14));
-    --normalized-selected-strong: var(--color-selection-stroke, #125e64);
+    --normalized-annotation: var(--color-brand-parchment, #b99b7f);
+    --normalized-selected: var(--color-brand-vermilion, #ff543d);
+    --normalized-word-selected: color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 22%, transparent);
+    --normalized-word-selected-strong: var(--color-turquoise-800, #125e64);
     --normalized-structure: var(--color-parchment-700, #7e6149);
     --normalized-structure-strong: var(--color-parchment-800, #5d4736);
     --normalized-text: var(--color-brand-black, #0c0a09);
@@ -92,40 +93,40 @@
 
     .entity {
         background: var(--entity-highlight-fill);
-        -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
         color: var(--normalized-text);
     }
 
+    .entity:hover {
+        background: var(--entity-highlight-fill);
+        box-shadow:
+          inset 0 1px 0 var(--entity-highlight-stroke),
+          inset 0 -1px 0 var(--entity-highlight-stroke);
+    }
+
     .entity.selected {
         background: var(--entity-highlight-fill);
-        --normalized-selected-strong: var(--entity-highlight-stroke);
+        margin-inline: -0.08em;
+        padding-inline: 0.08em;
+        box-shadow: inset 0 0 0 1px var(--entity-highlight-stroke);
     }
 
     .word {
         cursor: pointer;
 
-        &:hover {
-            background: var(--normalized-selected-hover);
-            box-shadow:
-              inset 0 1px 0 var(--normalized-selected-strong),
-              inset 0 -1px 0 var(--normalized-selected-strong);
-        }
-
+        &:hover,
         &.selected {
-            background: var(--normalized-selected);
+            background: var(--normalized-word-selected);
+            margin-inline: -0.08em;
+            padding-inline: 0.08em;
+            box-shadow: inset 0 0 0 1px var(--normalized-word-selected-strong);
         }
     }
 
-    .entity.selected,
-    .word.selected {
-        margin-inline: -0.08em;
-        padding-inline: 0.08em;
-        box-shadow:
-          inset 0 1px 0 var(--normalized-selected-strong),
-          inset 0 -1px 0 var(--normalized-selected-strong),
-          inset 1px 0 0 var(--normalized-selected-strong),
-          inset -1px 0 0 var(--normalized-selected-strong);
+    .entity .word:hover:not(.selected) {
+        background: transparent;
+        margin-inline: 0;
+        padding-inline: 0;
+        box-shadow: none;
     }
-
 }
