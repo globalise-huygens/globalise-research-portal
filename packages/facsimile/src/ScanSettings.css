@@ -1,40 +1,50 @@
 .scan-settings {
   position: fixed;
   z-index: 1000;
-  width: min(320px, calc(100vw - var(--s24)));
   max-height: calc(100vh - var(--s24));
   overflow: auto;
-  border: 1px solid rgb(255 255 255 / 0.22);
-  background: rgb(12 10 9 / 0.94);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(12 10 9 / 0.72);
   padding: var(--s12);
-  color: var(--color-brand-white);
-  box-shadow: 0 18px 48px rgb(0 0 0 / 0.36);
+  color: rgb(255 255 255 / 0.78);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+  backdrop-filter: blur(2px);
 }
 
 .scan-settings > .row {
   display: grid;
   min-height: var(--s32);
-  grid-template-columns: 96px minmax(96px, 1fr) var(--s40);
+  grid-template-columns: var(--s20) minmax(0, 1fr) var(--s40);
   align-items: center;
   gap: var(--s8);
 }
 
-.scan-settings .label {
+.scan-settings .icon {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--s6);
-  color: var(--color-brand-white);
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1rem;
+  justify-content: center;
+  color: inherit;
 }
 
-.scan-settings .settings-icon {
+.scan-settings .icon > svg {
   width: var(--s20);
   height: var(--s20);
-  flex-shrink: 0;
-  color: var(--color-brand-white);
+}
+
+.scan-settings .icon > .tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--s8));
+  width: max-content;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 75ms ease-out;
+}
+
+.scan-settings .icon:hover > .tooltip {
+  opacity: 1;
 }
 
 .scan-settings .slider {
@@ -94,7 +104,7 @@
 }
 
 .scan-settings .value {
-  color: rgb(255 255 255 / 0.88);
+  color: var(--color-parchment-500);
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
@@ -102,21 +112,11 @@
   text-align: right;
 }
 
-.scan-settings > .row[data-layout="stacked"] {
-  grid-template-columns: 96px 1fr;
+.scan-settings > .checkbox-row {
+  grid-template-columns: var(--s20) 1fr;
 }
 
 .scan-settings .checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s8);
-  color: rgb(255 255 255 / 0.9);
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  line-height: 1rem;
-}
-
-.scan-settings .checkbox input {
   width: var(--s16);
   height: var(--s16);
   margin: 0;
@@ -124,14 +124,7 @@
 }
 
 @media (max-width: 767px) {
-  .scan-settings {
-    width: calc(100vw - var(--s24));
-    max-height: calc(100vh - var(--s24));
-    padding: var(--s12);
-  }
-
-  .scan-settings > .row,
-  .scan-settings > .row[data-layout="stacked"] {
+  .scan-settings > .row {
     grid-template-columns: 1fr;
   }
 
