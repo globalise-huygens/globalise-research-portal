@@ -39,10 +39,12 @@ export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
   return (
     <div style={{
       position: 'relative',
-      margin: '0 auto',
+      margin: '0.5rem auto',
       maxWidth: '50rem',
       padding: '1rem',
       borderTop: '1px solid #eee',
+      background: 'var(--color-parchment-50)',
+      boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
     }}>
       <PageLabel label={canvasLabel}/>
       {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}

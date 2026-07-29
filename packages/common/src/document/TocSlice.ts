@@ -8,10 +8,6 @@ export type TocSlice = {
   toc: TocState;
 };
 
-export const defaultTocSlice: TocSlice = {
-  toc: { expandedDocIds: [] },
-};
-
 export function toggleTocDocument(id: string) {
   setState((s) => {
     const { expandedDocIds } = s.toc;

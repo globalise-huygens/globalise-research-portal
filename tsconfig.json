@@ -9,6 +9,7 @@
     { "path": "packages/line-by-line" },
     { "path": "packages/manifest" },
     { "path": "packages/metadata" },
+    { "path": "packages/object-card" },
     { "path": "packages/search" },
   ]
 }

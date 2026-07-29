@@ -4,7 +4,7 @@ import { Annotation, findTextPositionSelector } from '@globalise/common/annotati
  * Filter annotations with a valid text position selector linking to {@link pageAnnoId}.
  * When selector not found, log and skip annotation.
  */
-export function filterAnnotationsWithSelector(
+export function filterByTextSelectorOrLog(
   annotations: Annotation[],
   pageAnnoId: string,
 ): Annotation[] {

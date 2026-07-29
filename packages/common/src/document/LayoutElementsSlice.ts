@@ -4,10 +4,6 @@ export type LayoutElementsSlice = {
   isLayoutElementsVisible: boolean;
 };
 
-export const defaultLayoutElementsSlice: LayoutElementsSlice = {
-  isLayoutElementsVisible: true,
-};
-
 export function setLayoutElementsVisible(isLayoutElementsVisible: boolean) {
   setState({ isLayoutElementsVisible });
 }
