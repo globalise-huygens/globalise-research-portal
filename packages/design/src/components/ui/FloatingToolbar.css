@@ -53,6 +53,11 @@
     background: rgb(255 255 255 / 0.18);
   }
 
+  .floating-toolbar .tool-button[data-active="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+  }
+
   .floating-toolbar .tool-button > svg {
     width: var(--s20);
     height: var(--s20);
