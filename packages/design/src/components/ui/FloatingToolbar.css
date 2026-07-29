@@ -44,6 +44,10 @@
     padding-inline: 0;
   }
 
+  .floating-toolbar > .tool-button {
+    border-radius: 4px;
+  }
+
   .floating-toolbar .tool-button[data-hovered] {
     background: rgb(255 255 255 / 0.12);
     color: var(--color-brand-white);
