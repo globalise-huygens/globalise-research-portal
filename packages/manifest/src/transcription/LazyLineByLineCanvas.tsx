@@ -5,7 +5,7 @@ import {
   usePages,
 } from '@globalise/common/document';
 import { LineByLineView } from '@globalise/line-by-line';
-import { ScanLabel } from '../ScanLabel.tsx';
+import { CanvasLabel } from '../CanvasLabel.tsx';
 
 type Props = {
   canvasId: string;
@@ -45,7 +45,7 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
       background: 'var(--color-parchment-50)',
       boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
     }}>
-      <ScanLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+      <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
       {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
       {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}

@@ -10,7 +10,7 @@ import {
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
-import { ScanLabel } from '../ScanLabel.tsx';
+import { CanvasLabel } from '../CanvasLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 
 type Props = {
@@ -91,25 +91,25 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           color="indianred"
           background="rgb(248 243 243)"
         >
-          <ScanLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <ScanLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <ScanLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Loading...
         </TranscriptionPlaceholder>
       )}
       {isVisible && isContentReady && partOf && hasRenderableSize && (
         <>
-          <ScanLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           <div style={{ height: '100%', width }}>
             <DiplomaticView
               id={canvasId}
