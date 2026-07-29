@@ -8,7 +8,7 @@ import {
   isEntity,
 } from '@globalise/common/annotation';
 import {
-  filterAnnotationsWithSelector,
+  filterByTextSelectorOrLog,
 } from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
 import { useCanvasIndexes } from '@globalise/common/document';
@@ -34,7 +34,7 @@ export function useLineSegments(
       (a) => a.textGranularity === 'word',
     );
     const entityAnnos = Object.values(annotations).filter(isEntity);
-    const annos = filterAnnotationsWithSelector([...wordAnnos, ...entityAnnos], pageAnnoId);
+    const annos = filterByTextSelectorOrLog([...wordAnnos, ...entityAnnos], pageAnnoId);
     const segments = segment(pageText, annos, (a) => {
       const selector = findTextPositionSelector(a, pageAnnoId)
         ?? orThrow('No selector');

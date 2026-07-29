@@ -8,11 +8,6 @@ export type SelectionSlice = {
   clickedId: Id | null;
 };
 
-export const defaultSelectionSlice: SelectionSlice = {
-  hoveredId: null,
-  clickedId: null,
-};
-
 export function setHovered(id: Id | null) {
   useDocumentStore.setState({ hoveredId: id });
 }

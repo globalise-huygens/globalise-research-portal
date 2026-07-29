@@ -1,6 +1,6 @@
 import {
   Annotation,
-  filterAnnotationsWithSelector,
+  filterByTextSelectorOrLog,
   getEntityTypeClassName,
   type EntityVisualCategoryClassName,
   findTextPositionSelector,
@@ -85,7 +85,7 @@ export function renderDiplomaticView(
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
-  const markedAnnos = filterAnnotationsWithSelector(
+  const markedAnnos = filterByTextSelectorOrLog(
     [...wordAnnos, ...entityAnnos],
     pageAnnoId,
   );

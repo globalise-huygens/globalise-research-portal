@@ -4,6 +4,11 @@ import { asArray } from './asArray.ts';
 export type EntityBody = {
   type: EntityType;
   classified_as: EntityClassification;
+  ascribes_classification: {
+    id: string,
+    type: string,
+    _label: string
+  }
 };
 type EntityClassification = {
   id: string;
@@ -17,6 +22,7 @@ const entityTypes = [
 ] as const;
 
 export type EntityType = (typeof entityTypes)[number];
+
 export const entityVisualCategories = [
   'cidoc-actor',
   'cidoc-appellation',

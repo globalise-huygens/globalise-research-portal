@@ -1,7 +1,8 @@
 import {
   initCanvases,
   useDocumentStore,
-  useIsLayoutElementsVisible, useTranscriptionMode,
+  useIsLayoutElementsVisible,
+  useTranscriptionMode,
 } from '@globalise/common/document';
 import { FloatingToolbar } from '@globalise/design';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
@@ -9,7 +10,9 @@ import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
 import { ManifestLineByLineViewer } from './ManifestLineByLineViewer.tsx';
-import { ManifestTranscriptionControls } from './ManifestTranscriptionControls.tsx';
+import {
+  ManifestTranscriptionControls,
+} from './ManifestTranscriptionControls.tsx';
 
 type Props = {
   initialCanvasId?: string;

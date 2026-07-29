@@ -8,8 +8,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css",
-    "./inline-icon.css": "./src/components/icons/inline-icon.css"
+    "./styles.css": "./src/styles.css"
   },
   "dependencies": {
     "clsx": "^2.1.1",

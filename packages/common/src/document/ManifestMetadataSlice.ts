@@ -3,13 +3,7 @@ import { findByPath, isLinkedArtNode, LinkedArtNode } from '../linkedart';
 import { fetchJson } from '../util/fetchJson';
 import { setState, useDocumentStore } from './DocumentStore';
 import { asArray } from '../util/asArray.ts';
-
-export type MetadataState = {
-  root: LinkedArtNode | null;
-  isLoading: boolean;
-  isReady: boolean;
-  error: string | null;
-};
+import { emptyMetadataState, MetadataState } from './ManifestMetadataState.ts';
 
 /**
  * Linked art metadata, keyed by url:
@@ -17,17 +11,6 @@ export type MetadataState = {
  */
 export type MetadataSlice = {
   metadata: Record<string, MetadataState>;
-};
-
-export const emptyMetadataState: MetadataState = {
-  root: null,
-  isLoading: false,
-  isReady: false,
-  error: null,
-};
-
-export const defaultMetadataSlice: MetadataSlice = {
-  metadata: {},
 };
 
 const emptyNodes: LinkedArtNode[] = [];

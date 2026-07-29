@@ -11,10 +11,6 @@ export type EntityHighlightSlice = {
   entityHighlightCategories: Set<EntityVisualCategoryClassName>;
 };
 
-export const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightCategories: new Set(entityVisualCategories),
-};
-
 export function setEntityHighlightCategories(
   categories: Set<EntityVisualCategoryClassName>,
 ) {

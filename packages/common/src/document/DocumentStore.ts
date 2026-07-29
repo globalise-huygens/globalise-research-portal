@@ -1,10 +1,13 @@
 import { create } from 'zustand';
-import { EntityHighlightSlice, defaultEntityHighlightSlice } from './EntityHighlightSlice';
-import { LayoutElementsSlice, defaultLayoutElementsSlice } from './LayoutElementsSlice';
-import { ManifestViewerSlice, defaultManifestViewerSlice } from './ManifestViewerSlice';
-import { SelectionSlice, defaultSelectionSlice } from './SelectionSlice';
-import { TocSlice, defaultTocSlice } from './TocSlice';
-import { defaultMetadataSlice, MetadataSlice } from './ManifestMetadataSlice.ts';
+
+import type { EntityHighlightSlice } from './EntityHighlightSlice';
+import type { LayoutElementsSlice } from './LayoutElementsSlice';
+import type { ManifestViewerSlice } from './ManifestViewerSlice';
+import type { SelectionSlice } from './SelectionSlice';
+import type { TocSlice } from './TocSlice';
+import type { MetadataSlice } from './ManifestMetadataSlice.ts';
+
+import { entityVisualCategories } from '../annotation';
 
 export type DocumentState =
   & EntityHighlightSlice
@@ -13,6 +16,34 @@ export type DocumentState =
   & SelectionSlice
   & MetadataSlice
   & TocSlice;
+
+const defaultManifestViewerSlice: ManifestViewerSlice = {
+  selectedCanvasId: null,
+  selectedCanvasSource: 'external',
+  selectedCanvasAt: 0,
+  canvases: {},
+};
+
+const defaultSelectionSlice: SelectionSlice = {
+  hoveredId: null,
+  clickedId: null,
+};
+
+const defaultLayoutElementsSlice: LayoutElementsSlice = {
+  isLayoutElementsVisible: true,
+};
+
+const defaultEntityHighlightSlice: EntityHighlightSlice = {
+  entityHighlightCategories: new Set(entityVisualCategories),
+};
+
+const defaultMetadataSlice = {
+  metadata: {},
+};
+
+const defaultTocSlice = {
+  toc: { expandedDocIds: [] },
+};
 
 export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultEntityHighlightSlice,
