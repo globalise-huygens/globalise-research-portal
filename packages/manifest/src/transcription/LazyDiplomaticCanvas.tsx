@@ -26,7 +26,7 @@ type Props = {
   showLayoutElements: boolean;
 };
 
-export const LazyDiplomaticCanvas = memo(function LazyCanvasTranscription({
+export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   canvasId,
   canvasWidth,
   canvasHeight,

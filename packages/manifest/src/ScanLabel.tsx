@@ -7,8 +7,7 @@ type Props = {
 };
 
 export function ScanLabel({ canvasId, isCurrent = false }: Props) {
-  const name = canvasName(canvasId);
-  const number = (/\d+$/u.exec(name)?.[0] ?? name).replace(/^0+(?=\d)/u, '');
+  const number = canvasName(canvasId);
 
   return (
     <span

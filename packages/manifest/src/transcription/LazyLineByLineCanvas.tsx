@@ -15,7 +15,7 @@ type Props = {
   isCurrentCanvas: boolean;
 };
 
-export const LazyLineByLineCanvas = memo(function LazyCanvasLineByLine(
+export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
   { canvasId, annotationUrls, scale, showLayoutElements, isCurrentCanvas }: Props,
 ) {
   const annotations = useAnnotations(canvasId);
