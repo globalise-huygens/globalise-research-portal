@@ -437,7 +437,7 @@ export function FacsimileControls({
           {scanSettings.map((setting) => (
             <ScanSettingSlider key={setting.label} {...setting} />
           ))}
-          <div className="row" data-layout="checkbox">
+          <label className="row checkbox-row">
             <SettingIcon label="Invert">
               <IconInvert />
             </SettingIcon>
@@ -450,7 +450,7 @@ export function FacsimileControls({
                 setIsInverted(event.currentTarget.checked);
               }}
             />
-          </div>
+          </label>
         </div>,
         document.body,
       )}

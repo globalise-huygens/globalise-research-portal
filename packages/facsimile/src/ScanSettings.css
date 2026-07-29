@@ -1,7 +1,6 @@
 .scan-settings {
   position: fixed;
   z-index: 1000;
-  width: min(216px, calc(100vw - var(--s24)));
   max-height: calc(100vh - var(--s24));
   overflow: auto;
   border: 1px solid rgb(255 255 255 / 0.2);
@@ -113,7 +112,7 @@
   text-align: right;
 }
 
-.scan-settings > .row[data-layout="checkbox"] {
+.scan-settings > .checkbox-row {
   grid-template-columns: var(--s20) 1fr;
 }
 
@@ -122,4 +121,14 @@
   height: var(--s16);
   margin: 0;
   accent-color: var(--color-brand-white);
+}
+
+@media (max-width: 767px) {
+  .scan-settings > .row {
+    grid-template-columns: 1fr;
+  }
+
+  .scan-settings .value {
+    text-align: left;
+  }
 }
