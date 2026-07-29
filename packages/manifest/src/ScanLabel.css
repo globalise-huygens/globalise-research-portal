@@ -1,0 +1,37 @@
+.scan-label {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  border: 1px solid var(--color-parchment-400);
+  background: color-mix(
+    in srgb,
+    var(--color-parchment-50) 92%,
+    transparent
+  );
+  color: var(--color-parchment-800);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1rem;
+  padding: 0.2rem 0.4rem;
+
+  .prefix {
+    color: var(--color-parchment-700);
+    font-weight: 400;
+  }
+
+  &[aria-current="true"] {
+    border-color: var(--color-brand-white);
+    background: var(--color-turquoise-800);
+    color: var(--color-brand-white);
+
+    .prefix {
+      color: rgb(255 255 255 / 0.78);
+    }
+  }
+}

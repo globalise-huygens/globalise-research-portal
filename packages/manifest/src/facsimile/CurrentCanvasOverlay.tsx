@@ -3,7 +3,8 @@ import { Rect } from 'openseadragon';
 import { Overlay } from '@knaw-huc/osd-iiif-viewer';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
-import { canvasName } from '@globalise/common/annotation';
+import { ScanLabel } from '../ScanLabel.tsx';
+import './CurrentCanvasOverlay.css';
 
 export function CurrentCanvasOverlay() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
@@ -22,24 +23,11 @@ export function CurrentCanvasOverlay() {
   if (!isInit || !location) {
     return null;
   }
-  const name = canvasName(id);
 
-  const canvasBorderColor = 'rgb(144 187 195)';
   return (
     <Overlay location={location}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        boxSizing: 'border-box',
-        boxShadow: `inset 0 0 0 0.33em ${canvasBorderColor}`,
-        pointerEvents: 'none',
-        textAlign: 'right',
-        color: 'white',
-        textShadow: '0px 0px 5px rgba(0, 0, 0, 0.6)',
-        padding: '0.25rem',
-        fontSize: '0.8rem',
-      }}>
-        {name}
+      <div className="current-canvas-overlay">
+        <ScanLabel canvasId={id} isCurrent />
       </div>
     </Overlay>
   );
