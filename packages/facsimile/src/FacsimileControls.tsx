@@ -34,13 +34,12 @@ type FacsimileControlsProps = {
 const MIN_ZOOM_PERCENT = 10;
 const MAX_ZOOM_PERCENT = 400;
 const DEFAULT_SCAN_FILTER_VALUE = 100;
-const SETTINGS_PANEL_WIDTH = 320;
+const SETTINGS_PANEL_WIDTH = 220;
 const SETTINGS_PANEL_MARGIN = 12;
 const SETTINGS_PANEL_GAP = 8;
 const SETTINGS_PANEL_MIN_HEIGHT = 140;
 
 type ScanSetting = {
-  ariaLabel: string;
   icon: ReactNode;
   label: string;
   max: number;
@@ -314,10 +313,7 @@ export function FacsimileControls({
 
   const scanSettings: ScanSetting[] = [
     {
-      ariaLabel: 'Brightness',
-      icon: (
-        <IconBrightness className="settings-icon" />
-      ),
+      icon: <IconBrightness />,
       label: 'Brightness',
       max: 150,
       min: 50,
@@ -325,10 +321,7 @@ export function FacsimileControls({
       value: brightness,
     },
     {
-      ariaLabel: 'Contrast',
-      icon: (
-        <IconContrast className="settings-icon" />
-      ),
+      icon: <IconContrast />,
       label: 'Contrast',
       max: 150,
       min: 50,
@@ -336,10 +329,7 @@ export function FacsimileControls({
       value: contrast,
     },
     {
-      ariaLabel: 'Saturation',
-      icon: (
-        <IconSaturation className="settings-icon" />
-      ),
+      icon: <IconSaturation />,
       label: 'Saturation',
       max: 200,
       min: 0,
@@ -447,21 +437,19 @@ export function FacsimileControls({
           {scanSettings.map((setting) => (
             <ScanSettingSlider key={setting.label} {...setting} />
           ))}
-          <div className="row" data-layout="stacked">
-            <div className="label">
-              <IconInvert className="settings-icon" />
-              <span>Invert</span>
-            </div>
-            <label className="checkbox">
-              <input
-                type="checkbox"
-                checked={isInverted}
-                onChange={(event) => {
-                  setIsInverted(event.currentTarget.checked);
-                }}
-              />
-              <span>Invert scan image</span>
-            </label>
+          <div className="row" data-layout="checkbox">
+            <SettingIcon label="Invert">
+              <IconInvert />
+            </SettingIcon>
+            <input
+              aria-label="Invert scan image"
+              className="checkbox"
+              type="checkbox"
+              checked={isInverted}
+              onChange={(event) => {
+                setIsInverted(event.currentTarget.checked);
+              }}
+            />
           </div>
         </div>,
         document.body,
@@ -471,7 +459,6 @@ export function FacsimileControls({
 }
 
 function ScanSettingSlider({
-  ariaLabel,
   icon,
   label,
   max,
@@ -485,12 +472,11 @@ function ScanSettingSlider({
 
   return (
     <div className="row">
-      <div className="label">
+      <SettingIcon label={label}>
         {icon}
-        <span>{label}</span>
-      </div>
+      </SettingIcon>
       <input
-        aria-label={ariaLabel}
+        aria-label={label}
         className="slider"
         type="range"
         min={min}
@@ -509,5 +495,16 @@ function ScanSettingSlider({
         {value}%
       </span>
     </div>
+  );
+}
+
+function SettingIcon(
+  { children, label }: { children: ReactNode; label: string },
+) {
+  return (
+    <span className="icon">
+      {children}
+      <span aria-hidden="true" className="tooltip">{label}</span>
+    </span>
   );
 }

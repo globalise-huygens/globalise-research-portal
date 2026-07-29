@@ -1,7 +1,7 @@
 .scan-settings {
   position: fixed;
   z-index: 1000;
-  width: min(320px, calc(100vw - var(--s24)));
+  width: min(220px, calc(100vw - var(--s24)));
   max-height: calc(100vh - var(--s24));
   overflow: auto;
   border: 1px solid rgb(255 255 255 / 0.2);
@@ -15,27 +15,37 @@
 .scan-settings > .row {
   display: grid;
   min-height: var(--s32);
-  grid-template-columns: 96px minmax(96px, 1fr) var(--s40);
+  grid-template-columns: var(--s20) minmax(0, 1fr) var(--s40);
   align-items: center;
   gap: var(--s8);
 }
 
-.scan-settings .label {
+.scan-settings .icon {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--s6);
+  justify-content: center;
   color: inherit;
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1rem;
 }
 
-.scan-settings .settings-icon {
+.scan-settings .icon > svg {
   width: var(--s20);
   height: var(--s20);
-  flex-shrink: 0;
-  color: inherit;
+}
+
+.scan-settings .icon > .tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--s8));
+  width: max-content;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 75ms ease-out;
+}
+
+.scan-settings .icon:hover > .tooltip {
+  opacity: 1;
 }
 
 .scan-settings .slider {
@@ -103,40 +113,13 @@
   text-align: right;
 }
 
-.scan-settings > .row[data-layout="stacked"] {
-  grid-template-columns: 96px 1fr;
+.scan-settings > .row[data-layout="checkbox"] {
+  grid-template-columns: var(--s20) 1fr;
 }
 
 .scan-settings .checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s8);
-  color: inherit;
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  line-height: 1rem;
-}
-
-.scan-settings .checkbox input {
   width: var(--s16);
   height: var(--s16);
   margin: 0;
   accent-color: var(--color-brand-white);
-}
-
-@media (max-width: 767px) {
-  .scan-settings {
-    width: calc(100vw - var(--s24));
-    max-height: calc(100vh - var(--s24));
-    padding: var(--s12);
-  }
-
-  .scan-settings > .row,
-  .scan-settings > .row[data-layout="stacked"] {
-    grid-template-columns: 1fr;
-  }
-
-  .scan-settings .value {
-    text-align: left;
-  }
 }
