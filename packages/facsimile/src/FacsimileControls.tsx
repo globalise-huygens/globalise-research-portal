@@ -36,6 +36,7 @@ const MAX_ZOOM_PERCENT = 400;
 const DEFAULT_SCAN_FILTER_VALUE = 100;
 const SETTINGS_PANEL_WIDTH = 320;
 const SETTINGS_PANEL_MARGIN = 12;
+const SETTINGS_PANEL_GAP = 8;
 const SETTINGS_PANEL_MIN_HEIGHT = 140;
 
 type ScanSetting = {
@@ -71,22 +72,22 @@ function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
     window.innerWidth - SETTINGS_PANEL_MARGIN * 2,
   );
   const left = clamp(
-    buttonRect.right - width,
+    buttonRect.left + buttonRect.width / 2 - width / 2,
     SETTINGS_PANEL_MARGIN,
     window.innerWidth - width - SETTINGS_PANEL_MARGIN,
   );
-  const belowTop = buttonRect.bottom + SETTINGS_PANEL_MARGIN;
+  const belowTop = buttonRect.bottom + SETTINGS_PANEL_GAP;
   const availableBelow =
     window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
   const availableAbove =
-    buttonRect.top - SETTINGS_PANEL_MARGIN * 2;
+    buttonRect.top - SETTINGS_PANEL_GAP - SETTINGS_PANEL_MARGIN;
 
   if (
     availableBelow < SETTINGS_PANEL_MIN_HEIGHT &&
     availableAbove > availableBelow
   ) {
     return {
-      bottom: window.innerHeight - buttonRect.top + SETTINGS_PANEL_MARGIN,
+      bottom: window.innerHeight - buttonRect.top + SETTINGS_PANEL_GAP,
       left,
       maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableAbove),
       width,

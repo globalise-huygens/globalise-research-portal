@@ -4,11 +4,12 @@
   width: min(320px, calc(100vw - var(--s24)));
   max-height: calc(100vh - var(--s24));
   overflow: auto;
-  border: 1px solid rgb(255 255 255 / 0.22);
-  background: rgb(12 10 9 / 0.94);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(12 10 9 / 0.72);
   padding: var(--s12);
-  color: var(--color-brand-white);
-  box-shadow: 0 18px 48px rgb(0 0 0 / 0.36);
+  color: rgb(255 255 255 / 0.78);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+  backdrop-filter: blur(2px);
 }
 
 .scan-settings > .row {
@@ -23,7 +24,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s6);
-  color: var(--color-brand-white);
+  color: inherit;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
@@ -34,7 +35,7 @@
   width: var(--s20);
   height: var(--s20);
   flex-shrink: 0;
-  color: var(--color-brand-white);
+  color: inherit;
 }
 
 .scan-settings .slider {
@@ -94,7 +95,7 @@
 }
 
 .scan-settings .value {
-  color: rgb(255 255 255 / 0.88);
+  color: var(--color-parchment-500);
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
@@ -110,7 +111,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s8);
-  color: rgb(255 255 255 / 0.9);
+  color: inherit;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   line-height: 1rem;
