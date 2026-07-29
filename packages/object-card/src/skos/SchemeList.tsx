@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { loadSchemes, useSchemes } from './SchemesSlice.ts';
-import { loadConcept, useCurrentSchemeId } from './ConceptSlice.ts';
+import { loadSchemes, useSchemes } from './SkosSchemesSlice.ts';
+import { loadConcept, useCurrentSchemeId } from './SkosConceptSlice.ts';
 import { getConceptLabel } from './SkosModel.ts';
 
 export function SchemeList() {

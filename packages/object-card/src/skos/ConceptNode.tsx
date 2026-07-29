@@ -1,4 +1,3 @@
-import { loadConcept } from './ConceptSlice.ts';
 import { getConceptLabel, SkosConcept } from './SkosModel.ts';
 
 export type RelationKey =
@@ -9,19 +8,32 @@ export type RelationKey =
   | 'inScheme'
   | 'topConceptOf';
 
-type ConceptNodeProps = { concept: SkosConcept; childKey?: RelationKey };
+type ConceptNodeProps = {
+  concept: SkosConcept;
+  childKey?: RelationKey;
+  onSelect: (concept: SkosConcept) => void;
+};
 
-export function ConceptNode({ concept, childKey }: ConceptNodeProps) {
+export function ConceptNode({
+  concept,
+  childKey,
+  onSelect,
+}: ConceptNodeProps) {
   const children = childKey ? concept[childKey] : undefined;
   return (
     <li>
-      <button onClick={() => void loadConcept(concept.id)}>
+      <button onClick={() => onSelect(concept)}>
         {getConceptLabel(concept)}
       </button>
       {!!children?.length && (
         <ul className="concept-list">
           {children.map((child) => (
-            <ConceptNode key={child.id} concept={child} childKey={childKey} />
+            <ConceptNode
+              key={child.id}
+              concept={child}
+              childKey={childKey}
+              onSelect={onSelect}
+            />
           ))}
         </ul>
       )}

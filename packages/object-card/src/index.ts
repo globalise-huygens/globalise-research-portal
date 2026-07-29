@@ -1,5 +1,3 @@
-export { ObjectCard } from './ObjectCard';
-
 export {
   SchemeList,
   useObjectCardStore,
@@ -7,4 +5,5 @@ export {
   loadConcept,
   useSchemes,
   loadSchemes,
+  ConceptCard,
 } from './skos';

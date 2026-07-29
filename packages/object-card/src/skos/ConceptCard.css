@@ -1,0 +1,19 @@
+@layer components {
+  .concept-card {
+    .inactive .section-heading {
+      color: var(--color-neutral-500);
+    }
+
+    .property-value {
+      white-space: normal;
+    }
+
+    .concept-list {
+      line-height: 2rem;
+    }
+
+    > .footer {
+      padding: var(--panel-pad);
+    }
+  }
+}
