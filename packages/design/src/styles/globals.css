@@ -304,19 +304,6 @@
         (var(--shell-gutter) * (var(--card-cols) - 1))
     );
 
-    --overlay-object-card-inset-x: var(--s32);
-    --overlay-object-card-inset-top: var(--s32);
-    --overlay-object-card-inset-bottom: var(--s32);
-    --overlay-object-card-frame-max-width: var(--shell-inner);
-    --overlay-object-card-frame-width: min(
-      calc(100vw - (var(--overlay-object-card-inset-x) * 2)),
-      var(--overlay-object-card-frame-max-width)
-    );
-    --overlay-object-card-frame-height: calc(
-      100vh - var(--overlay-object-card-inset-top) -
-        var(--overlay-object-card-inset-bottom)
-    );
-
     /* ── Font families ─────────────────────────────── */
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;
@@ -375,10 +362,6 @@
       --shell-margin: var(--s24);
       --shell-gutter: var(--s16);
       --overlay-inset: var(--s24);
-
-      --overlay-object-card-inset-x: var(--s40);
-      --overlay-object-card-inset-top: var(--s40);
-      --overlay-object-card-inset-bottom: var(--s40);
     }
   }
 }
@@ -390,40 +373,6 @@
       --shell-margin: var(--s32);
       --shell-gutter: var(--s16);
       --overlay-inset: var(--s32);
-
-      --overlay-object-card-inset-x: var(--s48);
-      --overlay-object-card-inset-top: var(--s48);
-      --overlay-object-card-inset-bottom: var(--s48);
-    }
-  }
-}
-
-@media (min-width: 1440px) {
-  @layer base {
-    :root {
-      --overlay-object-card-inset-x: var(--s64);
-      --overlay-object-card-inset-top: var(--s56);
-      --overlay-object-card-inset-bottom: var(--s56);
-    }
-  }
-}
-
-@media (min-width: 1920px) {
-  @layer base {
-    :root {
-      --overlay-object-card-inset-x: var(--s96);
-      --overlay-object-card-inset-top: var(--s88);
-      --overlay-object-card-inset-bottom: var(--s88);
-    }
-  }
-}
-
-@media (min-width: 2560px) {
-  @layer base {
-    :root {
-      --overlay-object-card-inset-x: var(--s136);
-      --overlay-object-card-inset-top: var(--s112);
-      --overlay-object-card-inset-bottom: var(--s112);
     }
   }
 }

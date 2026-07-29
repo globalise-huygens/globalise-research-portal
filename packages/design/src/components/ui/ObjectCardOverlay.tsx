@@ -40,17 +40,17 @@ const ObjectCardOverlay = React.forwardRef<
         ref={ref}
         isOpen={isOpen}
         isDismissable={isDismissable}
-        className={cn('gds-object-card-overlay', className)}
+        className={cn('object-card-overlay', className)}
         {...props}
       >
         <AriaModal
-          className={cn('gds-object-card-overlay__modal', modalClassName)}
+          className={cn('modal', modalClassName)}
         >
-          <div className="gds-object-card-overlay__frame">
-            <div className="gds-object-card-overlay__grid">
+          <div className="frame">
+            <div className="grid">
               <div
                 className={cn(
-                  'gds-object-card-overlay__content',
+                  'content',
                   contentClassName,
                 )}
               >
