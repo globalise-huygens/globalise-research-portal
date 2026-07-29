@@ -115,6 +115,11 @@
     --entity-type-light: #d8d8db;
     --entity-type-strong: #2b2b2b;
 
+    /* Cross-view annotation selection. */
+    --selection-fill: rgb(41 191 204 / 0.22);
+    --selection-fill-hover: rgb(41 191 204 / 0.14);
+    --selection-stroke: var(--turquoise-800);
+
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);
     --surface-light: var(--brand-white);
@@ -221,6 +226,9 @@
     --color-entity-type: var(--entity-type);
     --color-entity-type-light: var(--entity-type-light);
     --color-entity-type-strong: var(--entity-type-strong);
+    --color-selection-fill: var(--selection-fill);
+    --color-selection-fill-hover: var(--selection-fill-hover);
+    --color-selection-stroke: var(--selection-stroke);
 
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;
