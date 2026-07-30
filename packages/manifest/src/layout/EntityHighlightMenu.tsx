@@ -226,9 +226,8 @@ function EntityHighlightMenu({
                 return (
                   <div key={category.id} className="category">
                     <div
-                      className="row"
+                      className={cn('row', category.tone)}
                       data-level="category"
-                      data-tone={category.tone}
                     >
                       <div className="label">
                         {category.icon && (
@@ -280,9 +279,8 @@ function EntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              className="row"
+                              className={cn('row', category.tone)}
                               data-level="subcategory"
-                              data-tone={category.tone}
                             >
                               <div className="label">
                                 {category.icon && (
