@@ -99,9 +99,7 @@ export function ManifestEntityHighlightMenu() {
       triggerIcon={<IconEntities className={iconClassName} />}
       triggerClassName={TOP_BAR_BUTTON}
       triggerLabel="Entity highlights"
-      title="Entity highlights"
       allLabel="Show all"
-      allDescription={null}
     />
   );
 }

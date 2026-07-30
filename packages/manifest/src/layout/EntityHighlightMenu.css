@@ -3,27 +3,25 @@
     position: relative;
   }
 
-  .entity-menu > .surface {
+  .entity-menu > .surface[data-size="compact"] {
     position: absolute;
     top: calc(100% + var(--s8));
     right: 0;
     z-index: 40;
-    display: flex;
-    width: 260px;
-    flex-direction: column;
-    gap: var(--s8);
-    border-color: rgb(255 255 255 / 0.1);
+    box-sizing: border-box;
+    width: 216px;
+    border-color: rgb(255 255 255 / 0.2);
     border-radius: 0;
-    background: var(--color-neutral-800);
+    background: rgb(12 10 9 / 0.72);
     padding: var(--s12);
-    box-shadow: 0 8px 20px rgb(0 0 0 / 0.32);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+    backdrop-filter: blur(2px);
   }
 
-  .entity-menu h3 {
-    color: var(--color-brand-white);
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+  .entity-menu > .surface > .body,
+  .entity-menu .content,
+  .entity-menu .list {
+    width: 100%;
   }
 
   .entity-menu .content,
@@ -32,37 +30,25 @@
   .entity-menu .subcategories {
     display: flex;
     flex-direction: column;
-    gap: var(--s6);
-  }
-
-  .entity-menu .list {
-    max-height: 304px;
-    overflow-y: auto;
-    padding-right: var(--s4);
-    scrollbar-color: var(--color-neutral-600) transparent;
-    scrollbar-width: thin;
+    gap: 0;
   }
 
   .entity-menu .all,
   .entity-menu .row {
     display: grid;
+    min-height: var(--s28);
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: var(--s6);
+    gap: var(--s4);
     border: 0;
-    padding: var(--s6) var(--s8);
+    padding: 0 var(--s4);
   }
 
   .entity-menu .all {
-    grid-template-columns: minmax(0, 1fr) auto;
     background: rgb(255 255 255 / 0.035);
   }
 
-  .entity-menu .all-copy {
-    min-width: 0;
-  }
-
   .entity-menu .row {
-    grid-template-columns: minmax(0, 1fr) auto;
     background: color-mix(
       in srgb,
       var(--entity-highlight-fill, transparent) 18%,
@@ -83,17 +69,11 @@
     color: var(--color-brand-white);
   }
 
-  .entity-menu .all-description {
-    color: rgb(255 255 255 / 0.45);
-    font-size: 10px;
-    line-height: 0.75rem;
-  }
-
   .entity-menu .label {
     display: flex;
     min-width: 0;
     align-items: center;
-    gap: var(--s8);
+    gap: var(--s6);
   }
 
   .entity-menu .label-text {
@@ -101,11 +81,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .entity-menu .count {
-    font-size: 10px;
-    line-height: 0.75rem;
   }
 
   .entity-menu .actions {
@@ -141,8 +116,8 @@
     box-shadow: none;
   }
 
-  .entity-menu .subcategories {
-    margin-left: var(--s16);
+  .entity-menu .row[data-level="subcategory"] {
+    padding-left: var(--s20);
   }
 
   .entity-menu .icon {
