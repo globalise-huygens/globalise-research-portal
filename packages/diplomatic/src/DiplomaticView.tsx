@@ -13,7 +13,7 @@ import '@knaw-huc/original-layout/style.css';
 import './DiplomaticView.css';
 import {
   Annotation,
-  type EntityVisualCategoryClassName,
+  type EntityClassificationId,
 } from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
@@ -25,7 +25,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
-  highlightedEntityCategories?: Set<EntityVisualCategoryClassName>;
+  highlightedEntityClassifications?: Set<EntityClassificationId>;
   selected?: Id[];
   style?: React.CSSProperties;
 };
@@ -38,7 +38,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     fit,
     showBlocks,
     showScanMargin,
-    highlightedEntityCategories,
+    highlightedEntityClassifications,
     selected = [],
     style,
   } = props;
@@ -72,7 +72,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     page,
     fit,
     showBlocks,
-    highlightedEntityCategories,
+    highlightedEntityClassifications,
     width,
   ]);
   function createDiplomaticView() {
@@ -86,7 +86,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       fit,
       showBlocks,
       showScanMargin,
-      highlightedEntityCategories,
+      highlightedEntityClassifications,
       onHover: setHovered,
       onClick: toggleClicked,
     });

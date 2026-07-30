@@ -12,6 +12,7 @@ import './EntityHighlightMenu.css';
 export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
+  tone?: string;
 };
 
 export type EntityHighlightCategory = {
@@ -248,7 +249,10 @@ function EntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              className={cn('row', category.tone)}
+                              className={cn(
+                                'row',
+                                subcategory.tone ?? category.tone,
+                              )}
                               data-level="subcategory"
                             >
                               <div className="label">

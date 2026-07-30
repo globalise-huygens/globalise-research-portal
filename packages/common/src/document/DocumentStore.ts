@@ -7,7 +7,7 @@ import type { SelectionSlice } from './SelectionSlice';
 import type { TocSlice } from './TocSlice';
 import type { MetadataSlice } from './ManifestMetadataSlice.ts';
 
-import { entityVisualCategories } from '../annotation';
+import { entityClassificationIds } from '../annotation';
 
 export type DocumentState =
   & EntityHighlightSlice
@@ -34,7 +34,7 @@ const defaultLayoutElementsSlice: LayoutElementsSlice = {
 };
 
 const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightCategories: new Set(entityVisualCategories),
+  entityHighlightClassifications: new Set(entityClassificationIds),
 };
 
 const defaultMetadataSlice = {

@@ -1,99 +1,154 @@
 import {
-  entityVisualCategories,
-  isEntityVisualCategory,
-  type EntityVisualCategoryClassName,
+  getEntityClassificationVisualCategory,
+  isEntityClassificationId,
+  type EntityClassificationId,
 } from '@globalise/common/annotation';
 import {
-  setEntityHighlightCategories,
-  useEntityHighlightCategories,
+  setEntityHighlightClassifications,
+  useEntityHighlightClassifications,
 } from '@globalise/common/document';
-import { IconEntities } from '@globalise/design';
+import {
+  IconEntities,
+  IconEntityCommodity,
+  IconEntityDate,
+  IconEntityDimensions,
+  IconEntityDocument,
+  IconEntityOrganisation,
+  IconEntityPerson,
+  IconEntityPlace,
+  IconEntityShip,
+} from '@globalise/design';
 import {
   EntityHighlightMenu,
   type EntityHighlightCategory,
+  type EntityHighlightSubcategory,
 } from './EntityHighlightMenu';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 
 const iconClassName = 'toolbar-icon';
 
-const entityCategoryConfig: Record<
-  EntityVisualCategoryClassName,
-  EntityHighlightCategory
-> = {
-  'cidoc-actor': {
-    id: 'cidoc-actor',
-    label: 'Actors',
-    tone: 'cidoc-actor',
-  },
-  'cidoc-appellation': {
-    id: 'cidoc-appellation',
-    label: 'Appellations',
-    tone: 'cidoc-appellation',
-  },
-  'cidoc-conceptual-object': {
-    id: 'cidoc-conceptual-object',
-    label: 'Conceptual objects',
-    tone: 'cidoc-conceptual-object',
-  },
-  'cidoc-dimension': {
-    id: 'cidoc-dimension',
-    label: 'Dimensions',
-    tone: 'cidoc-dimension',
-  },
-  'cidoc-physical-thing': {
-    id: 'cidoc-physical-thing',
-    label: 'Physical things',
-    tone: 'cidoc-physical-thing',
-  },
-  'cidoc-place': {
-    id: 'cidoc-place',
-    label: 'Places',
-    tone: 'cidoc-place',
-  },
-  'cidoc-time-span': {
-    id: 'cidoc-time-span',
-    label: 'Time spans',
-    tone: 'cidoc-time-span',
-  },
-  'cidoc-type': {
-    id: 'cidoc-type',
-    label: 'Types',
-    tone: 'cidoc-type',
-  },
+type EntityHighlightSubcategoryConfig = EntityHighlightSubcategory & {
+  id: EntityClassificationId;
 };
 
+type EntityHighlightCategoryConfig = Omit<
+  EntityHighlightCategory,
+  'subcategories'
+> & {
+  subcategories?: EntityHighlightSubcategoryConfig[];
+};
+
+const entityCategoryConfigs: EntityHighlightCategoryConfig[] = [
+  {
+    id: 'persons',
+    label: 'Persons',
+    icon: <IconEntityPerson className={iconClassName} />,
+    subcategories: [
+      { id: 'gan:PER_NAME', label: 'by Name' },
+      { id: 'gan:PER_ATTR', label: 'by Attributes' },
+      { id: 'gan:PRF', label: 'by Profession' },
+      { id: 'gan:STATUS', label: 'by Civic Status' },
+      { id: 'gan:ETH_REL', label: 'by Ethno-Religious Appellation' },
+    ],
+  },
+  {
+    id: 'organisations',
+    label: 'Organisations',
+    icon: <IconEntityOrganisation className={iconClassName} />,
+    subcategories: [
+      { id: 'gan:ORG', label: 'by Name' },
+    ],
+  },
+  {
+    id: 'ships',
+    label: 'Ships',
+    icon: <IconEntityShip className={iconClassName} />,
+    subcategories: [
+      { id: 'gan:SHIP', label: 'by Name' },
+      { id: 'gan:SHIP_TYPE', label: 'by Type' },
+    ],
+  },
+  {
+    id: 'commodities',
+    label: 'Commodities',
+    icon: <IconEntityCommodity className={iconClassName} />,
+    subcategories: [
+      { id: 'gan:CMTY_NAME', label: 'by Name' },
+      { id: 'gan:CMTY_QUAL', label: 'by Qualifier' },
+    ],
+  },
+  {
+    id: 'gan:DATE',
+    label: 'Dates',
+    icon: <IconEntityDate className={iconClassName} />,
+  },
+  {
+    id: 'places',
+    label: 'Places',
+    icon: <IconEntityPlace className={iconClassName} />,
+    subcategories: [
+      { id: 'gan:LOC_NAME', label: 'by Name' },
+      { id: 'gan:LOC_ADJ', label: 'by Location Form' },
+    ],
+  },
+  {
+    id: 'gan:DOC',
+    label: 'Documents',
+    icon: <IconEntityDocument className={iconClassName} />,
+  },
+  {
+    id: 'gan:CMTY_QUANT',
+    label: 'Unit',
+    icon: <IconEntityDimensions className={iconClassName} />,
+  },
+];
+
+const entityCategories: EntityHighlightCategory[] =
+  entityCategoryConfigs.map((category) => {
+    const subcategories = category.subcategories?.map((subcategory) => ({
+      ...subcategory,
+      tone: getEntityClassificationVisualCategory(subcategory.id),
+    }));
+
+    return {
+      id: category.id,
+      label: category.label,
+      icon: category.icon,
+      tone: isEntityClassificationId(category.id)
+        ? getEntityClassificationVisualCategory(category.id)
+        : subcategories?.[0]?.tone,
+      subcategories,
+    };
+  });
+
 export function ManifestEntityHighlightMenu() {
-  const selectedCategories = useEntityHighlightCategories();
+  const selectedClassifications = useEntityHighlightClassifications();
   const selectedKeys = React.useMemo(
-    () => new Set<string>(selectedCategories),
-    [selectedCategories],
-  );
-  const categories = React.useMemo(
-    () => entityVisualCategories.map((category) => entityCategoryConfig[category]),
-    [],
+    () => new Set<string>(selectedClassifications),
+    [selectedClassifications],
   );
 
   const handleSelectedKeysChange = React.useCallback(
     (update: React.SetStateAction<Set<string>>) => {
-      const current = new Set<string>(selectedCategories);
+      const current = new Set<string>(selectedClassifications);
       const updated = typeof update === 'function' ? update(current) : update;
-      const next = new Set<EntityVisualCategoryClassName>();
+      const next = new Set<EntityClassificationId>();
 
       for (const key of updated) {
-        if (isEntityVisualCategory(key)) {
+        if (isEntityClassificationId(key)) {
           next.add(key);
         }
       }
 
-      setEntityHighlightCategories(next);
+      setEntityHighlightClassifications(next);
     },
-    [selectedCategories],
+    [selectedClassifications],
   );
 
   return (
     <EntityHighlightMenu
-      categories={categories}
+      categories={entityCategories}
       selectedKeys={selectedKeys}
       onSelectedKeysChange={handleSelectedKeysChange}
       triggerIcon={<IconEntities className={iconClassName} />}

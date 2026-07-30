@@ -5,7 +5,9 @@ import {
   findSvgPath,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
+  getEntityClassificationId,
   type Annotation,
+  type EntityClassificationId,
   type Id,
   isBlock,
   isEntity,
@@ -16,7 +18,7 @@ import {
   loadCanvasAnnotationPages,
   useAnnotations,
   useCanvasIndexes,
-  useEntityHighlightCategories,
+  useEntityHighlightClassifications,
   useIsLayoutElementsVisible,
   usePages,
   useSelectedIdsForCanvas,
@@ -47,7 +49,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const highlightedEntityClassifications =
+    useEntityHighlightClassifications();
   const showLayoutElements = useIsLayoutElementsVisible();
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
@@ -80,7 +83,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       const tone = getEntityHighlightTone(
         entityId,
         annotations,
-        highlightedEntityCategories,
+        highlightedEntityClassifications,
       );
       if (!tone) {
         continue;
@@ -90,7 +93,11 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       });
     }
     return tones;
-  }, [annotations, highlightedEntityCategories, indexes.entityToWords]);
+  }, [
+    annotations,
+    highlightedEntityClassifications,
+    indexes.entityToWords,
+  ]);
 
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
@@ -183,12 +190,18 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 function getEntityHighlightTone(
   entityId: Id,
   annotations: Record<Id, Annotation>,
-  highlightedEntityCategories: Set<EntityHighlightTone>,
+  highlightedEntityClassifications: Set<EntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
   if (!annotation || !isEntity(annotation)) {
     return undefined;
   }
-  const tone = getEntityClassifiedAsClassName(annotation);
-  return highlightedEntityCategories.has(tone) ? tone : undefined;
+  const classificationId = getEntityClassificationId(annotation);
+  if (
+    !classificationId ||
+    !highlightedEntityClassifications.has(classificationId)
+  ) {
+    return undefined;
+  }
+  return getEntityClassifiedAsClassName(annotation);
 }

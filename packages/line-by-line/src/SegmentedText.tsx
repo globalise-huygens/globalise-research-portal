@@ -1,8 +1,8 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  type EntityVisualCategoryClassName,
-  getEntityClassifiedAsClassName,
+  type EntityClassificationId,
+  getEntityClassificationId,
   Id,
   isEntity,
   isWord,
@@ -10,7 +10,7 @@ import {
 import {
   setHovered,
   toggleClicked,
-  useEntityHighlightCategories,
+  useEntityHighlightClassifications,
 } from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
 import { NestedSegment } from './NestedSegment';
@@ -24,14 +24,15 @@ type TextProps = {
 export function SegmentedText(
   { canvasId, blockId, segments }: TextProps,
 ) {
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const highlightedEntityClassifications =
+    useEntityHighlightClassifications();
 
   return <>
     {segments.map((segment) => {
       const body = segment.value;
       const hoverId = selectAnnotation(
         segment.annotations,
-        highlightedEntityCategories,
+        highlightedEntityClassifications,
       )
         ?? blockId
         ?? null;
@@ -75,12 +76,16 @@ export function SegmentedText(
 
 function selectAnnotation(
   annotations: Annotation[],
-  highlightedEntityCategories: Set<EntityVisualCategoryClassName>,
+  highlightedEntityClassifications: Set<EntityClassificationId>,
 ): Id | undefined {
-  const entity = annotations.find((a) =>
-    isEntity(a) &&
-    highlightedEntityCategories.has(getEntityClassifiedAsClassName(a)),
-  );
+  const entity = annotations.find((annotation) => {
+    if (!isEntity(annotation)) {
+      return false;
+    }
+    const classificationId = getEntityClassificationId(annotation);
+    return classificationId !== undefined &&
+      highlightedEntityClassifications.has(classificationId);
+  });
   if (entity) {
     return entity.id;
   }

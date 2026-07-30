@@ -3,7 +3,7 @@ import {
   useAnnotations,
   usePages,
   usePartOf,
-  useEntityHighlightCategories,
+  useEntityHighlightClassifications,
   useSelectedCanvasIndex,
   useSelectedIdsForCanvas,
 } from '@globalise/common/document';
@@ -39,7 +39,8 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   showLayoutElements,
 }: Props) {
   const annotations = useAnnotations(canvasId);
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const highlightedEntityClassifications =
+    useEntityHighlightClassifications();
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -119,7 +120,9 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
               fit="width"
               showBlocks={showLayoutElements}
               showScanMargin={true}
-              highlightedEntityCategories={highlightedEntityCategories}
+              highlightedEntityClassifications={
+                highlightedEntityClassifications
+              }
             />
           </div>
         </>

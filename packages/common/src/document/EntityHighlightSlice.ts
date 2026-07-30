@@ -1,46 +1,25 @@
-import { useShallow } from 'zustand/react/shallow';
-import {
-  entityVisualCategories,
-  type EntityVisualCategoryClassName,
-  getEntityClassifiedAsClassName,
-  isEntity,
-} from '../annotation';
+import type { EntityClassificationId } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
 
 export type EntityHighlightSlice = {
-  entityHighlightCategories: Set<EntityVisualCategoryClassName>;
+  entityHighlightClassifications: Set<EntityClassificationId>;
 };
 
-export function setEntityHighlightCategories(
-  categories: Set<EntityVisualCategoryClassName>,
+export function setEntityHighlightClassifications(
+  classifications: Set<EntityClassificationId>,
 ) {
-  setState({ entityHighlightCategories: new Set(categories) });
+  setState({ entityHighlightClassifications: new Set(classifications) });
 }
 
-export function useEntityHighlightCategories() {
-  return useDocumentStore((s) => s.entityHighlightCategories);
+export function useEntityHighlightClassifications() {
+  return useDocumentStore((s) => s.entityHighlightClassifications);
 }
 
-export function useIsEntityHighlightCategoryVisible(
-  category: EntityVisualCategoryClassName,
+export function useIsEntityHighlightClassificationVisible(
+  classificationId?: EntityClassificationId,
 ) {
-  return useDocumentStore((s) => s.entityHighlightCategories.has(category));
-}
-
-export function useEntityHighlightCounts() {
-  return useDocumentStore(useShallow((s) => {
-    const counts = Object.fromEntries(
-      entityVisualCategories.map((category) => [category, 0]),
-    ) as Record<EntityVisualCategoryClassName, number>;
-
-    for (const canvas of Object.values(s.canvases)) {
-      for (const annotation of Object.values(canvas.annotations ?? {})) {
-        if (isEntity(annotation)) {
-          counts[getEntityClassifiedAsClassName(annotation)] += 1;
-        }
-      }
-    }
-
-    return counts;
-  }));
+  return useDocumentStore((s) =>
+    classificationId !== undefined &&
+    s.entityHighlightClassifications.has(classificationId),
+  );
 }
