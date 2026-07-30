@@ -44,6 +44,10 @@
     padding-inline: 0;
   }
 
+  .floating-toolbar > .tool-button {
+    border-radius: 4px;
+  }
+
   .floating-toolbar .tool-button[data-hovered] {
     background: rgb(255 255 255 / 0.12);
     color: var(--color-brand-white);
@@ -53,12 +57,9 @@
     background: rgb(255 255 255 / 0.18);
   }
 
-  .floating-toolbar .tool-button:focus,
-  .floating-toolbar .tool-button:focus-visible,
-  .floating-toolbar .tool-button[data-focused],
-  .floating-toolbar .tool-button[data-focus-visible] {
-    outline: none;
-    box-shadow: none;
+  .floating-toolbar .tool-button[data-active="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
   }
 
   .floating-toolbar .tool-button > svg {

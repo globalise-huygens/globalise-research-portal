@@ -164,6 +164,7 @@ export function ManifestLineByLineViewer({
             annotationUrls={canvasInfos[index].annotationUrls}
             scale={transcriptionScale}
             showLayoutElements={showLayoutElements}
+            isCurrentCanvas={selectedCanvasId === canvasInfos[index].canvasId}
           />
         </div>
       )}
