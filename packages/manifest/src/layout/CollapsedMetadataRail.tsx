@@ -17,7 +17,9 @@ export function CollapsedMetadataRail({
           onClick={() => onExpandSection(item.id)}
         >
           <span className="icon">{item.icon}</span>
-          <span className="label">{item.railLabel}</span>
+          {item.railLabel && (
+            <span className="label">{item.railLabel}</span>
+          )}
         </button>
       ))}
     </nav>

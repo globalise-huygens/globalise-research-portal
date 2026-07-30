@@ -28,7 +28,6 @@ export function ExpandedMetadataSidebar({
               <span className="content">
                 <span className="icon">{item.icon}</span>
                 <span className="label">{item.label}</span>
-                {item.count && <span className="count">{item.count}</span>}
                 {item.badge && <span className="badge">{item.badge}</span>}
               </span>
               <SidebarDisclosureIcon isExpanded={isExpanded} />

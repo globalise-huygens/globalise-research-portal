@@ -15,7 +15,6 @@ export type SidebarPanel = {
   label: string,
   railLabel?: string,
   badge?: string
-  count?: string,
 };
 
 export const sidebarPanels = [
@@ -34,15 +33,11 @@ export const sidebarPanels = [
   {
     id: 'entities',
     label: 'Entity tags',
-    count: '(376)',
-    railLabel: '376',
     icon: <IconEntities className="sidebar-icon" />,
   },
   {
     id: 'events',
     label: 'Event tags',
-    count: '(0)',
-    railLabel: '0',
     icon: <IconEvents className="sidebar-icon" />,
   },
 ] satisfies SidebarPanel[];
