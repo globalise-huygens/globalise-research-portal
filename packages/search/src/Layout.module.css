@@ -58,6 +58,7 @@
             height: var(--search-pane-height);
             min-height: 0;
             overflow-y: auto;
+            contain: layout paint;
             border-right: 1px solid rgb(255 255 255 / 0.2);
             border-bottom: 0;
             padding-right: var(--s24, 24px);

@@ -83,7 +83,7 @@ function FilterFacetTreeItemContent({ item, level, facetHasChildren, hasChildren
       </Button>}
 
       <Checkbox slot="selection" className={classes.checkbox} name={item.itemKey}
-        indicatorClassName={facetHasChildren && !hasChildren ? classes.leaf : undefined}
+        indicatorClassName={`${classes.indicator} ${facetHasChildren && !hasChildren ? classes.leaf : ''}`}
         isSelected={selected} isIndeterminate={indeterminate}
         onChange={() => toggle(item.itemKey)}>
         <ItemContent item={item}/>
