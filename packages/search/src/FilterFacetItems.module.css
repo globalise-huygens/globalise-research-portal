@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    min-height: var(--s28, 28px);
+    min-height: var(--s40, 40px);
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
     margin-left: var(--indent, 0);
     transition: background-color 75ms ease-out;
 
@@ -13,7 +14,7 @@
     .toggle {
         display: inline-flex;
         width: var(--s20, 20px);
-        height: var(--s28, 28px);
+        height: var(--s40, 40px);
         flex-shrink: 0;
         align-items: center;
         justify-content: flex-start;
@@ -21,10 +22,10 @@
         background: transparent;
 
         svg {
-            width: var(--s16, 16px);
-            height: var(--s16, 16px);
+            width: var(--s20, 20px);
+            height: var(--s20, 20px);
             fill: currentColor;
-            transition: rotate 150ms ease;
+            transition: rotate 120ms ease-out;
         }
 
         &.expanded svg {
@@ -38,7 +39,7 @@
         align-items: center;
         min-width: 0;
         width: 100%;
-        min-height: var(--s28, 28px);
+        min-height: var(--s40, 40px);
         cursor: pointer;
 
         .indicator {
@@ -79,9 +80,9 @@
         align-items: baseline;
         width: 100%;
         gap: var(--s8, 8px);
-        padding-right: var(--s4, 4px);
-        font-size: var(--text-xs, 0.75rem);
-        line-height: 1rem;
+        padding-right: var(--s8, 8px);
+        font-size: var(--text-sm, 0.875rem);
+        line-height: var(--s20, 20px);
 
         div:first-child {
             min-width: 0;
@@ -91,10 +92,10 @@
 
         div:last-child {
             flex-shrink: 0;
-            color: var(--color-neutral-400, #999);
-            font-size: 0.625rem;
+            color: var(--color-neutral-500, #808080);
+            font-size: var(--text-xs, 0.75rem);
             font-variant-numeric: tabular-nums;
-            line-height: 0.75rem;
+            line-height: var(--s16, 16px);
         }
     }
 }

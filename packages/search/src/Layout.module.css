@@ -15,8 +15,9 @@
     .facets {
         min-width: 0;
         width: 100%;
-        border-bottom: 1px solid rgb(255 255 255 / 0.2);
-        padding-bottom: var(--s24, 24px);
+        overflow: hidden;
+        border-bottom: 1px solid rgb(255 255 255 / 0.1);
+        background: var(--color-neutral-900, #262626);
     }
 
     .results {
@@ -36,35 +37,33 @@
     }
 
     @media (width >= 48rem) {
-        gap: var(--s16, 16px);
+        grid-template-columns:
+            clamp(
+                17rem,
+                var(--sidebar-width, 22rem),
+                22rem
+            )
+            minmax(0, 1fr);
+        gap: 0;
         padding-top: var(--s64, 64px);
 
         .facets {
             position: sticky;
             top: var(--s32, 32px);
-            min-height: calc(
+            width: 100%;
+            height: calc(
                 100dvh -
                 var(--s64, 64px) -
                 var(--s80, 80px)
             );
+            min-height: 24rem;
             max-height: calc(100dvh - var(--s64, 64px));
-            overflow-y: auto;
-            border-right: 1px solid rgb(255 255 255 / 0.2);
+            border-right: 0;
             border-bottom: 0;
-            padding-right: var(--s24, 24px);
-            padding-bottom: 0;
         }
 
         .results {
-            padding-left: var(--s24, 24px);
+            padding-left: var(--s32, 32px);
         }
-    }
-
-    @media (48rem <= width < 80rem) {
-        grid-template-columns: minmax(15rem, 3fr) minmax(0, 5fr);
-    }
-
-    @media (width >= 80rem) {
-        grid-template-columns: minmax(17rem, 4fr) minmax(0, 12fr);
     }
 }

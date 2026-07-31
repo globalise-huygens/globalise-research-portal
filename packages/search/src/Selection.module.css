@@ -78,8 +78,10 @@
 
     .clear {
         display: inline-flex;
+        width: 100%;
         min-height: var(--s24, 24px);
         align-items: center;
+        justify-content: flex-start;
         border-bottom: 1px solid currentColor;
         background: transparent;
         color: var(--color-brand-turquoise, #29bfcc);
@@ -99,6 +101,10 @@
 
     @media (width >= 48rem) {
         .label {
+            width: auto;
+        }
+
+        .clear {
             width: auto;
         }
     }
