@@ -61,4 +61,10 @@
     *::-webkit-scrollbar-thumb:hover {
         background: var(--color-neutral-500, #808080);
     }
+
+    @media (width >= 48rem) {
+        height: 100dvh;
+        min-height: 0;
+        overflow: hidden;
+    }
 }
