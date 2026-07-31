@@ -69,7 +69,7 @@
                 width: var(--s16, 16px);
                 height: var(--s16, 16px);
                 flex-shrink: 0;
-                stroke: currentColor;
+                fill: currentColor;
             }
         }
     }

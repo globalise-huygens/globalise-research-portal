@@ -48,12 +48,12 @@
                     width: var(--s16, 16px);
                     height: var(--s16, 16px);
                     fill: currentColor;
-                    rotate: 90deg;
+                    rotate: 0deg;
                     transition: rotate 120ms ease-out;
                 }
 
                 &[aria-expanded="true"] svg {
-                    rotate: 270deg;
+                    rotate: 180deg;
                 }
             }
         }

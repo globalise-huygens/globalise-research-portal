@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { IconClose, IconSearch } from '@globalise/design';
 import { Button } from 'react-aria-components';
 import { useSelectedFacets } from '@knaw-huc/faceted-search-react';
 import classes from './Selection.module.css';
@@ -33,17 +34,14 @@ function SelectedFacetItem({ name, label, onRemove }: {
 }) {
   return (
     <div className={classes.facet}>
-      <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round"
-          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-      </svg>
+      <IconSearch aria-hidden="true"/>
 
       <span>
         {name && <span className={classes.name}>{name}: </span>}{label}
       </span>
 
       <Button aria-label="Click to remove from search filters" onClick={onRemove}>
-        &#10005;
+        <IconClose aria-hidden="true"/>
       </Button>
     </div>
   );

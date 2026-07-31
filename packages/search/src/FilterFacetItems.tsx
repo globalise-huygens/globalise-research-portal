@@ -1,5 +1,5 @@
 import { CSSProperties, useMemo } from 'react';
-import { IconRight } from '@globalise/design';
+import { IconExpandSection } from '@globalise/design';
 import { Hierarchy, useHierarchy, useFilterFacetContext } from '@knaw-huc/faceted-search-react';
 import { Tree, TreeItem, TreeItemContent, Button, CheckboxField, CheckboxButton } from 'react-aria-components';
 import classes from './FilterFacetItems.module.css';
@@ -79,7 +79,7 @@ function FilterFacetTreeItemContent({ item, level, facetHasChildren, hasChildren
     <div className={classes.item}
       style={{ '--indent': level > 1 ? `${(level - 1) * 0.5}rem` : 0 } as CSSProperties}>
       {hasChildren && <Button slot="chevron" className={`${classes.toggle} ${isOpen ? classes.expanded : ''}`}>
-        <IconRight/>
+        <IconExpandSection/>
       </Button>}
 
       <CheckboxField slot="selection" className={classes.checkbox} name={item.itemKey}

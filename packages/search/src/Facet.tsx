@@ -1,5 +1,5 @@
 import { type ReactNode, useContext } from 'react';
-import { IconRight } from '@globalise/design';
+import { IconExpandSection } from '@globalise/design';
 import { Disclosure, DisclosurePanel, Button, DisclosureStateContext } from 'react-aria-components';
 import classes from './Facet.module.css';
 
@@ -36,8 +36,8 @@ function FacetHeader({ label }: { label: string }) {
       <div className={classes.buttons}>
         <Button slot="trigger"
           aria-label={isExpanded ? 'Close' : 'Open'}
-          className={`${classes.toggle} ${!isExpanded ? classes.expanded : ''}`}>
-          <IconRight/>
+          className={classes.toggle}>
+          <IconExpandSection/>
         </Button>
       </div>
     </div>
