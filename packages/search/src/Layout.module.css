@@ -1,34 +1,70 @@
 .search {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    margin-top: 1rem;
-
-    @media (width >= 64rem) {
-        flex-direction: row;
-        margin-bottom: 4rem;
-    }
-
-    @media (width >= 80rem) {
-        gap: 2.5rem;
-    }
+    max-width: var(--shell-max, 1440px);
+    min-height: 100dvh;
+    align-content: start;
+    align-items: start;
+    gap: var(--s32, 32px);
+    margin-inline: auto;
+    padding:
+        var(--s40, 40px)
+        var(--shell-margin, 16px)
+        var(--s80, 80px);
 
     .facets {
+        min-width: 0;
         width: 100%;
-        padding-inline: 1rem;
-        padding-bottom: 1.5rem;
-
-        @media (width >= 64rem) {
-            width: fit-content;
-            min-width: fit-content;
-        }
+        border-bottom: 1px solid rgb(255 255 255 / 0.2);
+        padding-bottom: var(--s24, 24px);
     }
 
     .results {
+        min-width: 0;
         flex-grow: 1;
-        padding-inline: 1rem;
-        padding-bottom: 5rem;
+    }
+
+    .results > :last-child {
+        min-height: 18rem;
+        border-top: 1px solid rgb(255 255 255 / 0.5);
+        padding-top: var(--s24, 24px);
+        font-family: var(--font-serif, "Noto Serif", serif);
+        font-size: var(--text-4xl, 2.25rem);
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+    }
+
+    @media (width >= 48rem) {
+        gap: var(--s16, 16px);
+        padding-top: var(--s64, 64px);
+
+        .facets {
+            position: sticky;
+            top: var(--s32, 32px);
+            min-height: calc(
+                100dvh -
+                var(--s64, 64px) -
+                var(--s80, 80px)
+            );
+            max-height: calc(100dvh - var(--s64, 64px));
+            overflow-y: auto;
+            border-right: 1px solid rgb(255 255 255 / 0.2);
+            border-bottom: 0;
+            padding-right: var(--s24, 24px);
+            padding-bottom: 0;
+        }
+
+        .results {
+            padding-left: var(--s24, 24px);
+        }
+    }
+
+    @media (48rem <= width < 80rem) {
+        grid-template-columns: minmax(15rem, 3fr) minmax(0, 5fr);
+    }
+
+    @media (width >= 80rem) {
+        grid-template-columns: minmax(17rem, 4fr) minmax(0, 12fr);
     }
 }
