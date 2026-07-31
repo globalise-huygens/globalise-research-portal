@@ -15,9 +15,8 @@
     .facets {
         min-width: 0;
         width: 100%;
-        overflow: hidden;
-        border-bottom: 1px solid rgb(255 255 255 / 0.1);
-        background: var(--color-neutral-900, #262626);
+        border-bottom: 1px solid rgb(255 255 255 / 0.2);
+        padding-bottom: var(--s24, 24px);
     }
 
     .results {
@@ -44,26 +43,27 @@
                 22rem
             )
             minmax(0, 1fr);
-        gap: 0;
+        gap: var(--s16, 16px);
         padding-top: var(--s64, 64px);
 
         .facets {
             position: sticky;
             top: var(--s32, 32px);
-            width: 100%;
-            height: calc(
+            min-height: calc(
                 100dvh -
                 var(--s64, 64px) -
                 var(--s80, 80px)
             );
-            min-height: 24rem;
             max-height: calc(100dvh - var(--s64, 64px));
-            border-right: 0;
+            overflow-y: auto;
+            border-right: 1px solid rgb(255 255 255 / 0.2);
             border-bottom: 0;
+            padding-right: var(--s24, 24px);
+            padding-bottom: 0;
         }
 
         .results {
-            padding-left: var(--s32, 32px);
+            padding-left: var(--s24, 24px);
         }
     }
 }
