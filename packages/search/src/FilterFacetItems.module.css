@@ -40,8 +40,14 @@
         min-height: var(--s28, 28px);
         cursor: pointer;
 
+        > span:last-child {
+            min-width: 0;
+            flex-grow: 1;
+        }
+
         .indicator {
             display: flex;
+            box-sizing: border-box;
             width: 14px;
             height: 14px;
             flex-shrink: 0;
@@ -50,24 +56,41 @@
             border: 1px solid rgb(255 255 255 / 0.38);
             margin-right: var(--s8, 8px);
             background: var(--color-neutral-700, #4d4d4d);
+            color: transparent;
             transition:
                 background-color 75ms ease-out,
-                border-color 75ms ease-out;
+                border-color 75ms ease-out,
+                color 75ms ease-out;
 
             &.leaf {
                 margin-left: var(--s24, 24px);
             }
 
-            &.selected {
-                border-color: var(--color-neutral-100, #e6e6e6);
-                background: var(--color-neutral-100, #e6e6e6);
+            svg {
+                width: 14px;
+                height: 14px;
+                fill: currentColor;
+                opacity: 0;
             }
 
-            svg {
-                width: 12px;
-                height: 12px;
-                stroke: var(--color-neutral-900, #262626);
+            > span {
+                width: var(--s8, 8px);
+                height: 2px;
+                background: currentColor;
+                opacity: 0;
             }
+        }
+
+        &[data-selected] .indicator,
+        &[data-indeterminate] .indicator {
+            border-color: var(--color-neutral-100, #e6e6e6);
+            background: var(--color-neutral-100, #e6e6e6);
+            color: var(--color-neutral-900, #262626);
+        }
+
+        &[data-selected] .indicator svg,
+        &[data-indeterminate] .indicator > span {
+            opacity: 1;
         }
     }
 
@@ -82,13 +105,13 @@
         font-size: var(--text-xs, 0.75rem);
         line-height: 1rem;
 
-        div:first-child {
+        span:first-child {
             min-width: 0;
             flex-grow: 1;
             overflow-wrap: anywhere;
         }
 
-        div:last-child {
+        span:last-child {
             flex-shrink: 0;
             color: var(--color-neutral-400, #999);
             font-size: 0.625rem;
