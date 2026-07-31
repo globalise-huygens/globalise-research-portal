@@ -28,18 +28,12 @@ function FacetHeader({ label }: { label: string }) {
   const { isExpanded } = useContext(DisclosureStateContext)!;
 
   return (
-    <div className={classes.header} aria-label={`Facet for ${label}`}>
-      <div className={classes.label} tabIndex={0}>
+    <Button slot="trigger" aria-label={isExpanded ? 'Close' : 'Open'} className={classes.header}>
+      <span className={classes.label}>
         {label}
-      </div>
+      </span>
 
-      <div className={classes.buttons}>
-        <Button slot="trigger"
-          aria-label={isExpanded ? 'Close' : 'Open'}
-          className={classes.toggle}>
-          <IconExpandSection/>
-        </Button>
-      </div>
-    </div>
+      <IconExpandSection/>
+    </Button>
   );
 }

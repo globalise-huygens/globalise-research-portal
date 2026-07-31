@@ -4,12 +4,25 @@
 
     .header {
         display: flex;
+        width: 100%;
         align-items: center;
         justify-content: space-between;
         min-height: var(--s48, 48px);
         gap: var(--s12, 12px);
-        border-top: 1px solid rgb(255 255 255 / 0.5);
-        border-bottom: 1px solid rgb(255 255 255 / 0.2);
+        border-bottom: 1px solid rgb(255 255 255 / 0.1);
+        background: var(--color-neutral-900, #262626);
+        transition: background-color 75ms ease-out;
+
+        &:hover,
+        &[data-hovered] {
+            background: rgb(255 255 255 / 0.08);
+        }
+
+        &:focus-visible {
+            outline: none;
+            background: rgb(255 255 255 / 0.06);
+            box-shadow: inset 3px 0 0 var(--color-neutral-500, #808080);
+        }
 
         .label {
             min-width: 0;
@@ -19,43 +32,20 @@
             font-weight: 500;
             letter-spacing: -0.03em;
             line-height: 1.25rem;
-
-            &:focus-visible {
-                outline: 2px solid var(--color-brand-turquoise, #29bfcc);
-                outline-offset: 2px;
-            }
         }
 
-        .buttons {
+        > svg {
+            width: var(--s16, 16px);
+            height: var(--s16, 16px);
             display: flex;
             flex-shrink: 0;
+            fill: currentColor;
+            rotate: 0deg;
+            transition: rotate 120ms ease-out;
+        }
 
-            .toggle {
-                display: flex;
-                width: var(--s32, 32px);
-                height: var(--s32, 32px);
-                align-items: center;
-                justify-content: center;
-                background: transparent;
-                transition: background-color 75ms ease-out;
-
-                &:hover,
-                &[data-hovered] {
-                    background: rgb(255 255 255 / 0.1);
-                }
-
-                svg {
-                    width: var(--s16, 16px);
-                    height: var(--s16, 16px);
-                    fill: currentColor;
-                    rotate: 0deg;
-                    transition: rotate 120ms ease-out;
-                }
-
-                &[aria-expanded="true"] svg {
-                    rotate: 180deg;
-                }
-            }
+        &[aria-expanded="true"] > svg {
+            rotate: 180deg;
         }
     }
 
