@@ -21,7 +21,6 @@
 
     .results {
         min-width: 0;
-        flex-grow: 1;
     }
 
     .results > :last-child {
@@ -36,6 +35,12 @@
     }
 
     @media (width >= 48rem) {
+        --search-pane-height: calc(
+            100dvh -
+            var(--s64, 64px) -
+            var(--s80, 80px)
+        );
+
         height: 100%;
         min-height: 0;
         grid-template-columns:
@@ -50,13 +55,7 @@
         padding-top: var(--s64, 64px);
 
         .facets {
-            position: sticky;
-            top: var(--s32, 32px);
-            height: calc(
-                100dvh -
-                var(--s64, 64px) -
-                var(--s80, 80px)
-            );
+            height: var(--search-pane-height);
             min-height: 0;
             overflow-y: auto;
             border-right: 1px solid rgb(255 255 255 / 0.2);
@@ -67,11 +66,7 @@
         }
 
         .results {
-            height: calc(
-                100dvh -
-                var(--s64, 64px) -
-                var(--s80, 80px)
-            );
+            height: var(--search-pane-height);
             min-height: 0;
             overflow-y: auto;
             padding-left: var(--s24, 24px);

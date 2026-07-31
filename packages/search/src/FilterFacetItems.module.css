@@ -1,6 +1,5 @@
 .item {
     display: flex;
-    flex-direction: row;
     align-items: center;
     min-height: var(--s28, 28px);
     margin-left: var(--indent, 0);
@@ -34,7 +33,6 @@
 
     .checkbox {
         display: flex;
-        flex-direction: row;
         align-items: center;
         min-width: 0;
         width: 100%;

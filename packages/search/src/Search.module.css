@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500&family=Noto+Serif:wght@400;500&display=swap");
 
 .search {
     min-height: 100dvh;
@@ -31,35 +31,6 @@
     button:focus-visible {
         outline: 2px solid var(--color-brand-turquoise, #29bfcc);
         outline-offset: 2px;
-    }
-
-    ::selection {
-        background: var(--color-brand-turquoise, #29bfcc);
-        color: var(--color-brand-black, #0c0a09);
-    }
-
-    * {
-        scrollbar-color:
-            var(--color-neutral-600, #666)
-            var(--color-neutral-900, #262626);
-        scrollbar-width: thin;
-    }
-
-    *::-webkit-scrollbar {
-        width: var(--s8, 8px);
-        height: var(--s8, 8px);
-    }
-
-    *::-webkit-scrollbar-track {
-        background: var(--color-neutral-900, #262626);
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background: var(--color-neutral-600, #666);
-    }
-
-    *::-webkit-scrollbar-thumb:hover {
-        background: var(--color-neutral-500, #808080);
     }
 
     @media (width >= 48rem) {
