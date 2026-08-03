@@ -115,8 +115,6 @@
           var(--entity-highlight-fill)
         );
         color: var(--entity-highlight-text);
-        margin-inline: -0.08em;
-        padding-inline: 0.08em;
     }
 
     .word {
@@ -125,14 +123,10 @@
         &:hover,
         &.selected {
             background: var(--normalized-word-selected);
-            margin-inline: -0.08em;
-            padding-inline: 0.08em;
         }
     }
 
     .entity .word:hover:not(.selected) {
         background: transparent;
-        margin-inline: 0;
-        padding-inline: 0;
     }
 }
