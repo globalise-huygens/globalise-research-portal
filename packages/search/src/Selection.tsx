@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { IconClose, IconSearch } from '@globalise/design';
+import { IconClose, IconEntityDocument } from '@globalise/design';
 import { Button } from 'react-aria-components';
 import { useSelectedFacets } from '@knaw-huc/faceted-search-react';
 import classes from './Selection.module.css';
@@ -34,7 +34,7 @@ function SelectedFacetItem({ name, label, onRemove }: {
 }) {
   return (
     <div className={classes.facet}>
-      <IconSearch aria-hidden="true"/>
+      <IconEntityDocument aria-hidden="true"/>
 
       <span>
         {name && <span className={classes.name}>{name}: </span>}{label}
