@@ -17,13 +17,19 @@ export function BlockHighlight(
   const [hovered, setHoveredLocal] = useState(false);
 
   const highlightStyle: HighlightStyle = {
-    fill: selected ? 'rgba(185, 155, 127, 0.1)'
-      : hovered ? 'rgba(185, 155, 127, 0.06)'
+    fill: selected
+      ? 'var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13))'
+      : hovered
+        ? 'var(--color-layout-element-fill, rgb(41 191 204 / 0.08))'
         : 'transparent',
-    stroke: selected ? 'rgba(255, 84, 61, 0.78)'
-      : hovered ? 'rgba(93, 71, 54, 0.68)'
-        : 'transparent',
-    strokeWidth: selected ? 4 : 2,
+    stroke: selected || hovered
+      ? 'var(--color-layout-element-stroke-strong, #125e64)'
+      : 'var(--color-layout-element-stroke, rgb(18 94 100 / 0.38))',
+    strokeWidth: selected || hovered ? 2 : 1,
+    haloStroke:
+      'var(--color-layout-element-halo, rgb(255 255 255 / 0.78))',
+    haloStrokeWidth: selected || hovered ? 4 : 2.5,
+    vectorEffect: 'non-scaling-stroke',
   };
 
   return (

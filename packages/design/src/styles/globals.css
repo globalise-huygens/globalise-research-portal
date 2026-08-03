@@ -115,6 +115,14 @@
     --entity-type-light: #d8d8db;
     --entity-type-strong: #2b2b2b;
 
+    /* Document structure: paragraphs, blocks and lines. */
+    --layout-element-fill: rgb(41 191 204 / 0.08);
+    --layout-element-fill-strong: rgb(41 191 204 / 0.13);
+    --layout-element-stroke: rgb(18 94 100 / 0.38);
+    --layout-element-stroke-strong: var(--turquoise-800);
+    --layout-element-text: var(--turquoise-800);
+    --layout-element-halo: rgb(255 255 255 / 0.78);
+
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);
     --surface-light: var(--brand-white);
@@ -221,6 +229,12 @@
     --color-entity-type: var(--entity-type);
     --color-entity-type-light: var(--entity-type-light);
     --color-entity-type-strong: var(--entity-type-strong);
+    --color-layout-element-fill: var(--layout-element-fill);
+    --color-layout-element-fill-strong: var(--layout-element-fill-strong);
+    --color-layout-element-stroke: var(--layout-element-stroke);
+    --color-layout-element-stroke-strong: var(--layout-element-stroke-strong);
+    --color-layout-element-text: var(--layout-element-text);
+    --color-layout-element-halo: var(--layout-element-halo);
 
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;

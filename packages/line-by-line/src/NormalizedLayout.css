@@ -1,11 +1,12 @@
 .normalized-view {
-    --normalized-annotation: var(--color-brand-parchment, #b99b7f);
     --normalized-annotation-strong: var(--color-parchment-800, #5d4736);
     --normalized-selected: var(--color-brand-vermilion, #ff543d);
-    --normalized-structure: var(--color-parchment-700, #7e6149);
-    --normalized-structure-strong: var(--color-parchment-800, #5d4736);
+    --normalized-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.38));
+    --normalized-structure-strong: var(--color-layout-element-stroke-strong, #125e64);
+    --normalized-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
+    --normalized-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
+    --normalized-structure-text: var(--color-layout-element-text, #125e64);
     --normalized-text: var(--color-brand-black, #0c0a09);
-    --normalized-muted: var(--color-neutral-600, #666666);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
     --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
 
@@ -16,6 +17,7 @@
     width: fit-content;
     padding: 0.75rem 1rem 1.25rem 0.25rem;
     color: var(--normalized-text);
+    font-family: var(--font-serif, "Noto Serif", serif);
 
     .text,
     .overlay {
@@ -42,7 +44,7 @@
             min-width: 2.35rem;
             margin-right: 0.65em;
             margin-left: 0.15em;
-            color: color-mix(in srgb, var(--normalized-structure) 72%, var(--normalized-muted));
+            color: var(--normalized-structure-text);
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
               monospace;
             font-size: 0.72em;
@@ -60,7 +62,8 @@
     }
 
     .line:hover .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--normalized-structure-text);
+        font-weight: 700;
     }
 
     &[data-layout-elements-visible="false"] .line-number {
@@ -68,24 +71,27 @@
     }
 
     .block-group {
-        border-left: 1px solid transparent;
-        padding-left: 0.35rem;
+        border-left: 2px solid var(--normalized-structure);
+        background: transparent;
+        padding: 0.2rem 0.35rem 0.3rem;
+
+        &:hover {
+            background: var(--normalized-structure-fill);
+            border-left-color: var(--normalized-structure-strong);
+        }
 
         &.selected {
-            background: color-mix(in srgb, var(--normalized-annotation) 7%, transparent);
-            border-left-color: color-mix(
-              in srgb,
-              var(--normalized-selected) 68%,
-              var(--normalized-structure-strong)
-            );
+            background: var(--normalized-structure-fill-strong);
+            border-left-color: var(--normalized-structure-strong);
         }
     }
 
     .block-group.selected .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--normalized-structure-text);
+        font-weight: 700;
     }
 
-    &[data-layout-elements-visible="false"] .block-group.selected {
+    &[data-layout-elements-visible="false"] .block-group {
         background: transparent;
         border-left-color: transparent;
     }

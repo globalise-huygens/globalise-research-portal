@@ -63,7 +63,9 @@ export function renderBlocks(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const label = findSourceLabel(block);
-      const $highlight = $svg.append('g').attr('opacity', 0);
+      const $highlight = $svg.append('g')
+        .attr('class', 'layout-block')
+        .attr('data-selected', 'false');
 
       $highlight
         .append('polygon')
