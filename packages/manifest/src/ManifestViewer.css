@@ -525,13 +525,6 @@
   line-height: var(--s20);
 }
 
-.manifest-viewer .sidebar-button .count {
-  color: var(--color-neutral-500);
-  font-size: var(--text-base);
-  font-weight: 400;
-  line-height: var(--s20);
-}
-
 .manifest-viewer .sidebar-button .badge {
   display: inline-flex;
   align-items: center;

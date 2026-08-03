@@ -16,7 +16,6 @@ export type SidebarPanel = {
   description: string,
   railLabel?: string,
   badge?: string
-  count?: string,
 };
 
 export const sidebarPanels = [
@@ -41,8 +40,6 @@ export const sidebarPanels = [
     label: 'Entity tags',
     description:
       'Explore words and phrases recognised in the transcription and linked, where possible, to people, places, dates, objects, and other concepts',
-    count: '(376)',
-    railLabel: '376',
     icon: <IconEntities className="sidebar-icon" />,
   },
   {
@@ -50,8 +47,6 @@ export const sidebarPanels = [
     label: 'Event tags',
     description:
       'Explore actions and events recognised in the transcription. Use these tags to find related passages',
-    count: '(0)',
-    railLabel: '0',
     icon: <IconEvents className="sidebar-icon" />,
   },
 ] satisfies SidebarPanel[];

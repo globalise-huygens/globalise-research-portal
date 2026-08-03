@@ -18,7 +18,9 @@ export function CollapsedMetadataRail({
             onPress={() => onExpandSection(item.id)}
           >
             <span className="icon">{item.icon}</span>
-            <span className="label">{item.railLabel}</span>
+            {item.railLabel && (
+              <span className="label">{item.railLabel}</span>
+            )}
           </AriaButton>
         </Tooltip>
       ))}
