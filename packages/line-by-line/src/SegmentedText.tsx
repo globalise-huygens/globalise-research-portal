@@ -1,11 +1,7 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  type EntityClassificationId,
-  getEntityClassificationId,
   Id,
-  isEntity,
-  isWord,
 } from '@globalise/common/annotation';
 import {
   setHovered,
@@ -13,6 +9,7 @@ import {
   useEntityHighlightClassifications,
 } from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
+import { findHoverAnnotation } from './findHoverAnnotation';
 import { NestedSegment } from './NestedSegment';
 
 type TextProps = {
@@ -30,10 +27,10 @@ export function SegmentedText(
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoverId = selectAnnotation(
+      const annotationId = findHoverAnnotation(
         segment.annotations,
         highlightedEntityClassifications,
-      )
+      )?.id
         ?? blockId
         ?? null;
 
@@ -42,16 +39,16 @@ export function SegmentedText(
           key={segment.index}
           onMouseEnter={(e) => {
             e.stopPropagation();
-            setHovered(hoverId);
+            setHovered(annotationId);
           }}
           onMouseLeave={(e) => {
             e.stopPropagation();
             setHovered(blockId);
           }}
           onClick={(e) => {
-            if (hoverId && hoverId !== blockId) {
+            if (annotationId && annotationId !== blockId) {
               e.stopPropagation();
-              toggleClicked(hoverId);
+              toggleClicked(annotationId);
             }
           }}
         >
@@ -72,25 +69,4 @@ export function SegmentedText(
       );
     })}
   </>;
-}
-
-function selectAnnotation(
-  annotations: Annotation[],
-  highlightedEntityClassifications: Set<EntityClassificationId>,
-): Id | undefined {
-  const entity = annotations.find((annotation) => {
-    if (!isEntity(annotation)) {
-      return false;
-    }
-    const classificationId = getEntityClassificationId(annotation);
-    return classificationId !== undefined &&
-      highlightedEntityClassifications.has(classificationId);
-  });
-  if (entity) {
-    return entity.id;
-  }
-  const word = annotations.find((a) => isWord(a));
-  if (word) {
-    return word.id;
-  }
 }
