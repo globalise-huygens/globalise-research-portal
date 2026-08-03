@@ -1,5 +1,5 @@
 import {
-  getEntityClassifiedAsClassName,
+  getEntityClassificationId,
   Id,
   isEntity,
 } from '@globalise/common/annotation';
@@ -21,14 +21,14 @@ export function useSelectedIdsForCanvas(
         continue;
       }
       const selectedAnnotation = canvas.annotations[selectedId];
-      if (
-        selectedAnnotation &&
-        isEntity(selectedAnnotation) &&
-        !s.entityHighlightCategories.has(
-          getEntityClassifiedAsClassName(selectedAnnotation),
-        )
-      ) {
-        continue;
+      if (selectedAnnotation && isEntity(selectedAnnotation)) {
+        const classificationId = getEntityClassificationId(selectedAnnotation);
+        if (
+          classificationId === undefined ||
+          !s.entityHighlightCategories.has(classificationId)
+        ) {
+          continue;
+        }
       }
       if (selectedId in canvas.annotations) {
         ids.push(selectedId);

@@ -6,7 +6,6 @@ import {
   IconZoomOut,
   Toggle,
   ToggleGroup,
-  ToolButton,
   Tooltip,
 } from '@globalise/design';
 import {
@@ -16,6 +15,7 @@ import {
   useTranscriptionMode,
 } from '@globalise/common/document';
 import { useState } from 'react';
+import { TooltipIconButton } from '../layout/TooltipIconButton';
 
 const MIN_ZOOM_PERCENT = 30;
 const MAX_ZOOM_PERCENT = 200;
@@ -92,11 +92,10 @@ export function ManifestTranscriptionControls() {
         </Tooltip>
       </ToggleGroup>
       <div className="zoom-controls">
-        <ToolButton
+        <TooltipIconButton
           aria-label="Zoom out transcription"
-          icon={
-            <IconZoomOut />
-          }
+          tooltip="Decrease transcription size"
+          icon={<IconZoomOut />}
           onPress={() => applyZoomPercent(diplomaticViewScale - 10)}
           size="compact"
         />
@@ -128,11 +127,10 @@ export function ManifestTranscriptionControls() {
             %
           </span>
         </label>
-        <ToolButton
+        <TooltipIconButton
           aria-label="Zoom in transcription"
-          icon={
-            <IconZoomIn />
-          }
+          tooltip="Increase transcription size"
+          icon={<IconZoomIn />}
           onPress={() => applyZoomPercent(diplomaticViewScale + 10)}
           size="compact"
         />
@@ -141,8 +139,9 @@ export function ManifestTranscriptionControls() {
         className="toolbar-divider"
         aria-hidden="true"
       />
-      <ToolButton
+      <TooltipIconButton
         aria-label="Reset transcription zoom"
+        tooltip="Reset transcription size to 100%"
         icon={<IconReset />}
         onPress={() => applyZoomPercent(100)}
         size="compact"
