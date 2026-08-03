@@ -1,23 +1,22 @@
 import {
   type Annotation,
   type EntityClassificationId,
-  getEntityClassificationId,
+  hasEntityClassification,
   isEntity,
   isWord,
 } from '@globalise/common/annotation';
 
 export function findHoverAnnotation(
   annotations: Annotation[],
-  highlightedEntityClassifications: Set<EntityClassificationId>,
+  highlightedEntityClassifications: ReadonlySet<EntityClassificationId>,
 ): Annotation | undefined {
-  const entityAnnotation = annotations.find((annotation) => {
-    if (!isEntity(annotation)) {
-      return false;
-    }
-    const classificationId = getEntityClassificationId(annotation);
-    return classificationId !== undefined &&
-      highlightedEntityClassifications.has(classificationId);
-  });
+  const entityAnnotation = annotations.find((annotation) =>
+    isEntity(annotation) &&
+    hasEntityClassification(
+      annotation,
+      highlightedEntityClassifications,
+    ),
+  );
 
   return entityAnnotation ?? annotations.find(isWord);
 }

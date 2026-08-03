@@ -25,7 +25,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
-  highlightedEntityClassifications?: Set<EntityClassificationId>;
+  highlightedEntityClassifications?: ReadonlySet<EntityClassificationId>;
   selected?: Id[];
   style?: React.CSSProperties;
 };

@@ -132,6 +132,15 @@ export function getEntityClassificationId(
   return isEntityClassificationId(id) ? id : undefined;
 }
 
+export function hasEntityClassification(
+  annotation: Annotation,
+  classifications: ReadonlySet<EntityClassificationId>,
+) {
+  const classificationId = getEntityClassificationId(annotation);
+  return classificationId !== undefined &&
+    classifications.has(classificationId);
+}
+
 export function getEntityClassifiedAsLabel(entity: Annotation) {
   const body = getPrimaryEntityBody(entity);
   return body.classified_as._label;

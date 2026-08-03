@@ -10,8 +10,8 @@ import {
 import { Button as AriaButton } from 'react-aria-components';
 import './EntityHighlightMenu.css';
 
-export type EntityHighlightSubcategory = {
-  id?: string;
+type EntityHighlightSubcategory = {
+  id: string;
   label: string;
   tone?: string;
 };
@@ -40,9 +40,7 @@ function getLeafKeys(category: EntityHighlightCategory) {
     return [category.id];
   }
 
-  return category.subcategories.map(
-    (subcategory) => subcategory.id ?? `${category.id}::${subcategory.label}`,
-  );
+  return category.subcategories.map((subcategory) => subcategory.id);
 }
 
 function EntityHighlightMenu({
@@ -246,9 +244,7 @@ function EntityHighlightMenu({
                     {isExpanded && hasSubcategories && (
                       <div className="subcategories">
                         {category.subcategories?.map((subcategory) => {
-                          const leafKey =
-                            subcategory.id ??
-                            `${category.id}::${subcategory.label}`;
+                          const leafKey = subcategory.id;
 
                           return (
                             <div

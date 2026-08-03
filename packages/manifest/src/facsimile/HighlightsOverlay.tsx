@@ -5,7 +5,7 @@ import {
   findSvgPath,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
-  getEntityClassificationId,
+  hasEntityClassification,
   type Annotation,
   type EntityClassificationId,
   type Id,
@@ -190,16 +190,17 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 function getEntityHighlightTone(
   entityId: Id,
   annotations: Record<Id, Annotation>,
-  highlightedEntityClassifications: Set<EntityClassificationId>,
+  highlightedEntityClassifications: ReadonlySet<EntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
   if (!annotation || !isEntity(annotation)) {
     return undefined;
   }
-  const classificationId = getEntityClassificationId(annotation);
   if (
-    !classificationId ||
-    !highlightedEntityClassifications.has(classificationId)
+    !hasEntityClassification(
+      annotation,
+      highlightedEntityClassifications,
+    )
   ) {
     return undefined;
   }

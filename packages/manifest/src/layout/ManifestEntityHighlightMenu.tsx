@@ -21,22 +21,20 @@ import {
 import {
   EntityHighlightMenu,
   type EntityHighlightCategory,
-  type EntityHighlightSubcategory,
 } from './EntityHighlightMenu';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 
 const iconClassName = 'toolbar-icon';
 
-type EntityHighlightSubcategoryConfig = EntityHighlightSubcategory & {
-  id: EntityClassificationId;
-};
-
-type EntityHighlightCategoryConfig = Omit<
-  EntityHighlightCategory,
-  'subcategories'
-> & {
-  subcategories?: EntityHighlightSubcategoryConfig[];
+type EntityHighlightCategoryConfig = {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  subcategories?: {
+    id: EntityClassificationId;
+    label: string;
+  }[];
 };
 
 const entityCategoryConfigs: EntityHighlightCategoryConfig[] = [
@@ -112,9 +110,7 @@ const entityCategories: EntityHighlightCategory[] =
     }));
 
     return {
-      id: category.id,
-      label: category.label,
-      icon: category.icon,
+      ...category,
       tone: isEntityClassificationId(category.id)
         ? getEntityClassificationVisualCategory(category.id)
         : subcategories?.[0]?.tone,
