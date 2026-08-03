@@ -85,7 +85,7 @@ export function getEntityTypeClassName(annotation: Annotation) {
   }
 }
 
-const ENTITY_CLASSNAMES: Record<string, EntityVisualCategoryClassName> = {
+const ENTITY_CLASSNAMES = {
   'gan:DATE': 'cidoc-time-span',
   'gan:PER_NAME': 'cidoc-actor',
   'gan:ORG': 'cidoc-actor',
@@ -96,25 +96,51 @@ const ENTITY_CLASSNAMES: Record<string, EntityVisualCategoryClassName> = {
   'gan:CMTY_NAME': 'cidoc-physical-thing',
   'gan:SHIP': 'cidoc-physical-thing',
   'gan:CMTY_QUAL': 'cidoc-type',
+  'gan:ETH_REL': 'cidoc-type',
   'gan:PER_ATTR': 'cidoc-type',
   'gan:PRF': 'cidoc-type',
   'gan:SHIP_TYPE': 'cidoc-type',
   'gan:STATUS': 'cidoc-type',
-};
+} as const satisfies Record<string, EntityVisualCategoryClassName>;
+
+export type EntityClassificationId = keyof typeof ENTITY_CLASSNAMES;
+
+export const entityClassificationIds = Object.keys(
+  ENTITY_CLASSNAMES,
+) as EntityClassificationId[];
 
 export function getEntityClassifiedAsClassName(
   annotation: Annotation,
 ): EntityVisualCategoryClassName {
   const body = getPrimaryEntityBody(annotation);
-  return (
-    ENTITY_CLASSNAMES[body.classified_as.id] ??
-    getFallbackVisualCategory(body.type)
-  );
+  const id = body.classified_as.id;
+  return isEntityClassificationId(id)
+    ? getEntityClassificationVisualCategory(id)
+    : getFallbackVisualCategory(body.type);
+}
+
+export function getEntityClassificationVisualCategory(
+  classificationId: EntityClassificationId,
+) {
+  return ENTITY_CLASSNAMES[classificationId];
+}
+
+export function getEntityClassificationId(
+  annotation: Annotation,
+): EntityClassificationId | undefined {
+  const id = getPrimaryEntityBody(annotation).classified_as.id;
+  return isEntityClassificationId(id) ? id : undefined;
 }
 
 export function getEntityClassifiedAsLabel(entity: Annotation) {
   const body = getPrimaryEntityBody(entity);
   return body.classified_as._label;
+}
+
+export function isEntityClassificationId(
+  value: string,
+): value is EntityClassificationId {
+  return entityClassificationIds.includes(value as EntityClassificationId);
 }
 
 export function isEntityVisualCategory(

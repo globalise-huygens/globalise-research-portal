@@ -5,7 +5,9 @@ import {
   findSvgPath,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
+  getEntityClassificationId,
   type Annotation,
+  type EntityClassificationId,
   type Id,
   isBlock,
   isEntity,
@@ -90,7 +92,11 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       });
     }
     return tones;
-  }, [annotations, highlightedEntityCategories, indexes.entityToWords]);
+  }, [
+    annotations,
+    highlightedEntityCategories,
+    indexes.entityToWords,
+  ]);
 
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
@@ -183,12 +189,18 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 function getEntityHighlightTone(
   entityId: Id,
   annotations: Record<Id, Annotation>,
-  highlightedEntityCategories: Set<EntityHighlightTone>,
+  highlightedEntityCategories: Set<EntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
   if (!annotation || !isEntity(annotation)) {
     return undefined;
   }
-  const tone = getEntityClassifiedAsClassName(annotation);
-  return highlightedEntityCategories.has(tone) ? tone : undefined;
+  const classificationId = getEntityClassificationId(annotation);
+  if (
+    !classificationId ||
+    !highlightedEntityCategories.has(classificationId)
+  ) {
+    return undefined;
+  }
+  return getEntityClassifiedAsClassName(annotation);
 }

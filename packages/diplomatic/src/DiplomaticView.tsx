@@ -13,7 +13,7 @@ import '@knaw-huc/original-layout/style.css';
 import './DiplomaticView.css';
 import {
   Annotation,
-  type EntityVisualCategoryClassName,
+  type EntityClassificationId,
 } from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
 import { debounce } from 'lodash';
@@ -25,7 +25,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
-  highlightedEntityCategories?: Set<EntityVisualCategoryClassName>;
+  highlightedEntityCategories?: Set<EntityClassificationId>;
   selected?: Id[];
   style?: React.CSSProperties;
 };
