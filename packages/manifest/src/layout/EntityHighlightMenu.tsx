@@ -7,6 +7,7 @@ import {
   ToolButton,
   Tooltip,
 } from '@globalise/design';
+import { Button as AriaButton } from 'react-aria-components';
 import './EntityHighlightMenu.css';
 
 export type EntityHighlightSubcategory = {
@@ -215,18 +216,21 @@ function EntityHighlightMenu({
                       </div>
                       <div className="actions">
                         {hasSubcategories && (
-                          <button
-                            type="button"
-                            aria-label={`Toggle ${category.label} subcategories`}
-                            aria-expanded={isExpanded}
-                            className="expand"
-                            onClick={() => toggleExpandedGroup(category.id)}
+                          <Tooltip
+                            label={`${isExpanded ? 'Hide' : 'Show'} ${category.label} subcategories`}
                           >
-                            <IconExpandSection
-                              aria-hidden="true"
-                              className="expand-icon"
-                            />
-                          </button>
+                            <AriaButton
+                              aria-label={`Toggle ${category.label} subcategories`}
+                              aria-expanded={isExpanded}
+                              className="expand"
+                              onPress={() => toggleExpandedGroup(category.id)}
+                            >
+                              <IconExpandSection
+                                aria-hidden="true"
+                                className="expand-icon"
+                              />
+                            </AriaButton>
+                          </Tooltip>
                         )}
                         <Checkbox
                           aria-label={`Toggle ${category.label} entity highlights`}
