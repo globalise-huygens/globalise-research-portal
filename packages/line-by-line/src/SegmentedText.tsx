@@ -1,7 +1,6 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  type EntityClassificationId,
   hasEntityClassification,
   Id,
   isEntity,
@@ -30,10 +29,14 @@ export function SegmentedText(
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const annotationId = findHoverAnnotation(
-        segment.annotations,
-        highlightedEntityClassifications,
-      )?.id
+      const hoveredAnnotation = segment.annotations.find((annotation) =>
+        isEntity(annotation) &&
+        hasEntityClassification(
+          annotation,
+          highlightedEntityClassifications,
+        ),
+      ) ?? segment.annotations.find(isWord);
+      const annotationId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
 
@@ -72,16 +75,4 @@ export function SegmentedText(
       );
     })}
   </>;
-}
-
-function findHoverAnnotation(
-  annotations: Annotation[],
-  highlightedClassifications: ReadonlySet<EntityClassificationId>,
-): Annotation | undefined {
-  const entityAnnotation = annotations.find((annotation) =>
-    isEntity(annotation) &&
-    hasEntityClassification(annotation, highlightedClassifications),
-  );
-
-  return entityAnnotation ?? annotations.find(isWord);
 }
