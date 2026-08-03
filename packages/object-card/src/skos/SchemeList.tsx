@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { loadSchemes, useSchemes } from './SkosSchemesSlice.ts';
 import { loadConcept, useCurrentSchemeId } from './SkosConceptSlice.ts';
 import { getConceptLabel } from './SkosModel.ts';
+import { ObjectCardAction } from '@globalise/design';
 
 export function SchemeList() {
   const { schemes, isLoading, isReady, error } = useSchemes();
@@ -27,13 +28,12 @@ export function SchemeList() {
           <span key={scheme.id}
             style={{ paddingRight: '0.25rem', lineHeight: '2rem' }}
           >
-            <button
+            <ObjectCardAction
               onClick={() => void loadConcept(scheme.id)}
-              aria-current={isCurrent || undefined}
             >
               {isCurrent ?
                 <strong>{getConceptLabel(scheme)}</strong> : getConceptLabel(scheme)}
-            </button>
+            </ObjectCardAction>
           </span>
         );
       })}

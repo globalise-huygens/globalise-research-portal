@@ -1,4 +1,5 @@
 import { getConceptLabel, SkosConcept } from './SkosModel.ts';
+import { ObjectCardAction } from '@globalise/design';
 
 export type RelationKey =
   | 'broader'
@@ -22,9 +23,9 @@ export function ConceptNode({
   const children = childKey ? concept[childKey] : undefined;
   return (
     <li>
-      <button onClick={() => onSelect(concept)}>
+      <ObjectCardAction onClick={() => onSelect(concept)}>
         {getConceptLabel(concept)}
-      </button>
+      </ObjectCardAction>
       {!!children?.length && (
         <ul className="concept-list">
           {children.map((child) => (
