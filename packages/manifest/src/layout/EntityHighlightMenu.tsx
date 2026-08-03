@@ -7,18 +7,17 @@ import {
   ToolButton,
   Tooltip,
 } from '@globalise/design';
+import { Button as AriaButton } from 'react-aria-components';
 import './EntityHighlightMenu.css';
 
 export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
-  count?: number;
 };
 
 export type EntityHighlightCategory = {
   id: string;
   label: string;
-  count?: number;
   icon?: React.ReactNode;
   tone?: string;
   subcategories?: EntityHighlightSubcategory[];
@@ -31,9 +30,7 @@ export type EntityHighlightMenuProps = {
   triggerIcon?: React.ReactNode;
   triggerClassName?: string;
   triggerLabel?: string;
-  title?: React.ReactNode;
   allLabel?: React.ReactNode;
-  allDescription?: React.ReactNode;
   className?: string;
 };
 
@@ -54,15 +51,11 @@ function EntityHighlightMenu({
   triggerIcon,
   triggerClassName,
   triggerLabel = 'Entity highlights',
-  title = 'Entity highlights',
   allLabel = 'All entity highlights',
-  allDescription = 'Select or clear every classified entity highlight',
   className,
 }: EntityHighlightMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
-    () => new Set(),
-  );
+  const [expandedGroup, setExpandedGroup] = React.useState<string | null>(null);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const allLeafKeys = React.useMemo(
     () => categories.flatMap((category) => getLeafKeys(category)),
@@ -146,17 +139,7 @@ function EntityHighlightMenu({
   );
 
   const toggleExpandedGroup = React.useCallback((groupName: string) => {
-    setExpandedGroups((current) => {
-      const next = new Set(current);
-
-      if (next.has(groupName)) {
-        next.delete(groupName);
-      } else {
-        next.add(groupName);
-      }
-
-      return next;
-    });
+    setExpandedGroup((current) => (current === groupName ? null : groupName));
   }, []);
 
   return (
@@ -185,22 +168,13 @@ function EntityHighlightMenu({
       {isOpen && (
         <Popover
           role="dialog"
-          aria-label={typeof title === 'string' ? title : triggerLabel}
+          aria-label={triggerLabel}
           size="compact"
           className="surface"
         >
-          <h3>{title}</h3>
-
           <div className="content">
             <div className="all">
-              <div className="all-copy">
-                <div className="all-title">{allLabel}</div>
-                {allDescription && (
-                  <div className="all-description">
-                    {allDescription}
-                  </div>
-                )}
-              </div>
+              <div className="all-title">{allLabel}</div>
               <Checkbox
                 aria-label="Toggle all entity highlights"
                 isSelected={areAllHighlightsSelected}
@@ -219,16 +193,15 @@ function EntityHighlightMenu({
                   leafKeys.length > 0 && selectedCount === leafKeys.length;
                 const isIndeterminate =
                   selectedCount > 0 && selectedCount < leafKeys.length;
-                const isExpanded = expandedGroups.has(category.id);
+                const isExpanded = expandedGroup === category.id;
                 const hasSubcategories =
                   category.subcategories && category.subcategories.length > 0;
 
                 return (
                   <div key={category.id} className="category">
                     <div
-                      className="row"
+                      className={cn('row', category.tone)}
                       data-level="category"
-                      data-tone={category.tone}
                     >
                       <div className="label">
                         {category.icon && (
@@ -240,27 +213,26 @@ function EntityHighlightMenu({
                           {category.label}
                         </span>
                       </div>
-                      {category.count !== undefined && (
-                        <span className="count">{category.count}</span>
-                      )}
                       <div className="actions">
                         {hasSubcategories && (
-                          <button
-                            type="button"
-                            aria-label={`Toggle ${category.label} subcategories`}
-                            aria-expanded={isExpanded}
-                            className="expand"
-                            onClick={() => toggleExpandedGroup(category.id)}
+                          <Tooltip
+                            label={`${isExpanded ? 'Hide' : 'Show'} ${category.label} subcategories`}
                           >
-                            <IconExpandSection
-                              aria-hidden="true"
-                              className="expand-icon"
-                            />
-                          </button>
+                            <AriaButton
+                              aria-label={`Toggle ${category.label} subcategories`}
+                              aria-expanded={isExpanded}
+                              className="expand"
+                              onPress={() => toggleExpandedGroup(category.id)}
+                            >
+                              <IconExpandSection
+                                aria-hidden="true"
+                                className="expand-icon"
+                              />
+                            </AriaButton>
+                          </Tooltip>
                         )}
                         <Checkbox
                           aria-label={`Toggle ${category.label} entity highlights`}
-                          isDisabled={(category.count ?? 1) <= 0}
                           isSelected={isSelected}
                           isIndeterminate={isIndeterminate}
                           onChange={(nextSelected) =>
@@ -280,16 +252,10 @@ function EntityHighlightMenu({
                           return (
                             <div
                               key={leafKey}
-                              className="row"
+                              className={cn('row', category.tone)}
                               data-level="subcategory"
-                              data-tone={category.tone}
                             >
                               <div className="label">
-                                {category.icon && (
-                                  <span className="icon">
-                                    {category.icon}
-                                  </span>
-                                )}
                                 <span className="label-text">
                                   {subcategory.label}
                                 </span>
