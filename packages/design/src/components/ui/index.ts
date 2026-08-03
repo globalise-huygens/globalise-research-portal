@@ -115,7 +115,7 @@ export {
   ObjectCardTitle,
 } from './ObjectCard';
 export type {
-  DialogObjectCardProps,
+  ObjectCardDialogProps,
   ObjectCardActionProps,
   ObjectCardBodyProps,
   ObjectCardExternalLinkProps,

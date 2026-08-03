@@ -26,14 +26,14 @@ const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
 );
 ObjectCard.displayName = 'ObjectCard';
 
-export type DialogObjectCardProps = {
+export type ObjectCardDialogProps = {
   className?: string;
 } & Omit<
   AriaDialogProps,
   'className' | 'style'
 >;
 
-const ObjectCardDialog = React.forwardRef<HTMLElement, DialogObjectCardProps>(
+const ObjectCardDialog = React.forwardRef<HTMLElement, ObjectCardDialogProps>(
   ({ className, ...props }, ref) => (
     <AriaDialog
       ref={ref}
