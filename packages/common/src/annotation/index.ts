@@ -1,8 +1,19 @@
 export { indexAnnotations } from './indexAnnotations.ts';
+export type { AnnotationIndexes } from './indexAnnotations.ts';
+export {
+  createWordRanges,
+  emptyOverlapIndexes,
+  indexRangesToWordsBlocks,
+} from './indexRangesToWordsBlocks';
+export type {
+  OffsetRange,
+  OverlapIndexes,
+} from './indexRangesToWordsBlocks';
 export { filterByTextSelectorOrLog } from './filterByTextSelectorOrLog.ts';
 
 export * from './AnnoModel';
 export * from './EntityModel';
+export * from './SearchResultModel';
 export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';
 export { findSvgPath } from './findSvgPath';
@@ -21,6 +32,6 @@ export { getBody } from './getBody';
 export { assertTextualBody } from './assertTextualBody';
 export { isSpecificResourceTarget } from './isSpecificResourceTarget';
 export { isSvgSelector } from './isSvgSelector';
-export { getPageText } from './getPageText';
+export { getPageText, findPageText, findPageTextId } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';

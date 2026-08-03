@@ -9,6 +9,7 @@ import {
   getPageText,
   indexAnnotations,
   isEntity,
+  isSearchResultAnnotation,
   toClassName,
 } from '@globalise/common/annotation';
 import { noop, orThrow } from '@globalise/common';
@@ -85,8 +86,10 @@ export function renderDiplomaticView(
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
+  const searchAnnos = Object.values(annotations)
+    .filter(isSearchResultAnnotation);
   const markedAnnos = filterByTextSelectorOrLog(
-    [...wordAnnos, ...entityAnnos],
+    [...searchAnnos, ...wordAnnos, ...entityAnnos],
     pageAnnoId,
   );
 
@@ -103,6 +106,7 @@ export function renderDiplomaticView(
 
   const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const $searchToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -119,6 +123,17 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
+      const searchAnnotation = segment.annotations.find(
+        (a) => isSearchResultAnnotation(a),
+      );
+      if (searchAnnotation) {
+        $segment.classList.add('search-result');
+        if (!$searchToSegments[searchAnnotation.id]) {
+          $searchToSegments[searchAnnotation.id] = [];
+        }
+        $searchToSegments[searchAnnotation.id].push($segment);
+      }
+
       const entityAnno = segment.annotations.find((a) => isEntity(a));
       const visualCategory = entityAnno
         ? getEntityClassifiedAsClassName(entityAnno)
@@ -154,8 +169,9 @@ export function renderDiplomaticView(
         $segment.addEventListener('mouseleave', () => onHover(null));
       } else {
         const blockId = wordToBlock[wordId];
-        $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => onHover(wordId));
+        const targetId = searchAnnotation?.id ?? wordId;
+        $segment.addEventListener('click', () => onClick(targetId));
+        $segment.addEventListener('mouseenter', () => onHover(targetId));
         $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
       }
     }
@@ -236,6 +252,9 @@ export function renderDiplomaticView(
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
       $segments?.forEach(($r) => { $r.classList.add('selected'); });
+    } else if (isSearchResultAnnotation(annotation)) {
+      const $segments = $searchToSegments[id];
+      $segments?.forEach(($r) => { $r.classList.add('selected'); });
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -250,6 +269,9 @@ export function renderDiplomaticView(
       deselectBlock(id);
     } else if (isEntity(annotation)) {
       const $segments = $entityToSegments[id];
+      $segments?.forEach(($r) => $r.classList.remove('selected'));
+    } else if (isSearchResultAnnotation(annotation)) {
+      const $segments = $searchToSegments[id];
       $segments?.forEach(($r) => $r.classList.remove('selected'));
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);

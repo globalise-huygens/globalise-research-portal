@@ -1,5 +1,4 @@
 import {
-  setSelectedCanvas,
   type CanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
@@ -9,15 +8,14 @@ import {
   IconRight,
   IconRightLast,
 } from '@globalise/design';
-import { useViewer } from '@knaw-huc/osd-iiif-viewer';
-import { Point } from 'openseadragon';
 import { useState } from 'react';
 import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
+import { useScrollToFacsimileCanvas } from './useScrollToFacsimileCanvas.tsx';
 
 export function ManifestCanvasNavigation() {
-  const viewer = useViewer();
+  const scrollToCanvas = useScrollToFacsimileCanvas();
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const { id: selectedCanvasId } = useSelectedCanvas();
   const [scanInput, setScanInput] = useState<string | null>(null);
@@ -40,19 +38,8 @@ export function ManifestCanvasNavigation() {
   const lastId = lazyCanvases[lazyCanvases.length - 1]?.canvasId;
 
   function scrollTo(canvasId?: CanvasId) {
-    if (!canvasId) {
-      return;
-    }
     setScanInput(null);
-    setSelectedCanvas(canvasId, 'external');
-    if (!viewer) {
-      return;
-    }
-    const canvas = lazyCanvases.find((c) => c.canvasId === canvasId);
-    if (!canvas) {
-      return;
-    }
-    viewer.viewport.panTo(new Point(0.5, canvas.y + canvas.height / 2));
+    scrollToCanvas(canvasId);
   }
 
   function navigateToScanNumber(scanNumber: number) {

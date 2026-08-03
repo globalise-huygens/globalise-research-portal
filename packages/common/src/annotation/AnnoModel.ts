@@ -6,6 +6,7 @@ import type {
   TextPositionSelector,
 } from '@iiif/presentation-3';
 import { EntityBody } from './EntityModel.ts';
+import { SearchResultBody } from './SearchResultModel.ts';
 import { Id } from './Id.ts';
 
 export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
@@ -28,7 +29,12 @@ type BlockWithLabel = {
   };
 };
 
-export type Body = IiifBody | BlockWithLabel | TextualBody | EntityBody;
+export type Body =
+  | IiifBody
+  | BlockWithLabel
+  | TextualBody
+  | EntityBody
+  | SearchResultBody;
 
 export const isBlockWithLabel = (toTest?: Body): toTest is BlockWithLabel => !!(toTest as BlockWithLabel)?.source.label;
 

@@ -1,7 +1,8 @@
-import { useDocumentStore, DocumentState } from './DocumentStore';
+import { useDocumentStore } from './DocumentStore';
 import { Id } from '../annotation';
 import { AnnotationIndexes } from '../annotation/indexAnnotations.ts';
-import { CanvasId, emptyAnnotationIndex } from './ManifestViewerSlice';
+import { CanvasId } from './ManifestViewerSlice';
+import { getCanvasIndexes } from './CanvasIndexesSlice';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
@@ -83,10 +84,6 @@ function isSelectedInFacsimile(
     return true;
   }
   return false;
-}
-
-function getCanvasIndexes(s: DocumentState, canvasId: CanvasId): AnnotationIndexes {
-  return s.canvases[canvasId]?.indexes ?? emptyAnnotationIndex;
 }
 
 export function useIsSelectedInTranscription(

@@ -5,22 +5,31 @@ import {
 } from '@globalise/common/annotation';
 import { useDocumentStore } from '@globalise/common/document';
 import { useShallow } from 'zustand/react/shallow';
+import { useAnnotations } from './useAnnotations';
+import { useCanvasIndexes } from './CanvasIndexesSlice';
 
 export function useSelectedIdsForCanvas(
   canvasId: string,
 ): Id[] {
+  const annotations = useAnnotations(canvasId);
+  const {
+    entityToWords,
+    wordToBlock,
+    entityToBlock,
+    searchToWords,
+    searchToBlock,
+  } = useCanvasIndexes(canvasId);
+
   return useDocumentStore(useShallow((s) => {
-    const canvas = s.canvases[canvasId];
-    if (!canvas?.annotations) {
+    if (!Object.keys(annotations).length) {
       return emptySelection;
     }
-    const { entityToWords, wordToBlock, entityToBlock } = canvas.indexes;
     const ids: Id[] = [];
     for (const selectedId of [s.hoveredId, s.clickedId]) {
       if (!selectedId) {
         continue;
       }
-      const selectedAnnotation = canvas.annotations[selectedId];
+      const selectedAnnotation = annotations[selectedId];
       if (
         selectedAnnotation &&
         isEntity(selectedAnnotation) &&
@@ -30,12 +39,16 @@ export function useSelectedIdsForCanvas(
       ) {
         continue;
       }
-      if (selectedId in canvas.annotations) {
+      if (selectedId in annotations) {
         ids.push(selectedId);
       }
       const wordsFromEntity = entityToWords[selectedId];
       if(wordsFromEntity) {
         ids.push(...wordsFromEntity);
+      }
+      const wordsFromSearch = searchToWords[selectedId];
+      if (wordsFromSearch) {
+        ids.push(...wordsFromSearch);
       }
       const blockFromWord = wordToBlock[selectedId];
       if (blockFromWord) {
@@ -44,6 +57,10 @@ export function useSelectedIdsForCanvas(
       const blockFromEntity = entityToBlock[selectedId];
       if (blockFromEntity) {
         ids.push(blockFromEntity);
+      }
+      const blockFromSearch = searchToBlock[selectedId];
+      if (blockFromSearch) {
+        ids.push(blockFromSearch);
       }
     }
     return ids.length ? ids : emptySelection;

@@ -3,6 +3,11 @@ import { Annotation } from './AnnoModel';
 import { isEntity } from './EntityModel';
 import { findResourceTarget } from './findResourceTarget.ts';
 import { findTextPositionSelector } from './findTextPositionSelector';
+import {
+  createWordRanges,
+  indexRangesToWordsBlocks,
+  type OffsetRange,
+} from './indexRangesToWordsBlocks.ts';
 import { orThrow } from '../util/orThrow.ts';
 
 export type AnnotationIndexes = {
@@ -12,6 +17,8 @@ export type AnnotationIndexes = {
   wordToBlock: Record<Id, Id>;
   entityToWords: Record<Id, Id[]>;
   entityToBlock: Record<Id, Id>;
+  searchToWords: Record<Id, Id[]>;
+  searchToBlock: Record<Id, Id>;
 };
 
 export function indexAnnotations(
@@ -49,43 +56,23 @@ export function indexAnnotations(
     }
   }
 
-  const entityToWords: Record<Id, Id[]> = {};
-  const entityToBlock: Record<Id, Id> = {};
-
-  const wordSelectors: { id: Id; start: number; end: number }[] = [];
-  for (const annotation of Object.values(annotations)) {
-    if (annotation.textGranularity === 'word') {
-      const { start, end } =
-        findTextPositionSelector(annotation, pageAnnoId) ??
-      orThrow('No selector');
-      wordSelectors.push({ id: annotation.id, start, end });
+  const entityRanges: OffsetRange[] = [];
+  for (const entity of Object.values(annotations)) {
+    if (!isEntity(entity)) {
+      continue;
     }
-  }
-
-  if (wordSelectors.length) {
-    for (const entity of Object.values(annotations)) {
-      if (!isEntity(entity)) {
-        continue;
-      }
-
-      const { start, end } =
-        findTextPositionSelector(entity, pageAnnoId)
+    const { start, end } = findTextPositionSelector(entity, pageAnnoId)
       ?? orThrow('No selector');
-      const overlapping = wordSelectors
-        .filter((word) => word.start < end && word.end > start)
-        .map((w) => w.id);
-
-      if (!overlapping.length) {
-        continue;
-      }
-      entityToWords[entity.id] = overlapping;
-
-      const blockId = wordToBlock[overlapping[0]];
-      if (blockId) {
-        entityToBlock[entity.id] = blockId;
-      }
-    }
+    entityRanges.push({ id: entity.id, start, end });
   }
+
+  const wordRanges = createWordRanges(annotations, pageAnnoId);
+  const { toWords: entityToWords, toBlock: entityToBlock } =
+    indexRangesToWordsBlocks(
+      entityRanges,
+      wordRanges,
+      wordToBlock,
+    );
 
   return {
     wordToLine,
@@ -94,5 +81,7 @@ export function indexAnnotations(
     wordToBlock,
     entityToWords,
     entityToBlock,
+    searchToWords: {},
+    searchToBlock: {},
   };
 }

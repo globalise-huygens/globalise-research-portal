@@ -5,6 +5,7 @@ import {
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
   isEntity,
+  isSearchResultAnnotation,
   toClassName,
   isWord,
 } from '@globalise/common/annotation';
@@ -27,6 +28,12 @@ export function AnnotationSegment(
     return <EntitySegment canvasId={canvasId} annotation={annotation}>
       {children}
     </EntitySegment>;
+  }
+
+  if (isSearchResultAnnotation(annotation)) {
+    return <SearchResultSegment canvasId={canvasId} annotation={annotation}>
+      {children}
+    </SearchResultSegment>;
   }
 
   if (isWord(annotation)) {
@@ -53,6 +60,18 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
       ref={ref}
       className={`word${isSelected ? ' selected' : ''}`}
     >
+      {children}
+    </span>
+  );
+}
+
+function SearchResultSegment(
+  { canvasId, annotation, children }: AnnotationProps,
+) {
+  const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
+
+  return (
+    <span className={`search-result${isSelected ? ' selected' : ''}`}>
       {children}
     </span>
   );

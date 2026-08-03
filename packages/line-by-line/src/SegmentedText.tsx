@@ -5,6 +5,7 @@ import {
   getEntityClassifiedAsClassName,
   Id,
   isEntity,
+  isSearchResultAnnotation,
   isWord,
 } from '@globalise/common/annotation';
 import {
@@ -83,6 +84,10 @@ function selectAnnotation(
   );
   if (entity) {
     return entity.id;
+  }
+  const searchResult = annotations.find((a) => isSearchResultAnnotation(a));
+  if (searchResult) {
+    return searchResult.id;
   }
   const word = annotations.find((a) => isWord(a));
   if (word) {

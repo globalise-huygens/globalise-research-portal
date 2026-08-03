@@ -11,17 +11,13 @@ import {
 import { FetchError, fetchJson } from '../util/fetchJson';
 import { type DocumentState, setState, useDocumentStore } from './DocumentStore';
 import { orThrow } from '../util/orThrow.ts';
-import {
-  AnnotationIndexes,
-  indexAnnotations,
-} from '../annotation/indexAnnotations.ts';
 import { debounce } from 'lodash';
+import { createCanvasIndexes } from './buildCanvasIndexes.ts';
 
 export type CanvasId = string;
 
 export type CanvasState = {
   annotations: Record<Id, Annotation> | null;
-  indexes: AnnotationIndexes;
   partOf: PartOf | null;
   isLoading: boolean;
   isReady: boolean;
@@ -44,18 +40,8 @@ export type ManifestViewerSlice = {
   canvases: Record<Id, CanvasState>;
 };
 
-export const emptyAnnotationIndex: AnnotationIndexes = {
-  wordToLine: {},
-  lineToBlock: {},
-  blockToLines: {},
-  wordToBlock: {},
-  entityToWords: {},
-  entityToBlock: {},
-};
-
 const emptyCanvasState: CanvasState = {
   annotations: {},
-  indexes: emptyAnnotationIndex,
   partOf: null,
   isLoading: false,
   isReady: false,
@@ -82,15 +68,16 @@ function createReadyCanvas(pages: AnnotationPage[]) {
     }
   }
   const partOf = pages[0]?.partOf ?? null;
-  const indexes = indexAnnotations(mapped, pageId);
 
   return {
-    annotations: mapped,
-    indexes,
-    partOf,
-    isLoading: false,
-    isReady: true,
-    error: null,
+    pageId,
+    canvas: {
+      annotations: mapped,
+      partOf,
+      isLoading: false,
+      isReady: true,
+      error: null,
+    },
   };
 }
 
@@ -165,12 +152,19 @@ export async function loadCanvasAnnotationPages(
       }
     }
 
-    setState((s) => ({
-      canvases: {
-        ...s.canvases,
-        [canvasId]: createReadyCanvas(success),
-      },
-    }));
+    setState((s) => {
+      const { canvas, pageId } = createReadyCanvas(success);
+      const { canvasToResults, resultsById } = s.searchResults.indexes;
+      const indexes = createCanvasIndexes(
+        canvas.annotations,
+        pageId,
+        canvasToResults[canvasId]?.map((id) => resultsById[id]),
+      );
+      return {
+        canvases: { ...s.canvases, [canvasId]: canvas },
+        canvasIndexes: { ...s.canvasIndexes, [canvasId]: indexes },
+      };
+    });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
     setState((s) => ({
@@ -250,18 +244,12 @@ export function useLoadCanvas() {
 
 const emptyAnnotations = {};
 
-export function useAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
+export function useCanvasAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
   return useDocumentStore((s) => {
     const canvas = s.canvases[canvasId];
     const annotations = canvas?.annotations;
     return annotations ?? emptyAnnotations;
   });
-}
-
-export function useCanvasIndexes(canvasId: CanvasId): AnnotationIndexes {
-  return useDocumentStore(
-    (s) => s.canvases[canvasId]?.indexes ?? emptyAnnotationIndex,
-  );
 }
 
 export function usePartOf(canvasId: CanvasId): PartOf | null {

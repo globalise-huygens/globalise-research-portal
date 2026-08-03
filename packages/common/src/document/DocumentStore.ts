@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import type { EntityHighlightSlice } from './EntityHighlightSlice';
 import type { LayoutElementsSlice } from './LayoutElementsSlice';
 import type { ManifestViewerSlice } from './ManifestViewerSlice';
+import type { CanvasIndexesSlice } from './CanvasIndexesSlice';
+import type { SearchResultSlice } from './SearchResultsSlice';
 import type { SelectionSlice } from './SelectionSlice';
 import type { TocSlice } from './TocSlice';
 import type { MetadataSlice } from './ManifestMetadataSlice.ts';
@@ -13,6 +15,8 @@ export type DocumentState =
   & EntityHighlightSlice
   & LayoutElementsSlice
   & ManifestViewerSlice
+  & CanvasIndexesSlice
+  & SearchResultSlice
   & SelectionSlice
   & MetadataSlice
   & TocSlice;
@@ -27,6 +31,18 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
 const defaultSelectionSlice: SelectionSlice = {
   hoveredId: null,
   clickedId: null,
+};
+
+const defaultSearchResultSlice: SearchResultSlice = {
+  searchResults: {
+    manifestId: null,
+    results: [],
+    indexes: { canvasToResults: {}, resultsById: {} },
+  },
+};
+
+const defaultCanvasIndexesSlice: CanvasIndexesSlice = {
+  canvasIndexes: {},
 };
 
 const defaultLayoutElementsSlice: LayoutElementsSlice = {
@@ -49,6 +65,8 @@ export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultEntityHighlightSlice,
   ...defaultLayoutElementsSlice,
   ...defaultManifestViewerSlice,
+  ...defaultCanvasIndexesSlice,
+  ...defaultSearchResultSlice,
   ...defaultSelectionSlice,
   ...defaultMetadataSlice,
   ...defaultTocSlice,

@@ -1,4 +1,10 @@
-import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
+import {
+  clearSearchResults,
+  getSearchResult,
+  setSearchResults,
+  setSelectedCanvas,
+  useDocumentStore,
+} from '@globalise/common/document';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestCanvasNavigation,
@@ -6,6 +12,7 @@ import {
   ManifestDropdown,
   ManifestFacsimileViewer,
   ManifestTranscriptionViewer,
+  SearchResultDropdown,
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
@@ -13,6 +20,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
+import { dummySearchResults } from './dummySearchResults.ts';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -45,6 +53,34 @@ export function ManifestPage() {
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
+    });
+  }
+
+  useEffect(loadDummySearchResults, [manifestUrl]);
+
+  function loadDummySearchResults() {
+    if (dummySearchResults.manifestId !== manifestUrl) {
+      clearSearchResults();
+      return;
+    }
+    setSearchResults(
+      dummySearchResults.manifestId,
+      dummySearchResults.results,
+    );
+  }
+
+  useEffect(logClickedSearchResult, []);
+
+  function logClickedSearchResult() {
+    return useDocumentStore.subscribe((state, prev) => {
+      const { clickedId } = state;
+      if (!clickedId || clickedId === prev.clickedId) {
+        return;
+      }
+      const result = getSearchResult(state, clickedId);
+      if (result) {
+        console.log('Clicked search result:', result.body.id, result);
+      }
     });
   }
 
@@ -93,11 +129,14 @@ export function ManifestPage() {
         <ManifestViewer
           onClose={() => void navigate({ to: '/' })}
           topLeft={
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
+            <>
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+              <SearchResultDropdown />
+            </>
           }
           scan={
             <ManifestFacsimileViewer

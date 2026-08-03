@@ -8,6 +8,7 @@
     --diplomatic-muted: var(--color-neutral-600, #666666);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
     --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
+    --search-result-fill: var(--color-brand-mint, #7fd8a4);
 
     color: var(--diplomatic-text);
 
@@ -27,6 +28,14 @@
         box-decoration-break: clone;
         color: var(--diplomatic-text);
         padding: 0 0.08em;
+    }
+
+    .search-result {
+        background: color-mix(in srgb, var(--search-result-fill) 45%, transparent);
+
+        &.selected {
+            background: var(--search-result-fill);
+        }
     }
 
     .entity.selected,
