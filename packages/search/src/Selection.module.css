@@ -33,16 +33,14 @@
 
         .facet {
             display: flex;
-            min-height: var(--s24, 24px);
             align-items: center;
             gap: var(--s8, 8px);
-            border: 1px solid rgb(255 255 255 / 0.3);
-            background: var(--color-neutral-800, #363636);
+            background: #616161;
             color: var(--color-brand-white, #fff);
-            padding-inline: var(--s8, 8px) var(--s4, 4px);
+            padding: var(--s4, 4px) var(--s4, 4px) var(--s4, 4px) var(--s8, 8px);
 
             .name {
-                color: var(--color-neutral-300, #b3b3b3);
+                color: inherit;
                 font-weight: 500;
             }
 
@@ -53,7 +51,7 @@
                 align-items: center;
                 justify-content: center;
                 background: none;
-                color: var(--color-neutral-300, #b3b3b3);
+                color: inherit;
                 transition:
                     background-color 75ms ease-out,
                     color 75ms ease-out;
