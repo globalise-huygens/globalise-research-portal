@@ -1,7 +1,11 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
+  type EntityClassificationId,
+  hasEntityClassification,
   Id,
+  isEntity,
+  isWord,
 } from '@globalise/common/annotation';
 import {
   setHovered,
@@ -9,7 +13,6 @@ import {
   useEntityHighlightClassifications,
 } from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
-import { findHoverAnnotation } from './findHoverAnnotation';
 import { NestedSegment } from './NestedSegment';
 
 type TextProps = {
@@ -69,4 +72,16 @@ export function SegmentedText(
       );
     })}
   </>;
+}
+
+function findHoverAnnotation(
+  annotations: Annotation[],
+  highlightedClassifications: ReadonlySet<EntityClassificationId>,
+): Annotation | undefined {
+  const entityAnnotation = annotations.find((annotation) =>
+    isEntity(annotation) &&
+    hasEntityClassification(annotation, highlightedClassifications),
+  );
+
+  return entityAnnotation ?? annotations.find(isWord);
 }
