@@ -1,16 +1,25 @@
 .facet {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
     width: 100%;
-    margin-bottom: var(--s32, 32px);
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-neutral-900, #262626);
 
     .header {
         display: flex;
         width: 100%;
+        height: var(--s64, 64px);
+        min-height: var(--s64, 64px);
+        flex-shrink: 0;
         align-items: center;
         justify-content: space-between;
-        min-height: var(--s48, 48px);
-        gap: var(--s12, 12px);
+        gap: var(--s16, 16px);
         border-bottom: 1px solid rgb(255 255 255 / 0.1);
         background: var(--color-neutral-900, #262626);
+        padding-inline: var(--s24, 24px);
         transition: background-color 75ms ease-out;
 
         &:hover,
@@ -18,7 +27,8 @@
             background: rgb(255 255 255 / 0.08);
         }
 
-        &:focus-visible {
+        &:focus-visible,
+        &[data-focus-visible] {
             outline: none;
             background: rgb(255 255 255 / 0.06);
             box-shadow: inset 3px 0 0 var(--color-neutral-500, #808080);
@@ -27,16 +37,16 @@
         .label {
             min-width: 0;
             color: var(--color-brand-white, #fff);
-            font-family: var(--font-serif, "Noto Serif", serif);
-            font-size: var(--text-lg, 1.125rem);
-            font-weight: 500;
-            letter-spacing: -0.03em;
-            line-height: 1.25rem;
+            font-family: var(--font-sans, "Noto Sans", sans-serif);
+            font-size: var(--text-xl, 1.25rem);
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: var(--s28, 28px);
         }
 
         > svg {
-            width: var(--s16, 16px);
-            height: var(--s16, 16px);
+            width: var(--s20, 20px);
+            height: var(--s20, 20px);
             display: flex;
             flex-shrink: 0;
             fill: currentColor;
@@ -50,12 +60,31 @@
     }
 
     .body {
+        min-height: 0;
         height: auto;
-        overflow: clip;
-        padding-top: var(--s12, 12px);
+        flex: 1 1 0%;
+        overflow: hidden auto;
+        border-bottom: 1px solid rgb(255 255 255 / 0.1);
+        background: var(--color-neutral-800, #363636);
+        padding:
+            var(--s12, 12px)
+            var(--s24, 24px)
+            var(--s24, 24px);
+        scrollbar-color: var(--color-neutral-600, #666) transparent;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
 
         @media (prefers-reduced-motion: no-preference) {
             transition: height 150ms ease;
+        }
+    }
+
+    @media (width < 48rem) {
+        height: auto;
+
+        .body {
+            max-height: min(24rem, 45dvh);
+            flex-basis: auto;
         }
     }
 }
