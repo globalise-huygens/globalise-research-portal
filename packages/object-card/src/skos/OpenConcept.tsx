@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { loadConcept } from './skos';
+import { loadConcept } from './';
 import './OpenConcept.css';
 
 export function OpenConcept() {

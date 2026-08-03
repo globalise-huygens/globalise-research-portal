@@ -13,14 +13,27 @@ import {
   Separator as AriaSeparator,
 } from 'react-aria-components';
 
-export type ObjectCardProps = {
+export type ObjectCardProps = React.HTMLAttributes<HTMLElement>;
+
+const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
+  ({ className, ...props }, ref) => (
+    <section
+      ref={ref}
+      className={cn('object-card', className)}
+      {...props}
+    />
+  ),
+);
+ObjectCard.displayName = 'ObjectCard';
+
+export type ObjectCardDialogProps = {
   className?: string;
 } & Omit<
   AriaDialogProps,
   'className' | 'style'
 >;
 
-const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
+const ObjectCardDialog = React.forwardRef<HTMLElement, ObjectCardDialogProps>(
   ({ className, ...props }, ref) => (
     <AriaDialog
       ref={ref}
@@ -29,7 +42,7 @@ const ObjectCard = React.forwardRef<HTMLElement, ObjectCardProps>(
     />
   ),
 );
-ObjectCard.displayName = 'ObjectCard';
+ObjectCardDialog.displayName = 'DialogObjectCard';
 
 export type ObjectCardTitleProps =
   {}
@@ -357,6 +370,7 @@ const ObjectCardAction = React.forwardRef<
 ObjectCardAction.displayName = 'ObjectCardAction';
 
 export {
+  ObjectCardDialog,
   ObjectCard,
   ObjectCardAction,
   objectCardActionVariants,

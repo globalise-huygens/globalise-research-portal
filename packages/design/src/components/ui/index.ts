@@ -96,6 +96,7 @@ export { ObjectCardOverlay } from './ObjectCardOverlay';
 export type { ObjectCardOverlayProps } from './ObjectCardOverlay';
 
 export {
+  ObjectCardDialog,
   ObjectCard,
   ObjectCardAction,
   objectCardActionVariants,
@@ -114,6 +115,7 @@ export {
   ObjectCardTitle,
 } from './ObjectCard';
 export type {
+  ObjectCardDialogProps,
   ObjectCardActionProps,
   ObjectCardBodyProps,
   ObjectCardExternalLinkProps,

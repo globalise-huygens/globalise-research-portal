@@ -1,6 +1,6 @@
 import { SkosConcept } from './SkosModel.ts';
 
-export type ConceptState = {
+export type SkosConceptState = {
   uri: string | null;
   concept: SkosConcept | null;
   isLoading: boolean;
@@ -8,7 +8,7 @@ export type ConceptState = {
   error: string | null;
 };
 
-export const emptyConceptState: ConceptState = {
+export const emptySkosConceptState: SkosConceptState = {
   uri: null,
   concept: null,
   isLoading: false,
