@@ -1,7 +1,7 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  hasEntityClassification,
+  getEntityClassificationId,
   Id,
   isEntity,
   isWord,
@@ -9,7 +9,7 @@ import {
 import {
   setHovered,
   toggleClicked,
-  useEntityHighlightClassifications,
+  useEntityHighlightCategories,
 } from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
 import { NestedSegment } from './NestedSegment';
@@ -23,20 +23,20 @@ type TextProps = {
 export function SegmentedText(
   { canvasId, blockId, segments }: TextProps,
 ) {
-  const highlightedEntityClassifications =
-    useEntityHighlightClassifications();
+  const highlightedEntityCategories = useEntityHighlightCategories();
 
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoveredAnnotation = segment.annotations.find((annotation) =>
-        isEntity(annotation) &&
-        hasEntityClassification(
-          annotation,
-          highlightedEntityClassifications,
-        ),
-      ) ?? segment.annotations.find(isWord);
-      const annotationId = hoveredAnnotation?.id
+      const hoveredAnnotation = segment.annotations.find((annotation) => {
+        if (!isEntity(annotation)) {
+          return false;
+        }
+        const classificationId = getEntityClassificationId(annotation);
+        return classificationId !== undefined &&
+          highlightedEntityCategories.has(classificationId);
+      }) ?? segment.annotations.find(isWord);
+      const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
 
@@ -45,16 +45,16 @@ export function SegmentedText(
           key={segment.index}
           onMouseEnter={(e) => {
             e.stopPropagation();
-            setHovered(annotationId);
+            setHovered(hoverId);
           }}
           onMouseLeave={(e) => {
             e.stopPropagation();
             setHovered(blockId);
           }}
           onClick={(e) => {
-            if (annotationId && annotationId !== blockId) {
+            if (hoverId && hoverId !== blockId) {
               e.stopPropagation();
-              toggleClicked(annotationId);
+              toggleClicked(hoverId);
             }
           }}
         >

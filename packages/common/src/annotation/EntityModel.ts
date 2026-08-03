@@ -132,15 +132,6 @@ export function getEntityClassificationId(
   return isEntityClassificationId(id) ? id : undefined;
 }
 
-export function hasEntityClassification(
-  annotation: Annotation,
-  classifications: ReadonlySet<EntityClassificationId>,
-) {
-  const classificationId = getEntityClassificationId(annotation);
-  return classificationId !== undefined &&
-    classifications.has(classificationId);
-}
-
 export function getEntityClassifiedAsLabel(entity: Annotation) {
   const body = getPrimaryEntityBody(entity);
   return body.classified_as._label;
@@ -150,6 +141,14 @@ export function isEntityClassificationId(
   value: string,
 ): value is EntityClassificationId {
   return entityClassificationIds.includes(value as EntityClassificationId);
+}
+
+export function isEntityVisualCategory(
+  value: string,
+): value is EntityVisualCategoryClassName {
+  return entityVisualCategories.includes(
+    value as EntityVisualCategoryClassName,
+  );
 }
 
 function getFallbackVisualCategory(

@@ -1,13 +1,13 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
+  getEntityClassificationId,
   getEntityTypeClassName,
   type EntityClassificationId,
   findTextPositionSelector,
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
   getPageText,
-  hasEntityClassification,
   indexAnnotations,
   isEntity,
   toClassName,
@@ -47,7 +47,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
-    highlightedEntityClassifications?: ReadonlySet<EntityClassificationId>;
+    highlightedEntityCategories?: Set<EntityClassificationId>;
     onHover?: (id: Id | null) => void;
     onClick?: (id: Id) => void;
   };
@@ -63,7 +63,7 @@ export function renderDiplomaticView(
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
   };
   const {
-    highlightedEntityClassifications,
+    highlightedEntityCategories,
     showBlocks,
     onHover,
     onClick,
@@ -121,13 +121,16 @@ export function renderDiplomaticView(
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find((a) => isEntity(a));
+      const classificationId = entityAnno
+        ? getEntityClassificationId(entityAnno)
+        : undefined;
       const isHighlightedEntity =
         entityAnno &&
         (
-          !highlightedEntityClassifications ||
-          hasEntityClassification(
-            entityAnno,
-            highlightedEntityClassifications,
+          !highlightedEntityCategories ||
+          (
+            classificationId &&
+            highlightedEntityCategories.has(classificationId)
           )
         );
 

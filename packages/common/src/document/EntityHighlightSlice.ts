@@ -1,29 +1,50 @@
+import { useShallow } from 'zustand/react/shallow';
 import {
-  type Annotation,
+  entityVisualCategories,
   type EntityClassificationId,
-  hasEntityClassification,
+  type EntityVisualCategoryClassName,
+  getEntityClassifiedAsClassName,
+  isEntity,
 } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
 
 export type EntityHighlightSlice = {
-  entityHighlightClassifications: Set<EntityClassificationId>;
+  entityHighlightCategories: Set<EntityClassificationId>;
 };
 
-export function setEntityHighlightClassifications(
-  classifications: ReadonlySet<EntityClassificationId>,
+export function setEntityHighlightCategories(
+  categories: Set<EntityClassificationId>,
 ) {
-  setState({ entityHighlightClassifications: new Set(classifications) });
+  setState({ entityHighlightCategories: new Set(categories) });
 }
 
-export function useEntityHighlightClassifications() {
-  return useDocumentStore((s) => s.entityHighlightClassifications);
+export function useEntityHighlightCategories() {
+  return useDocumentStore((s) => s.entityHighlightCategories);
 }
 
-export function useIsEntityHighlightVisible(annotation: Annotation) {
-  return useDocumentStore((state) =>
-    hasEntityClassification(
-      annotation,
-      state.entityHighlightClassifications,
-    ),
+export function useIsEntityHighlightCategoryVisible(
+  classificationId?: EntityClassificationId,
+) {
+  return useDocumentStore((s) =>
+    classificationId !== undefined &&
+    s.entityHighlightCategories.has(classificationId),
   );
+}
+
+export function useEntityHighlightCounts() {
+  return useDocumentStore(useShallow((s) => {
+    const counts = Object.fromEntries(
+      entityVisualCategories.map((category) => [category, 0]),
+    ) as Record<EntityVisualCategoryClassName, number>;
+
+    for (const canvas of Object.values(s.canvases)) {
+      for (const annotation of Object.values(canvas.annotations ?? {})) {
+        if (isEntity(annotation)) {
+          counts[getEntityClassifiedAsClassName(annotation)] += 1;
+        }
+      }
+    }
+
+    return counts;
+  }));
 }

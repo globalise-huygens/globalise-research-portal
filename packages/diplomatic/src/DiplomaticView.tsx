@@ -25,7 +25,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
-  highlightedEntityClassifications?: ReadonlySet<EntityClassificationId>;
+  highlightedEntityCategories?: Set<EntityClassificationId>;
   selected?: Id[];
   style?: React.CSSProperties;
 };
@@ -38,7 +38,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     fit,
     showBlocks,
     showScanMargin,
-    highlightedEntityClassifications,
+    highlightedEntityCategories,
     selected = [],
     style,
   } = props;
@@ -72,7 +72,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     page,
     fit,
     showBlocks,
-    highlightedEntityClassifications,
+    highlightedEntityCategories,
     width,
   ]);
   function createDiplomaticView() {
@@ -86,7 +86,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       fit,
       showBlocks,
       showScanMargin,
-      highlightedEntityClassifications,
+      highlightedEntityCategories,
       onHover: setHovered,
       onClick: toggleClicked,
     });

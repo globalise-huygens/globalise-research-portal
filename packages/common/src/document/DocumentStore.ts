@@ -34,7 +34,7 @@ const defaultLayoutElementsSlice: LayoutElementsSlice = {
 };
 
 const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightClassifications: new Set(entityClassificationIds),
+  entityHighlightCategories: new Set(entityClassificationIds),
 };
 
 const defaultMetadataSlice = {

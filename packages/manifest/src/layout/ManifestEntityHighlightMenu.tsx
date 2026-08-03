@@ -4,8 +4,8 @@ import {
   type EntityClassificationId,
 } from '@globalise/common/annotation';
 import {
-  setEntityHighlightClassifications,
-  useEntityHighlightClassifications,
+  setEntityHighlightCategories,
+  useEntityHighlightCategories,
 } from '@globalise/common/document';
 import {
   IconEntities,
@@ -119,15 +119,15 @@ const entityCategories: EntityHighlightCategory[] =
   });
 
 export function ManifestEntityHighlightMenu() {
-  const selectedClassifications = useEntityHighlightClassifications();
+  const selectedCategories = useEntityHighlightCategories();
   const selectedKeys = React.useMemo(
-    () => new Set<string>(selectedClassifications),
-    [selectedClassifications],
+    () => new Set<string>(selectedCategories),
+    [selectedCategories],
   );
 
   const handleSelectedKeysChange = React.useCallback(
     (update: React.SetStateAction<Set<string>>) => {
-      const current = new Set<string>(selectedClassifications);
+      const current = new Set<string>(selectedCategories);
       const updated = typeof update === 'function' ? update(current) : update;
       const next = new Set<EntityClassificationId>();
 
@@ -137,9 +137,9 @@ export function ManifestEntityHighlightMenu() {
         }
       }
 
-      setEntityHighlightClassifications(next);
+      setEntityHighlightCategories(next);
     },
-    [selectedClassifications],
+    [selectedCategories],
   );
 
   return (
