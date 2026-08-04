@@ -1,16 +1,16 @@
 import { create } from 'zustand';
-import type { ConceptSlice } from './ConceptSlice.ts';
-import type { SchemesSlice } from './SchemesSlice.ts';
-import { emptyConceptState } from './ConceptState.ts';
-import { emptySchemesState } from './SchemesState.ts';
+import type { SkosConceptSlice } from './SkosConceptSlice.ts';
+import type { SkosSchemesSlice } from './SkosSchemesSlice.ts';
+import { emptySkosConceptState } from './SkosConceptState.ts';
+import { emptySkosSchemesState } from './SkosSchemesState.ts';
 
 export type ObjectCardState =
-  & ConceptSlice
-  & SchemesSlice;
+  & SkosConceptSlice
+  & SkosSchemesSlice;
 
 export const useObjectCardStore = create<ObjectCardState>(() => ({
-  conceptState: { ...emptyConceptState },
-  schemeState: { ...emptySchemesState },
+  skosConceptState: { ...emptySkosConceptState },
+  skosSchemesState: { ...emptySkosSchemesState },
 }));
 
 export const setState = useObjectCardStore.setState;

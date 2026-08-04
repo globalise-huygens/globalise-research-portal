@@ -209,6 +209,7 @@
     .panel {
       display: flex;
       width: 100%;
+      box-sizing: border-box;
       min-height: auto;
       flex-direction: column;
       overflow: visible;

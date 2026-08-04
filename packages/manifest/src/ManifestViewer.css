@@ -4,8 +4,8 @@
   --manifest-sidebar-expanded-width: clamp(17rem, var(--sidebar-width), 22rem);
   --manifest-sidebar-collapsed-width: var(--rail);
   --manifest-sidebar-width: var(--manifest-sidebar-expanded-width);
-  --manifest-top-bar-height: var(--s56);
-  --manifest-bottom-bar-height: var(--s56);
+  --manifest-top-bar-height: var(--s48);
+  --manifest-bottom-bar-height: var(--s48);
 
   box-sizing: border-box;
   display: grid;
@@ -448,7 +448,7 @@
 .manifest-viewer .rail-button {
   display: inline-flex;
   width: 100%;
-  height: var(--s64);
+  height: var(--manifest-top-bar-height);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -486,7 +486,7 @@
 .manifest-viewer .sidebar-button {
   display: flex;
   width: 100%;
-  height: var(--s64);
+  height: var(--manifest-top-bar-height);
   align-items: center;
   justify-content: space-between;
   gap: var(--s16);
@@ -496,7 +496,7 @@
   background: var(--color-neutral-900);
   box-shadow: none;
   outline: none;
-  padding-inline: var(--s24);
+  padding-inline: var(--s16);
   font-family: var(--font-sans);
   color: var(--color-brand-white);
 }
@@ -520,28 +520,21 @@
 
 .manifest-viewer .sidebar-button .label {
   color: var(--color-brand-white);
-  font-size: var(--text-xl);
+  font-size: var(--text-base);
   font-weight: 400;
-  line-height: var(--s28);
-}
-
-.manifest-viewer .sidebar-button .count {
-  color: var(--color-neutral-500);
-  font-size: var(--text-xl);
-  font-weight: 400;
-  line-height: var(--s28);
+  line-height: var(--s20);
 }
 
 .manifest-viewer .sidebar-button .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: var(--s28);
-  min-width: var(--s40);
+  height: var(--s24);
+  min-width: var(--s36);
   border: 1px solid var(--color-neutral-500);
   background: var(--color-neutral-700);
   color: var(--color-brand-white);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
 .manifest-viewer .sidebar-panel {

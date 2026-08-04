@@ -1,6 +1,6 @@
 import {
   loadConcept,
-  ObjectCard,
+  ConceptCard,
   SchemeList,
   useObjectCardStore,
 } from '@globalise/object-card';
@@ -35,8 +35,8 @@ export function ObjectCardPage() {
   useEffect(syncConceptParam, []);
   function syncConceptParam() {
     return useObjectCardStore.subscribe((state, prev) => {
-      const { uri } = state.conceptState;
-      if (!uri || uri === prev.conceptState.uri) {
+      const { uri } = state.skosConceptState;
+      if (!uri || uri === prev.skosConceptState.uri) {
         return;
       }
       setConceptParam(uri, 'push');
@@ -47,7 +47,7 @@ export function ObjectCardPage() {
     <>
       <SchemeList />
       <hr />
-      <ObjectCard />
+      <ConceptCard />
     </>
   );
 }

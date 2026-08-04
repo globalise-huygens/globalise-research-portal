@@ -1,6 +1,7 @@
 import { useShallow } from 'zustand/react/shallow';
 import {
   entityVisualCategories,
+  type EntityClassificationId,
   type EntityVisualCategoryClassName,
   getEntityClassifiedAsClassName,
   isEntity,
@@ -8,11 +9,11 @@ import {
 import { setState, useDocumentStore } from './DocumentStore';
 
 export type EntityHighlightSlice = {
-  entityHighlightCategories: Set<EntityVisualCategoryClassName>;
+  entityHighlightCategories: Set<EntityClassificationId>;
 };
 
 export function setEntityHighlightCategories(
-  categories: Set<EntityVisualCategoryClassName>,
+  categories: Set<EntityClassificationId>,
 ) {
   setState({ entityHighlightCategories: new Set(categories) });
 }
@@ -22,9 +23,12 @@ export function useEntityHighlightCategories() {
 }
 
 export function useIsEntityHighlightCategoryVisible(
-  category: EntityVisualCategoryClassName,
+  classificationId?: EntityClassificationId,
 ) {
-  return useDocumentStore((s) => s.entityHighlightCategories.has(category));
+  return useDocumentStore((s) =>
+    classificationId !== undefined &&
+    s.entityHighlightCategories.has(classificationId),
+  );
 }
 
 export function useEntityHighlightCounts() {

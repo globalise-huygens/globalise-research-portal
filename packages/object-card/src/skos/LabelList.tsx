@@ -1,22 +1,28 @@
+import {
+  ObjectCardProperty,
+  ObjectCardPropertyList,
+  ObjectCardSection,
+} from '@globalise/design';
 import { LangValue } from './SkosModel.ts';
-import { LabelValue } from './LabelValue.tsx';
+import { HtmlValue } from './HtmlValue.tsx';
 
 type LabelListProps = { title: string; values?: LangValue[] };
 
 export function LabelList({ title, values }: LabelListProps) {
   if (!values?.length) {
-    return <h2 title="No data" className="inactive">{title}</h2>;
+    return <ObjectCardSection title={title} className="inactive"/>;
   }
   return (
-    <>
-      <h2>{title}</h2>
-      <ul>
+    <ObjectCardSection title={title}>
+      <ObjectCardPropertyList>
         {values.map((value, i) => (
-          <li key={i}>
-            <LabelValue value={value}/>
-          </li>
+          <ObjectCardProperty
+            key={i}
+            label={value['@language']}
+            value={<HtmlValue value={value['@value']}/>}
+          />
         ))}
-      </ul>
-    </>
+      </ObjectCardPropertyList>
+    </ObjectCardSection>
   );
 }
