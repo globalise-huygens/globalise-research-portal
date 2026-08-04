@@ -1,7 +1,12 @@
-import { Annotation, findSourceLabel } from '@globalise/common/annotation';
+import {
+  Annotation,
+  findSourceLabel,
+  findSvgPath,
+  parseSvgPath,
+} from '@globalise/common/annotation';
 import { Point } from '@knaw-huc/original-layout';
 import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
-import { createPath } from '@knaw-huc/original-layout';
+import { createPath, createPoints, orThrow } from '@knaw-huc/original-layout';
 import { Scale } from '@knaw-huc/original-layout';
 import { select } from 'd3-selection';
 import { px } from '@knaw-huc/original-layout';
@@ -13,6 +18,8 @@ type BlocksConfig = {
   scale: Scale;
   offset: Offset;
 };
+
+let nextTextMaskId = 0;
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
@@ -31,6 +38,38 @@ export function renderBlocks(
   const words = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
+  const textMaskId = `diplomatic-text-mask-${nextTextMaskId++}`;
+  const $textMask = $svg
+    .append('defs')
+    .append('mask')
+    .attr('id', textMaskId)
+    .attr('maskUnits', 'userSpaceOnUse')
+    .attr('maskContentUnits', 'userSpaceOnUse')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', width - offset.left)
+    .attr('height', height - offset.top);
+
+  $textMask
+    .append('rect')
+    .attr('width', width - offset.left)
+    .attr('height', height - offset.top)
+    .attr('fill', 'white');
+
+  const textMaskPath = words.map((word) => {
+    const path = findSvgPath(word) ?? orThrow('No word path');
+    const points = scale.path(createPoints(parseSvgPath(path)));
+    return `M${createPath(points)}Z`;
+  }).join(' ');
+
+  $textMask
+    .append('path')
+    .attr('d', textMaskPath)
+    .attr('fill', 'black')
+    .attr('stroke', 'black')
+    .attr('stroke-width', 4)
+    .attr('vector-effect', 'non-scaling-stroke');
+
   const blocks = Object.fromEntries(
     Object.entries(annotations).filter(([, a]) => a.textGranularity === 'block'),
   );
@@ -55,6 +94,7 @@ export function renderBlocks(
       $highlight
         .append('polygon')
         .attr('class', 'layout-element-shape')
+        .attr('mask', `url(#${textMaskId})`)
         .attr('points', createPath(corners))
         .attr('stroke-linejoin', 'miter');
 
