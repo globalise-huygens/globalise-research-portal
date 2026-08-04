@@ -1,10 +1,11 @@
+import '@globalise/design/styles.css';
+import './ObjectCardPage.css';
 import {
-  loadConcept,
   ConceptCard,
-  SchemeList,
+  loadConcept,
   useObjectCardStore,
 } from '@globalise/object-card';
-import '@globalise/design/styles.css';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 const DEFAULT_URI =
@@ -14,6 +15,7 @@ const DEFAULT_URI =
 const CONCEPT = 'concept';
 
 export function ObjectCardPage() {
+  const navigate = useNavigate();
 
   useEffect(initLoadObjectCard, []);
   function initLoadObjectCard() {
@@ -21,7 +23,7 @@ export function ObjectCardPage() {
     setConceptParam(uri, 'replace');
     loadConcept(uri).catch(console.error);
   }
-  
+
   useEffect(handleHistoryNav, []);
   function handleHistoryNav() {
     const onPopState = () => {
@@ -31,7 +33,7 @@ export function ObjectCardPage() {
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }
-  
+
   useEffect(syncConceptParam, []);
   function syncConceptParam() {
     return useObjectCardStore.subscribe((state, prev) => {
@@ -44,11 +46,9 @@ export function ObjectCardPage() {
   }
 
   return (
-    <>
-      <SchemeList />
-      <hr />
-      <ConceptCard />
-    </>
+    <main className="object-card-page">
+      <ConceptCard onClose={() => void navigate({ to: '/' })}/>
+    </main>
   );
 }
 
