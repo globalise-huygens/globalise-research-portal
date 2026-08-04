@@ -131,10 +131,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   },
   [isScrolling, words, selectedIds]);
 
-  const visibleBlocks = useMemo(
-    () => showLayoutElements ? blocks : [],
-    [blocks, showLayoutElements],
-  );
+  const visibleBlocks = showLayoutElements ? blocks : [];
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
