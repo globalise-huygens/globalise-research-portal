@@ -7,9 +7,11 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   return (
-    <>
+    <div className="site-shell">
       <SiteNavbar />
-      <Outlet />
-    </>
+      <div className="site-content">
+        <Outlet />
+      </div>
+    </div>
   );
 }
