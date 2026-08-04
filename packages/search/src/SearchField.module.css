@@ -1,0 +1,11 @@
+.search-field {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-block: 0.25rem;
+    padding-inline: 0.75rem;
+
+    .input-container {
+        flex-grow: 1;
+    }
+}

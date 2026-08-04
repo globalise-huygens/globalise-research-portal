@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@knaw-huc/panoptes-react": "^0.0.10",
+    "@knaw-huc/searchfield": "^0.0.2",
     "msw": "^2.15.0"
   },
   "peerDependencies": {

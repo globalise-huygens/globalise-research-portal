@@ -1,0 +1,1657 @@
+[
+    {
+        "id": "https://globalise.example.com/polity/Polity_10",
+        "type": "Polity",
+        "_label": "Siam",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_100",
+        "type": "Polity",
+        "_label": "Klungkung",
+        "alternative_labels": [
+            "Kalungkung",
+            "Kalungkung"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_101",
+        "type": "Polity",
+        "_label": "Karangasem",
+        "alternative_labels": [
+            "Karang-asem"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_103",
+        "type": "Polity",
+        "_label": "Dompo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_104",
+        "type": "Polity",
+        "_label": "Tambora",
+        "alternative_labels": [
+            "Tambura"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_105",
+        "type": "Polity",
+        "_label": "Bima",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_106",
+        "type": "Polity",
+        "_label": "Pekat",
+        "alternative_labels": [
+            "Papekat"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_108",
+        "type": "Polity",
+        "_label": "Asahan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_11",
+        "type": "Polity",
+        "_label": "Qing",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_110",
+        "type": "Polity",
+        "_label": "Riau (Yam Tuan Muda Line)",
+        "alternative_labels": [
+            "Riau"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_111",
+        "type": "Polity",
+        "_label": "Siak",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_112",
+        "type": "Polity",
+        "_label": "Jambi",
+        "alternative_labels": [
+            "Jambij",
+            "Djambi"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_114",
+        "type": "Polity",
+        "_label": "Selangor",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_115",
+        "type": "Polity",
+        "_label": "Trengganu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_116",
+        "type": "Polity",
+        "_label": "Cooch-Behar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_117",
+        "type": "Polity",
+        "_label": "Laos",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_118",
+        "type": "Polity",
+        "_label": "Sulu",
+        "alternative_labels": [
+            "Jolo Island"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_119",
+        "type": "Polity",
+        "_label": "Estado da India",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_12",
+        "type": "Polity",
+        "_label": "Surabaya",
+        "alternative_labels": [
+            "Surabaja"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_120",
+        "type": "Polity",
+        "_label": "Banjarmasin",
+        "alternative_labels": [
+            "Banjar Masin"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_122",
+        "type": "Polity",
+        "_label": "Pontianak",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_123",
+        "type": "Polity",
+        "_label": "Sambas",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_124",
+        "type": "Polity",
+        "_label": "Burma",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_125",
+        "type": "Polity",
+        "_label": "Arakan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_126",
+        "type": "Polity",
+        "_label": "Compagnie fran\u00e7aise pour le commerce des Indes orientales",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_129",
+        "type": "Polity",
+        "_label": "Rembau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_132",
+        "type": "Polity",
+        "_label": "Pasir",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_133",
+        "type": "Polity",
+        "_label": "Jailolo",
+        "alternative_labels": [
+            "Gilolo"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_134",
+        "type": "Polity",
+        "_label": "Mysore",
+        "alternative_labels": [
+            "Mais\u016br"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_135",
+        "type": "Polity",
+        "_label": "Madurai",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_137",
+        "type": "Polity",
+        "_label": "Brunei",
+        "alternative_labels": [
+            "Brunei Darussalam"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_138",
+        "type": "Polity",
+        "_label": "Ethiopia",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_139",
+        "type": "Polity",
+        "_label": "Inderagiri",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_140",
+        "type": "Polity",
+        "_label": "Mempawah",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_141",
+        "type": "Polity",
+        "_label": "Deli",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_142",
+        "type": "Polity",
+        "_label": "Madura (West)",
+        "alternative_labels": [
+            "Aros Baya"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_143",
+        "type": "Polity",
+        "_label": "Mangili",
+        "alternative_labels": [
+            "Menyili"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_144",
+        "type": "Polity",
+        "_label": "Melolo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_145",
+        "type": "Polity",
+        "_label": "Menia",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_146",
+        "type": "Polity",
+        "_label": "Oepao",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_147",
+        "type": "Polity",
+        "_label": "Adonara",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_148",
+        "type": "Polity",
+        "_label": "Dengka",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_149",
+        "type": "Polity",
+        "_label": "Kupang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_150",
+        "type": "Polity",
+        "_label": "Alitta",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_151",
+        "type": "Polity",
+        "_label": "Alor",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_152",
+        "type": "Polity",
+        "_label": "Amabi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_153",
+        "type": "Polity",
+        "_label": "Amakono",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_154",
+        "type": "Polity",
+        "_label": "Amanatun",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_155",
+        "type": "Polity",
+        "_label": "Amanuban",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_156",
+        "type": "Polity",
+        "_label": "Amarasi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_157",
+        "type": "Polity",
+        "_label": "Amfoan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_158",
+        "type": "Polity",
+        "_label": "Ba\u00e4",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_159",
+        "type": "Polity",
+        "_label": "Bacan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_160",
+        "type": "Polity",
+        "_label": "Badung",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_161",
+        "type": "Polity",
+        "_label": "Bajo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_163",
+        "type": "Polity",
+        "_label": "Balangnipa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_164",
+        "type": "Polity",
+        "_label": "Bali",
+        "alternative_labels": [
+            "Gelgel"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_165",
+        "type": "Polity",
+        "_label": "Banggai",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_166",
+        "type": "Polity",
+        "_label": "Alla",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_167",
+        "type": "Polity",
+        "_label": "Barnusa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_168",
+        "type": "Polity",
+        "_label": "Barru",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_169",
+        "type": "Polity",
+        "_label": "Barus",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_170",
+        "type": "Polity",
+        "_label": "Batulappa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_172",
+        "type": "Polity",
+        "_label": "Beboki",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_173",
+        "type": "Polity",
+        "_label": "Belu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_174",
+        "type": "Polity",
+        "_label": "Berau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_175",
+        "type": "Polity",
+        "_label": "Bilah",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_176",
+        "type": "Polity",
+        "_label": "Bilba",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_177",
+        "type": "Polity",
+        "_label": "Bintauna",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_178",
+        "type": "Polity",
+        "_label": "Binuang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_179",
+        "type": "Polity",
+        "_label": "Bolang-Itang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_18",
+        "type": "Polity",
+        "_label": "Giri",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_180",
+        "type": "Polity",
+        "_label": "Bolang-Mongondow",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_181",
+        "type": "Polity",
+        "_label": "Bolang-Uki",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_183",
+        "type": "Polity",
+        "_label": "Bulungan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_184",
+        "type": "Polity",
+        "_label": "Bungku",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_185",
+        "type": "Polity",
+        "_label": "Buntu Batu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_186",
+        "type": "Polity",
+        "_label": "Buol",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_187",
+        "type": "Polity",
+        "_label": "Cenrana",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_188",
+        "type": "Polity",
+        "_label": "Cibal",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_19",
+        "type": "Polity",
+        "_label": "Balambangan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_190",
+        "type": "Polity",
+        "_label": "Donggala (Banawa)",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_191",
+        "type": "Polity",
+        "_label": "Ende",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_192",
+        "type": "Polity",
+        "_label": "Enrekang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_193",
+        "type": "Polity",
+        "_label": "Fatuaruin (Liurai Wehali)",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_194",
+        "type": "Polity",
+        "_label": "Fatuleu - Takaip",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_195",
+        "type": "Polity",
+        "_label": "Fialaran (Bauho)",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_196",
+        "type": "Polity",
+        "_label": "Funai",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_197",
+        "type": "Polity",
+        "_label": "Gianyar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_198",
+        "type": "Polity",
+        "_label": "Gorontalo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_199",
+        "type": "Polity",
+        "_label": "Hitu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_2",
+        "type": "Polity",
+        "_label": "Mughal",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_201",
+        "type": "Polity",
+        "_label": "Indrapura",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_202",
+        "type": "Polity",
+        "_label": "Insana",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_203",
+        "type": "Polity",
+        "_label": "Jembrana",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_204",
+        "type": "Polity",
+        "_label": "Jenilu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_205",
+        "type": "Polity",
+        "_label": "Kaidipang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_206",
+        "type": "Polity",
+        "_label": "Kambera",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_207",
+        "type": "Polity",
+        "_label": "Kanatang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_208",
+        "type": "Polity",
+        "_label": "Kapunduk",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_209",
+        "type": "Polity",
+        "_label": "Kendahe",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_210",
+        "type": "Polity",
+        "_label": "Kisar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_211",
+        "type": "Polity",
+        "_label": "Kolana",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_212",
+        "type": "Polity",
+        "_label": "Korbaffo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_213",
+        "type": "Polity",
+        "_label": "Kotapinang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_214",
+        "type": "Polity",
+        "_label": "Kotawaringin",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_215",
+        "type": "Polity",
+        "_label": "Kubu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_216",
+        "type": "Polity",
+        "_label": "Kulawi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_217",
+        "type": "Polity",
+        "_label": "Laikang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_218",
+        "type": "Polity",
+        "_label": "Laiwui",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_219",
+        "type": "Polity",
+        "_label": "Lakekun",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_220",
+        "type": "Polity",
+        "_label": "Lamahala",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_221",
+        "type": "Polity",
+        "_label": "Lamakera",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_222",
+        "type": "Polity",
+        "_label": "Lampung",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_223",
+        "type": "Polity",
+        "_label": "Landu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_224",
+        "type": "Polity",
+        "_label": "Langkat",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_225",
+        "type": "Polity",
+        "_label": "Larantuka",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_226",
+        "type": "Polity",
+        "_label": "Lawayong",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_227",
+        "type": "Polity",
+        "_label": "Lewa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_228",
+        "type": "Polity",
+        "_label": "Liae",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_229",
+        "type": "Polity",
+        "_label": "Limbotto",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_23",
+        "type": "Polity",
+        "_label": "Palembang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_230",
+        "type": "Polity",
+        "_label": "Lole",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_231",
+        "type": "Polity",
+        "_label": "Lombok",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_234",
+        "type": "Polity",
+        "_label": "Mamuju",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_235",
+        "type": "Polity",
+        "_label": "Manganitu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_236",
+        "type": "Polity",
+        "_label": "Mangkunegaran",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_237",
+        "type": "Polity",
+        "_label": "Maros",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_238",
+        "type": "Polity",
+        "_label": "Meliau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_239",
+        "type": "Polity",
+        "_label": "Mengwi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_240",
+        "type": "Polity",
+        "_label": "Mesara",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_241",
+        "type": "Polity",
+        "_label": "Minangkabau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_242",
+        "type": "Polity",
+        "_label": "Moko-Moko",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_243",
+        "type": "Polity",
+        "_label": "Mollo",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_244",
+        "type": "Polity",
+        "_label": "Muna",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_245",
+        "type": "Polity",
+        "_label": "Nita",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_246",
+        "type": "Polity",
+        "_label": "Oenale",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_247",
+        "type": "Polity",
+        "_label": "Palu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_248",
+        "type": "Polity",
+        "_label": "Pambauang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_249",
+        "type": "Polity",
+        "_label": "Panei",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_25",
+        "type": "Polity",
+        "_label": "Tuban",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_250",
+        "type": "Polity",
+        "_label": "Parigi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_251",
+        "type": "Polity",
+        "_label": "Pasuruan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_252",
+        "type": "Polity",
+        "_label": "Pegatan and Kusan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_253",
+        "type": "Polity",
+        "_label": "Pelalawan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_254",
+        "type": "Polity",
+        "_label": "Praya",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_255",
+        "type": "Polity",
+        "_label": "Negeri Sembilan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_256",
+        "type": "Polity",
+        "_label": "Ya\u02bfrubid",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_257",
+        "type": "Polity",
+        "_label": "Pahang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_258",
+        "type": "Polity",
+        "_label": "\u0110\u1ea1i Vi\u1ec7t",
+        "alternative_labels": [
+            "Annam"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_259",
+        "type": "Polity",
+        "_label": "Kelantan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_261",
+        "type": "Polity",
+        "_label": "Purba",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_262",
+        "type": "Polity",
+        "_label": "Pureman",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_263",
+        "type": "Polity",
+        "_label": "Raijua",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_264",
+        "type": "Polity",
+        "_label": "Rappang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_265",
+        "type": "Polity",
+        "_label": "Ringgou",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_267",
+        "type": "Polity",
+        "_label": "Sanggar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_268",
+        "type": "Polity",
+        "_label": "Sanggau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_269",
+        "type": "Polity",
+        "_label": "Sanrabone",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_270",
+        "type": "Polity",
+        "_label": "Sawitto",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_271",
+        "type": "Polity",
+        "_label": "Seba-Sawu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_272",
+        "type": "Polity",
+        "_label": "Sekadau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_274",
+        "type": "Polity",
+        "_label": "Siau",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_275",
+        "type": "Polity",
+        "_label": "Sidenreng",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_276",
+        "type": "Polity",
+        "_label": "Sillebar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_277",
+        "type": "Polity",
+        "_label": "Simpang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_278",
+        "type": "Polity",
+        "_label": "Sintang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_279",
+        "type": "Polity",
+        "_label": "Solor",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_28",
+        "type": "Polity",
+        "_label": "Vereenigde Oost Indische Compagnie",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_280",
+        "type": "Polity",
+        "_label": "Sonba'i",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_282",
+        "type": "Polity",
+        "_label": "Sukadana-Matan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_283",
+        "type": "Polity",
+        "_label": "Sukawati-Ubud",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_284",
+        "type": "Polity",
+        "_label": "Sumanep",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_286",
+        "type": "Polity",
+        "_label": "Sungai Lemau-Ulu Bengkulu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_287",
+        "type": "Polity",
+        "_label": "Suppa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_289",
+        "type": "Polity",
+        "_label": "Tabanan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_29",
+        "type": "Polity",
+        "_label": "Cirebon",
+        "alternative_labels": [
+            "Cheribon"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_290",
+        "type": "Polity",
+        "_label": "Tabukan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_291",
+        "type": "Polity",
+        "_label": "Taebenu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_292",
+        "type": "Polity",
+        "_label": "Tagulandang",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_293",
+        "type": "Polity",
+        "_label": "Tahuna",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_294",
+        "type": "Polity",
+        "_label": "Talae",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_298",
+        "type": "Polity",
+        "_label": "Tanah Bumbu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_299",
+        "type": "Polity",
+        "_label": "Termanu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_3",
+        "type": "Polity",
+        "_label": "Ming",
+        "alternative_labels": [
+            "China"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_300",
+        "type": "Polity",
+        "_label": "Terong",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_301",
+        "type": "Polity",
+        "_label": "Thie",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_302",
+        "type": "Polity",
+        "_label": "Timu",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_303",
+        "type": "Polity",
+        "_label": "Trumon",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_304",
+        "type": "Polity",
+        "_label": "Dutch East Indies",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_305",
+        "type": "Polity",
+        "_label": "Vi\u1ec7t Nam",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_31",
+        "type": "Polity",
+        "_label": "Perak",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_32",
+        "type": "Polity",
+        "_label": "Johor",
+        "alternative_labels": [
+            "Johore"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_33",
+        "type": "Polity",
+        "_label": "English East India Company",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_34",
+        "type": "Polity",
+        "_label": "Kedah",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_35",
+        "type": "Polity",
+        "_label": "Patani",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_36",
+        "type": "Polity",
+        "_label": "Cochin China",
+        "alternative_labels": [
+            "Cochin-China",
+            "\u0110\u00e0ng Trong",
+            "Quinam"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_37",
+        "type": "Polity",
+        "_label": "Japan",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_38",
+        "type": "Polity",
+        "_label": "Kannur",
+        "alternative_labels": [
+            "Cannanore",
+            "Cannanur"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_39",
+        "type": "Polity",
+        "_label": "Kochi",
+        "alternative_labels": [
+            "Cochin"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_4",
+        "type": "Polity",
+        "_label": "Safavid",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_40",
+        "type": "Polity",
+        "_label": "Dutch Republic",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_41",
+        "type": "Polity",
+        "_label": "Gowa",
+        "alternative_labels": [
+            "Goa"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_42",
+        "type": "Polity",
+        "_label": "Tallo'",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_43",
+        "type": "Polity",
+        "_label": "Bone",
+        "alternative_labels": [
+            "Boni"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_44",
+        "type": "Polity",
+        "_label": "Wajo",
+        "alternative_labels": [
+            "Wadjo"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_45",
+        "type": "Polity",
+        "_label": "Soppeng",
+        "alternative_labels": [
+            "Sopeng"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_46",
+        "type": "Polity",
+        "_label": "Vijayanagara",
+        "alternative_labels": [
+            "Vidjajanagara"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_47",
+        "type": "Polity",
+        "_label": "Bijapur",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_48",
+        "type": "Polity",
+        "_label": "Ahmednagar",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_49",
+        "type": "Polity",
+        "_label": "Golconda",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_5",
+        "type": "Polity",
+        "_label": "Ottoman",
+        "alternative_labels": [
+            "Turkije"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_50",
+        "type": "Polity",
+        "_label": "Bengal",
+        "alternative_labels": [
+            "Bengalen"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_51",
+        "type": "Polity",
+        "_label": "Awadh",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_52",
+        "type": "Polity",
+        "_label": "Hyderabad",
+        "alternative_labels": [
+            "Haiderabad"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_53",
+        "type": "Polity",
+        "_label": "Maratha",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_54",
+        "type": "Polity",
+        "_label": "Spain",
+        "alternative_labels": [
+            "Spanje"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_55",
+        "type": "Polity",
+        "_label": "Portugal",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_56",
+        "type": "Polity",
+        "_label": "Holy Roman Empire",
+        "alternative_labels": [
+            "Duitsland"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_57",
+        "type": "Polity",
+        "_label": "Sumbawa",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_58",
+        "type": "Polity",
+        "_label": "Tonkin",
+        "alternative_labels": [
+            "Tonquin",
+            "\u0110\u00e0ng Ngo\u00e0i",
+            "\u0110\u00f4ng Kinh"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_6",
+        "type": "Polity",
+        "_label": "Mataram",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_60",
+        "type": "Polity",
+        "_label": "Baroda",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_61",
+        "type": "Polity",
+        "_label": "Bharatpur",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_63",
+        "type": "Polity",
+        "_label": "Bundi",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_64",
+        "type": "Polity",
+        "_label": "Choson",
+        "alternative_labels": [
+            "Joseon"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_66",
+        "type": "Polity",
+        "_label": "Haihaya",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_67",
+        "type": "Polity",
+        "_label": "Jodhpur",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_69",
+        "type": "Polity",
+        "_label": "Durra\u0304ni\u0304",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_7",
+        "type": "Polity",
+        "_label": "Aceh",
+        "alternative_labels": [
+            "Atjeh"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_70",
+        "type": "Polity",
+        "_label": "Yemen",
+        "alternative_labels": [
+            "Jemen"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_71",
+        "type": "Polity",
+        "_label": "Sweden",
+        "alternative_labels": [
+            "Zweden"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_72",
+        "type": "Polity",
+        "_label": "Denmark",
+        "alternative_labels": [
+            "Denemarken"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_73",
+        "type": "Polity",
+        "_label": "France",
+        "alternative_labels": [
+            "Frankrijk"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_74",
+        "type": "Polity",
+        "_label": "\u0100l B\u016b-Sa'\u012bd",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_77",
+        "type": "Polity",
+        "_label": "Bavaria",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_78",
+        "type": "Polity",
+        "_label": "Saxony",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_79",
+        "type": "Polity",
+        "_label": "England",
+        "alternative_labels": [
+            "Engeland",
+            "Great Britain"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_8",
+        "type": "Polity",
+        "_label": "Kandy",
+        "alternative_labels": [
+            "Kandi"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_80",
+        "type": "Polity",
+        "_label": "Thanjavur Nayak",
+        "alternative_labels": [
+            "Thanjavur",
+            "Tanj\u00fcr"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_81",
+        "type": "Polity",
+        "_label": "Maratha Kingdom of Thanjavur",
+        "alternative_labels": [
+            "Tanjore",
+            "Tanj\u00fcr"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_82",
+        "type": "Polity",
+        "_label": "Kutai",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_83",
+        "type": "Polity",
+        "_label": "Landak",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_85",
+        "type": "Polity",
+        "_label": "Saudi Arabia",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_86",
+        "type": "Polity",
+        "_label": "Zand-Iran",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_87",
+        "type": "Polity",
+        "_label": "Qajar-Iran",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_88",
+        "type": "Polity",
+        "_label": "Afsharid-Iran",
+        "alternative_labels": []
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_9",
+        "type": "Polity",
+        "_label": "Banten",
+        "alternative_labels": [
+            "Bantam"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_92",
+        "type": "Polity",
+        "_label": "Buton",
+        "alternative_labels": [
+            "Boeton",
+            "Bouton",
+            "Butung"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_93",
+        "type": "Polity",
+        "_label": "Luwu",
+        "alternative_labels": [
+            "Luwuk"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_94",
+        "type": "Polity",
+        "_label": "Tanete",
+        "alternative_labels": [
+            "Tanette",
+            "Aga-nansia"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_95",
+        "type": "Polity",
+        "_label": "Ternate",
+        "alternative_labels": [
+            "Pulau Ternate"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_96",
+        "type": "Polity",
+        "_label": "Tidore",
+        "alternative_labels": [
+            "Tidor",
+            "Tijdore"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_97",
+        "type": "Polity",
+        "_label": "Yogyakarta",
+        "alternative_labels": [
+            "Djokjakarta",
+            "Jogjakarta"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_98",
+        "type": "Polity",
+        "_label": "Surakarta",
+        "alternative_labels": [
+            "Solo"
+        ]
+    },
+    {
+        "id": "https://globalise.example.com/polity/Polity_99",
+        "type": "Polity",
+        "_label": "Buleleng",
+        "alternative_labels": [
+            "Bul\u00e8l\u00e8ng"
+        ]
+    }
+]
