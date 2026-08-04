@@ -1,18 +1,17 @@
+@import "@globalise/common/layout-elements.css";
+
 .original-layout {
     --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
     --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
-    --diplomatic-structure: var(--color-layout-element-stroke, rgb(18 94 100 / 0.38));
-    --diplomatic-structure-strong: var(--color-layout-element-stroke-strong, #125e64);
-    --diplomatic-structure-fill: var(--color-layout-element-fill, rgb(41 191 204 / 0.08));
-    --diplomatic-structure-fill-strong: var(--color-layout-element-fill-strong, rgb(41 191 204 / 0.13));
-    --diplomatic-structure-text: var(--color-layout-element-text, #125e64);
+    --diplomatic-structure: var(--color-parchment-700, #7e6149);
+    --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
+    --diplomatic-muted: var(--color-neutral-600, #666666);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
     --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
 
     color: var(--diplomatic-text);
-    font-family: var(--font-serif, "Noto Serif", serif);
 
     .segment {
         border-radius: 2px;
@@ -46,56 +45,12 @@
 
     .line-numbers .line-number {
         position: absolute;
-        color: var(--diplomatic-structure-text);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          monospace;
-        font-variant-numeric: tabular-nums;
-        font-weight: 500;
-        letter-spacing: 0;
         line-height: 1;
         text-shadow: 0 1px 1px rgb(255 255 255 / 0.28);
-        transition: color 120ms ease, opacity 120ms ease;
-        user-select: none;
     }
 
     .line-numbers .line-number.is-visible {
-        color: var(--diplomatic-structure-text);
+        color: var(--color-layout-element-text, #125e64);
         font-weight: 700;
-    }
-
-    .blocks .layout-block polygon {
-        fill: transparent;
-        stroke: var(--diplomatic-structure);
-        stroke-width: 1px;
-        transition: fill 100ms ease-out, stroke 100ms ease-out;
-    }
-
-    .blocks .layout-block:hover polygon {
-        fill: var(--diplomatic-structure-fill);
-        stroke: var(--diplomatic-structure-strong);
-    }
-
-    .blocks .layout-block[data-selected="true"] polygon {
-        fill: var(--diplomatic-structure-fill-strong);
-        stroke: var(--diplomatic-structure-strong);
-        stroke-width: 2px;
-    }
-
-    .blocks .layout-block .block-label {
-        fill: var(--diplomatic-structure-text);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          monospace;
-        font-weight: 600;
-        letter-spacing: 0;
-        opacity: 0;
-        paint-order: stroke;
-        stroke: rgb(255 255 255 / 0.38);
-        stroke-width: 2px;
-        transition: opacity 100ms ease-out;
-    }
-
-    .blocks .layout-block:hover .block-label,
-    .blocks .layout-block[data-selected="true"] .block-label {
-        opacity: 0.9;
     }
 }

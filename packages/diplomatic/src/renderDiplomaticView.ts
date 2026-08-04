@@ -57,7 +57,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  $view.classList.add('original-layout');
+  $view.classList.add('original-layout', 'transcription-view');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,

@@ -9,30 +9,15 @@ import { D3El } from '@knaw-huc/original-layout';
 import { createBlockBoundaries } from './createBlockBoundaries.ts';
 import { Offset } from '@knaw-huc/original-layout';
 
-type BlockColors = {
-  text: string;
-  stroke: string;
-  fill: string;
-};
-
 type BlocksConfig = {
   scale: Scale;
   offset: Offset;
-  colors?: BlockColors;
 };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
   $view: HTMLElement,
-  {
-    scale,
-    offset,
-    colors = {
-      text: 'rgba(93, 71, 54, 0.72)',
-      stroke: 'rgba(93, 71, 54, 0.48)',
-      fill: 'rgba(185, 155, 127, 0.08)',
-    },
-  }: BlocksConfig,
+  { scale, offset }: BlocksConfig,
 ) {
   const { width, height } = $view.getBoundingClientRect();
   const $svg = select($view)
@@ -64,27 +49,23 @@ export function renderBlocks(
       const block = blocks[id];
       const label = findSourceLabel(block);
       const $highlight = $svg.append('g')
-        .attr('class', 'layout-block')
+        .attr('class', 'layout-element')
         .attr('data-selected', 'false');
 
       $highlight
         .append('polygon')
+        .attr('class', 'layout-element-shape')
         .attr('points', createPath(corners))
-        .attr('fill', colors.fill)
-        .attr('stroke', colors.stroke)
-        .attr('stroke-width', 1.25)
-        .attr('stroke-linejoin', 'miter')
-        .attr('vector-effect', 'non-scaling-stroke');
+        .attr('stroke-linejoin', 'miter');
 
       const blockTopLeft = corners[0];
       $highlight
         .append('text')
-        .attr('class', 'block-label')
+        .attr('class', 'layout-element-label')
         .attr('dominant-baseline', 'hanging')
         .attr('x', blockTopLeft[0] + scale(30))
         .attr('y', blockTopLeft[1] + scale(30))
         .style('font-size', px(scale(60)))
-        .attr('fill', colors.text)
         .text(label);
       return [id, $highlight];
     }),
