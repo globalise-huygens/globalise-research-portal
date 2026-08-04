@@ -2,7 +2,7 @@
     display: grid;
     width: 100%;
     max-width: var(--shell-max, 1440px);
-    min-height: 100dvh;
+    min-height: 100%;
     align-content: start;
     align-items: start;
     gap: var(--s32, 32px);
@@ -37,7 +37,7 @@
 
     @media (width >= 48rem) {
         --search-pane-height: calc(
-            100dvh -
+            100% -
             var(--s64, 64px) -
             var(--s80, 80px)
         );
