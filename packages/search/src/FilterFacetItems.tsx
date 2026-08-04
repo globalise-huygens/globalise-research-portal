@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react';
-import { IconRight } from '@globalise/design';
+import { Checkbox, IconExpandSection } from '@globalise/design';
 import { Hierarchy, useHierarchy, useFilterFacetContext } from '@knaw-huc/faceted-search-react';
-import { Tree, TreeItem, TreeItemContent, Button, CheckboxField, CheckboxButton } from 'react-aria-components';
+import { Tree, TreeItem, TreeItemContent, Button } from 'react-aria-components';
 import classes from './FilterFacetItems.module.css';
 
 export type FilterFacetItem = {
@@ -79,47 +79,26 @@ function FilterFacetTreeItemContent({ item, level, facetHasChildren, hasChildren
     <div className={classes.item}
       style={{ '--indent': level > 1 ? `${(level - 1) * 0.5}rem` : 0 } as CSSProperties}>
       {hasChildren && <Button slot="chevron" className={`${classes.toggle} ${isOpen ? classes.expanded : ''}`}>
-        <IconRight/>
+        <IconExpandSection/>
       </Button>}
 
-      <CheckboxField slot="selection" className={classes.checkbox} name={item.itemKey}
+      <Checkbox slot="selection" className={classes.checkbox} name={item.itemKey}
+        indicatorClassName={`${classes.indicator} ${facetHasChildren && !hasChildren ? classes.leaf : ''}`}
         isSelected={selected} isIndeterminate={indeterminate}
         onChange={() => toggle(item.itemKey)}>
-        <CheckboxIndicator
-          className={facetHasChildren && !hasChildren ? classes.leaf : undefined}
-          isSelected={selected} isIndeterminate={indeterminate}/>
         <ItemContent item={item}/>
-      </CheckboxField>
+      </Checkbox>
     </div>
-  );
-}
-
-function CheckboxIndicator({ isSelected, isIndeterminate, className }: {
-  isSelected: boolean,
-  isIndeterminate: boolean,
-  className?: string
-}) {
-  return (
-    <CheckboxButton
-      className={`${className ?? ''} ${classes.indicator} ${isSelected || isIndeterminate ? classes.selected : ''}`}>
-      {(isSelected || isIndeterminate) &&
-          <svg viewBox="0 0 18 18" aria-hidden="true" key={isIndeterminate ? 'indeterminate' : 'check'}
-            fill="none" stroke="white" strokeWidth="3px">
-            {isIndeterminate
-              ? <rect x={3} y={8} width={12} height={1}/>
-              : <polyline points="2 9 7 14 16 4"/>}
-          </svg>}
-    </CheckboxButton>
   );
 }
 
 function ItemContent({ item }: { item: FilterFacetItem }) {
   return (
-    <div className={classes.inner}>
-      <div>{item.label}</div>
-      <div aria-label="Amount of results">
+    <span className={classes.inner}>
+      <span>{item.label}</span>
+      <span aria-label="Amount of results">
         {item.amount.toLocaleString()}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 }

@@ -16,7 +16,7 @@ export function Highlight(
     onClick = noop,
     onHover = noop,
   }: HighlightProps) {
-  const { fill, stroke, strokeWidth, cursor } = highlightStyle;
+  const { fill, stroke, strokeWidth, cursor, mixBlendMode } = highlightStyle;
 
   return (
     <polygon
@@ -24,7 +24,11 @@ export function Highlight(
       fill={fill}
       stroke={stroke ?? 'none'}
       strokeWidth={strokeWidth ?? 0}
-      style={{ pointerEvents: 'auto', cursor: cursor ?? 'default' }}
+      style={{
+        pointerEvents: 'auto',
+        cursor: cursor ?? 'default',
+        mixBlendMode,
+      }}
       onClick={() => { onClick(); }}
       onMouseEnter={(e) => { onHover(true, e); }}
       onMouseMove={(e) => { onHover(true, e); }}

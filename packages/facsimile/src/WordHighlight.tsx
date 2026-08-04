@@ -34,10 +34,8 @@ export function WordHighlight(
     fill: selected ? colors.fill
       : hovered ? colors.hoverFill
         : 'transparent',
-    stroke: selected || hovered ? colors.stroke
-      : 'transparent',
-    strokeWidth: selected ? 2 : 1,
     cursor: 'pointer',
+    mixBlendMode: 'multiply',
   };
 
   return (
