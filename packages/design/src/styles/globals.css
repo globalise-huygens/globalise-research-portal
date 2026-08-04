@@ -127,6 +127,8 @@
     --muted-foreground: #a3a3a3;
     --ring: #ffffff;
     --radius: 0;
+    --color-yellow-light: #fffcc1;
+    --color-yellow-strong: #fff751;
 
     /* ── Runtime aliases used by component CSS ───────────────────── */
     --color-background: var(--brand-black);

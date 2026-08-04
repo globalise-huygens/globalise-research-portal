@@ -20,7 +20,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
-import { dummySearchResults } from './dummySearchResults.ts';
+import { mockSearchResults } from './mockSearchResults.ts';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -59,13 +59,13 @@ export function ManifestPage() {
   useEffect(loadDummySearchResults, [manifestUrl]);
 
   function loadDummySearchResults() {
-    if (dummySearchResults.manifestId !== manifestUrl) {
+    if (mockSearchResults.manifestId !== manifestUrl) {
       clearSearchResults();
       return;
     }
     setSearchResults(
-      dummySearchResults.manifestId,
-      dummySearchResults.results,
+      mockSearchResults.manifestId,
+      mockSearchResults.results,
     );
   }
 

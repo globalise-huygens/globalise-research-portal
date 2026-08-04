@@ -8,7 +8,8 @@
     --normalized-muted: var(--color-neutral-600, #666666);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
     --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
-    --search-result-fill: var(--color-brand-mint, #7fd8a4);
+    --search-result-fill: var(--color-yellow-light, 'yellow');
+    --search-result-selected-fill: var(--color-yellow-strong, 'yellow');
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -106,11 +107,12 @@
     }
 
     .search-result {
-        background: color-mix(in srgb, var(--search-result-fill) 45%, transparent);
+        background: var(--search-result-fill);
         box-decoration-break: clone;
 
         &.selected {
-            background: var(--search-result-fill);
+            background: var(--search-result-selected-fill);
+            box-shadow: none;
         }
     }
 

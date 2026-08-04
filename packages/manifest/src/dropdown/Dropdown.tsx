@@ -21,7 +21,7 @@ export function Dropdown<T>(
     selectedKey,
     emptyLabel = '',
     placeholder,
-    maxItems = 20,
+    maxItems = 100,
     onSelect,
   }: DropdownProps<T>,
 ) {
