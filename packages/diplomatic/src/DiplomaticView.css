@@ -1,44 +1,48 @@
 .original-layout {
-    --diplomatic-annotation: var(--color-brand-parchment, #b99b7f);
-    --diplomatic-annotation-strong: var(--color-parchment-800, #5d4736);
-    --diplomatic-selected: var(--color-brand-vermilion, #ff543d);
+    --diplomatic-selected: color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 26%, transparent);
     --diplomatic-structure: var(--color-parchment-700, #7e6149);
     --diplomatic-structure-strong: var(--color-parchment-800, #5d4736);
     --diplomatic-text: var(--color-brand-black, #0c0a09);
     --diplomatic-muted: var(--color-neutral-600, #666666);
+    --entity-highlight-color: var(--color-brand-parchment, #b99b7f);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
-    --entity-highlight-stroke: var(--color-parchment-800, #5d4736);
+    --entity-highlight-hover-weight: 40%;
+    --entity-highlight-selected-weight: 60%;
+    --entity-highlight-text: var(--color-brand-black, #0c0a09);
 
     color: var(--diplomatic-text);
 
     .segment {
-        border-radius: 2px;
         cursor: pointer;
     }
 
-    .segment:hover {
-        background: color-mix(in srgb, var(--diplomatic-annotation) 18%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-annotation-strong);
-    }
-
     .entity {
-        border-bottom: 1px solid var(--entity-highlight-stroke);
         background: var(--entity-highlight-fill);
         box-decoration-break: clone;
         color: var(--diplomatic-text);
-        padding: 0 0.08em;
     }
 
     .entity.selected,
     .selected {
-        background: color-mix(in srgb, var(--diplomatic-selected) 18%, transparent);
-        box-shadow: inset 0 -1px 0 var(--diplomatic-selected);
+        background: var(--diplomatic-selected);
+    }
+
+    .entity:hover {
+        background: color-mix(
+          in srgb,
+          var(--entity-highlight-color) var(--entity-highlight-hover-weight),
+          var(--entity-highlight-fill)
+        );
+        color: var(--entity-highlight-text);
     }
 
     .entity.selected {
-        border-bottom-color: var(--entity-highlight-stroke);
-        background: var(--entity-highlight-fill);
-        box-shadow: inset 0 -1px 0 var(--entity-highlight-stroke);
+        background: color-mix(
+          in srgb,
+          var(--entity-highlight-color) var(--entity-highlight-selected-weight),
+          var(--entity-highlight-fill)
+        );
+        color: var(--entity-highlight-text);
     }
 
     .line-numbers .line-number {
