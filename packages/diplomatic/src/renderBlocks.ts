@@ -1,12 +1,7 @@
-import {
-  Annotation,
-  findSourceLabel,
-  findSvgPath,
-  parseSvgPath,
-} from '@globalise/common/annotation';
+import { Annotation, findSourceLabel } from '@globalise/common/annotation';
 import { Point } from '@knaw-huc/original-layout';
 import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
-import { createPath, createPoints, orThrow } from '@knaw-huc/original-layout';
+import { createPath } from '@knaw-huc/original-layout';
 import { Scale } from '@knaw-huc/original-layout';
 import { select } from 'd3-selection';
 import { px } from '@knaw-huc/original-layout';
@@ -18,8 +13,6 @@ type BlocksConfig = {
   scale: Scale;
   offset: Offset;
 };
-
-let nextTextMaskId = 0;
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
@@ -38,48 +31,19 @@ export function renderBlocks(
   const words = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
-  const textMaskId = `diplomatic-text-mask-${nextTextMaskId++}`;
-  const $textMask = $svg
-    .append('defs')
-    .append('mask')
-    .attr('id', textMaskId)
-    .attr('maskUnits', 'userSpaceOnUse')
-    .attr('maskContentUnits', 'userSpaceOnUse')
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', width - offset.left)
-    .attr('height', height - offset.top);
-
-  $textMask
-    .append('rect')
-    .attr('width', width - offset.left)
-    .attr('height', height - offset.top)
-    .attr('fill', 'white');
-
-  const textMaskPath = words.map((word) => {
-    const path = findSvgPath(word) ?? orThrow('No word path');
-    const points = scale.path(createPoints(parseSvgPath(path)));
-    return `M${createPath(points)}Z`;
-  }).join(' ');
-
-  $textMask
-    .append('path')
-    .attr('d', textMaskPath)
-    .attr('fill', 'black')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 4)
-    .attr('vector-effect', 'non-scaling-stroke');
-
   const blocks = Object.fromEntries(
     Object.entries(annotations).filter(([, a]) => a.textGranularity === 'block'),
   );
 
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
+  const leftTextClearance = Math.max(12, scale(50));
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
       const padded = scale.path(padCorners(corners, padding));
+      padded[0] = [padded[0][0] - leftTextClearance, padded[0][1]];
+      padded[3] = [padded[3][0] - leftTextClearance, padded[3][1]];
       return [id, padded];
     }),
   );
@@ -94,18 +58,27 @@ export function renderBlocks(
       $highlight
         .append('polygon')
         .attr('class', 'layout-element-shape')
-        .attr('mask', `url(#${textMaskId})`)
         .attr('points', createPath(corners))
         .attr('stroke-linejoin', 'miter');
 
       const blockTopLeft = corners[0];
+      const blockBottomLeft = corners[3];
+
+      $highlight
+        .append('line')
+        .attr('class', 'block-left-edge')
+        .attr('x1', blockTopLeft[0])
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', blockBottomLeft[0])
+        .attr('y2', blockBottomLeft[1]);
+
       $highlight
         .append('text')
         .attr('class', 'layout-element-label')
         .attr('dominant-baseline', 'hanging')
-        .attr('x', blockTopLeft[0] + scale(30))
-        .attr('y', blockTopLeft[1] + scale(30))
-        .style('font-size', px(scale(60)))
+        .attr('x', blockTopLeft[0] + Math.max(4, scale(16)))
+        .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
+        .style('font-size', px(Math.max(9, scale(42))))
         .text(label);
       return [id, $highlight];
     }),
