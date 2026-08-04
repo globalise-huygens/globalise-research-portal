@@ -1,11 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500&family=Noto+Serif:wght@400;500&display=swap");
+
 .search {
-    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    line-height: 1.5;
+    min-height: 100dvh;
+    background: var(--color-brand-black, #0c0a09);
+    color: var(--color-brand-white, #fff);
+    color-scheme: dark;
+    font-family: var(--font-sans, "Noto Sans", sans-serif);
+    font-size: var(--text-sm, 0.875rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25rem;
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
 
     button {
-        box-sizing: border-box;
         border: 0;
         margin: 0;
         padding: 0;
+        color: inherit;
+        font: inherit;
+    }
+
+    button:not(:disabled) {
+        cursor: pointer;
+    }
+
+    button:focus-visible {
+        outline: 2px solid var(--color-brand-turquoise, #29bfcc);
+        outline-offset: 2px;
+    }
+
+    @media (width >= 48rem) {
+        height: 100dvh;
+        min-height: 0;
+        overflow: hidden;
     }
 }
