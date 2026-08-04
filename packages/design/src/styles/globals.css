@@ -312,47 +312,65 @@
 
 /*
  * Shared CIDOC annotation roles.
- * Viewers provide the default values; a category only selects its semantic
- * fill and active border colours here.
+ * Viewers provide the default values; a category selects its semantic
+ * main, fill, and active text colours here.
  */
 :where(.cidoc-actor) {
+  --entity-highlight-color: var(--color-entity-actor, #ff543d);
   --entity-highlight-fill: var(--color-entity-actor-light, #ffcac3);
-  --entity-highlight-stroke: var(--color-entity-actor-strong, #8c2e22);
+  --entity-highlight-text: var(--color-brand-black, #0c0a09);
 }
 
 :where(.cidoc-appellation) {
+  --entity-highlight-color: var(--color-entity-appellation-strong, #464646);
   --entity-highlight-fill: var(--color-entity-appellation-light, #f2f2f2);
-  --entity-highlight-stroke: var(--color-entity-appellation-strong, #464646);
+  --entity-highlight-hover-weight: 80%;
+  --entity-highlight-selected-weight: 100%;
+  --entity-highlight-text: var(--color-brand-white, #ffffff);
 }
 
 :where(.cidoc-conceptual-object) {
+  --entity-highlight-color: color-mix(
+    in srgb,
+    var(--color-entity-conceptual-object, #d9a441) 65%,
+    var(--color-entity-conceptual-object-light, #f4e3bd)
+  );
   --entity-highlight-fill: var(--color-entity-conceptual-object-light, #f4e3bd);
-  --entity-highlight-stroke: var(--color-entity-conceptual-object-strong, #72531a);
+  --entity-highlight-text: var(--color-brand-black, #0c0a09);
 }
 
 :where(.cidoc-dimension) {
+  --entity-highlight-color: var(--color-entity-dimension-strong, #596168);
   --entity-highlight-fill: var(--color-entity-dimension-light, #d7dadd);
-  --entity-highlight-stroke: var(--color-entity-dimension-strong, #596168);
+  --entity-highlight-hover-weight: 80%;
+  --entity-highlight-selected-weight: 100%;
+  --entity-highlight-text: var(--color-brand-white, #ffffff);
 }
 
 :where(.cidoc-physical-thing) {
+  --entity-highlight-color: var(--color-entity-physical-thing, #b99b7f);
   --entity-highlight-fill: var(--color-entity-physical-thing-light, #f9f0d7);
-  --entity-highlight-stroke: var(--color-entity-physical-thing-strong, #665546);
+  --entity-highlight-text: var(--color-brand-black, #0c0a09);
 }
 
 :where(.cidoc-place) {
+  --entity-highlight-color: var(--color-entity-place, #36c6a7);
   --entity-highlight-fill: var(--color-entity-place-light, #c1ede4);
-  --entity-highlight-stroke: var(--color-entity-place-strong, #1e6d5c);
+  --entity-highlight-text: var(--color-brand-black, #0c0a09);
 }
 
 :where(.cidoc-time-span) {
+  --entity-highlight-color: var(--color-entity-time-span, #29bfcc);
   --entity-highlight-fill: var(--color-entity-time-span-light, #bdebef);
-  --entity-highlight-stroke: var(--color-entity-time-span-strong, #176970);
+  --entity-highlight-text: var(--color-brand-black, #0c0a09);
 }
 
 :where(.cidoc-type) {
+  --entity-highlight-color: var(--color-entity-type, #5b5b5b);
   --entity-highlight-fill: var(--color-entity-type-light, #d8d8db);
-  --entity-highlight-stroke: var(--color-entity-type-strong, #2b2b2b);
+  --entity-highlight-hover-weight: 80%;
+  --entity-highlight-selected-weight: 100%;
+  --entity-highlight-text: var(--color-brand-white, #ffffff);
 }
 
 @media (min-width: 768px) {

@@ -1,34 +1,75 @@
 .search {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    margin-top: 1rem;
-
-    @media (width >= 64rem) {
-        flex-direction: row;
-        margin-bottom: 4rem;
-    }
-
-    @media (width >= 80rem) {
-        gap: 2.5rem;
-    }
+    max-width: var(--shell-max, 1440px);
+    min-height: 100dvh;
+    align-content: start;
+    align-items: start;
+    gap: var(--s32, 32px);
+    margin-inline: auto;
+    padding:
+        var(--s40, 40px)
+        var(--shell-margin, 16px)
+        var(--s80, 80px);
 
     .facets {
+        min-width: 0;
         width: 100%;
-        padding-inline: 1rem;
-        padding-bottom: 1.5rem;
-
-        @media (width >= 64rem) {
-            width: fit-content;
-            min-width: fit-content;
-        }
+        overflow: hidden;
+        border-bottom: 1px solid rgb(255 255 255 / 0.1);
+        background: var(--color-neutral-900, #262626);
     }
 
     .results {
-        flex-grow: 1;
-        padding-inline: 1rem;
-        padding-bottom: 5rem;
+        min-width: 0;
+    }
+
+    .results > :last-child {
+        min-height: 18rem;
+        border-top: 1px solid rgb(255 255 255 / 0.5);
+        padding-top: var(--s24, 24px);
+        font-family: var(--font-serif, "Noto Serif", serif);
+        font-size: var(--text-4xl, 2.25rem);
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+    }
+
+    @media (width >= 48rem) {
+        --search-pane-height: calc(
+            100dvh -
+            var(--s64, 64px) -
+            var(--s80, 80px)
+        );
+
+        height: 100%;
+        min-height: 0;
+        grid-template-columns:
+            clamp(
+                17rem,
+                var(--sidebar-width, 22rem),
+                22rem
+            )
+            minmax(0, 1fr);
+        gap: 0;
+        overflow: hidden;
+        padding-top: var(--s64, 64px);
+
+        .facets {
+            height: var(--search-pane-height);
+            min-height: 0;
+            overflow: hidden;
+            contain: layout paint;
+            border-right: 0;
+            border-bottom: 0;
+        }
+
+        .results {
+            height: var(--search-pane-height);
+            min-height: 0;
+            overflow-y: auto;
+            padding-left: var(--s32, 32px);
+            scrollbar-gutter: stable;
+        }
     }
 }
