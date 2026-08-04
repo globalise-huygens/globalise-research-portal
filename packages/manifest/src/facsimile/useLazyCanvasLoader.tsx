@@ -34,7 +34,7 @@ export function useLazyCanvasLoader(
       },
     );
     return () => {
-      loader.destroy();
+      loader.close();
     };
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
