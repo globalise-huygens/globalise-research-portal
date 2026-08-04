@@ -14,7 +14,6 @@ export type TextPosition = {
 export type SearchResultBody = {
   id: SearchResultId;
   type: string
-  term: string
   snippet: string
 };
 
@@ -40,10 +39,7 @@ export type SearchResultIndexes = {
 };
 
 export type SearchResultsState = {
-  /**
-   * Manifest the results were found in.
-   * Results are ignored when another manifest is loaded.
-   */
+  // TODO: ignore search results once manifest ID changes
   manifestId: string | null;
   results: SearchResult[];
   indexes: SearchResultIndexes;
