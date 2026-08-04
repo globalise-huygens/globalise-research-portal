@@ -9,15 +9,30 @@ import { D3El } from '@knaw-huc/original-layout';
 import { createBlockBoundaries } from './createBlockBoundaries.ts';
 import { Offset } from '@knaw-huc/original-layout';
 
+type BlockColors = {
+  text: string;
+  stroke: string;
+  fill: string;
+};
+
 type BlocksConfig = {
   scale: Scale;
   offset: Offset;
+  colors?: BlockColors;
 };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
   $view: HTMLElement,
-  { scale, offset }: BlocksConfig,
+  {
+    scale,
+    offset,
+    colors = {
+      text: 'rgba(93, 71, 54, 0.72)',
+      stroke: 'rgba(93, 71, 54, 0.48)',
+      fill: 'rgba(185, 155, 127, 0.08)',
+    },
+  }: BlocksConfig,
 ) {
   const { width, height } = $view.getBoundingClientRect();
   const $svg = select($view)
@@ -59,7 +74,11 @@ export function renderBlocks(
         .append('polygon')
         .attr('class', 'layout-element-shape')
         .attr('points', createPath(corners))
-        .attr('stroke-linejoin', 'miter');
+        .attr('fill', colors.fill)
+        .attr('stroke', colors.stroke)
+        .attr('stroke-width', 1.25)
+        .attr('stroke-linejoin', 'miter')
+        .attr('vector-effect', 'non-scaling-stroke');
 
       const blockTopLeft = corners[0];
       const blockBottomLeft = corners[3];
@@ -79,6 +98,7 @@ export function renderBlocks(
         .attr('x', blockTopLeft[0] + Math.max(4, scale(16)))
         .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
         .style('font-size', px(Math.max(9, scale(42))))
+        .attr('fill', colors.text)
         .text(label);
       return [id, $highlight];
     }),
