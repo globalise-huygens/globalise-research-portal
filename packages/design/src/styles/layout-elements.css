@@ -1,9 +1,11 @@
-.transcription-view {
+.original-layout,
+.normalized-view {
     color: var(--color-brand-black, #0c0a09);
     font-family: var(--font-serif, "Noto Serif", serif);
 }
 
-.layout-element-number {
+.original-layout .line-number,
+.normalized-view .line-number {
     color: var(--color-layout-element-text, #125e64);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
       monospace;
@@ -14,7 +16,8 @@
     user-select: none;
 }
 
-.layout-element {
+.layout-element,
+.normalized-view .block-group {
     --layout-element-current-fill: transparent;
     --layout-element-current-stroke: var(
       --color-layout-element-stroke,
@@ -24,7 +27,8 @@
     --layout-element-current-halo-width: 2.5px;
 }
 
-.layout-element:hover {
+.layout-element:hover,
+.normalized-view .block-group:hover {
     --layout-element-current-fill: var(
       --color-layout-element-fill,
       rgb(41 191 204 / 0.08)
@@ -37,7 +41,8 @@
     --layout-element-current-halo-width: 4px;
 }
 
-.layout-element[data-selected="true"] {
+.layout-element[data-selected="true"],
+.normalized-view .block-group.selected {
     --layout-element-current-fill: var(
       --color-layout-element-fill-strong,
       rgb(41 191 204 / 0.13)
@@ -50,7 +55,8 @@
     --layout-element-current-halo-width: 4px;
 }
 
-.layout-element-surface {
+.layout-element-surface,
+.normalized-view .block-group {
     border-color: var(--layout-element-current-stroke);
     background: var(--layout-element-current-fill);
     transition: background-color 100ms ease-out, border-color 100ms ease-out;

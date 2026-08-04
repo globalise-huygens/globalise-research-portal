@@ -26,7 +26,7 @@ export const SegmentedLine = memo(function SegmentedLine(
       }}
       onMouseLeave={() => { setHovered(null); }}
     >
-      <span className="line-number layout-element-number">
+      <span className="line-number">
         {`${lineNumber}`.padStart(2, ' ')}
       </span>
       <span className="line-content">

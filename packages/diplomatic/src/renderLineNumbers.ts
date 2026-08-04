@@ -83,7 +83,7 @@ export function renderLineNumbers(
 
     const $lineNumber = document.createElement('span');
     $container.appendChild($lineNumber);
-    $lineNumber.classList.add('line-number', 'layout-element-number');
+    $lineNumber.classList.add('line-number');
     $lineNumber.textContent = `${i + 1}`;
     $lineNumber.style.display = 'none';
     Object.assign($lineNumber.style, {

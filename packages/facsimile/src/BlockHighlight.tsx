@@ -1,8 +1,6 @@
 import { CanvasId, setHovered, useIsSelectedInFacsimile } from '@globalise/common/document';
 import { Id } from '@globalise/common/annotation';
 
-import '@globalise/common/layout-elements.css';
-
 type BlockHighlightProps = {
   canvasId: CanvasId;
   id: Id;

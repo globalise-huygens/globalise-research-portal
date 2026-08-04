@@ -7,8 +7,7 @@
     ".": "./src/index.ts",
     "./annotation": "./src/annotation/index.ts",
     "./document": "./src/document/index.ts",
-    "./header": "./src/header/index.ts",
-    "./layout-elements.css": "./src/LayoutElement.css"
+    "./header": "./src/header/index.ts"
   },
   "scripts": {
     "test": "vitest run",

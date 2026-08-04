@@ -1,5 +1,3 @@
-@import "@globalise/common/layout-elements.css";
-
 .normalized-view {
     --normalized-annotation: var(--color-brand-parchment, #b99b7f);
     --normalized-annotation-strong: var(--color-parchment-800, #5d4736);
@@ -68,7 +66,7 @@
         padding: 0.2rem 0.35rem 0.3rem;
     }
 
-    .block-group[data-selected="true"] .line-number {
+    .block-group.selected .line-number {
         color: var(--color-layout-element-text, #125e64);
         font-weight: 700;
     }

@@ -31,7 +31,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 
   return (
     <div
-      className="normalized-view transcription-view"
+      className="normalized-view"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
     >
       <div className="text">
@@ -66,10 +66,7 @@ function BlockGroup(
   let count = 0;
 
   return (
-    <div
-      className="block-group layout-element layout-element-surface"
-      data-selected={isSelected ? 'true' : 'false'}
-    >
+    <div className={`block-group ${isSelected ? 'selected' : ''}`}>
       {lineIds.map((lineId) => {
         const segments = segmentsByLine[lineId];
         if (!segments) {
