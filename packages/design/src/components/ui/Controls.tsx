@@ -3,8 +3,9 @@ import * as React from 'react';
 import {
   Button as AriaButton,
   type ButtonProps as AriaButtonProps,
-  Checkbox as AriaCheckbox,
-  type CheckboxProps as AriaCheckboxProps,
+  CheckboxButton as AriaCheckboxButton,
+  CheckboxField as AriaCheckboxField,
+  type CheckboxFieldProps as AriaCheckboxFieldProps,
   ToggleButton as AriaToggleButton,
   ToggleButtonGroup as AriaToggleButtonGroup,
   type ToggleButtonGroupProps as AriaToggleButtonGroupProps,
@@ -102,7 +103,7 @@ export type CheckboxProps = {
   indicatorClassName?: string;
   children?: React.ReactNode;
 } & Omit<
-  AriaCheckboxProps,
+  AriaCheckboxFieldProps,
   'children' | 'className' | 'style'
 >;
 
@@ -110,35 +111,32 @@ const Checkbox = React.forwardRef<
   HTMLLabelElement,
   CheckboxProps
 >(({ className, indicatorClassName, children, ...props }, ref) => (
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  <AriaCheckbox
-    ref={ref}
-    className={cn('checkbox-control', className)}
-    {...props}
-  >
-    {({ isIndeterminate }) => (
-      <>
-        <span
-          className={cn('indicator', indicatorClassName)}
-          aria-hidden="true"
-        >
-          {isIndeterminate ? (
-            <span className="indeterminate" />
-          ) : (
-            <svg
-              className="check"
-              viewBox="0 -960 960 960"
-              focusable="false"
-              aria-hidden="true"
-            >
-              <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
-            </svg>
-          )}
-        </span>
-        {children && <span>{children}</span>}
-      </>
-    )}
-  </AriaCheckbox>
+  <AriaCheckboxField className="checkbox-field" {...props}>
+    <AriaCheckboxButton ref={ref} className={cn('checkbox-control', className)}>
+      {({ isIndeterminate }) => (
+        <>
+          <span
+            className={cn('indicator', indicatorClassName)}
+            aria-hidden="true"
+          >
+            {isIndeterminate ? (
+              <span className="indeterminate" />
+            ) : (
+              <svg
+                className="check"
+                viewBox="0 -960 960 960"
+                focusable="false"
+                aria-hidden="true"
+              >
+                <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
+              </svg>
+            )}
+          </span>
+          {children && <span>{children}</span>}
+        </>
+      )}
+    </AriaCheckboxButton>
+  </AriaCheckboxField>
 ));
 Checkbox.displayName = 'Checkbox';
 
