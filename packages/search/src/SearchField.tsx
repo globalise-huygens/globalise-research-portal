@@ -1,23 +1,19 @@
 import { useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
+import { getSVGElement } from '@globalise/common';
+import { svgEntityPlace, svgEntityPerson, IconSearch, IconClose } from '@globalise/design';
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { UpdateState, ThemeConfig, AutocompleteConfig } from '@knaw-huc/searchfield';
 import { default as SF, SearchFieldRef } from '@knaw-huc/searchfield/react';
 import classes from './SearchField.module.css';
 
+import IconUndo from './assets/undo.svg?react';
+import IconRedo from './assets/redo.svg?react';
 import { entities, Entity } from './mock/AutocompleteEntities';
-import placeIcon from './assets/place.svg?raw';
-import polityIcon from './assets/polity.svg?raw';
-
-function getSVGElement(svg: string) {
-  const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svg, 'image/svg+xml');
-  return svgDoc.documentElement as unknown as SVGElement;
-}
 
 const types = {
-  'Place': { color: '#C5D89D', icon: getSVGElement(placeIcon) },
-  'Polity': { color: '#BDE8F5', icon: getSVGElement(polityIcon) },
+  'Place': { color: 'var(--entity-place)', icon: getSVGElement(svgEntityPlace) },
+  'Polity': { color: 'var(--entity-actor)', icon: getSVGElement(svgEntityPerson) },
 };
 
 export default function SearchField() {
@@ -26,11 +22,11 @@ export default function SearchField() {
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
 
   const darkTheme: ThemeConfig = {
-    // fontFamily: 'sans-serif',
-    // fontFamilyAutocomplete: 'sans-serif',
-    // entity?: StyleSpec;
-    // icon?: StyleSpec;
-    // cross?: StyleSpec;
+    fontFamily: 'var(--font-sans)',
+    fontFamilyAutocomplete: 'var(--font-sans)',
+    entity: { className: classes.entity },
+    // icon?: { className?: string, style?: StyleSpec };
+    // cross?: { className?: string, style?: StyleSpec };
     // highlight: {
     //   string?: string;
     //   operatorKeyword?: string;
@@ -70,10 +66,12 @@ export default function SearchField() {
         theme={{ dark: darkTheme }} autocomplete={autocomplete}
         enableHistory enableLuceneQuerySyntax/>
 
-      <Button onClick={() => searchFieldRef.current?.search()}>🔎</Button>
-      <Button onClick={() => searchFieldRef.current?.undo()} isDisabled={!history.canUndo}>↶</Button>
-      <Button onClick={() => searchFieldRef.current?.redo()} isDisabled={!history.canRedo}>↷</Button>
-      <Button onClick={() => searchFieldRef.current?.clear()}>&#10005;</Button>
+      <div className={classes.buttons}>
+        <Button onClick={() => searchFieldRef.current?.search()}><IconSearch/></Button>
+        <Button onClick={() => searchFieldRef.current?.undo()} isDisabled={!history.canUndo}><IconUndo/></Button>
+        <Button onClick={() => searchFieldRef.current?.redo()} isDisabled={!history.canRedo}><IconRedo/></Button>
+        <Button onClick={() => searchFieldRef.current?.clear()}><IconClose/></Button>
+      </div>
     </div>
   );
 }
