@@ -164,10 +164,47 @@
 
     .concept-card__definitions .property-value {
       overflow: visible;
+      overflow-wrap: anywhere;
       font-weight: 400;
       line-height: 1.35;
       text-overflow: initial;
       white-space: normal;
+      word-break: normal;
+    }
+
+    .concept-card__html-value {
+      white-space: pre-line;
+    }
+
+    .concept-card__inline-link {
+      display: inline-flex;
+      max-width: 100%;
+      align-items: center;
+      gap: var(--s4);
+      color: #6b9eff;
+      text-decoration-line: underline;
+      text-decoration-color: currentColor;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+      vertical-align: text-bottom;
+    }
+
+    .concept-card__inline-link-label {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+
+    .concept-card__inline-link-icon {
+      width: var(--s12);
+      height: var(--s12);
+      flex-shrink: 0;
+    }
+
+    .concept-card__inline-link:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
     }
 
     .concept-card__external {
@@ -199,20 +236,25 @@
 
     .concept-card__match-list .external-link {
       width: 100%;
+      align-items: flex-start;
       justify-content: space-between;
       color: #6b9eff;
     }
 
     .concept-card__match-list .external-link-label {
-      overflow: hidden;
+      min-width: 0;
+      overflow: visible;
+      overflow-wrap: anywhere;
       text-decoration: none;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      text-overflow: initial;
+      white-space: normal;
+      word-break: normal;
     }
 
     .concept-card__match-list .external-link-icon {
       width: var(--s16);
       height: var(--s16);
+      flex-shrink: 0;
       color: #6b9eff;
     }
 
