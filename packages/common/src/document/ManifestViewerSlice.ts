@@ -110,6 +110,19 @@ export function initCanvases(canvasIds: Id[], selectedCanvasId?: CanvasId) {
   setState({ canvases, selectedCanvasId: nextSelected });
 }
 
+/**
+ * Set canvas state from already fetched pages
+ */
+export function setCanvasPages(canvasId: CanvasId, pages: AnnotationPage[]) {
+  setState((s) => ({
+    canvases: {
+      ...s.canvases,
+      [canvasId]: createReadyCanvas(pages),
+    },
+    selectedCanvasId: s.selectedCanvasId ?? canvasId,
+  }));
+}
+
 export async function loadCanvasAnnotationPages(
   canvasId: CanvasId,
   annotationPageUrls: string[],
