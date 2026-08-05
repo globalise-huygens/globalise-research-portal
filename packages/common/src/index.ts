@@ -4,6 +4,7 @@ export { fetchJson } from './util/fetchJson';
 export { isUrl } from './util/isUrl';
 export { asArray } from './util/asArray.ts';
 export { isCentered } from './util/isCentered.ts';
+export { getSVGElement } from './util/getSVGElement';
 
 export * from './linkedart';
 export * from './document/ManifestMetadataSlice.ts';
