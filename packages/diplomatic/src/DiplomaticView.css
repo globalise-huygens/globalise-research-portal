@@ -63,6 +63,17 @@
         color: var(--diplomatic-structure-strong);
     }
 
+    .blocks {
+        z-index: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .text {
+        z-index: 1;
+    }
+
     .block-label {
         fill: color-mix(in srgb, var(--diplomatic-structure-strong) 84%, transparent);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,

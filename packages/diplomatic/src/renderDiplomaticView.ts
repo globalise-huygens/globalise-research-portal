@@ -180,12 +180,9 @@ export function renderDiplomaticView(
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks } = renderBlocks(annotations, $layoutView, { scale, offset });
+    const { $blocks } = renderBlocks(annotations, $view, { scale, offset });
     const lineNumbers = renderLineNumbers(annotations, $view, {
-      scale, gap: lineNumberGap, offset: {
-        left: offset.left + lineNumberWidth,
-        top: offset.top,
-      },
+      scale, gap: lineNumberGap, offset,
     });
     const { showLine, hideLine } = lineNumbers;
 
