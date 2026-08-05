@@ -190,12 +190,12 @@ export function renderDiplomaticView(
     const { showLine, hideLine } = lineNumbers;
 
     function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 1);
+      $block.attr('data-selected', 'true');
       lines.forEach((l) => showLine(l));
     }
 
     function hideBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 0);
+      $block.attr('data-selected', 'false');
       lines.forEach((l) => hideLine(l));
     }
 

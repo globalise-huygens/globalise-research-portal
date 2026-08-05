@@ -1,0 +1,98 @@
+.original-layout,
+.normalized-view {
+    color: var(--color-brand-black, #0c0a09);
+    font-family: var(--font-serif, "Noto Serif", serif);
+}
+
+.original-layout .line-number,
+.normalized-view .line-number {
+    color: var(--color-layout-element-text, #125e64);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    letter-spacing: 0;
+    transition: color 120ms ease, opacity 120ms ease;
+    user-select: none;
+}
+
+.layout-element,
+.normalized-view .block-group {
+    --layout-element-current-fill: transparent;
+    --layout-element-current-stroke: var(
+      --color-layout-element-stroke,
+      rgb(18 94 100 / 0.38)
+    );
+    --layout-element-current-stroke-width: 1px;
+    --layout-element-current-halo-width: 2.5px;
+}
+
+.layout-element:hover,
+.normalized-view .block-group:hover {
+    --layout-element-current-fill: var(
+      --color-layout-element-fill,
+      rgb(41 191 204 / 0.08)
+    );
+    --layout-element-current-stroke: var(
+      --color-layout-element-stroke-strong,
+      #125e64
+    );
+    --layout-element-current-stroke-width: 2px;
+    --layout-element-current-halo-width: 4px;
+}
+
+.layout-element[data-selected="true"],
+.normalized-view .block-group.selected {
+    --layout-element-current-fill: var(
+      --color-layout-element-fill-strong,
+      rgb(41 191 204 / 0.13)
+    );
+    --layout-element-current-stroke: var(
+      --color-layout-element-stroke-strong,
+      #125e64
+    );
+    --layout-element-current-stroke-width: 2px;
+    --layout-element-current-halo-width: 4px;
+}
+
+.layout-element-surface,
+.normalized-view .block-group {
+    border-color: var(--layout-element-current-stroke);
+    background: var(--layout-element-current-fill);
+    transition: background-color 100ms ease-out, border-color 100ms ease-out;
+}
+
+.layout-element-shape {
+    fill: var(--layout-element-current-fill);
+    pointer-events: auto;
+    stroke: var(--layout-element-current-stroke);
+    stroke-width: var(--layout-element-current-stroke-width);
+    vector-effect: non-scaling-stroke;
+    transition: fill 100ms ease-out, stroke 100ms ease-out,
+      stroke-width 100ms ease-out;
+}
+
+.layout-element-halo {
+    fill: none;
+    stroke: var(--color-layout-element-halo, rgb(255 255 255 / 0.78));
+    stroke-width: var(--layout-element-current-halo-width);
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+.layout-element-label {
+    fill: var(--color-layout-element-text, #125e64);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+    font-weight: 600;
+    letter-spacing: 0;
+    opacity: 0;
+    paint-order: stroke;
+    stroke: rgb(255 255 255 / 0.38);
+    stroke-width: 2px;
+    transition: opacity 100ms ease-out;
+}
+
+.layout-element[data-selected="true"] .layout-element-label {
+    opacity: 0.9;
+}

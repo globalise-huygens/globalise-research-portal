@@ -45,16 +45,8 @@
             min-width: 2.35rem;
             margin-right: 0.65em;
             margin-left: 0.15em;
-            color: color-mix(in srgb, var(--normalized-structure) 72%, var(--normalized-muted));
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-              monospace;
             font-size: 0.72em;
-            font-variant-numeric: tabular-nums;
-            font-weight: 500;
-            letter-spacing: 0;
             text-align: right;
-            transition: color 120ms ease;
-            user-select: none;
         }
 
         .line-content {
@@ -63,7 +55,8 @@
     }
 
     .line:hover .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--color-layout-element-text, #125e64);
+        font-weight: 700;
     }
 
     &[data-layout-elements-visible="false"] .line-number {
@@ -71,24 +64,17 @@
     }
 
     .block-group {
-        border-left: 1px solid transparent;
-        padding-left: 0.35rem;
-
-        &.selected {
-            background: color-mix(in srgb, var(--normalized-annotation) 7%, transparent);
-            border-left-color: color-mix(
-              in srgb,
-              var(--normalized-selected) 68%,
-              var(--normalized-structure-strong)
-            );
-        }
+        border-left-width: 2px;
+        border-left-style: solid;
+        padding: 0.2rem 0.35rem 0.3rem;
     }
 
     .block-group.selected .line-number {
-        color: var(--normalized-structure-strong);
+        color: var(--color-layout-element-text, #125e64);
+        font-weight: 700;
     }
 
-    &[data-layout-elements-visible="false"] .block-group.selected {
+    &[data-layout-elements-visible="false"] .block-group {
         background: transparent;
         border-left-color: transparent;
     }

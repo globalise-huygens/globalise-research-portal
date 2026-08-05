@@ -131,19 +131,10 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   },
   [isScrolling, words, selectedIds]);
 
-  const visibleBlocks = useMemo(() => {
-    if (!showLayoutElements) {
-      return [];
-    }
-    if(!isScrolling) {
-      return blocks;
-    }
-    if(!selectedIds.length) {
-      return [];
-    }
-    return blocks.filter((b) => selectedIds.includes(b.id));
-  },
-  [isScrolling, blocks, selectedIds, showLayoutElements]);
+  const visibleBlocks = useMemo(
+    () => showLayoutElements ? blocks : [],
+    [blocks, showLayoutElements],
+  );
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;

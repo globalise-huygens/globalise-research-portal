@@ -9,30 +9,15 @@ import { D3El } from '@knaw-huc/original-layout';
 import { createBlockBoundaries } from './createBlockBoundaries.ts';
 import { Offset } from '@knaw-huc/original-layout';
 
-type BlockColors = {
-  text: string;
-  stroke: string;
-  fill: string;
-};
-
 type BlocksConfig = {
   scale: Scale;
   offset: Offset;
-  colors?: BlockColors;
 };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
   $view: HTMLElement,
-  {
-    scale,
-    offset,
-    colors = {
-      text: 'rgba(93, 71, 54, 0.72)',
-      stroke: 'rgba(93, 71, 54, 0.48)',
-      fill: 'rgba(185, 155, 127, 0.08)',
-    },
-  }: BlocksConfig,
+  { scale, offset }: BlocksConfig,
 ) {
   const { width, height } = $view.getBoundingClientRect();
   const $svg = select($view)
@@ -52,10 +37,13 @@ export function renderBlocks(
 
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
+  const leftTextClearance = Math.max(12, scale(50));
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
       const padded = scale.path(padCorners(corners, padding));
+      padded[0] = [padded[0][0] - leftTextClearance, padded[0][1]];
+      padded[3] = [padded[3][0] - leftTextClearance, padded[3][1]];
       return [id, padded];
     }),
   );
@@ -63,26 +51,34 @@ export function renderBlocks(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const label = findSourceLabel(block);
-      const $highlight = $svg.append('g').attr('opacity', 0);
+      const $highlight = $svg.append('g')
+        .attr('class', 'layout-element')
+        .attr('data-selected', 'false');
 
       $highlight
         .append('polygon')
+        .attr('class', 'layout-element-shape')
         .attr('points', createPath(corners))
-        .attr('fill', colors.fill)
-        .attr('stroke', colors.stroke)
-        .attr('stroke-width', 1.25)
-        .attr('stroke-linejoin', 'miter')
-        .attr('vector-effect', 'non-scaling-stroke');
+        .attr('stroke-linejoin', 'miter');
 
       const blockTopLeft = corners[0];
+      const blockBottomLeft = corners[3];
+
+      $highlight
+        .append('line')
+        .attr('class', 'block-left-edge')
+        .attr('x1', blockTopLeft[0])
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', blockBottomLeft[0])
+        .attr('y2', blockBottomLeft[1]);
+
       $highlight
         .append('text')
-        .attr('class', 'block-label')
+        .attr('class', 'layout-element-label')
         .attr('dominant-baseline', 'hanging')
-        .attr('x', blockTopLeft[0] + scale(30))
-        .attr('y', blockTopLeft[1] + scale(30))
-        .style('font-size', px(scale(60)))
-        .attr('fill', colors.text)
+        .attr('x', blockTopLeft[0] + Math.max(4, scale(16)))
+        .attr('y', blockTopLeft[1] + Math.max(3, scale(12)))
+        .style('font-size', px(Math.max(9, scale(42))))
         .text(label);
       return [id, $highlight];
     }),
