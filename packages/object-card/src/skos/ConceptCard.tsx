@@ -27,11 +27,7 @@ import {
 import { HtmlValue } from './HtmlValue.tsx';
 import type { LangValue } from './SkosModel.ts';
 
-export type ConceptCardProps = {
-  onClose?: () => void;
-};
-
-export function ConceptCard({ onClose }: ConceptCardProps) {
+export function ConceptCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
 
   if (!uri) {
@@ -92,7 +88,6 @@ export function ConceptCard({ onClose }: ConceptCardProps) {
   return (
     <ObjectCard className="concept-card">
       <ObjectCardHeader
-        onClose={onClose}
         actions={(
           <>
             <ObjectCardAction

@@ -1,11 +1,12 @@
 @layer components {
   .concept-card {
-    width: min(100%, 1008px);
-    max-width: 1008px;
+    width: 100%;
+    max-width: none;
     height: auto;
-    max-height: min(800px, 100%);
-    overflow: hidden;
+    max-height: none;
+    overflow: visible;
     background: #242529;
+    box-shadow: none;
 
     > .header {
       position: relative;
@@ -110,30 +111,12 @@
 
     > .body {
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .panel {
       min-height: 0;
-      overflow-x: hidden;
-      overflow-y: auto;
-      scrollbar-color: #6d6d6d transparent;
-      scrollbar-width: thin;
-    }
-
-    .panel::-webkit-scrollbar {
-      width: 14px;
-    }
-
-    .panel::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .panel::-webkit-scrollbar-thumb {
-      border: 4px solid transparent;
-      border-radius: 999px;
-      background: #6d6d6d;
-      background-clip: content-box;
+      overflow: visible;
     }
 
     .panel[data-side="left"] {
@@ -325,7 +308,7 @@
   @media (min-width: 1024px) {
     .concept-card {
       > .body {
-        grid-template-columns: minmax(0, 516px) minmax(0, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .panel {

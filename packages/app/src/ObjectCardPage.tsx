@@ -5,7 +5,6 @@ import {
   loadConcept,
   useObjectCardStore,
 } from '@globalise/object-card';
-import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 const DEFAULT_URI =
@@ -15,8 +14,6 @@ const DEFAULT_URI =
 const CONCEPT = 'concept';
 
 export function ObjectCardPage() {
-  const navigate = useNavigate();
-
   useEffect(initLoadObjectCard, []);
   function initLoadObjectCard() {
     const uri = getUriFromUrl();
@@ -47,7 +44,9 @@ export function ObjectCardPage() {
 
   return (
     <main className="object-card-page">
-      <ConceptCard onClose={() => void navigate({ to: '/' })}/>
+      <div className="object-card-page__content">
+        <ConceptCard/>
+      </div>
     </main>
   );
 }
