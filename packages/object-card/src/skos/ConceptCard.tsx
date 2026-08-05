@@ -76,6 +76,13 @@ export function ConceptCard() {
   const hasLeftPanel = hasDefinitions || hasExternal;
   const hasBody = hasLeftPanel || hasGraph;
   const hasSinglePanel = hasLeftPanel !== hasGraph;
+  const hasSplitDetails = hasDefinitions && hasExternal;
+  const bodyClassName = [
+    hasSinglePanel ? 'concept-card__body--single' : undefined,
+    hasSplitDetails && hasGraph
+      ? 'concept-card__body--wide-details'
+      : undefined,
+  ].filter(Boolean).join(' ') || undefined;
 
   function handleCopy() {
     void navigator.clipboard.writeText(conceptUri).catch(console.error);
@@ -137,11 +144,14 @@ export function ConceptCard() {
         )}
       </ObjectCardHeader>
       {hasBody && (
-        <ObjectCardBody
-          className={hasSinglePanel ? 'concept-card__body--single' : undefined}
-        >
+        <ObjectCardBody className={bodyClassName}>
           {hasLeftPanel && (
-            <ObjectCardPanel side="left">
+            <ObjectCardPanel
+              side="left"
+              className={hasSplitDetails
+                ? 'concept-card__details--split'
+                : undefined}
+            >
               {hasDefinitions && (
                 <ObjectCardSection
                   title="Definitions"

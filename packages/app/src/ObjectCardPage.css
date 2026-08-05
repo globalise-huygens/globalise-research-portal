@@ -3,18 +3,11 @@
   width: 100%;
   min-height: 100%;
   background: #18191b;
-  padding: var(--s16) var(--shell-margin) var(--s48);
+  padding: var(--s16) var(--shell-margin) var(--s32);
 }
 
 .object-card-page__content {
   width: 100%;
-  max-width: var(--shell-max);
+  max-width: 1200px;
   margin-inline: auto;
-}
-
-@media (min-width: 768px) {
-  .object-card-page {
-    padding-top: var(--s32);
-    padding-bottom: var(--s64);
-  }
 }

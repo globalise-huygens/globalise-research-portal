@@ -13,17 +13,17 @@
       background:
         linear-gradient(rgb(36 37 41 / 0.5), rgb(36 37 41 / 0.5)),
         #313236;
-      padding: var(--s24) var(--s32);
+      padding: var(--s16);
     }
 
     .header-main {
       gap: var(--s8);
-      padding-right: var(--s80);
+      padding-right: var(--s64);
     }
 
     .header-actions {
       position: absolute;
-      top: var(--s24);
+      top: var(--s16);
       right: var(--s16);
       gap: 0;
     }
@@ -120,10 +120,10 @@
     }
 
     .panel[data-side="left"] {
-      gap: var(--s24);
+      gap: var(--s16);
       border-color: #37373c;
       background: #242529;
-      padding: var(--s16) var(--s24);
+      padding: var(--s16);
     }
 
     .panel[data-side="left"] > .section + .section {
@@ -134,7 +134,7 @@
       background:
         linear-gradient(rgb(36 37 41 / 0.5), rgb(36 37 41 / 0.5)),
         #313236;
-      padding: var(--s16) var(--s24);
+      padding: var(--s16);
     }
 
     .section-heading {
@@ -148,7 +148,7 @@
     }
 
     .concept-card__definitions .property-list {
-      gap: var(--s16);
+      gap: var(--s12);
     }
 
     .concept-card__definitions .property {
@@ -164,13 +164,14 @@
 
     .concept-card__definitions .property-value {
       overflow: visible;
+      font-weight: 400;
       line-height: 1.35;
       text-overflow: initial;
       white-space: normal;
     }
 
     .concept-card__external {
-      gap: var(--s16);
+      gap: var(--s12);
     }
 
     .concept-card__match-group {
@@ -216,7 +217,7 @@
     }
 
     .concept-card__graph {
-      gap: var(--s16);
+      gap: var(--s12);
     }
 
     .concept-card__relation {
@@ -331,6 +332,31 @@
       > .body.concept-card__body--single .panel[data-side="left"] {
         border-right: 0;
       }
+
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .concept-card {
+      > .body.concept-card__body--wide-details {
+        grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+      }
+
+      .concept-card__details--split {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr);
+        align-content: start;
+        align-items: start;
+        gap: var(--s16);
+      }
+
+      .concept-card__details--split .concept-card__definitions {
+        height: 100%;
+        border-right: 1px solid #808083;
+        border-bottom: 0;
+        padding-right: var(--s16);
+        padding-bottom: 0;
+      }
     }
   }
 
@@ -359,7 +385,7 @@
       }
 
       .panel[data-side="right"] {
-        padding: var(--s16) var(--s24);
+        padding: var(--s16);
       }
     }
   }
