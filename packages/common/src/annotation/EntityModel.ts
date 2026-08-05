@@ -163,3 +163,17 @@ function getFallbackVisualCategory(
       return 'cidoc-dimension';
   }
 }
+
+export function isHighlightedEntity(
+  annotation: Annotation,
+  categories?: Set<EntityClassificationId>,
+): boolean {
+  if (!isEntity(annotation)) {
+    return false;
+  }
+  if (!categories) {
+    return true;
+  }
+  const classificationId = getEntityClassificationId(annotation);
+  return !!classificationId && categories.has(classificationId);
+}

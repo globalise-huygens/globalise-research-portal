@@ -1,11 +1,9 @@
 import {
   loadCanvasAnnotationPages,
-  useAnnotations,
   usePages,
   usePartOf,
-  useEntityHighlightCategories,
   useSelectedCanvasIndex,
-  useSelectedIdsForCanvas,
+  useSelectedIdsForCanvas, useHighlightedAnnotations,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect } from 'react';
@@ -38,8 +36,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   renderDistance,
   showLayoutElements,
 }: Props) {
-  const annotations = useAnnotations(canvasId);
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const annotations = useHighlightedAnnotations(canvasId);
   const partOf = usePartOf(canvasId);
   const selectedIds = useSelectedIdsForCanvas(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -119,7 +116,6 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
               fit="width"
               showBlocks={showLayoutElements}
               showScanMargin={true}
-              highlightedEntityCategories={highlightedEntityCategories}
             />
           </div>
         </>
