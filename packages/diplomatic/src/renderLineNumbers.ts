@@ -1,6 +1,5 @@
 import { Annotation, findSvgPath, findResourceTarget, parseSvgPath } from '@globalise/common/annotation';
 import { Id } from '@knaw-huc/original-layout';
-import { Point } from '@knaw-huc/original-layout';
 import { Rect } from '@knaw-huc/original-layout';
 import {
   calcBoundingBox,
@@ -17,13 +16,14 @@ import { Offset } from '@knaw-huc/original-layout';
 export type LineNumbersConfig = {
   scale: Scale;
   offset: Offset;
+  padding?: { x: number, y: number };
   gap: number;
 };
 
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLElement,
-  { scale, offset, gap }: LineNumbersConfig,
+  { scale, offset, padding = { x: 100, y: 50 }, gap }: LineNumbersConfig,
 ) {
   const $container = document.createElement('div');
   $view.appendChild($container);
@@ -52,12 +52,11 @@ export function renderLineNumbers(
     lineToBlock[line.id] = block.id;
   }
 
-  const padding: Point = [50, 100];
   const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
-      const padded = scale.path(padCorners(corners, padding));
+      const padded = scale.path(padCorners(corners, [padding.x, padding.y]));
       return [id, padded];
     }),
   );
