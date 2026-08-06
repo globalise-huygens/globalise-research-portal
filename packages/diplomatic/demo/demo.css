@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.stage {
+  .original-layout {
+    & .entity.selected {
+      background: #8d8dff;
+    }
+  }
+
+  position: relative;
+
+  .scan,
+  .raw-paths {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  .scan {
+    display: block;
+  }
+
+  .original-layout {
+    z-index: 1;
+  }
+
+  .raw-paths {
+    pointer-events: none;
+    z-index: 2;
+
+    path {
+      fill: none;
+      stroke: black;
+      stroke-width: 2;
+    }
+  }
+}
