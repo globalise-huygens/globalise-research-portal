@@ -143,14 +143,6 @@ export function isEntityClassificationId(
   return entityClassificationIds.includes(value as EntityClassificationId);
 }
 
-export function isEntityVisualCategory(
-  value: string,
-): value is EntityVisualCategoryClassName {
-  return entityVisualCategories.includes(
-    value as EntityVisualCategoryClassName,
-  );
-}
-
 function getFallbackVisualCategory(
   type: EntityType,
 ): EntityVisualCategoryClassName {
@@ -166,13 +158,10 @@ function getFallbackVisualCategory(
 
 export function isHighlightedEntity(
   annotation: Annotation,
-  categories?: Set<EntityClassificationId>,
+  categories: Set<EntityClassificationId>,
 ): boolean {
   if (!isEntity(annotation)) {
     return false;
-  }
-  if (!categories) {
-    return true;
   }
   const classificationId = getEntityClassificationId(annotation);
   return !!classificationId && categories.has(classificationId);

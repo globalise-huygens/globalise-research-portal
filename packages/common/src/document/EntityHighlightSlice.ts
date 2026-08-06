@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 import {
-  entityVisualCategories,
   type Annotation,
   type EntityClassificationId,
   type Id,
@@ -42,11 +40,8 @@ export function useHighlightedAnnotations(
   }, [annotations, categories]);
 }
 
-export function useIsEntityHighlightCategoryVisible(
-  classificationId?: EntityClassificationId,
-) {
+export function useIsHighlightedEntity(annotation: Annotation): boolean {
   return useDocumentStore((s) =>
-    classificationId !== undefined &&
-    s.entityHighlightCategories.has(classificationId),
+    isHighlightedEntity(annotation, s.entityHighlightCategories),
   );
 }

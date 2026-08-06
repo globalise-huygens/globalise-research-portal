@@ -5,12 +5,11 @@ import {
   findSvgPath,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
-  getEntityClassificationId,
   type Annotation,
   type EntityClassificationId,
   type Id,
   isBlock,
-  isEntity,
+  isHighlightedEntity,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
@@ -192,14 +191,10 @@ function getEntityHighlightTone(
   highlightedEntityCategories: Set<EntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
-  if (!annotation || !isEntity(annotation)) {
+  if (!annotation) {
     return undefined;
   }
-  const classificationId = getEntityClassificationId(annotation);
-  if (
-    !classificationId ||
-    !highlightedEntityCategories.has(classificationId)
-  ) {
+  if (!isHighlightedEntity(annotation, highlightedEntityCategories)) {
     return undefined;
   }
   return getEntityClassifiedAsClassName(annotation);

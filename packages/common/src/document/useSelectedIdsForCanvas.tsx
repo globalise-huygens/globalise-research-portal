@@ -1,7 +1,7 @@
 import {
-  getEntityClassificationId,
   Id,
   isEntity,
+  isHighlightedEntity,
 } from '@globalise/common/annotation';
 import { useDocumentStore } from '@globalise/common/document';
 import { useShallow } from 'zustand/react/shallow';
@@ -21,20 +21,18 @@ export function useSelectedIdsForCanvas(
         continue;
       }
       const selectedAnnotation = canvas.annotations[selectedId];
-      if (selectedAnnotation && isEntity(selectedAnnotation)) {
-        const classificationId = getEntityClassificationId(selectedAnnotation);
-        if (
-          classificationId === undefined ||
-          !s.entityHighlightCategories.has(classificationId)
-        ) {
-          continue;
-        }
+      if (
+        selectedAnnotation &&
+        isEntity(selectedAnnotation) &&
+        !isHighlightedEntity(selectedAnnotation, s.entityHighlightCategories)
+      ) {
+        continue;
       }
       if (selectedId in canvas.annotations) {
         ids.push(selectedId);
       }
       const wordsFromEntity = entityToWords[selectedId];
-      if(wordsFromEntity) {
+      if (wordsFromEntity) {
         ids.push(...wordsFromEntity);
       }
       const blockFromWord = wordToBlock[selectedId];

@@ -1,9 +1,10 @@
 import {
   loadCanvasAnnotationPages,
+  useHighlightedAnnotations,
   usePages,
   usePartOf,
   useSelectedCanvasIndex,
-  useSelectedIdsForCanvas, useHighlightedAnnotations,
+  useSelectedIdsForCanvas,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect } from 'react';
