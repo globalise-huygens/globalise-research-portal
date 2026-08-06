@@ -1,0 +1,20 @@
+.manifest-entity-preview {
+  position: fixed;
+  z-index: 100;
+}
+
+.manifest-entity-preview__link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  cursor: pointer;
+}
+
+.manifest-entity-preview__link:hover {
+  color: var(--color-brand-mint);
+}

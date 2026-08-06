@@ -146,8 +146,6 @@ export function renderDiplomaticView(
             entityLabel,
           ],
         );
-        $segment.title = `${entityLabel} | ${entityAnno.id}`;
-
         if (!$entityToSegments[entityAnno.id]) {
           $entityToSegments[entityAnno.id] = [];
         }

@@ -48,8 +48,10 @@ export function WordHighlight(
         setHovered(hovering ? id : null);
         if (!hovering) {
           setTooltip(null);
-        } else {
+        } else if (!tone) {
           setTooltip({ text, x: e.clientX, y: e.clientY });
+        } else {
+          setTooltip(null);
         }
       }}
     />

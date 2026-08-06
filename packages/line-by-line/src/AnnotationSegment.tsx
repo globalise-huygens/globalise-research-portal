@@ -75,7 +75,6 @@ function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   return (
     <span
       className={`entity ${category} ${classifiedAs} ${toClassName(label)}${isSelected ? ' selected' : ''}`}
-      title={`${label} | ${annotation.id}`}
     >
       {children}
     </span>
