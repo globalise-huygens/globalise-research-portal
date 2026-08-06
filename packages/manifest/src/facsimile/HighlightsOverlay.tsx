@@ -20,7 +20,7 @@ import {
   useEntityHighlightCategories,
   useIsLayoutElementsVisible,
   usePages,
-  useSelectedIdsForCanvas,
+  useSelectedAnnotationsInFacsimile,
 } from '@globalise/common/document';
 import { orThrow } from '@globalise/common';
 import {
@@ -52,7 +52,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const showLayoutElements = useIsLayoutElementsVisible();
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
-  const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
+  const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
 
   const annotationUrls = useMemo(() => {
     if (!vault) {
@@ -123,12 +123,12 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return words;
     }
-    if(!selectedIds.length) {
+    if(!selected.all.length) {
       return [];
     }
-    return words.filter((w) => selectedIds.includes(w.id));
+    return words.filter((w) => selected.all.includes(w.id));
   },
-  [isScrolling, words, selectedIds]);
+  [isScrolling, words, selected]);
 
   const visibleBlocks = useMemo(() => {
     if (!showLayoutElements) {
@@ -137,12 +137,12 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return blocks;
     }
-    if(!selectedIds.length) {
+    if(!selected.all.length) {
       return [];
     }
-    return blocks.filter((b) => selectedIds.includes(b.id));
+    return blocks.filter((b) => selected.all.includes(b.id));
   },
-  [isScrolling, blocks, selectedIds, showLayoutElements]);
+  [isScrolling, blocks, selected, showLayoutElements]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;

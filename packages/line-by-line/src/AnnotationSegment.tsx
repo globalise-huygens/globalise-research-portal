@@ -9,9 +9,9 @@ import {
   isWord,
 } from '@globalise/common/annotation';
 import {
-  useDocumentStore,
+  useIsClickedInLineByLine,
   useIsHighlightedEntity,
-  useIsSelectedInTranscription,
+  useIsSelectedInLineByLine,
 } from '@globalise/common/document';
 
 type AnnotationProps = {
@@ -30,7 +30,7 @@ export function AnnotationSegment(
   }
 
   if (isWord(annotation)) {
-    return <WordSegment annotation={annotation}>
+    return <WordSegment canvasId={canvasId} annotation={annotation}>
       {children}
     </WordSegment>;
   }
@@ -38,15 +38,16 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>) {
-  const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
+function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
+  const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
+  const isClicked = useIsClickedInLineByLine(canvasId, annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (isSelected && ref.current) {
+    if (isClicked && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [isSelected]);
+  }, [isClicked]);
 
   return (
     <span
@@ -63,7 +64,7 @@ function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const classifiedAs = getEntityClassifiedAsClassName(annotation);
   const category = getEntityTypeClassName(annotation);
   const isHighlightedEntity = useIsHighlightedEntity(annotation);
-  const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
+  const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
 
   if (!isHighlightedEntity) {
     return <>{children}</>;
