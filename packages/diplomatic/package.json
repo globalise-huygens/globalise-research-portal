@@ -8,8 +8,7 @@
   },
   "scripts": {
     "demo": "vite",
-    "screenshot": "npx playwright screenshot --wait-for-selector='.stage .fragment' --viewport-size=1200,500 http://localhost:5175 demo/static/3598_0797-screenshot.jpg && magick demo/static/3598_0797-screenshot.jpg -crop 950x300+150+150 -strip -quality 85 demo/static/3598_0797-screenshot.jpg",
-    "test:watch": "vitest"
+    "screenshot": "npx playwright screenshot --wait-for-selector='.stage .fragment' --viewport-size=1920,800 http://localhost:5175 demo/static/3598_0797-screenshot.jpg && magick demo/static/3598_0797-screenshot.jpg -crop 1520x480+240+240 -strip -quality 85 demo/static/3598_0797-screenshot.jpg",    "test:watch": "vitest"
   },
   "dependencies": {
     "@globalise/common": "*",
