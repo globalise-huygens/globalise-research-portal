@@ -1,0 +1,26 @@
+.search-field {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding-block: 0.25rem;
+    padding-inline: 0.75rem;
+
+    .input-container {
+        flex-grow: 1;
+    }
+
+    .buttons {
+        height: max-content;
+
+        svg {
+            width: var(--s20);
+            height: var(--s20);
+            stroke: white;
+        }
+    }
+
+    .entity {
+        border-radius: 0;
+    }
+}

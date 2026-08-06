@@ -53,6 +53,7 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/consistent-type-definitions": ['warn', 'type'],
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       '@stylistic/semi': ['error', 'always'],
       'curly': ['error', 'all'],
@@ -79,7 +80,6 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off', // Unnecessary optional chain on a non-nullish value
       '@typescript-eslint/no-unsafe-argument': 'off', //Unsafe argument of type `any` assigned to a parameter of type `Error`
       '@typescript-eslint/no-dynamic-delete': 'off', // Do not delete dynamically computed property keys
-      '@typescript-eslint/no-unsafe-member-access': 'off', // Allow CSS modules
     },
   },
 
