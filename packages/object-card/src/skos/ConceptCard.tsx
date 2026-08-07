@@ -75,25 +75,9 @@ export function ConceptCard() {
     0;
   const hasLeftPanel = hasDefinitions || hasExternal;
   const hasBody = hasLeftPanel || hasGraph;
-  const hasSinglePanel = hasLeftPanel !== hasGraph;
-  const hasSplitDetails = hasDefinitions && hasExternal;
-  const isRightOnly = hasGraph && !hasLeftPanel;
-  const isLeftOnly = hasLeftPanel && !hasGraph;
-  const definitionsClassName = hasExternal
-    ? 'definitions definitions-with-external'
-    : 'definitions';
   const cardClassName = ['concept-card', !hasBody ? 'header-only' : undefined]
     .filter(Boolean)
     .join(' ');
-  const bodyClassName =
-    [
-      hasSinglePanel ? 'single-panel' : undefined,
-      isLeftOnly ? 'single-left' : undefined,
-      isRightOnly ? 'single-right' : undefined,
-      hasSplitDetails && hasGraph ? 'wide-details' : undefined,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined;
 
   function handleCopy() {
     void navigator.clipboard.writeText(conceptUri).catch(console.error);
@@ -153,17 +137,13 @@ export function ConceptCard() {
         )}
       </ObjectCardHeader>
       {hasBody && (
-        <ObjectCardBody className={bodyClassName}>
+        <ObjectCardBody
+          className={hasLeftPanel && hasGraph ? undefined : 'single-panel'}
+        >
           {hasLeftPanel && (
-            <ObjectCardPanel
-              side="left"
-              className={hasSplitDetails ? 'details-split' : undefined}
-            >
+            <ObjectCardPanel side="left">
               {hasDefinitions && (
-                <ObjectCardSection
-                  title="Definitions"
-                  className={definitionsClassName}
-                >
+                <ObjectCardSection title="Definitions" className="definitions">
                   <ObjectCardPropertyList>
                     {definitions.map((definition, index) => (
                       <ObjectCardProperty

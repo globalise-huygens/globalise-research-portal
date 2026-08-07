@@ -20,9 +20,7 @@ export function ConceptList({
 
   return (
     <section className="relation">
-      <header className="relation-header">
-        <h4>{title}</h4>
-      </header>
+      <h4 className="relation-title">{title}</h4>
       <ul className="concept-list">
         {concepts.map((concept) => (
           <ConceptNode
