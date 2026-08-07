@@ -123,14 +123,6 @@
       padding-bottom: var(--s16);
     }
 
-    > .body.wide-details {
-      background: linear-gradient(
-        to right,
-        #242529 0 var(--concept-card-right-col-start),
-        #313236 var(--concept-card-right-col-start) 100%
-      );
-    }
-
     > .body.single-right {
       background: #242529;
     }
@@ -389,6 +381,14 @@
     .concept-card {
       > .body {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      > .body:not(.single-panel) {
+        background: linear-gradient(
+          to right,
+          #242529 0 var(--concept-card-right-col-start),
+          #313236 var(--concept-card-right-col-start) 100%
+        );
       }
 
       .panel {
