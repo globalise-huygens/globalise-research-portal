@@ -87,7 +87,7 @@ export function ManifestEntityPreview() {
       setDisplayed(annotation);
       setDetail('subject');
       setHoveredDetail(null);
-      if (annotation && !isPreviewVisible.current) {
+      if (annotation && !isPreviewHovered.current) {
         setPosition(placePreview(pointer.current.x, pointer.current.y));
       }
       isPreviewVisible.current = annotation !== null;
@@ -221,7 +221,10 @@ export function ManifestEntityPreview() {
 
 function useHoveredAnnotation(): EntityAnnotation | null {
   return useDocumentStore((state) => {
-    const selectedId = state.hoveredId ?? state.clickedId;
+    // This is a hover preview, not the persistent document selection. Clicked
+    // annotations remain selected/highlighted elsewhere, but must not keep a
+    // floating card open after the pointer leaves the text.
+    const selectedId = state.hoveredId;
     if (!selectedId) {
       return null;
     }
@@ -627,13 +630,21 @@ function getEntityTypeLabel(
 
 function placePreview(x: number, y: number): CSSProperties {
   const gap = 12;
-  const horizontal = x < window.innerWidth / 2
-    ? { left: x + gap }
-    : { right: window.innerWidth - x + gap };
-  const vertical = y < window.innerHeight / 2
-    ? { top: y + gap }
-    : { bottom: window.innerHeight - y + gap };
-  return { ...horizontal, ...vertical };
+  const cardWidth = Math.min(360, window.innerWidth - 16);
+  // Most previews are compact; only flip above the trigger when this estimate
+  // would otherwise put the card beyond the bottom edge.
+  const cardHeight = Math.min(190, window.innerHeight - 16);
+  const left = x < window.innerWidth / 2
+    ? Math.min(x + gap, window.innerWidth - cardWidth - 8)
+    : Math.max(8, x - cardWidth - gap);
+  // Align near the trigger instead of flipping the whole card far above it.
+  // This leaves a short, predictable path from the highlighted text to the
+  // card and lets the close delay act as a traversable hover bridge.
+  const top = Math.min(
+    Math.max(8, y - 24),
+    window.innerHeight - cardHeight - 8,
+  );
+  return { left, top };
 }
 
 function getExternalLinks(
