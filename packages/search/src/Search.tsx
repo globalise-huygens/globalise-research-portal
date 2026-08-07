@@ -1,3 +1,4 @@
+import '@globalise/design/styles.css';
 import { Panoptes, PanoptesConfiguration, useSearch } from '@knaw-huc/panoptes-react';
 import { FacetedSearch, type Facets } from '@knaw-huc/faceted-search-react';
 import setupWorker from './mock/serverMock';

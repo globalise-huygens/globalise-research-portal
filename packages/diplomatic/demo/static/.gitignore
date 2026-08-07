@@ -1,0 +1,7 @@
+*.png
+*.jpg
+*.json
+!3598_0797-valid.jpg
+!NL-HaNA_1.04.02_3598_0797.jpg
+!NL-HaNA_1.04.02_3598_0797-entities.json
+!NL-HaNA_1.04.02_3598_0797-transcription.json
