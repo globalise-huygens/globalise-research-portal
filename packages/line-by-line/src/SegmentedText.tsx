@@ -45,11 +45,25 @@ export function SegmentedText(
           key={segment.index}
           onMouseEnter={(e) => {
             e.stopPropagation();
-            setHovered(hoverId);
+            // The segment wrapper may cover more than the highlighted entity
+            // (especially for nested annotations). Anchor to the deepest
+            // rendered element under the pointer whenever possible.
+            const target = e.target instanceof HTMLElement
+              ? e.target
+              : e.currentTarget;
+            const rect = target.getBoundingClientRect();
+            setHovered(hoverId, {
+              element: target,
+              x: e.clientX, y: e.clientY,
+              left: rect.left, top: rect.top, right: rect.right,
+              bottom: rect.bottom, width: rect.width, height: rect.height,
+            });
           }}
           onMouseLeave={(e) => {
             e.stopPropagation();
-            setHovered(blockId);
+            // Let the preview close (with its short bridge delay) instead of
+            // replacing the entity anchor with the whole line's anchor.
+            setHovered(null);
           }}
           onClick={(e) => {
             if (hoverId && hoverId !== blockId) {

@@ -6,4 +6,6 @@ export {
   useSchemes,
   loadSchemes,
   ConceptCard,
+  getConceptLabel,
 } from './skos';
+export type { SkosConcept } from './skos';

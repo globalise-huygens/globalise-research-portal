@@ -1,0 +1,40 @@
+.manifest-entity-preview {
+  position: fixed;
+  width: max-content;
+  z-index: 100;
+}
+
+/* A small transparent interaction buffer bridges the visual gap between the
+ * highlighted text and its card. It makes the card reachable without changing
+ * the visible placement or obscuring a meaningful area of the transcription. */
+.manifest-entity-preview::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
+
+.manifest-entity-preview > * {
+  position: relative;
+  z-index: 1;
+}
+
+.manifest-entity-preview__related {
+  position: absolute;
+  z-index: 101;
+}
+
+.manifest-entity-preview__link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  cursor: pointer;
+}
+
+.manifest-entity-preview__link:hover {
+  color: var(--color-brand-mint);
+}
