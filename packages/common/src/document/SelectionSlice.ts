@@ -5,11 +5,36 @@ import { CanvasId, emptyAnnotationIndex } from './ManifestViewerSlice';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
+  hoveredAt: HoverAnchor | null;
   clickedId: Id | null;
 };
 
-export function setHovered(id: Id | null) {
-  useDocumentStore.setState({ hoveredId: id });
+export type HoverAnchor = {
+  element?: Element;
+  x: number;
+  y: number;
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
+
+export function setHovered(
+  id: Id | null,
+  anchor?: HoverAnchor,
+) {
+  const current = useDocumentStore.getState();
+  if (current.hoveredId === id) {
+    if (!anchor || !current.hoveredAt) {
+      return;
+    }
+  }
+  useDocumentStore.setState({
+    hoveredId: id,
+    hoveredAt: id && anchor ? anchor : null,
+  });
 }
 
 export function toggleClicked(id: Id) {
@@ -20,7 +45,7 @@ export function toggleClicked(id: Id) {
 }
 
 export function clearSelection() {
-  useDocumentStore.setState({ hoveredId: null, clickedId: null });
+  useDocumentStore.setState({ hoveredId: null, hoveredAt: null, clickedId: null });
 }
 
 /**

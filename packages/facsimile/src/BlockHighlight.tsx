@@ -30,9 +30,20 @@ export function BlockHighlight(
     <Highlight
       points={points}
       highlightStyle={highlightStyle}
-      onHover={(hovering) => {
+      onHover={(hovering, event) => {
         setHoveredLocal(hovering);
-        setHovered(hovering ? id : null);
+        setHovered(
+          hovering ? id : null,
+          hovering ? (() => {
+            const rect = event.currentTarget.getBoundingClientRect();
+            return {
+              element: event.currentTarget,
+              x: event.clientX, y: event.clientY,
+              left: rect.left, top: rect.top, right: rect.right,
+              bottom: rect.bottom, width: rect.width, height: rect.height,
+            };
+          })() : undefined,
+        );
       }}
     />
   );

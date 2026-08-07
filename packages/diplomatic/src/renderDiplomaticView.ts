@@ -12,6 +12,7 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
+import type { HoverAnchor } from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
 import {
   D3El,
@@ -48,7 +49,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
     highlightedEntityCategories?: Set<EntityClassificationId>;
-    onHover?: (id: Id | null) => void;
+    onHover?: (id: Id | null, anchor?: HoverAnchor) => void;
     onClick?: (id: Id) => void;
   };
 
@@ -152,12 +153,28 @@ export function renderDiplomaticView(
         $entityToSegments[entityAnno.id].push($segment);
 
         $segment.addEventListener('click', () => onClick(entityAnno.id));
-        $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
+        $segment.addEventListener('mouseenter', (event) => {
+          const rect = $segment.getBoundingClientRect();
+          onHover(entityAnno.id, {
+            element: $segment,
+            x: event.clientX, y: event.clientY,
+            left: rect.left, top: rect.top, right: rect.right,
+            bottom: rect.bottom, width: rect.width, height: rect.height,
+          });
+        });
         $segment.addEventListener('mouseleave', () => onHover(null));
       } else {
         const blockId = wordToBlock[wordId];
         $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => onHover(wordId));
+        $segment.addEventListener('mouseenter', (event) => {
+          const rect = $segment.getBoundingClientRect();
+          onHover(wordId, {
+            element: $segment,
+            x: event.clientX, y: event.clientY,
+            left: rect.left, top: rect.top, right: rect.right,
+            bottom: rect.bottom, width: rect.width, height: rect.height,
+          });
+        });
         $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
       }
     }

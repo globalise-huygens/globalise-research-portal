@@ -19,9 +19,15 @@ export const SegmentedLine = memo(function SegmentedLine(
     <span
       className="line"
       data-line-id={lineId}
-      onMouseEnter={() => {
+      onMouseEnter={(event) => {
         if (blockId) {
-          setHovered(blockId);
+          const rect = event.currentTarget.getBoundingClientRect();
+          setHovered(blockId, {
+            element: event.currentTarget,
+            x: event.clientX, y: event.clientY,
+            left: rect.left, top: rect.top, right: rect.right,
+            bottom: rect.bottom, width: rect.width, height: rect.height,
+          });
         }
       }}
       onMouseLeave={() => { setHovered(null); }}

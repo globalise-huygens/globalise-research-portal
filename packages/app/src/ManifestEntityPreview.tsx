@@ -8,7 +8,10 @@ import {
   type EntityBody,
   type EntityClassificationId,
 } from '@globalise/common/annotation';
-import { useDocumentStore } from '@globalise/common/document';
+import {
+  useDocumentStore,
+  type HoverAnchor,
+} from '@globalise/common/document';
 import {
   EntityPreviewCard,
   IconEntityCommodity,
@@ -33,11 +36,13 @@ import {
 } from '@globalise/object-card';
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import './ManifestEntityPreview.css';
 
 const CLOSE_DELAY = 160;
@@ -59,11 +64,18 @@ type PreviewDetail = 'subject' | 'assertion' | 'concept';
 
 export function ManifestEntityPreview() {
   const annotation = useHoveredAnnotation();
+  const hoveredAt = useDocumentStore((state) => state.hoveredAt);
   const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
   const [detail, setDetail] = useState<PreviewDetail>('subject');
   const [hoveredDetail, setHoveredDetail] = useState<PreviewDetail | null>(null);
   const conceptState = useConcept();
-  const [position, setPosition] = useState<CSSProperties>({ left: 0, top: 0 });
+  const [anchor, setAnchor] = useState<HoverAnchor | null>(null);
+  const [position, setPosition] = useState<CSSProperties>({
+    left: 0,
+    top: 0,
+    visibility: 'hidden',
+  });
+  const previewRef = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const closeTimer = useRef<number | undefined>(undefined);
   const detailHoverTimer = useRef<number | undefined>(undefined);
@@ -87,13 +99,62 @@ export function ManifestEntityPreview() {
       setDisplayed(annotation);
       setDetail('subject');
       setHoveredDetail(null);
-      if (annotation && !isPreviewHovered.current) {
-        setPosition(placePreview(pointer.current.x, pointer.current.y));
+      if (annotation && hoveredAt) {
+        setAnchor(hoveredAt);
+      } else if (annotation) {
+        setAnchor({
+          x: pointer.current.x,
+          y: pointer.current.y,
+          left: pointer.current.x,
+          top: pointer.current.y,
+          right: pointer.current.x,
+          bottom: pointer.current.y,
+          width: 0,
+          height: 0,
+        });
+      } else {
+        setAnchor(null);
       }
       isPreviewVisible.current = annotation !== null;
     }, annotation ? 0 : CLOSE_DELAY);
     return () => window.clearTimeout(closeTimer.current);
-  }, [annotation]);
+  }, [annotation, hoveredAt]);
+
+  useLayoutEffect(() => {
+    const preview = previewRef.current;
+    if (!displayed || !anchor || !preview) {
+      return;
+    }
+
+    const updatePosition = () => {
+      const rect = preview.getBoundingClientRect();
+      const anchorRect = anchor.element?.getBoundingClientRect();
+      const currentAnchor = anchorRect
+        ? {
+            ...anchor,
+            left: anchorRect.left,
+            top: anchorRect.top,
+            right: anchorRect.right,
+            bottom: anchorRect.bottom,
+            width: anchorRect.width,
+            height: anchorRect.height,
+          }
+        : anchor;
+      setPosition(placePreview(currentAnchor, rect.width, rect.height));
+    };
+
+    updatePosition();
+    const resizeObserver = new ResizeObserver(updatePosition);
+    resizeObserver.observe(preview);
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [anchor, displayed, detail, hoveredDetail]);
 
   const conceptUri = displayed ? getConceptUri(displayed) : undefined;
 
@@ -160,8 +221,9 @@ export function ManifestEntityPreview() {
       }
     : null;
 
-  return (
+  return createPortal(
     <div
+      ref={previewRef}
       className="manifest-entity-preview"
       style={position}
       onMouseEnter={() => {
@@ -215,7 +277,8 @@ export function ManifestEntityPreview() {
           <EntityPreviewCard data={conceptPreview} />
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -628,23 +691,36 @@ function getEntityTypeLabel(
   }
 }
 
-function placePreview(x: number, y: number): CSSProperties {
-  const gap = 12;
-  const cardWidth = Math.min(360, window.innerWidth - 16);
-  // Most previews are compact; only flip above the trigger when this estimate
-  // would otherwise put the card beyond the bottom edge.
-  const cardHeight = Math.min(190, window.innerHeight - 16);
-  const left = x < window.innerWidth / 2
-    ? Math.min(x + gap, window.innerWidth - cardWidth - 8)
-    : Math.max(8, x - cardWidth - gap);
-  // Align near the trigger instead of flipping the whole card far above it.
-  // This leaves a short, predictable path from the highlighted text to the
-  // card and lets the close delay act as a traversable hover bridge.
-  const top = Math.min(
-    Math.max(8, y - 24),
-    window.innerHeight - cardHeight - 8,
-  );
-  return { left, top };
+function placePreview(
+  anchor: HoverAnchor,
+  cardWidth: number,
+  cardHeight: number,
+): CSSProperties {
+  const margin = 8;
+  const gap = 8;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const maxLeft = Math.max(margin, viewportWidth - cardWidth - margin);
+  const maxTop = Math.max(margin, viewportHeight - cardHeight - margin);
+  const left = clamp(anchor.left, margin, maxLeft);
+  const belowTop = anchor.bottom + gap;
+  const aboveTop = anchor.top - cardHeight - gap;
+  const spaceBelow = viewportHeight - margin - belowTop;
+  const spaceAbove = anchor.top - gap - margin;
+  const preferredTop = cardHeight <= spaceBelow
+    ? belowTop
+    : cardHeight <= spaceAbove
+      ? aboveTop
+      : spaceBelow >= spaceAbove
+        ? belowTop
+        : aboveTop;
+  const top = clamp(preferredTop, margin, maxTop);
+
+  return { left, top, visibility: 'visible' };
+}
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(Math.max(value, minimum), maximum);
 }
 
 function getExternalLinks(

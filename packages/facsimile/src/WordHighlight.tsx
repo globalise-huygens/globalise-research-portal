@@ -45,7 +45,16 @@ export function WordHighlight(
       onClick={() => toggleClicked(id)}
       onHover={(hovering, e) => {
         setHoveredLocal(hovering);
-        setHovered(hovering ? id : null);
+        const rect = e.currentTarget.getBoundingClientRect();
+        setHovered(
+          hovering ? id : null,
+          hovering ? {
+            element: e.currentTarget,
+            x: e.clientX, y: e.clientY,
+            left: rect.left, top: rect.top, right: rect.right,
+            bottom: rect.bottom, width: rect.width, height: rect.height,
+          } : undefined,
+        );
         if (!hovering) {
           setTooltip(null);
         } else if (!tone) {
