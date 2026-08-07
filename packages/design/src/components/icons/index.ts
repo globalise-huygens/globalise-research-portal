@@ -14,6 +14,7 @@ export { IconDownload } from './IconDownload';
 export { IconEast } from './IconEast';
 export { IconEntities } from './IconEntities';
 export { IconEntityCommodity } from './IconEntityCommodity';
+export { IconEntityConcept } from './IconEntityConcept';
 export { IconEntityDate } from './IconEntityDate';
 export { IconEntityDimensions } from './IconEntityDimensions';
 export { IconEntityDocument } from './IconEntityDocument';

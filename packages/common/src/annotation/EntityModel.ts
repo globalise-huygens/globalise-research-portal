@@ -8,8 +8,10 @@ export type EntityBody = {
   value?: string | number;
   timespan?: {
     type: string;
+    begin_of_the_begin?: string;
     end_of_the_begin?: string;
     begin_of_the_end?: string;
+    end_of_the_end?: string;
   };
   ascribes_classification?: {
     id: string,
@@ -22,6 +24,7 @@ export type EntityBody = {
     type: string;
     content: string;
   };
+  unit?: EntityReference;
 };
 
 /** The semantic links represented by an entity annotation. */

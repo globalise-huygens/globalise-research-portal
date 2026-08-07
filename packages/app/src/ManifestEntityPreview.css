@@ -1,6 +1,14 @@
 .manifest-entity-preview {
   position: fixed;
+  width: max-content;
   z-index: 100;
+}
+
+.manifest-entity-preview__related {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 32px;
+  z-index: 101;
 }
 
 .manifest-entity-preview__link {

@@ -1,4 +1,4 @@
-import { IconArrowTopRight, IconExternalLink } from '../icons';
+import { IconArrowTopRight, IconCopy, IconExternalLink } from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
 import { Popover } from './Popover';
@@ -9,6 +9,7 @@ export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 export type EntityPreviewCardKind =
   | 'entity'
   | 'commodity'
+  | 'concept'
   | 'date'
   | 'dimensions'
   | 'document'
@@ -29,6 +30,10 @@ export type EntityPreviewCardBaseData = {
   externalLinks?: EntityPreviewCardExternalLink[];
   openFullCardLabel?: string;
   openFullCardHref?: string;
+  /** URI or annotation identifier copied by the compact card action. */
+  copyValue?: string;
+  /** Whether the card represents a resolved authority/concept record. */
+  linked?: boolean;
 };
 
 export type EntityPreviewCardEntityData = {
@@ -42,6 +47,10 @@ export type EntityPreviewCardCommodityData = {
   unit?: React.ReactNode;
   mentions?: React.ReactNode;
   qualifier?: React.ReactNode;
+} & EntityPreviewCardBaseData;
+
+export type EntityPreviewCardConceptData = {
+  kind: 'concept';
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDateData = {
@@ -126,6 +135,7 @@ export type EntityPreviewCardShipData = {
 export type EntityPreviewCardData =
   | EntityPreviewCardEntityData
   | EntityPreviewCardCommodityData
+  | EntityPreviewCardConceptData
   | EntityPreviewCardDateData
   | EntityPreviewCardDimensionsData
   | EntityPreviewCardDocumentData
@@ -154,6 +164,9 @@ export type EntityPreviewCardExternalLink = {
 function getEntityBadgeType(
   kind: EntityPreviewCardKind,
 ): EntityBadgeType | 'entity' {
+  if (kind === 'concept') {
+    return 'entity';
+  }
   if (kind === 'polity') {
     return 'organisation';
   }
@@ -169,6 +182,8 @@ function getEntityBadgeLabel(kind: EntityPreviewCardKind) {
   switch (kind) {
     case 'entity':
       return 'Entity';
+    case 'concept':
+      return 'Concept';
     case 'organisation':
       return 'Organisation';
     case 'dimensions':
@@ -304,6 +319,8 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
       size="compact"
       className={cn('entity-preview-card', className)}
       data-has-external-links={data.externalLinks?.length ? 'true' : 'false'}
+      data-linked={data.linked ? 'true' : 'false'}
+      data-kind={data.kind}
     >
       <div className="header">
         <div className="identity">
@@ -338,6 +355,18 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         </div>
 
         <div className="actions">
+          {data.copyValue && (
+            <button
+              type="button"
+              aria-label="Copy identifier"
+              className="action"
+              onClick={() => {
+                void navigator.clipboard?.writeText(data.copyValue ?? '');
+              }}
+            >
+              <IconCopy />
+            </button>
+          )}
           {data.openFullCardHref && (
             <a
               href={data.openFullCardHref}

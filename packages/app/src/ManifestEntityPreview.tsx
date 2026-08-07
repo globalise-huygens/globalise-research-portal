@@ -12,6 +12,7 @@ import { useDocumentStore } from '@globalise/common/document';
 import {
   EntityPreviewCard,
   IconEntityCommodity,
+  IconEntityConcept,
   IconEntityDate,
   IconEntityDimensions,
   IconEntityDocument,
@@ -60,10 +61,12 @@ export function ManifestEntityPreview() {
   const annotation = useHoveredAnnotation();
   const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
   const [detail, setDetail] = useState<PreviewDetail>('subject');
+  const [hoveredDetail, setHoveredDetail] = useState<PreviewDetail | null>(null);
   const conceptState = useConcept();
   const [position, setPosition] = useState<CSSProperties>({ left: 0, top: 0 });
   const pointer = useRef({ x: 0, y: 0 });
   const closeTimer = useRef<number | undefined>(undefined);
+  const detailHoverTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
   const isPreviewVisible = useRef(false);
 
@@ -83,6 +86,7 @@ export function ManifestEntityPreview() {
     closeTimer.current = window.setTimeout(() => {
       setDisplayed(annotation);
       setDetail('subject');
+      setHoveredDetail(null);
       if (annotation && !isPreviewVisible.current) {
         setPosition(placePreview(pointer.current.x, pointer.current.y));
       }
@@ -108,10 +112,11 @@ export function ManifestEntityPreview() {
     ? conceptState.concept
     : null;
   const relationships = getEntityRelationships(displayed);
+  const linkedSubject = getLinkedSubject(relationships.subject);
   const title = detail === 'concept' && concept
     ? getConceptLabel(concept)
-    : detail === 'subject' && relationships.subject?._label
-      ? relationships.subject._label
+    : detail === 'subject' && linkedSubject?._label
+      ? linkedSubject._label
       : detail === 'assertion' && relationships.appellation
         ? relationships.appellation
         : preview.title;
@@ -125,14 +130,35 @@ export function ManifestEntityPreview() {
     : undefined;
   const href = detail === 'concept' && conceptUri
     ? `/object-card?concept=${encodeURIComponent(conceptUri)}`
-    : detail === 'subject' && relationships.subject?.id && isUrl(relationships.subject.id)
-      ? relationships.subject.id
+    : detail === 'subject' && linkedSubject?.id && isUrl(linkedSubject.id)
+      ? linkedSubject.id
     : undefined;
-  const externalLinks = detail === 'assertion'
-    ? getAssertionLinks(displayed)
-    : detail === 'concept'
-      ? getExternalLinks(displayed, concept)
-      : [];
+  // The compact card exposes identifiers through the copy action. Full
+  // external-link lists belong on the expanded object card, not this preview.
+  const externalLinks: EntityPreviewCardExternalLink[] = [];
+  const scheduleDetailClear = () => {
+    window.clearTimeout(detailHoverTimer.current);
+    detailHoverTimer.current = window.setTimeout(() => {
+      setHoveredDetail(null);
+    }, 120);
+  };
+  const keepDetail = () => window.clearTimeout(detailHoverTimer.current);
+  const conceptPreview = concept && conceptUri
+    ? {
+        kind: 'concept' as const,
+        icon: <IconEntityConcept />,
+        title: getConceptLabel(concept),
+        definition: preferredValue(concept.definition),
+        alternativeLabels: concept.altLabel
+          ?.map((label) => label['@value'])
+          .filter((label, index, labels) => labels.indexOf(label) === index)
+          .join(', '),
+        properties: getConceptProperties(displayed, concept),
+        openFullCardHref: `/object-card?concept=${encodeURIComponent(conceptUri)}`,
+        copyValue: conceptUri,
+        linked: true,
+      }
+    : null;
 
   return (
     <div
@@ -146,6 +172,7 @@ export function ManifestEntityPreview() {
         isPreviewHovered.current = false;
         setDisplayed(annotation);
         setDetail('subject');
+        setHoveredDetail(null);
         isPreviewVisible.current = annotation !== null;
       }}
     >
@@ -157,18 +184,37 @@ export function ManifestEntityPreview() {
           definition,
           alternativeLabels,
           properties: detail === 'concept'
-            ? []
+            ? getConceptProperties(displayed, concept)
             : getDetailProperties(
               displayed,
               detail,
               relationships,
+              linkedSubject,
               concept,
               setDetail,
+              setHoveredDetail,
+              keepDetail,
+              scheduleDetailClear,
             ),
           externalLinks,
           openFullCardHref: href,
+          copyValue: detail === 'concept'
+            ? conceptUri
+            : detail === 'subject'
+              ? linkedSubject?.id ?? displayed.id
+              : displayed.id,
+          linked: detail === 'concept' || !!linkedSubject,
         }}
       />
+      {hoveredDetail === 'concept' && conceptPreview && (
+        <div
+          className="manifest-entity-preview__related"
+          onMouseEnter={keepDetail}
+          onMouseLeave={scheduleDetailClear}
+        >
+          <EntityPreviewCard data={conceptPreview} />
+        </div>
+      )}
     </div>
   );
 }
@@ -233,30 +279,46 @@ function getConceptUri(annotation: EntityAnnotation) {
 function getPreviewContent(annotation: EntityAnnotation): PreviewContent {
   const body = getPrimaryEntityBody(annotation);
   const category = getPreviewCategory(getEntityClassificationId(annotation));
-  const subject = body.has_appellative_subject
-    ?? body.has_classificatory_subject;
-  const title = body.label
-    ?? body.ascribes_appellation?.content
-    ?? subject?._label
-    ?? body.classified_as._label;
-  const properties: EntityPreviewCardProperty[] = [
-    {
-      label: 'Type',
-      value: getEntityTypeLabel(getEntityClassificationId(annotation)),
-    },
-  ];
-  if (body.value !== undefined) {
-    properties.push({ label: 'Value', value: body.value });
-  }
+  const title = getUnlinkedTitle(annotation);
+  const properties = getUnlinkedProperties(annotation);
   return { ...category, title, properties };
+}
+
+function getUnlinkedTitle(annotation: EntityAnnotation) {
+  const body = getPrimaryEntityBody(annotation);
+  if (isClassificationOnly(annotation)) {
+    return 'Unknown';
+  }
+  return body.label
+    ?? body.ascribes_appellation?.content
+    ?? getQuantityTitle(body)
+    ?? body.classified_as._label;
+}
+
+function isClassificationOnly(annotation: EntityAnnotation) {
+  const classificationId = getEntityClassificationId(annotation);
+  if (classificationId === 'gan:CMTY_QUAL') {
+    return false;
+  }
+  return classificationId === 'gan:DOC'
+    || classificationId === 'gan:ORG'
+    || classificationId === 'gan:PER_ATTR'
+    || classificationId === 'gan:SHIP_TYPE'
+    || classificationId === 'gan:PRF'
+    || classificationId === 'gan:STATUS'
+    || classificationId === 'gan:ETH_REL';
 }
 
 function getDetailProperties(
   annotation: EntityAnnotation,
   detail: PreviewDetail,
   relationships: ReturnType<typeof getEntityRelationships>,
+  linkedSubject: ReturnType<typeof getLinkedSubject>,
   concept: SkosConcept | null,
   onDetail: (detail: PreviewDetail) => void,
+  onHoverDetail: (detail: PreviewDetail) => void,
+  keepDetail: () => void,
+  scheduleDetailClear: () => void,
 ): EntityPreviewCardProperty[] {
   const classificationLabel = relationships.classification?._label;
   const conceptLabel = concept ? getConceptLabel(concept) : classificationLabel;
@@ -268,18 +330,39 @@ function getDetailProperties(
         event.stopPropagation();
         onDetail(next);
       }}
+      onMouseEnter={() => {
+        keepDetail();
+        onHoverDetail(next);
+      }}
+      onMouseLeave={scheduleDetailClear}
     >
       {label}
     </button>
   );
 
   if (detail === 'subject') {
+    if (!linkedSubject) {
+      return getUnlinkedProperties(annotation);
+    }
     const properties: (EntityPreviewCardProperty | null)[] = [
       relationships.appellation
         ? { label: 'Alt label', value: link(relationships.appellation, 'assertion') }
         : null,
+      linkedSubject.type
+        ? { label: 'Type', value: getLinkedSubjectTypeLabel(linkedSubject.type) }
+        : null,
       conceptLabel
-        ? { label: 'Type', value: conceptUriValue(concept, conceptLabel, onDetail) }
+        ? { label: 'Classified as', value: conceptUriValue(
+          concept,
+          conceptLabel,
+          onDetail,
+          onHoverDetail,
+          keepDetail,
+          scheduleDetailClear,
+        ) }
+        : null,
+      concept
+        ? { label: 'Type of link', value: 'equivalent' }
         : null,
       { label: 'Recognised', value: link(annotationBodyLabel(annotation), 'assertion') },
     ];
@@ -292,13 +375,45 @@ function getDetailProperties(
   const properties: (EntityPreviewCardProperty | null)[] = [
     { label: 'Type', value: getEntityTypeLabel(getEntityClassificationId(annotation)) },
     { label: 'Recognised', value: body.classified_as._label },
-    relationships.subject?._label
-      ? { label: 'Subject', value: link(relationships.subject._label, 'subject') }
+    linkedSubject?._label
+      ? { label: 'Subject', value: link(linkedSubject._label, 'subject') }
       : null,
   ];
   return properties.filter(
     (property): property is EntityPreviewCardProperty => property !== null,
   );
+}
+
+function getLinkedSubjectTypeLabel(type: string) {
+  return type
+    .replace(/^.*[#/]/, '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
+function getConceptProperties(
+  annotation: EntityAnnotation,
+  concept: SkosConcept | null,
+): EntityPreviewCardProperty[] {
+  if (!concept) {
+    return [];
+  }
+  const classification = getPrimaryEntityBody(annotation).classified_as._label;
+  const scheme = concept.inScheme?.[0]
+    ? getConceptLabel(concept.inScheme[0])
+    : undefined;
+  const broader = concept.broader?.[0]
+    ? getConceptLabel(concept.broader[0])
+    : undefined;
+  const properties: EntityPreviewCardProperty[] = [
+    { label: 'Type', value: 'Concept' },
+    ...(scheme ? [{ label: 'Scheme', value: scheme }] : []),
+    ...(broader ? [{ label: 'Broader', value: broader }] : []),
+    { label: 'Classified by', value: classification },
+  ];
+  if (concept.exactMatch?.length || concept.closeMatch?.length) {
+    properties.push({ label: 'Type of link', value: 'equivalent' });
+  }
+  return properties;
 }
 
 function getEntityRelationships(annotation: EntityAnnotation) {
@@ -311,10 +426,94 @@ function getEntityRelationships(annotation: EntityAnnotation) {
   };
 }
 
+function getLinkedSubject(
+  subject: ReturnType<typeof getEntityRelationships>['subject'],
+): ReturnType<typeof getEntityRelationships>['subject'] {
+  // A generated entity annotation always has a subject resource, even when no
+  // authority match exists. Until the authority resolver supplies an explicit
+  // linked record, treat these subjects as evidence-only and keep the card in
+  // the unlinked variant. This prevents a false open-record arrow on every
+  // local NER person/place/etc. annotation.
+  void subject;
+  return undefined;
+}
+
+function getQuantityTitle(body: EntityBody) {
+  const unit = (body as EntityBody & { unit?: { _label: string } }).unit;
+  if (body.classified_as.id !== 'gan:CMTY_QUANT' || body.value === undefined) {
+    return undefined;
+  }
+  return unit?._label
+    ? `${body.value} ${unit._label}`
+    : String(body.value);
+}
+
+function getUnlinkedProperties(annotation: EntityAnnotation): EntityPreviewCardProperty[] {
+  const body = getPrimaryEntityBody(annotation);
+  const unit = (body as EntityBody & { unit?: { _label: string } }).unit;
+  const classificationId = getEntityClassificationId(annotation);
+  const properties: EntityPreviewCardProperty[] = [
+    { label: 'Type', value: getEntityKindLabel(classificationId) },
+  ];
+  if (classificationId === 'gan:DATE' && body.timespan) {
+    const timespan = body.timespan;
+    properties.push(
+      { label: 'Begin of the begin', value: timespan.begin_of_the_begin ?? '-' },
+      { label: 'Begin of the end', value: timespan.begin_of_the_end ?? '-' },
+      { label: 'End of the begin', value: timespan.end_of_the_begin ?? '-' },
+      { label: 'End of the end', value: timespan.end_of_the_end ?? '-' },
+    );
+  }
+  if (classificationId === 'gan:CMTY_QUANT') {
+    properties.push({ label: 'Value', value: body.value ?? '-' });
+    properties.push({ label: 'Unit', value: unit?._label ?? '-' });
+  }
+  if (isClassificationOnly(annotation)) {
+    properties.push({
+      label: 'Classified as',
+      value: body.label ?? body.ascribes_appellation?.content ?? '—',
+    });
+  }
+  properties.push({ label: 'Classified by', value: body.classified_as._label });
+  return properties;
+}
+
+function getEntityKindLabel(classificationId: EntityClassificationId | undefined) {
+  switch (classificationId) {
+    case 'gan:LOC_NAME':
+    case 'gan:LOC_ADJ':
+      return 'Place';
+    case 'gan:PER_NAME':
+    case 'gan:PER_ATTR':
+    case 'gan:PRF':
+    case 'gan:STATUS':
+      return 'Person';
+    case 'gan:ORG':
+      return 'Organisation';
+    case 'gan:SHIP':
+    case 'gan:SHIP_TYPE':
+      return 'Ship';
+    case 'gan:DOC':
+      return 'Document';
+    case 'gan:CMTY_NAME':
+    case 'gan:CMTY_QUAL':
+      return 'Commodity';
+    case 'gan:CMTY_QUANT':
+      return 'Exchange Unit';
+    case 'gan:DATE':
+      return 'Date';
+    default:
+      return 'Entity';
+  }
+}
+
 function conceptUriValue(
   concept: SkosConcept | null,
   label: string,
   onDetail: (detail: PreviewDetail) => void,
+  onHoverDetail: (detail: PreviewDetail) => void,
+  keepDetail: () => void,
+  scheduleDetailClear: () => void,
 ) {
   return concept
     ? <button
@@ -324,6 +523,11 @@ function conceptUriValue(
           event.stopPropagation();
           onDetail('concept');
         }}
+        onMouseEnter={() => {
+          keepDetail();
+          onHoverDetail('concept');
+        }}
+        onMouseLeave={scheduleDetailClear}
       >
         {label}
       </button>
@@ -359,8 +563,10 @@ function preferredValue(
 
 function getEntityTypeLabel(
   classificationId: EntityClassificationId | undefined,
+  body?: EntityBody,
 ) {
-  switch (classificationId) {
+  const id = classificationId as string | undefined;
+  switch (id) {
     case 'gan:PER_NAME':
       return 'Person name';
     case 'gan:PER_ATTR':
@@ -390,9 +596,32 @@ function getEntityTypeLabel(
     case 'gan:DOC':
       return 'Document';
     case 'gan:CMTY_QUANT':
-      return 'Quantity';
+      return 'Exchange Unit';
     default:
-      return 'Entity';
+      switch (id) {
+        case 'gan:LOC_NAME':
+        case 'gan:LOC_ADJ':
+          return 'Place';
+        case 'gan:PER_NAME':
+        case 'gan:PER_ATTR':
+        case 'gan:PRF':
+        case 'gan:STATUS':
+          return 'Person';
+        case 'gan:ORG':
+          return 'Organisation';
+        case 'gan:SHIP':
+        case 'gan:SHIP_TYPE':
+          return 'Ship';
+        case 'gan:DOC':
+          return 'Document';
+        case 'gan:CMTY_NAME':
+        case 'gan:CMTY_QUAL':
+          return 'Commodity';
+        case 'gan:DATE':
+          return 'Date';
+        default:
+          return body?.type === 'AppellativeStatus' ? 'Entity' : 'Entity';
+      }
   }
 }
 
