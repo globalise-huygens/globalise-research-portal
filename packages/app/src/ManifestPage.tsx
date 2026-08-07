@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
+import { installLocalLinkedConceptFixture } from './localLinkedConceptFixture.ts';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -32,6 +33,8 @@ export function ManifestPage() {
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
+
+  useEffect(() => installLocalLinkedConceptFixture(), []);
 
   const allManifests = useCollectionManifests(collectionUrl);
 

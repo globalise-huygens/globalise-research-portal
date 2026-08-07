@@ -9,6 +9,7 @@ import {
   type EntityClassificationId,
 } from '@globalise/common/annotation';
 import {
+  setHovered,
   useDocumentStore,
   type HoverAnchor,
 } from '@globalise/common/document';
@@ -45,7 +46,10 @@ import {
 import { createPortal } from 'react-dom';
 import './ManifestEntityPreview.css';
 
-const CLOSE_DELAY = 160;
+// Hoverable supplemental content must remain available while the pointer or
+// keyboard focus moves from its trigger into the content (WCAG 1.4.13).
+const CLOSE_DELAY = 700;
+const DETAIL_CLOSE_DELAY = 500;
 const NER_TYPE_BASE_URL =
   'https://digitaalerfgoed.poolparty.biz/globalise/annotation/ner/';
 
@@ -75,12 +79,17 @@ export function ManifestEntityPreview() {
     top: 0,
     visibility: 'hidden',
   });
+  const [relatedPosition, setRelatedPosition] = useState<CSSProperties>({
+    left: 0,
+    top: 0,
+  });
   const previewRef = useRef<HTMLDivElement>(null);
+  const relatedPreviewRef = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const closeTimer = useRef<number | undefined>(undefined);
   const detailHoverTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
-  const isPreviewVisible = useRef(false);
+  const displayedId = useRef<string | null>(null);
 
   useEffect(() => {
     const rememberPointer = (event: PointerEvent) => {
@@ -91,34 +100,54 @@ export function ManifestEntityPreview() {
   }, []);
 
   useEffect(() => {
-    window.clearTimeout(closeTimer.current);
-    if (!annotation && isPreviewHovered.current) {
+    if (annotation) {
+      window.clearTimeout(closeTimer.current);
+      const changedAnnotation = displayedId.current !== annotation.id;
+      displayedId.current = annotation.id;
+      setDisplayed(annotation);
+      if (changedAnnotation) {
+        setDetail('subject');
+        setHoveredDetail(null);
+      }
+      setAnchor(hoveredAt ?? {
+        x: pointer.current.x,
+        y: pointer.current.y,
+        left: pointer.current.x,
+        top: pointer.current.y,
+        right: pointer.current.x,
+        bottom: pointer.current.y,
+        width: 0,
+        height: 0,
+      });
       return;
     }
+
+    if (isPreviewHovered.current) {
+      return;
+    }
+
+    window.clearTimeout(closeTimer.current);
     closeTimer.current = window.setTimeout(() => {
-      setDisplayed(annotation);
+      // A pointer or keyboard transition into the card wins over the delayed
+      // leave event emitted by the transcription/facsimile annotation.
+      if (
+        isPreviewHovered.current ||
+        useDocumentStore.getState().hoveredId !== null
+      ) {
+        return;
+      }
+      displayedId.current = null;
+      setDisplayed(null);
+      setAnchor(null);
       setDetail('subject');
       setHoveredDetail(null);
-      if (annotation && hoveredAt) {
-        setAnchor(hoveredAt);
-      } else if (annotation) {
-        setAnchor({
-          x: pointer.current.x,
-          y: pointer.current.y,
-          left: pointer.current.x,
-          top: pointer.current.y,
-          right: pointer.current.x,
-          bottom: pointer.current.y,
-          width: 0,
-          height: 0,
-        });
-      } else {
-        setAnchor(null);
-      }
-      isPreviewVisible.current = annotation !== null;
-    }, annotation ? 0 : CLOSE_DELAY);
-    return () => window.clearTimeout(closeTimer.current);
+    }, CLOSE_DELAY);
   }, [annotation, hoveredAt]);
+
+  useEffect(() => () => {
+    window.clearTimeout(closeTimer.current);
+    window.clearTimeout(detailHoverTimer.current);
+  }, []);
 
   useLayoutEffect(() => {
     const preview = previewRef.current;
@@ -128,6 +157,7 @@ export function ManifestEntityPreview() {
 
     const updatePosition = () => {
       const rect = preview.getBoundingClientRect();
+      const relatedRect = relatedPreviewRef.current?.getBoundingClientRect();
       const anchorRect = anchor.element?.getBoundingClientRect();
       const currentAnchor = anchorRect
         ? {
@@ -140,12 +170,49 @@ export function ManifestEntityPreview() {
             height: anchorRect.height,
           }
         : anchor;
-      setPosition(placePreview(currentAnchor, rect.width, rect.height));
+      // The source card is positioned independently and must not jump when a
+      // related card is added to the stack.
+      const mainPosition = placePreview(currentAnchor, rect.width, rect.height);
+      setPosition(mainPosition);
+
+      if (!relatedRect) {
+        setRelatedPosition({ left: 0, top: 0 });
+        return;
+      }
+
+      const margin = 8;
+      const mainLeft = typeof mainPosition.left === 'number'
+        ? mainPosition.left
+        : 0;
+      const mainTop = typeof mainPosition.top === 'number'
+        ? mainPosition.top
+        : 0;
+      const minimumLeft = margin - mainLeft;
+      const maximumLeft = Math.max(
+        minimumLeft,
+        window.innerWidth - margin - relatedRect.width - mainLeft,
+      );
+      const minimumTop = margin - mainTop;
+      const maximumTop = Math.max(
+        minimumTop,
+        window.innerHeight - margin - relatedRect.height - mainTop,
+      );
+      setRelatedPosition({
+        left: clamp(32, minimumLeft, maximumLeft),
+        top: clamp(
+          Math.min(rect.height * 0.75, 128),
+          minimumTop,
+          maximumTop,
+        ),
+      });
     };
 
     updatePosition();
     const resizeObserver = new ResizeObserver(updatePosition);
     resizeObserver.observe(preview);
+    if (relatedPreviewRef.current) {
+      resizeObserver.observe(relatedPreviewRef.current);
+    }
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition, true);
 
@@ -201,7 +268,7 @@ export function ManifestEntityPreview() {
     window.clearTimeout(detailHoverTimer.current);
     detailHoverTimer.current = window.setTimeout(() => {
       setHoveredDetail(null);
-    }, 120);
+    }, DETAIL_CLOSE_DELAY);
   };
   const keepDetail = () => window.clearTimeout(detailHoverTimer.current);
   const conceptPreview = concept && conceptUri
@@ -226,16 +293,75 @@ export function ManifestEntityPreview() {
       ref={previewRef}
       className="manifest-entity-preview"
       style={position}
-      onMouseEnter={() => {
+      onPointerEnter={() => {
         isPreviewHovered.current = true;
         window.clearTimeout(closeTimer.current);
+        keepDetail();
+        // Keep both the preview and its source highlight active while the user
+        // crosses into or interacts with the card.
+        setHovered(displayed.id, anchor ?? undefined);
       }}
-      onMouseLeave={() => {
+      onPointerLeave={() => {
         isPreviewHovered.current = false;
-        setDisplayed(annotation);
-        setDetail('subject');
+        setHovered(null);
+        window.clearTimeout(closeTimer.current);
+        closeTimer.current = window.setTimeout(() => {
+          if (
+            isPreviewHovered.current ||
+            useDocumentStore.getState().hoveredId !== null
+          ) {
+            return;
+          }
+          displayedId.current = null;
+          setDisplayed(null);
+          setAnchor(null);
+          setDetail('subject');
+          setHoveredDetail(null);
+        }, CLOSE_DELAY);
+        scheduleDetailClear();
+      }}
+      onFocusCapture={() => {
+        isPreviewHovered.current = true;
+        window.clearTimeout(closeTimer.current);
+        keepDetail();
+        setHovered(displayed.id, anchor ?? undefined);
+      }}
+      onBlurCapture={(event) => {
+        if (
+          event.relatedTarget instanceof Node &&
+          event.currentTarget.contains(event.relatedTarget)
+        ) {
+          return;
+        }
+        isPreviewHovered.current = false;
+        setHovered(null);
+        scheduleDetailClear();
+        window.clearTimeout(closeTimer.current);
+        closeTimer.current = window.setTimeout(() => {
+          if (
+            isPreviewHovered.current ||
+            useDocumentStore.getState().hoveredId !== null
+          ) {
+            return;
+          }
+          displayedId.current = null;
+          setDisplayed(null);
+          setAnchor(null);
+          setDetail('subject');
+          setHoveredDetail(null);
+        }, CLOSE_DELAY);
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Escape') {
+          return;
+        }
+        event.stopPropagation();
+        window.clearTimeout(closeTimer.current);
+        window.clearTimeout(detailHoverTimer.current);
+        isPreviewHovered.current = false;
+        setHovered(null);
+        setDisplayed(null);
         setHoveredDetail(null);
-        isPreviewVisible.current = annotation !== null;
       }}
     >
       <EntityPreviewCard
@@ -270,9 +396,15 @@ export function ManifestEntityPreview() {
       />
       {hoveredDetail === 'concept' && conceptPreview && (
         <div
+          ref={relatedPreviewRef}
           className="manifest-entity-preview__related"
-          onMouseEnter={keepDetail}
-          onMouseLeave={scheduleDetailClear}
+          style={relatedPosition}
+          onPointerEnter={() => {
+            isPreviewHovered.current = true;
+            window.clearTimeout(closeTimer.current);
+            keepDetail();
+          }}
+          onPointerLeave={scheduleDetailClear}
         >
           <EntityPreviewCard data={conceptPreview} />
         </div>
@@ -396,11 +528,11 @@ function getDetailProperties(
         event.stopPropagation();
         onDetail(next);
       }}
-      onMouseEnter={() => {
+      onPointerEnter={() => {
         keepDetail();
         onHoverDetail(next);
       }}
-      onMouseLeave={scheduleDetailClear}
+      onPointerLeave={scheduleDetailClear}
     >
       {label}
     </button>
@@ -408,7 +540,26 @@ function getDetailProperties(
 
   if (detail === 'subject') {
     if (!linkedSubject) {
-      return getUnlinkedProperties(annotation);
+      const properties = getUnlinkedProperties(annotation);
+      if (!concept || !conceptLabel) {
+        return properties;
+      }
+      return [
+        properties[0],
+        {
+          label: 'Classified as',
+          value: conceptUriValue(
+            concept,
+            conceptLabel,
+            onDetail,
+            onHoverDetail,
+            keepDetail,
+            scheduleDetailClear,
+          ),
+        },
+        { label: 'Type of link', value: 'equivalent' },
+        ...properties.slice(1),
+      ];
     }
     const properties: (EntityPreviewCardProperty | null)[] = [
       relationships.appellation
@@ -589,11 +740,11 @@ function conceptUriValue(
           event.stopPropagation();
           onDetail('concept');
         }}
-        onMouseEnter={() => {
+        onPointerEnter={() => {
           keepDetail();
           onHoverDetail('concept');
         }}
-        onMouseLeave={scheduleDetailClear}
+        onPointerLeave={scheduleDetailClear}
       >
         {label}
       </button>
