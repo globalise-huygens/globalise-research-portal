@@ -19,8 +19,8 @@ export function ConceptList({
   }
 
   return (
-    <section className="concept-card__relation">
-      <header className="concept-card__relation-header">
+    <section className="relation">
+      <header className="relation-header">
         <h4>{title}</h4>
         <strong>{concepts.length}</strong>
       </header>

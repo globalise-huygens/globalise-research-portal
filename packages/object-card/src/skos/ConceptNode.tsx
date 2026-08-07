@@ -22,22 +22,22 @@ export function ConceptNode({
 }: ConceptNodeProps) {
   const children = childKey ? concept[childKey] : undefined;
   return (
-    <li className="concept-card__concept-node">
+    <li className="concept-node">
       <ObjectCardAction
-        className="concept-card__concept-link"
+        className="concept-link"
         onPress={() => onSelect(concept)}
       >
-        <span className="concept-card__concept-label">
+        <span className="concept-label">
           {getConceptLabel(concept)}
         </span>
         {!!children?.length && (
-          <strong className="concept-card__concept-count">
+          <strong className="concept-count">
             {children.length}
           </strong>
         )}
         <IconArrowTopRight
           aria-hidden="true"
-          className="concept-card__concept-link-icon"
+          className="concept-link-icon"
         />
       </ObjectCardAction>
       {!!children?.length && (

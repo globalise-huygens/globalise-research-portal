@@ -9,9 +9,9 @@ export function MatchList({ title, matches }: MatchListProps) {
   }
 
   return (
-    <section className="concept-card__match-group">
+    <section className="match-group">
       <h4>{title}</h4>
-      <div className="concept-card__match-list">
+      <div className="match-list">
         {matches.map((match, i) => {
           const uri = matchUri(match);
           return (

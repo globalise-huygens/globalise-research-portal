@@ -1,3 +1,4 @@
+import './ConceptCard.css';
 import {
   IconContentWarning,
   IconCopy,
@@ -14,14 +15,13 @@ import {
   ObjectCardStats,
   ObjectCardTitle,
 } from '@globalise/design';
-import './ConceptCard.css';
 import {
-  getConceptLabel,
   ConceptList,
+  getConceptLabel,
   getSkosUrl,
+  loadConcept,
   MatchList,
   SkosConcept,
-  loadConcept,
   useConcept,
 } from './';
 import { HtmlValue } from './HtmlValue.tsx';
@@ -63,26 +63,39 @@ export function ConceptCard() {
     alternativeLabels.length || hiddenLabels.length,
   );
   const hasDefinitions = Boolean(definitions.length || source);
-  const hasExternal = (
-    (concept.closeMatch?.length ?? 0)
-    + (concept.narrowMatch?.length ?? 0)
-    + (concept.exactMatch?.length ?? 0)
-  ) > 0;
-  const hasGraph = (
-    (concept.broader?.length ?? 0)
-    + (concept.narrower?.length ?? 0)
-    + (concept.related?.length ?? 0)
-  ) > 0;
+  const hasExternal =
+    (concept.closeMatch?.length ?? 0) +
+      (concept.narrowMatch?.length ?? 0) +
+      (concept.exactMatch?.length ?? 0) >
+    0;
+  const hasGraph =
+    (concept.broader?.length ?? 0) +
+      (concept.narrower?.length ?? 0) +
+      (concept.related?.length ?? 0) >
+    0;
   const hasLeftPanel = hasDefinitions || hasExternal;
   const hasBody = hasLeftPanel || hasGraph;
   const hasSinglePanel = hasLeftPanel !== hasGraph;
   const hasSplitDetails = hasDefinitions && hasExternal;
-  const bodyClassName = [
-    hasSinglePanel ? 'concept-card__body--single' : undefined,
-    hasSplitDetails && hasGraph
-      ? 'concept-card__body--wide-details'
-      : undefined,
-  ].filter(Boolean).join(' ') || undefined;
+  const isRightOnly = hasGraph && !hasLeftPanel;
+  const isLeftOnly = hasLeftPanel && !hasGraph;
+  const definitionsClassName = hasExternal
+    ? 'definitions definitions-with-external'
+    : 'definitions';
+  const cardClassName = ['concept-card', !hasBody ? 'header-only' : undefined]
+    .filter(Boolean)
+    .join(' ');
+  const bodyClassName =
+    [
+      hasSinglePanel ? 'single-panel' : undefined,
+      isLeftOnly ? 'single-left' : undefined,
+      isRightOnly ? 'single-right' : undefined,
+      hasSplitDetails && hasGraph
+        ? 'wide-details'
+        : undefined,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined;
 
   function handleCopy() {
     void navigator.clipboard.writeText(conceptUri).catch(console.error);
@@ -93,27 +106,29 @@ export function ConceptCard() {
   }
 
   return (
-    <ObjectCard className="concept-card">
+    <ObjectCard className={cardClassName}>
       <ObjectCardHeader
-        actions={(
+        actions={
           <>
             <ObjectCardAction
               aria-label="Copy concept URI"
-              icon={<IconCopy className="concept-card__header-action-icon"/>}
+              icon={<IconCopy className="header-action-icon" />}
               onPress={handleCopy}
             />
             <ObjectCardAction
               aria-label="Open concept JSON-LD"
-              icon={<IconDownload className="concept-card__header-action-icon"/>}
+              icon={
+                <IconDownload className="header-action-icon" />
+              }
               onPress={handleOpenJson}
             />
           </>
-        )}
+        }
       >
-        <span className="concept-card__badge">Concept</span>
+        <span className="badge">Concept</span>
         <ObjectCardTitle>{title}</ObjectCardTitle>
         {!!otherPreferredLabels.length && (
-          <ObjectCardStats className="concept-card__preferred-labels">
+          <ObjectCardStats className="preferred-labels">
             {otherPreferredLabels.map((label) => (
               <ObjectCardStat key={`${label['@language']}-${label['@value']}`}>
                 {formatLabel(label)}
@@ -122,8 +137,8 @@ export function ConceptCard() {
           </ObjectCardStats>
         )}
         {hasAlternativeLabels && (
-          <div className="concept-card__alternative-labels">
-            <span className="concept-card__alternative-labels-title">
+          <div className="alternative-labels">
+            <span className="alternative-title">
               alternative labels:
             </span>
             {alternativeLabels.map((label) => (
@@ -134,9 +149,9 @@ export function ConceptCard() {
             {hiddenLabels.map((label) => (
               <span
                 key={`hidden-${label['@language']}-${label['@value']}`}
-                className="concept-card__hidden-label"
+                className="hidden-label"
               >
-                <IconContentWarning aria-hidden="true"/>
+                <IconContentWarning aria-hidden="true" />
                 {formatLabel(label)}
               </span>
             ))}
@@ -148,27 +163,27 @@ export function ConceptCard() {
           {hasLeftPanel && (
             <ObjectCardPanel
               side="left"
-              className={hasSplitDetails
-                ? 'concept-card__details--split'
-                : undefined}
+              className={
+                hasSplitDetails ? 'details-split' : undefined
+              }
             >
               {hasDefinitions && (
                 <ObjectCardSection
                   title="Definitions"
-                  className="concept-card__definitions"
+                  className={definitionsClassName}
                 >
                   <ObjectCardPropertyList>
                     {definitions.map((definition, index) => (
                       <ObjectCardProperty
                         key={`${definition['@language']}-${index}`}
                         label={definition['@language']}
-                        value={<HtmlValue value={definition['@value']}/>}
+                        value={<HtmlValue value={definition['@value']} />}
                       />
                     ))}
                     {source && (
                       <ObjectCardProperty
                         label="Source"
-                        value={<HtmlValue value={source['@value']}/>}
+                        value={<HtmlValue value={source['@value']} />}
                       />
                     )}
                   </ObjectCardPropertyList>
@@ -177,11 +192,14 @@ export function ConceptCard() {
               {hasExternal && (
                 <ObjectCardSection
                   title="External"
-                  className="concept-card__external"
+                  className="external"
                 >
-                  <MatchList title="Close match" matches={concept.closeMatch}/>
-                  <MatchList title="Narrow match" matches={concept.narrowMatch}/>
-                  <MatchList title="Exact match" matches={concept.exactMatch}/>
+                  <MatchList title="Close match" matches={concept.closeMatch} />
+                  <MatchList
+                    title="Narrow match"
+                    matches={concept.narrowMatch}
+                  />
+                  <MatchList title="Exact match" matches={concept.exactMatch} />
                 </ObjectCardSection>
               )}
             </ObjectCardPanel>
@@ -190,7 +208,7 @@ export function ConceptCard() {
             <ObjectCardPanel side="right">
               <ObjectCardSection
                 title="Concept Graph"
-                className="concept-card__graph"
+                className="graph"
               >
                 <ConceptList
                   title="Broader"
@@ -219,9 +237,11 @@ export function ConceptCard() {
 }
 
 function getPrimaryLabel(concept: SkosConcept): LangValue | undefined {
-  return concept.prefLabel.find((label) => label['@language'] === 'en')
-    ?? concept.prefLabel.find((label) => label['@language'] === 'nl')
-    ?? concept.prefLabel[0];
+  return (
+    concept.prefLabel.find((label) => label['@language'] === 'en') ??
+    concept.prefLabel.find((label) => label['@language'] === 'nl') ??
+    concept.prefLabel[0]
+  );
 }
 
 function formatLabel(label: LangValue): string {
