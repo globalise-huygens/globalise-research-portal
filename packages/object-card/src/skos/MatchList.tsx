@@ -1,19 +1,23 @@
-import { ObjectCardExternalLink, ObjectCardSection } from '@globalise/design';
+import { ObjectCardExternalLink } from '@globalise/design';
 import { matchLabel, matchUri, SkosMatch } from './SkosModel.ts';
 
 type MatchListProps = { title: string; matches?: SkosMatch[] };
 
 export function MatchList({ title, matches }: MatchListProps) {
   if (!matches?.length) {
-    return <ObjectCardSection title={title} className="inactive"/>;
+    return null;
   }
+
   return (
-    <ObjectCardSection title={title}>
-      {matches.map((match, i) => (
-        <ObjectCardExternalLink key={i} href={matchUri(match)}>
-          {matchLabel(match)}
-        </ObjectCardExternalLink>
-      ))}
-    </ObjectCardSection>
+    <section className="match-group">
+      <h4 className="match-title">{title}</h4>
+      <div className="match-list">
+        {matches.map((match, i) => (
+          <ObjectCardExternalLink key={i} href={matchUri(match)}>
+            {matchLabel(match)}
+          </ObjectCardExternalLink>
+        ))}
+      </div>
+    </section>
   );
 }
