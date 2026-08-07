@@ -293,6 +293,7 @@ function getEntityPreviewProperties(
 }
 
 function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
+  const [copied, setCopied] = React.useState(false);
   const properties: EntityPreviewCardProperty[] = getEntityPreviewProperties(
     data,
   )
@@ -321,6 +322,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
       data-has-external-links={data.externalLinks?.length ? 'true' : 'false'}
       data-linked={data.linked ? 'true' : 'false'}
       data-kind={data.kind}
+      data-copied={copied ? 'true' : 'false'}
     >
       <div className="header">
         <div className="identity">
@@ -358,10 +360,23 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
           {data.copyValue && (
             <button
               type="button"
-              aria-label="Copy identifier"
+              aria-label={`Copy URI ${data.copyValue}`}
               className="action"
-              onClick={() => {
-                void navigator.clipboard?.writeText(data.copyValue ?? '');
+              title={copied ? `Copied ${data.copyValue}` : data.copyValue}
+              onClick={async () => {
+                if (!data.copyValue) {
+                  return;
+                }
+                if (!navigator.clipboard) {
+                  return;
+                }
+                try {
+                  await navigator.clipboard.writeText(data.copyValue);
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 1200);
+                } catch {
+                  // Clipboard access can be denied by the browser context.
+                }
               }}
             >
               <IconCopy />
@@ -376,16 +391,16 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               <IconArrowTopRight />
             </a>
           )}
-          {!data.openFullCardHref && (
-            <span
-              aria-hidden="true"
-              className="action"
-              data-placeholder="true"
-            >
-              <IconArrowTopRight />
-            </span>
-          )}
         </div>
+        {data.copyValue && (
+          <span
+            className="copy-status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {copied ? 'URI copied!' : ''}
+          </span>
+        )}
       </div>
 
       {(summaryProperties.length > 0 ||

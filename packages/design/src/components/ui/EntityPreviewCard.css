@@ -145,6 +145,32 @@
       gap: var(--s8);
     }
 
+    .copy-status {
+      position: absolute;
+      top: calc(100% + var(--s8));
+      right: 0;
+      z-index: 70;
+      display: none;
+      width: max-content;
+      max-width: 240px;
+      padding: var(--s12);
+      border: 1px solid rgb(255 255 255 / 0.1);
+      background: var(--color-neutral-700);
+      color: var(--color-brand-white);
+      font-family: var(--font-sans);
+      font-size: 0.625rem;
+      line-height: 0.75rem;
+      box-shadow:
+        0 6px 14px rgb(0 0 0 / 0.25),
+        0 25px 25px rgb(0 0 0 / 0.22),
+        0 56px 34px rgb(0 0 0 / 0.13);
+      white-space: nowrap;
+    }
+
+    &[data-copied="true"] .copy-status {
+      display: block;
+    }
+
     .action {
       display: inline-flex;
       width: var(--s16);
