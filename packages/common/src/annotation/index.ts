@@ -1,4 +1,4 @@
-export { indexAnnotations } from './indexAnnotations.ts';
+export { type AnnotationIndexes, indexAnnotations } from './indexAnnotations.ts';
 export { filterByTextSelectorOrLog } from './filterByTextSelectorOrLog.ts';
 
 export * from './AnnoModel';

@@ -274,7 +274,7 @@ export function ManifestDiplomaticViewer({
               index={i}
               isVisible={visibleCanvases.has(i)}
               renderDistance={renderDistance}
-              showLayoutElements={showLayoutElements}
+              showBlocks={showLayoutElements}
             />
           ))}
       </div>
