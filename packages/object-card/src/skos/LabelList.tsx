@@ -3,6 +3,7 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
+import { HtmlValue } from './HtmlValue.tsx';
 import { LangValue } from './SkosModel.ts';
 
 type LabelListProps = { title: string; values?: LangValue[] };
@@ -18,7 +19,7 @@ export function LabelList({ title, values }: LabelListProps) {
           <ObjectCardProperty
             key={i}
             label={value['@language']}
-            value={value['@value']}
+            value={<HtmlValue value={value['@value']} />}
           />
         ))}
       </ObjectCardPropertyList>

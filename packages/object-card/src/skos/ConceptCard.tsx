@@ -22,6 +22,7 @@ import {
   SkosConcept,
   useConcept,
 } from './';
+import { HtmlValue } from './HtmlValue.tsx';
 
 export function ConceptCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -130,13 +131,13 @@ export function ConceptCard() {
                       <ObjectCardProperty
                         key={`${definition['@language']}-${index}`}
                         label={definition['@language']}
-                        value={definition['@value']}
+                        value={<HtmlValue value={definition['@value']} />}
                       />
                     ))}
                     {source && (
                       <ObjectCardProperty
                         label="Source"
-                        value={source['@value']}
+                        value={<HtmlValue value={source['@value']} />}
                       />
                     )}
                   </ObjectCardPropertyList>

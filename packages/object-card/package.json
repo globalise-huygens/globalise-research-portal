@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@globalise/common": "*",
-    "@globalise/design": "*"
+    "@globalise/design": "*",
+    "dompurify": "^3.4.12"
   }
 }

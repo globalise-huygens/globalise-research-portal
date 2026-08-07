@@ -171,6 +171,41 @@
       word-break: normal;
     }
 
+    .html-value {
+      white-space: pre-line;
+    }
+
+    .inline-link {
+      display: inline-flex;
+      max-width: 100%;
+      align-items: center;
+      gap: var(--s4);
+      color: #6b9eff;
+      text-decoration-line: underline;
+      text-decoration-color: currentColor;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+      vertical-align: text-bottom;
+    }
+
+    .inline-link-label {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+
+    .inline-link-icon {
+      width: var(--s12);
+      height: var(--s12);
+      flex-shrink: 0;
+    }
+
+    .inline-link:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
+    }
+
     .external {
       gap: var(--s12);
       padding-bottom: var(--s24);
