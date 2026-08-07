@@ -77,7 +77,6 @@
       text-transform: uppercase;
     }
 
-    .preferred-labels,
     .alternative-labels {
       display: flex;
       min-width: 0;
@@ -90,11 +89,6 @@
       font-style: italic;
       letter-spacing: -0.02em;
       line-height: 1.2;
-    }
-
-    .preferred-labels .stat {
-      color: #b5b5b5;
-      letter-spacing: -0.02em;
     }
 
     .alternative-title {
@@ -175,41 +169,6 @@
       text-overflow: initial;
       white-space: normal;
       word-break: normal;
-    }
-
-    .html-value {
-      white-space: pre-line;
-    }
-
-    .inline-link {
-      display: inline-flex;
-      max-width: 100%;
-      align-items: center;
-      gap: var(--s4);
-      color: #6b9eff;
-      text-decoration-line: underline;
-      text-decoration-color: currentColor;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.18em;
-      vertical-align: text-bottom;
-    }
-
-    .inline-link-label {
-      min-width: 0;
-      overflow-wrap: anywhere;
-      word-break: normal;
-    }
-
-    .inline-link-icon {
-      width: var(--s12);
-      height: var(--s12);
-      flex-shrink: 0;
-    }
-
-    .inline-link:focus-visible {
-      border-radius: 2px;
-      outline: 2px solid var(--ring);
-      outline-offset: 2px;
     }
 
     .external {
@@ -391,7 +350,6 @@
 
   @media (max-width: 1023px) {
     .concept-card {
-      height: 100%;
       max-height: 100%;
       overflow: hidden;
 

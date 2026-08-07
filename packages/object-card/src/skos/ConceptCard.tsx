@@ -11,8 +11,6 @@ import {
   ObjectCardProperty,
   ObjectCardPropertyList,
   ObjectCardSection,
-  ObjectCardStat,
-  ObjectCardStats,
   ObjectCardTitle,
 } from '@globalise/design';
 import {
@@ -24,8 +22,6 @@ import {
   SkosConcept,
   useConcept,
 } from './';
-import { HtmlValue } from './HtmlValue.tsx';
-import type { LangValue } from './SkosModel.ts';
 
 export function ConceptCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -48,13 +44,7 @@ export function ConceptCard() {
 
   const conceptUri = uri;
   const url = getSkosUrl(conceptUri);
-  const primaryLabel = getPrimaryLabel(concept);
-  const title = primaryLabel
-    ? formatLabel(primaryLabel)
-    : getConceptLabel(concept);
-  const otherPreferredLabels = concept.prefLabel.filter(
-    (label) => label !== primaryLabel,
-  );
+  const title = getConceptLabel(concept);
   const alternativeLabels = concept.altLabel ?? [];
   const hiddenLabels = concept.hiddenLabel ?? [];
   const definitions = concept.definition ?? [];
@@ -107,21 +97,12 @@ export function ConceptCard() {
       >
         <span className="badge">Concept</span>
         <ObjectCardTitle>{title}</ObjectCardTitle>
-        {!!otherPreferredLabels.length && (
-          <ObjectCardStats className="preferred-labels">
-            {otherPreferredLabels.map((label) => (
-              <ObjectCardStat key={`${label['@language']}-${label['@value']}`}>
-                {formatLabel(label)}
-              </ObjectCardStat>
-            ))}
-          </ObjectCardStats>
-        )}
         {hasAlternativeLabels && (
           <div className="alternative-labels">
             <span className="alternative-title">alternative labels:</span>
             {alternativeLabels.map((label) => (
               <span key={`alt-${label['@language']}-${label['@value']}`}>
-                {formatLabel(label)}
+                {label['@value']}
               </span>
             ))}
             {hiddenLabels.map((label) => (
@@ -130,7 +111,7 @@ export function ConceptCard() {
                 className="hidden-label"
               >
                 <IconContentWarning aria-hidden="true" />
-                {formatLabel(label)}
+                {label['@value']}
               </span>
             ))}
           </div>
@@ -149,13 +130,13 @@ export function ConceptCard() {
                       <ObjectCardProperty
                         key={`${definition['@language']}-${index}`}
                         label={definition['@language']}
-                        value={<HtmlValue value={definition['@value']} />}
+                        value={definition['@value']}
                       />
                     ))}
                     {source && (
                       <ObjectCardProperty
                         label="Source"
-                        value={<HtmlValue value={source['@value']} />}
+                        value={source['@value']}
                       />
                     )}
                   </ObjectCardPropertyList>
@@ -200,16 +181,4 @@ export function ConceptCard() {
       )}
     </ObjectCard>
   );
-}
-
-function getPrimaryLabel(concept: SkosConcept): LangValue | undefined {
-  return (
-    concept.prefLabel.find((label) => label['@language'] === 'en') ??
-    concept.prefLabel.find((label) => label['@language'] === 'nl') ??
-    concept.prefLabel[0]
-  );
-}
-
-function formatLabel(label: LangValue): string {
-  return `${label['@value']} (${label['@language']})`;
 }
