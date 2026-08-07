@@ -7,16 +7,16 @@ type HtmlValueProps = {
 
 const URL_PATTERN = /(https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?])/gi;
 
-function renderMarkdownLite(value: string): string {
+function normalizeText(value: string): string {
   return value
-    .replace(/(\*\*|__)([^\n]+?)\1/g, '<strong>$2</strong>')
-    .replace(/(^|[\s(])\*(?!\s)([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>')
-    .replace(/(^|[\s(])_(?!\s)([^_\n]+?)_(?!_)/g, '$1<em>$2</em>');
+    .replace(/(\*\*|__)([^\n]+?)\1/g, '$2')
+    .replace(/(^|[\s(])\*(?!\s)([^*\n]+?)\*(?!\*)/g, '$1$2')
+    .replace(/(^|[\s(])_(?!\s)([^_\n]+?)_(?!_)/g, '$1$2');
 }
 
 export function HtmlValue({ value }: HtmlValueProps) {
-  const htmlValue = renderMarkdownLite(value);
-  const parts = DOMPurify.sanitize(htmlValue).split(URL_PATTERN);
+  const sanitized = DOMPurify.sanitize(normalizeText(value));
+  const parts = sanitized.split(URL_PATTERN);
 
   return (
     <span className="html-value">
@@ -30,13 +30,10 @@ export function HtmlValue({ value }: HtmlValueProps) {
             className="inline-link"
           >
             <span className="inline-link-label">{part}</span>
-            <IconExternalLink
-              aria-hidden="true"
-              className="inline-link-icon"
-            />
+            <IconExternalLink aria-hidden="true" className="inline-link-icon" />
           </a>
         ) : (
-          <span key={index} dangerouslySetInnerHTML={{ __html: part }} />
+          <span key={index}>{part}</span>
         ),
       )}
     </span>

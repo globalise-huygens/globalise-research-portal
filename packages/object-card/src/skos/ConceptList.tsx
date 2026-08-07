@@ -22,7 +22,6 @@ export function ConceptList({
     <section className="relation">
       <header className="relation-header">
         <h4>{title}</h4>
-        <strong>{concepts.length}</strong>
       </header>
       <ul className="concept-list">
         {concepts.map((concept) => (

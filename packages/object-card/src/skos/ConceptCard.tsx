@@ -2,7 +2,7 @@ import './ConceptCard.css';
 import {
   IconContentWarning,
   IconCopy,
-  IconDownload,
+  IconExternalLink,
   ObjectCard,
   ObjectCardAction,
   ObjectCardBody,
@@ -90,9 +90,7 @@ export function ConceptCard() {
       hasSinglePanel ? 'single-panel' : undefined,
       isLeftOnly ? 'single-left' : undefined,
       isRightOnly ? 'single-right' : undefined,
-      hasSplitDetails && hasGraph
-        ? 'wide-details'
-        : undefined,
+      hasSplitDetails && hasGraph ? 'wide-details' : undefined,
     ]
       .filter(Boolean)
       .join(' ') || undefined;
@@ -117,9 +115,7 @@ export function ConceptCard() {
             />
             <ObjectCardAction
               aria-label="Open concept JSON-LD"
-              icon={
-                <IconDownload className="header-action-icon" />
-              }
+              icon={<IconExternalLink className="header-action-icon" />}
               onPress={handleOpenJson}
             />
           </>
@@ -138,9 +134,7 @@ export function ConceptCard() {
         )}
         {hasAlternativeLabels && (
           <div className="alternative-labels">
-            <span className="alternative-title">
-              alternative labels:
-            </span>
+            <span className="alternative-title">alternative labels:</span>
             {alternativeLabels.map((label) => (
               <span key={`alt-${label['@language']}-${label['@value']}`}>
                 {formatLabel(label)}
@@ -163,9 +157,7 @@ export function ConceptCard() {
           {hasLeftPanel && (
             <ObjectCardPanel
               side="left"
-              className={
-                hasSplitDetails ? 'details-split' : undefined
-              }
+              className={hasSplitDetails ? 'details-split' : undefined}
             >
               {hasDefinitions && (
                 <ObjectCardSection
@@ -190,10 +182,7 @@ export function ConceptCard() {
                 </ObjectCardSection>
               )}
               {hasExternal && (
-                <ObjectCardSection
-                  title="External"
-                  className="external"
-                >
+                <ObjectCardSection title="External" className="external">
                   <MatchList title="Close match" matches={concept.closeMatch} />
                   <MatchList
                     title="Narrow match"
@@ -206,10 +195,7 @@ export function ConceptCard() {
           )}
           {hasGraph && (
             <ObjectCardPanel side="right">
-              <ObjectCardSection
-                title="Concept Graph"
-                className="graph"
-              >
+              <ObjectCardSection title="Concept Graph" className="graph">
                 <ConceptList
                   title="Broader"
                   concepts={concept.broader}
