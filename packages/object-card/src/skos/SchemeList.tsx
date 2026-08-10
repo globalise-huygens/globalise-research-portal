@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { loadSchemes, useSchemes } from './SkosSchemesSlice.ts';
-import { loadConcept, useCurrentSchemeId } from './SkosConceptSlice.ts';
+import { useCurrentSchemeId } from './SkosConceptSlice.ts';
 import { getConceptLabel } from './SkosModel.ts';
 import { ObjectCardAction } from '@globalise/design';
+import { loadResource } from '../resolve';
 
 export function SchemeList() {
   const { schemes, isLoading, isReady, error } = useSchemes();
@@ -29,7 +30,7 @@ export function SchemeList() {
             style={{ paddingRight: '0.25rem', lineHeight: '2rem' }}
           >
             <ObjectCardAction
-              onClick={() => void loadConcept(scheme.id)}
+              onClick={() => void loadResource(scheme.id)}
             >
               {isCurrent ?
                 <strong>{getConceptLabel(scheme)}</strong> : getConceptLabel(scheme)}

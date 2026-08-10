@@ -10,47 +10,38 @@ import {
   ObjectCardTitle,
 } from '@globalise/design';
 import './ConceptCard.css';
-import { asArray } from '@globalise/common';
+import { asArray, getJsonUrl } from '@globalise/common';
 import {
   getConceptLabel,
   ConceptList,
-  getSkosUrl,
   LabelList,
   MatchList,
   Reference,
   SkosConcept,
-  loadConcept,
   useConcept,
 } from './';
-import { OpenConcept } from './OpenConcept.tsx';
+import { OpenResource } from '../OpenResource.tsx';
+import { loadResource } from '../resolve';
 
 export function ConceptCard() {
-  const { uri, concept, isLoading, isReady, error } = useConcept();
+  const { uri, concept } = useConcept();
 
-  if (!uri) {
-    return <div>No URI</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (isLoading || !isReady || !concept) {
-    return <div>Loading...</div>;
+  if (!uri || !concept) {
+    return null;
   }
 
   function handleSelect(selected: SkosConcept) {
-    void loadConcept(selected.id);
+    void loadResource(selected.id);
   }
 
-  const url = getSkosUrl(uri);
+  const url = getJsonUrl(uri);
   const title = getConceptLabel(concept);
   const types = asArray(concept.type);
   const notations = asArray(concept.notation);
 
   return (
     <ObjectCard className="concept-card">
-      <ObjectCardHeader actions={<OpenConcept/>}>
+      <ObjectCardHeader actions={<OpenResource/>}>
         <ObjectCardTitle>{title}</ObjectCardTitle>
         <ObjectCardStats>
           <ObjectCardStat>{types.join(', ')}</ObjectCardStat>

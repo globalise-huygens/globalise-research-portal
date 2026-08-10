@@ -1,5 +1,3 @@
-import { isUrl } from '@globalise/common';
-
 export type LangValue = {
   '@language': string;
   '@value': string;
@@ -52,15 +50,16 @@ export function getConceptLabel(concept: SkosConcept): string {
   return concept._label ?? '';
 }
 
-/**
- * Convert ID URI into a URL by adding `.json`
- */
-export function getSkosUrl(uri: string): string {
-  const result = `${uri}.json`;
-  if (!isUrl(result)) {
-    throw new Error(`Could not create url from uri ${uri}`);
+export function isSkosConcept(value: unknown): value is SkosConcept {
+  if (!value || typeof value !== 'object') {
+    return false;
   }
-  return result;
+  if ('prefLabel' in value) {
+    return true;
+  }
+  return 'type' in value
+    && typeof value.type === 'string'
+    && value.type.startsWith('skos:');
 }
 
 export function matchUri(match: SkosMatch): string {

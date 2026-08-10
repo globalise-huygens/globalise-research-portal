@@ -1,7 +1,6 @@
-import { fetchJson } from '@globalise/common';
-import { useObjectCardStore, setState } from './ObjectCardStore.ts';
+import { fetchJson, getJsonUrl } from '@globalise/common';
+import { useObjectCardStore, setState } from '../ObjectCardStore.ts';
 import { emptySkosSchemesState, SchemeBundle, SkosSchemesState } from './SkosSchemesState.ts';
-import { getSkosUrl } from './SkosModel.ts';
 
 export const schemesUri =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:schemes';
@@ -18,7 +17,7 @@ export async function loadSchemes() {
   setState({ skosSchemesState: { ...emptySkosSchemesState, isLoading: true } });
 
   try {
-    const url = getSkosUrl(schemesUri);
+    const url = getJsonUrl(schemesUri);
     const bundle = await fetchJson<SchemeBundle>(url);
     const schemes = bundle['@graph'];
     if(schemes) {
