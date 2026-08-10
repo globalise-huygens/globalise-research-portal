@@ -64,7 +64,7 @@ export type { SectionDividerProps } from './SectionDivider';
 export { NewsletterSignup } from './NewsletterSignup';
 export type { NewsletterSignupProps } from './NewsletterSignup';
 
-export { EntityBadge, entityBadgeVariants } from './EntityBadge';
+export { EntityBadge } from './EntityBadge';
 export type {
   EntityBadgeProps,
   EntityBadgeType,

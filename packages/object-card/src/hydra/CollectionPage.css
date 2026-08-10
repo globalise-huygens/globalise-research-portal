@@ -1,0 +1,34 @@
+@layer components {
+  .collection-page {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+
+    .collection-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .collection-total {
+      color: var(--color-neutral-500);
+    }
+
+    .collection-list {
+      height: 70vh;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pagination-position {
+      color: var(--color-neutral-500);
+      white-space: nowrap;
+    }
+  }
+}
