@@ -1,6 +1,6 @@
 import { LinkedArtNode } from './LinkedArtNode.ts';
 import { getLiteral } from './literal.ts';
 
-export function label(node: LinkedArtNode): string {
-  return getLiteral(node._label);
+export function getContent(node: LinkedArtNode): string {
+  return getLiteral(node.content);
 }
