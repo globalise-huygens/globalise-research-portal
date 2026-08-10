@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Id } from '@globalise/common/annotation';
-import { useIsSelectedInTranscription } from '@globalise/common/document';
+import { useIsSelectedInLineByLine } from '@globalise/common/document';
 import { SegmentedLine } from './SegmentedLine';
 import { LineSegments } from './useLineSegments';
 
@@ -61,7 +61,7 @@ type BlockGroupProps = {
 function BlockGroup(
   { canvasId, blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
 ) {
-  const isSelected = useIsSelectedInTranscription(canvasId, blockId);
+  const isSelected = useIsSelectedInLineByLine(canvasId, blockId);
 
   let count = 0;
 

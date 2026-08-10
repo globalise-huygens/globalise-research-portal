@@ -143,14 +143,6 @@ export function isEntityClassificationId(
   return entityClassificationIds.includes(value as EntityClassificationId);
 }
 
-export function isEntityVisualCategory(
-  value: string,
-): value is EntityVisualCategoryClassName {
-  return entityVisualCategories.includes(
-    value as EntityVisualCategoryClassName,
-  );
-}
-
 function getFallbackVisualCategory(
   type: EntityType,
 ): EntityVisualCategoryClassName {
@@ -162,4 +154,15 @@ function getFallbackVisualCategory(
     case 'Dimension':
       return 'cidoc-dimension';
   }
+}
+
+export function isHighlightedEntity(
+  annotation: Annotation,
+  categories: Set<EntityClassificationId>,
+): boolean {
+  if (!isEntity(annotation)) {
+    return false;
+  }
+  const classificationId = getEntityClassificationId(annotation);
+  return !!classificationId && categories.has(classificationId);
 }
