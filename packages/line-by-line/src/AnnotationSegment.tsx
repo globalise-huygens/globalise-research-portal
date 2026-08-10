@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
-  getEntityTypeClassName,
+  getEntityAnnotationBodyClassName,
   getEntityClassifiedAsLabel,
-  getEntityClassifiedAsClassName,
+  getCidocClassName,
   isEntity,
   toClassName,
   isWord,
@@ -61,8 +61,8 @@ function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const label = getEntityClassifiedAsLabel(annotation);
-  const classifiedAs = getEntityClassifiedAsClassName(annotation);
-  const category = getEntityTypeClassName(annotation);
+  const classifiedAs = getCidocClassName(annotation);
+  const category = getEntityAnnotationBodyClassName(annotation);
   const isHighlightedEntity = useIsHighlightedEntity(annotation);
   const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
 

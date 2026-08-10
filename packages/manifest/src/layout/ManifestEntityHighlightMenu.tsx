@@ -1,5 +1,5 @@
 import {
-  getEntityClassificationVisualCategory,
+  getCidocClassNameByClassificationId,
   isEntityClassificationId,
   type EntityClassificationId,
 } from '@globalise/common/annotation';
@@ -106,13 +106,13 @@ const entityCategories: EntityHighlightCategory[] =
   entityCategoryConfigs.map((category) => {
     const subcategories = category.subcategories?.map((subcategory) => ({
       ...subcategory,
-      tone: getEntityClassificationVisualCategory(subcategory.id),
+      tone: getCidocClassNameByClassificationId(subcategory.id),
     }));
 
     return {
       ...category,
       tone: isEntityClassificationId(category.id)
-        ? getEntityClassificationVisualCategory(category.id)
+        ? getCidocClassNameByClassificationId(category.id)
         : subcategories?.[0]?.tone,
       subcategories,
     };

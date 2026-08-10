@@ -1,7 +1,6 @@
-import type { EntityVisualCategoryClassName } from '@globalise/common/annotation';
+import type { CidocClassName } from '@globalise/common';
 
-export type EntityHighlightTone =
-  EntityVisualCategoryClassName;
+export type EntityHighlightTone = CidocClassName;
 
 export type EntityHighlightColors = {
   fill: string;

@@ -1,8 +1,9 @@
 import { Annotation, Body } from './AnnoModel.ts';
 import { asArray } from './asArray.ts';
+import { CidocClassName } from '../linkedart';
 
 export type EntityBody = {
-  type: EntityType;
+  type: EntityAnnotationBodyType;
   classified_as: EntityClassification;
   ascribes_classification: {
     id: string,
@@ -15,27 +16,14 @@ type EntityClassification = {
   type: string;
   _label: string;
 };
-const entityTypes = [
+const entityAnnotationBodyTypes = [
   'AppellativeStatus',
   'ClassificatoryStatus',
   'Dimension',
 ] as const;
 
-export type EntityType = (typeof entityTypes)[number];
-
-export const entityVisualCategories = [
-  'cidoc-actor',
-  'cidoc-appellation',
-  'cidoc-conceptual-object',
-  'cidoc-dimension',
-  'cidoc-physical-thing',
-  'cidoc-place',
-  'cidoc-time-span',
-  'cidoc-type',
-] as const;
-
-export type EntityVisualCategoryClassName =
-  (typeof entityVisualCategories)[number];
+export type EntityAnnotationBodyType =
+  (typeof entityAnnotationBodyTypes)[number];
 
 export function assertEntityBody(
   body: Body | undefined,
@@ -50,7 +38,7 @@ export const isEntityBody = (body: Body | undefined): body is EntityBody => {
     return false;
   }
   const entityBody = body as EntityBody;
-  return entityTypes.includes(entityBody.type);
+  return entityAnnotationBodyTypes.includes(entityBody.type);
 };
 
 export const isEntity = (
@@ -70,12 +58,12 @@ export function getPrimaryEntityBody(annotation: Annotation): EntityBody {
   return body;
 }
 
-export function getEntityType(annotation: Annotation) {
+export function getEntityAnnotationBodyType(annotation: Annotation) {
   return getPrimaryEntityBody(annotation).type;
 }
 
-export function getEntityTypeClassName(annotation: Annotation) {
-  switch (getEntityType(annotation)) {
+export function getEntityAnnotationBodyClassName(annotation: Annotation) {
+  switch (getEntityAnnotationBodyType(annotation)) {
     case 'AppellativeStatus':
       return 'appellative-status';
     case 'ClassificatoryStatus':
@@ -85,7 +73,7 @@ export function getEntityTypeClassName(annotation: Annotation) {
   }
 }
 
-const ENTITY_CLASSNAMES = {
+const cidocClassNameByClassificationId = {
   'gan:DATE': 'cidoc-time-span',
   'gan:PER_NAME': 'cidoc-actor',
   'gan:ORG': 'cidoc-actor',
@@ -101,28 +89,29 @@ const ENTITY_CLASSNAMES = {
   'gan:PRF': 'cidoc-type',
   'gan:SHIP_TYPE': 'cidoc-type',
   'gan:STATUS': 'cidoc-type',
-} as const satisfies Record<string, EntityVisualCategoryClassName>;
+} as const satisfies Record<string, CidocClassName>;
 
-export type EntityClassificationId = keyof typeof ENTITY_CLASSNAMES;
+export type EntityClassificationId =
+  keyof typeof cidocClassNameByClassificationId;
 
 export const entityClassificationIds = Object.keys(
-  ENTITY_CLASSNAMES,
+  cidocClassNameByClassificationId,
 ) as EntityClassificationId[];
 
-export function getEntityClassifiedAsClassName(
+export function getCidocClassName(
   annotation: Annotation,
-): EntityVisualCategoryClassName {
+): CidocClassName {
   const body = getPrimaryEntityBody(annotation);
   const id = body.classified_as.id;
   return isEntityClassificationId(id)
-    ? getEntityClassificationVisualCategory(id)
-    : getFallbackVisualCategory(body.type);
+    ? getCidocClassNameByClassificationId(id)
+    : getFallbackCidocClassName(body.type);
 }
 
-export function getEntityClassificationVisualCategory(
+export function getCidocClassNameByClassificationId(
   classificationId: EntityClassificationId,
 ) {
-  return ENTITY_CLASSNAMES[classificationId];
+  return cidocClassNameByClassificationId[classificationId];
 }
 
 export function getEntityClassificationId(
@@ -143,9 +132,9 @@ export function isEntityClassificationId(
   return entityClassificationIds.includes(value as EntityClassificationId);
 }
 
-function getFallbackVisualCategory(
-  type: EntityType,
-): EntityVisualCategoryClassName {
+function getFallbackCidocClassName(
+  type: EntityAnnotationBodyType,
+): CidocClassName {
   switch (type) {
     case 'AppellativeStatus':
       return 'cidoc-appellation';

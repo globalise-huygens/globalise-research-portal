@@ -4,7 +4,7 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
-  getEntityClassifiedAsClassName,
+  getCidocClassName,
   type Annotation,
   type EntityClassificationId,
   type Id,
@@ -197,5 +197,5 @@ function getEntityHighlightTone(
   if (!isHighlightedEntity(annotation, highlightedEntityCategories)) {
     return undefined;
   }
-  return getEntityClassifiedAsClassName(annotation);
+  return getCidocClassName(annotation);
 }
