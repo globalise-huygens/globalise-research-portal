@@ -1,7 +1,5 @@
 @layer components {
   .concept-card {
-    --concept-card-right-col-start: 50%;
-
     width: 100%;
     max-width: none;
     height: 100%;
@@ -111,9 +109,7 @@
     > .body {
       box-sizing: border-box;
       min-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      overscroll-behavior: contain;
+      overflow: visible;
     }
 
     .panel {
@@ -277,6 +273,7 @@
       flex-direction: column;
       gap: var(--s8);
       margin: 0;
+      background: #313236;
       padding: 0;
       list-style: none;
     }
@@ -288,6 +285,7 @@
 
     .concept-node {
       min-width: 0;
+      background: #313236;
     }
 
     .concept-link {
@@ -339,18 +337,14 @@
     .concept-card {
       > .body {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      > .body:not(.single-panel) {
-        background: linear-gradient(
-          to right,
-          #242529 0 var(--concept-card-right-col-start),
-          #313236 var(--concept-card-right-col-start) 100%
-        );
+        overflow: hidden;
       }
 
       .panel {
         grid-column: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
       }
 
       .panel[data-side='left'] {
@@ -374,8 +368,9 @@
 
   @media (max-width: 1023px) {
     .concept-card {
-      max-height: 100%;
-      overflow: hidden;
+      height: auto;
+      max-height: none;
+      overflow: visible;
 
       > .header {
         padding: var(--s16);

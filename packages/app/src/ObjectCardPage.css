@@ -16,3 +16,16 @@
   max-width: 1200px;
   margin-inline: auto;
 }
+
+@media (max-width: 1023px) {
+  .object-card-page {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .object-card-page__content {
+    height: auto;
+    min-height: 100%;
+    align-items: flex-start;
+  }
+}
