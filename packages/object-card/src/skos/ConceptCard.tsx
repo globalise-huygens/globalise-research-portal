@@ -1,28 +1,28 @@
+import './ConceptCard.css';
 import {
+  IconContentWarning,
+  IconCopy,
+  IconExternalLink,
   ObjectCard,
+  ObjectCardAction,
   ObjectCardBody,
-  ObjectCardExternalLink,
-  ObjectCardFooter,
   ObjectCardHeader,
   ObjectCardPanel,
-  ObjectCardStat,
-  ObjectCardStats,
+  ObjectCardProperty,
+  ObjectCardPropertyList,
+  ObjectCardSection,
   ObjectCardTitle,
 } from '@globalise/design';
-import './ConceptCard.css';
-import { asArray } from '@globalise/common';
 import {
-  getConceptLabel,
   ConceptList,
+  getConceptLabel,
   getSkosUrl,
-  LabelList,
-  MatchList,
-  Reference,
-  SkosConcept,
   loadConcept,
+  MatchList,
+  SkosConcept,
   useConcept,
 } from './';
-import { OpenConcept } from './OpenConcept.tsx';
+import { HtmlValue } from './HtmlValue.tsx';
 
 export function ConceptCard() {
   const { uri, concept, isLoading, isReady, error } = useConcept();
@@ -43,71 +43,166 @@ export function ConceptCard() {
     void loadConcept(selected.id);
   }
 
-  const url = getSkosUrl(uri);
+  const conceptUri = uri;
+  const url = getSkosUrl(conceptUri);
   const title = getConceptLabel(concept);
-  const types = asArray(concept.type);
-  const notations = asArray(concept.notation);
+  const alternativeLabels = concept.altLabel ?? [];
+  const hiddenLabels = concept.hiddenLabel ?? [];
+  const definitions = concept.definition ?? [];
+  const source = concept.source ?? concept.references;
+  const hasAlternativeLabels = Boolean(
+    alternativeLabels.length || hiddenLabels.length,
+  );
+  const hasDefinitions = Boolean(definitions.length || source);
+  const hasExternal =
+    (concept.closeMatch?.length ?? 0) +
+      (concept.narrowMatch?.length ?? 0) +
+      (concept.exactMatch?.length ?? 0) >
+    0;
+  const hasGraph =
+    (concept.inScheme?.length ?? 0) +
+      (concept.hasTopConcept?.length ?? 0) +
+      (concept.broader?.length ?? 0) +
+      (concept.narrower?.length ?? 0) +
+      (concept.related?.length ?? 0) >
+    0;
+  const hasLeftPanel = hasDefinitions || hasExternal;
+  const hasBody = hasLeftPanel || hasGraph;
+  const cardClassName = ['concept-card', !hasBody ? 'header-only' : undefined]
+    .filter(Boolean)
+    .join(' ');
+
+  function handleCopy() {
+    void navigator.clipboard.writeText(conceptUri).catch(console.error);
+  }
+
+  function handleOpenJson() {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 
   return (
-    <ObjectCard className="concept-card">
-      <ObjectCardHeader actions={<OpenConcept/>}>
+    <ObjectCard className={cardClassName}>
+      <ObjectCardHeader
+        actions={
+          <>
+            <ObjectCardAction
+              aria-label="Copy concept URI"
+              icon={<IconCopy className="header-action-icon" />}
+              onPress={handleCopy}
+            />
+            <ObjectCardAction
+              aria-label="Open concept JSON-LD"
+              icon={<IconExternalLink className="header-action-icon" />}
+              onPress={handleOpenJson}
+            />
+          </>
+        }
+      >
+        <span className="badge">Concept</span>
         <ObjectCardTitle>{title}</ObjectCardTitle>
-        <ObjectCardStats>
-          <ObjectCardStat>{types.join(', ')}</ObjectCardStat>
-          {!!notations.length && (
-            <ObjectCardStat>notation: {notations.join(', ')}</ObjectCardStat>
-          )}
-        </ObjectCardStats>
-      </ObjectCardHeader>
-      <ObjectCardBody>
-        <ObjectCardPanel side="left">
-          <LabelList title="prefLabel" values={concept.prefLabel}/>
-          <LabelList title="altLabel" values={concept.altLabel}/>
-          <LabelList title="hiddenLabel" values={concept.hiddenLabel}/>
-          <LabelList title="definition" values={concept.definition}/>
-          <Reference title="references" value={concept.references}/>
-        </ObjectCardPanel>
-        <ObjectCardPanel side="right">
-          <ConceptList
-            title="inScheme"
-            concepts={concept.inScheme}
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="hasTopConcept"
-            concepts={concept.hasTopConcept}
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="broader"
-            concepts={concept.broader}
-            childKey="broader"
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="narrower"
-            concepts={concept.narrower}
-            childKey="narrower"
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="related"
-            concepts={concept.related}
-            onSelect={handleSelect}
-          />
-          <MatchList title="closeMatch" matches={concept.closeMatch}/>
-          <MatchList title="narrowMatch" matches={concept.narrowMatch}/>
-          <MatchList title="exactMatch" matches={concept.exactMatch}/>
-        </ObjectCardPanel>
-      </ObjectCardBody>
-      <ObjectCardFooter>
-        <ObjectCardExternalLink href={url}>raw</ObjectCardExternalLink>
-        {concept.source && (
-          <ObjectCardExternalLink href={concept.source['@value']}>
-            {concept.source['@value']}
-          </ObjectCardExternalLink>
+        {hasAlternativeLabels && (
+          <div className="alternative-labels">
+            <span className="alternative-title">alternative labels:</span>
+            {alternativeLabels.map((label) => (
+              <span
+                key={`alt-${label['@language']}-${label['@value']}`}
+                className="alternative-label"
+              >
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
+              </span>
+            ))}
+            {hiddenLabels.map((label) => (
+              <span
+                key={`hidden-${label['@language']}-${label['@value']}`}
+                className="hidden-label"
+              >
+                <IconContentWarning aria-hidden="true" />
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
+              </span>
+            ))}
+          </div>
         )}
-      </ObjectCardFooter>
+      </ObjectCardHeader>
+      {hasBody && (
+        <ObjectCardBody
+          className={hasLeftPanel && hasGraph ? undefined : 'single-panel'}
+        >
+          {hasLeftPanel && (
+            <ObjectCardPanel side="left">
+              {hasDefinitions && (
+                <ObjectCardSection title="Definitions" className="definitions">
+                  <ObjectCardPropertyList>
+                    {definitions.map((definition, index) => (
+                      <ObjectCardProperty
+                        key={`${definition['@language']}-${index}`}
+                        label={definition['@language']}
+                        value={<HtmlValue value={definition['@value']} />}
+                      />
+                    ))}
+                    {source && (
+                      <ObjectCardProperty
+                        label="Source"
+                        value={<HtmlValue value={source['@value']} />}
+                      />
+                    )}
+                  </ObjectCardPropertyList>
+                </ObjectCardSection>
+              )}
+              {hasExternal && (
+                <ObjectCardSection title="External" className="external">
+                  <MatchList title="Close match" matches={concept.closeMatch} />
+                  <MatchList
+                    title="Narrow match"
+                    matches={concept.narrowMatch}
+                  />
+                  <MatchList title="Exact match" matches={concept.exactMatch} />
+                </ObjectCardSection>
+              )}
+            </ObjectCardPanel>
+          )}
+          {hasGraph && (
+            <ObjectCardPanel side="right">
+              <ConceptList
+                title="inScheme"
+                concepts={concept.inScheme}
+                onSelect={handleSelect}
+              />
+              <ConceptList
+                title="hasTopConcept"
+                concepts={concept.hasTopConcept}
+                onSelect={handleSelect}
+              />
+              <ConceptList
+                title="broader"
+                concepts={concept.broader}
+                childKey="broader"
+                onSelect={handleSelect}
+              />
+              <ConceptList
+                title="narrower"
+                concepts={concept.narrower}
+                childKey="narrower"
+                onSelect={handleSelect}
+              />
+              <ConceptList
+                title="related"
+                concepts={concept.related}
+                onSelect={handleSelect}
+              />
+            </ObjectCardPanel>
+          )}
+        </ObjectCardBody>
+      )}
     </ObjectCard>
   );
 }
