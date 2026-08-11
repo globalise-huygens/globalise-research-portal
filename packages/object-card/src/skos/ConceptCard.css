@@ -1,5 +1,10 @@
 @layer components {
   .concept-card {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
     background: #242529;
     box-shadow: none;
 
@@ -112,6 +117,17 @@
       width: 14px;
       height: 14px;
       flex-shrink: 0;
+    }
+
+    > .body {
+      box-sizing: border-box;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    .panel {
+      min-height: 0;
+      overflow: visible;
     }
 
     .panel[data-side='left'] {
@@ -293,11 +309,22 @@
       width: 14px;
       height: 14px;
     }
-
   }
 
   @media (min-width: 1024px) {
     .concept-card {
+      > .body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: hidden;
+      }
+
+      .panel {
+        grid-column: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
       .panel[data-side='left'] {
         border-right: 1px solid #37373c;
         border-bottom: 0;
@@ -319,6 +346,10 @@
 
   @media (max-width: 1023px) {
     .concept-card {
+      height: auto;
+      max-height: none;
+      overflow: visible;
+
       > .header {
         padding: var(--s16);
       }
@@ -330,6 +361,11 @@
       .header-actions {
         top: var(--s16);
         right: var(--s8);
+      }
+
+      > .body,
+      .panel {
+        overflow: visible;
       }
 
       .panel[data-side='right'] {
