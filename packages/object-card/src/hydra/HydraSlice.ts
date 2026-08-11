@@ -8,7 +8,7 @@ export type HydraSlice = {
   hydraState: HydraState;
 };
 
-export async function loadCollection(uri: string) {
+export async function loadCatalog(uri: string) {
   const { hydraState } = useCatalogStore.getState();
   if (isRequested(hydraState, uri)) {
     return;

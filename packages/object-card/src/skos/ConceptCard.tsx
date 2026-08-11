@@ -21,9 +21,10 @@ import {
   useConcept,
 } from './';
 import { OpenResource } from '../OpenResource.tsx';
-import { loadObjectCard } from '../CardSlice.ts';
+import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 export function ConceptCard() {
+  const navigateToObjectCard = useNavigateToObjectCard();
   const { uri, concept } = useConcept();
 
   if (!uri || !concept) {
@@ -31,7 +32,7 @@ export function ConceptCard() {
   }
 
   function handleSelect(selected: SkosConcept) {
-    void loadObjectCard(selected.id);
+    navigateToObjectCard(selected.id);
   }
 
   const url = getJsonUrl(uri);

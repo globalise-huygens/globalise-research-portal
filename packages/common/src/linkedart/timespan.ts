@@ -12,9 +12,6 @@ export type Timespan = {
   label?: string;
 };
 
-/**
- * Read a linked art `TimeSpan` node.
- */
 export function getTimespan(node?: LinkedArtNode | null): Timespan | null {
   if (!node) {
     return null;
@@ -29,11 +26,6 @@ export function getTimespan(node?: LinkedArtNode | null): Timespan | null {
   return hasDates(timespan) ? timespan : null;
 }
 
-/**
- * Find the timespan of an event or status node,
- * which either carries a `timespan` node
- * or a `crm:P4_has_time-span` value.
- */
 export function findTimespan(node?: LinkedArtNode | null): Timespan | null {
   if (!node) {
     return null;

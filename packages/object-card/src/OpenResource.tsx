@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { loadObjectCard } from './CardSlice.ts';
+import { useNavigateToObjectCard } from './useNavigateToObjectCard.ts';
 import './OpenResource.css';
 
 export function OpenResource() {
+  const navigateToObjectCard = useNavigateToObjectCard();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
 
   function handleSubmit() {
     const cleaned = input.replace('.json', '');
-    loadObjectCard(cleaned).catch(console.error);
+    navigateToObjectCard(cleaned);
     setIsOpen(false);
     setInput('');
   }

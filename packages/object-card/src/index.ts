@@ -19,6 +19,6 @@ export {
   CollectionPage,
   type HydraCollection,
   type HydraMember,
-  loadCollection,
+  loadCatalog,
   useCollection,
 } from './hydra';

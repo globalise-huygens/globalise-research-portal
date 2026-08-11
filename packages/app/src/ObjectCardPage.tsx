@@ -1,10 +1,6 @@
+import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
-import {
-  loadObjectCard,
-  ObjectCardView,
-  useCard,
-} from '@globalise/object-card';
-import { useUriSync } from './useUriSync.ts';
+import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
 import '@globalise/design/styles.css';
 
 const route = getRouteApi('/object-card/');
@@ -15,9 +11,10 @@ const defaultUri =
 
 export function ObjectCardPage() {
   const { uri } = route.useSearch();
-  const { uri: loadedUri } = useCard();
 
-  useUriSync(uri ?? defaultUri, loadedUri, loadObjectCard, '/object-card');
+  useEffect(() => {
+    loadObjectCard(uri ?? defaultUri).catch(console.error);
+  }, [uri]);
 
   return <ObjectCardView/>;
 }

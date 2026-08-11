@@ -10,17 +10,8 @@ export type TypedValue = {
   '@value': string;
 };
 
-/**
- * Linked art values come in four shapes:
- * a plain string, a language tagged value, a typed value,
- * or an array containing any mix of those.
- */
 export type LinkedArtValue = string | LanguageValue | TypedValue;
 
-/**
- * Language preference, most preferred first.
- * Values without a language are always eligible.
- */
 const languages = ['en', 'nl'];
 
 export function isLanguageValue(value: unknown): value is LanguageValue {
@@ -36,18 +27,13 @@ export function isTypedValue(value: unknown): value is TypedValue {
   );
 }
 
-/**
- * All string values, in document order.
- */
+
 export function getValues(value: unknown): string[] {
   return asArray(value as LinkedArtValue | LinkedArtValue[] | undefined)
     .map(getStringValue)
     .filter((found) => !!found);
 }
 
-/**
- * The single most preferred string value.
- */
 export function getValue(value: unknown): string {
   const values = asArray(value as LinkedArtValue | LinkedArtValue[] | undefined);
   for (const language of languages) {
