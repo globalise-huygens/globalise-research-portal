@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { HighlightStyle } from './HighlightStyle.tsx';
+import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
-import { Highlight } from './Highlight.tsx';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import { Id } from '@globalise/common/annotation';
 import {
@@ -30,28 +28,35 @@ export function WordHighlight(
   const [hovered, setHoveredLocal] = useState(false);
   const colors = getEntityHighlightColors(tone);
 
-  const highlightStyle: HighlightStyle = {
-    fill: selected ? colors.fill
-      : hovered ? colors.hoverFill
-        : 'transparent',
-    cursor: 'pointer',
-    mixBlendMode: 'multiply',
-  };
+  const fill = selected ? colors.fill
+    : hovered ? colors.hoverFill
+      : 'transparent';
+
+  function handleHover(hovering: boolean, event: MouseEvent) {
+    setHoveredLocal(hovering);
+    setHovered(hovering ? id : null);
+    if (!hovering) {
+      setTooltip(null);
+    } else {
+      setTooltip({ text, x: event.clientX, y: event.clientY });
+    }
+  }
 
   return (
-    <Highlight
+    <polygon
       points={points}
-      highlightStyle={highlightStyle}
-      onClick={() => toggleClicked(id)}
-      onHover={(hovering, e) => {
-        setHoveredLocal(hovering);
-        setHovered(hovering ? id : null);
-        if (!hovering) {
-          setTooltip(null);
-        } else {
-          setTooltip({ text, x: e.clientX, y: e.clientY });
-        }
+      fill={fill}
+      stroke="none"
+      strokeWidth={0}
+      style={{
+        pointerEvents: 'auto',
+        cursor: 'pointer',
+        mixBlendMode: 'multiply',
       }}
+      onClick={() => toggleClicked(id)}
+      onMouseEnter={(event) => handleHover(true, event)}
+      onMouseMove={(event) => handleHover(true, event)}
+      onMouseLeave={(event) => handleHover(false, event)}
     />
   );
 }
