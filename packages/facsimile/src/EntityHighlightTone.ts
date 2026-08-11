@@ -1,4 +1,4 @@
-import type { CidocClassName } from '@globalise/common';
+import {CidocClassName} from "@globalise/common/annotation";
 
 export type EntityHighlightTone = CidocClassName;
 

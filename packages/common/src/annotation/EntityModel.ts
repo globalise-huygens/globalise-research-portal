@@ -1,6 +1,5 @@
 import { Annotation, Body } from './AnnoModel.ts';
 import { asArray } from './asArray.ts';
-import { CidocClassName } from '../linkedart';
 
 export type EntityBody = {
   type: EntityAnnotationBodyType;
@@ -72,6 +71,19 @@ export function getEntityAnnotationBodyClassName(annotation: Annotation) {
       return 'dimension';
   }
 }
+
+export const cidocClassNames = [
+  'cidoc-actor',
+  'cidoc-appellation',
+  'cidoc-conceptual-object',
+  'cidoc-dimension',
+  'cidoc-physical-thing',
+  'cidoc-place',
+  'cidoc-time-span',
+  'cidoc-type',
+] as const;
+
+export type CidocClassName = (typeof cidocClassNames)[number];
 
 const cidocClassNameByClassificationId = {
   'gan:DATE': 'cidoc-time-span',

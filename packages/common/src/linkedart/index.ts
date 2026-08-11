@@ -17,9 +17,7 @@ export {
 } from './LinkedArtValue.ts';
 export { type Timespan, getTimespan, findTimespan } from './timespan.ts';
 export {
-  type CidocClassName,
   type LinkedArtEntityType,
-  cidocClassNames,
   linkedArtEntityTypes,
   getEntityIdentifiers,
   getEntityTitle,

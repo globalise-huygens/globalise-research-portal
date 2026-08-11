@@ -1,21 +1,8 @@
-import { LinkedArtNode } from './LinkedArtNode.ts';
-import { findByPath } from './findByPath.ts';
-import { findStatuses, getStatusLabel } from './findStatuses.ts';
-import { label } from './label.ts';
-import { getContent } from './getContent.ts';
-
-export const cidocClassNames = [
-  'cidoc-actor',
-  'cidoc-appellation',
-  'cidoc-conceptual-object',
-  'cidoc-dimension',
-  'cidoc-physical-thing',
-  'cidoc-place',
-  'cidoc-time-span',
-  'cidoc-type',
-] as const;
-
-export type CidocClassName = (typeof cidocClassNames)[number];
+import {LinkedArtNode} from './LinkedArtNode.ts';
+import {findByPath} from './findByPath.ts';
+import {findStatuses, getStatusLabel} from './findStatuses.ts';
+import {label} from './label.ts';
+import {getContent} from './getContent.ts';
 
 export const linkedArtEntityTypes = [
   'person',
