@@ -60,9 +60,7 @@ export function ConceptCard() {
       (concept.exactMatch?.length ?? 0) >
     0;
   const hasGraph =
-    (concept.inScheme?.length ?? 0) +
-      (concept.hasTopConcept?.length ?? 0) +
-      (concept.broader?.length ?? 0) +
+    (concept.broader?.length ?? 0) +
       (concept.narrower?.length ?? 0) +
       (concept.related?.length ?? 0) >
     0;
@@ -172,33 +170,25 @@ export function ConceptCard() {
           )}
           {hasGraph && (
             <ObjectCardPanel side="right">
-              <ConceptList
-                title="inScheme"
-                concepts={concept.inScheme}
-                onSelect={handleSelect}
-              />
-              <ConceptList
-                title="hasTopConcept"
-                concepts={concept.hasTopConcept}
-                onSelect={handleSelect}
-              />
-              <ConceptList
-                title="broader"
-                concepts={concept.broader}
-                childKey="broader"
-                onSelect={handleSelect}
-              />
-              <ConceptList
-                title="narrower"
-                concepts={concept.narrower}
-                childKey="narrower"
-                onSelect={handleSelect}
-              />
-              <ConceptList
-                title="related"
-                concepts={concept.related}
-                onSelect={handleSelect}
-              />
+              <ObjectCardSection title="Concept Graph" className="graph">
+                <ConceptList
+                  title="Broader"
+                  concepts={concept.broader}
+                  childKey="broader"
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Narrower"
+                  concepts={concept.narrower}
+                  childKey="narrower"
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Related"
+                  concepts={concept.related}
+                  onSelect={handleSelect}
+                />
+              </ObjectCardSection>
             </ObjectCardPanel>
           )}
         </ObjectCardBody>

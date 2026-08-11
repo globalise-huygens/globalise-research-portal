@@ -1,4 +1,3 @@
-import { ObjectCardSection } from '@globalise/design';
 import { ConceptNode, RelationKey } from './ConceptNode.tsx';
 import { SkosConcept } from './SkosModel.ts';
 
@@ -16,10 +15,12 @@ export function ConceptList({
   onSelect,
 }: ConceptListProps) {
   if (!concepts?.length) {
-    return <ObjectCardSection title={title} className="inactive"/>;
+    return null;
   }
+
   return (
-    <ObjectCardSection title={title}>
+    <section className="relation">
+      <h4 className="relation-title">{title}</h4>
       <ul className="concept-list">
         {concepts.map((concept) => (
           <ConceptNode
@@ -30,6 +31,6 @@ export function ConceptList({
           />
         ))}
       </ul>
-    </ObjectCardSection>
+    </section>
   );
 }
