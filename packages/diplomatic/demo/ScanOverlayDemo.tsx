@@ -31,7 +31,7 @@ export function ScanOverlayDemo() {
   const annotations = useAnnotations(canvasId);
   const indexes = useCanvasIndexes(canvasId);
   const page = usePartOf(canvasId);
-  const selected = useSelectedAnnotationsInDiplomatic(canvasId);
+  const { all: selectedIds } = useSelectedAnnotationsInDiplomatic(canvasId);
   const selectedWords = useMemo(
     () => addToSelection(words, indexes),
     [indexes],
@@ -64,7 +64,7 @@ export function ScanOverlayDemo() {
     <DiplomaticView
       annotations={annotations}
       page={page}
-      selected={[...selectedWords, ...selected.all]}
+      selected={[...selectedWords, ...selectedIds]}
       fit="width"
       showBlocks
       showScanMargin={showScanMargin}
