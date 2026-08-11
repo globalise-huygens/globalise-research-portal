@@ -16,6 +16,19 @@ function normalizeText(value: string): string {
 
 export function HtmlValue({ value }: HtmlValueProps) {
   const sanitized = DOMPurify.sanitize(normalizeText(value));
+
+  // Preserve the existing HTML rendering behaviour. Plain-text values are
+  // handled below so URLs in definitions and sources can become links without
+  // rewriting URLs that are already part of HTML attributes.
+  if (/<[a-z][\s\S]*>/i.test(sanitized)) {
+    return (
+      <span
+        className="html-value"
+        dangerouslySetInnerHTML={{ __html: sanitized }}
+      />
+    );
+  }
+
   const parts = sanitized.split(URL_PATTERN);
 
   return (
