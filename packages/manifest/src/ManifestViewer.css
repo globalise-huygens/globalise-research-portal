@@ -1,4 +1,5 @@
 @import "@globalise/design/styles.css";
+@import "./transcription/LayoutElements.css";
 
 .manifest-viewer {
   --manifest-sidebar-expanded-width: clamp(17rem, var(--sidebar-width), 22rem);

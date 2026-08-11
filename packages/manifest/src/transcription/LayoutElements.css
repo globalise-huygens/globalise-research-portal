@@ -1,0 +1,52 @@
+.manifest-viewer {
+  --layout-element-fill: transparent;
+  --layout-element-stroke: color-mix(
+    in srgb,
+    var(--color-turquoise-800, #125e64) 38%,
+    transparent
+  );
+  --layout-element-stroke-width: 1px;
+}
+
+.manifest-viewer .layout-element:hover,
+.manifest-viewer .normalized-view .block-group:hover {
+  --layout-element-fill: color-mix(
+    in srgb,
+    var(--color-brand-turquoise, #29bfcc) 8%,
+    transparent
+  );
+  --layout-element-stroke: var(--color-turquoise-800, #125e64);
+  --layout-element-stroke-width: 2px;
+}
+
+.manifest-viewer .layout-element[data-selected="true"],
+.manifest-viewer .normalized-view .block-group.selected {
+  --layout-element-fill: color-mix(
+    in srgb,
+    var(--color-brand-turquoise, #29bfcc) 13%,
+    transparent
+  );
+  --layout-element-stroke: var(--color-turquoise-800, #125e64);
+  --layout-element-stroke-width: 2px;
+}
+
+.manifest-viewer .normalized-view .block-group {
+  border-color: var(--layout-element-stroke);
+  background: var(--layout-element-fill);
+}
+
+.manifest-viewer .layout-element-shape {
+  fill: var(--layout-element-fill);
+  stroke: var(--layout-element-stroke);
+  stroke-width: var(--layout-element-stroke-width);
+  vector-effect: non-scaling-stroke;
+  pointer-events: auto;
+}
+
+.manifest-viewer .layout-element-halo {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.78);
+  stroke-width: calc(var(--layout-element-stroke-width) + 2px);
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
