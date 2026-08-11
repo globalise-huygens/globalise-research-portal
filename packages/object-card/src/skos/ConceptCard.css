@@ -114,7 +114,6 @@
       overflow-y: auto;
       overflow-x: hidden;
       overscroll-behavior: contain;
-      padding-bottom: var(--s16);
     }
 
     .panel {
@@ -369,16 +368,6 @@
 
       > .body.single-panel .panel[data-side='left'] {
         border-right: 0;
-      }
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .concept-card {
-      --concept-card-right-col-start: 66.666667%;
-
-      > .body {
-        grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
       }
     }
   }
