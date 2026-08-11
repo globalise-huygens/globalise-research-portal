@@ -1,35 +1,27 @@
-import { useResource } from './resolve';
+import { useCard } from './CardSlice.ts';
 import { ConceptCard, SchemeList } from './skos';
 import { EntityCard } from './linkedart';
-import { CollectionPage } from './hydra';
 
 export function ObjectCardView() {
-  const { uri, type, isLoading, isReady, error } = useResource();
+  const { kind, isReady, error } = useCard();
 
-  if (!uri) {
-    return <div>No URI</div>;
-  }
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (isLoading || !isReady) {
+  if (!isReady) {
     return <div>Loading...</div>;
   }
-
-  switch (type) {
-    case 'skos':
-      return (
-        <>
-          <SchemeList/>
-          <hr/>
-          <ConceptCard/>
-        </>
-      );
-    case 'entity':
-      return <EntityCard/>;
-    case 'hydra':
-      return <CollectionPage/>;
-    default:
-      return null;
+  if (kind === 'skos') {
+    return (
+      <>
+        <SchemeList/>
+        <hr/>
+        <ConceptCard/>
+      </>
+    );
   }
+  if (kind === 'entity') {
+    return <EntityCard/>;
+  }
+  return null;
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { loadResource } from './resolve';
+import { loadObjectCard } from './CardSlice.ts';
 import './OpenResource.css';
 
 export function OpenResource() {
@@ -8,7 +8,7 @@ export function OpenResource() {
 
   function handleSubmit() {
     const cleaned = input.replace('.json', '');
-    loadResource(cleaned).catch(console.error);
+    loadObjectCard(cleaned).catch(console.error);
     setIsOpen(false);
     setInput('');
   }

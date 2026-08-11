@@ -1,5 +1,11 @@
 import { getRouteApi } from '@tanstack/react-router';
-import { ResourcePage } from './ResourcePage.tsx';
+import {
+  loadObjectCard,
+  ObjectCardView,
+  useCard,
+} from '@globalise/object-card';
+import { useUriSync } from './useUriSync.ts';
+import '@globalise/design/styles.css';
 
 const route = getRouteApi('/object-card/');
 
@@ -9,5 +15,9 @@ const defaultUri =
 
 export function ObjectCardPage() {
   const { uri } = route.useSearch();
-  return <ResourcePage uri={uri ?? defaultUri} to="/object-card"/>;
+  const { uri: loadedUri } = useCard();
+
+  useUriSync(uri ?? defaultUri, loadedUri, loadObjectCard, '/object-card');
+
+  return <ObjectCardView/>;
 }

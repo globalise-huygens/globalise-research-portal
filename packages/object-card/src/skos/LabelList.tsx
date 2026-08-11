@@ -3,10 +3,10 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import { LangValue } from './SkosModel.ts';
+import { SkosValue } from './SkosModel.ts';
 import { HtmlValue } from './HtmlValue.tsx';
 
-type LabelListProps = { title: string; values?: LangValue[] };
+type LabelListProps = { title: string; values?: SkosValue[] };
 
 export function LabelList({ title, values }: LabelListProps) {
   if (!values?.length) {

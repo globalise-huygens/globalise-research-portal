@@ -21,7 +21,7 @@ import {
   useConcept,
 } from './';
 import { OpenResource } from '../OpenResource.tsx';
-import { loadResource } from '../resolve';
+import { loadObjectCard } from '../CardSlice.ts';
 
 export function ConceptCard() {
   const { uri, concept } = useConcept();
@@ -31,7 +31,7 @@ export function ConceptCard() {
   }
 
   function handleSelect(selected: SkosConcept) {
-    void loadResource(selected.id);
+    void loadObjectCard(selected.id);
   }
 
   const url = getJsonUrl(uri);

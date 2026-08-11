@@ -3,7 +3,8 @@ import {
   ObjectCardExternalLink,
 } from '@globalise/design';
 import { getContent, label, LinkedArtNode, url } from '@globalise/common';
-import { isInternalUri, loadResource } from '../resolve';
+import { isInternalUri } from '../isInternalUri.ts';
+import { loadObjectCard } from '../CardSlice.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -15,7 +16,7 @@ export function RelationLink({ node }: RelationLinkProps) {
 
   if (href && isInternalUri(href)) {
     return (
-      <ObjectCardAction onClick={() => void loadResource(href)}>
+      <ObjectCardAction onClick={() => void loadObjectCard(href)}>
         {text}
       </ObjectCardAction>
     );

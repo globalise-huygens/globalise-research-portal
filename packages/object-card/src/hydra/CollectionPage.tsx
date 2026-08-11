@@ -15,10 +15,13 @@ import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
 
 export function CollectionPage() {
-  const { collection } = useCollection();
+  const { collection, isReady, error } = useCollection();
 
-  if (!collection) {
-    return null;
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+  if (!isReady || !collection) {
+    return <div>Loading...</div>;
   }
 
   const { title, totalItems, member, view } = collection;

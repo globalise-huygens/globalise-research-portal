@@ -7,14 +7,14 @@ export { url } from './url.ts';
 export { getJsonUrl } from './getJsonUrl.ts';
 export { isClassifiedAs } from './isClassifiedAs.ts';
 export {
-  type LangValue,
-  type Literal,
+  type LanguageValue,
+  type LinkedArtValue,
   type TypedValue,
-  isLangValue,
+  isLanguageValue,
   isTypedValue,
-  getLiteral,
-  getLiterals,
-} from './literal.ts';
+  getValue,
+  getValues,
+} from './LinkedArtValue.ts';
 export { type Timespan, getTimespan, findTimespan } from './timespan.ts';
 export {
   type CidocClassName,

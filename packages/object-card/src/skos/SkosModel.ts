@@ -1,4 +1,4 @@
-export type LangValue = {
+export type SkosValue = {
   '@language': string;
   '@value': string;
 };
@@ -7,12 +7,12 @@ export type SkosConcept = {
   id: string;
   type: string | string[];
   _label?: string;
-  prefLabel: LangValue[];
-  altLabel?: LangValue[];
-  definition?: LangValue[];
-  references?: LangValue;
-  hiddenLabel?: LangValue[];
-  source?: LangValue;
+  prefLabel: SkosValue[];
+  altLabel?: SkosValue[];
+  definition?: SkosValue[];
+  references?: SkosValue;
+  hiddenLabel?: SkosValue[];
+  source?: SkosValue;
   notation?: string | string[];
 
   /**

@@ -1,19 +1,15 @@
+import { emptyLoadState, LoadState } from '../LoadState.ts';
 import { SkosConcept } from './SkosModel.ts';
 
 export type SchemeBundle = {
   '@graph': SkosConcept[];
 };
 
-export type SkosSchemesState = {
+export type SkosSchemesState = LoadState & {
   schemes: SkosConcept[];
-  isLoading: boolean;
-  isReady: boolean;
-  error: string | null;
 };
 
 export const emptySkosSchemesState: SkosSchemesState = {
+  ...emptyLoadState,
   schemes: [],
-  isLoading: false,
-  isReady: false,
-  error: null,
 };

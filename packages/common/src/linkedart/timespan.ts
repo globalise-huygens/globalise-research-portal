@@ -2,7 +2,7 @@ import { LinkedArtNode } from './LinkedArtNode.ts';
 import { isLinkedArtNode } from './isLinkedArtNode.ts';
 import { findByPath } from './findByPath.ts';
 import { getContent } from './getContent.ts';
-import { getLiterals } from './literal.ts';
+import { getValues } from './LinkedArtValue.ts';
 
 export type Timespan = {
   beginOfTheBegin?: string;
@@ -32,7 +32,7 @@ export function getTimespan(node?: LinkedArtNode | null): Timespan | null {
 /**
  * Find the timespan of an event or status node,
  * which either carries a `timespan` node
- * or a `crm:P4_has_time-span` literal.
+ * or a `crm:P4_has_time-span` value.
  */
 export function findTimespan(node?: LinkedArtNode | null): Timespan | null {
   if (!node) {
@@ -44,7 +44,7 @@ export function findTimespan(node?: LinkedArtNode | null): Timespan | null {
   if (nested) {
     return nested;
   }
-  const dates = getLiterals(node['crm:P4_has_time-span']);
+  const dates = getValues(node['crm:P4_has_time-span']);
   const [instant] = dates;
   if (!instant) {
     return null;

@@ -1,6 +1,6 @@
 import { asArray } from '../util/asArray.ts';
 
-export type LangValue = {
+export type LanguageValue = {
   '@language': string;
   '@value': string;
 };
@@ -11,11 +11,11 @@ export type TypedValue = {
 };
 
 /**
- * Linked art literals come in four shapes:
+ * Linked art values come in four shapes:
  * a plain string, a language tagged value, a typed value,
  * or an array containing any mix of those.
  */
-export type Literal = string | LangValue | TypedValue;
+export type LinkedArtValue = string | LanguageValue | TypedValue;
 
 /**
  * Language preference, most preferred first.
@@ -23,7 +23,7 @@ export type Literal = string | LangValue | TypedValue;
  */
 const languages = ['en', 'nl'];
 
-export function isLangValue(value: unknown): value is LangValue {
+export function isLanguageValue(value: unknown): value is LanguageValue {
   return !!value && typeof value === 'object' && '@language' in value;
 }
 
@@ -37,30 +37,32 @@ export function isTypedValue(value: unknown): value is TypedValue {
 }
 
 /**
- * All string values of a literal, in document order.
+ * All string values, in document order.
  */
-export function getLiterals(value: unknown): string[] {
-  return asArray(value as Literal | Literal[] | undefined)
+export function getValues(value: unknown): string[] {
+  return asArray(value as LinkedArtValue | LinkedArtValue[] | undefined)
     .map(getStringValue)
     .filter((found) => !!found);
 }
 
 /**
- * The single most preferred string value of a literal.
+ * The single most preferred string value.
  */
-export function getLiteral(value: unknown): string {
-  const values = asArray(value as Literal | Literal[] | undefined);
+export function getValue(value: unknown): string {
+  const values = asArray(value as LinkedArtValue | LinkedArtValue[] | undefined);
   for (const language of languages) {
-    const found = values.find((it) => isLangValue(it) && it['@language'] === language);
+    const found = values.find(
+      (it) => isLanguageValue(it) && it['@language'] === language,
+    );
     if (found) {
       return getStringValue(found);
     }
   }
-  const untagged = values.find((it) => !isLangValue(it));
+  const untagged = values.find((it) => !isLanguageValue(it));
   return getStringValue(untagged ?? values[0]);
 }
 
-function getStringValue(value?: Literal): string {
+function getStringValue(value?: LinkedArtValue): string {
   if (!value) {
     return '';
   }

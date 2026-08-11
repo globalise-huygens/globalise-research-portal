@@ -1,4 +1,4 @@
-import { setState, useObjectCardStore } from '../ObjectCardStore.ts';
+import { setObjectCardState, useObjectCardStore } from '../ObjectCardStore.ts';
 import { SkosConceptState } from './SkosConceptState.ts';
 import { SkosConcept } from './SkosModel.ts';
 
@@ -7,7 +7,7 @@ export type SkosConceptSlice = {
 };
 
 export function setConcept(uri: string, concept: SkosConcept) {
-  setState({ skosConceptState: { uri, concept } });
+  setObjectCardState({ skosConceptState: { uri, concept } });
 }
 
 export function useConcept(): SkosConceptState {
