@@ -1,12 +1,13 @@
-import { useShallow } from 'zustand/react/shallow';
+import { useMemo } from 'react';
 import {
-  entityVisualCategories,
+  type Annotation,
   type EntityClassificationId,
-  type EntityVisualCategoryClassName,
-  getEntityClassifiedAsClassName,
+  type Id,
   isEntity,
+  isHighlightedEntity,
 } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
+import { type CanvasId, useAnnotations } from './ManifestViewerSlice';
 
 export type EntityHighlightSlice = {
   entityHighlightCategories: Set<EntityClassificationId>;
@@ -22,29 +23,25 @@ export function useEntityHighlightCategories() {
   return useDocumentStore((s) => s.entityHighlightCategories);
 }
 
-export function useIsEntityHighlightCategoryVisible(
-  classificationId?: EntityClassificationId,
-) {
-  return useDocumentStore((s) =>
-    classificationId !== undefined &&
-    s.entityHighlightCategories.has(classificationId),
-  );
+export function useHighlightedAnnotations(
+  canvasId: CanvasId,
+): Record<Id, Annotation> {
+  const annotations = useAnnotations(canvasId);
+  const categories = useEntityHighlightCategories();
+  return useMemo(() => {
+    const highlighted: Record<Id, Annotation> = {};
+    for (const [id, annotation] of Object.entries(annotations)) {
+      if (isEntity(annotation) && !isHighlightedEntity(annotation, categories)) {
+        continue;
+      }
+      highlighted[id] = annotation;
+    }
+    return highlighted;
+  }, [annotations, categories]);
 }
 
-export function useEntityHighlightCounts() {
-  return useDocumentStore(useShallow((s) => {
-    const counts = Object.fromEntries(
-      entityVisualCategories.map((category) => [category, 0]),
-    ) as Record<EntityVisualCategoryClassName, number>;
-
-    for (const canvas of Object.values(s.canvases)) {
-      for (const annotation of Object.values(canvas.annotations ?? {})) {
-        if (isEntity(annotation)) {
-          counts[getEntityClassifiedAsClassName(annotation)] += 1;
-        }
-      }
-    }
-
-    return counts;
-  }));
+export function useIsHighlightedEntity(annotation: Annotation): boolean {
+  return useDocumentStore((s) =>
+    isHighlightedEntity(annotation, s.entityHighlightCategories),
+  );
 }
