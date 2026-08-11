@@ -9,6 +9,8 @@
     "start": "npm -w @globalise/app run dev",
     "build:app": "npm -w @globalise/app run build",
     "build": "npm t && npm run typecheck && npm run lint && npm run build:app",
+    "diplomatic:demo": "npm -w @globalise/diplomatic run demo",
+    "diplomatic:screenshot": "npm -w @globalise/diplomatic run screenshot",
     "preview": "npm -w @globalise/app run build && npm -w @globalise/app run preview",
     "typecheck": "tsc -b --clean && tsc -b",
     "lint": "eslint .",
