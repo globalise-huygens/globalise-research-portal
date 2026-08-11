@@ -1,9 +1,7 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
-  getEntityClassificationId,
   getEntityTypeClassName,
-  type EntityClassificationId,
   findTextPositionSelector,
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
@@ -47,7 +45,6 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
-    highlightedEntityCategories?: Set<EntityClassificationId>;
     onHover?: (id: Id | null) => void;
     onClick?: (id: Id) => void;
   };
@@ -63,7 +60,6 @@ export function renderDiplomaticView(
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
   };
   const {
-    highlightedEntityCategories,
     showBlocks,
     onHover,
     onClick,
@@ -120,24 +116,12 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
-      const entityAnno = segment.annotations.find((a) => isEntity(a));
-      const classificationId = entityAnno
-        ? getEntityClassificationId(entityAnno)
-        : undefined;
-      const isHighlightedEntity =
-        entityAnno &&
-        (
-          !highlightedEntityCategories ||
-          (
-            classificationId &&
-            highlightedEntityCategories.has(classificationId)
-          )
-        );
+      const entity = segment.annotations.find((a) => isEntity(a));
 
-      if (isHighlightedEntity) {
-        const visualCategory = getEntityClassifiedAsClassName(entityAnno);
-        const entityLabel = toClassName(getEntityClassifiedAsLabel(entityAnno));
-        const entityType = getEntityTypeClassName(entityAnno);
+      if (entity) {
+        const visualCategory = getEntityClassifiedAsClassName(entity);
+        const entityLabel = toClassName(getEntityClassifiedAsLabel(entity));
+        const entityType = getEntityTypeClassName(entity);
         $segment.classList.add(
           ...[
             'entity',
@@ -146,15 +130,15 @@ export function renderDiplomaticView(
             entityLabel,
           ],
         );
-        $segment.title = `${entityLabel} | ${entityAnno.id}`;
+        $segment.title = `${entityLabel} | ${entity.id}`;
 
-        if (!$entityToSegments[entityAnno.id]) {
-          $entityToSegments[entityAnno.id] = [];
+        if (!$entityToSegments[entity.id]) {
+          $entityToSegments[entity.id] = [];
         }
-        $entityToSegments[entityAnno.id].push($segment);
+        $entityToSegments[entity.id].push($segment);
 
-        $segment.addEventListener('click', () => onClick(entityAnno.id));
-        $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
+        $segment.addEventListener('click', () => onClick(entity.id));
+        $segment.addEventListener('mouseenter', () => onHover(entity.id));
         $segment.addEventListener('mouseleave', () => onHover(null));
       } else {
         const blockId = wordToBlock[wordId];
@@ -180,12 +164,9 @@ export function renderDiplomaticView(
     $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
     $layoutView.style.marginLeft = px(lineNumberWidth);
 
-    const { $blocks } = renderBlocks(annotations, $layoutView, { scale, offset });
+    const { $blocks } = renderBlocks(annotations, $view, { scale, offset });
     const lineNumbers = renderLineNumbers(annotations, $view, {
-      scale, gap: lineNumberGap, offset: {
-        left: offset.left + lineNumberWidth,
-        top: offset.top,
-      },
+      scale, gap: lineNumberGap, offset,
     });
     const { showLine, hideLine } = lineNumbers;
 

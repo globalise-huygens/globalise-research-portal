@@ -5,12 +5,11 @@ import {
   findSvgPath,
   findTextualBodyValue,
   getEntityClassifiedAsClassName,
-  getEntityClassificationId,
   type Annotation,
   type EntityClassificationId,
   type Id,
   isBlock,
-  isEntity,
+  isHighlightedEntity,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
@@ -21,7 +20,7 @@ import {
   useEntityHighlightCategories,
   useIsLayoutElementsVisible,
   usePages,
-  useSelectedIdsForCanvas,
+  useSelectedAnnotationsInFacsimile,
 } from '@globalise/common/document';
 import { orThrow } from '@globalise/common';
 import {
@@ -53,7 +52,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const showLayoutElements = useIsLayoutElementsVisible();
   const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
-  const selectedIds = useSelectedIdsForCanvas(lazyCanvas.canvasId);
+  const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
 
   const annotationUrls = useMemo(() => {
     if (!vault) {
@@ -124,14 +123,26 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return words;
     }
-    if(!selectedIds.length) {
+    if(!selected.all.length) {
       return [];
     }
-    return words.filter((w) => selectedIds.includes(w.id));
+    return words.filter((w) => selected.all.includes(w.id));
   },
-  [isScrolling, words, selectedIds]);
+  [isScrolling, words, selected]);
 
-  const visibleBlocks = showLayoutElements ? blocks : [];
+  const visibleBlocks = useMemo(() => {
+    if (!showLayoutElements) {
+      return [];
+    }
+    if(!isScrolling) {
+      return blocks;
+    }
+    if(!selected.all.length) {
+      return [];
+    }
+    return blocks.filter((b) => selected.all.includes(b.id));
+  },
+  [isScrolling, blocks, selected, showLayoutElements]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
     return null;
@@ -180,14 +191,10 @@ function getEntityHighlightTone(
   highlightedEntityCategories: Set<EntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
-  if (!annotation || !isEntity(annotation)) {
+  if (!annotation) {
     return undefined;
   }
-  const classificationId = getEntityClassificationId(annotation);
-  if (
-    !classificationId ||
-    !highlightedEntityCategories.has(classificationId)
-  ) {
+  if (!isHighlightedEntity(annotation, highlightedEntityCategories)) {
     return undefined;
   }
   return getEntityClassifiedAsClassName(annotation);

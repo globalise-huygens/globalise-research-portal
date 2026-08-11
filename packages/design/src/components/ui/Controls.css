@@ -186,6 +186,10 @@
     color: var(--color-brand-white);
   }
 
+  .checkbox-field {
+    display: contents;
+  }
+
   .checkbox-control {
     display: inline-flex;
     min-width: 0;

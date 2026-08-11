@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
-  getEntityClassificationId,
   getEntityTypeClassName,
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
@@ -10,9 +9,9 @@ import {
   isWord,
 } from '@globalise/common/annotation';
 import {
-  useDocumentStore,
-  useIsEntityHighlightCategoryVisible,
-  useIsSelectedInTranscription,
+  useIsClickedInLineByLine,
+  useIsHighlightedEntity,
+  useIsSelectedInLineByLine,
 } from '@globalise/common/document';
 
 type AnnotationProps = {
@@ -31,7 +30,7 @@ export function AnnotationSegment(
   }
 
   if (isWord(annotation)) {
-    return <WordSegment annotation={annotation}>
+    return <WordSegment canvasId={canvasId} annotation={annotation}>
       {children}
     </WordSegment>;
   }
@@ -39,15 +38,16 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>) {
-  const isSelected = useDocumentStore((s) => s.clickedId === annotation.id);
+function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
+  const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
+  const isClicked = useIsClickedInLineByLine(canvasId, annotation.id);
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (isSelected && ref.current) {
+    if (isClicked && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [isSelected]);
+  }, [isClicked]);
 
   return (
     <span
@@ -61,14 +61,12 @@ function WordSegment({ annotation, children }: Omit<AnnotationProps, 'canvasId'>
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
   const label = getEntityClassifiedAsLabel(annotation);
-  const classificationId = getEntityClassificationId(annotation);
   const classifiedAs = getEntityClassifiedAsClassName(annotation);
   const category = getEntityTypeClassName(annotation);
-  const isHighlighted =
-    useIsEntityHighlightCategoryVisible(classificationId);
-  const isSelected = useIsSelectedInTranscription(canvasId, annotation.id);
+  const isHighlightedEntity = useIsHighlightedEntity(annotation);
+  const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
 
-  if (!isHighlighted) {
+  if (!isHighlightedEntity) {
     return <>{children}</>;
   }
 

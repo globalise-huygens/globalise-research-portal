@@ -63,6 +63,17 @@
         color: var(--diplomatic-structure-strong);
     }
 
+    .blocks {
+        z-index: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .text {
+        z-index: 1;
+    }
+
     .blocks .layout-element-shape {
         stroke: transparent;
     }

@@ -49,6 +49,7 @@ export class LazyCanvasTileLoader {
   private onChangeViewport: () => void;
 
   private frameId: number | null = null;
+  private isClosed = false;
 
   constructor(
     viewer: Viewer,
@@ -85,7 +86,7 @@ export class LazyCanvasTileLoader {
    * Check viewport bounds, mounts visible canvases, and remove hidden ones.
    */
   private updateCanvasTilesThrottled = throttle((): void => {
-    if (!this.viewer.viewport) {
+    if (!this.isReady()) {
       return;
     }
     const bounds = this.viewer.viewport.getBounds(true);
@@ -121,7 +122,10 @@ export class LazyCanvasTileLoader {
   /**
    * Clear active tile images, loaded images, and pending requests.
    */
-  public destroy(): void {
+  public close(): void {
+    this.isClosed = true;
+    this.updateCanvasTilesThrottled.cancel();
+
     this.viewer.removeHandler('viewport-change', this.onChangeViewport);
     this.viewer.removeHandler('animation', this.onChangeViewport);
 
@@ -133,6 +137,11 @@ export class LazyCanvasTileLoader {
     this.viewer.world.removeAll();
     this.loaded.clear();
     this.pending.clear();
+  }
+  private isReady(): boolean {
+    return !this.isClosed
+      && !!this.viewer.element
+      && !!this.viewer.viewport;
   }
 
   /**
@@ -156,7 +165,7 @@ export class LazyCanvasTileLoader {
     this.pending.add(canvas.canvasId);
     try {
       const tileSource = await this.fetchInfo(canvas.imageServiceUrl);
-      if (!this.pending.has(canvas.canvasId)) {
+      if (!this.pending.has(canvas.canvasId) || !this.isReady()) {
         return;
       }
       this.viewer.addTiledImage({
@@ -168,6 +177,9 @@ export class LazyCanvasTileLoader {
         // @ts-expect-error type mismatch
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
+          if (this.isClosed) {
+            return;
+          }
           this.loaded.set(canvas.canvasId, event.item);
           this.onLoadedChangeBatched();
         },

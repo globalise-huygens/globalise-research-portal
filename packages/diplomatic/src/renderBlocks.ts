@@ -1,5 +1,4 @@
 import { Annotation, findSourceLabel } from '@globalise/common/annotation';
-import { Point } from '@knaw-huc/original-layout';
 import { calcBoundingCorners, padCorners } from '@knaw-huc/original-layout';
 import { createPath } from '@knaw-huc/original-layout';
 import { Scale } from '@knaw-huc/original-layout';
@@ -18,6 +17,7 @@ type BlockColors = {
 type BlocksConfig = {
   scale: Scale;
   offset: Offset;
+  padding?: { x: number, y: number };
   colors?: BlockColors;
 };
 
@@ -27,6 +27,7 @@ export function renderBlocks(
   {
     scale,
     offset,
+    padding = { x: 100, y: 50 },
     colors = {
       text: 'rgba(93, 71, 54, 0.72)',
       stroke: 'rgba(93, 71, 54, 0.48)',
@@ -51,11 +52,10 @@ export function renderBlocks(
   );
 
   const blockBoundaries = createBlockBoundaries(words, annotations);
-  const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
-      const padded = scale.path(padCorners(corners, padding));
+      const padded = scale.path(padCorners(corners, [padding.x, padding.y]));
       return [id, padded];
     }),
   );
