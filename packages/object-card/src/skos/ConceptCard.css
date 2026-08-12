@@ -55,6 +55,7 @@
       font-size: var(--s32);
       letter-spacing: -0.03em;
       line-height: var(--s32);
+      margin-block: var(--s24) 0;
     }
 
     .title-language {
