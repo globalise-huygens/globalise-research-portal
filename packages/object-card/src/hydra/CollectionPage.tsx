@@ -1,4 +1,5 @@
 import { Virtuoso } from 'react-virtuoso';
+import { Link } from '@tanstack/react-router';
 import {
   ReferencePanelItem,
   ReferencePanelList,
@@ -8,12 +9,11 @@ import {
   type LinkedArtEntityType,
 } from '@globalise/common';
 import { EntityTypeBadge } from '../linkedart';
-import { HydraMember } from './HydraModel.ts';
+import { getPageNumber, HydraCollection, HydraMember } from './HydraModel.ts';
 import { useCollection } from './HydraSlice.ts';
 import { getHydraHref, getHydraTarget } from './getHydraHref.ts';
 import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
-import { Link } from '@tanstack/react-router';
 
 export function CollectionPage() {
   const { collection, isReady, error } = useCollection();
@@ -28,20 +28,23 @@ export function CollectionPage() {
   const { title, totalItems, member, view } = collection;
 
   const memberType = getLinkedArtEntityType(collection['@id']);
+  const shownItems = getShownItemsRange(collection);
 
   return (
-    <section className="collection-page">
-      <header className="collection-header">
+    <section className='collection-page'>
+      <header className='collection-header'>
         <h2>{title ?? 'Collection'}</h2>
         {!!totalItems && (
-          <span className="collection-total">
-            {totalItems.toLocaleString()} items
+          <span className='collection-total'>
+            {shownItems
+              ? `${shownItems} of ${totalItems.toLocaleString()} items`
+              : `${totalItems.toLocaleString()} items`}
           </span>
         )}
         <Pagination view={view}/>
       </header>
       <Virtuoso
-        className="collection-list"
+        className='collection-list'
         data={member}
         components={{ List: ReferencePanelList }}
         itemContent={(index, item) => (
@@ -50,6 +53,22 @@ export function CollectionPage() {
       />
     </section>
   );
+}
+
+function getShownItemsRange(collection: HydraCollection): string | null {
+  const { totalItems, member, view } = collection;
+  if (!totalItems || !view) {
+    return null;
+  }
+  const current = getPageNumber(view['@id']);
+  const last = getPageNumber(view.last);
+  if (!current || !last) {
+    return null;
+  }
+  const pageSize = Math.ceil(totalItems / last);
+  const start = (current - 1) * pageSize + 1;
+  const end = start + member.length - 1;
+  return `${start.toLocaleString()}-${end.toLocaleString()}`;
 }
 
 type PageItemProps = {
