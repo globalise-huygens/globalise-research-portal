@@ -71,24 +71,15 @@
     }
 
     .block-group {
-        border-left: 1px solid transparent;
+        border-left: 1px solid var(--layout-element-stroke);
         padding-left: 0.35rem;
-
-        &.selected {
-            background: color-mix(in srgb, var(--normalized-annotation) 7%, transparent);
-            border-left-color: color-mix(
-              in srgb,
-              var(--normalized-selected) 68%,
-              var(--normalized-structure-strong)
-            );
-        }
     }
 
     .block-group.selected .line-number {
         color: var(--normalized-structure-strong);
     }
 
-    &[data-layout-elements-visible="false"] .block-group.selected {
+    &[data-layout-elements-visible="false"] .block-group {
         background: transparent;
         border-left-color: transparent;
     }

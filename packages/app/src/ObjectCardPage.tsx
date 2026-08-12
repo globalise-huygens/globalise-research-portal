@@ -1,7 +1,8 @@
+import '@globalise/design/styles.css';
+import './ObjectCardPage.css';
 import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
-import '@globalise/design/styles.css';
 
 const route = getRouteApi('/object-card/');
 
@@ -16,5 +17,11 @@ export function ObjectCardPage() {
     loadObjectCard(uri ?? defaultUri).catch(console.error);
   }, [uri]);
 
-  return <ObjectCardView/>;
+  return (
+    <main className='object-card-page'>
+      <div className='object-card-page__content'>
+        <ObjectCardView/>
+      </div>
+    </main>
+  );
 }

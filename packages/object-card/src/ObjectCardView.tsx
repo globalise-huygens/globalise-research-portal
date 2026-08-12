@@ -1,5 +1,5 @@
 import { useCard } from './CardSlice.ts';
-import { ConceptCard, SchemeList } from './skos';
+import { ConceptCard } from './skos';
 import { EntityCard } from './linkedart';
 
 export function ObjectCardView() {
@@ -12,13 +12,7 @@ export function ObjectCardView() {
     return <div>Loading...</div>;
   }
   if (type === 'skos') {
-    return (
-      <>
-        <SchemeList/>
-        <hr/>
-        <ConceptCard/>
-      </>
-    );
+    return <ConceptCard/>;
   }
   if (type === 'entity') {
     return <EntityCard/>;
