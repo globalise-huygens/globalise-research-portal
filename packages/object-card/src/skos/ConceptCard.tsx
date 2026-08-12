@@ -49,18 +49,22 @@ export function ConceptCard() {
   const alternativeLabels = concept.altLabel ?? [];
   const hiddenLabels = concept.hiddenLabel ?? [];
   const definitions = concept.definition ?? [];
-  const source = concept.source ?? concept.references;
+  const source = concept.source;
+  const references = concept.references;
   const hasAlternativeLabels = Boolean(
     alternativeLabels.length || hiddenLabels.length,
   );
-  const hasDefinitions = Boolean(definitions.length || source);
+  const hasDefinitions =
+    definitions.length > 0 || Boolean(source) || Boolean(references);
   const hasExternal =
     (concept.closeMatch?.length ?? 0) +
       (concept.narrowMatch?.length ?? 0) +
       (concept.exactMatch?.length ?? 0) >
     0;
   const hasGraph =
-    (concept.broader?.length ?? 0) +
+    (concept.inScheme?.length ?? 0) +
+      (concept.hasTopConcept?.length ?? 0) +
+      (concept.broader?.length ?? 0) +
       (concept.narrower?.length ?? 0) +
       (concept.related?.length ?? 0) >
     0;
@@ -102,8 +106,16 @@ export function ConceptCard() {
           <div className="alternative-labels">
             <span className="alternative-title">alternative labels:</span>
             {alternativeLabels.map((label) => (
-              <span key={`alt-${label['@language']}-${label['@value']}`}>
-                {label['@value']}
+              <span
+                key={`alt-${label['@language']}-${label['@value']}`}
+                className="alternative-label"
+              >
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
               </span>
             ))}
             {hiddenLabels.map((label) => (
@@ -112,7 +124,12 @@ export function ConceptCard() {
                 className="hidden-label"
               >
                 <IconContentWarning aria-hidden="true" />
-                {label['@value']}
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
               </span>
             ))}
           </div>
@@ -140,6 +157,12 @@ export function ConceptCard() {
                         value={<HtmlValue value={source['@value']} />}
                       />
                     )}
+                    {references && (
+                      <ObjectCardProperty
+                        label="References"
+                        value={<HtmlValue value={references['@value']} />}
+                      />
+                    )}
                   </ObjectCardPropertyList>
                 </ObjectCardSection>
               )}
@@ -158,6 +181,16 @@ export function ConceptCard() {
           {hasGraph && (
             <ObjectCardPanel side="right">
               <ObjectCardSection title="Concept Graph" className="graph">
+                <ConceptList
+                  title="Scheme"
+                  concepts={concept.inScheme}
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Top concepts"
+                  concepts={concept.hasTopConcept}
+                  onSelect={handleSelect}
+                />
                 <ConceptList
                   title="Broader"
                   concepts={concept.broader}
