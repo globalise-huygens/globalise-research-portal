@@ -3,7 +3,7 @@ import { ConceptCard, SchemeList } from './skos';
 import { EntityCard } from './linkedart';
 
 export function ObjectCardView() {
-  const { kind, isReady, error } = useCard();
+  const { type, isReady, error } = useCard();
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -11,7 +11,7 @@ export function ObjectCardView() {
   if (!isReady) {
     return <div>Loading...</div>;
   }
-  if (kind === 'skos') {
+  if (type === 'skos') {
     return (
       <>
         <SchemeList/>
@@ -20,7 +20,7 @@ export function ObjectCardView() {
       </>
     );
   }
-  if (kind === 'entity') {
+  if (type === 'entity') {
     return <EntityCard/>;
   }
   return null;

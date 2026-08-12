@@ -2,7 +2,7 @@ import { fetchJson, getJsonUrl, isLinkedArtNode } from '@globalise/common';
 import { setObjectCardState, useObjectCardStore } from './ObjectCardStore.ts';
 import { isSkosConcept, setConcept } from './skos';
 import { setEntity } from './linkedart';
-import { CardKind, CardState, emptyCardState } from './CardState.ts';
+import { CardType, CardState, emptyCardState } from './CardState.ts';
 import { getErrorMessage, isRequested } from './LoadState.ts';
 
 export type CardSlice = {
@@ -18,8 +18,8 @@ export async function loadObjectCard(uri: string) {
 
   try {
     const payload = await fetchJson<unknown>(getJsonUrl(uri));
-    const kind = keep(uri, payload);
-    setObjectCardState({ cardState: { uri, kind, isLoading: false, isReady: true, error: null } });
+    const type = getType(uri, payload);
+    setObjectCardState({ cardState: { uri, type, isLoading: false, isReady: true, error: null } });
   } catch (e) {
     const error = getErrorMessage(e);
     setObjectCardState({ cardState: { ...emptyCardState, uri, error } });
@@ -30,7 +30,7 @@ export function useCard(): CardState {
   return useObjectCardStore((s) => s.cardState);
 }
 
-function keep(uri: string, payload: unknown): CardKind {
+function getType(uri: string, payload: unknown): CardType {
   if (isSkosConcept(payload)) {
     setConcept(uri, payload);
     return 'skos';

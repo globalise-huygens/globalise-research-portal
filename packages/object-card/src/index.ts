@@ -4,7 +4,7 @@ export { type LoadState, type UriLoadState } from './LoadState.ts';
 export { ObjectCardView } from './ObjectCardView.tsx';
 export { OpenResource } from './OpenResource.tsx';
 export { isInternalUri } from './isInternalUri.ts';
-export { type CardKind, type CardState } from './CardState.ts';
+export { type CardType, type CardState } from './CardState.ts';
 export { loadObjectCard, useCard } from './CardSlice.ts';
 export {
   ConceptCard,
