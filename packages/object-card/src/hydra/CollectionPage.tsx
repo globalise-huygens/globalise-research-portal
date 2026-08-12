@@ -10,9 +10,10 @@ import {
 import { EntityTypeBadge } from '../linkedart';
 import { HydraMember } from './HydraModel.ts';
 import { useCollection } from './HydraSlice.ts';
-import { getHydraHref } from './getHydraHref.ts';
+import { getHydraHref, getHydraTarget } from './getHydraHref.ts';
 import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
+import { Link } from '@tanstack/react-router';
 
 export function CollectionPage() {
   const { collection, isReady, error } = useCollection();
@@ -58,13 +59,18 @@ type PageItemProps = {
 
 function PageItem({ member, type }: PageItemProps) {
   const uri = member['@id'];
+  const target = getHydraTarget(member);
 
   return (
     <ReferencePanelItem
-      title={member.title ?? uri}
+      title={
+        <Link {...target} className='collection-item-link'>
+          {member.title ?? uri}
+        </Link>
+      }
       metadata={<EntityTypeBadge type={type}/>}
       href={getHydraHref(member)}
-      hrefLabel="Open"
+      hrefLabel='Open'
       uri={uri}
     />
   );

@@ -20,6 +20,15 @@
       height: 70vh;
     }
 
+    .collection-item-link {
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
     .pagination {
       display: flex;
       align-items: center;
