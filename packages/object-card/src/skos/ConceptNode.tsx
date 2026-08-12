@@ -1,4 +1,4 @@
-import { IconArrowRightSimple, ObjectCardAction } from '@globalise/design';
+import { IconArrowTopRight, ObjectCardAction } from '@globalise/design';
 import { getConceptLabel, SkosConcept } from './SkosModel.ts';
 
 export type RelationKey =
@@ -24,10 +24,7 @@ export function ConceptNode({ concept, childKey, onSelect }: ConceptNodeProps) {
         onPress={() => onSelect(concept)}
       >
         <span className="concept-label">{getConceptLabel(concept)}</span>
-        <IconArrowRightSimple
-          aria-hidden="true"
-          className="concept-link-icon"
-        />
+        <IconArrowTopRight aria-hidden="true" className="concept-link-icon" />
       </ObjectCardAction>
       {!!children?.length && (
         <ul className="concept-list">
