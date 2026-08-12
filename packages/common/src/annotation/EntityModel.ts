@@ -13,31 +13,16 @@ export type EntityBody = {
     begin_of_the_end?: string;
     end_of_the_end?: string;
   };
-  ascribes_classification?: {
+  ascribes_classification: {
     id: string,
     type: string,
     _label: string
   };
-  has_classificatory_subject?: EntityReference;
-  has_appellative_subject?: EntityReference;
   ascribes_appellation?: {
     type: string;
     content: string;
   };
-  unit?: EntityReference;
-};
-
-/** The semantic links represented by an entity annotation. */
-export type EntityRelationships = {
-  subject?: EntityReference;
-  appellation?: string;
-  classification?: EntityClassification;
-  classificationRelation?: EntityReference;
-};
-type EntityReference = {
-  id: string;
-  type: string;
-  _label: string;
+  unit?: EntityClassification;
 };
 type EntityClassification = {
   id: string;
@@ -97,22 +82,6 @@ export function getPrimaryEntityBody(annotation: Annotation): EntityBody {
     ?? bodies.find((current) => current.type === 'AppellativeStatus');
   assertEntityBody(body);
   return body;
-}
-
-/**
- * Keep the assertion's facets separate. Consumers can render these as
- * navigable cards instead of flattening every URI into an external-link list.
- */
-export function getEntityRelationships(
-  annotation: Annotation,
-): EntityRelationships {
-  const body = getPrimaryEntityBody(annotation);
-  return {
-    subject: body.has_appellative_subject ?? body.has_classificatory_subject,
-    appellation: body.ascribes_appellation?.content ?? body.label,
-    classification: body.classified_as,
-    classificationRelation: body.ascribes_classification,
-  };
 }
 
 export function getEntityType(annotation: Annotation) {

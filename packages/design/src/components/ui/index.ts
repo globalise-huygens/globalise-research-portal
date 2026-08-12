@@ -80,7 +80,6 @@ export type {
   EntityPreviewCardDimensionsData,
   EntityPreviewCardDocumentData,
   EntityPreviewCardEntityData,
-  EntityPreviewCardExternalLink,
   EntityPreviewCardKind,
   EntityPreviewCardOrganisationData,
   EntityPreviewCardPersonData,

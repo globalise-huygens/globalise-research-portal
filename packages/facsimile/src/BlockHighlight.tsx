@@ -16,20 +16,7 @@ export function BlockHighlight(
     <g
       className="layout-element"
       data-selected={selected ? 'true' : 'false'}
-      onMouseEnter={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        setHovered(id, {
-          element: event.currentTarget,
-          x: event.clientX,
-          y: event.clientY,
-          left: rect.left,
-          top: rect.top,
-          right: rect.right,
-          bottom: rect.bottom,
-          width: rect.width,
-          height: rect.height,
-        });
-      }}
+      onMouseEnter={() => { setHovered(id); }}
       onMouseLeave={() => { setHovered(null); }}
     >
       <polygon className="layout-element-halo" points={points} />

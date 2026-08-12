@@ -1,7 +1,8 @@
-import { IconArrowTopRight, IconCopy, IconExternalLink } from '../icons';
+import { IconArrowTopRight, IconCopy } from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
 import { Popover } from './Popover';
+import { Tooltip } from './Tooltip';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
@@ -9,7 +10,6 @@ export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 export type EntityPreviewCardKind =
   | 'entity'
   | 'commodity'
-  | 'concept'
   | 'date'
   | 'dimensions'
   | 'document'
@@ -22,18 +22,13 @@ export type EntityPreviewCardKind =
 
 export type EntityPreviewCardBaseData = {
   title: React.ReactNode;
-  definition?: React.ReactNode;
-  alternativeLabels?: React.ReactNode;
   properties?: EntityPreviewCardProperty[];
   badges?: EntityPreviewCardAutomationBadge[];
   icon?: React.ReactNode;
-  externalLinks?: EntityPreviewCardExternalLink[];
   openFullCardLabel?: string;
   openFullCardHref?: string;
   /** URI or annotation identifier copied by the compact card action. */
   copyValue?: string;
-  /** Whether the card represents a resolved authority/concept record. */
-  linked?: boolean;
 };
 
 export type EntityPreviewCardEntityData = {
@@ -47,10 +42,6 @@ export type EntityPreviewCardCommodityData = {
   unit?: React.ReactNode;
   mentions?: React.ReactNode;
   qualifier?: React.ReactNode;
-} & EntityPreviewCardBaseData;
-
-export type EntityPreviewCardConceptData = {
-  kind: 'concept';
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDateData = {
@@ -135,7 +126,6 @@ export type EntityPreviewCardShipData = {
 export type EntityPreviewCardData =
   | EntityPreviewCardEntityData
   | EntityPreviewCardCommodityData
-  | EntityPreviewCardConceptData
   | EntityPreviewCardDateData
   | EntityPreviewCardDimensionsData
   | EntityPreviewCardDocumentData
@@ -156,17 +146,9 @@ export type EntityPreviewCardProperty = {
   value: React.ReactNode;
 };
 
-export type EntityPreviewCardExternalLink = {
-  href: string;
-  label: React.ReactNode;
-};
-
 function getEntityBadgeType(
   kind: EntityPreviewCardKind,
 ): EntityBadgeType | 'entity' {
-  if (kind === 'concept') {
-    return 'entity';
-  }
   if (kind === 'polity') {
     return 'organisation';
   }
@@ -182,8 +164,6 @@ function getEntityBadgeLabel(kind: EntityPreviewCardKind) {
   switch (kind) {
     case 'entity':
       return 'Entity';
-    case 'concept':
-      return 'Concept';
     case 'organisation':
       return 'Organisation';
     case 'dimensions':
@@ -302,15 +282,6 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         property[1] !== undefined && property[1] !== null && property[1] !== '',
     )
     .map(([label, value]) => ({ label, value }));
-  const summaryProperties: EntityPreviewCardProperty[] = [
-    { label: 'Definition', value: data.definition },
-    { label: 'Alt label', value: data.alternativeLabels },
-  ].filter(
-    (property): property is EntityPreviewCardProperty =>
-      property.value !== undefined &&
-      property.value !== null &&
-      property.value !== '',
-  );
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
   const categoryLabel = getEntityBadgeLabel(data.kind);
@@ -334,69 +305,72 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   return (
     <Popover
       size="compact"
-      className={cn('entity-preview-card', className)}
-      data-has-external-links={data.externalLinks?.length ? 'true' : 'false'}
-      data-linked={data.linked ? 'true' : 'false'}
-      data-kind={data.kind}
+      className={cn('gds-entity-preview-card', className)}
       data-copied={copied ? 'true' : 'false'}
     >
-      <div className="header">
-        <div className="identity">
-          <div className="leading">
-            <span
-              role="img"
-              aria-label={`Category: ${categoryLabel}`}
-              className="category"
-              data-type={getEntityBadgeType(data.kind)}
+      <div className="gds-entity-preview-card__header">
+        <div className="gds-entity-preview-card__identity">
+          <div className="gds-entity-preview-card__leading-row">
+            <Tooltip
+              label={`Category: ${categoryLabel}`}
+              placement="top"
             >
-              {data.icon ? (
-                <span className="category-icon">
-                  {data.icon}
-                </span>
-              ) : (
-                <span className="category-initial">
-                  {categoryLabel.slice(0, 1)}
-                </span>
-              )}
-            </span>
+              <span
+                tabIndex={0}
+                role="img"
+                aria-label={`Category: ${categoryLabel}`}
+                className="gds-entity-preview-card__category-trigger"
+                data-type={getEntityBadgeType(data.kind)}
+              >
+                {data.icon ? (
+                  <span className="gds-entity-preview-card__category-icon">
+                    {data.icon}
+                  </span>
+                ) : (
+                  <span className="gds-entity-preview-card__category-initial">
+                    {categoryLabel.slice(0, 1)}
+                  </span>
+                )}
+              </span>
+            </Tooltip>
             {automationBadges.map((badge) => (
               <EntityBadge
                 key={badge}
                 type={badge}
-                className="automation-badge"
+                className="gds-entity-preview-card__automation-badge"
               >
                 {badge.toUpperCase()}
               </EntityBadge>
             ))}
           </div>
-          <div className="title">{data.title}</div>
+          <div className="gds-entity-preview-card__title">{data.title}</div>
         </div>
 
-        <div className="actions">
+        <div className="gds-entity-preview-card__actions">
           {copyValue && (
             <button
               type="button"
               aria-label={`Copy URI ${copyValue}`}
-              className="action"
+              className="gds-entity-preview-card__icon-action"
               title={copied ? `Copied ${copyValue}` : copyValue}
               onClick={copyIdentifier}
             >
-              <IconCopy />
+              <IconCopy className="gds-entity-preview-card__icon-action-icon" />
             </button>
           )}
           {data.openFullCardHref && (
             <a
               href={data.openFullCardHref}
               aria-label={openFullCardLabel}
-              className="action"
+              className="gds-entity-preview-card__icon-action"
             >
-              <IconArrowTopRight />
+              <IconArrowTopRight className="gds-entity-preview-card__icon-action-icon" />
             </a>
           )}
         </div>
         {copyValue && (
           <span
-            className="copy-status"
+            className="gds-entity-preview-card__copy-status"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -405,23 +379,21 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         )}
       </div>
 
-      {(summaryProperties.length > 0 ||
-        (data.properties?.length ?? 0) > 0 ||
+      {((data.properties?.length ?? 0) > 0 ||
         properties.length > 0) && (
-        <dl className="properties">
+        <dl className="gds-entity-preview-card__properties">
           {[
-            ...summaryProperties,
             ...(data.properties ?? []),
             ...properties,
           ].map((property) => (
             <div
               key={property.label}
-              className="property"
+              className="gds-entity-preview-card__property"
             >
-              <dt className="label">
+              <dt className="gds-entity-preview-card__property-label">
                 {property.label}
               </dt>
-              <dd className="value">
+              <dd className="gds-entity-preview-card__property-value">
                 {property.value}
               </dd>
             </div>
@@ -429,27 +401,6 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         </dl>
       )}
 
-      {!!data.externalLinks?.length && (
-        <div className="external">
-          <div className="label">
-            External
-          </div>
-          <div className="external-links">
-            {data.externalLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link"
-              >
-                <span>{link.label}</span>
-                <IconExternalLink aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
     </Popover>
   );
 }

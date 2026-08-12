@@ -1,9 +1,7 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
-  getEntityClassificationId,
   getEntityTypeClassName,
-  type EntityClassificationId,
   findTextPositionSelector,
   getEntityClassifiedAsLabel,
   getEntityClassifiedAsClassName,
@@ -48,7 +46,6 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
-    highlightedEntityCategories?: Set<EntityClassificationId>;
     onHover?: (id: Id | null, anchor?: HoverAnchor) => void;
     onClick?: (id: Id) => void;
   };
@@ -64,7 +61,6 @@ export function renderDiplomaticView(
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
   };
   const {
-    highlightedEntityCategories,
     showBlocks,
     onHover,
     onClick,
@@ -122,20 +118,8 @@ export function renderDiplomaticView(
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
       const entity = segment.annotations.find((a) => isEntity(a));
-      const classificationId = entity
-        ? getEntityClassificationId(entity)
-        : undefined;
-      const isHighlightedEntity =
-        entity &&
-        (
-          !highlightedEntityCategories ||
-          (
-            classificationId &&
-            highlightedEntityCategories.has(classificationId)
-          )
-        );
 
-      if (isHighlightedEntity) {
+      if (entity) {
         const visualCategory = getEntityClassifiedAsClassName(entity);
         const entityLabel = toClassName(getEntityClassifiedAsLabel(entity));
         const entityType = getEntityTypeClassName(entity);
