@@ -121,12 +121,12 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
-      const entityAnno = segment.annotations.find((a) => isEntity(a));
-      const classificationId = entityAnno
-        ? getEntityClassificationId(entityAnno)
+      const entity = segment.annotations.find((a) => isEntity(a));
+      const classificationId = entity
+        ? getEntityClassificationId(entity)
         : undefined;
       const isHighlightedEntity =
-        entityAnno &&
+        entity &&
         (
           !highlightedEntityCategories ||
           (
@@ -136,9 +136,9 @@ export function renderDiplomaticView(
         );
 
       if (isHighlightedEntity) {
-        const visualCategory = getEntityClassifiedAsClassName(entityAnno);
-        const entityLabel = toClassName(getEntityClassifiedAsLabel(entityAnno));
-        const entityType = getEntityTypeClassName(entityAnno);
+        const visualCategory = getEntityClassifiedAsClassName(entity);
+        const entityLabel = toClassName(getEntityClassifiedAsLabel(entity));
+        const entityType = getEntityTypeClassName(entity);
         $segment.classList.add(
           ...[
             'entity',
@@ -147,19 +147,26 @@ export function renderDiplomaticView(
             entityLabel,
           ],
         );
-        if (!$entityToSegments[entityAnno.id]) {
-          $entityToSegments[entityAnno.id] = [];
-        }
-        $entityToSegments[entityAnno.id].push($segment);
+        $segment.title = `${entityLabel} | ${entity.id}`;
 
-        $segment.addEventListener('click', () => onClick(entityAnno.id));
+        if (!$entityToSegments[entity.id]) {
+          $entityToSegments[entity.id] = [];
+        }
+        $entityToSegments[entity.id].push($segment);
+
+        $segment.addEventListener('click', () => onClick(entity.id));
         $segment.addEventListener('mouseenter', (event) => {
           const rect = $segment.getBoundingClientRect();
-          onHover(entityAnno.id, {
+          onHover(entity.id, {
             element: $segment,
-            x: event.clientX, y: event.clientY,
-            left: rect.left, top: rect.top, right: rect.right,
-            bottom: rect.bottom, width: rect.width, height: rect.height,
+            x: event.clientX,
+            y: event.clientY,
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom,
+            width: rect.width,
+            height: rect.height,
           });
         });
         $segment.addEventListener('mouseleave', () => onHover(null));
@@ -202,12 +209,12 @@ export function renderDiplomaticView(
     const { showLine, hideLine } = lineNumbers;
 
     function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 1);
+      $block.attr('data-selected', 'true');
       lines.forEach((l) => showLine(l));
     }
 
     function hideBlock($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 0);
+      $block.attr('data-selected', 'false');
       lines.forEach((l) => hideLine(l));
     }
 

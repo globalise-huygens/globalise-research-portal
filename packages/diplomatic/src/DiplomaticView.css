@@ -74,6 +74,17 @@
         z-index: 1;
     }
 
+    .blocks .layout-element-shape {
+        stroke: transparent;
+    }
+
+    .blocks .block-left-edge {
+        pointer-events: none;
+        stroke: var(--layout-element-stroke);
+        stroke-width: var(--layout-element-stroke-width);
+        vector-effect: non-scaling-stroke;
+    }
+
     .block-label {
         fill: color-mix(in srgb, var(--diplomatic-structure-strong) 84%, transparent);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -83,5 +94,10 @@
         paint-order: stroke;
         stroke: rgb(255 255 255 / 0.38);
         stroke-width: 2px;
+        opacity: 0;
+    }
+
+    .layout-element[data-selected="true"] .block-label {
+        opacity: 1;
     }
 }

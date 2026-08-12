@@ -41,10 +41,10 @@ export function installLocalLinkedConceptFixture() {
       const nextBodies = bodies.map((body) =>
         isEntityBody(body) && body.label === 'zeehoofd'
           ? {
-              ...body,
-              ascribes_classification: BUILT_ENVIRONMENT_CONCEPT,
-            }
-          : body
+            ...body,
+            ascribes_classification: BUILT_ENVIRONMENT_CONCEPT,
+          }
+          : body,
       );
 
       useDocumentStore.setState((current) => ({

@@ -63,10 +63,13 @@ export function renderBlocks(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const label = findSourceLabel(block);
-      const $highlight = $svg.append('g').attr('opacity', 0);
+      const $highlight = $svg.append('g')
+        .attr('class', 'layout-element')
+        .attr('data-selected', 'false');
 
       $highlight
         .append('polygon')
+        .attr('class', 'layout-element-shape')
         .attr('points', createPath(corners))
         .attr('fill', colors.fill)
         .attr('stroke', colors.stroke)
@@ -75,6 +78,16 @@ export function renderBlocks(
         .attr('vector-effect', 'non-scaling-stroke');
 
       const blockTopLeft = corners[0];
+      const blockBottomLeft = corners[3];
+
+      $highlight
+        .append('line')
+        .attr('class', 'block-left-edge')
+        .attr('x1', blockTopLeft[0])
+        .attr('y1', blockTopLeft[1])
+        .attr('x2', blockBottomLeft[0])
+        .attr('y2', blockBottomLeft[1]);
+
       $highlight
         .append('text')
         .attr('class', 'block-label')

@@ -314,6 +314,22 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
   const categoryLabel = getEntityBadgeLabel(data.kind);
+  const copyValue = data.copyValue;
+
+  function copyIdentifier() {
+    if (!copyValue || !navigator.clipboard) {
+      return;
+    }
+    void navigator.clipboard.writeText(copyValue).then(
+      () => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1200);
+      },
+      () => {
+        // Clipboard access can be denied by the browser context.
+      },
+    );
+  }
 
   return (
     <Popover
@@ -357,27 +373,13 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         </div>
 
         <div className="actions">
-          {data.copyValue && (
+          {copyValue && (
             <button
               type="button"
-              aria-label={`Copy URI ${data.copyValue}`}
+              aria-label={`Copy URI ${copyValue}`}
               className="action"
-              title={copied ? `Copied ${data.copyValue}` : data.copyValue}
-              onClick={async () => {
-                if (!data.copyValue) {
-                  return;
-                }
-                if (!navigator.clipboard) {
-                  return;
-                }
-                try {
-                  await navigator.clipboard.writeText(data.copyValue);
-                  setCopied(true);
-                  window.setTimeout(() => setCopied(false), 1200);
-                } catch {
-                  // Clipboard access can be denied by the browser context.
-                }
-              }}
+              title={copied ? `Copied ${copyValue}` : copyValue}
+              onClick={copyIdentifier}
             >
               <IconCopy />
             </button>
@@ -392,7 +394,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
             </a>
           )}
         </div>
-        {data.copyValue && (
+        {copyValue && (
           <span
             className="copy-status"
             aria-live="polite"

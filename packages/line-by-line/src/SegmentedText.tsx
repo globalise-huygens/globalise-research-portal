@@ -1,9 +1,8 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  getEntityClassificationId,
   Id,
-  isEntity,
+  isHighlightedEntity,
   isWord,
 } from '@globalise/common/annotation';
 import {
@@ -28,14 +27,11 @@ export function SegmentedText(
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoveredAnnotation = segment.annotations.find((annotation) => {
-        if (!isEntity(annotation)) {
-          return false;
-        }
-        const classificationId = getEntityClassificationId(annotation);
-        return classificationId !== undefined &&
-          highlightedEntityCategories.has(classificationId);
-      }) ?? segment.annotations.find(isWord);
+      const hoveredAnnotation = segment.annotations.find(
+        (annotation) => isHighlightedEntity(
+          annotation, highlightedEntityCategories,
+        ),
+      ) ?? segment.annotations.find(isWord);
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;

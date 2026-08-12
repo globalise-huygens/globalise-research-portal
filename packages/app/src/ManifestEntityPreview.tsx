@@ -11,6 +11,7 @@ import {
 import {
   setHovered,
   useDocumentStore,
+  type DocumentState,
   type HoverAnchor,
 } from '@globalise/common/document';
 import {
@@ -26,7 +27,6 @@ import {
   IconEntityShip,
   IconEntities,
   type EntityPreviewCardKind,
-  type EntityPreviewCardExternalLink,
   type EntityPreviewCardProperty,
 } from '@globalise/design';
 import {
@@ -38,6 +38,7 @@ import {
 import {
   useEffect,
   useLayoutEffect,
+  useCallback,
   useRef,
   useState,
   type CSSProperties,
@@ -50,8 +51,6 @@ import './ManifestEntityPreview.css';
 // keyboard focus moves from its trigger into the content (WCAG 1.4.13).
 const CLOSE_DELAY = 700;
 const DETAIL_CLOSE_DELAY = 500;
-const NER_TYPE_BASE_URL =
-  'https://digitaalerfgoed.poolparty.biz/globalise/annotation/ner/';
 
 type PreviewCategory = {
   kind: EntityPreviewCardKind;
@@ -67,13 +66,17 @@ type EntityAnnotation = Annotation<EntityBody>;
 type PreviewDetail = 'subject' | 'assertion' | 'concept';
 
 export function ManifestEntityPreview() {
-  const annotation = useHoveredAnnotation();
-  const hoveredAt = useDocumentStore((state) => state.hoveredAt);
-  const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
+  const [displayed, setDisplayed] = useState<EntityAnnotation | null>(() =>
+    getHoveredAnnotation(useDocumentStore.getState()),
+  );
   const [detail, setDetail] = useState<PreviewDetail>('subject');
   const [hoveredDetail, setHoveredDetail] = useState<PreviewDetail | null>(null);
   const conceptState = useConcept();
-  const [anchor, setAnchor] = useState<HoverAnchor | null>(null);
+  const [anchor, setAnchor] = useState<HoverAnchor | null>(() => {
+    const state = useDocumentStore.getState();
+    const initialAnnotation = getHoveredAnnotation(state);
+    return initialAnnotation ? state.hoveredAt : null;
+  });
   const [position, setPosition] = useState<CSSProperties>({
     left: 0,
     top: 0,
@@ -87,9 +90,11 @@ export function ManifestEntityPreview() {
   const relatedPreviewRef = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const closeTimer = useRef<number | undefined>(undefined);
-  const detailHoverTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
-  const displayedId = useRef<string | null>(null);
+  const displayedId = useRef<string | null>(displayed?.id ?? null);
+  const { keepDetail, scheduleDetailClear } = useDetailCloseControls(
+    setHoveredDetail,
+  );
 
   useEffect(() => {
     const rememberPointer = (event: PointerEvent) => {
@@ -99,7 +104,8 @@ export function ManifestEntityPreview() {
     return () => window.removeEventListener('pointermove', rememberPointer);
   }, []);
 
-  useEffect(() => {
+  useEffect(() => useDocumentStore.subscribe((state) => {
+    const annotation = getHoveredAnnotation(state);
     if (annotation) {
       window.clearTimeout(closeTimer.current);
       const changedAnnotation = displayedId.current !== annotation.id;
@@ -109,16 +115,7 @@ export function ManifestEntityPreview() {
         setDetail('subject');
         setHoveredDetail(null);
       }
-      setAnchor(hoveredAt ?? {
-        x: pointer.current.x,
-        y: pointer.current.y,
-        left: pointer.current.x,
-        top: pointer.current.y,
-        right: pointer.current.x,
-        bottom: pointer.current.y,
-        width: 0,
-        height: 0,
-      });
+      setAnchor(state.hoveredAt ?? pointerAnchor(pointer.current));
       return;
     }
 
@@ -142,11 +139,10 @@ export function ManifestEntityPreview() {
       setDetail('subject');
       setHoveredDetail(null);
     }, CLOSE_DELAY);
-  }, [annotation, hoveredAt]);
+  }), []);
 
   useEffect(() => () => {
     window.clearTimeout(closeTimer.current);
-    window.clearTimeout(detailHoverTimer.current);
   }, []);
 
   useLayoutEffect(() => {
@@ -161,14 +157,14 @@ export function ManifestEntityPreview() {
       const anchorRect = anchor.element?.getBoundingClientRect();
       const currentAnchor = anchorRect
         ? {
-            ...anchor,
-            left: anchorRect.left,
-            top: anchorRect.top,
-            right: anchorRect.right,
-            bottom: anchorRect.bottom,
-            width: anchorRect.width,
-            height: anchorRect.height,
-          }
+          ...anchor,
+          left: anchorRect.left,
+          top: anchorRect.top,
+          right: anchorRect.right,
+          bottom: anchorRect.bottom,
+          width: anchorRect.width,
+          height: anchorRect.height,
+        }
         : anchor;
       // The source card is positioned independently and must not jump when a
       // related card is added to the stack.
@@ -260,32 +256,24 @@ export function ManifestEntityPreview() {
     ? `/object-card?concept=${encodeURIComponent(conceptUri)}`
     : detail === 'subject' && linkedSubject?.id && isUrl(linkedSubject.id)
       ? linkedSubject.id
-    : undefined;
+      : undefined;
   // The compact card exposes identifiers through the copy action. Full
   // external-link lists belong on the expanded object card, not this preview.
-  const externalLinks: EntityPreviewCardExternalLink[] = [];
-  const scheduleDetailClear = () => {
-    window.clearTimeout(detailHoverTimer.current);
-    detailHoverTimer.current = window.setTimeout(() => {
-      setHoveredDetail(null);
-    }, DETAIL_CLOSE_DELAY);
-  };
-  const keepDetail = () => window.clearTimeout(detailHoverTimer.current);
   const conceptPreview = concept && conceptUri
     ? {
-        kind: 'concept' as const,
-        icon: <IconEntityConcept />,
-        title: getConceptLabel(concept),
-        definition: preferredValue(concept.definition),
-        alternativeLabels: concept.altLabel
-          ?.map((label) => label['@value'])
-          .filter((label, index, labels) => labels.indexOf(label) === index)
-          .join(', '),
-        properties: getConceptProperties(displayed, concept),
-        openFullCardHref: `/object-card?concept=${encodeURIComponent(conceptUri)}`,
-        copyValue: conceptUri,
-        linked: true,
-      }
+      kind: 'concept' as const,
+      icon: <IconEntityConcept />,
+      title: getConceptLabel(concept),
+      definition: preferredValue(concept.definition),
+      alternativeLabels: concept.altLabel
+        ?.map((label) => label['@value'])
+        .filter((label, index, labels) => labels.indexOf(label) === index)
+        .join(', '),
+      properties: getConceptProperties(displayed, concept),
+      openFullCardHref: `/object-card?concept=${encodeURIComponent(conceptUri)}`,
+      copyValue: conceptUri,
+      linked: true,
+    }
     : null;
 
   return createPortal(
@@ -357,7 +345,7 @@ export function ManifestEntityPreview() {
         }
         event.stopPropagation();
         window.clearTimeout(closeTimer.current);
-        window.clearTimeout(detailHoverTimer.current);
+        keepDetail();
         isPreviewHovered.current = false;
         setHovered(null);
         setDisplayed(null);
@@ -384,7 +372,6 @@ export function ManifestEntityPreview() {
               keepDetail,
               scheduleDetailClear,
             ),
-          externalLinks,
           openFullCardHref: href,
           copyValue: detail === 'concept'
             ? conceptUri
@@ -414,39 +401,71 @@ export function ManifestEntityPreview() {
   );
 }
 
-function useHoveredAnnotation(): EntityAnnotation | null {
-  return useDocumentStore((state) => {
-    // This is a hover preview, not the persistent document selection. Clicked
-    // annotations remain selected/highlighted elsewhere, but must not keep a
-    // floating card open after the pointer leaves the text.
-    const selectedId = state.hoveredId;
-    if (!selectedId) {
-      return null;
-    }
+function useDetailCloseControls(
+  onClear: (detail: PreviewDetail | null) => void,
+) {
+  const timer = useRef<number | undefined>(undefined);
+  const keepDetail = useCallback(() => {
+    window.clearTimeout(timer.current);
+  }, []);
+  const scheduleDetailClear = useCallback(() => {
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      onClear(null);
+    }, DETAIL_CLOSE_DELAY);
+  }, [onClear]);
 
-    for (const canvas of Object.values(state.canvases)) {
-      if (!canvas.annotations) {
-        continue;
-      }
+  useEffect(() => () => {
+    window.clearTimeout(timer.current);
+  }, []);
 
-      const direct = canvas.annotations[selectedId];
-      if (!direct) {
-        continue;
-      }
-      if (isEntity(direct)) {
-        return direct;
-      }
+  return { keepDetail, scheduleDetailClear };
+}
 
-      return findEntityForWord(
-        selectedId,
-        canvas.annotations,
-        canvas.indexes.entityToWords,
-        state.entityHighlightCategories,
-      ) ?? null;
-    }
+function pointerAnchor(pointer: { x: number; y: number }): HoverAnchor {
+  return {
+    x: pointer.x,
+    y: pointer.y,
+    left: pointer.x,
+    top: pointer.y,
+    right: pointer.x,
+    bottom: pointer.y,
+    width: 0,
+    height: 0,
+  };
+}
 
+function getHoveredAnnotation(state: DocumentState): EntityAnnotation | null {
+  // This is a hover preview, not the persistent document selection. Clicked
+  // annotations remain selected/highlighted elsewhere, but must not keep a
+  // floating card open after the pointer leaves the text.
+  const selectedId = state.hoveredId;
+  if (!selectedId) {
     return null;
-  });
+  }
+
+  for (const canvas of Object.values(state.canvases)) {
+    if (!canvas.annotations) {
+      continue;
+    }
+
+    const direct = canvas.annotations[selectedId];
+    if (!direct) {
+      continue;
+    }
+    if (isEntity(direct)) {
+      return direct;
+    }
+
+    return findEntityForWord(
+      selectedId,
+      canvas.annotations,
+      canvas.indexes.entityToWords,
+      state.entityHighlightCategories,
+    ) ?? null;
+  }
+
+  return null;
 }
 
 function findEntityForWord(
@@ -475,7 +494,6 @@ function getConceptUri(annotation: EntityAnnotation) {
 }
 
 function getPreviewContent(annotation: EntityAnnotation): PreviewContent {
-  const body = getPrimaryEntityBody(annotation);
   const category = getPreviewCategory(getEntityClassificationId(annotation));
   const title = getUnlinkedTitle(annotation);
   const properties = getUnlinkedProperties(annotation);
@@ -734,20 +752,20 @@ function conceptUriValue(
 ) {
   return concept
     ? <button
-        type="button"
-        className="manifest-entity-preview__link"
-        onClick={(event) => {
-          event.stopPropagation();
-          onDetail('concept');
-        }}
-        onPointerEnter={() => {
-          keepDetail();
-          onHoverDetail('concept');
-        }}
-        onPointerLeave={scheduleDetailClear}
-      >
-        {label}
-      </button>
+      type="button"
+      className="manifest-entity-preview__link"
+      onClick={(event) => {
+        event.stopPropagation();
+        onDetail('concept');
+      }}
+      onPointerEnter={() => {
+        keepDetail();
+        onHoverDetail('concept');
+      }}
+      onPointerLeave={scheduleDetailClear}
+    >
+      {label}
+    </button>
     : label;
 }
 
@@ -755,19 +773,6 @@ function annotationBodyLabel(annotation: EntityAnnotation) {
   return getPrimaryEntityBody(annotation).type === 'AppellativeStatus'
     ? 'Appellative status'
     : 'Classificatory status';
-}
-
-function getAssertionLinks(
-  annotation: EntityAnnotation,
-): EntityPreviewCardExternalLink[] {
-  const body = getPrimaryEntityBody(annotation);
-  const classificationUri = body.classified_as.id.startsWith('gan:')
-    ? `${NER_TYPE_BASE_URL}${body.classified_as.id.slice(4)}`
-    : body.classified_as.id;
-  return [
-    { href: annotation.id, label: 'data.globalise' },
-    { href: classificationUri, label: 'poolparty' },
-  ].filter((link) => isUrl(link.href));
 }
 
 function preferredValue(
@@ -872,47 +877,6 @@ function placePreview(
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
-}
-
-function getExternalLinks(
-  annotation: EntityAnnotation,
-  concept: SkosConcept | null,
-): EntityPreviewCardExternalLink[] {
-  const body = getPrimaryEntityBody(annotation);
-  const subject = body.has_appellative_subject
-    ?? body.has_classificatory_subject;
-  const classificationUri = body.classified_as.id.startsWith('gan:')
-    ? `${NER_TYPE_BASE_URL}${body.classified_as.id.slice(4)}`
-    : body.classified_as.id;
-  const conceptMatches = [
-    ...(concept?.closeMatch ?? []),
-    ...(concept?.narrowMatch ?? []),
-    ...(concept?.exactMatch ?? []),
-  ].map((match) => typeof match === 'string' ? match : match.id);
-  const candidates = [
-    ...conceptMatches,
-    annotation.id,
-    subject?.id,
-    classificationUri,
-  ];
-
-  return candidates
-    .filter((href): href is string => typeof href === 'string' && isUrl(href))
-    .filter((href, index, links) =>
-      links.findIndex((link) => getExternalLinkKey(link) === getExternalLinkKey(href))
-      === index,
-    )
-    .map((href) => ({ href, label: getExternalLinkLabel(href) }));
-}
-
-function getExternalLinkKey(href: string) {
-  const url = new URL(href);
-  url.hash = '';
-  return url.href;
-}
-
-function getExternalLinkLabel(href: string) {
-  return new URL(href).hostname.replace(/^www\./, '');
 }
 
 function getPreviewCategory(

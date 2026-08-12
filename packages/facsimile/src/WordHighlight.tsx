@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { HighlightStyle } from './HighlightStyle.tsx';
+import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
-import { Highlight } from './Highlight.tsx';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import { Id } from '@globalise/common/annotation';
 import {
@@ -30,39 +28,49 @@ export function WordHighlight(
   const [hovered, setHoveredLocal] = useState(false);
   const colors = getEntityHighlightColors(tone);
 
-  const highlightStyle: HighlightStyle = {
-    fill: selected ? colors.fill
-      : hovered ? colors.hoverFill
-        : 'transparent',
-    cursor: 'pointer',
-    mixBlendMode: 'multiply',
-  };
+  const fill = selected ? colors.fill
+    : hovered ? colors.hoverFill
+      : 'transparent';
+
+  function handleHover(hovering: boolean, event: MouseEvent) {
+    setHoveredLocal(hovering);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHovered(
+      hovering ? id : null,
+      hovering ? {
+        element: event.currentTarget,
+        x: event.clientX,
+        y: event.clientY,
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+      } : undefined,
+    );
+    if (hovering && !tone) {
+      setTooltip({ text, x: event.clientX, y: event.clientY });
+    } else {
+      setTooltip(null);
+    }
+  }
 
   return (
-    <Highlight
+    <polygon
       points={points}
-      highlightStyle={highlightStyle}
-      onClick={() => toggleClicked(id)}
-      onHover={(hovering, e) => {
-        setHoveredLocal(hovering);
-        const rect = e.currentTarget.getBoundingClientRect();
-        setHovered(
-          hovering ? id : null,
-          hovering ? {
-            element: e.currentTarget,
-            x: e.clientX, y: e.clientY,
-            left: rect.left, top: rect.top, right: rect.right,
-            bottom: rect.bottom, width: rect.width, height: rect.height,
-          } : undefined,
-        );
-        if (!hovering) {
-          setTooltip(null);
-        } else if (!tone) {
-          setTooltip({ text, x: e.clientX, y: e.clientY });
-        } else {
-          setTooltip(null);
-        }
+      fill={fill}
+      stroke="none"
+      strokeWidth={0}
+      style={{
+        pointerEvents: 'auto',
+        cursor: 'pointer',
+        mixBlendMode: 'multiply',
       }}
+      onClick={() => toggleClicked(id)}
+      onMouseEnter={(event) => handleHover(true, event)}
+      onMouseMove={(event) => handleHover(true, event)}
+      onMouseLeave={(event) => handleHover(false, event)}
     />
   );
 }
