@@ -15,7 +15,7 @@ export {
 } from './skos';
 export { EntityCard, EntityTypeBadge, useEntity } from './linkedart';
 export {
-  CollectionPage,
+  CatalogView,
   type HydraCollection,
   type HydraMember,
   loadCatalog,

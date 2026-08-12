@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import {
-  CollectionPage,
+  CatalogView,
   loadCatalog,
 } from '@globalise/object-card';
 import '@globalise/design/styles.css';
@@ -18,5 +18,5 @@ export function CatalogPage() {
     loadCatalog(uri ?? catalogUri).catch(console.error);
   }, [uri]);
 
-  return <CollectionPage/>;
+  return <CatalogView/>;
 }

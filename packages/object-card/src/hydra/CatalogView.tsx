@@ -15,7 +15,7 @@ import { getHydraHref, getHydraTarget } from './getHydraHref.ts';
 import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
 
-export function CollectionPage() {
+export function CatalogView() {
   const { collection, isReady, error } = useCollection();
 
   if (error) {
