@@ -147,7 +147,7 @@ export function ConceptCard() {
                     {definitions.map((definition, index) => (
                       <ObjectCardProperty
                         key={`${definition['@language']}-${index}`}
-                        label={definition['@language']}
+                        label={getLanguageLabel(definition['@language'])}
                         value={<HtmlValue value={definition['@value']} />}
                       />
                     ))}
@@ -215,4 +215,9 @@ export function ConceptCard() {
       )}
     </ObjectCard>
   );
+}
+
+function getLanguageLabel(language: string): string {
+  const normalized = language.trim();
+  return normalized && normalized !== '?' ? normalized : '-';
 }
