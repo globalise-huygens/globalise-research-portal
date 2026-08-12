@@ -9,7 +9,7 @@ export type SkosConcept = {
   id: string;
   type: string | string[];
   _label?: string;
-  prefLabel?: LangValue[];
+  prefLabel: LangValue[];
   altLabel?: LangValue[];
   definition?: LangValue[];
   references?: LangValue;
@@ -37,37 +37,19 @@ export type SkosConcept = {
 
 export type SkosMatch = SkosConcept | string;
 
-const languageDisplayNames = new Intl.DisplayNames(['en'], {
-  type: 'language',
-});
-
-export function getPreferredLabel(concept: SkosConcept): LangValue | undefined {
-  return (
-    // Pick english by default:
-    concept.prefLabel?.find((l) => l['@language'] === 'en')
-    // Use dutch when missing:
-    ?? concept.prefLabel?.find((l) => l['@language'] === 'nl')
-    // Any other label when present:
-    ?? concept.prefLabel?.[0]
-  );
-}
-
 export function getConceptLabel(concept: SkosConcept): string {
-  const prefLabel = getPreferredLabel(concept);
+  const prefLabel =
+    // Pick english by default:
+    concept.prefLabel.find((l) => l['@language'] === 'en')
+    // Use dutch when missing:
+    ?? concept.prefLabel.find((l) => l['@language'] === 'nl')
+    // Any other label when present:
+    ?? concept.prefLabel[0];
+  if(prefLabel) {
+    return prefLabel?.['@value'];
+  }
   // Use dev _label when no prefLabel:
-  return prefLabel?.['@value'] ?? concept._label ?? '';
-}
-
-export function getLanguageDisplayName(language: string): string | undefined {
-  const normalized = language.trim();
-  if (!normalized || normalized === '?') {
-    return undefined;
-  }
-  try {
-    return languageDisplayNames.of(normalized) ?? normalized;
-  } catch {
-    return normalized;
-  }
+  return concept._label ?? '';
 }
 
 /**
