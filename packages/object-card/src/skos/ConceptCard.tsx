@@ -1,5 +1,6 @@
 import './ConceptCard.css';
 import {
+  IconConcept,
   IconContentWarning,
   IconCopy,
   IconExternalLink,
@@ -116,7 +117,10 @@ export function ConceptCard() {
           </>
         }
       >
-        <span className="badge">Concept</span>
+        <span className="badge">
+          <IconConcept aria-hidden="true" className="concept-icon" />
+          Concept
+        </span>
         <ObjectCardTitle>
           <span lang={titleLanguageTag}>{title}</span>
           {titleLanguage && (

@@ -76,12 +76,19 @@
       border: 1.2px solid #2e5a7d;
       background: #1a3a52;
       color: #b3d9f2;
+      gap: var(--s4);
       font-family: var(--font-sans);
       font-size: var(--text-xs);
       font-weight: 500;
       line-height: var(--s12);
       padding-inline: var(--s8);
       text-transform: uppercase;
+    }
+
+    .concept-icon {
+      width: var(--s16);
+      height: var(--s16);
+      flex-shrink: 0;
     }
 
     .label-groups {
