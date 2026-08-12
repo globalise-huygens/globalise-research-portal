@@ -22,5 +22,5 @@ export {
   getEntityIdentifiers,
   getEntityTitle,
   getLinkedArtEntityType,
-} from './EntityModel.ts';
+} from './LinkedArtEntityModel.ts';
 export { type Status, findStatuses, getStatusLabel } from './findStatuses.ts';
