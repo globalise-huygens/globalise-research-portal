@@ -3,7 +3,7 @@ import {
   filterByTextSelectorOrLog,
   getEntityAnnotationBodyClassName,
   findTextPositionSelector,
-  getEntityClassifiedAsLabel,
+  getCidocEntityClassifiedAsLabel,
   getCidocClassName,
   getPageText,
   indexAnnotations,
@@ -120,7 +120,7 @@ export function renderDiplomaticView(
 
       if (entity) {
         const visualCategory = getCidocClassName(entity);
-        const entityLabel = toClassName(getEntityClassifiedAsLabel(entity));
+        const entityLabel = toClassName(getCidocEntityClassifiedAsLabel(entity));
         const entityType = getEntityAnnotationBodyClassName(entity);
         $segment.classList.add(
           ...[

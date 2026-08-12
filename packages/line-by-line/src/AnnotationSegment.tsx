@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
   getEntityAnnotationBodyClassName,
-  getEntityClassifiedAsLabel,
+  getCidocEntityClassifiedAsLabel,
   getCidocClassName,
   isEntity,
   toClassName,
@@ -60,7 +60,7 @@ function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
 }
 
 function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
-  const label = getEntityClassifiedAsLabel(annotation);
+  const label = getCidocEntityClassifiedAsLabel(annotation);
   const classifiedAs = getCidocClassName(annotation);
   const category = getEntityAnnotationBodyClassName(annotation);
   const isHighlightedEntity = useIsHighlightedEntity(annotation);

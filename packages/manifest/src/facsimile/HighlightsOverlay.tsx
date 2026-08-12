@@ -6,7 +6,7 @@ import {
   findTextualBodyValue,
   getCidocClassName,
   type Annotation,
-  type EntityClassificationId,
+  type CidocEntityClassificationId,
   type Id,
   isBlock,
   isHighlightedEntity,
@@ -188,7 +188,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 function getEntityHighlightTone(
   entityId: Id,
   annotations: Record<Id, Annotation>,
-  highlightedEntityCategories: Set<EntityClassificationId>,
+  highlightedEntityCategories: Set<CidocEntityClassificationId>,
 ): EntityHighlightTone | undefined {
   const annotation = annotations[entityId];
   if (!annotation) {
