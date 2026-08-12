@@ -370,6 +370,7 @@
       border: 0;
       background: transparent;
       color: var(--color-brand-white);
+      cursor: pointer;
       font-family: var(--font-sans);
       font-size: var(--text-xs);
       font-weight: 500;
@@ -405,6 +406,10 @@
       &[data-focus-visible] {
         outline: 2px solid var(--ring);
         outline-offset: 2px;
+      }
+
+      &[data-disabled] {
+        cursor: not-allowed;
       }
     }
 
