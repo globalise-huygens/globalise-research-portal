@@ -13,7 +13,7 @@ export async function loadCatalog(uri: string) {
   if (isRequested(hydraState, uri)) {
     return;
   }
-  setCatalogState({ hydraState: { ...emptyHydraState, uri, isLoading: true } });
+  setCatalogState({ hydraState: { ...hydraState, uri, isLoading: true, error: null } });
 
   try {
     const payload = await fetchJson<unknown>(getJsonUrl(uri));
@@ -21,7 +21,7 @@ export async function loadCatalog(uri: string) {
       throw new Error('Not a collection');
     }
     setCatalogState({
-      hydraState: { ...emptyHydraState, uri, collection: payload, isReady: true },
+      hydraState: { uri, collection: payload, isLoading: false, isReady: true, error: null },
     });
   } catch (e) {
     const error = getErrorMessage(e);

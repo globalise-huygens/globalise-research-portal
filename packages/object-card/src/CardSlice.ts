@@ -14,12 +14,12 @@ export async function loadObjectCard(uri: string) {
   if (isRequested(cardState, uri)) {
     return;
   }
-  setObjectCardState({ cardState: { ...emptyCardState, uri, isLoading: true } });
+  setObjectCardState({ cardState: { ...cardState, uri, isLoading: true, error: null } });
 
   try {
     const payload = await fetchJson<unknown>(getJsonUrl(uri));
     const kind = keep(uri, payload);
-    setObjectCardState({ cardState: { ...emptyCardState, uri, kind, isReady: true } });
+    setObjectCardState({ cardState: { uri, kind, isLoading: false, isReady: true, error: null } });
   } catch (e) {
     const error = getErrorMessage(e);
     setObjectCardState({ cardState: { ...emptyCardState, uri, error } });
