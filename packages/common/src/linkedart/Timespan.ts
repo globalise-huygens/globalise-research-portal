@@ -17,10 +17,10 @@ export function getTimespan(node?: LinkedArtNode | null): Timespan | null {
     return null;
   }
   const timespan: Timespan = {
-    beginOfTheBegin: getDate(node.begin_of_the_begin),
-    endOfTheBegin: getDate(node.end_of_the_begin),
-    beginOfTheEnd: getDate(node.begin_of_the_end),
-    endOfTheEnd: getDate(node.end_of_the_end),
+    beginOfTheBegin: getDateString(node.begin_of_the_begin),
+    endOfTheBegin: getDateString(node.end_of_the_begin),
+    beginOfTheEnd: getDateString(node.begin_of_the_end),
+    endOfTheEnd: getDateString(node.end_of_the_end),
     label: getContent(findByPath(node, ['identified_by'])[0] ?? node),
   };
   return hasDates(timespan) ? timespan : null;
@@ -48,7 +48,7 @@ export function findTimespan(node?: LinkedArtNode | null): Timespan | null {
   };
 }
 
-function getDate(value: unknown): string | undefined {
+function getDateString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 

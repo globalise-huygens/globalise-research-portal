@@ -2,7 +2,7 @@ import { LinkedArtNode } from './LinkedArtNode.ts';
 import { findByPath } from './findByPath.ts';
 import { label } from './label.ts';
 import { getContent } from './getContent.ts';
-import { findTimespan, Timespan } from './timespan.ts';
+import { findTimespan, Timespan } from './Timespan.ts';
 
 const relationSuffix = '_relation';
 const ascribesPrefix = 'ascribes_';

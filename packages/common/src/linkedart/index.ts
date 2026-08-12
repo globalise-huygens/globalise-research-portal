@@ -15,7 +15,7 @@ export {
   getValue,
   getValues,
 } from './LinkedArtValue.ts';
-export { type Timespan, getTimespan, findTimespan } from './timespan.ts';
+export { type Timespan, getTimespan, findTimespan } from './Timespan.ts';
 export {
   type LinkedArtEntityType,
   linkedArtEntityTypes,
