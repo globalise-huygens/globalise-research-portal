@@ -1,7 +1,7 @@
-import {ReactNode} from 'react';
-import {IconClose, IconEntityDocument} from '@globalise/design';
-import {Button} from 'react-aria-components';
-import {useSelectedFacets} from '@knaw-huc/faceted-search-react';
+import { ReactNode } from 'react';
+import { IconClose, IconEntityDocument } from '@globalise/design';
+import { Button } from 'react-aria-components';
+import { useSelectedFacets } from '@knaw-huc/faceted-search-react';
 import classes from './Selection.module.css';
 
 export default function Selection() {
@@ -27,7 +27,7 @@ export default function Selection() {
   );
 }
 
-function SelectedFacetItem({name, label, onRemove}: {
+function SelectedFacetItem({ name, label, onRemove }: {
   name?: string,
   label: ReactNode,
   onRemove: () => void,

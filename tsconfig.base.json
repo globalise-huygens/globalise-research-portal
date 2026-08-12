@@ -14,5 +14,6 @@
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
     "outDir": "dist"
-  }
+  },
+  "files": ["vite-env.d.ts"]
 }
