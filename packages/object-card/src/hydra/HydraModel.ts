@@ -1,6 +1,3 @@
-export const catalogUri =
-  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/catalog.json';
-
 export type HydraMember = {
   '@id': string;
   '@type'?: string;

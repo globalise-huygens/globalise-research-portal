@@ -1,5 +1,4 @@
 export {
-  catalogUri,
   type HydraCollection,
   type HydraMember,
   type PartialCollectionView,
