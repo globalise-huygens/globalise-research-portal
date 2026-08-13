@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Id } from '../annotation';
-import { AnnotationIndexes } from '../annotation/indexAnnotations.ts';
+import { AnnotationIndexes } from '../annotation';
 import { CanvasId, useCanvasIndexes } from './ManifestViewerSlice';
 import { useSelectedAnnotations } from './useSelectedAnnotations.tsx';
 

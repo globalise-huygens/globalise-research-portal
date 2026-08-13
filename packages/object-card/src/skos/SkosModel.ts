@@ -1,6 +1,4 @@
-import { isUrl } from '@globalise/common';
-
-export type LangValue = {
+export type SkosValue = {
   '@language': string;
   '@value': string;
 };
@@ -9,12 +7,12 @@ export type SkosConcept = {
   id: string;
   type: string | string[];
   _label?: string;
-  prefLabel?: LangValue[];
-  altLabel?: LangValue[];
-  definition?: LangValue[];
-  references?: LangValue;
-  hiddenLabel?: LangValue[];
-  source?: LangValue;
+  prefLabel?: SkosValue[];
+  altLabel?: SkosValue[];
+  definition?: SkosValue[];
+  references?: SkosValue;
+  hiddenLabel?: SkosValue[];
+  source?: SkosValue;
   notation?: string | string[];
 
   /**
@@ -41,7 +39,7 @@ const languageDisplayNames = new Intl.DisplayNames(['en'], {
   type: 'language',
 });
 
-export function getPreferredLabel(concept: SkosConcept): LangValue | undefined {
+export function getPreferredLabel(concept: SkosConcept): SkosValue | undefined {
   return (
     // Pick english by default:
     concept.prefLabel?.find((l) => l['@language'] === 'en')
@@ -76,15 +74,16 @@ export function getLanguageDisplayName(language: string): string | undefined {
   }
 }
 
-/**
- * Convert ID URI into a URL by adding `.json`
- */
-export function getSkosUrl(uri: string): string {
-  const result = `${uri}.json`;
-  if (!isUrl(result)) {
-    throw new Error(`Could not create url from uri ${uri}`);
+export function isSkosConcept(value: unknown): value is SkosConcept {
+  if (!value || typeof value !== 'object') {
+    return false;
   }
-  return result;
+  if ('prefLabel' in value) {
+    return true;
+  }
+  return 'type' in value
+    && typeof value.type === 'string'
+    && value.type.startsWith('skos:');
 }
 
 export function matchUri(match: SkosMatch): string {

@@ -2,10 +2,7 @@ import './ConceptCard.css';
 import {
   IconConcept,
   IconContentWarning,
-  IconCopy,
-  IconExternalLink,
   ObjectCard,
-  ObjectCardAction,
   ObjectCardBody,
   ObjectCardHeader,
   ObjectCardPanel,
@@ -14,41 +11,35 @@ import {
   ObjectCardSection,
   ObjectCardTitle,
 } from '@globalise/design';
+import { getJsonUrl } from '@globalise/common';
 import {
   ConceptList,
   getConceptLabel,
   getLanguageDisplayName,
   getLanguageTag,
   getPreferredLabel,
-  getSkosUrl,
-  loadConcept,
   MatchList,
   SkosConcept,
   useConcept,
 } from './';
+import { CardCopyAction } from '../CardCopyAction.tsx';
+import { CardOpenAction } from '../CardOpenAction.tsx';
 import { HtmlValue } from './HtmlValue.tsx';
+import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 export function ConceptCard() {
-  const { uri, concept, isLoading, isReady, error } = useConcept();
+  const navigateToObjectCard = useNavigateToObjectCard();
+  const { uri, concept } = useConcept();
 
-  if (!uri) {
-    return <div>No URI</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (isLoading || !isReady || !concept) {
-    return <div>Loading...</div>;
+  if (!uri || !concept) {
+    return null;
   }
 
   function handleSelect(selected: SkosConcept) {
-    void loadConcept(selected.id);
+    navigateToObjectCard(selected.id);
   }
 
-  const conceptUri = uri;
-  const url = getSkosUrl(conceptUri);
+  const url = getJsonUrl(uri);
   const preferredLabels = concept.prefLabel ?? [];
   const primaryLabel = getPreferredLabel(concept);
   const title = primaryLabel?.['@value'] ?? getConceptLabel(concept);
@@ -75,15 +66,15 @@ export function ConceptCard() {
     definitions.length > 0 || Boolean(source) || Boolean(references);
   const hasExternal =
     (concept.closeMatch?.length ?? 0) +
-      (concept.narrowMatch?.length ?? 0) +
-      (concept.exactMatch?.length ?? 0) >
+    (concept.narrowMatch?.length ?? 0) +
+    (concept.exactMatch?.length ?? 0) >
     0;
   const hasGraph =
     (concept.inScheme?.length ?? 0) +
-      (concept.hasTopConcept?.length ?? 0) +
-      (concept.broader?.length ?? 0) +
-      (concept.narrower?.length ?? 0) +
-      (concept.related?.length ?? 0) >
+    (concept.hasTopConcept?.length ?? 0) +
+    (concept.broader?.length ?? 0) +
+    (concept.narrower?.length ?? 0) +
+    (concept.related?.length ?? 0) >
     0;
   const hasLeftPanel = hasDefinitions || hasExternal;
   const hasBody = hasLeftPanel || hasGraph;
@@ -91,29 +82,13 @@ export function ConceptCard() {
     .filter(Boolean)
     .join(' ');
 
-  function handleCopy() {
-    void navigator.clipboard.writeText(conceptUri).catch(console.error);
-  }
-
-  function handleOpenJson() {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-
   return (
     <ObjectCard className={cardClassName}>
       <ObjectCardHeader
         actions={
           <>
-            <ObjectCardAction
-              aria-label="Copy concept URI"
-              icon={<IconCopy className="header-action-icon" />}
-              onPress={handleCopy}
-            />
-            <ObjectCardAction
-              aria-label="Open concept JSON-LD"
-              icon={<IconExternalLink className="header-action-icon" />}
-              onPress={handleOpenJson}
-            />
+            <CardCopyAction uri={uri} label="Copy concept URI"/>
+            <CardOpenAction url={url} label="Open concept JSON-LD"/>
           </>
         }
       >

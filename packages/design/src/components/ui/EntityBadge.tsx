@@ -1,5 +1,5 @@
-import { cn } from '../../lib';
 import * as React from 'react';
+import { cn } from '../../lib';
 
 export type EntityBadgeType =
   | 'ship'
@@ -8,16 +8,25 @@ export type EntityBadgeType =
   | 'commodity'
   | 'dimensions'
   | 'organisation'
+  | 'polity'
+  | 'rulership'
+  | 'voyage'
+  | 'conversion'
+  | 'occurrence'
+  | 'concept'
   | 'date'
   | 'document'
   | 'ner'
   | 'lin';
 
-export function entityBadgeVariants({
-  className,
-}: { className?: string } = {}) {
-  return cn('gds-entity-badge', className);
-}
+const colorByType: Partial<Record<EntityBadgeType, EntityBadgeType>> = {
+  polity: 'organisation',
+  rulership: 'organisation',
+  voyage: 'ship',
+  conversion: 'document',
+  occurrence: 'document',
+  concept: 'document',
+};
 
 export type EntityBadgeProps = {
   type?: EntityBadgeType;
@@ -31,10 +40,11 @@ function EntityBadge({
   children,
   ...props
 }: EntityBadgeProps) {
+  const badgeType = type ?? 'ship';
   return (
     <span
-      className={entityBadgeVariants({ className })}
-      data-type={type ?? 'ship'}
+      className={cn('gds-entity-badge', className)}
+      data-type={colorByType[badgeType] ?? badgeType}
       {...props}
     >
       {icon && <span className="gds-entity-badge__icon">{icon}</span>}

@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { loadConcept } from './';
-import './OpenConcept.css';
+import { useNavigateToObjectCard } from './useNavigateToObjectCard.ts';
+import './OpenResource.css';
 
-export function OpenConcept() {
+export function OpenResource() {
+  const navigateToObjectCard = useNavigateToObjectCard();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
 
   function handleSubmit() {
     const cleaned = input.replace('.json', '');
-    loadConcept(cleaned).catch(console.error);
+    navigateToObjectCard(cleaned);
     setIsOpen(false);
     setInput('');
   }
@@ -24,14 +25,14 @@ export function OpenConcept() {
 
   if (!isOpen) {
     return (
-      <span className="open-concept">
-        <button onClick={() => setIsOpen(true)}>Open concept</button>
+      <span className="open-resource">
+        <button onClick={() => setIsOpen(true)}>Open resource</button>
       </span>
     );
   }
 
   return (
-    <span className="open-concept">
+    <span className="open-resource">
       <input
         placeholder="Enter ID uri or json url..."
         autoFocus

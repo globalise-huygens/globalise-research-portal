@@ -1,7 +1,7 @@
-import { fetchJson } from '@globalise/common';
-import { useObjectCardStore, setState } from './ObjectCardStore.ts';
+import { fetchJson, getJsonUrl } from '@globalise/common';
+import { useObjectCardStore, setObjectCardState } from '../ObjectCardStore.ts';
+import { getErrorMessage } from '../LoadState.ts';
 import { emptySkosSchemesState, SchemeBundle, SkosSchemesState } from './SkosSchemesState.ts';
-import { getSkosUrl } from './SkosModel.ts';
 
 export const schemesUri =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:schemes';
@@ -15,20 +15,21 @@ export async function loadSchemes() {
   if (skosSchemesState.isReady || skosSchemesState.isLoading || skosSchemesState.error) {
     return;
   }
-  setState({ skosSchemesState: { ...emptySkosSchemesState, isLoading: true } });
+  setObjectCardState({ skosSchemesState: { ...emptySkosSchemesState, isLoading: true } });
 
   try {
-    const url = getSkosUrl(schemesUri);
+    const url = getJsonUrl(schemesUri);
     const bundle = await fetchJson<SchemeBundle>(url);
     const schemes = bundle['@graph'];
-    if(schemes) {
-      setState({ skosSchemesState: { ...emptySkosSchemesState, schemes, isReady: true } });
-    } else {
-      setState({ skosSchemesState: { ...emptySkosSchemesState, schemes, isReady: true, error: 'No schemes found' } });
+    if (!schemes) {
+      throw new Error('No schemes found');
     }
+    setObjectCardState({
+      skosSchemesState: { ...emptySkosSchemesState, schemes, isReady: true },
+    });
   } catch (e) {
-    const error = e instanceof Error ? e.message : 'Unknown error';
-    setState({ skosSchemesState: { ...emptySkosSchemesState, error } });
+    const error = getErrorMessage(e);
+    setObjectCardState({ skosSchemesState: { ...emptySkosSchemesState, error } });
   }
 }
 
