@@ -24,7 +24,7 @@ import {
   IconEntityShip,
   IconEntities,
   type EntityPreviewCardData,
-  type EntityPreviewCardKind,
+  type EntityPreviewCardType,
   type EntityPreviewCardProperty,
 } from '@globalise/design';
 import {
@@ -43,7 +43,7 @@ const CLOSE_DELAY = 200;
 
 type EntityAnnotation = Annotation<EntityBody>;
 type PreviewCategory = {
-  kind: EntityPreviewCardKind;
+  type: EntityPreviewCardType;
   icon: ReactNode;
 };
 
@@ -382,26 +382,26 @@ function getPreviewCategory(
     case 'gan:PRF':
     case 'gan:STATUS':
     case 'gan:ETH_REL':
-      return { kind: 'person', icon: <IconEntityPerson /> };
+      return { type: 'person', icon: <IconEntityPerson /> };
     case 'gan:ORG':
-      return { kind: 'organisation', icon: <IconEntityOrganisation /> };
+      return { type: 'organisation', icon: <IconEntityOrganisation /> };
     case 'gan:SHIP':
     case 'gan:SHIP_TYPE':
-      return { kind: 'ship', icon: <IconEntityShip /> };
+      return { type: 'ship', icon: <IconEntityShip /> };
     case 'gan:CMTY_NAME':
     case 'gan:CMTY_QUAL':
-      return { kind: 'commodity', icon: <IconEntityCommodity /> };
+      return { type: 'commodity', icon: <IconEntityCommodity /> };
     case 'gan:DATE':
-      return { kind: 'date', icon: <IconEntityDate /> };
+      return { type: 'date', icon: <IconEntityDate /> };
     case 'gan:LOC_NAME':
     case 'gan:LOC_ADJ':
-      return { kind: 'place', icon: <IconEntityPlace /> };
+      return { type: 'place', icon: <IconEntityPlace /> };
     case 'gan:DOC':
-      return { kind: 'document', icon: <IconEntityDocument /> };
+      return { type: 'document', icon: <IconEntityDocument /> };
     case 'gan:CMTY_QUANT':
-      return { kind: 'dimensions', icon: <IconEntityDimensions /> };
+      return { type: 'dimensions', icon: <IconEntityDimensions /> };
     default:
-      return { kind: 'entity', icon: <IconEntities /> };
+      return { type: 'entity', icon: <IconEntities /> };
   }
 }
 

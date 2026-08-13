@@ -7,7 +7,7 @@ import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
-export type EntityPreviewCardKind =
+export type EntityPreviewCardType =
   | 'entity'
   | 'commodity'
   | 'date'
@@ -32,11 +32,11 @@ export type EntityPreviewCardBaseData = {
 };
 
 export type EntityPreviewCardEntityData = {
-  kind: 'entity';
+  type: 'entity';
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardCommodityData = {
-  kind: 'commodity';
+  type: 'commodity';
   commodityType?: React.ReactNode;
   origin?: React.ReactNode;
   unit?: React.ReactNode;
@@ -45,7 +45,7 @@ export type EntityPreviewCardCommodityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDateData = {
-  kind: 'date';
+  type: 'date';
   normalizedDate?: React.ReactNode;
   calendar?: React.ReactNode;
   period?: React.ReactNode;
@@ -54,7 +54,7 @@ export type EntityPreviewCardDateData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDimensionsData = {
-  kind: 'dimensions';
+  type: 'dimensions';
   measurementType?: React.ReactNode;
   value?: React.ReactNode;
   unit?: React.ReactNode;
@@ -62,7 +62,7 @@ export type EntityPreviewCardDimensionsData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDocumentData = {
-  kind: 'document';
+  type: 'document';
   documentType?: React.ReactNode;
   reference?: React.ReactNode;
   archiveScan?: React.ReactNode;
@@ -71,7 +71,7 @@ export type EntityPreviewCardDocumentData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardOrganisationData = {
-  kind: 'organisation';
+  type: 'organisation';
   organisationType?: React.ReactNode;
   jurisdiction?: React.ReactNode;
   founded?: React.ReactNode;
@@ -80,7 +80,7 @@ export type EntityPreviewCardOrganisationData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPersonData = {
-  kind: 'person';
+  type: 'person';
   role?: React.ReactNode;
   affiliation?: React.ReactNode;
   civicStatus?: React.ReactNode;
@@ -89,7 +89,7 @@ export type EntityPreviewCardPersonData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPlaceData = {
-  kind: 'place';
+  type: 'place';
   placeType?: React.ReactNode;
   historicalForm?: React.ReactNode;
   region?: React.ReactNode;
@@ -98,7 +98,7 @@ export type EntityPreviewCardPlaceData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPolityData = {
-  kind: 'polity';
+  type: 'polity';
   polityType?: React.ReactNode;
   region?: React.ReactNode;
   period?: React.ReactNode;
@@ -107,7 +107,7 @@ export type EntityPreviewCardPolityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardQuantityData = {
-  kind: 'quantity';
+  type: 'quantity';
   quantityType?: React.ReactNode;
   amount?: React.ReactNode;
   unit?: React.ReactNode;
@@ -115,7 +115,7 @@ export type EntityPreviewCardQuantityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardShipData = {
-  kind: 'ship';
+  type: 'ship';
   shipType?: React.ReactNode;
   built?: React.ReactNode;
   laidUp?: React.ReactNode;
@@ -147,21 +147,21 @@ export type EntityPreviewCardProperty = {
 };
 
 function getEntityBadgeType(
-  kind: EntityPreviewCardKind,
+  type: EntityPreviewCardType,
 ): EntityBadgeType | 'entity' {
-  if (kind === 'polity') {
+  if (type === 'polity') {
     return 'organisation';
   }
 
-  if (kind === 'quantity') {
+  if (type === 'quantity') {
     return 'dimensions';
   }
 
-  return kind;
+  return type;
 }
 
-function getEntityBadgeLabel(kind: EntityPreviewCardKind) {
-  switch (kind) {
+function getEntityBadgeLabel(type: EntityPreviewCardType) {
+  switch (type) {
     case 'entity':
       return 'Entity';
     case 'organisation':
@@ -169,7 +169,7 @@ function getEntityBadgeLabel(kind: EntityPreviewCardKind) {
     case 'dimensions':
       return 'Measure';
     default:
-      return kind;
+      return type;
   }
 }
 
@@ -188,7 +188,7 @@ function getAutomationBadges(
 function getEntityPreviewProperties(
   data: EntityPreviewCardData,
 ): [string, React.ReactNode | undefined][] {
-  switch (data.kind) {
+  switch (data.type) {
     case 'person':
       return [
         ['Role', data.role],
@@ -284,7 +284,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
     .map(([label, value]) => ({ label, value }));
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
-  const categoryLabel = getEntityBadgeLabel(data.kind);
+  const categoryLabel = getEntityBadgeLabel(data.type);
   const copyValue = data.copyValue;
 
   function copyIdentifier() {
@@ -320,7 +320,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 role="img"
                 aria-label={`Category: ${categoryLabel}`}
                 className="gds-entity-preview-card__category-trigger"
-                data-type={getEntityBadgeType(data.kind)}
+                data-type={getEntityBadgeType(data.type)}
               >
                 {data.icon ? (
                   <span className="gds-entity-preview-card__category-icon">
