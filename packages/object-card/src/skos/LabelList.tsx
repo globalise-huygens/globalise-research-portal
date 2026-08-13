@@ -10,7 +10,7 @@ type LabelListProps = { title: string; values?: SkosValue[] };
 
 export function LabelList({ title, values }: LabelListProps) {
   if (!values?.length) {
-    return <ObjectCardSection title={title} className="inactive"/>;
+    return null;
   }
   return (
     <ObjectCardSection title={title}>

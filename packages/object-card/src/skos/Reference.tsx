@@ -5,7 +5,7 @@ type ReferenceProps = { title: string; value?: SkosValue };
 
 export function Reference({ title, value }: ReferenceProps) {
   if (!value) {
-    return <ObjectCardSection title={title} className="inactive"/>;
+    return null;
   }
   return (
     <ObjectCardSection title={title}>
