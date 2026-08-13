@@ -13,7 +13,7 @@ type StatusSectionProps = {
 export function StatusSection({ entity, labeledKey }: StatusSectionProps) {
   const statuses = findStatuses(entity, labeledKey.key);
   if (!statuses.length) {
-    return <ObjectCardSection title={labeledKey.label} className="inactive"/>;
+    return null;
   }
   return (
     <ObjectCardSection title={labeledKey.label}>
