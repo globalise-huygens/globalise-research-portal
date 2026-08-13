@@ -42,9 +42,7 @@ export function EntityCard() {
       <ObjectCardHeader actions={<OpenResource/>}>
         <ObjectCardTitle>{getEntityTitle(entity)}</ObjectCardTitle>
         <ObjectCardStats>
-          <ObjectCardStat>
-            <EntityTypeBadge type={getLinkedArtEntityType(uri)}/>
-          </ObjectCardStat>
+          <EntityTypeBadge type={getLinkedArtEntityType(uri)}/>
           {!!identifiers.length && (
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           )}
