@@ -296,12 +296,12 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   return (
     <Popover
       size="compact"
-      className={cn('gds-entity-preview-card', className)}
+      className={cn('entity-preview-card', className)}
       data-copied={copied ? 'true' : 'false'}
     >
-      <div className="gds-entity-preview-card__header">
-        <div className="gds-entity-preview-card__identity">
-          <div className="gds-entity-preview-card__leading-row">
+      <div className="header">
+        <div className="identity">
+          <div className="leading-row">
             <Tooltip
               label={`Category: ${categoryLabel}`}
               placement="top"
@@ -310,15 +310,15 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 tabIndex={0}
                 role="img"
                 aria-label={`Category: ${categoryLabel}`}
-                className="gds-entity-preview-card__category-trigger"
+                className="category-trigger"
                 data-type={getEntityBadgeType(data.type)}
               >
                 {data.icon ? (
-                  <span className="gds-entity-preview-card__category-icon">
+                  <span className="category-icon">
                     {data.icon}
                   </span>
                 ) : (
-                  <span className="gds-entity-preview-card__category-initial">
+                  <span className="category-initial">
                     {categoryLabel.slice(0, 1)}
                   </span>
                 )}
@@ -328,40 +328,40 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               <EntityBadge
                 key={badge}
                 type={badge}
-                className="gds-entity-preview-card__automation-badge"
+                className="automation-badge"
               >
                 {badge.toUpperCase()}
               </EntityBadge>
             ))}
           </div>
-          <div className="gds-entity-preview-card__title">{data.title}</div>
+          <div className="title">{data.title}</div>
         </div>
 
-        <div className="gds-entity-preview-card__actions">
+        <div className="actions">
           {copyValue && (
             <button
               type="button"
               aria-label={`Copy URI ${copyValue}`}
-              className="gds-entity-preview-card__icon-action"
+              className="icon-action"
               title={copied ? `Copied ${copyValue}` : copyValue}
               onClick={copyIdentifier}
             >
-              <IconCopy className="gds-entity-preview-card__icon-action-icon" />
+              <IconCopy className="icon-action-icon" />
             </button>
           )}
           {data.openFullCardHref && (
             <a
               href={data.openFullCardHref}
               aria-label={openFullCardLabel}
-              className="gds-entity-preview-card__icon-action"
+              className="icon-action"
             >
-              <IconArrowTopRight className="gds-entity-preview-card__icon-action-icon" />
+              <IconArrowTopRight className="icon-action-icon" />
             </a>
           )}
         </div>
         {copyValue && (
           <span
-            className="gds-entity-preview-card__copy-status"
+            className="copy-status"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -372,19 +372,19 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
 
       {((data.properties?.length ?? 0) > 0 ||
         properties.length > 0) && (
-        <dl className="gds-entity-preview-card__properties">
+        <dl className="properties">
           {[
             ...(data.properties ?? []),
             ...properties,
           ].map((property) => (
             <div
               key={property.label}
-              className="gds-entity-preview-card__property"
+              className="property"
             >
-              <dt className="gds-entity-preview-card__property-label">
+              <dt className="property-label">
                 {property.label}
               </dt>
-              <dd className="gds-entity-preview-card__property-value">
+              <dd className="property-value">
                 {property.value}
               </dd>
             </div>
