@@ -36,16 +36,19 @@ export function getValues(value: unknown): string[] {
 
 export function getValue(value: unknown): string {
   const values = asArray(value as LinkedArtValue | LinkedArtValue[] | undefined);
+  return getStringValue(preferLanguage(values));
+}
+
+export function preferLanguage<T>(values: T[]): T | undefined {
   for (const language of languages) {
     const found = values.find(
       (it) => isLanguageValue(it) && it['@language'] === language,
     );
     if (found) {
-      return getStringValue(found);
+      return found;
     }
   }
-  const untagged = values.find((it) => !isLanguageValue(it));
-  return getStringValue(untagged ?? values[0]);
+  return values.find((it) => !isLanguageValue(it)) ?? values[0];
 }
 
 function getStringValue(value?: LinkedArtValue): string {

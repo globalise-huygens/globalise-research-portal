@@ -14,6 +14,7 @@ export {
   isTypedValue,
   getValue,
   getValues,
+  preferLanguage,
 } from './LinkedArtValue.ts';
 export { type Timespan, getTimespan, findTimespan } from './Timespan.ts';
 export {

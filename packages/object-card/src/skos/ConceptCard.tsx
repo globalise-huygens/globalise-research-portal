@@ -11,13 +11,14 @@ import {
   ObjectCardSection,
   ObjectCardTitle,
 } from '@globalise/design';
-import { getJsonUrl } from '@globalise/common';
+import {
+  getJsonUrl,
+  preferLanguage,
+  type LanguageValue,
+} from '@globalise/common';
 import {
   ConceptList,
   getConceptLabel,
-  getLanguageDisplayName,
-  getLanguageTag,
-  getPreferredLabel,
   MatchList,
   SkosConcept,
   useConcept,
@@ -41,8 +42,8 @@ export function ConceptCard() {
 
   const url = getJsonUrl(uri);
   const preferredLabels = concept.prefLabel ?? [];
-  const primaryLabel = getPreferredLabel(concept);
-  const title = primaryLabel?.['@value'] ?? getConceptLabel(concept);
+  const primaryLabel = preferLanguage(preferredLabels);
+  const title = getConceptLabel(concept);
   const titleLanguageTag = primaryLabel
     ? getLanguageTag(primaryLabel['@language'])
     : undefined;
@@ -225,7 +226,7 @@ function getLanguageLabel(language: string): string {
 }
 
 type ConceptLabelProps = {
-  label: { '@language': string; '@value': string };
+  label: LanguageValue;
   isAlternative?: boolean;
   isHidden?: boolean;
 };
@@ -252,4 +253,21 @@ function ConceptLabel({
       {language && <span className="label-language">({language})</span>}
     </span>
   );
+}
+
+const languageDisplayNames = new Intl.DisplayNames(['en'], {
+  type: 'language',
+});
+
+function getLanguageTag(language: string): string | undefined {
+  const normalized = language.trim();
+  return normalized && normalized !== '?' ? normalized : undefined;
+}
+
+function getLanguageDisplayName(language: string): string {
+  try {
+    return languageDisplayNames.of(language) ?? language;
+  } catch {
+    return language;
+  }
 }
