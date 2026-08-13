@@ -1,4 +1,9 @@
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
+import type {
+  FocusEvent,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
 import {
   Annotation,
   Id,
@@ -48,53 +53,61 @@ export function SegmentedText(
         );
       }
 
+      function handleMouseEnter(event: MouseEvent<HTMLSpanElement>) {
+        event.stopPropagation();
+        const previewAnchorElement = event.target instanceof HTMLElement
+          ? event.target
+          : event.currentTarget;
+        showPreview(previewAnchorElement);
+      }
+
+      function handleMouseLeave(event: MouseEvent<HTMLSpanElement>) {
+        event.stopPropagation();
+        if (document.activeElement !== event.currentTarget) {
+          setHovered(null);
+        }
+      }
+
+      function handleFocus(event: FocusEvent<HTMLSpanElement>) {
+        if (isEntityTrigger) {
+          showPreview(event.currentTarget, true);
+        }
+      }
+
+      function handleBlur() {
+        setHovered(null);
+      }
+
+      function handleKeyDown(event: KeyboardEvent<HTMLSpanElement>) {
+        if (
+          isEntityTrigger &&
+          hoverId &&
+          (event.key === 'Enter' || event.key === ' ')
+        ) {
+          event.preventDefault();
+          toggleClicked(hoverId);
+        }
+      }
+
+      function handleClick(event: MouseEvent<HTMLSpanElement>) {
+        if (hoverId && hoverId !== blockId) {
+          event.stopPropagation();
+          toggleClicked(hoverId);
+        }
+      }
+
       return (
         <span
           key={segment.index}
           tabIndex={isEntityTrigger ? 0 : undefined}
           role={isEntityTrigger ? 'button' : undefined}
           aria-label={isEntityTrigger ? `Preview entity: ${body}` : undefined}
-          onMouseEnter={(e) => {
-            e.stopPropagation();
-            // The segment wrapper may cover more than the highlighted entity
-            // (especially for nested annotations). Anchor to the deepest
-            // rendered element under the pointer whenever possible.
-            const target = e.target instanceof HTMLElement
-              ? e.target
-              : e.currentTarget;
-            showPreview(target);
-          }}
-          onMouseLeave={(e) => {
-            e.stopPropagation();
-            if (document.activeElement === e.currentTarget) {
-              return;
-            }
-            // Let the preview close (with its short bridge delay) instead of
-            // replacing the entity anchor with the whole line's anchor.
-            setHovered(null);
-          }}
-          onFocus={(e) => {
-            if (isEntityTrigger) {
-              showPreview(e.currentTarget, true);
-            }
-          }}
-          onBlur={() => setHovered(null)}
-          onKeyDown={(e) => {
-            if (
-              isEntityTrigger &&
-              hoverId &&
-              (e.key === 'Enter' || e.key === ' ')
-            ) {
-              e.preventDefault();
-              toggleClicked(hoverId);
-            }
-          }}
-          onClick={(e) => {
-            if (hoverId && hoverId !== blockId) {
-              e.stopPropagation();
-              toggleClicked(hoverId);
-            }
-          }}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
         >
           <NestedSegment
             annotations={segment.annotations}
