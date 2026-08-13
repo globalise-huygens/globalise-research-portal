@@ -105,6 +105,35 @@ export function renderDiplomaticView(
   const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
+  function getEntitySegment(event: FocusEvent) {
+    if (!(event.target instanceof HTMLSpanElement)) {
+      return null;
+    }
+
+    return event.target.dataset.entityId
+      ? event.target
+      : null;
+  }
+
+  function handleEntityFocus(event: FocusEvent) {
+    const $segment = getEntitySegment(event);
+    if ($segment) {
+      onHover(
+        $segment.dataset.entityId ?? null,
+        createHoverAnchor($segment, true),
+      );
+    }
+  }
+
+  function handleEntityBlur(event: FocusEvent) {
+    if (getEntitySegment(event)) {
+      onHover(null);
+    }
+  }
+
+  $layoutView.addEventListener('focusin', handleEntityFocus);
+  $layoutView.addEventListener('focusout', handleEntityBlur);
+
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
       continue;
@@ -135,6 +164,7 @@ export function renderDiplomaticView(
           ],
         );
         $segment.tabIndex = 0;
+        $segment.dataset.entityId = entity.id;
         $segment.setAttribute('role', 'button');
         $segment.setAttribute(
           'aria-label',
@@ -155,10 +185,6 @@ export function renderDiplomaticView(
             onHover(null);
           }
         });
-        $segment.addEventListener('focus', () =>
-          onHover(entity.id, createHoverAnchor($segment, true)),
-        );
-        $segment.addEventListener('blur', () => onHover(null));
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
