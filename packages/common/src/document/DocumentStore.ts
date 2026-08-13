@@ -7,7 +7,7 @@ import type { SelectionSlice } from './SelectionSlice';
 import type { TocSlice } from './TocSlice';
 import type { MetadataSlice } from './ManifestMetadataSlice.ts';
 
-import { entityClassificationIds } from '../annotation';
+import { cidocEntityClassificationIds } from '../annotation';
 
 export type DocumentState =
   & EntityHighlightSlice
@@ -35,7 +35,7 @@ const defaultLayoutElementsSlice: LayoutElementsSlice = {
 };
 
 const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightCategories: new Set(entityClassificationIds),
+  entityHighlightCategories: new Set(cidocEntityClassificationIds),
 };
 
 const defaultMetadataSlice = {

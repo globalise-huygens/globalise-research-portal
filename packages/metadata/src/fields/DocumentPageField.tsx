@@ -6,8 +6,13 @@ import { IconExternalLink } from '@globalise/design';
 import { EmptyPair, Pair } from '../common';
 import type { FieldProps } from './FieldProps';
 
-export function DocumentPageField({ url, label = 'Document', fallback }: FieldProps) {
-  const [object] = useMetadataNodes(url, ['subject_of']);
+export function DocumentPageField({
+  url,
+  label = 'Document',
+  fallback,
+  path = ['subject_of'],
+}: FieldProps) {
+  const [object] = useMetadataNodes(url, path);
   // TODO: const href = object && urlOf(object)
   if (!url || !object) {
     return <EmptyPair label={label} fallback={fallback}/>;

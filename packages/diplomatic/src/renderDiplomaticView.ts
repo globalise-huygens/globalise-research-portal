@@ -1,10 +1,10 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
-  getEntityTypeClassName,
+  getEntityAnnotationBodyClassName,
   findTextPositionSelector,
-  getEntityClassifiedAsLabel,
-  getEntityClassifiedAsClassName,
+  getCidocEntityClassifiedAsLabel,
+  getCidocClassName,
   getPageText,
   indexAnnotations,
   isEntity,
@@ -120,9 +120,9 @@ export function renderDiplomaticView(
       const entity = segment.annotations.find((a) => isEntity(a));
 
       if (entity) {
-        const visualCategory = getEntityClassifiedAsClassName(entity);
-        const entityLabel = toClassName(getEntityClassifiedAsLabel(entity));
-        const entityType = getEntityTypeClassName(entity);
+        const visualCategory = getCidocClassName(entity);
+        const entityLabel = toClassName(getCidocEntityClassifiedAsLabel(entity));
+        const entityType = getEntityAnnotationBodyClassName(entity);
         $segment.classList.add(
           ...[
             'entity',

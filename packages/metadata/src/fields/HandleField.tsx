@@ -11,8 +11,13 @@ import type { FieldProps } from './FieldProps';
 
 const webPage = 'http://vocab.getty.edu/aat/300264578';
 
-export function HandleField({ url, label = 'Handle', fallback }: FieldProps) {
-  const webPages = useMetadataNodes(url, ['subject_of', 'digitally_carried_by'])
+export function HandleField({
+  url,
+  label = 'Handle',
+  fallback,
+  path = ['subject_of', 'digitally_carried_by'],
+}: FieldProps) {
+  const webPages = useMetadataNodes(url, path)
     .filter((object) => isClassifiedAs(object, webPage));
   const [object] = webPages;
   const href = object && urlOf(findByPath(object, ['access_point'])[0]);

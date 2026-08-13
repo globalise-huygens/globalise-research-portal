@@ -1,113 +1,198 @@
+import './ConceptCard.css';
 import {
+  IconContentWarning,
   ObjectCard,
   ObjectCardBody,
-  ObjectCardExternalLink,
-  ObjectCardFooter,
   ObjectCardHeader,
   ObjectCardPanel,
-  ObjectCardStat,
-  ObjectCardStats,
+  ObjectCardProperty,
+  ObjectCardPropertyList,
+  ObjectCardSection,
   ObjectCardTitle,
 } from '@globalise/design';
-import './ConceptCard.css';
-import { asArray } from '@globalise/common';
+import { getJsonUrl } from '@globalise/common';
 import {
-  getConceptLabel,
   ConceptList,
-  getSkosUrl,
-  LabelList,
+  getConceptLabel,
   MatchList,
-  Reference,
   SkosConcept,
-  loadConcept,
   useConcept,
 } from './';
-import { OpenConcept } from './OpenConcept.tsx';
+import { CardCopyAction } from '../CardCopyAction.tsx';
+import { CardOpenAction } from '../CardOpenAction.tsx';
+import { HtmlValue } from './HtmlValue.tsx';
+import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 export function ConceptCard() {
-  const { uri, concept, isLoading, isReady, error } = useConcept();
+  const navigateToObjectCard = useNavigateToObjectCard();
+  const { uri, concept } = useConcept();
 
-  if (!uri) {
-    return <div>No URI</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (isLoading || !isReady || !concept) {
-    return <div>Loading...</div>;
+  if (!uri || !concept) {
+    return null;
   }
 
   function handleSelect(selected: SkosConcept) {
-    void loadConcept(selected.id);
+    navigateToObjectCard(selected.id);
   }
 
-  const url = getSkosUrl(uri);
+  const url = getJsonUrl(uri);
   const title = getConceptLabel(concept);
-  const types = asArray(concept.type);
-  const notations = asArray(concept.notation);
+  const alternativeLabels = concept.altLabel ?? [];
+  const hiddenLabels = concept.hiddenLabel ?? [];
+  const definitions = concept.definition ?? [];
+  const source = concept.source;
+  const references = concept.references;
+  const hasAlternativeLabels = Boolean(
+    alternativeLabels.length || hiddenLabels.length,
+  );
+  const hasDefinitions =
+    definitions.length > 0 || Boolean(source) || Boolean(references);
+  const hasExternal =
+    (concept.closeMatch?.length ?? 0) +
+    (concept.narrowMatch?.length ?? 0) +
+    (concept.exactMatch?.length ?? 0) >
+    0;
+  const hasGraph =
+    (concept.inScheme?.length ?? 0) +
+    (concept.hasTopConcept?.length ?? 0) +
+    (concept.broader?.length ?? 0) +
+    (concept.narrower?.length ?? 0) +
+    (concept.related?.length ?? 0) >
+    0;
+  const hasLeftPanel = hasDefinitions || hasExternal;
+  const hasBody = hasLeftPanel || hasGraph;
+  const cardClassName = ['concept-card', !hasBody ? 'header-only' : undefined]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <ObjectCard className="concept-card">
-      <ObjectCardHeader actions={<OpenConcept/>}>
+    <ObjectCard className={cardClassName}>
+      <ObjectCardHeader
+        actions={
+          <>
+            <CardCopyAction uri={uri} label="Copy concept URI"/>
+            <CardOpenAction url={url} label="Open concept JSON-LD"/>
+          </>
+        }
+      >
+        <span className="badge">Concept</span>
         <ObjectCardTitle>{title}</ObjectCardTitle>
-        <ObjectCardStats>
-          <ObjectCardStat>{types.join(', ')}</ObjectCardStat>
-          {!!notations.length && (
-            <ObjectCardStat>notation: {notations.join(', ')}</ObjectCardStat>
-          )}
-        </ObjectCardStats>
-      </ObjectCardHeader>
-      <ObjectCardBody>
-        <ObjectCardPanel side="left">
-          <LabelList title="prefLabel" values={concept.prefLabel}/>
-          <LabelList title="altLabel" values={concept.altLabel}/>
-          <LabelList title="hiddenLabel" values={concept.hiddenLabel}/>
-          <LabelList title="definition" values={concept.definition}/>
-          <Reference title="references" value={concept.references}/>
-        </ObjectCardPanel>
-        <ObjectCardPanel side="right">
-          <ConceptList
-            title="inScheme"
-            concepts={concept.inScheme}
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="hasTopConcept"
-            concepts={concept.hasTopConcept}
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="broader"
-            concepts={concept.broader}
-            childKey="broader"
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="narrower"
-            concepts={concept.narrower}
-            childKey="narrower"
-            onSelect={handleSelect}
-          />
-          <ConceptList
-            title="related"
-            concepts={concept.related}
-            onSelect={handleSelect}
-          />
-          <MatchList title="closeMatch" matches={concept.closeMatch}/>
-          <MatchList title="narrowMatch" matches={concept.narrowMatch}/>
-          <MatchList title="exactMatch" matches={concept.exactMatch}/>
-        </ObjectCardPanel>
-      </ObjectCardBody>
-      <ObjectCardFooter>
-        <ObjectCardExternalLink href={url}>raw</ObjectCardExternalLink>
-        {concept.source && (
-          <ObjectCardExternalLink href={concept.source['@value']}>
-            {concept.source['@value']}
-          </ObjectCardExternalLink>
+        {hasAlternativeLabels && (
+          <div className="alternative-labels">
+            <span className="alternative-title">alternative labels:</span>
+            {alternativeLabels.map((label) => (
+              <span
+                key={`alt-${label['@language']}-${label['@value']}`}
+                className="alternative-label"
+              >
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
+              </span>
+            ))}
+            {hiddenLabels.map((label) => (
+              <span
+                key={`hidden-${label['@language']}-${label['@value']}`}
+                className="hidden-label"
+              >
+                <IconContentWarning aria-hidden="true" />
+                <span lang={label['@language'] || undefined}>
+                  {label['@value']}
+                </span>
+                <span className="label-language">
+                  [{label['@language'] || 'und'}]
+                </span>
+              </span>
+            ))}
+          </div>
         )}
-      </ObjectCardFooter>
+      </ObjectCardHeader>
+      {hasBody && (
+        <ObjectCardBody
+          className={hasLeftPanel && hasGraph ? undefined : 'single-panel'}
+        >
+          {hasLeftPanel && (
+            <ObjectCardPanel side="left">
+              {hasDefinitions && (
+                <ObjectCardSection title="Definitions" className="definitions">
+                  <ObjectCardPropertyList>
+                    {definitions.map((definition, index) => (
+                      <ObjectCardProperty
+                        key={`${definition['@language']}-${index}`}
+                        label={getLanguageLabel(definition['@language'])}
+                        value={<HtmlValue value={definition['@value']} />}
+                      />
+                    ))}
+                    {source && (
+                      <ObjectCardProperty
+                        label="Source"
+                        value={<HtmlValue value={source['@value']} />}
+                      />
+                    )}
+                    {references && (
+                      <ObjectCardProperty
+                        label="References"
+                        value={<HtmlValue value={references['@value']} />}
+                      />
+                    )}
+                  </ObjectCardPropertyList>
+                </ObjectCardSection>
+              )}
+              {hasExternal && (
+                <ObjectCardSection title="External" className="external">
+                  <MatchList title="Close match" matches={concept.closeMatch} />
+                  <MatchList
+                    title="Narrow match"
+                    matches={concept.narrowMatch}
+                  />
+                  <MatchList title="Exact match" matches={concept.exactMatch} />
+                </ObjectCardSection>
+              )}
+            </ObjectCardPanel>
+          )}
+          {hasGraph && (
+            <ObjectCardPanel side="right">
+              <ObjectCardSection title="Concept Graph" className="graph">
+                <ConceptList
+                  title="Scheme"
+                  concepts={concept.inScheme}
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Top concepts"
+                  concepts={concept.hasTopConcept}
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Broader"
+                  concepts={concept.broader}
+                  childKey="broader"
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Narrower"
+                  concepts={concept.narrower}
+                  childKey="narrower"
+                  onSelect={handleSelect}
+                />
+                <ConceptList
+                  title="Related"
+                  concepts={concept.related}
+                  onSelect={handleSelect}
+                />
+              </ObjectCardSection>
+            </ObjectCardPanel>
+          )}
+        </ObjectCardBody>
+      )}
     </ObjectCard>
   );
+}
+
+function getLanguageLabel(language: string): string {
+  const normalized = language.trim();
+  return normalized && normalized !== '?' ? normalized : '-';
 }

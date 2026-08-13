@@ -74,7 +74,7 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        navigate({ to: '/object-card', search: { concept: uri } })
+        navigate({ to: '/object-card', search: { uri } })
           .catch(console.error);
       }
     });
