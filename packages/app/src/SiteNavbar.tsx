@@ -21,6 +21,7 @@ export function SiteNavbar() {
         <NavLinks className="site-navbar__links">
           <NavLink href="/search">Search</NavLink>
           <NavLink href="/manifest">Manifest Viewer</NavLink>
+          <NavLink href="/catalog">Catalog</NavLink>
           <NavLink href="/object-card">Object Card</NavLink>
         </NavLinks>
       </Navbar>

@@ -72,7 +72,7 @@
     max-height: none;
     min-height: 0;
     flex-direction: column;
-    overflow: visible;
+    overflow: scroll;
     background: var(--color-neutral-800);
     outline: none;
     box-shadow:

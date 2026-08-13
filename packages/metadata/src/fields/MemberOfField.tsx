@@ -7,9 +7,9 @@ import {
 import { LabelHierarchy } from '../common';
 import type { FieldProps } from './FieldProps';
 
-export function MemberOfField({ url }: FieldProps) {
+export function MemberOfField({ url, path = ['member_of'] }: FieldProps) {
   const root = useMetadataRoot(url);
-  const labelPaths = useMetadataNodes(url, ['member_of']).flatMap(toParentLabels);
+  const labelPaths = useMetadataNodes(url, path).flatMap(toParentLabels);
 
   if (!root || !labelPaths.length) {
     return null;

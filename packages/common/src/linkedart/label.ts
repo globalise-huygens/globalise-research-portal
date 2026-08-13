@@ -1,5 +1,6 @@
 import { LinkedArtNode } from './LinkedArtNode.ts';
+import { getValue } from './LinkedArtValue.ts';
 
 export function label(node: LinkedArtNode): string {
-  return node._label ?? '';
+  return getValue(node._label);
 }

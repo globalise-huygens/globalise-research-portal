@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import {
   type Annotation,
-  type EntityClassificationId,
+  type CidocEntityClassificationId,
   type Id,
   isEntity,
   isHighlightedEntity,
@@ -10,11 +10,11 @@ import { setState, useDocumentStore } from './DocumentStore';
 import { type CanvasId, useAnnotations } from './ManifestViewerSlice';
 
 export type EntityHighlightSlice = {
-  entityHighlightCategories: Set<EntityClassificationId>;
+  entityHighlightCategories: Set<CidocEntityClassificationId>;
 };
 
 export function setEntityHighlightCategories(
-  categories: Set<EntityClassificationId>,
+  categories: Set<CidocEntityClassificationId>,
 ) {
   setState({ entityHighlightCategories: new Set(categories) });
 }

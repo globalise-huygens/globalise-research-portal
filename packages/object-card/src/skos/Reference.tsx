@@ -1,7 +1,7 @@
 import { ObjectCardSection } from '@globalise/design';
-import { LangValue } from './SkosModel.ts';
+import { SkosValue } from './SkosModel.ts';
 
-type ReferenceProps = { title: string; value?: LangValue };
+type ReferenceProps = { title: string; value?: SkosValue };
 
 export function Reference({ title, value }: ReferenceProps) {
   if (!value) {
