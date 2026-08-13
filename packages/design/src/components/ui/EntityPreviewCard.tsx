@@ -27,7 +27,6 @@ export type EntityPreviewCardBaseData = {
   icon?: React.ReactNode;
   openFullCardLabel?: string;
   openFullCardHref?: string;
-  /** URI or annotation identifier copied by the compact card action. */
   copyValue?: string;
 };
 
