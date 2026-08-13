@@ -1,10 +1,7 @@
 import './ConceptCard.css';
 import {
   IconContentWarning,
-  IconCopy,
-  IconExternalLink,
   ObjectCard,
-  ObjectCardAction,
   ObjectCardBody,
   ObjectCardHeader,
   ObjectCardPanel,
@@ -21,6 +18,8 @@ import {
   SkosConcept,
   useConcept,
 } from './';
+import { CardCopyAction } from '../CardCopyAction.tsx';
+import { CardOpenAction } from '../CardOpenAction.tsx';
 import { HtmlValue } from './HtmlValue.tsx';
 import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
@@ -66,31 +65,13 @@ export function ConceptCard() {
     .filter(Boolean)
     .join(' ');
 
-  function handleCopy() {
-    if(uri) {
-      navigator.clipboard.writeText(uri).catch(console.error);
-    }
-  }
-
-  function handleOpenJson() {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-
   return (
     <ObjectCard className={cardClassName}>
       <ObjectCardHeader
         actions={
           <>
-            <ObjectCardAction
-              aria-label="Copy concept URI"
-              icon={<IconCopy className="header-action-icon" />}
-              onPress={handleCopy}
-            />
-            <ObjectCardAction
-              aria-label="Open concept JSON-LD"
-              icon={<IconExternalLink className="header-action-icon" />}
-              onPress={handleOpenJson}
-            />
+            <CardCopyAction uri={uri} label="Copy concept URI"/>
+            <CardOpenAction url={url} label="Open concept JSON-LD"/>
           </>
         }
       >

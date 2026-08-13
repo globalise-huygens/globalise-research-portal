@@ -24,13 +24,5 @@
       font-size: var(--text-sm);
       line-height: 1.5rem;
     }
-
-    .source-page {
-      margin-right: 0.25rem;
-    }
-
-    > .footer {
-      padding: var(--panel-pad);
-    }
   }
 }

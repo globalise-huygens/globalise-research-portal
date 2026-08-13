@@ -1,8 +1,6 @@
 import {
   ObjectCard,
   ObjectCardBody,
-  ObjectCardExternalLink,
-  ObjectCardFooter,
   ObjectCardHeader,
   ObjectCardPanel,
   ObjectCardStat,
@@ -16,7 +14,8 @@ import {
   getLinkedArtEntityType,
   getJsonUrl,
 } from '@globalise/common';
-import { OpenResource } from '../OpenResource.tsx';
+import { CardCopyAction } from '../CardCopyAction.tsx';
+import { CardOpenAction } from '../CardOpenAction.tsx';
 import { eventKeys, relationKeys, statusKeys } from './LabeledKey.ts';
 import { EntityTypeBadge } from './EntityTypeBadge.tsx';
 import { EntitySummary } from './EntitySummary.tsx';
@@ -39,14 +38,21 @@ export function EntityCard() {
 
   return (
     <ObjectCard className="entity-card">
-      <ObjectCardHeader actions={<OpenResource/>}>
+      <ObjectCardHeader
+        actions={
+          <>
+            <CardCopyAction uri={uri} label="Copy entity URI"/>
+            <CardOpenAction url={getJsonUrl(uri)} label="Open entity JSON-LD"/>
+          </>
+        }
+      >
+        <EntityTypeBadge type={getLinkedArtEntityType(uri)}/>
         <ObjectCardTitle>{getEntityTitle(entity)}</ObjectCardTitle>
-        <ObjectCardStats>
-          <EntityTypeBadge type={getLinkedArtEntityType(uri)}/>
-          {!!identifiers.length && (
+        {!!identifiers.length && (
+          <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
-          )}
-        </ObjectCardStats>
+          </ObjectCardStats>
+        )}
       </ObjectCardHeader>
       <ObjectCardBody>
         <ObjectCardPanel side="left">
@@ -77,9 +83,6 @@ export function EntityCard() {
           ))}
         </ObjectCardPanel>
       </ObjectCardBody>
-      <ObjectCardFooter>
-        <ObjectCardExternalLink href={getJsonUrl(uri)}>raw</ObjectCardExternalLink>
-      </ObjectCardFooter>
     </ObjectCard>
   );
 }
