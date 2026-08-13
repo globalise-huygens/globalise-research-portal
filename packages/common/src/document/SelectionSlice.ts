@@ -9,15 +9,20 @@ export type SelectionSlice = {
 
 export type HoverAnchor = {
   element?: Element;
-  x: number;
-  y: number;
+  openImmediately?: boolean;
   left: number;
   top: number;
   right: number;
   bottom: number;
-  width: number;
-  height: number;
 };
+
+export function createHoverAnchor(
+  element: Element,
+  openImmediately = false,
+): HoverAnchor {
+  const { left, top, right, bottom } = element.getBoundingClientRect();
+  return { element, openImmediately, left, top, right, bottom };
+}
 
 export function setHovered(
   id: Id | null,

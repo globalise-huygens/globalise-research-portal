@@ -10,7 +10,10 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
-import type { HoverAnchor } from '@globalise/common/document';
+import {
+  createHoverAnchor,
+  type HoverAnchor,
+} from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
 import {
   D3El,
@@ -131,7 +134,12 @@ export function renderDiplomaticView(
             entityLabel,
           ],
         );
-        $segment.title = `${entityLabel} | ${entity.id}`;
+        $segment.tabIndex = 0;
+        $segment.setAttribute('role', 'button');
+        $segment.setAttribute(
+          'aria-label',
+          `Preview entity: ${$segment.textContent}`,
+        );
 
         if (!$entityToSegments[entity.id]) {
           $entityToSegments[entity.id] = [];
@@ -139,33 +147,35 @@ export function renderDiplomaticView(
         $entityToSegments[entity.id].push($segment);
 
         $segment.addEventListener('click', () => onClick(entity.id));
-        $segment.addEventListener('mouseenter', (event) => {
-          const rect = $segment.getBoundingClientRect();
-          onHover(entity.id, {
-            element: $segment,
-            x: event.clientX,
-            y: event.clientY,
-            left: rect.left,
-            top: rect.top,
-            right: rect.right,
-            bottom: rect.bottom,
-            width: rect.width,
-            height: rect.height,
-          });
+        $segment.addEventListener('mouseenter', () =>
+          onHover(entity.id, createHoverAnchor($segment)),
+        );
+        $segment.addEventListener('mouseleave', () => {
+          if (document.activeElement !== $segment) {
+            onHover(null);
+          }
         });
-        $segment.addEventListener('mouseleave', () => onHover(null));
+        $segment.addEventListener('focus', () =>
+          onHover(entity.id, createHoverAnchor($segment, true)),
+        );
+        $segment.addEventListener('blur', () => onHover(null));
+        $segment.addEventListener('pointerdown', (event) => {
+          if (event.pointerType !== 'mouse') {
+            onHover(entity.id, createHoverAnchor($segment, true));
+          }
+        });
+        $segment.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick(entity.id);
+          }
+        });
       } else {
         const blockId = wordToBlock[wordId];
         $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', (event) => {
-          const rect = $segment.getBoundingClientRect();
-          onHover(wordId, {
-            element: $segment,
-            x: event.clientX, y: event.clientY,
-            left: rect.left, top: rect.top, right: rect.right,
-            bottom: rect.bottom, width: rect.width, height: rect.height,
-          });
-        });
+        $segment.addEventListener('mouseenter', () =>
+          onHover(wordId, createHoverAnchor($segment)),
+        );
         $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
       }
     }

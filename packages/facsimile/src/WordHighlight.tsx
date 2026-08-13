@@ -1,6 +1,7 @@
 import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
+  createHoverAnchor,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
@@ -34,20 +35,12 @@ export function WordHighlight(
 
   function handleHover(hovering: boolean, event: MouseEvent) {
     setHoveredLocal(hovering);
-    const rect = event.currentTarget.getBoundingClientRect();
+    if (!hovering && document.activeElement === event.currentTarget) {
+      return;
+    }
     setHovered(
       hovering ? id : null,
-      hovering ? {
-        element: event.currentTarget,
-        x: event.clientX,
-        y: event.clientY,
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height,
-      } : undefined,
+      hovering ? createHoverAnchor(event.currentTarget) : undefined,
     );
     if (hovering && !tone) {
       setTooltip({ text, x: event.clientX, y: event.clientY });
@@ -67,10 +60,34 @@ export function WordHighlight(
         cursor: 'pointer',
         mixBlendMode: 'multiply',
       }}
+      tabIndex={tone ? 0 : undefined}
+      role={tone ? 'button' : undefined}
+      aria-label={tone ? `Preview entity: ${text}` : undefined}
       onClick={() => toggleClicked(id)}
       onMouseEnter={(event) => handleHover(true, event)}
-      onMouseMove={(event) => handleHover(true, event)}
+      onMouseMove={(event) => {
+        if (!tone) {
+          handleHover(true, event);
+        }
+      }}
       onMouseLeave={(event) => handleHover(false, event)}
+      onFocus={(event) => {
+        if (tone) {
+          setHovered(id, createHoverAnchor(event.currentTarget, true));
+        }
+      }}
+      onBlur={() => setHovered(null)}
+      onPointerDown={(event) => {
+        if (tone && event.pointerType !== 'mouse') {
+          setHovered(id, createHoverAnchor(event.currentTarget, true));
+        }
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleClicked(id);
+        }
+      }}
     />
   );
 }

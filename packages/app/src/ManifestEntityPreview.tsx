@@ -1,10 +1,10 @@
 import {
-  getEntityClassificationId,
+  getCidocEntityClassificationId,
   getPrimaryEntityBody,
   isEntity,
   type Annotation,
   type EntityBody,
-  type EntityClassificationId,
+  type CidocEntityClassificationId,
 } from '@globalise/common/annotation';
 import {
   setHovered,
@@ -38,9 +38,8 @@ import {
 import { createPortal } from 'react-dom';
 import './ManifestEntityPreview.css';
 
-// Hoverable supplemental content must remain available while the pointer or
-// keyboard focus moves from its trigger into the content (WCAG 1.4.13).
-const CLOSE_DELAY = 700;
+const OPEN_DELAY = 300;
+const CLOSE_DELAY = 200;
 
 type EntityAnnotation = Annotation<EntityBody>;
 type PreviewCategory = {
@@ -63,27 +62,31 @@ export function ManifestEntityPreview() {
     visibility: 'hidden',
   });
   const previewRef = useRef<HTMLDivElement>(null);
-  const pointer = useRef({ x: 0, y: 0 });
+  const displayedRef = useRef(initialAnnotation);
+  const openTimer = useRef<number | undefined>(undefined);
   const closeTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
 
-  useEffect(() => {
-    const rememberPointer = (event: PointerEvent) => {
-      pointer.current = { x: event.clientX, y: event.clientY };
-    };
-    window.addEventListener('pointermove', rememberPointer);
-    return () => window.removeEventListener('pointermove', rememberPointer);
-  }, []);
-
   useEffect(() => useDocumentStore.subscribe((state) => {
     const annotation = getHoveredAnnotation(state);
-    if (annotation) {
+    if (annotation && state.hoveredAt) {
+      window.clearTimeout(openTimer.current);
       window.clearTimeout(closeTimer.current);
-      setDisplayed(annotation);
-      setAnchor(state.hoveredAt ?? pointerAnchor(pointer.current));
+      if (displayedRef.current?.id === annotation.id) {
+        setAnchor(state.hoveredAt);
+        return;
+      }
+      openTimer.current = window.setTimeout(() => {
+        displayedRef.current = annotation;
+        setDisplayed(annotation);
+        setAnchor(state.hoveredAt);
+      }, displayedRef.current || state.hoveredAt.openImmediately
+        ? 0
+        : OPEN_DELAY);
       return;
     }
 
+    window.clearTimeout(openTimer.current);
     if (isPreviewHovered.current) {
       return;
     }
@@ -96,12 +99,14 @@ export function ManifestEntityPreview() {
       ) {
         return;
       }
+      displayedRef.current = null;
       setDisplayed(null);
       setAnchor(null);
     }, CLOSE_DELAY);
   }), []);
 
   useEffect(() => () => {
+    window.clearTimeout(openTimer.current);
     window.clearTimeout(closeTimer.current);
   }, []);
 
@@ -113,7 +118,9 @@ export function ManifestEntityPreview() {
 
     const updatePosition = () => {
       const rect = preview.getBoundingClientRect();
-      const anchorRect = anchor.element?.getBoundingClientRect();
+      const anchorRect = anchor.element?.isConnected
+        ? anchor.element.getBoundingClientRect()
+        : undefined;
       const currentAnchor = anchorRect
         ? {
           ...anchor,
@@ -121,8 +128,6 @@ export function ManifestEntityPreview() {
           top: anchorRect.top,
           right: anchorRect.right,
           bottom: anchorRect.bottom,
-          width: anchorRect.width,
-          height: anchorRect.height,
         }
         : anchor;
       setPosition(placePreview(currentAnchor, rect.width, rect.height));
@@ -146,6 +151,7 @@ export function ManifestEntityPreview() {
   }
 
   function close() {
+    displayedRef.current = null;
     setDisplayed(null);
     setAnchor(null);
   }
@@ -245,14 +251,14 @@ function findEntityForWord(
   wordId: string,
   annotations: Record<string, Annotation>,
   entityToWords: Record<string, string[]>,
-  visibleCategories: Set<EntityClassificationId>,
+  visibleCategories: Set<CidocEntityClassificationId>,
 ) {
   for (const [entityId, wordIds] of Object.entries(entityToWords)) {
     const annotation = annotations[entityId];
     if (!wordIds.includes(wordId) || !annotation || !isEntity(annotation)) {
       continue;
     }
-    const classificationId = getEntityClassificationId(annotation);
+    const classificationId = getCidocEntityClassificationId(annotation);
     if (classificationId && visibleCategories.has(classificationId)) {
       return annotation;
     }
@@ -261,7 +267,7 @@ function findEntityForWord(
 
 function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
   return {
-    ...getPreviewCategory(getEntityClassificationId(annotation)),
+    ...getPreviewCategory(getCidocEntityClassificationId(annotation)),
     title: getPreviewTitle(annotation),
     properties: getPreviewProperties(annotation),
     copyValue: annotation.id,
@@ -283,7 +289,7 @@ function getPreviewProperties(
   annotation: EntityAnnotation,
 ): EntityPreviewCardProperty[] {
   const body = getPrimaryEntityBody(annotation);
-  const classificationId = getEntityClassificationId(annotation);
+  const classificationId = getCidocEntityClassificationId(annotation);
   const properties: EntityPreviewCardProperty[] = [
     { label: 'Type', value: getEntityKindLabel(classificationId) },
   ];
@@ -322,7 +328,7 @@ function getQuantityTitle(body: EntityBody) {
 }
 
 function isClassificationOnly(annotation: EntityAnnotation) {
-  const classificationId = getEntityClassificationId(annotation);
+  const classificationId = getCidocEntityClassificationId(annotation);
   if (classificationId === 'gan:CMTY_QUAL') {
     return false;
   }
@@ -336,7 +342,7 @@ function isClassificationOnly(annotation: EntityAnnotation) {
 }
 
 function getEntityKindLabel(
-  classificationId: EntityClassificationId | undefined,
+  classificationId: CidocEntityClassificationId | undefined,
 ) {
   switch (classificationId) {
     case 'gan:LOC_NAME':
@@ -368,7 +374,7 @@ function getEntityKindLabel(
 }
 
 function getPreviewCategory(
-  classificationId: EntityClassificationId | undefined,
+  classificationId: CidocEntityClassificationId | undefined,
 ): PreviewCategory {
   switch (classificationId) {
     case 'gan:PER_NAME':
@@ -397,19 +403,6 @@ function getPreviewCategory(
     default:
       return { kind: 'entity', icon: <IconEntities /> };
   }
-}
-
-function pointerAnchor(pointer: { x: number; y: number }): HoverAnchor {
-  return {
-    x: pointer.x,
-    y: pointer.y,
-    left: pointer.x,
-    top: pointer.y,
-    right: pointer.x,
-    bottom: pointer.y,
-    width: 0,
-    height: 0,
-  };
 }
 
 function placePreview(

@@ -2,10 +2,12 @@ import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
   Id,
+  isEntity,
   isHighlightedEntity,
   isWord,
 } from '@globalise/common/annotation';
 import {
+  createHoverAnchor,
   setHovered,
   toggleClicked,
   useEntityHighlightCategories,
@@ -35,10 +37,23 @@ export function SegmentedText(
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
+      const isEntityTrigger = hoveredAnnotation
+        ? isEntity(hoveredAnnotation)
+        : false;
+
+      function showPreview(element: Element, openImmediately = false) {
+        setHovered(
+          hoverId,
+          createHoverAnchor(element, openImmediately),
+        );
+      }
 
       return (
         <span
           key={segment.index}
+          tabIndex={isEntityTrigger ? 0 : undefined}
+          role={isEntityTrigger ? 'button' : undefined}
+          aria-label={isEntityTrigger ? `Preview entity: ${body}` : undefined}
           onMouseEnter={(e) => {
             e.stopPropagation();
             // The segment wrapper may cover more than the highlighted entity
@@ -47,19 +62,37 @@ export function SegmentedText(
             const target = e.target instanceof HTMLElement
               ? e.target
               : e.currentTarget;
-            const rect = target.getBoundingClientRect();
-            setHovered(hoverId, {
-              element: target,
-              x: e.clientX, y: e.clientY,
-              left: rect.left, top: rect.top, right: rect.right,
-              bottom: rect.bottom, width: rect.width, height: rect.height,
-            });
+            showPreview(target);
           }}
           onMouseLeave={(e) => {
             e.stopPropagation();
+            if (document.activeElement === e.currentTarget) {
+              return;
+            }
             // Let the preview close (with its short bridge delay) instead of
             // replacing the entity anchor with the whole line's anchor.
             setHovered(null);
+          }}
+          onFocus={(e) => {
+            if (isEntityTrigger) {
+              showPreview(e.currentTarget, true);
+            }
+          }}
+          onBlur={() => setHovered(null)}
+          onPointerDown={(e) => {
+            if (isEntityTrigger && e.pointerType !== 'mouse') {
+              showPreview(e.currentTarget, true);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (
+              isEntityTrigger &&
+              hoverId &&
+              (e.key === 'Enter' || e.key === ' ')
+            ) {
+              e.preventDefault();
+              toggleClicked(hoverId);
+            }
           }}
           onClick={(e) => {
             if (hoverId && hoverId !== blockId) {
