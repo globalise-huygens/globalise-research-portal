@@ -13,7 +13,7 @@ import {
 } from '@globalise/design';
 import {
   getJsonUrl,
-  preferLanguage,
+  getPreferredLanguageValue,
   type LanguageValue,
 } from '@globalise/common';
 import {
@@ -42,7 +42,7 @@ export function ConceptCard() {
 
   const url = getJsonUrl(uri);
   const preferredLabels = concept.prefLabel ?? [];
-  const primaryLabel = preferLanguage(preferredLabels);
+  const primaryLabel = getPreferredLanguageValue(preferredLabels);
   const title = getConceptLabel(concept);
   const titleLanguageTag = primaryLabel
     ? getLanguageTag(primaryLabel['@language'])

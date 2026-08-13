@@ -36,10 +36,10 @@ export function getValues(value: unknown): string[] {
 
 export function getValue(value: unknown): string {
   const values = asArray(value as LinkedArtValue | LinkedArtValue[] | undefined);
-  return getStringValue(preferLanguage(values));
+  return getStringValue(getPreferredLanguageValue(values));
 }
 
-export function preferLanguage<T>(values: T[]): T | undefined {
+export function getPreferredLanguageValue<T>(values: T[]): T | undefined {
   for (const language of languages) {
     const found = values.find(
       (it) => isLanguageValue(it) && it['@language'] === language,
