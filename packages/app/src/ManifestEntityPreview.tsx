@@ -8,6 +8,7 @@ import {
 } from '@globalise/common/annotation';
 import {
   setHovered,
+  subscribeHovered,
   useDocumentStore,
   type DocumentState,
   type HoverAnchor,
@@ -48,39 +49,36 @@ type PreviewCategory = {
 };
 
 export function ManifestEntityPreview() {
-  const initialState = useDocumentStore.getState();
-  const initialAnnotation = getHoveredAnnotation(initialState);
-  const [displayed, setDisplayed] = useState<EntityAnnotation | null>(
-    initialAnnotation,
-  );
-  const [anchor, setAnchor] = useState<HoverAnchor | null>(
-    initialAnnotation ? initialState.hoveredAt : null,
-  );
+  const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
+  const [anchor, setAnchor] = useState<HoverAnchor | null>(null);
   const [position, setPosition] = useState<CSSProperties>({
     left: 0,
     top: 0,
     visibility: 'hidden',
   });
   const previewRef = useRef<HTMLDivElement>(null);
-  const displayedRef = useRef(initialAnnotation);
+  const displayedRef = useRef<EntityAnnotation | null>(null);
   const openTimer = useRef<number | undefined>(undefined);
   const closeTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
 
-  useEffect(() => useDocumentStore.subscribe((state) => {
-    const annotation = getHoveredAnnotation(state);
-    if (annotation && state.hoveredAt) {
+  useEffect(() => subscribeHovered((id, nextAnchor) => {
+    const annotation = getHoveredAnnotation(
+      useDocumentStore.getState(),
+      id,
+    );
+    if (annotation && nextAnchor) {
       window.clearTimeout(openTimer.current);
       window.clearTimeout(closeTimer.current);
       if (displayedRef.current?.id === annotation.id) {
-        setAnchor(state.hoveredAt);
+        setAnchor(nextAnchor);
         return;
       }
       openTimer.current = window.setTimeout(() => {
         displayedRef.current = annotation;
         setDisplayed(annotation);
-        setAnchor(state.hoveredAt);
-      }, displayedRef.current || state.hoveredAt.openImmediately
+        setAnchor(nextAnchor);
+      }, displayedRef.current || nextAnchor.openImmediately
         ? 0
         : OPEN_DELAY);
       return;
@@ -118,19 +116,12 @@ export function ManifestEntityPreview() {
 
     const updatePosition = () => {
       const rect = preview.getBoundingClientRect();
-      const anchorRect = anchor.element?.isConnected
+      const anchorRect = anchor.element.isConnected
         ? anchor.element.getBoundingClientRect()
         : undefined;
-      const currentAnchor = anchorRect
-        ? {
-          ...anchor,
-          left: anchorRect.left,
-          top: anchorRect.top,
-          right: anchorRect.right,
-          bottom: anchorRect.bottom,
-        }
-        : anchor;
-      setPosition(placePreview(currentAnchor, rect.width, rect.height));
+      if (anchorRect) {
+        setPosition(placePreview(anchorRect, rect.width, rect.height));
+      }
     };
 
     updatePosition();
@@ -217,8 +208,10 @@ export function ManifestEntityPreview() {
   );
 }
 
-function getHoveredAnnotation(state: DocumentState): EntityAnnotation | null {
-  const hoveredId = state.hoveredId;
+function getHoveredAnnotation(
+  state: DocumentState,
+  hoveredId: string | null,
+): EntityAnnotation | null {
   if (!hoveredId) {
     return null;
   }
@@ -406,7 +399,7 @@ function getPreviewCategory(
 }
 
 function placePreview(
-  anchor: HoverAnchor,
+  anchor: Pick<DOMRect, 'bottom' | 'left' | 'right' | 'top'>,
   cardWidth: number,
   cardHeight: number,
 ): CSSProperties {

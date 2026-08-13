@@ -3,41 +3,43 @@ import { Id } from '../annotation';
 
 export type SelectionSlice = {
   hoveredId: Id | null;
-  hoveredAt: HoverAnchor | null;
   clickedId: Id | null;
 };
 
 export type HoverAnchor = {
-  element?: Element;
+  element: Element;
   openImmediately?: boolean;
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
 };
+
+type HoverListener = (
+  id: Id | null,
+  anchor?: HoverAnchor,
+) => void;
+
+const hoverListeners = new Set<HoverListener>();
 
 export function createHoverAnchor(
   element: Element,
   openImmediately = false,
 ): HoverAnchor {
-  const { left, top, right, bottom } = element.getBoundingClientRect();
-  return { element, openImmediately, left, top, right, bottom };
+  return { element, openImmediately };
+}
+
+export function subscribeHovered(listener: HoverListener) {
+  hoverListeners.add(listener);
+  return () => {
+    hoverListeners.delete(listener);
+  };
 }
 
 export function setHovered(
   id: Id | null,
   anchor?: HoverAnchor,
 ) {
-  const current = useDocumentStore.getState();
-  if (current.hoveredId === id) {
-    if (!anchor || !current.hoveredAt) {
-      return;
-    }
+  if (useDocumentStore.getState().hoveredId !== id) {
+    useDocumentStore.setState({ hoveredId: id });
   }
-  useDocumentStore.setState({
-    hoveredId: id,
-    hoveredAt: id && anchor ? anchor : null,
-  });
+  hoverListeners.forEach((listener) => listener(id, anchor));
 }
 
 export function toggleClicked(id: Id) {
@@ -48,5 +50,6 @@ export function toggleClicked(id: Id) {
 }
 
 export function clearSelection() {
-  useDocumentStore.setState({ hoveredId: null, hoveredAt: null, clickedId: null });
+  useDocumentStore.setState({ hoveredId: null, clickedId: null });
+  hoverListeners.forEach((listener) => listener(null));
 }
