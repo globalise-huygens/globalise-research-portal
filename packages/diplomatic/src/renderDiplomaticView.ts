@@ -159,11 +159,6 @@ export function renderDiplomaticView(
           onHover(entity.id, createHoverAnchor($segment, true)),
         );
         $segment.addEventListener('blur', () => onHover(null));
-        $segment.addEventListener('pointerdown', (event) => {
-          if (event.pointerType !== 'mouse') {
-            onHover(entity.id, createHoverAnchor($segment, true));
-          }
-        });
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();

@@ -79,11 +79,6 @@ export function SegmentedText(
             }
           }}
           onBlur={() => setHovered(null)}
-          onPointerDown={(e) => {
-            if (isEntityTrigger && e.pointerType !== 'mouse') {
-              showPreview(e.currentTarget, true);
-            }
-          }}
           onKeyDown={(e) => {
             if (
               isEntityTrigger &&

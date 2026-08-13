@@ -77,11 +77,6 @@ export function WordHighlight(
         }
       }}
       onBlur={() => setHovered(null)}
-      onPointerDown={(event) => {
-        if (tone && event.pointerType !== 'mouse') {
-          setHovered(id, createHoverAnchor(event.currentTarget, true));
-        }
-      }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
