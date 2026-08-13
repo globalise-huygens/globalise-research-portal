@@ -1,5 +1,5 @@
 import { IconArrowTopRight, IconCopy } from '../icons';
-import { cn } from '../../lib';
+import { cn, useCopy } from '../../lib';
 import * as React from 'react';
 import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
@@ -273,7 +273,7 @@ function getEntityPreviewProperties(
 }
 
 function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
-  const [copied, setCopied] = React.useState(false);
+  const { copied, copy } = useCopy();
   const properties: EntityPreviewCardProperty[] = getEntityPreviewProperties(
     data,
   )
@@ -288,18 +288,9 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   const copyValue = data.copyValue;
 
   function copyIdentifier() {
-    if (!copyValue || !navigator.clipboard) {
-      return;
+    if (copyValue) {
+      void copy(copyValue);
     }
-    void navigator.clipboard.writeText(copyValue).then(
-      () => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1200);
-      },
-      () => {
-        // Clipboard access can be denied by the browser context.
-      },
-    );
   }
 
   return (
