@@ -7,6 +7,7 @@ export { IconArrowRightSimple } from './IconArrowRightSimple';
 export { IconArrowTopRight } from './IconArrowTopRight';
 export { IconBrightness } from './IconBrightness';
 export { IconClose } from './IconClose';
+export { IconConcept } from './IconConcept';
 export { IconContentWarning } from './IconContentWarning';
 export { IconContrast } from './IconContrast';
 export { IconCopy } from './IconCopy';

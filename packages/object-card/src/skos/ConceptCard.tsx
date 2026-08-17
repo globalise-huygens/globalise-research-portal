@@ -1,5 +1,6 @@
 import './ConceptCard.css';
 import {
+  IconConcept,
   IconContentWarning,
   ObjectCard,
   ObjectCardBody,
@@ -10,7 +11,11 @@ import {
   ObjectCardSection,
   ObjectCardTitle,
 } from '@globalise/design';
-import { getJsonUrl } from '@globalise/common';
+import {
+  getJsonUrl,
+  getPreferredLanguageValue,
+  type LanguageValue,
+} from '@globalise/common';
 import {
   ConceptList,
   getConceptLabel,
@@ -36,14 +41,27 @@ export function ConceptCard() {
   }
 
   const url = getJsonUrl(uri);
+  const preferredLabels = concept.prefLabel ?? [];
+  const primaryLabel = getPreferredLanguageValue(preferredLabels);
   const title = getConceptLabel(concept);
+  const titleLanguageTag = primaryLabel
+    ? getLanguageTag(primaryLabel['@language'])
+    : undefined;
+  const titleLanguage = titleLanguageTag
+    ? getLanguageDisplayName(titleLanguageTag)
+    : undefined;
+  const additionalPreferredLabels = preferredLabels.filter(
+    (label) => label !== primaryLabel,
+  );
   const alternativeLabels = concept.altLabel ?? [];
   const hiddenLabels = concept.hiddenLabel ?? [];
   const definitions = concept.definition ?? [];
   const source = concept.source;
   const references = concept.references;
-  const hasAlternativeLabels = Boolean(
-    alternativeLabels.length || hiddenLabels.length,
+  const hasLabels = Boolean(
+    additionalPreferredLabels.length
+      || alternativeLabels.length
+      || hiddenLabels.length,
   );
   const hasDefinitions =
     definitions.length > 0 || Boolean(source) || Boolean(references);
@@ -75,38 +93,48 @@ export function ConceptCard() {
           </>
         }
       >
-        <span className="badge">Concept</span>
-        <ObjectCardTitle>{title}</ObjectCardTitle>
-        {hasAlternativeLabels && (
-          <div className="alternative-labels">
-            <span className="alternative-title">alternative labels:</span>
-            {alternativeLabels.map((label) => (
-              <span
-                key={`alt-${label['@language']}-${label['@value']}`}
-                className="alternative-label"
-              >
-                <span lang={label['@language'] || undefined}>
-                  {label['@value']}
-                </span>
-                <span className="label-language">
-                  [{label['@language'] || 'und'}]
-                </span>
-              </span>
-            ))}
-            {hiddenLabels.map((label) => (
-              <span
-                key={`hidden-${label['@language']}-${label['@value']}`}
-                className="hidden-label"
-              >
-                <IconContentWarning aria-hidden="true" />
-                <span lang={label['@language'] || undefined}>
-                  {label['@value']}
-                </span>
-                <span className="label-language">
-                  [{label['@language'] || 'und'}]
-                </span>
-              </span>
-            ))}
+        <span className="badge">
+          <IconConcept aria-hidden="true" className="concept-icon" />
+          Concept
+        </span>
+        <ObjectCardTitle>
+          <span lang={titleLanguageTag}>{title}</span>
+          {titleLanguage && (
+            <span className="title-language">({titleLanguage})</span>
+          )}
+        </ObjectCardTitle>
+        {hasLabels && (
+          <div className="label-groups">
+            {!!additionalPreferredLabels.length && (
+              <div className="label-group">
+                <span className="label-group-title">preferred labels:</span>
+                {additionalPreferredLabels.map((label) => (
+                  <ConceptLabel
+                    key={`pref-${label['@language']}-${label['@value']}`}
+                    label={label}
+                  />
+                ))}
+              </div>
+            )}
+            {!!(alternativeLabels.length || hiddenLabels.length) && (
+              <div className="label-group alternative-labels">
+                <span className="label-group-title">alternative labels:</span>
+                {alternativeLabels.map((label) => (
+                  <ConceptLabel
+                    key={`alt-${label['@language']}-${label['@value']}`}
+                    label={label}
+                    isAlternative
+                  />
+                ))}
+                {hiddenLabels.map((label) => (
+                  <ConceptLabel
+                    key={`hidden-${label['@language']}-${label['@value']}`}
+                    label={label}
+                    isHidden
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </ObjectCardHeader>
@@ -122,7 +150,7 @@ export function ConceptCard() {
                     {definitions.map((definition, index) => (
                       <ObjectCardProperty
                         key={`${definition['@language']}-${index}`}
-                        label={getLanguageLabel(definition['@language'])}
+                        label={getLanguageTag(definition['@language']) ?? '-'}
                         value={<HtmlValue value={definition['@value']} />}
                       />
                     ))}
@@ -192,7 +220,49 @@ export function ConceptCard() {
   );
 }
 
-function getLanguageLabel(language: string): string {
+type ConceptLabelProps = {
+  label: LanguageValue;
+  isAlternative?: boolean;
+  isHidden?: boolean;
+};
+
+function ConceptLabel({
+  label,
+  isAlternative,
+  isHidden,
+}: ConceptLabelProps) {
+  const languageTag = getLanguageTag(label['@language']);
+  const language = languageTag
+    ? getLanguageDisplayName(languageTag)
+    : undefined;
+  const className = [
+    'concept-label-value',
+    isAlternative ? 'alternative-label' : undefined,
+    isHidden ? 'hidden-label' : undefined,
+  ].filter(Boolean).join(' ');
+
+  return (
+    <span className={className}>
+      {isHidden && <IconContentWarning aria-hidden="true" />}
+      <span lang={languageTag}>{label['@value']}</span>
+      {language && <span className="label-language">({language})</span>}
+    </span>
+  );
+}
+
+const languageDisplayNames = new Intl.DisplayNames(['en'], {
+  type: 'language',
+});
+
+function getLanguageTag(language: string): string | undefined {
   const normalized = language.trim();
-  return normalized && normalized !== '?' ? normalized : '-';
+  return normalized && normalized !== '?' ? normalized : undefined;
+}
+
+function getLanguageDisplayName(language: string): string {
+  try {
+    return languageDisplayNames.of(language) ?? language;
+  } catch {
+    return language;
+  }
 }

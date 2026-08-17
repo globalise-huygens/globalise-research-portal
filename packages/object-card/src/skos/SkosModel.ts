@@ -1,13 +1,12 @@
-export type SkosValue = {
-  '@language': string;
-  '@value': string;
-};
+import { getValue, type LanguageValue } from '@globalise/common';
+
+export type SkosValue = LanguageValue;
 
 export type SkosConcept = {
   id: string;
   type: string | string[];
   _label?: string;
-  prefLabel: SkosValue[];
+  prefLabel?: SkosValue[];
   altLabel?: SkosValue[];
   definition?: SkosValue[];
   references?: SkosValue;
@@ -36,18 +35,8 @@ export type SkosConcept = {
 export type SkosMatch = SkosConcept | string;
 
 export function getConceptLabel(concept: SkosConcept): string {
-  const prefLabel =
-    // Pick english by default:
-    concept.prefLabel.find((l) => l['@language'] === 'en')
-    // Use dutch when missing:
-    ?? concept.prefLabel.find((l) => l['@language'] === 'nl')
-    // Any other label when present:
-    ?? concept.prefLabel[0];
-  if(prefLabel) {
-    return prefLabel?.['@value'];
-  }
-  // Use dev _label when no prefLabel:
-  return concept._label ?? '';
+  const preferredLabel = getValue(concept.prefLabel);
+  return preferredLabel ? preferredLabel : concept._label ?? '';
 }
 
 export function isSkosConcept(value: unknown): value is SkosConcept {
