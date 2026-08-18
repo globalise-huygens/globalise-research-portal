@@ -11,12 +11,43 @@
     }
 
     .buttons {
-        height: max-content;
+        display: flex;
+        height: var(--s48, 48px);
+        padding: var(--s4, 4px);
+        align-items: center;
+        gap: var(--s4, 4px);
+        flex-shrink: 0;
+        background: #242529;
+        box-shadow: 0 4px 12px 0 rgb(0 0 0 / 15%);
+
+        button {
+            display: inline-flex;
+            width: var(--s40, 40px);
+            height: var(--s40, 40px);
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        button:hover,
+        button[data-hovered] {
+            background: rgb(255 255 255 / 10%);
+        }
+
+        button:active,
+        button[data-pressed] {
+            background: rgb(255 255 255 / 15%);
+        }
+
+        button:disabled,
+        button[data-disabled] {
+            opacity: 0.45;
+        }
 
         svg {
-            width: var(--s20);
-            height: var(--s20);
-            stroke: white;
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
         }
     }
 
