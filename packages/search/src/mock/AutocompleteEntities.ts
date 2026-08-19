@@ -6,7 +6,6 @@ export type Entity = {
   type: 'Place' | 'Polity';
   label: string;
   alternatives: string[];
-  matchedAlternative?: string;
 };
 
 export const entities: Entity[] = [...places.map((place) => ({

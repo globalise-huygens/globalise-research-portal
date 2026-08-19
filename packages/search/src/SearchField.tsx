@@ -43,22 +43,18 @@ export default function SearchField() {
       const normalizedQuery = query.toLowerCase();
       return entities.filter((entity) => {
         const labelMatch = entity.label.toLowerCase().includes(normalizedQuery);
-        const matchedAlternative = entity.alternatives.find((alt) =>
-          normalizedQuery && alt.toLowerCase().includes(normalizedQuery));
+        const alternativeMatch = entity.alternatives.some((alt) =>
+          alt.toLowerCase().includes(normalizedQuery));
 
-        return labelMatch || matchedAlternative;
-      }).map((entity) => ({
-        ...entity,
-        matchedAlternative: entity.alternatives.find((alt) =>
-          normalizedQuery && alt.toLowerCase().includes(normalizedQuery)),
-      }));
+        return labelMatch || alternativeMatch;
+      });
     },
     entityRegex: /({"id":.*?,"type":.*?,"label":.*?,"alternatives":.*?})/g,
     id: 'id',
     label: 'label',
     description: (entity) => [
       entity.type,
-      entity.matchedAlternative && `Alt: ${entity.matchedAlternative}`,
+      entity.alternatives.join(', '),
     ].filter(Boolean).join(' • '),
     color: (entity) => types[entity.type].color,
     icon: (entity) => types[entity.type].icon,
