@@ -118,21 +118,21 @@ export function ManifestViewer({
   }
   const splitPanes: [React.ReactNode, React.ReactNode] = isViewerOrderSwapped
     ? [
-        <ViewerPane key="transcription" type="transcription" isBordered>
-          {transcription}
-        </ViewerPane>,
-        <ViewerPane key="scan" type="scan">
-          {scan}
-        </ViewerPane>,
-      ]
+      <ViewerPane key="transcription" type="transcription" isBordered>
+        {transcription}
+      </ViewerPane>,
+      <ViewerPane key="scan" type="scan">
+        {scan}
+      </ViewerPane>,
+    ]
     : [
-        <ViewerPane key="scan" type="scan" isBordered>
-          {scan}
-        </ViewerPane>,
-        <ViewerPane key="transcription" type="transcription">
-          {transcription}
-        </ViewerPane>,
-      ];
+      <ViewerPane key="scan" type="scan" isBordered>
+        {scan}
+      </ViewerPane>,
+      <ViewerPane key="transcription" type="transcription">
+        {transcription}
+      </ViewerPane>,
+    ];
 
   return (
     <div className="gds manifest-viewer">
