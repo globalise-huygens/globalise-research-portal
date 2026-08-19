@@ -52,6 +52,11 @@
             font-weight: 500;
         }
 
+        :global(.cm-completionMatchedText) {
+            color: var(--color-brand-turquoise, #29bfcc);
+            font-weight: 700;
+        }
+
         :global(.cm-completionDetail) {
             display: inline;
             margin-left: var(--s4, 4px);
