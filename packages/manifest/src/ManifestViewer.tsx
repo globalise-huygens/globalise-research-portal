@@ -1,3 +1,5 @@
+'use client';
+
 import './ManifestViewer.css';
 import {
   cn,
@@ -64,7 +66,8 @@ export function ManifestViewer({
   );
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
-  const [isViewerOrderSwapped, setIsViewerOrderSwapped] = React.useState(false);
+  const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
+    React.useState(false);
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     () => new Set(['inventory']),
   );
@@ -121,14 +124,10 @@ export function ManifestViewer({
       <ViewerPane key="transcription" type="transcription" isBordered>
         {transcription}
       </ViewerPane>,
-      <ViewerPane key="scan" type="scan">
-        {scan}
-      </ViewerPane>,
+      <ViewerPane key="scan" type="scan">{scan}</ViewerPane>,
     ]
     : [
-      <ViewerPane key="scan" type="scan" isBordered>
-        {scan}
-      </ViewerPane>,
+      <ViewerPane key="scan" type="scan" isBordered>{scan}</ViewerPane>,
       <ViewerPane key="transcription" type="transcription">
         {transcription}
       </ViewerPane>,
@@ -171,7 +170,9 @@ export function ManifestViewer({
                 onPress={() => setIsSidebarExpanded((v) => !v)}
               />
 
-              <span className="top-bar-divider">|</span>
+              <span className="top-bar-divider">
+                |
+              </span>
 
               {topLeft}
 
@@ -189,26 +190,24 @@ export function ManifestViewer({
                 }}
               >
                 <Tooltip
-                  label={
-                    isScanVisible ? 'Hide scan viewer' : 'Show scan viewer'
-                  }
+                  label={isScanVisible ? 'Hide scan viewer' : 'Show scan viewer'}
                 >
                   <Toggle
                     id="scan"
                     aria-label={
                       isScanVisible ? 'Close scan viewer' : 'Open scan viewer'
                     }
-                    icon={<IconScan className="segmented-icon" />}
+                    icon={
+                      <IconScan className="segmented-icon" />
+                    }
                   >
                     Scan
                   </Toggle>
                 </Tooltip>
                 <Tooltip
-                  label={
-                    isTextVisible
-                      ? 'Hide transcription viewer'
-                      : 'Show transcription viewer'
-                  }
+                  label={isTextVisible
+                    ? 'Hide transcription viewer'
+                    : 'Show transcription viewer'}
                 >
                   <Toggle
                     id="text"
@@ -217,7 +216,9 @@ export function ManifestViewer({
                         ? 'Close transcription viewer'
                         : 'Open transcription viewer'
                     }
-                    icon={<IconTranscription className="segmented-icon" />}
+                    icon={
+                      <IconTranscription className="segmented-icon" />
+                    }
                   >
                     Text
                   </Toggle>
@@ -237,7 +238,9 @@ export function ManifestViewer({
                 isActive={isViewerOrderSwapped}
                 isDisabled={!isScanVisible || !isTextVisible}
                 className={TOP_BAR_BUTTON}
-                icon={<IconSwap className="toolbar-icon" />}
+                icon={
+                  <IconSwap className="toolbar-icon" />
+                }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />
               <ManifestEntityHighlightMenu />
@@ -253,7 +256,9 @@ export function ManifestViewer({
                     aria-label="Close manifest viewer"
                     tooltip="Close manifest viewer"
                     className={TOP_BAR_BUTTON}
-                    icon={<IconClose className="toolbar-icon" />}
+                    icon={
+                      <IconClose className="toolbar-icon" />
+                    }
                     onPress={onClose}
                   />
                 </>
@@ -264,14 +269,18 @@ export function ManifestViewer({
           <main className="body">
             {isScanVisible && isTextVisible ? (
               <div className="split-viewer">
-                <SplitPaneLayout>{splitPanes}</SplitPaneLayout>
+                <SplitPaneLayout>
+                  {splitPanes}
+                </SplitPaneLayout>
               </div>
             ) : (
               (scanPane ?? transcriptionPane)
             )}
           </main>
 
-          <footer className="bottom-bar">{bottom}</footer>
+          <footer className="bottom-bar">
+            {bottom}
+          </footer>
         </div>
       </div>
     </div>

@@ -9,10 +9,10 @@ export function RootLayout() {
   return (
     <QueryClientProvider client={router.options.context.queryClient}>
       <RouterProvider navigate={(to) => void router.navigate({ to })}>
-        <div className="site-shell">
-          <SiteNavbar />
-          <div className="site-content">
-            <Outlet />
+        <div className='site-shell'>
+          <SiteNavbar/>
+          <div className='site-content'>
+            <Outlet/>
           </div>
         </div>
       </RouterProvider>

@@ -6,15 +6,12 @@ export type RouterContext = {
   queryClient: QueryClient;
 };
 
-// New QueryClient + router instance per call, required so SSR requests don't share state.
 export function getRouter() {
   const queryClient = new QueryClient();
 
   return createRouter({
     routeTree,
     context: { queryClient } satisfies RouterContext,
-    defaultPreload: 'intent',
-    scrollRestoration: true,
   });
 }
 
