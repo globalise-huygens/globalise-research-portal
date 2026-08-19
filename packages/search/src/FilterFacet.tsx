@@ -29,8 +29,6 @@ function FilterFacetItems({ facetKey }: { facetKey: string }) {
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const items = useTextFacetItems({ facetKey, sort: 'hits', textFilter: '', selected });
 
-  const hasChildren = items.some((item) => item.children && item.children.length > 0);
-
   const expandedKeys = useMemo(() => {
     const addExpandingKeys = (item: FilterFacetItem) => {
       if (item.children) {
@@ -49,16 +47,13 @@ function FilterFacetItems({ facetKey }: { facetKey: string }) {
     <Hierarchy items={items} selected={selected} setSelected={onSelect}
       getKey={(item) => item.itemKey} getChildren={(item) => item.children}>
       <Tree selectionMode="multiple" aria-label="Facet items" defaultExpandedKeys={expandedKeys}>
-        <TreeItems items={items} facetHasChildren={hasChildren}/>
+        <TreeItems items={items}/>
       </Tree>
     </Hierarchy>
   );
 }
 
-function TreeItems({ items, facetHasChildren }: {
-  items: FilterFacetItem[],
-  facetHasChildren: boolean,
-}) {
+function TreeItems({ items }: { items: FilterFacetItem[] }) {
   return (
     <>
       {items.map((item) => (
@@ -66,22 +61,21 @@ function TreeItems({ items, facetHasChildren }: {
           hasChildItems={item.children && item.children.length > 0}>
           <TreeItemContent>
             {({ hasChildItems, isExpanded, level }) =>
-              <FilterFacetTreeItemContent item={item} level={level} facetHasChildren={facetHasChildren}
+              <FilterFacetTreeItemContent item={item} level={level}
                 hasChildren={hasChildItems} isOpen={isExpanded}/>}
           </TreeItemContent>
 
           {item.children && item.children.length > 0 &&
-              <TreeItems items={item.children} facetHasChildren={facetHasChildren}/>}
+              <TreeItems items={item.children}/>}
         </TreeItem>
       ))}
     </>
   );
 }
 
-function FilterFacetTreeItemContent({ item, level, facetHasChildren, hasChildren, isOpen }: {
+function FilterFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
   item: FilterFacetItem,
   level: number,
-  facetHasChildren: boolean,
   hasChildren: boolean,
   isOpen: boolean,
 }) {
@@ -93,16 +87,16 @@ function FilterFacetTreeItemContent({ item, level, facetHasChildren, hasChildren
   return (
     <div className={classes.item}
       style={{ '--indent': level > 1 ? `${(level - 1) * 0.5}rem` : 0 } as CSSProperties}>
-      {hasChildren && <Button slot="chevron" className={`${classes.toggle} ${isOpen ? classes.expanded : ''}`}>
-        <IconExpandSection/>
-      </Button>}
-
       <Checkbox slot="selection" className={classes.checkbox} name={item.itemKey}
-        indicatorClassName={`${classes.indicator} ${facetHasChildren && !hasChildren ? classes.leaf : ''}`}
+        indicatorClassName={classes.indicator}
         isSelected={selected} isIndeterminate={indeterminate}
         onChange={() => toggle(item.itemKey)}>
         <ItemContent item={item}/>
       </Checkbox>
+
+      {hasChildren && <Button slot="chevron" className={`${classes.toggle} ${isOpen ? classes.expanded : ''}`}>
+        <IconExpandSection/>
+      </Button>}
     </div>
   );
 }
