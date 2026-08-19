@@ -9,25 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as SearchRouteImport } from './routes/search'
-import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
-import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
+import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
+import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CatalogIndexRoute = CatalogIndexRouteImport.update({
-  id: '/catalog/',
-  path: '/catalog/',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
+  id: '/object-card/',
+  path: '/object-card/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManifestIndexRoute = ManifestIndexRouteImport.update({
@@ -35,9 +35,9 @@ const ManifestIndexRoute = ManifestIndexRouteImport.update({
   path: '/manifest/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
-  id: '/object-card/',
-  path: '/object-card/',
+const CatalogIndexRoute = CatalogIndexRouteImport.update({
+  id: '/catalog/',
+  path: '/catalog/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -87,13 +87,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -101,11 +94,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/catalog/': {
-      id: '/catalog/'
-      path: '/catalog'
-      fullPath: '/catalog/'
-      preLoaderRoute: typeof CatalogIndexRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/object-card/': {
+      id: '/object-card/'
+      path: '/object-card'
+      fullPath: '/object-card/'
+      preLoaderRoute: typeof ObjectCardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manifest/': {
@@ -115,11 +115,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManifestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/object-card/': {
-      id: '/object-card/'
-      path: '/object-card'
-      fullPath: '/object-card/'
-      preLoaderRoute: typeof ObjectCardIndexRouteImport
+    '/catalog/': {
+      id: '/catalog/'
+      path: '/catalog'
+      fullPath: '/catalog/'
+      preLoaderRoute: typeof CatalogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
