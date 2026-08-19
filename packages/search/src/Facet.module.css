@@ -6,20 +6,24 @@
     height: 100%;
     flex-direction: column;
     overflow: hidden;
-    background: var(--color-neutral-900, #262626);
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+    background: var(--color-brand-black, #0c0a09);
 
     .header {
         display: flex;
         width: 100%;
-        height: var(--s64, 64px);
-        min-height: var(--s64, 64px);
         flex-shrink: 0;
         align-items: center;
         justify-content: space-between;
         gap: var(--s16, 16px);
-        border-bottom: 1px solid rgb(255 255 255 / 0.1);
-        background: var(--color-neutral-900, #262626);
-        padding-inline: var(--s24, 24px);
+        border: 0;
+        border-top: 1px solid #46474a;
+        background: transparent;
+        padding:
+            var(--s24, 24px)
+            var(--s16, 16px)
+            var(--s24, 24px)
+            var(--s32, 32px);
         transition: background-color 75ms ease-out;
 
         &:hover,
@@ -37,11 +41,11 @@
         .label {
             min-width: 0;
             color: var(--color-brand-white, #fff);
-            font-family: var(--font-sans, "Noto Sans", sans-serif);
-            font-size: var(--text-xl, 1.25rem);
-            font-weight: 400;
+            font-family: var(--font-serif, "Noto Serif", serif);
+            font-size: var(--text-lg, 1.125rem);
+            font-weight: 500;
             letter-spacing: normal;
-            line-height: var(--s28, 28px);
+            line-height: 1.1;
         }
 
         > svg {
@@ -64,12 +68,13 @@
         height: auto;
         flex: 1 1 0%;
         overflow: hidden auto;
-        border-bottom: 1px solid rgb(255 255 255 / 0.1);
-        background: var(--color-neutral-800, #363636);
+        border: 0;
+        background: transparent;
         padding:
-            var(--s12, 12px)
+            0
+            var(--s16, 16px)
             var(--s24, 24px)
-            var(--s24, 24px);
+            var(--s32, 32px);
         scrollbar-color: var(--color-neutral-600, #666) transparent;
         scrollbar-gutter: stable;
         scrollbar-width: thin;
