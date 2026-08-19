@@ -1,14 +1,19 @@
 import { useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { getSVGElement } from '@globalise/common';
-import { svgEntityPlace, svgEntityPerson, IconSearch, IconClose } from '@globalise/design';
+import {
+  svgEntityPlace,
+  svgEntityPerson,
+  IconSearch,
+  IconUndo,
+  IconRedo,
+  IconClose,
+} from '@globalise/design';
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { UpdateState, ThemeConfig, AutocompleteConfig } from '@knaw-huc/searchfield';
 import { default as SF, SearchFieldRef } from '@knaw-huc/searchfield/react';
 import classes from './SearchField.module.css';
 
-import IconUndo from './assets/undo.svg?react';
-import IconRedo from './assets/redo.svg?react';
 import { entities, Entity } from './mock/AutocompleteEntities';
 
 const types = {
