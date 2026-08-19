@@ -1,4 +1,7 @@
-import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
+import {
+  setSelectedCanvas,
+  useDocumentStore,
+} from '@globalise/common/document';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestCanvasNavigation,
@@ -26,7 +29,9 @@ const CANVAS = 'canvas';
 
 export function ManifestPage() {
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
+  const params = new URLSearchParams(
+    typeof location === 'undefined' ? '' : location.search,
+  );
   const initialCanvasId = params.get(CANVAS) ?? undefined;
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
@@ -64,17 +69,13 @@ export function ManifestPage() {
       const clickedAnno = canvasAnnotations
         ? canvasAnnotations[currentClickedId]
         : undefined;
-      const entity = (clickedAnno && isEntity(clickedAnno))
-        ? clickedAnno
-        : undefined;
-      const entityBody = entity
-        ? asArray(entity.body)[0]
-        : undefined;
+      const entity =
+        clickedAnno && isEntity(clickedAnno) ? clickedAnno : undefined;
+      const entityBody = entity ? asArray(entity.body)[0] : undefined;
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        navigate({ to: '/object-card', search: { uri } })
-          .catch(console.error);
+        navigate({ to: '/object-card', search: { uri } }).catch(console.error);
       }
     });
   }
@@ -111,7 +112,7 @@ export function ManifestPage() {
               onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
             />
           }
-          bottom={<ManifestCanvasNavigation/>}
+          bottom={<ManifestCanvasNavigation />}
         />
       </ManifestLoader>
     </ViewerProvider>
