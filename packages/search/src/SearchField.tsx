@@ -31,17 +31,9 @@ export default function SearchField() {
     fontFamilyAutocomplete: 'var(--font-sans)',
     entity: { className: classes.entity },
     icon: { className: classes.autocompleteIcon },
-    // icon?: { className?: string, style?: StyleSpec };
-    // cross?: { className?: string, style?: StyleSpec };
-    // highlight: {
-    //   string?: string;
-    //   operatorKeyword?: string;
-    //   number?: string;
-    //   modifier?: string;
-    //   regexp?: string;
-    //   escape?: string;
-    //   paren?: string;
-    // };
+    highlight: {
+      string: classes.searchText,
+    },
   };
 
   const autocomplete: AutocompleteConfig<Entity> = {

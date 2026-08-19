@@ -9,6 +9,14 @@
     .input-container {
         flex-grow: 1;
 
+        :global(.cm-content) {
+            padding-inline: var(--s4, 4px);
+        }
+
+        .searchText {
+            color: var(--color-brand-white, #fff);
+        }
+
         :global(.cm-tooltip.cm-tooltip-autocomplete) {
             z-index: 10;
             width: min(32rem, calc(100vw - var(--s32, 32px)));
