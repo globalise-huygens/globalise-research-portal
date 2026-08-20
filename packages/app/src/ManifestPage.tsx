@@ -26,7 +26,7 @@ const CANVAS = 'canvas';
 
 export function ManifestPage() {
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
+  const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
