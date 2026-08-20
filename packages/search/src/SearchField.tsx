@@ -30,35 +30,32 @@ export default function SearchField() {
     fontFamily: 'var(--font-sans)',
     fontFamilyAutocomplete: 'var(--font-sans)',
     entity: { className: classes.entity },
-    // icon?: { className?: string, style?: StyleSpec };
-    // cross?: { className?: string, style?: StyleSpec };
-    // highlight: {
-    //   string?: string;
-    //   operatorKeyword?: string;
-    //   number?: string;
-    //   modifier?: string;
-    //   regexp?: string;
-    //   escape?: string;
-    //   paren?: string;
-    // };
+    icon: { className: classes.autocompleteIcon },
+    highlight: {
+      string: classes.searchText,
+    },
   };
 
   const autocomplete: AutocompleteConfig<Entity> = {
     // TODO: To be replaced by an ElasticSearch autocomplete service
     // eslint-disable-next-line @typescript-eslint/require-await
     source: async (query: string) => {
-      query = query.toLowerCase();
+      const normalizedQuery = query.toLowerCase();
       return entities.filter((entity) => {
-        const labelMatch = entity.label.toLowerCase().includes(query);
-        const altMatch = entity.alternatives.find((alt) => alt.toLowerCase().includes(query));
+        const labelMatch = entity.label.toLowerCase().includes(normalizedQuery);
+        const alternativeMatch = entity.alternatives.some((alt) =>
+          alt.toLowerCase().includes(normalizedQuery));
 
-        return labelMatch || altMatch;
+        return labelMatch || alternativeMatch;
       });
     },
     entityRegex: /({"id":.*?,"type":.*?,"label":.*?,"alternatives":.*?})/g,
     id: 'id',
     label: 'label',
-    description: (entity) => entity.alternatives.join(', '),
+    description: (entity) => [
+      entity.type,
+      entity.alternatives.join(', '),
+    ].filter(Boolean).join(' • '),
     color: (entity) => types[entity.type].color,
     icon: (entity) => types[entity.type].icon,
   };

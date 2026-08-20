@@ -8,6 +8,75 @@
 
     .input-container {
         flex-grow: 1;
+
+        :global(.cm-content) {
+            padding-inline: var(--s4, 4px);
+        }
+
+        .searchText {
+            color: var(--color-brand-white, #fff);
+        }
+
+        :global(.cm-tooltip.cm-tooltip-autocomplete) {
+            z-index: 10;
+            width: min(32rem, calc(100vw - var(--s32, 32px)));
+            max-width: none;
+            border: 1px solid rgb(255 255 255 / 0.2);
+            background: var(--color-neutral-800, #363636);
+            box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+
+            > ul {
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+                max-height: min(24rem, 50vh);
+                padding: 0;
+
+                > li {
+                    min-width: 0;
+                    padding: var(--s12, 12px) var(--s16, 16px);
+                    line-height: 1.25;
+                    transition: background-color 75ms ease-out;
+                }
+
+                > li[aria-selected] {
+                    background: rgb(255 255 255 / 0.12);
+                    color: var(--color-brand-white, #fff);
+                }
+            }
+        }
+
+        :global(.cm-completionLabel) {
+            color: var(--color-brand-white, #fff);
+            font-size: var(--text-base, 1rem);
+            font-weight: 500;
+        }
+
+        :global(.cm-completionMatchedText) {
+            color: var(--color-brand-turquoise, #29bfcc);
+            font-weight: 700;
+        }
+
+        :global(.cm-completionDetail) {
+            display: inline;
+            margin-left: var(--s4, 4px);
+            color: var(--color-neutral-300, #b3b3b3);
+            font-size: var(--text-sm, 0.875rem);
+
+            &::before {
+                content: '•';
+                margin-right: var(--s4, 4px);
+                color: var(--color-neutral-500, #808080);
+            }
+        }
+
+        .autocompleteIcon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            margin-right: var(--s4, 4px);
+            vertical-align: -0.15em;
+        }
     }
 
     .buttons {
