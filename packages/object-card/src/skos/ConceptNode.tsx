@@ -61,9 +61,6 @@ export function ConceptNodeRow({
         {isTopConcept && (
           <span className="concept-position-label"> (Top concept)</span>
         )}
-        {isCurrent && (
-          <span className="concept-position-label"> (Current)</span>
-        )}
       </span>
       {!isCurrent && (
         <IconArrowTopRight aria-hidden="true" className="concept-link-icon" />
