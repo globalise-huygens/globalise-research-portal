@@ -1,5 +1,6 @@
 export { SchemeList } from './SchemeList.tsx';
 export { ConceptList } from './ConceptList.tsx';
+export { ConceptHierarchy } from './ConceptHierarchy.tsx';
 export { LabelList } from './LabelList.tsx';
 export { MatchList } from './MatchList.tsx';
 export { Reference } from './Reference.tsx';
