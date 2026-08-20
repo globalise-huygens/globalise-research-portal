@@ -15,7 +15,7 @@
     "@globalise/common": "*",
     "@globalise/design": "*",
     "@tanstack/react-router": "^1.170.4",
-    "dompurify": "^3.4.12",
+    "markdown-it": "^15.0.0",
     "react-virtuoso": "^4.18.7"
   }
 }
