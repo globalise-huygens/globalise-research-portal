@@ -28,6 +28,7 @@ export default tseslint.config(
       '**/*.config.{js,ts,mjs,cjs}',
       '**/public/mockServiceWorker.js',
       'eslint.config.js',
+      '**/server.js',
     ],
   },
 
