@@ -287,6 +287,13 @@
       padding-left: var(--s16);
     }
 
+    .hierarchy-paths {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: var(--s16);
+    }
+
     .concept-node {
       min-width: 0;
       background: #313236;
@@ -334,6 +341,23 @@
     .concept-link-icon {
       width: 14px;
       height: 14px;
+    }
+
+    .current-concept {
+      display: flex;
+      align-items: center;
+      border-left-color: #b3d9f2;
+      font-family: var(--font-sans);
+    }
+
+    .current-concept > span {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .concept-position-label {
+      color: #b5b5b5;
+      font-size: var(--text-xs);
+      font-weight: 400;
     }
   }
 
