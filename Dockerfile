@@ -21,13 +21,13 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 reactapp
 
-RUN npm install -g sirv-cli
-
-COPY --from=builder /repos/globalise-research-portal/packages/app/dist ./dist
+COPY --from=builder /repos/globalise-research-portal/node_modules ./node_modules
+COPY --from=builder /repos/globalise-research-portal/packages ./packages
+COPY --from=builder /repos/globalise-research-portal/package.json ./package.json
 
 USER reactapp
 
 EXPOSE 3000
-ENV PORT 3000
+ENV PORT=3000
 
-CMD ["sirv", "dist", "--port", "3000", "--host", "0.0.0.0", "--single"]
+CMD ["node", "packages/app/server.js"]
