@@ -8,11 +8,25 @@ import {
 export type EntityBody = {
   type: EntityAnnotationBodyType;
   classified_as: EntityClassification;
+  label?: string;
+  value?: string | number;
+  timespan?: {
+    type: string;
+    begin_of_the_begin?: string;
+    end_of_the_begin?: string;
+    begin_of_the_end?: string;
+    end_of_the_end?: string;
+  };
   ascribes_classification: {
     id: string,
     type: string,
     _label: string
-  }
+  };
+  ascribes_appellation?: {
+    type: string;
+    content: string;
+  };
+  unit?: EntityClassification;
 };
 
 export type EntityClassification = {

@@ -1,6 +1,7 @@
 import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
+  createHoverAnchor,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
@@ -34,11 +35,17 @@ export function WordHighlight(
 
   function handleHover(hovering: boolean, event: MouseEvent) {
     setHoveredLocal(hovering);
-    setHovered(hovering ? id : null);
-    if (!hovering) {
-      setTooltip(null);
-    } else {
+    if (!hovering && document.activeElement === event.currentTarget) {
+      return;
+    }
+    setHovered(
+      hovering ? id : null,
+      hovering ? createHoverAnchor(event.currentTarget) : undefined,
+    );
+    if (hovering && !tone) {
       setTooltip({ text, x: event.clientX, y: event.clientY });
+    } else {
+      setTooltip(null);
     }
   }
 
@@ -53,10 +60,29 @@ export function WordHighlight(
         cursor: 'pointer',
         mixBlendMode: 'multiply',
       }}
+      tabIndex={tone ? 0 : undefined}
+      role={tone ? 'button' : undefined}
+      aria-label={tone ? `Preview entity: ${text}` : undefined}
       onClick={() => toggleClicked(id)}
       onMouseEnter={(event) => handleHover(true, event)}
-      onMouseMove={(event) => handleHover(true, event)}
+      onMouseMove={(event) => {
+        if (!tone) {
+          handleHover(true, event);
+        }
+      }}
       onMouseLeave={(event) => handleHover(false, event)}
+      onFocus={(event) => {
+        if (tone) {
+          setHovered(id, createHoverAnchor(event.currentTarget, true));
+        }
+      }}
+      onBlur={() => setHovered(null)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleClicked(id);
+        }
+      }}
     />
   );
 }

@@ -13,6 +13,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
+import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -113,6 +114,7 @@ export function ManifestPage() {
           }
           bottom={<ManifestCanvasNavigation/>}
         />
+        <ManifestEntityPreview />
       </ManifestLoader>
     </ViewerProvider>
   );
