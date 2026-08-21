@@ -1,4 +1,11 @@
-import { getContent, findByPath, label, LinkedArtNode } from '@globalise/common';
+import { ObjectCardExternalLink } from '@globalise/design';
+import {
+  getContent,
+  findByPath,
+  isUrl,
+  label,
+  LinkedArtNode,
+} from '@globalise/common';
 import { RelationLink } from './RelationLink.tsx';
 
 type SourceListProps = {
@@ -21,8 +28,19 @@ export function SourceList({ sources }: SourceListProps) {
           <li key={i}>
             {page && <span className="source-page">p. {page}</span>}
             {works.length
-              ? works.map((work, j) => <RelationLink key={j} node={work}/>)
-              : label(source)}
+              ? works.map((work, j) => {
+                const sourceUrl = label(work);
+                if (isUrl(sourceUrl)) {
+                  return (
+                    <ObjectCardExternalLink key={j} href={sourceUrl}>
+                      {sourceUrl}
+                    </ObjectCardExternalLink>
+                  );
+                }
+                return <RelationLink key={j} node={work}/>;
+              })
+              : [getContent(source), source.id, source.type]
+                .find((value) => !!value)}
           </li>
         );
       })}

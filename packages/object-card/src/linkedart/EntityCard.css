@@ -24,5 +24,127 @@
       font-size: var(--text-sm);
       line-height: 1.5rem;
     }
+
+    .person-status-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s8);
+    }
+
+    .person-status {
+      border-left: 2px solid var(--color-neutral-600);
+      background: rgb(255 255 255 / 0.02);
+      padding: var(--s8);
+      transition:
+        background-color 75ms ease-out,
+        border-color 75ms ease-out;
+    }
+
+    .person-status:hover,
+    .person-status:focus-within {
+      border-color: var(--color-neutral-400);
+      background: rgb(255 255 255 / 0.06);
+    }
+
+    &.person-card {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: 100%;
+      overflow: hidden;
+
+      > .body {
+        box-sizing: border-box;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .panel {
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--s16);
+      }
+
+      .panel[data-side="left"] {
+        border-right: 1px solid var(--color-neutral-600);
+        border-bottom: 0;
+        background: var(--color-neutral-900);
+      }
+
+      .panel[data-side="right"] {
+        background: var(--color-neutral-800);
+      }
+
+      .panel > .section + .section {
+        margin-top: var(--section-gap);
+      }
+
+      .person-names {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s4) var(--s12);
+        color: var(--color-neutral-400);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        line-height: var(--s20);
+      }
+
+      .person-names-title {
+        flex-shrink: 0;
+      }
+
+      .person-name {
+        color: var(--color-neutral-300);
+        font-style: italic;
+      }
+
+      .person-name-value {
+        font-style: italic;
+      }
+
+      .source-list {
+        display: flex;
+        margin: 0;
+        flex-direction: column;
+        gap: var(--s4);
+        list-style: none;
+        padding: 0;
+      }
+
+      .source-page {
+        margin-right: var(--s8);
+      }
+
+      .gds-entity-tag {
+        max-width: 100%;
+        align-items: flex-start;
+      }
+
+      .gds-entity-tag__label {
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .entity-card.person-card {
+      height: auto;
+      max-height: none;
+      overflow: visible;
+
+      > .body,
+      .panel {
+        overflow: visible;
+      }
+
+      .panel[data-side="left"] {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-neutral-600);
+      }
+    }
   }
 }
