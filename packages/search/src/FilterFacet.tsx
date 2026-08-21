@@ -27,7 +27,7 @@ export default function FilterFacet({ facetKey }: { facetKey: string }) {
 
 function FilterFacetItems({ facetKey }: { facetKey: string }) {
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
-  const items = useTextFacetItems({ facetKey, sort: 'hits', textFilter: '', selected });
+  const items = useTextFacetItems({ facetKey, sort: 'hits', textFilter: '', selected: [...selected].sort() });
 
   const expandedKeys = useMemo(() => {
     const addExpandingKeys = (item: FilterFacetItem) => {
