@@ -803,6 +803,10 @@
     opacity: 1;
   }
 
+  .gds-entity-tag[data-interactive="true"] {
+    cursor: pointer;
+  }
+
   .gds-entity-tag[data-pressed] {
     opacity: 0.72;
   }

@@ -284,7 +284,7 @@
       display: inline-flex;
       min-width: 0;
       max-width: 100%;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
       gap: var(--s4);
       color: var(--color-brand-turquoise);
@@ -314,10 +314,12 @@
 
     .external-link-label {
       min-width: 0;
+      overflow-wrap: anywhere;
       text-decoration-line: underline;
       text-decoration-color: currentColor;
       text-decoration-thickness: 1px;
       text-underline-offset: 0.18em;
+      white-space: normal;
     }
 
     .list-item {

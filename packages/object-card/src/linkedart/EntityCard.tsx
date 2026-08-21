@@ -21,6 +21,11 @@ import { EntityTypeBadge } from './EntityTypeBadge.tsx';
 import { EntitySummary } from './EntitySummary.tsx';
 import { EventSection } from './EventSection.tsx';
 import { NodeList } from './NodeList.tsx';
+import {
+  PersonCardBody,
+  PersonNameSummary,
+  getPersonTitle,
+} from './PersonCardBody.tsx';
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
@@ -35,9 +40,12 @@ export function EntityCard() {
 
   const identifiers = getEntityIdentifiers(entity);
   const sources = findByPath(entity, ['referred_to_by']);
+  const entityType = getLinkedArtEntityType(uri);
 
   return (
-    <ObjectCard className="entity-card">
+    <ObjectCard
+      className={entityType === 'person' ? 'entity-card person-card' : 'entity-card'}
+    >
       <ObjectCardHeader
         actions={
           <>
@@ -46,43 +54,50 @@ export function EntityCard() {
           </>
         }
       >
-        <EntityTypeBadge type={getLinkedArtEntityType(uri)}/>
-        <ObjectCardTitle>{getEntityTitle(entity)}</ObjectCardTitle>
-        {!!identifiers.length && (
+        <EntityTypeBadge type={entityType}/>
+        <ObjectCardTitle>
+          {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
+        </ObjectCardTitle>
+        {entityType === 'person' && <PersonNameSummary entity={entity}/>}
+        {entityType !== 'person' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>
         )}
       </ObjectCardHeader>
-      <ObjectCardBody>
-        <ObjectCardPanel side="left">
-          <EntitySummary entity={entity}/>
-          {eventKeys.map((labeledKey) => (
-            <EventSection
-              key={labeledKey.key}
-              entity={entity}
-              labeledKey={labeledKey}
-            />
-          ))}
-          {!!sources.length && <SourceList sources={sources}/>}
-        </ObjectCardPanel>
-        <ObjectCardPanel side="right">
-          {statusKeys.map((labeledKey) => (
-            <StatusSection
-              key={labeledKey.key}
-              entity={entity}
-              labeledKey={labeledKey}
-            />
-          ))}
-          {relationKeys.map((labeledKey) => (
-            <NodeList
-              key={labeledKey.key}
-              title={labeledKey.label}
-              nodes={findByPath(entity, [labeledKey.key])}
-            />
-          ))}
-        </ObjectCardPanel>
-      </ObjectCardBody>
+      {entityType === 'person' ? (
+        <PersonCardBody entity={entity}/>
+      ) : (
+        <ObjectCardBody>
+          <ObjectCardPanel side="left">
+            <EntitySummary entity={entity}/>
+            {eventKeys.map((labeledKey) => (
+              <EventSection
+                key={labeledKey.key}
+                entity={entity}
+                labeledKey={labeledKey}
+              />
+            ))}
+            {!!sources.length && <SourceList sources={sources}/>}
+          </ObjectCardPanel>
+          <ObjectCardPanel side="right">
+            {statusKeys.map((labeledKey) => (
+              <StatusSection
+                key={labeledKey.key}
+                entity={entity}
+                labeledKey={labeledKey}
+              />
+            ))}
+            {relationKeys.map((labeledKey) => (
+              <NodeList
+                key={labeledKey.key}
+                title={labeledKey.label}
+                nodes={findByPath(entity, [labeledKey.key])}
+              />
+            ))}
+          </ObjectCardPanel>
+        </ObjectCardBody>
+      )}
     </ObjectCard>
   );
 }
