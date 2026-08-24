@@ -23,7 +23,7 @@ import { EventSection } from './EventSection.tsx';
 import { NodeList } from './NodeList.tsx';
 import {
   PersonCardBody,
-  PersonNameSummary,
+  PersonOverview,
   getPersonTitle,
 } from './PersonCardBody.tsx';
 import { SourceList } from './SourceList.tsx';
@@ -58,7 +58,7 @@ export function EntityCard() {
         <ObjectCardTitle>
           {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
-        {entityType === 'person' && <PersonNameSummary entity={entity}/>}
+        {entityType === 'person' && <PersonOverview entity={entity}/>}
         {entityType !== 'person' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>

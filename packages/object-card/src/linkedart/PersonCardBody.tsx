@@ -1,25 +1,24 @@
 import {
-  ObjectCardBody,
-  ObjectCardPanel,
-  ObjectCardProperty,
-  ObjectCardPropertyList,
-  ObjectCardSection,
-} from '@globalise/design';
-import {
   asArray,
   findByPath,
   findTimespan,
   getContent,
+  getLinkedArtEntityType,
   getValue,
   getValues,
   isLinkedArtNode,
   label,
   LinkedArtNode,
 } from '@globalise/common';
-import { relationKeys } from './LabeledKey.ts';
-import { NodeList } from './NodeList.tsx';
-import { RelationLink } from './RelationLink.tsx';
-import { SourceList } from './SourceList.tsx';
+import {
+  ObjectCardBody,
+  ObjectCardPanel,
+  ObjectCardProperty,
+  ObjectCardPropertyList,
+  ObjectCardSection,
+} from '@globalise/design';
+import { RelationLink, RelationValue } from './RelationLink.tsx';
+import { isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 
 type PersonCardBodyProps = {
@@ -58,7 +57,6 @@ const personStatusGroups: StatusGroup[] = [
     type: 'ClassificatoryStatus',
     properties: [
       { label: 'Classification', keys: ['ascribes_classification'] },
-      { label: 'Relation', keys: ['ascribes_classification_relation'] },
     ],
   },
   {
@@ -68,11 +66,6 @@ const personStatusGroups: StatusGroup[] = [
     type: 'SocialStatus',
     properties: [
       { label: 'Status or occupation', keys: ['ascribes_social_status'] },
-      { label: 'Relation', keys: ['ascribes_social_status_relation'] },
-      {
-        label: 'In relation to',
-        keys: ['ascribes_social_status_in_relation_to'],
-      },
     ],
   },
   {
@@ -80,30 +73,21 @@ const personStatusGroups: StatusGroup[] = [
     column: 'right',
     key: 'is_residence_subject_of',
     type: 'ResidentialStatus',
-    properties: [
-      { label: 'Place', keys: ['ascribes_residence_place'] },
-      { label: 'Relation', keys: ['ascribes_residence_relation'] },
-    ],
+    properties: [{ label: 'Place', keys: ['ascribes_residence_place'] }],
   },
   {
     title: 'Relations',
     column: 'right',
     key: 'is_familial_subject_of',
     type: 'FamilyStatus',
-    properties: [
-      { label: 'Person', keys: ['ascribes_relative'] },
-      { label: 'Relation', keys: ['ascribes_familial_relation'] },
-    ],
+    properties: [{ label: 'Person', keys: ['ascribes_relative'] }],
   },
   {
     title: 'Social relations',
     column: 'right',
     key: 'is_social_relation_subject_of',
     type: 'SocialRelationStatus',
-    properties: [
-      { label: 'Group', keys: ['ascribes_social_relation_target'] },
-      { label: 'Relation', keys: ['ascribes_social_relation'] },
-    ],
+    properties: [{ label: 'Group', keys: ['ascribes_social_relation_target'] }],
   },
   {
     title: 'Similarity',
@@ -112,7 +96,6 @@ const personStatusGroups: StatusGroup[] = [
     type: 'SimilarityStatus',
     properties: [
       { label: 'Entity', keys: ['ascribes_similarity_target'] },
-      { label: 'Relation', keys: ['ascribes_similarity_relation'] },
       { label: 'Mode', keys: ['ascribes_similarity_mode'] },
     ],
   },
@@ -121,10 +104,7 @@ const personStatusGroups: StatusGroup[] = [
     column: 'right',
     key: 'is_membership_subject_of',
     type: 'MembershipStatus',
-    properties: [
-      { label: 'Group', keys: ['ascribes_group'] },
-      { label: 'Relation', keys: ['ascribes_membership_relation'] },
-    ],
+    properties: [{ label: 'Group', keys: ['ascribes_group'] }],
   },
   {
     title: 'Ownership',
@@ -143,22 +123,27 @@ const personStatusGroups: StatusGroup[] = [
 ];
 
 export function PersonCardBody({ entity }: PersonCardBodyProps) {
-  const sources = findByPath(entity, ['referred_to_by']);
+  const sources = findByPath(entity, ['referred_to_by'])
+    .filter(isVisibleSource);
 
   return (
     <ObjectCardBody>
       <ObjectCardPanel side="left">
-        <PersonNameDetailsSection entity={entity}/>
+        <PersonNameDetailsSection entity={entity} />
         {personStatusGroups
           .filter((group) => group.column === 'left')
           .map((group) => (
-            <PersonStatusGroup key={group.title} entity={entity} group={group}/>
+            <PersonStatusGroup
+              key={group.title}
+              entity={entity}
+              group={group}
+            />
           ))}
-        <PersonEventSection entity={entity} property="born" title="Born"/>
-        <PersonEventSection entity={entity} property="died" title="Died"/>
+        <PersonEventSection entity={entity} property="born" title="Born" />
+        <PersonEventSection entity={entity} property="died" title="Died" />
         {!!sources.length && (
           <ObjectCardSection title="Sources">
-            <SourceList sources={sources}/>
+            <SourceList sources={sources} />
           </ObjectCardSection>
         )}
       </ObjectCardPanel>
@@ -166,15 +151,12 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
         {personStatusGroups
           .filter((group) => group.column === 'right')
           .map((group) => (
-            <PersonStatusGroup key={group.title} entity={entity} group={group}/>
+            <PersonStatusGroup
+              key={group.title}
+              entity={entity}
+              group={group}
+            />
           ))}
-        {relationKeys.map((relation) => (
-          <NodeList
-            key={relation.key}
-            title={relation.label}
-            nodes={findByPath(entity, [relation.key])}
-          />
-        ))}
       </ObjectCardPanel>
     </ObjectCardBody>
   );
@@ -182,26 +164,100 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
 
 export function getPersonTitle(entity: LinkedArtNode): string {
   const [name] = getPersonNameRecords(entity).map((record) => record.name);
-  return [name, getContent(entity), entity.id, entity.type]
-    .find((value) => !!value) ?? '';
+  return (
+    [name, getContent(entity), entity.id, entity.type].find(
+      (value) => !!value,
+    ) ?? ''
+  );
 }
 
-export function PersonNameSummary({ entity }: PersonCardBodyProps) {
-  const names = [...new Set(
-    getPersonNameRecords(entity).map((record) => record.name),
-  )];
+export function PersonOverview({ entity }: PersonCardBodyProps) {
+  const names = [
+    ...new Set(getPersonNameRecords(entity).map((record) => record.name)),
+  ];
   const alternativeNames = names.slice(1);
-  if (!alternativeNames.length) {
+  const classifications = getStatusNodes(entity, personStatusGroups[0])
+    .flatMap((status) => getStatusValues(status, ['ascribes_classification']));
+  const occupations = getStatusNodes(entity, personStatusGroups[1])
+    .flatMap((status) => getStatusValues(status, ['ascribes_social_status']));
+  const born = getEventTimespans(entity, 'born');
+  const died = getEventTimespans(entity, 'died');
+
+  if (
+    !alternativeNames.length &&
+    !classifications.length &&
+    !occupations.length &&
+    !born.length &&
+    !died.length
+  ) {
     return null;
   }
   return (
-    <div className="person-names">
-      <span className="person-names-title">also recorded as:</span>
-      {alternativeNames.map((name) => (
-        <span key={name} className="person-name">{name}</span>
-      ))}
+    <div className="person-overview">
+      <PersonOverviewFact label="also" values={alternativeNames} />
+      <PersonOverviewFact values={classifications} />
+      <PersonOverviewTimespans label="born" timespans={born} />
+      <PersonOverviewTimespans label="died" timespans={died} />
+      <PersonOverviewFact values={occupations} />
     </div>
   );
+}
+
+type PersonOverviewFactProps = {
+  label?: string;
+  values: StatusValue[];
+};
+
+function PersonOverviewFact({ label: factLabel, values }: PersonOverviewFactProps) {
+  if (!values.length) {
+    return null;
+  }
+  return (
+    <span className="person-overview-fact">
+      {factLabel && <span className="person-overview-label">{factLabel}:</span>}
+      <span className="person-overview-value">
+        {values.map((value, index) => (
+          <span key={index}>
+            {index > 0 && ', '}
+            {isLinkedArtNode(value) ? <RelationValue node={value} /> : value}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+type PersonOverviewTimespansProps = {
+  label: string;
+  timespans: NonNullable<ReturnType<typeof findTimespan>>[];
+};
+
+function PersonOverviewTimespans({
+  label: factLabel,
+  timespans,
+}: PersonOverviewTimespansProps) {
+  if (!timespans.length) {
+    return null;
+  }
+  return (
+    <span className="person-overview-fact">
+      <span className="person-overview-label">{factLabel}:</span>
+      <span className="person-overview-value">
+        {timespans.map((timespan, index) => (
+          <span key={index}>
+            {index > 0 && ', '}
+            <TimespanValue timespan={timespan} />
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function getEventTimespans(entity: LinkedArtNode, property: 'born' | 'died') {
+  return findByPath(entity, [property])
+    .map(findTimespan)
+    .filter((timespan) => !!timespan);
 }
 
 function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
@@ -222,26 +278,13 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
               label="Classification"
               values={getStatusValues(status, ['classified_as'])}
             />
-            <StatusValuesProperty
-              label="Relation"
-              values={getStatusValues(status, [
-                'ascribes_appellative_relation',
-              ])}
-            />
-            <StatusValuesProperty
-              label="Identifier"
-              values={getStatusValues(status, [
-                'identified_by',
-                'is_identified_by',
-              ])}
-            />
             {findTimespan(status) && (
               <ObjectCardProperty
                 label="Date"
-                value={<TimespanValue timespan={findTimespan(status)}/>}
+                value={<TimespanValue timespan={findTimespan(status)} />}
               />
             )}
-            <SourcesProperty node={status}/>
+            <SourcesProperty node={status} />
           </ObjectCardPropertyList>
         ))}
       </div>
@@ -255,8 +298,18 @@ type PersonEventSectionProps = {
   title: string;
 };
 
-function PersonEventSection({ entity, property, title }: PersonEventSectionProps) {
-  const events = findByPath(entity, [property]);
+function PersonEventSection({
+  entity,
+  property,
+  title,
+}: PersonEventSectionProps) {
+  const events = findByPath(entity, [property])
+    .map((event) => ({
+      event,
+      locations: getStatusValues(event, ['took_place_at']),
+      timespan: findTimespan(event),
+    }))
+    .filter(({ locations, timespan }) => locations.length || timespan);
   if (!events.length) {
     return null;
   }
@@ -264,28 +317,38 @@ function PersonEventSection({ entity, property, title }: PersonEventSectionProps
   return (
     <ObjectCardSection title={title}>
       <div className="person-status-list">
-        {events.map((event, index) => (
+        {events.map(({ event, locations, timespan }, index) => (
           <ObjectCardPropertyList key={index} className="person-status">
-            <StatusValuesProperty
-              label="Type"
-              values={getStatusValues(event, ['classified_as'])}
-            />
-            {findTimespan(event) && (
+            {timespan && (
               <ObjectCardProperty
                 label="Date"
-                value={<TimespanValue timespan={findTimespan(event)}/>}
+                value={<TimespanValue timespan={timespan} />}
               />
             )}
             <StatusValuesProperty
-              label="Place"
-              values={getStatusValues(event, ['took_place_at'])}
+              label={getEventLocationLabel(locations)}
+              values={locations}
             />
-            <SourcesProperty node={event}/>
+            <SourcesProperty node={event} />
           </ObjectCardPropertyList>
         ))}
       </div>
     </ObjectCardSection>
   );
+}
+
+function getEventLocationLabel(values: StatusValue[]): string {
+  const types = new Set(
+    values
+      .filter(isLinkedArtNode)
+      .map((value) => getLinkedArtEntityType(value.id))
+      .filter((type) => type !== 'unknown'),
+  );
+  if (types.size !== 1) {
+    return 'Location';
+  }
+  const [type] = types;
+  return `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
 }
 
 type PersonStatusGroupProps = {
@@ -294,7 +357,9 @@ type PersonStatusGroupProps = {
 };
 
 function PersonStatusGroup({ entity, group }: PersonStatusGroupProps) {
-  const statuses = getStatusNodes(entity, group);
+  const statuses = getStatusNodes(entity, group)
+    .filter((status) => hasStatusValues(status, group));
+  const isOccupationGroup = group.type === 'SocialStatus';
   if (!statuses.length) {
     return null;
   }
@@ -302,72 +367,102 @@ function PersonStatusGroup({ entity, group }: PersonStatusGroupProps) {
   return (
     <ObjectCardSection title={group.title}>
       <div className="person-status-list">
-        {statuses.map((status, index) => (
-          <ObjectCardPropertyList key={index} className="person-status">
-            {group.properties.map((property) => (
+        {statuses.map((status, index) => {
+          const timespan = findTimespan(status);
+          return (
+            <ObjectCardPropertyList
+              key={index}
+              className={`person-status${isOccupationGroup ? ' person-occupation-status' : ''}`}
+            >
+              {isOccupationGroup && timespan && (
+                <ObjectCardProperty
+                  className="person-status-date"
+                  label="Date"
+                  value={<TimespanValue timespan={timespan} />}
+                />
+              )}
+              {group.properties.map((property, propertyIndex) => (
+                <StatusValuesProperty
+                  key={property.label}
+                  className={isOccupationGroup && propertyIndex === 0
+                    ? 'person-status-primary'
+                    : undefined}
+                  label={property.label}
+                  values={getStatusValues(status, property.keys)}
+                />
+              ))}
+              {getAdditionalStatusProperties(status, group).map((property) => (
+                <StatusValuesProperty
+                  key={property.key}
+                  label={property.label}
+                  values={property.values}
+                />
+              ))}
               <StatusValuesProperty
-                key={property.label}
-                label={property.label}
-                values={getStatusValues(status, property.keys)}
+                label="Geographic scope"
+                values={getStatusValues(status, ['has_geographic_scope'])}
               />
-            ))}
-            {getAdditionalStatusProperties(status, group).map((property) => (
               <StatusValuesProperty
-                key={property.key}
-                label={property.label}
-                values={property.values}
+                label="Classification"
+                values={getStatusValues(status, ['classified_as'])}
               />
-            ))}
-            <StatusValuesProperty
-              label="Geographic scope"
-              values={getStatusValues(status, ['has_geographic_scope'])}
-            />
-            <StatusValuesProperty
-              label="Classification"
-              values={getStatusValues(status, ['classified_as'])}
-            />
-            <StatusValuesProperty
-              label="Identifier"
-              values={getStatusValues(status, [
-                'identified_by',
-                'is_identified_by',
-              ])}
-            />
-            {findTimespan(status) && (
-              <ObjectCardProperty
-                label="Date"
-                value={<TimespanValue timespan={findTimespan(status)}/>}
+              {!isOccupationGroup && timespan && (
+                <ObjectCardProperty
+                  label="Date"
+                  value={<TimespanValue timespan={timespan} />}
+                />
+              )}
+              <SourcesProperty
+                className={isOccupationGroup
+                  ? 'person-status-sources'
+                  : undefined}
+                node={status}
               />
-            )}
-            <SourcesProperty node={status}/>
-          </ObjectCardPropertyList>
-        ))}
+            </ObjectCardPropertyList>
+          );
+        })}
       </div>
     </ObjectCardSection>
   );
+}
+
+function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
+  return group.properties.some((property) =>
+    getStatusValues(status, property.keys).length > 0,
+  ) || getAdditionalStatusProperties(status, group).length > 0
+    || getStatusValues(status, ['has_geographic_scope']).length > 0
+    || getStatusValues(status, ['classified_as']).length > 0
+    || !!findTimespan(status);
 }
 
 function getStatusNodes(
   entity: LinkedArtNode,
   definition: Pick<StatusDefinition, 'key' | 'type'>,
 ): LinkedArtNode[] {
-  return findByPath(entity, [definition.key])
-    .filter((status) => status.type === definition.type);
+  return findByPath(entity, [definition.key]).filter(
+    (status) => status.type === definition.type,
+  );
 }
 
 type StatusValuesPropertyProps = {
+  className?: string;
   label: string;
   values: StatusValue[];
 };
 
-function StatusValuesProperty({ label: propertyLabel, values }: StatusValuesPropertyProps) {
+function StatusValuesProperty({
+  className,
+  label: propertyLabel,
+  values,
+}: StatusValuesPropertyProps) {
   if (!values.length) {
     return null;
   }
   return (
     <ObjectCardProperty
+      className={className}
       label={propertyLabel}
-      value={<StatusValues values={values}/>}
+      value={<StatusValues values={values} />}
     />
   );
 }
@@ -378,22 +473,30 @@ function StatusValues({ values }: Pick<StatusValuesPropertyProps, 'values'>) {
       {values.map((value, index) => (
         <span key={index}>
           {index > 0 && ', '}
-          {isLinkedArtNode(value) ? <RelationLink node={value}/> : value}
+          {isLinkedArtNode(value) ? <RelationLink node={value} /> : value}
         </span>
       ))}
     </span>
   );
 }
 
-function SourcesProperty({ node }: { node: LinkedArtNode }) {
-  const sources = findByPath(node, ['referred_to_by']);
+function SourcesProperty({
+  className,
+  node,
+}: {
+  className?: string;
+  node: LinkedArtNode;
+}) {
+  const sources = findByPath(node, ['referred_to_by'])
+    .filter(isVisibleSource);
   if (!sources.length) {
     return null;
   }
   return (
     <ObjectCardProperty
+      className={className}
       label="Sources"
-      value={<SourceList sources={sources}/>}
+      value={<SourceList sources={sources} />}
     />
   );
 }
@@ -423,7 +526,12 @@ function getAdditionalStatusProperties(
     group.properties.flatMap((property) => property.keys),
   );
   return Object.keys(status)
-    .filter((key) => key.includes('ascribes_') && !configuredKeys.has(key))
+    .filter(
+      (key) =>
+        key.includes('ascribes_') &&
+        !key.includes('_relation') &&
+        !configuredKeys.has(key),
+    )
     .map((key) => ({
       key,
       label: getPropertyLabel(key),
@@ -434,27 +542,31 @@ function getAdditionalStatusProperties(
 
 function getPropertyLabel(key: string): string {
   const prefix = 'ascribes_';
-  const words = key.slice(key.indexOf(prefix) + prefix.length).replaceAll('_', ' ');
+  const words = key
+    .slice(key.indexOf(prefix) + prefix.length)
+    .replaceAll('_', ' ');
   return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
 }
 
 function getStatusValueText(value: StatusValue): string {
   return typeof value === 'string'
     ? value
-    : getContent(value)
-      || getValue(value.value)
-      || (value.type === 'Type' ? label(value) : '');
+    : getContent(value) ||
+        getValue(value.value) ||
+        (value.type === 'Type' ? label(value) : '');
 }
 
 function getPersonNameRecords(entity: LinkedArtNode) {
   return getStatusNodes(entity, personNameDefinition)
-    .flatMap((status, statusIndex) => getStatusValues(status, [
-      'ascribes_appellation',
-      'aaao:ZP6_ascribes_appellation',
-    ]).map((value, valueIndex) => ({
-      key: `${status.id ?? statusIndex}-${valueIndex}`,
-      name: getStatusValueText(value),
-      status,
-    })))
+    .flatMap((status, statusIndex) =>
+      getStatusValues(status, [
+        'ascribes_appellation',
+        'aaao:ZP6_ascribes_appellation',
+      ]).map((value, valueIndex) => ({
+        key: `${status.id ?? statusIndex}-${valueIndex}`,
+        name: getStatusValueText(value),
+        status,
+      })),
+    )
     .filter((record) => !!record.name);
 }

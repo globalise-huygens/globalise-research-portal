@@ -53,16 +53,26 @@ export function RelationLink({ node }: RelationLinkProps) {
   return <span className="relation">{text}</span>;
 }
 
+export function RelationValue({ node }: RelationLinkProps) {
+  return <>{useRelationValue(node, url(node))}</>;
+}
+
 function getFirstValue(...values: (string | undefined)[]): string {
   return values.find((value) => !!value) ?? '';
 }
 
 function useRelationValue(node: LinkedArtNode, href?: string): string {
   const fallback = getNodeValue(node);
-  const shouldResolve = node.type !== 'Type' || getValues(node._label).length !== 1;
-  const internalUri = shouldResolve && href && isInternalUri(href)
-    ? href
-    : undefined;
+  const internalUri = href && isInternalUri(href) ? href : undefined;
+  // Temporary fallback until all internal entity IDs resolve.
+  const temporaryLabelFallback = getValue(node._label);
+  const safeFallback = internalUri
+    ? getFirstValue(
+      isInternalUri(fallback) ? undefined : fallback,
+      temporaryLabelFallback,
+      node.type,
+    )
+    : fallback;
   const [resolved, setResolved] = useState<{
     uri: string;
     value: string;
@@ -83,7 +93,9 @@ function useRelationValue(node: LinkedArtNode, href?: string): string {
     };
   }, [internalUri]);
 
-  return resolved && resolved.uri === internalUri ? resolved.value : fallback;
+  return resolved && resolved.uri === internalUri
+    ? resolved.value
+    : safeFallback;
 }
 
 function resolveRelationValue(uri: string): Promise<string | undefined> {

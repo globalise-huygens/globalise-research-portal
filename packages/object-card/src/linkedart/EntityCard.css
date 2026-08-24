@@ -31,6 +31,11 @@
       gap: var(--s8);
     }
 
+    .timespan-boundaries {
+      display: inline-flex;
+      flex-direction: column;
+    }
+
     .person-status {
       border-left: 2px solid var(--color-neutral-600);
       background: rgb(255 255 255 / 0.02);
@@ -44,6 +49,43 @@
     .person-status:focus-within {
       border-color: var(--color-neutral-400);
       background: rgb(255 255 255 / 0.06);
+    }
+
+    .person-occupation-status {
+      gap: var(--s8);
+      background: var(--color-neutral-700);
+      padding: var(--s16);
+    }
+
+    .person-occupation-status .person-status-date,
+    .person-occupation-status .person-status-primary {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .person-occupation-status .person-status-date .property-label,
+    .person-occupation-status .person-status-primary .property-label {
+      display: none;
+    }
+
+    .person-occupation-status .person-status-date .property-value {
+      margin: 0;
+      color: var(--color-neutral-400);
+      font-size: var(--text-sm);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .person-occupation-status .person-status-primary .property-value {
+      margin: 0;
+      font-size: var(--text-base);
+      line-height: var(--s24);
+    }
+
+    .person-occupation-status .person-status-sources .source-list > li {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
     }
 
     &.person-card {
@@ -81,25 +123,33 @@
         margin-top: var(--section-gap);
       }
 
-      .person-names {
+      .person-overview {
         display: flex;
         min-width: 0;
         flex-wrap: wrap;
         align-items: baseline;
-        gap: var(--s4) var(--s12);
+        gap: var(--s4) var(--s24);
         color: var(--color-neutral-400);
         font-family: var(--font-sans);
         font-size: var(--text-sm);
+        font-style: italic;
         line-height: var(--s20);
       }
 
-      .person-names-title {
+      .person-overview-fact {
+        display: inline-flex;
+        min-width: 0;
+        gap: var(--s4);
+      }
+
+      .person-overview-label {
         flex-shrink: 0;
       }
 
-      .person-name {
+      .person-overview-value {
+        min-width: 0;
         color: var(--color-neutral-300);
-        font-style: italic;
+        overflow-wrap: anywhere;
       }
 
       .person-name-value {
