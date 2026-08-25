@@ -1,6 +1,6 @@
 export default function Results() {
   return (
-    <div data-empty-results>
+    <div>
       Search results
     </div>
   );
