@@ -1,4 +1,9 @@
-import { IconArrowTopRight, IconClose, IconExternalLink } from '../icons';
+import {
+  IconArrowTopRight,
+  IconClose,
+  IconExpandSection,
+  IconExternalLink,
+} from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
 import {
@@ -180,6 +185,8 @@ export type ObjectCardSectionProps = {
   title?: string;
   scrollable?: boolean;
   sticky?: boolean;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
@@ -188,10 +195,21 @@ function ObjectCardSection({
   title,
   scrollable,
   sticky,
+  collapsible = false,
+  defaultExpanded = true,
   className,
   children,
 }: ObjectCardSectionProps) {
   const headingId = React.useId();
+  const contentId = React.useId();
+  const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const isCollapsible = collapsible && Boolean(title);
+  const content = scrollable ? (
+    <div className="section-scroll">{children}</div>
+  ) : (
+    children
+  );
+
   return (
     <Group
       aria-labelledby={title ? headingId : undefined}
@@ -199,7 +217,22 @@ function ObjectCardSection({
       data-has-title={title ? 'true' : 'false'}
       data-sticky={sticky ? 'true' : undefined}
     >
-      {title && (
+      {title && isCollapsible ? (
+        <AriaHeading level={3} id={headingId} className="section-heading">
+          <AriaButton
+            aria-controls={contentId}
+            aria-expanded={isExpanded}
+            className="section-toggle"
+            onPress={() => setIsExpanded((expanded) => !expanded)}
+          >
+            <span>{title}</span>
+            <IconExpandSection
+              aria-hidden="true"
+              className="section-toggle-icon"
+            />
+          </AriaButton>
+        </AriaHeading>
+      ) : title ? (
         <AriaHeading
           level={3}
           id={headingId}
@@ -207,11 +240,13 @@ function ObjectCardSection({
         >
           {title}
         </AriaHeading>
-      )}
-      {scrollable ? (
-        <div className="section-scroll">{children}</div>
+      ) : null}
+      {isCollapsible ? (
+        <div id={contentId} hidden={!isExpanded} className="section-content">
+          {content}
+        </div>
       ) : (
-        children
+        content
       )}
     </Group>
   );
