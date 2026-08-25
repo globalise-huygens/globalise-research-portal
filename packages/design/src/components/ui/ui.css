@@ -780,6 +780,11 @@
     justify-content: center;
   }
 
+  .gds-entity-badge__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
   .gds-entity-tag {
     position: relative;
     display: inline-flex;
