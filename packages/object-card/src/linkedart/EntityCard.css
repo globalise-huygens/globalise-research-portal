@@ -31,15 +31,24 @@
       gap: var(--s8);
     }
 
+    .person-status-values.stacked {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+    }
+
     .timespan-boundaries {
       display: inline-flex;
       flex-direction: column;
     }
 
     .person-status {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
       border-left: 2px solid var(--color-neutral-600);
       background: rgb(255 255 255 / 0.02);
-      padding: var(--s8);
       transition:
         background-color 75ms ease-out,
         border-color 75ms ease-out;
@@ -51,34 +60,100 @@
       background: rgb(255 255 255 / 0.06);
     }
 
-    .person-occupation-status {
-      gap: var(--s8);
-      background: var(--color-neutral-700);
-      padding: var(--s16);
+    .person-status-header {
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
     }
 
-    .person-occupation-status .person-status-date,
-    .person-occupation-status .person-status-primary {
-      grid-template-columns: minmax(0, 1fr);
+    .person-status-summary {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      padding: var(--s12);
     }
 
-    .person-occupation-status .person-status-date .property-label,
-    .person-occupation-status .person-status-primary .property-label {
-      display: none;
+    .person-status-summary-content {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
     }
 
-    .person-occupation-status .person-status-date .property-value {
-      margin: 0;
+    .person-status-summary-property {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--s4);
+    }
+
+    .person-status-summary-label,
+    .person-status-summary-date {
       color: var(--color-neutral-400);
+      font-family: var(--font-sans);
       font-size: var(--text-sm);
       font-style: italic;
       font-weight: 400;
+      line-height: var(--s20);
     }
 
-    .person-occupation-status .person-status-primary .property-value {
-      margin: 0;
-      font-size: var(--text-base);
-      line-height: var(--s24);
+    .person-status-summary-value {
+      min-width: 0;
+      color: var(--color-brand-white);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: var(--s20);
+      overflow-wrap: anywhere;
+    }
+
+    .person-status-toggle {
+      display: inline-flex;
+      width: var(--s36);
+      height: var(--s36);
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: var(--color-brand-white);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .person-status-toggle:hover {
+      background: rgb(255 255 255 / 0.08);
+    }
+
+    .person-status-toggle:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: -2px;
+    }
+
+    .person-status-toggle-icon {
+      width: var(--s16);
+      height: var(--s16);
+      rotate: 0deg;
+      transition: rotate 120ms ease-out;
+    }
+
+    .person-status-toggle[aria-expanded="true"]
+      .person-status-toggle-icon {
+      rotate: 180deg;
+    }
+
+    .person-status-content {
+      padding: 0 var(--s12) var(--s12);
+    }
+
+    .person-status-details {
+      gap: var(--s8);
+    }
+
+    .person-occupation-status {
+      background: var(--color-neutral-700);
     }
 
     .person-occupation-status .person-status-sources .source-list > li {
@@ -119,6 +194,10 @@
         background: var(--color-neutral-800);
       }
 
+      .panel.person-reference-panel {
+        padding: 0;
+      }
+
       .panel > .section + .section {
         margin-top: var(--section-gap);
       }
@@ -156,6 +235,15 @@
         font-style: italic;
       }
 
+      .person-references-empty {
+        margin: 0 var(--panel-pad);
+        color: var(--color-neutral-400);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-style: italic;
+        line-height: var(--s20);
+      }
+
       .source-list {
         display: flex;
         margin: 0;
@@ -169,9 +257,26 @@
         margin-right: var(--s8);
       }
 
+      .source-citation {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+      }
+
+      .source-note {
+        display: block;
+        margin-top: var(--s4);
+        font-style: italic;
+      }
+
       .gds-entity-tag {
         max-width: 100%;
-        align-items: flex-start;
+      }
+
+      .gds-entity-tag__icon {
+        width: 1em;
+        height: 1em;
       }
 
       .gds-entity-tag__label {

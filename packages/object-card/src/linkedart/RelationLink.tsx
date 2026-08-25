@@ -117,6 +117,7 @@ function getNodeValue(node: LinkedArtNode): string {
     getValue(node.value),
     getValue(node.prefLabel),
     getAppellationValue(node),
+    !node.id ? getValue(node._label) : undefined,
     typeLabels.length === 1 ? typeLabels[0] : undefined,
     node.id,
     node.type,
