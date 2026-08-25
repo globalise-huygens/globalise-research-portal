@@ -39,10 +39,6 @@
             var(--s20, 20px)
             var(--s32, 32px);
         background: var(--color-brand-black, #0c0a09);
-
-        > * {
-            width: 100%;
-        }
     }
 
     .facets {

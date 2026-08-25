@@ -1,4 +1,3 @@
-import { SearchBar } from '@globalise/design';
 import Facets from './Facets';
 import Selection from './Selection';
 import SearchField from './SearchField';
@@ -12,10 +11,7 @@ export default function Layout() {
         <SearchField/>
       </div>
 
-      <div className={classes.facetSearch}>
-        <SearchBar aria-label="Search within filters" placeholder="Search the properties"
-          size="sm" variant="subtle" isDisabled/>
-      </div>
+      <div className={classes.facetSearch} aria-hidden="true"/>
 
       <div className={classes.facets}>
         <Facets/>
