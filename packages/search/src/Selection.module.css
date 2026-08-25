@@ -4,23 +4,12 @@
     flex-wrap: wrap;
     align-items: flex-start;
     gap: var(--s8, 8px) var(--s12, 12px);
-    margin-bottom: var(--s32, 32px);
+    margin-bottom: 0;
     font-size: var(--text-xs, 0.75rem);
     line-height: 1rem;
 
     &:has(.facets:empty) {
         display: none;
-    }
-
-    .label {
-        width: 100%;
-        flex-shrink: 0;
-        color: var(--color-neutral-400, #999);
-        font-size: 0.625rem;
-        letter-spacing: 0;
-        line-height: var(--s24, 24px);
-        white-space: nowrap;
-        text-transform: uppercase;
     }
 
     .facets {
@@ -76,6 +65,7 @@
         display: inline-flex;
         width: 100%;
         min-height: var(--s24, 24px);
+        flex-shrink: 0;
         align-items: center;
         justify-content: flex-start;
         border-bottom: 1px solid currentColor;
@@ -101,10 +91,6 @@
         overflow-x: auto;
         scrollbar-color: var(--color-neutral-600, #666) transparent;
         scrollbar-width: thin;
-
-        .label {
-            width: auto;
-        }
 
         .facets {
             flex-wrap: nowrap;

@@ -9,19 +9,13 @@ export default function Selection() {
 
   return (
     <section className={classes.selection} aria-label="Selected filters">
-      <div className={classes.label}>
-        Selected filters:
-      </div>
+      <Button className={classes.clear} onClick={clearFacets}>
+        Clear filters
+      </Button>
 
       <div className={classes.facets}>
         {selectedFacets.map((facet) =>
           <SelectedFacetItem key={facet.itemKey} {...facet}/>)}
-      </div>
-
-      <div>
-        <Button className={classes.clear} onClick={clearFacets}>
-          Clear filters
-        </Button>
       </div>
     </section>
   );

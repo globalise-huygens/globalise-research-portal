@@ -9,8 +9,10 @@
     .input {
         display: flex;
         min-width: 0;
+        height: 100%;
         flex: 1 1 auto;
         align-items: center;
+        cursor: text;
     }
 
     .input-container {
@@ -29,6 +31,9 @@
         }
 
         :global(.cm-content) {
+            min-height: 100%;
+            align-content: center;
+            padding-block: 0;
             padding-inline: var(--s4, 4px);
         }
 
