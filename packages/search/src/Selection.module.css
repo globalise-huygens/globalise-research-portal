@@ -96,8 +96,23 @@
     }
 
     @media (width >= 48rem) {
+        flex-wrap: nowrap;
+        align-items: center;
+        overflow-x: auto;
+        scrollbar-color: var(--color-neutral-600, #666) transparent;
+        scrollbar-width: thin;
+
         .label {
             width: auto;
+        }
+
+        .facets {
+            flex-wrap: nowrap;
+
+            .facet {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
         }
 
         .clear {

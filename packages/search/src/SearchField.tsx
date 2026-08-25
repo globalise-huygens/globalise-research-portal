@@ -29,7 +29,7 @@ export default function SearchField() {
   const darkTheme: ThemeConfig = {
     fontFamily: 'var(--font-sans)',
     fontFamilyAutocomplete: 'var(--font-sans)',
-    entity: { className: classes.entity },
+    entity: { style: { borderRadius: 0 } },
     icon: { className: classes.autocompleteIcon },
     highlight: {
       string: classes.searchText,
@@ -62,17 +62,29 @@ export default function SearchField() {
 
   return (
     <div className={classes.searchField}>
-      <SF className={classes.inputContainer} ref={searchFieldRef}
-        query={query} onSearch={onSearch}
-        onUpdate={({ canUndo, canRedo }) => updateHistory({ canUndo, canRedo })}
-        theme={{ dark: darkTheme }} autocomplete={autocomplete}
-        enableHistory enableLuceneQuerySyntax/>
+      <div className={classes.input}>
+        <SF className={classes.inputContainer} ref={searchFieldRef}
+          query={query} onSearch={onSearch}
+          onUpdate={({ canUndo, canRedo }) => updateHistory({ canUndo, canRedo })}
+          theme={{ dark: darkTheme }} autocomplete={autocomplete}
+          enableHistory enableLuceneQuerySyntax/>
+      </div>
 
       <div className={classes.buttons}>
-        <Button onClick={() => searchFieldRef.current?.search()}><IconSearch/></Button>
-        <Button onClick={() => searchFieldRef.current?.undo()} isDisabled={!history.canUndo}><IconUndo/></Button>
-        <Button onClick={() => searchFieldRef.current?.redo()} isDisabled={!history.canRedo}><IconRedo/></Button>
-        <Button onClick={() => searchFieldRef.current?.clear()}><IconClose/></Button>
+        <Button aria-label="Search" onClick={() => searchFieldRef.current?.search()}>
+          <IconSearch aria-hidden="true"/>
+        </Button>
+        <Button aria-label="Undo search edit" onClick={() => searchFieldRef.current?.undo()}
+          isDisabled={!history.canUndo}>
+          <IconUndo aria-hidden="true"/>
+        </Button>
+        <Button aria-label="Redo search edit" onClick={() => searchFieldRef.current?.redo()}
+          isDisabled={!history.canRedo}>
+          <IconRedo aria-hidden="true"/>
+        </Button>
+        <Button aria-label="Clear search" onClick={() => searchFieldRef.current?.clear()}>
+          <IconClose aria-hidden="true"/>
+        </Button>
       </div>
     </div>
   );
