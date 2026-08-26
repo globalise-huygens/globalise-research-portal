@@ -49,30 +49,24 @@
             font-family: var(--font-serif);
         }
 
-        p {
-            color: #99a1af;
-            font-size: 0.625rem;
-            font-style: italic;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-        }
-
-        ul.subline {
-            display: flex;
-            flex-direction: row;
+        ul.metadata {
+            display: inline;
             list-style-type: none;
             margin: 0;
             padding: 0;
-            gap: 0.2rem;
 
             color: #99a1af;
-            font-size: 0.625rem;
+            font-size: 0.8rem;
             letter-spacing: -0.02em;
             line-height: 1.1;
 
-            li:not(:first-child)::before {
-                content: '•';
-                margin-right: 0.2rem;
+            li {
+                display: inline;
+
+                &:not(:first-child)::before {
+                    content: '•';
+                    margin-inline: 0.2rem;
+                }
             }
         }
 
@@ -83,11 +77,20 @@
             margin: 0;
             padding: 0;
             gap: 0.5rem;
+            max-height: 8rem;
+            overflow-y: scroll;
+            scrollbar-color: var(--color-neutral-500) transparent;
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
 
             li {
                 padding: 0.5rem;
                 background: var(--color-neutral-800, #363636);
             }
+        }
+
+        .archive {
+            font-style: italic;
         }
     }
 }

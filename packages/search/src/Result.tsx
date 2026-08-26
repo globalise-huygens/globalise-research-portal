@@ -1,5 +1,5 @@
 import { JSX, ReactNode } from 'react';
-import { EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
+import { cn, EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
 import { DocumentSearchResult } from './Results';
 import classes from './Result.module.css';
 
@@ -35,7 +35,7 @@ export default function Result({ type, begin, end, title, subline, children }: R
       <div className={classes.main}>
         <h2>{title}</h2>
 
-        <ul className={classes.subline}>
+        <ul className={classes.metadata}>
           {subline.map((item, idx) => <li key={idx}>{item}</li>)}
         </ul>
 
@@ -45,12 +45,19 @@ export default function Result({ type, begin, end, title, subline, children }: R
   );
 }
 
-export function DocumentResultContent({ summary }: DocumentSearchResult) {
+export function DocumentResultContent({ archive }: DocumentSearchResult) {
   return (
     <>
-      <p>{summary}</p>
+      <ul className={cn(classes.metadata, classes.archive)}>
+        {archive.map((item, idx) => <li key={idx}>{item}</li>)}
+      </ul>
 
       <ul className={classes.mentions}>
+        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
         <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
         <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
         <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>

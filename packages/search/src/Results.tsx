@@ -13,7 +13,7 @@ export type SearchResult = {
 
 export type DocumentSearchResult = SearchResult & {
   type: 'document';
-  summary: string;
+  archive: string[];
   text: string;
   observances: {
     type: EntityTagType;
@@ -47,11 +47,7 @@ function ResultPages() {
   }, [fetchNextPage]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(observerCallback, {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0,
-    });
+    const observer = new IntersectionObserver(observerCallback, { rootMargin: '20px' });
 
     if (endOfTheListRef.current) {
       observer.observe(endOfTheListRef.current);
