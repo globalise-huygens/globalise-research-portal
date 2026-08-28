@@ -1,12 +1,13 @@
+import DOMPurify from 'dompurify';
 import MarkdownIt from 'markdown-it';
 
 const markdown = new MarkdownIt('zero', {
   breaks: true,
   html: false,
-  linkify: true,
+  linkify: false,
 });
 
-markdown.enable(['emphasis', 'link', 'linkify', 'newline']);
+markdown.enable(['emphasis', 'newline']);
 markdown.renderer.rules.strong_open = () => '';
 markdown.renderer.rules.strong_close = () => '';
 
@@ -19,5 +20,9 @@ export function renderMarkdown(value: string): string {
 }
 
 export function HtmlValue({ value }: HtmlValueProps) {
-  return <span dangerouslySetInnerHTML={{ __html: renderMarkdown(value) }} />;
+  const sanitized = DOMPurify.sanitize(renderMarkdown(value), {
+    ALLOWED_TAGS: ['em', 'br'],
+    ALLOWED_ATTR: [],
+  });
+  return <span dangerouslySetInnerHTML={{ __html: sanitized }} />;
 }

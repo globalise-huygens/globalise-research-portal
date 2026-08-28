@@ -205,12 +205,6 @@
       word-break: normal;
     }
 
-    .definitions .property-value a {
-      color: var(--color-brand-turquoise);
-      text-decoration: underline;
-      text-underline-offset: 0.18em;
-    }
-
     .external {
       gap: var(--s12);
       padding-bottom: var(--s24);
