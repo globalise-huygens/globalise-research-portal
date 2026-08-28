@@ -1,0 +1,69 @@
+button.queryExpansion {
+    /* TODO: Fix !important by adapting the current higher precedence for button in Search.module.css */
+    padding: 1rem !important;
+    border: 2px solid grey !important;
+
+    .terms {
+        font-weight: 700;
+    }
+}
+
+.termsSelection {
+    width: 50vw;
+    height: 50vh;
+    background: var(--color-neutral-800);
+    border-color: rgb(255 255 255 / 0.1) !important;
+    box-shadow: 0 6px 14px rgb(0 0 0 / 0.25),
+    0 25px 25px rgb(0 0 0 / 0.22),
+    0 56px 34px rgb(0 0 0 / 0.13),
+    0 100px 40px rgb(0 0 0 / 0.04),
+    0 156px 44px rgb(0 0 0 / 0);
+    padding: var(--s16);
+    list-style-type: none;
+    overflow-y: scroll;
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .label {
+        color: var(--color-neutral-400);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-weight: 400;
+        letter-spacing: -0.025em;
+        line-height: 1rem;
+        text-transform: uppercase;
+    }
+
+    .checkbox {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--color-brand-white);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        line-height: var(--s20);
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .selection {
+        list-style-type: none;
+        border-bottom: 1px solid var(--color-neutral-700);
+        padding: 0.5rem;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .terms {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
