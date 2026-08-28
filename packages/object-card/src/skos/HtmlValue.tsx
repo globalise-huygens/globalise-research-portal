@@ -4,10 +4,10 @@ import MarkdownIt from 'markdown-it';
 const markdown = new MarkdownIt('zero', {
   breaks: true,
   html: false,
-  linkify: false,
+  linkify: true,
 });
 
-markdown.enable(['emphasis', 'newline']);
+markdown.enable(['emphasis', 'linkify', 'newline']);
 markdown.renderer.rules.strong_open = () => '';
 markdown.renderer.rules.strong_close = () => '';
 
@@ -21,8 +21,8 @@ export function renderMarkdown(value: string): string {
 
 export function HtmlValue({ value }: HtmlValueProps) {
   const sanitized = DOMPurify.sanitize(renderMarkdown(value), {
-    ALLOWED_TAGS: ['em', 'br'],
-    ALLOWED_ATTR: [],
+    ALLOWED_TAGS: ['a', 'em', 'br'],
+    ALLOWED_ATTR: ['href'],
   });
   return <span dangerouslySetInnerHTML={{ __html: sanitized }} />;
 }
