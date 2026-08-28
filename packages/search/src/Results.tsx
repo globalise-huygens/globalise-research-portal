@@ -57,8 +57,8 @@ function ResultPages() {
   }, [observerCallback]);
 
   return (
-    <div className={classes.results}>
-      <ul>
+    <>
+      <ul className={classes.results}>
         {items.map((pageItems, idx) =>
           <ResultItems key={idx} items={pageItems}/>)}
       </ul>
@@ -66,7 +66,7 @@ function ResultPages() {
       <div ref={endOfTheListRef}>
         {isFetchingNextPage && 'Loading...'}
       </div>
-    </div>
+    </>
   );
 }
 
