@@ -5,29 +5,70 @@
     min-height: 100%;
     align-content: start;
     align-items: start;
-    gap: var(--s32, 32px);
     margin-inline: auto;
     padding:
         var(--s40, 40px)
         var(--shell-margin, 16px)
         var(--s80, 80px);
 
-    .facets {
+    .search-header,
+    .facet-search,
+    .facets,
+    .selection-slot,
+    .result-list {
         min-width: 0;
+    }
+
+    .search-header {
         width: 100%;
+        margin-bottom: var(--s32, 32px);
+    }
+
+    .facet-search,
+    .selection-slot {
+        min-height: var(--s80, 80px);
+        border-bottom: 1px solid rgb(255 255 255 / 0.25);
+    }
+
+    .facet-search {
+        display: flex;
+        align-items: center;
+        padding:
+            var(--s20, 20px)
+            var(--s16, 16px)
+            var(--s20, 20px)
+            var(--s32, 32px);
+        background: var(--color-brand-black, #0c0a09);
+    }
+
+    .facets {
+        width: 100%;
+        margin-bottom: var(--s32, 32px);
         overflow: hidden;
-        border-bottom: 1px solid rgb(255 255 255 / 0.1);
         background: var(--color-neutral-900, #262626);
     }
 
-    .results {
-        min-width: 0;
+    .facets > :first-child,
+    .facets > :first-child > :first-child {
+        border-top: 0;
     }
 
-    .results > :last-child {
+    .selection-slot {
+        display: flex;
+        align-items: center;
+        padding-block: var(--s20, 20px);
+        overflow: hidden;
+    }
+
+    .selection-slot > :first-child {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .result-list {
         min-height: 18rem;
-        border-top: 1px solid rgb(255 255 255 / 0.5);
         padding-top: var(--s24, 24px);
+        overflow-y: auto;
         font-family: var(--font-serif, "Noto Serif", serif);
         font-size: var(--text-4xl, 2.25rem);
         font-weight: 500;
@@ -36,8 +77,6 @@
     }
 
     @media (width >= 48rem) {
-        --search-pane-height: 100%;
-
         height: 100%;
         min-height: 0;
         grid-template-columns:
@@ -47,25 +86,45 @@
                 22rem
             )
             minmax(0, 1fr);
-        gap: 0;
+        grid-template-rows: auto var(--s80, 80px) minmax(0, 1fr);
         overflow: hidden;
-        padding-top: var(--s64, 64px);
+        padding:
+            var(--s64, 64px)
+            var(--shell-margin, 16px)
+            0;
 
-        .facets {
-            height: var(--search-pane-height);
-            min-height: 0;
-            overflow: hidden;
-            contain: layout paint;
-            border-right: 0;
-            border-bottom: 0;
+        .search-header {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            margin-bottom: 0;
         }
 
-        .results {
-            height: var(--search-pane-height);
-            min-height: 0;
-            overflow-y: auto;
+        .facet-search {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .selection-slot {
+            grid-column: 2;
+            grid-row: 2;
             padding-left: var(--s32, 32px);
-            scrollbar-gutter: stable;
+        }
+
+        .facets {
+            grid-column: 1;
+            grid-row: 3;
+            height: 100%;
+            min-height: 0;
+            margin-bottom: 0;
+            overflow: hidden;
+            contain: layout paint;
+        }
+
+        .result-list {
+            grid-column: 2;
+            grid-row: 3;
+            min-height: 0;
+            padding-left: var(--s32, 32px);
         }
     }
 }
