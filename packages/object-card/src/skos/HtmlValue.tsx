@@ -1,4 +1,3 @@
-import DOMPurify from 'dompurify';
 import MarkdownIt from 'markdown-it';
 
 const markdown = new MarkdownIt('zero', {
@@ -20,9 +19,5 @@ export function renderMarkdown(value: string): string {
 }
 
 export function HtmlValue({ value }: HtmlValueProps) {
-  const sanitized = DOMPurify.sanitize(renderMarkdown(value), {
-    ALLOWED_TAGS: ['em', 'br'],
-    ALLOWED_ATTR: [],
-  });
-  return <span dangerouslySetInnerHTML={{ __html: sanitized }} />;
+  return <span dangerouslySetInnerHTML={{ __html: renderMarkdown(value) }} />;
 }
