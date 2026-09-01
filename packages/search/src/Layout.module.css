@@ -86,7 +86,7 @@
             )
             minmax(0, 1fr);
         grid-template-rows: auto var(--s80, 80px) minmax(0, 1fr);
-        /* TODO: overflow: hidden; */
+        overflow: hidden;
         padding:
             var(--s64, 64px)
             var(--shell-margin, 16px)
@@ -123,6 +123,7 @@
             grid-column: 2;
             grid-row: 3;
             min-height: 0;
+            align-self: stretch;
             padding-left: var(--s32, 32px);
         }
     }
