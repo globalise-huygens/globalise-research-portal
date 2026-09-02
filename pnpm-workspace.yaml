@@ -1,0 +1,11 @@
+packages:
+  - 'packages/*'
+
+nodeLinker: hoisted
+
+minimumReleaseAge: 10080
+minimumReleaseAgeStrict: true
+
+allowBuilds:
+  esbuild: true
+  msw: false
