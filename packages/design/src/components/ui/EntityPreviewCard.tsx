@@ -1,5 +1,5 @@
-import { IconArrowTopRight } from '../icons';
-import { cn } from '../../lib';
+import { IconArrowTopRight, IconCopy } from '../icons';
+import { cn, useCopy } from '../../lib';
 import * as React from 'react';
 import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
@@ -7,7 +7,8 @@ import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
-export type EntityPreviewCardKind =
+export type EntityPreviewCardType =
+  | 'entity'
   | 'commodity'
   | 'date'
   | 'dimensions'
@@ -21,14 +22,20 @@ export type EntityPreviewCardKind =
 
 export type EntityPreviewCardBaseData = {
   title: React.ReactNode;
+  properties?: EntityPreviewCardProperty[];
   badges?: EntityPreviewCardAutomationBadge[];
   icon?: React.ReactNode;
   openFullCardLabel?: string;
   openFullCardHref?: string;
+  copyValue?: string;
 };
 
+export type EntityPreviewCardEntityData = {
+  type: 'entity';
+} & EntityPreviewCardBaseData;
+
 export type EntityPreviewCardCommodityData = {
-  kind: 'commodity';
+  type: 'commodity';
   commodityType?: React.ReactNode;
   origin?: React.ReactNode;
   unit?: React.ReactNode;
@@ -37,7 +44,7 @@ export type EntityPreviewCardCommodityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDateData = {
-  kind: 'date';
+  type: 'date';
   normalizedDate?: React.ReactNode;
   calendar?: React.ReactNode;
   period?: React.ReactNode;
@@ -46,7 +53,7 @@ export type EntityPreviewCardDateData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDimensionsData = {
-  kind: 'dimensions';
+  type: 'dimensions';
   measurementType?: React.ReactNode;
   value?: React.ReactNode;
   unit?: React.ReactNode;
@@ -54,7 +61,7 @@ export type EntityPreviewCardDimensionsData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardDocumentData = {
-  kind: 'document';
+  type: 'document';
   documentType?: React.ReactNode;
   reference?: React.ReactNode;
   archiveScan?: React.ReactNode;
@@ -63,7 +70,7 @@ export type EntityPreviewCardDocumentData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardOrganisationData = {
-  kind: 'organisation';
+  type: 'organisation';
   organisationType?: React.ReactNode;
   jurisdiction?: React.ReactNode;
   founded?: React.ReactNode;
@@ -72,7 +79,7 @@ export type EntityPreviewCardOrganisationData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPersonData = {
-  kind: 'person';
+  type: 'person';
   role?: React.ReactNode;
   affiliation?: React.ReactNode;
   civicStatus?: React.ReactNode;
@@ -81,7 +88,7 @@ export type EntityPreviewCardPersonData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPlaceData = {
-  kind: 'place';
+  type: 'place';
   placeType?: React.ReactNode;
   historicalForm?: React.ReactNode;
   region?: React.ReactNode;
@@ -90,7 +97,7 @@ export type EntityPreviewCardPlaceData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardPolityData = {
-  kind: 'polity';
+  type: 'polity';
   polityType?: React.ReactNode;
   region?: React.ReactNode;
   period?: React.ReactNode;
@@ -99,7 +106,7 @@ export type EntityPreviewCardPolityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardQuantityData = {
-  kind: 'quantity';
+  type: 'quantity';
   quantityType?: React.ReactNode;
   amount?: React.ReactNode;
   unit?: React.ReactNode;
@@ -107,7 +114,7 @@ export type EntityPreviewCardQuantityData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardShipData = {
-  kind: 'ship';
+  type: 'ship';
   shipType?: React.ReactNode;
   built?: React.ReactNode;
   laidUp?: React.ReactNode;
@@ -116,6 +123,7 @@ export type EntityPreviewCardShipData = {
 } & EntityPreviewCardBaseData;
 
 export type EntityPreviewCardData =
+  | EntityPreviewCardEntityData
   | EntityPreviewCardCommodityData
   | EntityPreviewCardDateData
   | EntityPreviewCardDimensionsData
@@ -132,31 +140,35 @@ export type EntityPreviewCardProps = {
   className?: string;
 };
 
-type EntityPreviewCardProperty = {
+export type EntityPreviewCardProperty = {
   label: string;
   value: React.ReactNode;
 };
 
-function getEntityBadgeType(kind: EntityPreviewCardKind): EntityBadgeType {
-  if (kind === 'polity') {
+function getEntityBadgeType(
+  type: EntityPreviewCardType,
+): EntityBadgeType | 'entity' {
+  if (type === 'polity') {
     return 'organisation';
   }
 
-  if (kind === 'quantity') {
+  if (type === 'quantity') {
     return 'dimensions';
   }
 
-  return kind;
+  return type;
 }
 
-function getEntityBadgeLabel(kind: EntityPreviewCardKind) {
-  switch (kind) {
+function getEntityBadgeLabel(type: EntityPreviewCardType) {
+  switch (type) {
+    case 'entity':
+      return 'Entity';
     case 'organisation':
       return 'Organisation';
     case 'dimensions':
       return 'Measure';
     default:
-      return kind;
+      return type;
   }
 }
 
@@ -175,7 +187,7 @@ function getAutomationBadges(
 function getEntityPreviewProperties(
   data: EntityPreviewCardData,
 ): [string, React.ReactNode | undefined][] {
-  switch (data.kind) {
+  switch (data.type) {
     case 'person':
       return [
         ['Role', data.role],
@@ -260,6 +272,7 @@ function getEntityPreviewProperties(
 }
 
 function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
+  const { copied, copy } = useCopy();
   const properties: EntityPreviewCardProperty[] = getEntityPreviewProperties(
     data,
   )
@@ -270,16 +283,24 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
     .map(([label, value]) => ({ label, value }));
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
-  const categoryLabel = getEntityBadgeLabel(data.kind);
+  const categoryLabel = getEntityBadgeLabel(data.type);
+  const copyValue = data.copyValue;
+
+  function copyIdentifier() {
+    if (copyValue) {
+      void copy(copyValue);
+    }
+  }
 
   return (
     <Popover
       size="compact"
-      className={cn('gds-entity-preview-card', className)}
+      className={cn('entity-preview-card', className)}
+      data-copied={copied ? 'true' : 'false'}
     >
-      <div className="gds-entity-preview-card__header">
-        <div className="gds-entity-preview-card__identity">
-          <div className="gds-entity-preview-card__leading-row">
+      <div className="header">
+        <div className="identity">
+          <div className="leading-row">
             <Tooltip
               label={`Category: ${categoryLabel}`}
               placement="top"
@@ -288,15 +309,15 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 tabIndex={0}
                 role="img"
                 aria-label={`Category: ${categoryLabel}`}
-                className="gds-entity-preview-card__category-trigger"
-                data-type={getEntityBadgeType(data.kind)}
+                className="category-trigger"
+                data-type={getEntityBadgeType(data.type)}
               >
                 {data.icon ? (
-                  <span className="gds-entity-preview-card__category-icon">
+                  <span className="category-icon">
                     {data.icon}
                   </span>
                 ) : (
-                  <span className="gds-entity-preview-card__category-initial">
+                  <span className="category-initial">
                     {categoryLabel.slice(0, 1)}
                   </span>
                 )}
@@ -306,52 +327,70 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               <EntityBadge
                 key={badge}
                 type={badge}
-                className="gds-entity-preview-card__automation-badge"
+                className="automation-badge"
               >
                 {badge.toUpperCase()}
               </EntityBadge>
             ))}
           </div>
-          <div className="gds-entity-preview-card__title">{data.title}</div>
+          <div className="title">{data.title}</div>
         </div>
 
-        <a
-          href={data.openFullCardHref ?? '#'}
-          aria-label={openFullCardLabel}
-          aria-disabled={data.openFullCardHref ? undefined : 'true'}
-          tabIndex={data.openFullCardHref ? undefined : -1}
-          onClick={(event) => {
-            if (!data.openFullCardHref) {
-              event.preventDefault();
-            }
-          }}
-          className={cn(
-            'gds-entity-preview-card__icon-action',
-            !data.openFullCardHref &&
-              'gds-entity-preview-card__icon-action--disabled',
+        <div className="actions">
+          {copyValue && (
+            <button
+              type="button"
+              aria-label={`Copy URI ${copyValue}`}
+              className="icon-action"
+              title={copied ? `Copied ${copyValue}` : copyValue}
+              onClick={copyIdentifier}
+            >
+              <IconCopy className="icon-action-icon" />
+            </button>
           )}
-        >
-          <IconArrowTopRight className="gds-entity-preview-card__icon-action-icon" />
-        </a>
+          {data.openFullCardHref && (
+            <a
+              href={data.openFullCardHref}
+              aria-label={openFullCardLabel}
+              className="icon-action"
+            >
+              <IconArrowTopRight className="icon-action-icon" />
+            </a>
+          )}
+        </div>
+        {copyValue && (
+          <span
+            className="copy-status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {copied ? 'URI copied!' : ''}
+          </span>
+        )}
       </div>
 
-      {properties.length > 0 && (
-        <dl className="gds-entity-preview-card__properties">
-          {properties.map((property) => (
+      {((data.properties?.length ?? 0) > 0 ||
+        properties.length > 0) && (
+        <dl className="properties">
+          {[
+            ...(data.properties ?? []),
+            ...properties,
+          ].map((property) => (
             <div
               key={property.label}
-              className="gds-entity-preview-card__property"
+              className="property"
             >
-              <dt className="gds-entity-preview-card__property-label">
+              <dt className="property-label">
                 {property.label}
               </dt>
-              <dd className="gds-entity-preview-card__property-value">
+              <dd className="property-value">
                 {property.value}
               </dd>
             </div>
           ))}
         </dl>
       )}
+
     </Popover>
   );
 }
