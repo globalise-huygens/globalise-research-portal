@@ -37,7 +37,7 @@ export default function Results() {
 function ResultPages() {
   const state = useSearchState();
   const { items, fetchNextPage, isFetchingNextPage } = useInfiniteSearch<SearchResult>(state);
-  const endOfTheListRef = useRef<HTMLDivElement>(null);
+  const loadingResultsRef = useRef<HTMLDivElement>(null);
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
@@ -47,10 +47,9 @@ function ResultPages() {
   }, [fetchNextPage]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(observerCallback, { rootMargin: '20px' });
-
-    if (endOfTheListRef.current) {
-      observer.observe(endOfTheListRef.current);
+    const observer = new IntersectionObserver(observerCallback);
+    if (loadingResultsRef.current) {
+      observer.observe(loadingResultsRef.current);
     }
 
     return () => observer.disconnect();
@@ -63,7 +62,7 @@ function ResultPages() {
           <ResultItems key={idx} items={pageItems}/>)}
       </ul>
 
-      <div ref={endOfTheListRef}>
+      <div className={classes.loadingResults} ref={loadingResultsRef}>
         {isFetchingNextPage && 'Loading...'}
       </div>
     </>

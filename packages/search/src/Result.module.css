@@ -77,7 +77,7 @@
             margin: 0;
             padding: 0;
             gap: 0.5rem;
-            max-height: 8rem;
+            max-height: 7rem;
             overflow-y: scroll;
             scrollbar-color: var(--color-neutral-500) transparent;
             scrollbar-gutter: stable;

@@ -5,3 +5,7 @@ ul.results {
     margin: 0;
     padding: 0;
 }
+
+.loading-results {
+    height: 1px;
+}
