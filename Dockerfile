@@ -9,8 +9,8 @@ RUN cd globalise-design-system && pnpm install --frozen-lockfile && pnpm build
 
 WORKDIR /repos/globalise-research-portal
 COPY . .
-RUN npm ci
-RUN npm run build
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
 # Run
 FROM node:24-alpine AS runner
