@@ -2,6 +2,7 @@
 FROM node:24-alpine AS builder
 RUN apk add --no-cache git
 RUN corepack enable
+RUN corepack install --global pnpm@11.25.0
 WORKDIR /repos
 
 RUN git clone --depth 1 https://github.com/globalise-huygens/globalise-design-system.git

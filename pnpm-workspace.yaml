@@ -1,5 +1,11 @@
 packages:
   - 'packages/*'
 
-onlyBuiltDependencies:
-  - msw
+nodeLinker: hoisted
+
+minimumReleaseAge: 10080
+minimumReleaseAgeStrict: true
+
+allowBuilds:
+  esbuild: true
+  msw: false
