@@ -7,5 +7,4 @@ minimumReleaseAge: 10080
 minimumReleaseAgeStrict: true
 
 allowBuilds:
-  esbuild: true
-  msw: false
+  msw: true
