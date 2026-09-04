@@ -3,7 +3,10 @@ FROM node:24-alpine AS builder
 
 RUN apk add --no-cache git
 
-RUN npm install --global pnpm@11.25.0 \
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
+RUN npx --yes get-pnpm 11.25.0 \
     && command -v pnpm \
     && pnpm --version
 
