@@ -66,9 +66,10 @@
     }
 
     .result-list {
+        display: flex;
+        flex-direction: column;
         min-height: 18rem;
         padding-top: var(--s24, 24px);
-        overflow-y: auto;
         font-family: var(--font-serif, "Noto Serif", serif);
         font-weight: 500;
         letter-spacing: -0.03em;
