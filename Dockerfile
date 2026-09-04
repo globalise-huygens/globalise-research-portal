@@ -6,7 +6,7 @@ RUN apk add --no-cache git
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME/bin:$PATH"
 
-RUN npx --yes get-pnpm 11.25.0 \
+RUN SHELL=/bin/sh npx --yes get-pnpm 11.25.0 \
     && command -v pnpm \
     && pnpm --version
 
