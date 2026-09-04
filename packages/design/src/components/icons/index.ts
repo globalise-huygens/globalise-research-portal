@@ -32,6 +32,8 @@ export { IconInvert } from './IconInvert';
 export { IconLayoutElements } from './IconLayoutElements';
 export { IconLeft } from './IconLeft';
 export { IconLeftFirst } from './IconLeftFirst';
+export { IconLeftPanelClose } from './IconLeftPanelClose';
+export { IconLeftPanelOpen } from './IconLeftPanelOpen';
 export { IconMenu } from './IconMenu';
 export { IconModeDark } from './IconModeDark';
 export { IconModeLight } from './IconModeLight';
