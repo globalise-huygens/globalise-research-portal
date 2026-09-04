@@ -26,22 +26,11 @@ export type DocumentSearchResult = SearchResult & {
 
 const isDocument = (result: SearchResult): result is DocumentSearchResult => result.type === 'document';
 
-import QueryExpansion from './queryExpansion/QueryExpansion';
-import { TermSelectionProvider } from './queryExpansion/TermSelectionProvider';
-
 export default function Results() {
   return (
-    <>
-      <div>
-        <TermSelectionProvider>
-          <QueryExpansion/>
-        </TermSelectionProvider>
-      </div>
-
-      <Suspense fallback={'Loading...'}>
-        <ResultPages/>
-      </Suspense>
-    </>
+    <Suspense fallback={'Loading...'}>
+      <ResultPages/>
+    </Suspense>
   );
 }
 
@@ -67,8 +56,8 @@ function ResultPages() {
   }, [observerCallback]);
 
   return (
-    <>
-      <ul className={classes.results}>
+    <div className={classes.results}>
+      <ul>
         {items.map((pageItems, idx) =>
           <ResultItems key={idx} items={pageItems}/>)}
       </ul>
@@ -76,7 +65,7 @@ function ResultPages() {
       <div className={classes.loadingResults} ref={loadingResultsRef}>
         {isFetchingNextPage && 'Loading...'}
       </div>
-    </>
+    </div>
   );
 }
 

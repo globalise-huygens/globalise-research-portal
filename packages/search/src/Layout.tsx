@@ -2,6 +2,7 @@ import Facets from './Facets';
 import Selection from './Selection';
 import SearchField from './SearchField';
 import Results from './Results';
+import ResultsHeader from './ResultsHeader';
 import classes from './Layout.module.css';
 
 export default function Layout() {
@@ -22,6 +23,7 @@ export default function Layout() {
       </div>
 
       <div className={classes.resultList}>
+        <ResultsHeader/>
         <Results/>
       </div>
     </div>
