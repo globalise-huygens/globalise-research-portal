@@ -50,7 +50,6 @@ export { IconSaturation } from './IconSaturation';
 export { IconSearch } from './IconSearch';
 export { IconSetting } from './IconSetting';
 export { IconShowMore } from './IconShowMore';
-export { IconSidebar } from './IconSidebar';
 export { IconSwap } from './IconSwap';
 export { IconTableOfContent } from './IconTableOfContent';
 export { IconTextLine } from './IconTextLine';
