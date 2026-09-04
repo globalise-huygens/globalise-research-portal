@@ -29,6 +29,40 @@ export async function loadCatalog(uri: string) {
   }
 }
 
+export async function loadNextCatalogPage() {
+  const { hydraState } = useCatalogStore.getState();
+  const next = hydraState.collection?.view?.next;
+  if (!next || hydraState.isLoading) {
+    return;
+  }
+
+  setCatalogState({ hydraState: { ...hydraState, isLoading: true } });
+  try {
+    const payload = await fetchJson<unknown>(getJsonUrl(next));
+    if (!isHydraCollection(payload)) {
+      throw new Error('Not a collection');
+    }
+    const collection = hydraState.collection;
+    if (!collection) {
+      setCatalogState({ hydraState: { ...hydraState, isLoading: false } });
+      return;
+    }
+    setCatalogState({
+      hydraState: {
+        ...hydraState,
+        collection: {
+          ...collection,
+          member: [...collection.member, ...payload.member],
+          view: payload.view,
+        },
+        isLoading: false,
+      },
+    });
+  } catch (e) {
+    setCatalogState({ hydraState: { ...hydraState, isLoading: false, error: getErrorMessage(e) } });
+  }
+}
+
 export function useCollection(): HydraState {
   return useCatalogStore((s) => s.hydraState);
 }

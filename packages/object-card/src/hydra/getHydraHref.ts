@@ -1,13 +1,11 @@
-import { HydraMember, isCollectionMember } from './HydraModel.ts';
+import { HydraMember } from './HydraModel.ts';
 
 export function getHydraHref(member: HydraMember): string {
-  const page = isCollectionMember(member) ? '/catalog' : '/object-card';
-  return `${page}?uri=${encodeURIComponent(member['@id'])}`;
+  return `/catalog?uri=${encodeURIComponent(member['@id'])}`;
 }
 
 export function getHydraTarget(member: HydraMember) {
-  const to = isCollectionMember(member) ? '/catalog' : '/object-card';
-  return { to, search: { uri: member['@id'] } } as const;
+  return { to: '/catalog', search: { uri: member['@id'] } } as const;
 }
 
 export function getCollectionHref(uri: string): string {

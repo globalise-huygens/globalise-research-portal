@@ -164,11 +164,14 @@
   }
 
   .collection-page {
+    box-sizing: border-box;
     display: flex;
-    height: 100%;
+    width: min(100%, 1200px);
+    margin: var(--s32) auto;
     flex-direction: column;
+    background: var(--color-neutral-800);
 
-    .collection-header {
+    .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -176,20 +179,48 @@
       flex-wrap: wrap;
     }
 
+    .collection-title {
+      display: flex;
+      align-items: center;
+      gap: var(--s12);
+    }
+
+    .body {
+      display: block;
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+
     .collection-total {
       color: var(--color-neutral-500);
     }
 
     .collection-list {
-      height: 70vh;
+      width: 100%;
+      height: min(65vh, 720px);
+      min-height: 320px;
+    }
+
+    .collection-list .gds-reference-panel-item {
+      margin-inline: var(--s16);
     }
 
     .collection-item-link {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+      justify-content: space-between;
       color: white;
       text-decoration: none;
+      text-align: left;
+
+      .action-icon {
+        order: 2;
+        margin-left: auto;
+      }
 
       &:hover {
-        text-decoration: underline;
+        background: rgb(255 255 255 / 0.08);
       }
     }
 

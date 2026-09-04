@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
 import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
-import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,25 +34,18 @@ const ManifestIndexRoute = ManifestIndexRouteImport.update({
   path: '/manifest/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
-  id: '/object-card/',
-  path: '/object-card/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
   '/catalog/': typeof CatalogIndexRoute
   '/manifest/': typeof ManifestIndexRoute
-  '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
   '/catalog': typeof CatalogIndexRoute
   '/manifest': typeof ManifestIndexRoute
-  '/object-card': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,20 +53,13 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/catalog/': typeof CatalogIndexRoute
   '/manifest/': typeof ManifestIndexRoute
-  '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/catalog/' | '/manifest/' | '/object-card/'
+  fullPaths: '/' | '/search' | '/catalog/' | '/manifest/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/catalog' | '/manifest' | '/object-card'
-  id:
-    | '__root__'
-    | '/'
-    | '/search'
-    | '/catalog/'
-    | '/manifest/'
-    | '/object-card/'
+  to: '/' | '/search' | '/catalog' | '/manifest'
+  id: '__root__' | '/' | '/search' | '/catalog/' | '/manifest/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -82,7 +67,6 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   ManifestIndexRoute: typeof ManifestIndexRoute
-  ObjectCardIndexRoute: typeof ObjectCardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -115,13 +99,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManifestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/object-card/': {
-      id: '/object-card/'
-      path: '/object-card'
-      fullPath: '/object-card/'
-      preLoaderRoute: typeof ObjectCardIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -130,7 +107,6 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   ManifestIndexRoute: ManifestIndexRoute,
-  ObjectCardIndexRoute: ObjectCardIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
