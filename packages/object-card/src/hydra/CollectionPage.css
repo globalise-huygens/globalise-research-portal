@@ -1,4 +1,168 @@
 @layer components {
+  .catalog-overview {
+    box-sizing: border-box;
+    display: grid;
+    min-height: 100%;
+    gap: var(--s48);
+    background: var(--color-background-fixed-card);
+    padding: clamp(var(--s24), 4vw, var(--s64));
+  }
+
+  .catalog-overview-header {
+    display: grid;
+    gap: var(--s8);
+
+    h1 {
+      max-width: 18ch;
+      margin: 0;
+      color: var(--color-brand-white);
+      font-family: var(--font-serif);
+      font-size: clamp(var(--text-4xl), 5vw, var(--text-6xl));
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+  }
+
+  .catalog-overview-eyebrow,
+  .catalog-schema-group > h2 {
+    margin: 0;
+    color: var(--color-neutral-300);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    line-height: var(--s20);
+    text-transform: uppercase;
+  }
+
+  .catalog-schema-group {
+    display: grid;
+    gap: var(--s16);
+  }
+
+  .catalog-schema-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s16);
+  }
+
+  .catalog-schema-tile {
+    display: flex;
+    aspect-ratio: 1;
+    min-height: var(--s176);
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--catalog-schema-color, var(--color-neutral-200));
+    color: var(--color-brand-black);
+    padding: var(--s20);
+    text-decoration: none;
+    transition:
+      filter 150ms ease,
+      transform 150ms ease;
+  }
+
+  .catalog-schema-tile[data-schema="person"],
+  .catalog-schema-tile[data-schema="place"] {
+    --catalog-schema-color: var(--color-brand-mint);
+  }
+
+  .catalog-schema-tile[data-schema="organization"],
+  .catalog-schema-tile[data-schema="rulership"] {
+    --catalog-schema-color: var(--color-brand-vermilion);
+  }
+
+  .catalog-schema-tile[data-schema="polity"] {
+    --catalog-schema-color: var(--color-mint-700);
+
+    color: var(--color-brand-white);
+  }
+
+  .catalog-schema-tile[data-schema="ship"],
+  .catalog-schema-tile[data-schema="voyage"] {
+    --catalog-schema-color: var(--color-brand-turquoise);
+  }
+
+  .catalog-schema-tile[data-schema="conversion"] {
+    --catalog-schema-color: var(--color-parchment-300);
+  }
+
+  .catalog-schema-tile[data-schema="occurrence"] {
+    --catalog-schema-color: var(--color-brand-parchment);
+  }
+
+  .catalog-schema-tile[data-schema="concept"],
+  .catalog-schema-tile[data-schema="conceptscheme"],
+  .catalog-schema-tile[data-schema="collection"] {
+    --catalog-schema-color: var(--color-neutral-200);
+  }
+
+  .catalog-schema-tile:hover {
+    filter: brightness(1.08);
+  }
+
+  .catalog-schema-tile:active {
+    transform: scale(0.985);
+  }
+
+  .catalog-schema-tile:focus-visible {
+    outline: 3px solid var(--color-brand-white);
+    outline-offset: var(--s4);
+  }
+
+  .catalog-schema-tile-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s4);
+  }
+
+  .catalog-schema-tile-category {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--s20);
+  }
+
+  .catalog-schema-tile-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-3xl);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .catalog-schema-tile-icon {
+    width: var(--s24);
+    height: var(--s24);
+    transition: transform 150ms ease;
+  }
+
+  .catalog-schema-tile:hover .catalog-schema-tile-icon {
+    transform: translateX(var(--s4));
+  }
+
+  @media (min-width: 560px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .catalog-schema-tile,
+    .catalog-schema-tile-icon {
+      transition: none;
+    }
+  }
+
   .collection-page {
     display: flex;
     height: 100%;

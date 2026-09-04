@@ -1,6 +1,7 @@
 import { Virtuoso } from 'react-virtuoso';
 import { Link } from '@tanstack/react-router';
 import {
+  IconEast,
   ReferencePanelItem,
   ReferencePanelList,
 } from '@globalise/design';
@@ -28,6 +29,11 @@ export function CatalogView() {
   const { title, totalItems, member, view } = collection;
 
   const memberType = getLinkedArtEntityType(collection['@id']);
+
+  if (memberType === 'unknown') {
+    return <SchemaCatalog title={title} members={member}/>;
+  }
+
   const shownItems = getShownItemsRange(collection);
 
   return (
@@ -51,6 +57,97 @@ export function CatalogView() {
           <PageItem key={index} member={item} type={memberType}/>
         )}
       />
+    </section>
+  );
+}
+
+const conceptTypes: LinkedArtEntityType[] = [
+  'concept',
+  'conceptscheme',
+  'collection',
+];
+
+const schemaTitles: Partial<Record<LinkedArtEntityType, string>> = {
+  person: 'Person',
+  place: 'Place',
+  organization: 'Organisation',
+  polity: 'Polity',
+  rulership: 'Rulership',
+  ship: 'Ship',
+  voyage: 'Voyage',
+  conversion: 'Conversion',
+  occurrence: 'Occurrence',
+  concept: 'Concept',
+  conceptscheme: 'Concept scheme',
+  collection: 'SKOS collection',
+};
+
+function SchemaCatalog({
+  title,
+  members,
+}: {
+  title?: string;
+  members: HydraMember[];
+}) {
+  const schemas = members.map((member) => ({
+    member,
+    type: getLinkedArtEntityType(member['@id']),
+  }));
+  const entities = schemas.filter(({ type }) => !conceptTypes.includes(type));
+  const concepts = schemas.filter(({ type }) => conceptTypes.includes(type));
+
+  return (
+    <main className='catalog-overview'>
+      <header className='catalog-overview-header'>
+        <span className='catalog-overview-eyebrow'>Browse the dataset</span>
+        <h1>{title ?? 'Globalise Dataset Catalog'}</h1>
+      </header>
+      <SchemaGroup title='Entities' schemas={entities}/>
+      <SchemaGroup title='Concepts' schemas={concepts}/>
+    </main>
+  );
+}
+
+function SchemaGroup({
+  title,
+  schemas,
+}: {
+  title: 'Entities' | 'Concepts';
+  schemas: { member: HydraMember; type: LinkedArtEntityType }[];
+}) {
+  return (
+    <section
+      className='catalog-schema-group'
+      aria-labelledby={`catalog-${title}`}
+    >
+      <h2 id={`catalog-${title}`}>{title}</h2>
+      <div className='catalog-schema-grid'>
+        {schemas.map(({ member, type }) => {
+          const schemaTitle =
+            schemaTitles[type] ?? member.title ?? member['@id'];
+
+          return (
+            <Link
+              key={member['@id']}
+              {...getHydraTarget(member)}
+              aria-label={`Open ${schemaTitle} collection`}
+              className='catalog-schema-tile'
+              data-schema={type}
+            >
+              <span className='catalog-schema-tile-header'>
+                <span className='catalog-schema-tile-category'>
+                  {title === 'Entities' ? 'Entity' : 'Concept'}
+                </span>
+                <span className='catalog-schema-tile-title'>{schemaTitle}</span>
+              </span>
+              <IconEast
+                className='catalog-schema-tile-icon'
+                aria-hidden='true'
+              />
+            </Link>
+          );
+        })}
+      </div>
     </section>
   );
 }
