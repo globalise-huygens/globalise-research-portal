@@ -1,3 +1,4 @@
+import { mergePaths, type TreeNode } from '@globalise/common';
 import { ConceptNode, ConceptNodeRow } from './ConceptNode.tsx';
 import type { SkosConcept } from './SkosModel.ts';
 
@@ -42,10 +43,13 @@ export function ConceptHierarchy({
   );
 }
 
+type PathGroup = { scheme?: SkosConcept; paths: SkosConcept[][] };
+
 function buildHierarchy(concept: SkosConcept): HierarchyNode[] {
   const paths = getBroaderPaths(concept);
-  const hierarchy: HierarchyNode[] = [];
-  const schemeNodes = new Map<string, HierarchyNode>();
+  const groups: PathGroup[] = [];
+  const schemeGroups = new Map<string, PathGroup>();
+  let rootGroup: PathGroup | undefined;
 
   for (const path of paths) {
     const root = path[0];
@@ -56,22 +60,47 @@ function buildHierarchy(concept: SkosConcept): HierarchyNode[] {
         : [];
 
     if (!rootSchemes.length) {
-      addHierarchyPath(hierarchy, path);
+      if (!rootGroup) {
+        rootGroup = { paths: [] };
+        groups.push(rootGroup);
+      }
+      rootGroup.paths.push(path);
       continue;
     }
 
     for (const scheme of rootSchemes) {
-      let schemeNode = schemeNodes.get(scheme.id);
-      if (!schemeNode) {
-        schemeNode = { concept: scheme, children: [], isScheme: true };
-        schemeNodes.set(scheme.id, schemeNode);
-        hierarchy.push(schemeNode);
+      let schemeGroup = schemeGroups.get(scheme.id);
+      if (!schemeGroup) {
+        schemeGroup = { scheme, paths: [] };
+        schemeGroups.set(scheme.id, schemeGroup);
+        groups.push(schemeGroup);
       }
-      addHierarchyPath(schemeNode.children, path);
+      schemeGroup.paths.push(path);
     }
   }
 
-  return hierarchy;
+  return groups.flatMap(({ scheme, paths }) => {
+    const children = mergePaths(paths, (candidate) => candidate.id)
+      .map((node) => toHierarchyNode(node, concept, true));
+
+    return scheme
+      ? [{ concept: scheme, children, isScheme: true }]
+      : children;
+  });
+}
+
+function toHierarchyNode(
+  node: TreeNode<SkosConcept>,
+  concept: SkosConcept,
+  isRoot: boolean,
+): HierarchyNode {
+  return {
+    concept: node.item,
+    children: node.children.map((child) =>
+      toHierarchyNode(child, concept, false)),
+    isCurrent: node.item.id === concept.id,
+    isTopConcept: isRoot && Boolean(node.item.topConceptOf?.length),
+  };
 }
 
 function getBroaderPaths(concept: SkosConcept): SkosConcept[][] {
@@ -81,30 +110,6 @@ function getBroaderPaths(concept: SkosConcept): SkosConcept[][] {
 
   return concept.broader.flatMap((broader) =>
     getBroaderPaths(broader).map((path) => [...path, concept]));
-}
-
-function addHierarchyPath(
-  nodes: HierarchyNode[],
-  path: SkosConcept[],
-  index = 0,
-) {
-  const concept = path[index];
-  let node = nodes.find((candidate) => candidate.concept.id === concept.id);
-
-  if (!node) {
-    node = {
-      concept,
-      children: [],
-      isTopConcept: index === 0 && Boolean(concept.topConceptOf?.length),
-    };
-    nodes.push(node);
-  }
-
-  if (index === path.length - 1) {
-    node.isCurrent = true;
-  } else {
-    addHierarchyPath(node.children, path, index + 1);
-  }
 }
 
 type HierarchyConceptNodeProps = {
