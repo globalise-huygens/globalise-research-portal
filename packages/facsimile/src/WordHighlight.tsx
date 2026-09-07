@@ -1,7 +1,8 @@
 import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
-  createHoverAnchor,
+  removeHoverAttribute,
+  setHoverAttribute,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
@@ -35,13 +36,15 @@ export function WordHighlight(
 
   function handleHover(hovering: boolean, event: MouseEvent) {
     setHoveredLocal(hovering);
+    if (hovering) {
+      setHoverAttribute(event.currentTarget, 'delayed');
+    } else {
+      removeHoverAttribute(event.currentTarget);
+    }
     if (!hovering && document.activeElement === event.currentTarget) {
       return;
     }
-    setHovered(
-      hovering ? id : null,
-      hovering ? createHoverAnchor(event.currentTarget) : undefined,
-    );
+    setHovered(hovering ? id : null);
     if (hovering && !tone) {
       setTooltip({ text, x: event.clientX, y: event.clientY });
     } else {
@@ -73,10 +76,14 @@ export function WordHighlight(
       onMouseLeave={(event) => handleHover(false, event)}
       onFocus={(event) => {
         if (tone) {
-          setHovered(id, createHoverAnchor(event.currentTarget, true));
+          setHoverAttribute(event.currentTarget);
+          setHovered(id);
         }
       }}
-      onBlur={() => setHovered(null)}
+      onBlur={(event) => {
+        removeHoverAttribute(event.currentTarget);
+        setHovered(null);
+      }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
