@@ -6,13 +6,13 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "npm -w @globalise/app run dev",
-    "build:app": "npm -w @globalise/app run build",
-    "build": "npm t && npm run typecheck && npm run lint && npm run build:app",
-    "serve": "npm -w @globalise/app run serve",
-    "diplomatic:demo": "npm -w @globalise/diplomatic run demo",
-    "diplomatic:screenshot": "npm -w @globalise/diplomatic run screenshot",
-    "preview": "npm -w @globalise/app run build && npm -w @globalise/app run preview",
+    "start": "pnpm --filter @globalise/app dev",
+    "build:app": "pnpm --filter @globalise/app build",
+    "build": "pnpm test && pnpm typecheck && pnpm lint && pnpm build:app",
+    "serve": "pnpm --filter @globalise/app serve",
+    "diplomatic:demo": "pnpm --filter @globalise/diplomatic demo",
+    "diplomatic:screenshot": "pnpm --filter @globalise/diplomatic screenshot",
+    "preview": "pnpm --filter @globalise/app build && pnpm --filter @globalise/app preview",
     "typecheck": "tsc -b --clean && tsc -b",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -52,5 +52,11 @@
     "workerDirectory": [
       "packages/app/public"
     ]
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.25.0+sha512.5cde925b4f075f725eb71fbae18a42ffe784524789f19b61c731cb8721ec28aaee160e01a8d5af4fedb2a42cdbf300efe23db356b0d4a17b4d63e11f8ab7c956"
+    }
   }
 }
