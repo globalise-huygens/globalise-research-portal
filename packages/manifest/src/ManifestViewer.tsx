@@ -4,8 +4,9 @@ import './ManifestViewer.css';
 import {
   cn,
   IconClose,
+  IconLeftPanelClose,
+  IconLeftPanelOpen,
   IconScan,
-  IconSidebar,
   IconSwap,
   IconTranscription,
   Toggle,
@@ -166,7 +167,9 @@ export function ManifestViewer({
                 tooltip={isSidebarExpanded ? 'Hide sidebar' : 'Show sidebar'}
                 isActive={isSidebarExpanded}
                 className={TOP_BAR_BUTTON}
-                icon={<IconSidebar className="toolbar-icon" />}
+                icon={isSidebarExpanded
+                  ? <IconLeftPanelClose aria-hidden="true" className="toolbar-icon" />
+                  : <IconLeftPanelOpen aria-hidden="true" className="toolbar-icon" />}
                 onPress={() => setIsSidebarExpanded((v) => !v)}
               />
 
