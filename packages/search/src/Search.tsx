@@ -1,5 +1,5 @@
 import '@globalise/design/styles.css';
-import { Panoptes, PanoptesConfiguration, useSearch } from '@knaw-huc/panoptes-react';
+import { Panoptes, PanoptesConfiguration } from '@knaw-huc/panoptes-react';
 import { FacetedSearch, type Facets } from '@knaw-huc/faceted-search-react';
 import setupWorker from './mock/serverMock';
 import { facets } from './Facets';
@@ -32,10 +32,8 @@ export default function Search() {
 }
 
 function StateSetup() {
-  const searchFn = useSearch(dataset);
-
   return (
-    <FacetedSearch facets={facetsObj} searchFn={searchFn} pageSize={pageSize}>
+    <FacetedSearch facets={facetsObj} pageSize={pageSize} syncPageToUrl={false}>
       <Layout/>
     </FacetedSearch>
   );
