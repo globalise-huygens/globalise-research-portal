@@ -5,6 +5,8 @@ import { IconEntityOrganisation } from '../icons';
 import { IconEntityPerson } from '../icons';
 import { IconEntityPlace } from '../icons';
 import { IconEntityShip } from '../icons';
+import { IconConcept } from '../icons';
+import { IconEvents } from '../icons';
 import { cn } from '../../lib';
 import * as React from 'react';
 import {
@@ -20,6 +22,12 @@ export type EntityTagType =
   | 'commodity'
   | 'dimensions'
   | 'organisation'
+  | 'polity'
+  | 'rulership'
+  | 'voyage'
+  | 'conversion'
+  | 'occurrence'
+  | 'concept'
   | 'date'
   | 'document';
 
@@ -42,7 +50,17 @@ function getEntityTagIcon(type: EntityTagType) {
     case 'dimensions':
       return <IconEntityDimensions className={iconClassName} />;
     case 'organisation':
+    case 'polity':
+    case 'rulership':
       return <IconEntityOrganisation className={iconClassName} />;
+    case 'voyage':
+      return <IconEntityShip className={iconClassName} />;
+    case 'concept':
+      return <IconConcept className={iconClassName} />;
+    case 'occurrence':
+      return <IconEvents className={iconClassName} />;
+    case 'conversion':
+      return <IconEntityDocument className={iconClassName} />;
     case 'date':
       return <IconEntityDate className={iconClassName} />;
     case 'document':
@@ -68,6 +86,7 @@ function EntityTag({
   icon,
   children,
   href,
+  onPress,
   ...props
 }: EntityTagProps) {
   const content = (
@@ -79,12 +98,14 @@ function EntityTag({
     </>
   );
 
-  if (href) {
+  if (href || onPress) {
     return (
       <AriaLink
         href={href}
+        onPress={onPress}
         className={entityTagVariants({ className })}
         data-type={type}
+        data-interactive="true"
         {...props}
       >
         {content}

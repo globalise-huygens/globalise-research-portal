@@ -69,12 +69,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/search' | '/catalog' | '/manifest' | '/object-card'
   id:
-    | '__root__'
-    | '/'
-    | '/search'
-    | '/catalog/'
-    | '/manifest/'
-    | '/object-card/'
+    '__root__' | '/' | '/search' | '/catalog/' | '/manifest/' | '/object-card/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
