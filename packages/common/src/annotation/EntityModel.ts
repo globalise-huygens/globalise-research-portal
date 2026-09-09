@@ -26,6 +26,9 @@ export type EntityBody = {
     type: string;
     content: string;
   };
+  has_appellative_subject?: EntitySubject;
+  has_classificatory_subject?: EntitySubject;
+  has_dimension_subject?: EntitySubject;
   unit?: EntityClassification;
 };
 
@@ -33,6 +36,12 @@ export type EntityClassification = {
   id: string;
   type: string;
   _label: string;
+};
+
+export type EntitySubject = {
+  id: string;
+  type: string;
+  _label?: string;
 };
 const entityAnnotationBodyTypes = [
   'AppellativeStatus',

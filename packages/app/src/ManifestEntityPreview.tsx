@@ -253,10 +253,30 @@ function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
   return {
     type,
     icon: <EntityIcon type={type} />,
+    openFullCardHref: getLinkedObjectCardHref(annotation),
     title: getPreviewTitle(annotation),
     properties: getPreviewProperties(annotation),
-    copyValue: annotation.id,
   };
+}
+
+function getLinkedObjectCardHref(annotation: EntityAnnotation): string | undefined {
+  const body = getPrimaryEntityBody(annotation);
+  const subject = body.has_appellative_subject
+    ?? body.has_classificatory_subject
+    ?? body.has_dimension_subject;
+  const uri = subject?.id;
+  if (!uri || uri.includes('#') || uri.includes('/annotations:')) {
+    return undefined;
+  }
+  try {
+    const parsed = new URL(uri);
+    if (parsed.protocol !== 'https:' || parsed.hostname !== 'data.globalise.huygens.knaw.nl') {
+      return undefined;
+    }
+  } catch {
+    return undefined;
+  }
+  return `/object-card?uri=${encodeURIComponent(uri)}`;
 }
 
 function getPreviewTitle(annotation: EntityAnnotation) {
