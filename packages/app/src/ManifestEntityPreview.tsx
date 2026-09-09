@@ -109,9 +109,15 @@ export function ManifestEntityPreview() {
       const anchorRect = anchor.isConnected
         ? anchor.getBoundingClientRect()
         : undefined;
-      if (anchorRect) {
-        setPosition(placePreview(anchorRect, rect.width, rect.height));
+      if (!anchorRect) {
+        setPosition((current) => ({ ...current, visibility: 'hidden' }));
+        return;
       }
+      if (anchorRect.bottom < 0 || anchorRect.top > window.innerHeight) {
+        setPosition((current) => ({ ...current, visibility: 'hidden' }));
+        return;
+      }
+      setPosition(placePreview(anchorRect, rect.width, rect.height));
     };
 
     updatePosition();
@@ -310,7 +316,12 @@ function getPreviewProperties(
       { label: 'Unit', value: body.unit?._label ?? '-' },
     );
   }
-  if (classificationId === 'gan:DATE' && body.timespan) {
+  const dateLabel = body.label ?? body.ascribes_appellation?.content ?? '';
+  if (
+    classificationId === 'gan:DATE'
+    && body.timespan
+    && !hasExplicitDateYear(dateLabel)
+  ) {
     const dateBounds = [
       ['Begin of the begin', body.timespan.begin_of_the_begin],
       ['End of the begin', body.timespan.end_of_the_begin],
@@ -331,6 +342,10 @@ function getPreviewProperties(
   }
   properties.push({ label: 'Classified by', value: body.classified_as._label });
   return properties;
+}
+
+function hasExplicitDateYear(value: string): boolean {
+  return /\b\d{4}\b|\b\d{3,4}\/\d{1,4}\b/.test(value);
 }
 
 function getQuantityTitle(body: EntityBody) {

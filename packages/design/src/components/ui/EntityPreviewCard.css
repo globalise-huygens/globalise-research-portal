@@ -1,8 +1,8 @@
 @layer components {
-  .entity-preview-card {
-    width: max-content;
+  .entity-preview-card.popover {
+    width: fit-content;
     min-width: min(200px, calc(100vw - var(--s16)));
-    max-width: min(360px, calc(100vw - var(--s16)));
+    max-width: min(260px, calc(100vw - var(--s16)));
     background: var(--color-neutral-800);
     border-color: rgb(255 255 255 / 0.1) !important;
     box-shadow:
