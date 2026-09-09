@@ -8,27 +8,33 @@ import {
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
-import { Id } from '@globalise/common/annotation';
 import {
-  EntityHighlightTone,
-  getEntityHighlightColors,
-} from './EntityHighlightTone.ts';
+  type Id,
+  type CidocEntityClassificationId,
+  getCidocClassNameByClassificationId,
+} from '@globalise/common/annotation';
+import { getEntityHighlightColors } from './EntityHighlightTone.ts';
 
 type WordHighlightProps = {
   canvasId: CanvasId;
   id: Id;
   points: string;
   text: string;
-  tone?: EntityHighlightTone;
+  entityClassificationId?: CidocEntityClassificationId;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export function WordHighlight(
-  { canvasId, id, points, text, tone, setTooltip }: WordHighlightProps,
+  {
+    canvasId, id, points, text, entityClassificationId, setTooltip,
+  }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
-  const colors = getEntityHighlightColors(tone);
+  const isEntityTrigger = entityClassificationId !== undefined;
+  const colors = getEntityHighlightColors(entityClassificationId
+    ? getCidocClassNameByClassificationId(entityClassificationId)
+    : undefined);
 
   const fill = selected ? colors.fill
     : hovered ? colors.hoverFill
@@ -45,7 +51,7 @@ export function WordHighlight(
       removeHoverAttribute(event.currentTarget);
     }
     setHovered(hovering ? id : null);
-    if (hovering && !tone) {
+    if (hovering && !isEntityTrigger) {
       setTooltip({ text, x: event.clientX, y: event.clientY });
     } else {
       setTooltip(null);
@@ -63,19 +69,19 @@ export function WordHighlight(
         cursor: 'pointer',
         mixBlendMode: 'multiply',
       }}
-      tabIndex={tone ? 0 : undefined}
-      role={tone ? 'button' : undefined}
-      aria-label={tone ? `Preview entity: ${text}` : undefined}
+      tabIndex={isEntityTrigger ? 0 : undefined}
+      role={isEntityTrigger ? 'button' : undefined}
+      aria-label={isEntityTrigger ? `Preview entity: ${text}` : undefined}
       onClick={() => toggleClicked(id)}
       onMouseEnter={(event) => handleHover(true, event)}
       onMouseMove={(event) => {
-        if (!tone) {
+        if (!isEntityTrigger) {
           handleHover(true, event);
         }
       }}
       onMouseLeave={(event) => handleHover(false, event)}
       onFocus={(event) => {
-        if (tone) {
+        if (isEntityTrigger) {
           setHoverAttribute(event.currentTarget);
           setHovered(id);
         }
