@@ -1,0 +1,16 @@
+.manifest-entity-preview {
+  position: fixed;
+  width: max-content;
+  z-index: 100;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}

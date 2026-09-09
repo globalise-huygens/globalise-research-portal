@@ -79,11 +79,13 @@ export type {
   EntityPreviewCardDateData,
   EntityPreviewCardDimensionsData,
   EntityPreviewCardDocumentData,
-  EntityPreviewCardKind,
+  EntityPreviewCardEntityData,
+  EntityPreviewCardType,
   EntityPreviewCardOrganisationData,
   EntityPreviewCardPersonData,
   EntityPreviewCardPlaceData,
   EntityPreviewCardPolityData,
+  EntityPreviewCardProperty,
   EntityPreviewCardProps,
   EntityPreviewCardQuantityData,
   EntityPreviewCardShipData,
@@ -174,3 +176,4 @@ export type { SearchBarProps } from './SearchBar';
 
 export { ArticleRow } from './ArticleRow';
 export type { ArticleRowProps } from './ArticleRow';
+export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';

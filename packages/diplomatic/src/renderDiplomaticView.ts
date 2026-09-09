@@ -10,6 +10,7 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
+import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
 import {
   D3El,
@@ -101,6 +102,35 @@ export function renderDiplomaticView(
   const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
+  function getEntitySegment(event: FocusEvent) {
+    if (!(event.target instanceof HTMLSpanElement)) {
+      return null;
+    }
+
+    return event.target.dataset.entityId
+      ? event.target
+      : null;
+  }
+
+  function handleEntityFocus(event: FocusEvent) {
+    const $segment = getEntitySegment(event);
+    if ($segment) {
+      setHoverAttribute($segment);
+      onHover($segment.dataset.entityId ?? null);
+    }
+  }
+
+  function handleEntityBlur(event: FocusEvent) {
+    const $segment = getEntitySegment(event);
+    if ($segment) {
+      removeHoverAttribute($segment);
+      onHover(null);
+    }
+  }
+
+  $layoutView.addEventListener('focusin', handleEntityFocus);
+  $layoutView.addEventListener('focusout', handleEntityBlur);
+
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
       continue;
@@ -130,7 +160,13 @@ export function renderDiplomaticView(
             entityLabel,
           ],
         );
-        $segment.title = `${entityLabel} | ${entity.id}`;
+        $segment.tabIndex = 0;
+        $segment.dataset.entityId = entity.id;
+        $segment.setAttribute('role', 'button');
+        $segment.setAttribute(
+          'aria-label',
+          `Preview entity: ${$segment.textContent}`,
+        );
 
         if (!$entityToSegments[entity.id]) {
           $entityToSegments[entity.id] = [];
@@ -138,13 +174,33 @@ export function renderDiplomaticView(
         $entityToSegments[entity.id].push($segment);
 
         $segment.addEventListener('click', () => onClick(entity.id));
-        $segment.addEventListener('mouseenter', () => onHover(entity.id));
-        $segment.addEventListener('mouseleave', () => onHover(null));
+        $segment.addEventListener('mouseenter', () => {
+          setHoverAttribute($segment, 'delayed');
+          onHover(entity.id);
+        });
+        $segment.addEventListener('mouseleave', () => {
+          if (document.activeElement !== $segment) {
+            removeHoverAttribute($segment);
+            onHover(null);
+          }
+        });
+        $segment.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick(entity.id);
+          }
+        });
       } else {
         const blockId = wordToBlock[wordId];
         $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => onHover(wordId));
-        $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
+        $segment.addEventListener('mouseenter', () => {
+          setHoverAttribute($segment, 'delayed');
+          onHover(wordId);
+        });
+        $segment.addEventListener('mouseleave', () => {
+          removeHoverAttribute($segment);
+          onHover(blockId ?? null);
+        });
       }
     }
     $word.replaceChildren(...$segments);

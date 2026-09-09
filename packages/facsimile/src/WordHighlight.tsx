@@ -1,32 +1,40 @@
 import { type MouseEvent, useState } from 'react';
 import {
   CanvasId,
+  removeHoverAttribute,
+  setHoverAttribute,
   setHovered,
   toggleClicked,
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
-import { Id } from '@globalise/common/annotation';
 import {
-  EntityHighlightTone,
-  getEntityHighlightColors,
-} from './EntityHighlightTone.ts';
+  type Id,
+  type CidocEntityClassificationId,
+  getCidocClassNameByClassificationId,
+} from '@globalise/common/annotation';
+import { getEntityHighlightColors } from './EntityHighlightTone.ts';
 
 type WordHighlightProps = {
   canvasId: CanvasId;
   id: Id;
   points: string;
   text: string;
-  tone?: EntityHighlightTone;
+  entityClassificationId?: CidocEntityClassificationId;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export function WordHighlight(
-  { canvasId, id, points, text, tone, setTooltip }: WordHighlightProps,
+  {
+    canvasId, id, points, text, entityClassificationId, setTooltip,
+  }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
-  const colors = getEntityHighlightColors(tone);
+  const isEntityTrigger = entityClassificationId !== undefined;
+  const colors = getEntityHighlightColors(entityClassificationId
+    ? getCidocClassNameByClassificationId(entityClassificationId)
+    : undefined);
 
   const fill = selected ? colors.fill
     : hovered ? colors.hoverFill
@@ -34,11 +42,19 @@ export function WordHighlight(
 
   function handleHover(hovering: boolean, event: MouseEvent) {
     setHoveredLocal(hovering);
-    setHovered(hovering ? id : null);
-    if (!hovering) {
-      setTooltip(null);
+    if (!hovering && document.activeElement === event.currentTarget) {
+      return;
+    }
+    if (hovering) {
+      setHoverAttribute(event.currentTarget, 'delayed');
     } else {
+      removeHoverAttribute(event.currentTarget);
+    }
+    setHovered(hovering ? id : null);
+    if (hovering && !isEntityTrigger) {
       setTooltip({ text, x: event.clientX, y: event.clientY });
+    } else {
+      setTooltip(null);
     }
   }
 
@@ -53,10 +69,33 @@ export function WordHighlight(
         cursor: 'pointer',
         mixBlendMode: 'multiply',
       }}
+      tabIndex={isEntityTrigger ? 0 : undefined}
+      role={isEntityTrigger ? 'button' : undefined}
+      aria-label={isEntityTrigger ? `Preview entity: ${text}` : undefined}
       onClick={() => toggleClicked(id)}
       onMouseEnter={(event) => handleHover(true, event)}
-      onMouseMove={(event) => handleHover(true, event)}
+      onMouseMove={(event) => {
+        if (!isEntityTrigger) {
+          handleHover(true, event);
+        }
+      }}
       onMouseLeave={(event) => handleHover(false, event)}
+      onFocus={(event) => {
+        if (isEntityTrigger) {
+          setHoverAttribute(event.currentTarget);
+          setHovered(id);
+        }
+      }}
+      onBlur={(event) => {
+        removeHoverAttribute(event.currentTarget);
+        setHovered(null);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleClicked(id);
+        }
+      }}
     />
   );
 }

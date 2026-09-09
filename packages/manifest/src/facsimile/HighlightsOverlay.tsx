@@ -4,20 +4,14 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
-  getCidocClassName,
-  type Annotation,
-  type CidocEntityClassificationId,
-  type Id,
   isBlock,
-  isHighlightedEntity,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
   loadCanvasAnnotationPages,
   useAnnotations,
-  useCanvasIndexes,
-  useEntityHighlightCategories,
+  useWordEntityClassifications,
   useIsLayoutElementsVisible,
   usePages,
   useSelectedAnnotationsInFacsimile,
@@ -25,7 +19,6 @@ import {
 import { orThrow } from '@globalise/common';
 import {
   BlockHighlight,
-  type EntityHighlightTone,
   FacsimileTooltip,
   FacsimileTooltipProps,
   WordHighlight,
@@ -48,9 +41,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
-  const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
 
@@ -75,28 +67,6 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     canvasSize = { width: canvas.width, height: canvas.height };
   }
 
-  const wordHighlightTones = useMemo(() => {
-    const tones: Partial<Record<Id, EntityHighlightTone>> = {};
-    for (const [entityId, wordIds] of Object.entries(indexes.entityToWords)) {
-      const tone = getEntityHighlightTone(
-        entityId,
-        annotations,
-        highlightedEntityCategories,
-      );
-      if (!tone) {
-        continue;
-      }
-      wordIds.forEach((wordId) => {
-        tones[wordId] = tone;
-      });
-    }
-    return tones;
-  }, [
-    annotations,
-    highlightedEntityCategories,
-    indexes.entityToWords,
-  ]);
-
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
     [lazyCanvas.y, lazyCanvas.height],
@@ -108,8 +78,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       id: a.id,
       path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       text: findTextualBodyValue(a) ?? orThrow('No body value'),
-      tone: wordHighlightTones[a.id],
-    })), [annotations, wordHighlightTones]);
+      entityClassificationId: entityClassificationByWord[a.id],
+    })), [annotations, entityClassificationByWord]);
 
   const blocks = useMemo(() => Object.values(annotations)
     .filter(isBlock)
@@ -167,14 +137,14 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
-          {visibleWords.map(({ id, path, text, tone }) => (
+          {visibleWords.map(({ id, path, text, entityClassificationId }) => (
             <WordHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
               id={id}
               points={path}
               text={text}
-              tone={tone}
+              entityClassificationId={entityClassificationId}
               setTooltip={setTooltip}
             />
           ))}
@@ -184,18 +154,3 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     </>
   );
 });
-
-function getEntityHighlightTone(
-  entityId: Id,
-  annotations: Record<Id, Annotation>,
-  highlightedEntityCategories: Set<CidocEntityClassificationId>,
-): EntityHighlightTone | undefined {
-  const annotation = annotations[entityId];
-  if (!annotation) {
-    return undefined;
-  }
-  if (!isHighlightedEntity(annotation, highlightedEntityCategories)) {
-    return undefined;
-  }
-  return getCidocClassName(annotation);
-}
