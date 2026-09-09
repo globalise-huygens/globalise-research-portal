@@ -4,21 +4,11 @@ import * as React from 'react';
 import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
+import { getEntityTypeLabel, type EntityType } from './EntityIcon';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
-export type EntityPreviewCardType =
-  | 'entity'
-  | 'commodity'
-  | 'date'
-  | 'dimensions'
-  | 'document'
-  | 'organisation'
-  | 'person'
-  | 'place'
-  | 'polity'
-  | 'quantity'
-  | 'ship';
+export type EntityPreviewCardType = EntityType;
 
 export type EntityPreviewCardBaseData = {
   title: React.ReactNode;
@@ -159,19 +149,6 @@ function getEntityBadgeType(
   return type;
 }
 
-function getEntityBadgeLabel(type: EntityPreviewCardType) {
-  switch (type) {
-    case 'entity':
-      return 'Entity';
-    case 'organisation':
-      return 'Organisation';
-    case 'dimensions':
-      return 'Measure';
-    default:
-      return type;
-  }
-}
-
 function getAutomationBadges(
   badges: EntityPreviewCardAutomationBadge[] | undefined,
 ) {
@@ -283,7 +260,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
     .map(([label, value]) => ({ label, value }));
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
-  const categoryLabel = getEntityBadgeLabel(data.type);
+  const categoryLabel = getEntityTypeLabel(data.type);
   const copyValue = data.copyValue;
 
   function copyIdentifier() {

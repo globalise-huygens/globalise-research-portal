@@ -15,15 +15,8 @@ import {
 } from '@globalise/common/document';
 import {
   EntityPreviewCard,
-  IconEntityCommodity,
-  IconEntityDate,
-  IconEntityDimensions,
-  IconEntityDocument,
-  IconEntityOrganisation,
-  IconEntityPerson,
-  IconEntityPlace,
-  IconEntityShip,
-  IconEntities,
+  EntityIcon,
+  getEntityTypeLabel,
   type EntityPreviewCardData,
   type EntityPreviewCardType,
   type EntityPreviewCardProperty,
@@ -34,7 +27,6 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import './ManifestEntityPreview.css';
@@ -43,10 +35,6 @@ const OPEN_DELAY = 300;
 const CLOSE_DELAY = 200;
 
 type EntityAnnotation = Annotation<EntityBody>;
-type PreviewCategory = {
-  type: EntityPreviewCardType;
-  icon: ReactNode;
-};
 
 export function ManifestEntityPreview() {
   const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
@@ -261,8 +249,10 @@ function findEntityForWord(
 }
 
 function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
+  const type = getEntityType(getCidocEntityClassificationId(annotation));
   return {
-    ...getPreviewCategory(getCidocEntityClassificationId(annotation)),
+    type,
+    icon: <EntityIcon type={type} />,
     title: getPreviewTitle(annotation),
     properties: getPreviewProperties(annotation),
     copyValue: annotation.id,
@@ -286,7 +276,12 @@ function getPreviewProperties(
   const body = getPrimaryEntityBody(annotation);
   const classificationId = getCidocEntityClassificationId(annotation);
   const properties: EntityPreviewCardProperty[] = [
-    { label: 'Type', value: getEntityKindLabel(classificationId) },
+    {
+      label: 'Type',
+      value: classificationId === 'gan:CMTY_QUANT'
+        ? 'Exchange Unit'
+        : getEntityTypeLabel(getEntityType(classificationId)),
+    },
   ];
 
   if (classificationId === 'gan:DATE' && body.timespan) {
@@ -336,68 +331,26 @@ function isClassificationOnly(annotation: EntityAnnotation) {
     || classificationId === 'gan:ETH_REL';
 }
 
-function getEntityKindLabel(
-  classificationId: CidocEntityClassificationId | undefined,
-) {
-  switch (classificationId) {
-    case 'gan:LOC_NAME':
-    case 'gan:LOC_ADJ':
-      return 'Place';
-    case 'gan:PER_NAME':
-    case 'gan:PER_ATTR':
-    case 'gan:PRF':
-    case 'gan:STATUS':
-    case 'gan:ETH_REL':
-      return 'Person';
-    case 'gan:ORG':
-      return 'Organisation';
-    case 'gan:SHIP':
-    case 'gan:SHIP_TYPE':
-      return 'Ship';
-    case 'gan:DOC':
-      return 'Document';
-    case 'gan:CMTY_NAME':
-    case 'gan:CMTY_QUAL':
-      return 'Commodity';
-    case 'gan:CMTY_QUANT':
-      return 'Exchange Unit';
-    case 'gan:DATE':
-      return 'Date';
-    default:
-      return 'Entity';
-  }
-}
+const entityTypeByClassificationId = {
+  'gan:PER_NAME': 'person',
+  'gan:PER_ATTR': 'person',
+  'gan:PRF': 'person',
+  'gan:STATUS': 'person',
+  'gan:ETH_REL': 'person',
+  'gan:ORG': 'organisation',
+  'gan:SHIP': 'ship',
+  'gan:SHIP_TYPE': 'ship',
+  'gan:CMTY_NAME': 'commodity',
+  'gan:CMTY_QUAL': 'commodity',
+  'gan:DATE': 'date',
+  'gan:LOC_NAME': 'place',
+  'gan:LOC_ADJ': 'place',
+  'gan:DOC': 'document',
+  'gan:CMTY_QUANT': 'dimensions',
+} as const satisfies Record<CidocEntityClassificationId, EntityPreviewCardType>;
 
-function getPreviewCategory(
-  classificationId: CidocEntityClassificationId | undefined,
-): PreviewCategory {
-  switch (classificationId) {
-    case 'gan:PER_NAME':
-    case 'gan:PER_ATTR':
-    case 'gan:PRF':
-    case 'gan:STATUS':
-    case 'gan:ETH_REL':
-      return { type: 'person', icon: <IconEntityPerson /> };
-    case 'gan:ORG':
-      return { type: 'organisation', icon: <IconEntityOrganisation /> };
-    case 'gan:SHIP':
-    case 'gan:SHIP_TYPE':
-      return { type: 'ship', icon: <IconEntityShip /> };
-    case 'gan:CMTY_NAME':
-    case 'gan:CMTY_QUAL':
-      return { type: 'commodity', icon: <IconEntityCommodity /> };
-    case 'gan:DATE':
-      return { type: 'date', icon: <IconEntityDate /> };
-    case 'gan:LOC_NAME':
-    case 'gan:LOC_ADJ':
-      return { type: 'place', icon: <IconEntityPlace /> };
-    case 'gan:DOC':
-      return { type: 'document', icon: <IconEntityDocument /> };
-    case 'gan:CMTY_QUANT':
-      return { type: 'dimensions', icon: <IconEntityDimensions /> };
-    default:
-      return { type: 'entity', icon: <IconEntities /> };
-  }
+function getEntityType(classificationId: CidocEntityClassificationId | undefined) {
+  return classificationId ? entityTypeByClassificationId[classificationId] : 'entity';
 }
 
 function placePreview(

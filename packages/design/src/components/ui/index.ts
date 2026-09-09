@@ -176,3 +176,4 @@ export type { SearchBarProps } from './SearchBar';
 
 export { ArticleRow } from './ArticleRow';
 export type { ArticleRowProps } from './ArticleRow';
+export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';
