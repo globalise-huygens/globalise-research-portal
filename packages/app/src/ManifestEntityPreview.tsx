@@ -284,19 +284,24 @@ function getPreviewProperties(
     },
   ];
 
-  if (classificationId === 'gan:DATE' && body.timespan) {
-    properties.push(
-      { label: 'Begin of the begin', value: body.timespan.begin_of_the_begin ?? '-' },
-      { label: 'Begin of the end', value: body.timespan.begin_of_the_end ?? '-' },
-      { label: 'End of the begin', value: body.timespan.end_of_the_begin ?? '-' },
-      { label: 'End of the end', value: body.timespan.end_of_the_end ?? '-' },
-    );
-  }
   if (classificationId === 'gan:CMTY_QUANT') {
     properties.push(
       { label: 'Value', value: body.value ?? '-' },
       { label: 'Unit', value: body.unit?._label ?? '-' },
     );
+  }
+  if (classificationId === 'gan:DATE' && body.timespan) {
+    const dateBounds = [
+      ['Begin of the begin', body.timespan.begin_of_the_begin],
+      ['End of the begin', body.timespan.end_of_the_begin],
+      ['Begin of the end', body.timespan.begin_of_the_end],
+      ['End of the end', body.timespan.end_of_the_end],
+    ] as const;
+    for (const [label, value] of dateBounds) {
+      if (value) {
+        properties.push({ label, value: formatPreviewDate(value) });
+      }
+    }
   }
   if (isClassificationOnly(annotation)) {
     properties.push({
@@ -315,6 +320,18 @@ function getQuantityTitle(body: EntityBody) {
   return body.unit?._label
     ? `${body.value} ${body.unit._label}`
     : String(body.value);
+}
+
+const previewDateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+function formatPreviewDate(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value.split('T')[0] : previewDateFormatter.format(date);
 }
 
 function isClassificationOnly(annotation: EntityAnnotation) {
