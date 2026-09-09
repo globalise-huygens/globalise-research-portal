@@ -10,6 +10,7 @@
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
     "@knaw-huc/panoptes-react": "^0.0.13",
+    "@elastic/elasticsearch": "^9.5.1",
     "@knaw-huc/searchfield": "^0.0.3",
     "msw": "^2.15.0"
   },

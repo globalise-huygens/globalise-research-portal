@@ -1,17 +1,19 @@
 import { CSSProperties, Suspense, useMemo } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Checkbox, IconExpandSection } from '@globalise/design';
-import { useTextFacetItems } from '@knaw-huc/panoptes-react';
-import { Hierarchy, useHierarchy, useFilterFacet, useFilterFacetSelection } from '@knaw-huc/faceted-search-react';
+import {
+  Hierarchy,
+  useHierarchy,
+  useFilterFacet,
+  useFilterFacetSelection,
+  useSearchState,
+} from '@knaw-huc/faceted-search-react';
 import { Tree, TreeItem, TreeItemContent, Button } from 'react-aria-components';
+import hierarchyFacetItemsQueryOptions from './queries/hierarchyFacetItemsQueryOptions';
 import Facet from './Facet';
 import classes from './FilterFacet.module.css';
 
-export type FilterFacetItem = {
-  itemKey: string;
-  label: string;
-  amount: number;
-  children?: FilterFacetItem[];
-};
+import type { HierarchyFacetItem } from './elasticsearch/hierarchyFacetItems.server';
 
 export default function FilterFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFilterFacet(facetKey);
@@ -26,13 +28,18 @@ export default function FilterFacet({ facetKey }: { facetKey: string }) {
 }
 
 function FilterFacetItems({ facetKey }: { facetKey: string }) {
+  const { query, facetValues } = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
-  const items = useTextFacetItems({ facetKey, sort: 'hits', textFilter: '', selected: [...selected].sort() });
+  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions({
+    key: facetKey,
+    query,
+    facets: facetValues,
+  }));
 
   const expandedKeys = useMemo(() => {
-    const addExpandingKeys = (item: FilterFacetItem) => {
+    const addExpandingKeys = (item: HierarchyFacetItem) => {
       if (item.children) {
-        keys.add(item.itemKey);
+        keys.add(item.id);
         item.children.map(addExpandingKeys);
       }
     };
@@ -45,7 +52,7 @@ function FilterFacetItems({ facetKey }: { facetKey: string }) {
 
   return (
     <Hierarchy items={items} selected={selected} setSelected={onSelect}
-      getKey={(item) => item.itemKey} getChildren={(item) => item.children}>
+      getKey={(item) => item.id} getChildren={(item) => item.children}>
       <Tree selectionMode="multiple" aria-label="Facet items" defaultExpandedKeys={expandedKeys}>
         <TreeItems items={items}/>
       </Tree>
@@ -53,11 +60,11 @@ function FilterFacetItems({ facetKey }: { facetKey: string }) {
   );
 }
 
-function TreeItems({ items }: { items: FilterFacetItem[] }) {
+function TreeItems({ items }: { items: HierarchyFacetItem[] }) {
   return (
     <>
       {items.map((item) => (
-        <TreeItem key={item.itemKey} id={item.itemKey} textValue={item.label}
+        <TreeItem key={item.id} id={item.id} textValue={item.label}
           hasChildItems={item.children && item.children.length > 0}>
           <TreeItemContent>
             {({ hasChildItems, isExpanded, level }) =>
@@ -74,23 +81,23 @@ function TreeItems({ items }: { items: FilterFacetItem[] }) {
 }
 
 function FilterFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
-  item: FilterFacetItem,
+  item: HierarchyFacetItem,
   level: number,
   hasChildren: boolean,
   isOpen: boolean,
 }) {
   const { toggle, isSelected, isPartial } = useHierarchy();
 
-  const selected = useMemo(() => isSelected(item.itemKey), [item, isSelected]);
-  const indeterminate = useMemo(() => isPartial(item.itemKey), [item, isPartial]);
+  const selected = useMemo(() => isSelected(item.id), [item, isSelected]);
+  const indeterminate = useMemo(() => isPartial(item.id), [item, isPartial]);
 
   return (
     <div className={classes.item}
       style={{ '--indent': level > 1 ? `${(level - 1) * 0.5}rem` : 0 } as CSSProperties}>
-      <Checkbox slot="selection" className={classes.checkbox} name={item.itemKey}
+      <Checkbox slot="selection" className={classes.checkbox} name={item.id}
         indicatorClassName={classes.indicator}
         isSelected={selected} isIndeterminate={indeterminate}
-        onChange={() => toggle(item.itemKey)}>
+        onChange={() => toggle(item.id)}>
         <ItemContent item={item}/>
       </Checkbox>
 
@@ -101,12 +108,12 @@ function FilterFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
   );
 }
 
-function ItemContent({ item }: { item: FilterFacetItem }) {
+function ItemContent({ item }: { item: HierarchyFacetItem }) {
   return (
     <span className={classes.inner}>
       <span>{item.label}</span>
       <span aria-label="Amount of results">
-        {item.amount.toLocaleString()}
+        {item.count?.toLocaleString()}
       </span>
     </span>
   );

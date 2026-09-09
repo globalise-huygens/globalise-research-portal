@@ -7,11 +7,21 @@ export type Facet = {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const facets: Facet[] = [{
-  key: 'archive',
-  label: 'Archive Hierarchy',
-  type: 'filter',
-}];
+export const facets: Facet[] = [
+  {
+    key: 'eadIdPaths.tree',
+    label: 'Archive',
+    type: 'filter',
+  }, {
+    key: 'professionIdPaths.tree',
+    label: 'Profession',
+    type: 'filter',
+  }, {
+    key: 'documentTypeIdPaths.tree',
+    label: 'Document Type',
+    type: 'filter',
+  },
+];
 
 export default function Facets() {
   return (
@@ -33,6 +43,6 @@ function FacetRendering({ facet }: { facet: Facet }) {
 
 function FilterFacetRendering({ facet }: { facet: Facet }) {
   return (
-    <FilterFacet facetKey={facet.key} />
+    <FilterFacet facetKey={facet.key}/>
   );
 }
