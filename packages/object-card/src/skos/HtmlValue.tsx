@@ -6,7 +6,11 @@ const markdown = new MarkdownIt('zero', {
   linkify: true,
 });
 
-markdown.enable(['emphasis', 'linkify', 'newline']);
+markdown.enable([
+  'emphasis',
+  'linkify', // required because the zero preset disables this rule
+  'newline',
+]);
 markdown.renderer.rules.strong_open = () => '';
 markdown.renderer.rules.strong_close = () => '';
 
