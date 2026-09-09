@@ -12,7 +12,8 @@ import {
   isWord,
 } from '@globalise/common/annotation';
 import {
-  createHoverAnchor,
+  removeHoverAttribute,
+  setHoverAttribute,
   setHovered,
   toggleClicked,
   useEntityHighlightCategories,
@@ -47,24 +48,24 @@ export function SegmentedText(
         : false;
 
       function showPreview(element: Element, openImmediately = false) {
-        setHovered(
-          hoverId,
-          createHoverAnchor(element, openImmediately),
-        );
+        setHoverAttribute(element, openImmediately ? 'immediate' : 'delayed');
+        setHovered(hoverId);
+      }
+
+      function hidePreview(element: Element) {
+        removeHoverAttribute(element);
+        setHovered(null);
       }
 
       function handleMouseEnter(event: MouseEvent<HTMLSpanElement>) {
         event.stopPropagation();
-        const previewAnchorElement = event.target instanceof HTMLElement
-          ? event.target
-          : event.currentTarget;
-        showPreview(previewAnchorElement);
+        showPreview(event.currentTarget);
       }
 
       function handleMouseLeave(event: MouseEvent<HTMLSpanElement>) {
         event.stopPropagation();
         if (document.activeElement !== event.currentTarget) {
-          setHovered(null);
+          hidePreview(event.currentTarget);
         }
       }
 
@@ -74,8 +75,8 @@ export function SegmentedText(
         }
       }
 
-      function handleBlur() {
-        setHovered(null);
+      function handleBlur(event: FocusEvent<HTMLSpanElement>) {
+        hidePreview(event.currentTarget);
       }
 
       function handleKeyDown(event: KeyboardEvent<HTMLSpanElement>) {

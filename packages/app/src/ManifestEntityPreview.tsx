@@ -7,11 +7,11 @@ import {
   type CidocEntityClassificationId,
 } from '@globalise/common/annotation';
 import {
+  getHoverDelay,
+  getHoverElement,
   setHovered,
-  subscribeHovered,
   useDocumentStore,
   type DocumentState,
-  type HoverAnchor,
 } from '@globalise/common/document';
 import {
   EntityPreviewCard,
@@ -50,7 +50,7 @@ type PreviewCategory = {
 
 export function ManifestEntityPreview() {
   const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
-  const [anchor, setAnchor] = useState<HoverAnchor | null>(null);
+  const [anchor, setAnchor] = useState<Element | null>(null);
   const [position, setPosition] = useState<CSSProperties>({
     left: 0,
     top: 0,
@@ -62,12 +62,16 @@ export function ManifestEntityPreview() {
   const closeTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
 
-  useEffect(() => subscribeHovered((id, nextAnchor) => {
+  useEffect(() => useDocumentStore.subscribe(({ hoveredId }) => {
+    const nextAnchor = hoveredId
+      ? getHoverElement()
+      : null;
     const annotation = getHoveredAnnotation(
       useDocumentStore.getState(),
-      id,
+      hoveredId,
     );
     if (annotation && nextAnchor) {
+      const openImmediately = getHoverDelay(nextAnchor) === 'immediate';
       window.clearTimeout(openTimer.current);
       window.clearTimeout(closeTimer.current);
       if (displayedRef.current?.id === annotation.id) {
@@ -78,9 +82,7 @@ export function ManifestEntityPreview() {
         displayedRef.current = annotation;
         setDisplayed(annotation);
         setAnchor(nextAnchor);
-      }, displayedRef.current || nextAnchor.openImmediately
-        ? 0
-        : OPEN_DELAY);
+      }, displayedRef.current || openImmediately ? 0 : OPEN_DELAY);
       return;
     }
 
@@ -116,8 +118,8 @@ export function ManifestEntityPreview() {
 
     const updatePosition = () => {
       const rect = preview.getBoundingClientRect();
-      const anchorRect = anchor.element.isConnected
-        ? anchor.element.getBoundingClientRect()
+      const anchorRect = anchor.isConnected
+        ? anchor.getBoundingClientRect()
         : undefined;
       if (anchorRect) {
         setPosition(placePreview(anchorRect, rect.width, rect.height));
@@ -168,7 +170,7 @@ export function ManifestEntityPreview() {
       onPointerEnter={() => {
         isPreviewHovered.current = true;
         window.clearTimeout(closeTimer.current);
-        setHovered(displayed.id, anchor ?? undefined);
+        setHovered(displayed.id);
       }}
       onPointerLeave={() => {
         isPreviewHovered.current = false;
@@ -178,7 +180,7 @@ export function ManifestEntityPreview() {
       onFocusCapture={() => {
         isPreviewHovered.current = true;
         window.clearTimeout(closeTimer.current);
-        setHovered(displayed.id, anchor ?? undefined);
+        setHovered(displayed.id);
       }}
       onBlurCapture={(event) => {
         if (

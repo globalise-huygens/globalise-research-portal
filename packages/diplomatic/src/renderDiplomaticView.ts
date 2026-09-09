@@ -10,10 +10,7 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
-import {
-  createHoverAnchor,
-  type HoverAnchor,
-} from '@globalise/common/document';
+import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
 import {
   D3El,
@@ -49,7 +46,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
-    onHover?: (id: Id | null, anchor?: HoverAnchor) => void;
+    onHover?: (id: Id | null) => void;
     onClick?: (id: Id) => void;
   };
 
@@ -118,15 +115,15 @@ export function renderDiplomaticView(
   function handleEntityFocus(event: FocusEvent) {
     const $segment = getEntitySegment(event);
     if ($segment) {
-      onHover(
-        $segment.dataset.entityId ?? null,
-        createHoverAnchor($segment, true),
-      );
+      setHoverAttribute($segment);
+      onHover($segment.dataset.entityId ?? null);
     }
   }
 
   function handleEntityBlur(event: FocusEvent) {
-    if (getEntitySegment(event)) {
+    const $segment = getEntitySegment(event);
+    if ($segment) {
+      removeHoverAttribute($segment);
       onHover(null);
     }
   }
@@ -177,11 +174,13 @@ export function renderDiplomaticView(
         $entityToSegments[entity.id].push($segment);
 
         $segment.addEventListener('click', () => onClick(entity.id));
-        $segment.addEventListener('mouseenter', () =>
-          onHover(entity.id, createHoverAnchor($segment)),
-        );
+        $segment.addEventListener('mouseenter', () => {
+          setHoverAttribute($segment, 'delayed');
+          onHover(entity.id);
+        });
         $segment.addEventListener('mouseleave', () => {
           if (document.activeElement !== $segment) {
+            removeHoverAttribute($segment);
             onHover(null);
           }
         });
@@ -194,10 +193,14 @@ export function renderDiplomaticView(
       } else {
         const blockId = wordToBlock[wordId];
         $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () =>
-          onHover(wordId, createHoverAnchor($segment)),
-        );
-        $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
+        $segment.addEventListener('mouseenter', () => {
+          setHoverAttribute($segment, 'delayed');
+          onHover(wordId);
+        });
+        $segment.addEventListener('mouseleave', () => {
+          removeHoverAttribute($segment);
+          onHover(blockId ?? null);
+        });
       }
     }
     $word.replaceChildren(...$segments);
