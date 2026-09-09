@@ -60,9 +60,24 @@ export function matchUri(match: SkosMatch): string {
 
 export function matchLabel(match: SkosMatch): string {
   if (typeof match === 'string') {
-    return match;
+    return getExternalSourceLabel(match);
   }
   return match.prefLabel?.[0]['@value']
     ?? match._label
     ?? match.id;
+}
+
+function getExternalSourceLabel(uri: string): string {
+  try {
+    const hostname = new URL(uri).hostname.replace(/^www\./, '');
+    if (hostname === 'vocab.getty.edu') {
+      return 'Getty AAT';
+    }
+    if (hostname === 'wikidata.org') {
+      return 'Wikidata';
+    }
+    return hostname;
+  } catch {
+    return uri;
+  }
 }
