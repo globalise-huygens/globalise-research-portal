@@ -1,0 +1,26 @@
+{
+  "name": "@globalise/map",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "d3": "^3.5.17",
+    "topojson-client": "^3.1.0",
+    "versor": "^0.2.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "typescript": "^5.9.2",
+    "@types/d3": "^7.4.3",
+    "@types/topojson-client": "^3.1.5"
+  }
+}

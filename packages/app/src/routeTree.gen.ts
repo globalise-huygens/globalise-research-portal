@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
 import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
@@ -18,6 +19,11 @@ import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -43,6 +49,7 @@ const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/catalog/': typeof CatalogIndexRoute
   '/manifest/': typeof ManifestIndexRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/catalog': typeof CatalogIndexRoute
   '/manifest': typeof ManifestIndexRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/catalog/': typeof CatalogIndexRoute
   '/manifest/': typeof ManifestIndexRoute
@@ -65,12 +74,19 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/catalog/' | '/manifest/' | '/object-card/'
+  fullPaths:
+    | '/'
+    | '/map'
+    | '/search'
+    | '/catalog/'
+    | '/manifest/'
+    | '/object-card/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/catalog' | '/manifest' | '/object-card'
+  to: '/' | '/map' | '/search' | '/catalog' | '/manifest' | '/object-card'
   id:
     | '__root__'
     | '/'
+    | '/map'
     | '/search'
     | '/catalog/'
     | '/manifest/'
@@ -79,6 +95,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MapRoute: typeof MapRoute
   SearchRoute: typeof SearchRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   ManifestIndexRoute: typeof ManifestIndexRoute
@@ -92,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -127,6 +151,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MapRoute: MapRoute,
   SearchRoute: SearchRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   ManifestIndexRoute: ManifestIndexRoute,

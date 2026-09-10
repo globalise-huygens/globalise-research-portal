@@ -8,6 +8,7 @@ export function Home() {
       <li><Link to="/manifest">Manifest viewer</Link></li>
       <li><Link to="/catalog">Catalog</Link></li>
       <li><Link to="/object-card">Object card</Link></li>
+      <li><Link to="/map">World map</Link></li>
     </ul>
   </>
   );

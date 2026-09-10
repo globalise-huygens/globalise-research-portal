@@ -13,6 +13,7 @@
     { "path": "../manifest" },
     { "path": "../metadata" },
     { "path": "../object-card" },
-    { "path": "../search" }
+    { "path": "../search" },
+    { "path": "../map" }
   ]
 }
