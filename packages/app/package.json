@@ -16,6 +16,7 @@
     "@globalise/manifest": "workspace:*",
     "@globalise/object-card": "workspace:*",
     "@globalise/search": "workspace:*",
+    "@globalise/map": "workspace:*",
     "@iiif/helpers": "^1.5.9",
     "@knaw-huc/osd-iiif-viewer": "^0.3.1",
     "@tanstack/react-query": "^5.101.4",
