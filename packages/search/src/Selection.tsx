@@ -5,23 +5,17 @@ import { useSelectedFacets } from '@knaw-huc/faceted-search-react';
 import classes from './Selection.module.css';
 
 export default function Selection() {
-  const [selectedFacets, clearFacets] = useSelectedFacets();
+  const [selectedFacets, clearFacets] = useSelectedFacets(false);
 
   return (
     <section className={classes.selection} aria-label="Selected filters">
-      <div className={classes.label}>
-        Selected filters:
-      </div>
+      <Button className={classes.clear} onClick={clearFacets}>
+        Clear filters
+      </Button>
 
       <div className={classes.facets}>
         {selectedFacets.map((facet) =>
           <SelectedFacetItem key={facet.itemKey} {...facet}/>)}
-      </div>
-
-      <div>
-        <Button className={classes.clear} onClick={clearFacets}>
-          Clear filters
-        </Button>
       </div>
     </section>
   );

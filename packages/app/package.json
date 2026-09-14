@@ -6,21 +6,25 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "node server.js"
   },
   "dependencies": {
-    "@globalise/design": "*",
-    "@globalise/manifest": "*",
-    "@globalise/object-card": "*",
-    "@globalise/search": "*",
+    "@globalise/common": "workspace:*",
+    "@globalise/design": "workspace:*",
+    "@globalise/facsimile": "workspace:*",
+    "@globalise/manifest": "workspace:*",
+    "@globalise/object-card": "workspace:*",
+    "@globalise/search": "workspace:*",
     "@iiif/helpers": "^1.5.9",
     "@knaw-huc/osd-iiif-viewer": "^0.3.1",
+    "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-router": "^1.170.4",
+    "@tanstack/react-start": "^1.168.47",
     "openseadragon": "^5.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-virtuoso": "^4.18.7"
-  },
-  "devDependencies": {
-    "@tanstack/router-plugin": "^1.168.6"
   },
   "msw": {
     "workerDirectory": [

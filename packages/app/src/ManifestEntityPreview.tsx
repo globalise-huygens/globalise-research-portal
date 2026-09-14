@@ -1,6 +1,7 @@
 import {
   getCidocEntityClassificationId,
   getPrimaryEntityBody,
+  getEntityDateTimespan,
   isEntity,
   type Annotation,
   type EntityBody,
@@ -9,6 +10,7 @@ import {
 import {
   getHoverDelay,
   getHoverElement,
+  removeHoverAttribute,
   setHovered,
   useDocumentStore,
   type DocumentState,
@@ -61,12 +63,14 @@ export function ManifestEntityPreview() {
     if (annotation && nextAnchor) {
       const openImmediately = getHoverDelay(nextAnchor) === 'immediate';
       window.clearTimeout(openTimer.current);
+      openTimer.current = undefined;
       window.clearTimeout(closeTimer.current);
       if (displayedRef.current?.id === annotation.id) {
         setAnchor(nextAnchor);
         return;
       }
       openTimer.current = window.setTimeout(() => {
+        openTimer.current = undefined;
         displayedRef.current = annotation;
         setDisplayed(annotation);
         setAnchor(nextAnchor);
@@ -75,6 +79,7 @@ export function ManifestEntityPreview() {
     }
 
     window.clearTimeout(openTimer.current);
+    openTimer.current = undefined;
     if (isPreviewHovered.current) {
       return;
     }
@@ -96,6 +101,57 @@ export function ManifestEntityPreview() {
   useEffect(() => () => {
     window.clearTimeout(openTimer.current);
     window.clearTimeout(closeTimer.current);
+  }, []);
+
+  useEffect(() => {
+    function dismiss() {
+      window.clearTimeout(openTimer.current);
+      window.clearTimeout(closeTimer.current);
+      openTimer.current = undefined;
+      isPreviewHovered.current = false;
+      const trigger = getHoverElement();
+      if (trigger) {
+        removeHoverAttribute(trigger);
+      }
+      displayedRef.current = null;
+      setDisplayed(null);
+      setAnchor(null);
+      setHovered(null);
+    }
+
+    function handleMovement(event: Event) {
+      if (event.target instanceof Node && previewRef.current?.contains(event.target)) {
+        return;
+      }
+      if (displayedRef.current || openTimer.current !== undefined) {
+        dismiss();
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape' || (!displayedRef.current && openTimer.current === undefined)) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      const trigger = getHoverElement();
+      if (previewRef.current?.contains(document.activeElement)
+        && (trigger instanceof HTMLElement || trigger instanceof SVGElement)) {
+        trigger.focus({ preventScroll: true });
+      }
+      dismiss();
+    }
+
+    window.addEventListener('scroll', handleMovement, true);
+    window.addEventListener('wheel', handleMovement, { capture: true, passive: true });
+    window.addEventListener('pointerdown', handleMovement, true);
+    window.addEventListener('keydown', handleEscape, true);
+    return () => {
+      window.removeEventListener('scroll', handleMovement, true);
+      window.removeEventListener('wheel', handleMovement, true);
+      window.removeEventListener('pointerdown', handleMovement, true);
+      window.removeEventListener('keydown', handleEscape, true);
+    };
   }, []);
 
   useLayoutEffect(() => {
@@ -124,12 +180,10 @@ export function ManifestEntityPreview() {
     const resizeObserver = new ResizeObserver(updatePosition);
     resizeObserver.observe(preview);
     window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
 
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
     };
   }, [anchor, displayed]);
 
@@ -186,16 +240,6 @@ export function ManifestEntityPreview() {
         isPreviewHovered.current = false;
         setHovered(null);
         scheduleClose();
-      }}
-      onKeyDown={(event) => {
-        if (event.key !== 'Escape') {
-          return;
-        }
-        event.stopPropagation();
-        window.clearTimeout(closeTimer.current);
-        isPreviewHovered.current = false;
-        setHovered(null);
-        close();
       }}
     >
       <EntityPreviewCard data={getPreviewData(displayed)} />
@@ -316,17 +360,16 @@ function getPreviewProperties(
       { label: 'Unit', value: body.unit?._label ?? '-' },
     );
   }
-  const dateLabel = body.label ?? body.ascribes_appellation?.content ?? '';
+  const date = getEntityDateTimespan(body);
   if (
     classificationId === 'gan:DATE'
-    && body.timespan
-    && !hasExplicitDateYear(dateLabel)
+    && date?.type === 'TimeSpan'
   ) {
     const dateBounds = [
-      ['Begin of the begin', body.timespan.begin_of_the_begin],
-      ['End of the begin', body.timespan.end_of_the_begin],
-      ['Begin of the end', body.timespan.begin_of_the_end],
-      ['End of the end', body.timespan.end_of_the_end],
+      ['Begin of the begin', date.begin_of_the_begin],
+      ['End of the begin', date.end_of_the_begin],
+      ['Begin of the end', date.begin_of_the_end],
+      ['End of the end', date.end_of_the_end],
     ] as const;
     for (const [label, value] of dateBounds) {
       if (value) {
@@ -342,10 +385,6 @@ function getPreviewProperties(
   }
   properties.push({ label: 'Classified by', value: body.classified_as._label });
   return properties;
-}
-
-function hasExplicitDateYear(value: string): boolean {
-  return /\b\d{4}\b|\b\d{3,4}\/\d{1,4}\b/.test(value);
 }
 
 function getQuantityTitle(body: EntityBody) {

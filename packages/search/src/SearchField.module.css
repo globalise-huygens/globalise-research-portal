@@ -1,0 +1,161 @@
+.search-field {
+    display: flex;
+    min-width: 0;
+    width: 100%;
+    height: var(--s48, 48px);
+    align-items: stretch;
+    border-bottom: 1px solid rgb(255 255 255 / 0.5);
+
+    .input {
+        display: flex;
+        min-width: 0;
+        height: 100%;
+        flex: 1 1 auto;
+        align-items: center;
+        cursor: text;
+    }
+
+    .input-container {
+        min-width: 0;
+        height: 100%;
+        flex: 1 1 auto;
+
+        :global(.cm-editor) {
+            height: 100%;
+            background: transparent;
+        }
+
+        :global(.cm-scroller) {
+            height: 100%;
+            align-items: center;
+        }
+
+        :global(.cm-content) {
+            min-height: 100%;
+            align-content: center;
+            padding-block: 0;
+            padding-inline: var(--s4, 4px);
+        }
+
+        :global(.cm-editor:not(.cm-focused) .cm-content > .cm-line:only-child:empty)::before,
+        :global(.cm-editor:not(.cm-focused) .cm-content > .cm-line:only-child:has(> br:only-child))::before {
+            content: 'Type to search…';
+            color: var(--color-neutral-400, #999);
+            font-family: var(--font-serif, "Noto Serif", serif);
+            font-size: var(--text-lg, 1.125rem);
+            font-style: italic;
+        }
+
+        .searchText {
+            color: var(--color-brand-white, #fff);
+        }
+
+        /* The library's fallback Lucene theme is injected after this stylesheet. */
+        :global(.cm-content .cm-line > span:not(.cm-entity)) {
+            color: var(--color-brand-white, #fff) !important;
+        }
+
+        :global(.cm-tooltip.cm-tooltip-autocomplete) {
+            z-index: 10;
+            width: min(32rem, calc(100vw - var(--s32, 32px)));
+            max-width: none;
+            border: 1px solid rgb(255 255 255 / 0.2);
+            background: var(--color-neutral-800, #363636);
+            box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+
+            > ul {
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+                max-height: min(24rem, 50vh);
+                padding: 0;
+
+                > li {
+                    min-width: 0;
+                    padding: var(--s12, 12px) var(--s16, 16px);
+                    line-height: 1.25;
+                    transition: background-color 75ms ease-out;
+                }
+
+                > li[aria-selected] {
+                    background: rgb(255 255 255 / 0.12);
+                    color: var(--color-brand-white, #fff);
+                }
+            }
+        }
+
+        :global(.cm-completionLabel) {
+            color: var(--color-brand-white, #fff);
+            font-size: var(--text-base, 1rem);
+            font-weight: 500;
+        }
+
+        :global(.cm-completionMatchedText) {
+            color: var(--color-brand-turquoise, #29bfcc);
+            font-weight: 700;
+        }
+
+        :global(.cm-completionDetail) {
+            display: inline;
+            margin-left: var(--s4, 4px);
+            color: var(--color-neutral-300, #b3b3b3);
+            font-size: var(--text-sm, 0.875rem);
+
+            &::before {
+                content: '•';
+                margin-right: var(--s4, 4px);
+                color: var(--color-neutral-500, #808080);
+            }
+        }
+
+        .autocompleteIcon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            margin-right: var(--s4, 4px);
+            vertical-align: -0.15em;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        height: 100%;
+        padding: var(--s4, 4px);
+        align-items: center;
+        gap: var(--s4, 4px);
+        flex-shrink: 0;
+        background: var(--color-neutral-800, #363636);
+        box-shadow: 0 4px 12px 0 rgb(0 0 0 / 15%);
+
+        button {
+            display: inline-flex;
+            width: var(--s40, 40px);
+            height: var(--s40, 40px);
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        button:hover,
+        button[data-hovered] {
+            background: rgb(255 255 255 / 10%);
+        }
+
+        button:active,
+        button[data-pressed] {
+            background: rgb(255 255 255 / 15%);
+        }
+
+        button:disabled,
+        button[data-disabled] {
+            opacity: 0.45;
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+    }
+
+}

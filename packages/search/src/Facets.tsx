@@ -1,6 +1,4 @@
-import { useTextFacet } from '@knaw-huc/panoptes-react';
 import FilterFacet from './FilterFacet';
-import FilterFacetItems from './FilterFacetItems';
 
 export type Facet = {
   key: string,
@@ -35,16 +33,6 @@ function FacetRendering({ facet }: { facet: Facet }) {
 
 function FilterFacetRendering({ facet }: { facet: Facet }) {
   return (
-    <FilterFacet facetKey={facet.key}>
-      <FilterFacetItemsRendering name={facet.key}/>
-    </FilterFacet>
-  );
-}
-
-function FilterFacetItemsRendering({ name }: { name: string }) {
-  const { items } = useTextFacet(name);
-
-  return (
-    <FilterFacetItems items={items}/>
+    <FilterFacet facetKey={facet.key} />
   );
 }

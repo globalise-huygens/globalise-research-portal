@@ -1,19 +1,25 @@
 # Build
 FROM node:24-alpine AS builder
-RUN apk add --no-cache git
-RUN corepack enable
-WORKDIR /repos
 
-RUN git clone --depth 1 https://github.com/globalise-huygens/globalise-design-system.git
-RUN cd globalise-design-system && pnpm install --frozen-lockfile && pnpm build
+RUN apk add --no-cache git
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
+RUN ENV="$HOME/.shrc" SHELL=/bin/sh npx --yes get-pnpm 11.25.0 \
+    && command -v pnpm \
+    && pnpm --version
 
 WORKDIR /repos/globalise-research-portal
+
 COPY . .
-RUN npm ci
-RUN npm run build
+
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
 # Run
 FROM node:24-alpine AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -21,13 +27,13 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 reactapp
 
-RUN npm install -g sirv-cli
-
-COPY --from=builder /repos/globalise-research-portal/packages/app/dist ./dist
+COPY --from=builder /repos/globalise-research-portal/node_modules ./node_modules
+COPY --from=builder /repos/globalise-research-portal/packages ./packages
+COPY --from=builder /repos/globalise-research-portal/package.json ./package.json
 
 USER reactapp
 
 EXPOSE 3000
-ENV PORT 3000
+ENV PORT=3000
 
-CMD ["sirv", "dist", "--port", "3000", "--host", "0.0.0.0", "--single"]
+CMD ["node", "packages/app/server.js"]

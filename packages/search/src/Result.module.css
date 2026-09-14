@@ -1,0 +1,96 @@
+.resultCard {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .aside {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        gap: 0.5rem;
+        width: 120px;
+
+        .badge span {
+            display: flex;
+            align-items: baseline;
+            gap: 0.2rem;
+        }
+
+        .labels {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+
+            .label {
+                color: #99a1af;
+                font-size: 0.625rem;
+                font-style: italic;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+            }
+        }
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+
+        h2 {
+            margin: 0;
+            font-weight: normal;
+            font-family: var(--font-serif);
+        }
+
+        ul.metadata {
+            display: inline;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+
+            color: #99a1af;
+            font-size: 0.8rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+
+            li {
+                display: inline;
+
+                &:not(:first-child)::before {
+                    content: '•';
+                    margin-inline: 0.2rem;
+                }
+            }
+        }
+
+        ul.mentions {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            gap: 0.5rem;
+            max-height: 7rem;
+            overflow-y: scroll;
+            scrollbar-color: var(--color-neutral-500) transparent;
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
+
+            li {
+                padding: 0.5rem;
+                background: var(--color-neutral-800, #363636);
+            }
+        }
+
+        .archive {
+            font-style: italic;
+        }
+    }
+}

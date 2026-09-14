@@ -5,6 +5,9 @@ export type Direction = 'horizontal' | 'vertical';
 export function useLayoutDirection(breakpoint: number): Direction {
 
   const [direction, setDirection] = useState<Direction>(() => {
+    if (typeof window === 'undefined') {
+      return 'horizontal';
+    }
     const width = window.innerWidth;
     return width <= breakpoint
       ? 'vertical'

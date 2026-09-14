@@ -13,8 +13,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@globalise/common": "*",
-    "@globalise/design": "*",
+    "@globalise/common": "workspace:*",
+    "@globalise/design": "workspace:*",
     "lodash.debounce": "^4.0.8"
   }
 }

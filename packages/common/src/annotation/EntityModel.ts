@@ -42,6 +42,16 @@ export type EntitySubject = {
   id: string;
   type: string;
   _label?: string;
+  is_similarity_subject_of?: {
+    ascribes_similarity_relation?: string;
+    ascribes_similarity_target?: {
+      type: string;
+      begin_of_the_begin?: string;
+      end_of_the_begin?: string;
+      begin_of_the_end?: string;
+      end_of_the_end?: string;
+    };
+  };
 };
 const entityAnnotationBodyTypes = [
   'AppellativeStatus',
@@ -51,6 +61,14 @@ const entityAnnotationBodyTypes = [
 
 export type EntityAnnotationBodyType =
   (typeof entityAnnotationBodyTypes)[number];
+
+export function getEntityDateTimespan(body: EntityBody) {
+  const interpretation = body.has_appellative_subject?.is_similarity_subject_of;
+  const target = interpretation?.ascribes_similarity_target;
+  // The outer status timespan describes the status, not the date being named.
+  return interpretation?.ascribes_similarity_relation === 'la:equivalent'
+    && target?.type === 'TimeSpan' ? target : undefined;
+}
 
 export function assertEntityBody(
   body: Body | undefined,

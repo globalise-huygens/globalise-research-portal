@@ -7,7 +7,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@knaw-huc/panoptes-react": "^0.0.10",
+    "@globalise/common": "workspace:*",
+    "@globalise/design": "workspace:*",
+    "@knaw-huc/panoptes-react": "^0.0.13",
+    "@knaw-huc/searchfield": "^0.0.3",
     "msw": "^2.15.0"
   },
   "peerDependencies": {
