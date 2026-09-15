@@ -3,10 +3,14 @@ import MarkdownIt from 'markdown-it';
 const markdown = new MarkdownIt('zero', {
   breaks: true,
   html: false,
-  linkify: false,
+  linkify: true,
 });
 
-markdown.enable(['emphasis', 'newline']);
+markdown.enable([
+  'emphasis',
+  'linkify', // required because the zero preset disables this rule
+  'newline',
+]);
 markdown.renderer.rules.strong_open = () => '';
 markdown.renderer.rules.strong_close = () => '';
 
