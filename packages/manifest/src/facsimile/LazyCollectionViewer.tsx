@@ -143,6 +143,8 @@ export function LazyCollectionViewer({
       preserveViewport: true,
       gestureSettingsMouse: {
         scrollToZoom: false,
+        clickToZoom: false,
+        dblClickToZoom: true,
       },
       tileRetryMax: 3,
       tileRetryDelay: 3000,
