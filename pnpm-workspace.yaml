@@ -5,6 +5,8 @@ nodeLinker: hoisted
 
 minimumReleaseAge: 10080
 minimumReleaseAgeStrict: true
+minimumReleaseAgeExclude:
+  - '@knaw-huc/*'
 
 allowBuilds:
   msw: true
