@@ -18,7 +18,7 @@
     "@globalise/facsimile": "workspace:*",
     "@globalise/line-by-line": "workspace:*",
     "@globalise/metadata": "workspace:*",
-    "openseadragon": "^5.0.1",
+    "openseadragon": "^6.1.1",
     "react-split-pane": "^3.2.0"
   },
   "devDependencies": {
