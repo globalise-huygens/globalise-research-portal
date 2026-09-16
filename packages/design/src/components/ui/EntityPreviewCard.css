@@ -99,11 +99,6 @@
       --entity-preview-category-color: var(--color-neutral-200);
     }
 
-    .category-trigger:focus-visible {
-      outline: 2px solid var(--ring);
-      outline-offset: 2px;
-    }
-
     .category-icon,
     .category-initial {
       display: inline-flex;

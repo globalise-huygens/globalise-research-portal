@@ -73,22 +73,10 @@ export type {
 export { EntityPreviewCard } from './EntityPreviewCard';
 export type {
   EntityPreviewCardAutomationBadge,
-  EntityPreviewCardBaseData,
-  EntityPreviewCardCommodityData,
   EntityPreviewCardData,
-  EntityPreviewCardDateData,
-  EntityPreviewCardDimensionsData,
-  EntityPreviewCardDocumentData,
-  EntityPreviewCardEntityData,
   EntityPreviewCardType,
-  EntityPreviewCardOrganisationData,
-  EntityPreviewCardPersonData,
-  EntityPreviewCardPlaceData,
-  EntityPreviewCardPolityData,
   EntityPreviewCardProperty,
   EntityPreviewCardProps,
-  EntityPreviewCardQuantityData,
-  EntityPreviewCardShipData,
 } from './EntityPreviewCard';
 
 export { EntityTag, entityTagVariants } from './EntityTag';
