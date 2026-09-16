@@ -525,9 +525,12 @@ importers:
 
   packages/map:
     dependencies:
+      '@globalise/design':
+        specifier: workspace:*
+        version: link:../design
       d3:
-        specifier: ^3.5.17
-        version: 3.5.17
+        specifier: ^7.9.0
+        version: 7.9.0
       react:
         specifier: '>=18'
         version: 19.2.8
@@ -2067,9 +2070,6 @@ packages:
   d3-zoom@3.0.0:
     resolution: {integrity: sha512-b8AmV3kfQaqWAuacbPuNbL6vahnOJflOhexLzMMNLga62+/nh0JzvJ0aO/5a5MVgUFGS7Hu1P9P03o3fJkDCyw==}
     engines: {node: '>=12'}
-
-  d3@3.5.17:
-    resolution: {integrity: sha512-yFk/2idb8OHPKkbAL8QaOaqENNoMhIaSHZerk3oQsECwkObkCpJyjYwCe+OHiq6UEdhe1m8ZGARRRO3ljFjlKg==}
 
   d3@7.9.0:
     resolution: {integrity: sha512-e1U46jVP+w7Iut8Jt8ri1YsPOvFpg46k+K8TpCb0P+zjCkjkPnV7WzfDJzMHy1LnA+wj5pLT1wjO901gLXeEhA==}
@@ -4763,8 +4763,6 @@ snapshots:
       d3-interpolate: 3.0.1
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
-
-  d3@3.5.17: {}
 
   d3@7.9.0:
     dependencies:
