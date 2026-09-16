@@ -1,25 +1,25 @@
-import FilterFacet from './FilterFacet';
+import HierarchyFacet from './HierarchyFacet';
 
 export type Facet = {
   key: string,
   label: string,
-  type: 'filter',
+  type: 'hierarchy',
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const facets: Facet[] = [
   {
-    key: 'eadIdPaths.tree',
+    key: 'ead',
     label: 'Archive',
-    type: 'filter',
+    type: 'hierarchy',
   }, {
-    key: 'professionIdPaths.tree',
+    key: 'profession',
     label: 'Profession',
-    type: 'filter',
+    type: 'hierarchy',
   }, {
-    key: 'documentTypeIdPaths.tree',
+    key: 'document_type',
     label: 'Document Type',
-    type: 'filter',
+    type: 'hierarchy',
   },
 ];
 
@@ -34,15 +34,7 @@ export default function Facets() {
 
 function FacetRendering({ facet }: { facet: Facet }) {
   switch (facet.type) {
-    case 'filter':
-      return (
-        <FilterFacetRendering facet={facet}/>
-      );
+    case 'hierarchy':
+      return <HierarchyFacet facetKey={facet.key}/>;
   }
-}
-
-function FilterFacetRendering({ facet }: { facet: Facet }) {
-  return (
-    <FilterFacet facetKey={facet.key}/>
-  );
 }

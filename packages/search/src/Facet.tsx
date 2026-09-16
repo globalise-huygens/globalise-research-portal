@@ -17,7 +17,9 @@ export default function Facet({ label, children }: FacetProps) {
       <FacetHeader label={label}/>
 
       <DisclosurePanel className={classes.body}>
-        {children}
+        <div className={classes.content}>
+          {children}
+        </div>
       </DisclosurePanel>
     </Disclosure>
   );

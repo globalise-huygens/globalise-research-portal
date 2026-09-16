@@ -3,11 +3,15 @@
     min-width: 0;
     min-height: 0;
     width: 100%;
-    height: 100%;
     flex-direction: column;
     overflow: hidden;
     border-top: 1px solid rgb(0 0 0 / 0.1);
     background: var(--color-brand-black, #0c0a09);
+
+    &[data-expanded] {
+        flex: 1 1 0;
+        min-height: 0;
+    }
 
     .header {
         display: flex;
@@ -70,14 +74,17 @@
         overflow: hidden auto;
         border: 0;
         background: transparent;
-        padding:
-            0
-            var(--s16, 16px)
-            var(--s24, 24px)
-            var(--s32, 32px);
         scrollbar-color: var(--color-neutral-600, #666) transparent;
         scrollbar-gutter: stable;
         scrollbar-width: thin;
+
+        > .content {
+            padding:
+                    0
+                    var(--s16, 16px)
+                    var(--s24, 24px)
+                    var(--s32, 32px);
+        }
 
         @media (prefers-reduced-motion: no-preference) {
             transition: height 150ms ease;
