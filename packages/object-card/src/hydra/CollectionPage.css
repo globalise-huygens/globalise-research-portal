@@ -47,52 +47,47 @@
   }
 
   .catalog-schema-tile {
-    display: flex;
     aspect-ratio: 1;
     min-height: var(--s176);
-    flex-direction: column;
     justify-content: space-between;
     background: var(--catalog-schema-color, var(--color-neutral-200));
     color: var(--color-brand-black);
     padding: var(--s20);
     text-decoration: none;
-    transition:
-      filter 150ms ease,
-      transform 150ms ease;
   }
 
-  .catalog-schema-tile[data-schema="person"],
-  .catalog-schema-tile[data-schema="place"] {
+  .catalog-schema-tile--person,
+  .catalog-schema-tile--place {
     --catalog-schema-color: var(--color-brand-mint);
   }
 
-  .catalog-schema-tile[data-schema="organization"],
-  .catalog-schema-tile[data-schema="rulership"] {
+  .catalog-schema-tile--organization,
+  .catalog-schema-tile--rulership {
     --catalog-schema-color: var(--color-brand-vermilion);
   }
 
-  .catalog-schema-tile[data-schema="polity"] {
+  .catalog-schema-tile--polity {
     --catalog-schema-color: var(--color-mint-700);
 
     color: var(--color-brand-white);
   }
 
-  .catalog-schema-tile[data-schema="ship"],
-  .catalog-schema-tile[data-schema="voyage"] {
+  .catalog-schema-tile--ship,
+  .catalog-schema-tile--voyage {
     --catalog-schema-color: var(--color-brand-turquoise);
   }
 
-  .catalog-schema-tile[data-schema="conversion"] {
+  .catalog-schema-tile--conversion {
     --catalog-schema-color: var(--color-parchment-300);
   }
 
-  .catalog-schema-tile[data-schema="occurrence"] {
+  .catalog-schema-tile--occurrence {
     --catalog-schema-color: var(--color-brand-parchment);
   }
 
-  .catalog-schema-tile[data-schema="concept"],
-  .catalog-schema-tile[data-schema="conceptscheme"],
-  .catalog-schema-tile[data-schema="collection"] {
+  .catalog-schema-tile--concept,
+  .catalog-schema-tile--conceptscheme,
+  .catalog-schema-tile--collection {
     --catalog-schema-color: var(--color-neutral-200);
   }
 
@@ -100,42 +95,12 @@
     filter: brightness(1.08);
   }
 
-  .catalog-schema-tile:active {
-    transform: scale(0.985);
-  }
-
-  .catalog-schema-tile:focus-visible {
-    outline: 3px solid var(--color-brand-white);
-    outline-offset: var(--s4);
-  }
-
-  .catalog-schema-tile-header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s4);
-  }
-
-  .catalog-schema-tile-category {
-    font-family: var(--font-sans);
-    font-size: var(--text-sm);
-    line-height: var(--s20);
-  }
-
-  .catalog-schema-tile-title {
-    font-family: var(--font-serif);
+  .catalog-schema-tile .gds-card-article__title {
     font-size: var(--text-3xl);
-    font-weight: 500;
-    line-height: 1.15;
   }
 
-  .catalog-schema-tile-icon {
-    width: var(--s24);
-    height: var(--s24);
-    transition: transform 150ms ease;
-  }
-
-  .catalog-schema-tile:hover .catalog-schema-tile-icon {
-    transform: translateX(var(--s4));
+  .catalog-schema-tile--polity .gds-card-article__title {
+    color: inherit;
   }
 
   @media (min-width: 560px) {
@@ -156,22 +121,12 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .catalog-schema-tile,
-    .catalog-schema-tile-icon {
-      transition: none;
-    }
-  }
-
   .collection-page {
-    box-sizing: border-box;
     display: flex;
-    width: min(100%, 1200px);
-    margin: var(--s32) auto;
+    height: 100%;
     flex-direction: column;
-    background: var(--color-neutral-800);
 
-    .header {
+    .collection-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -179,48 +134,20 @@
       flex-wrap: wrap;
     }
 
-    .collection-title {
-      display: flex;
-      align-items: center;
-      gap: var(--s12);
-    }
-
-    .body {
-      display: block;
-      flex: 0 0 auto;
-      min-height: 0;
-    }
-
     .collection-total {
       color: var(--color-neutral-500);
     }
 
     .collection-list {
-      width: 100%;
-      height: min(65vh, 720px);
-      min-height: 320px;
-    }
-
-    .collection-list .gds-reference-panel-item {
-      margin-inline: var(--s16);
+      height: 70vh;
     }
 
     .collection-item-link {
-      display: flex;
-      width: 100%;
-      box-sizing: border-box;
-      justify-content: space-between;
       color: white;
       text-decoration: none;
-      text-align: left;
-
-      .action-icon {
-        order: 2;
-        margin-left: auto;
-      }
 
       &:hover {
-        background: rgb(255 255 255 / 0.08);
+        text-decoration: underline;
       }
     }
 

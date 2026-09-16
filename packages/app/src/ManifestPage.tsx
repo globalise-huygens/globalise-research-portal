@@ -13,7 +13,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
-import { loadObjectCard } from '@globalise/object-card';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -74,7 +73,8 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        loadObjectCard(uri).catch(console.error);
+        navigate({ to: '/object-card', search: { uri } })
+          .catch(console.error);
       }
     });
   }

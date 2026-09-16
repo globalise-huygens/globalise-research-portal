@@ -2,11 +2,6 @@ export type HydraMember = {
   '@id': string;
   '@type'?: string;
   title?: string;
-  ascribes_appellation?: {
-    content?: string;
-  } | {
-    content?: string;
-  }[];
 };
 
 export type PartialCollectionView = {

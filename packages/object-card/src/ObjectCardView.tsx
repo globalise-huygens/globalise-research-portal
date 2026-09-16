@@ -2,7 +2,7 @@ import { useCard } from './CardSlice.ts';
 import { ConceptCard } from './skos';
 import { EntityCard } from './linkedart';
 
-export function ObjectCardView({ onClose }: { onClose?: () => void }) {
+export function ObjectCardView() {
   const { type, isReady, error } = useCard();
 
   if (error) {
@@ -12,10 +12,10 @@ export function ObjectCardView({ onClose }: { onClose?: () => void }) {
     return <div>Loading...</div>;
   }
   if (type === 'skos') {
-    return <ConceptCard onClose={onClose}/>;
+    return <ConceptCard/>;
   }
   if (type === 'entity') {
-    return <EntityCard onClose={onClose}/>;
+    return <EntityCard/>;
   }
   return null;
 }

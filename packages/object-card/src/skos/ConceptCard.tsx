@@ -29,7 +29,7 @@ import { CardOpenAction } from '../CardOpenAction.tsx';
 import { HtmlValue } from './HtmlValue.tsx';
 import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
-export function ConceptCard({ onClose }: { onClose?: () => void }) {
+export function ConceptCard() {
   const navigateToObjectCard = useNavigateToObjectCard();
   const { uri, concept } = useConcept();
 
@@ -88,7 +88,6 @@ export function ConceptCard({ onClose }: { onClose?: () => void }) {
   return (
     <ObjectCard className={cardClassName}>
       <ObjectCardHeader
-        onClose={onClose}
         actions={
           <>
             <CardCopyAction uri={uri} label="Copy concept URI"/>

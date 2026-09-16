@@ -1,8 +1,11 @@
-import { loadObjectCard } from './CardSlice.ts';
+import { useNavigate } from '@tanstack/react-router';
 
 /**
- * Open a concept or entity in the global object-card modal.
+ * Open a concept or entity on the object card page.
  */
 export function useNavigateToObjectCard() {
-  return (uri: string) => { void loadObjectCard(uri); };
+  const navigate = useNavigate();
+  return (uri: string) => {
+    void navigate({ to: '/object-card', search: { uri } });
+  };
 }

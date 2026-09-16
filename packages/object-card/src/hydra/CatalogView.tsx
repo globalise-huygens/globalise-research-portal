@@ -1,13 +1,7 @@
 import { Virtuoso } from 'react-virtuoso';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import {
-  IconEast,
-  IconArrowTopRight,
-  ObjectCard,
-  ObjectCardBody,
-  ObjectCardHeader,
-  ObjectCardAction,
-  ObjectCardTitle,
+  CardArticle,
   ReferencePanelItem,
   ReferencePanelList,
 } from '@globalise/design';
@@ -16,15 +10,19 @@ import {
   type LinkedArtEntityType,
 } from '@globalise/common';
 import { EntityTypeBadge } from '../linkedart';
-import { HydraMember } from './HydraModel.ts';
-import { loadNextCatalogPage, useCollection } from './HydraSlice.ts';
-import { getHydraTarget } from './getHydraHref.ts';
-import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
+import {
+  getPageNumber,
+  HydraCollection,
+  HydraMember,
+  isCollectionMember,
+} from './HydraModel.ts';
+import { useCollection } from './HydraSlice.ts';
+import { getHydraHref, getHydraTarget } from './getHydraHref.ts';
+import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
 
 export function CatalogView() {
   const { collection, isReady, error } = useCollection();
-  const navigate = useNavigate();
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -33,42 +31,85 @@ export function CatalogView() {
     return <div>Loading...</div>;
   }
 
-  const { title, totalItems, member } = collection;
+  const { title, totalItems, member, view } = collection;
 
-  const memberType = getLinkedArtEntityType(collection['@id']);
-
-  if (memberType === 'unknown') {
+  const memberType = getCatalogEntityType(collection['@id']);
+  if (member.length > 0 && member.every(isCollectionMember)) {
     return <SchemaCatalog title={title} members={member}/>;
   }
 
+  const shownItems = getShownItemsRange(collection);
+
   return (
-    <ObjectCard className='collection-page'>
-      <ObjectCardHeader
-        onClose={() => { void navigate({ to: '/catalog' }); }}
-      >
-        <div className='collection-title'>
-          <ObjectCardTitle>{title ?? 'Collection'}</ObjectCardTitle>
-          <EntityTypeBadge type={memberType}/>
-        </div>
+    <section className='collection-page'>
+      <header className='collection-header'>
+        <h2>{title ?? 'Collection'}</h2>
         {!!totalItems && (
           <span className='collection-total'>
-            {totalItems.toLocaleString()} items
+            {shownItems
+              ? `${shownItems} of ${totalItems.toLocaleString()} items`
+              : `${totalItems.toLocaleString()} items`}
           </span>
         )}
-      </ObjectCardHeader>
-      <ObjectCardBody>
-        <Virtuoso
-          className='collection-list'
-          data={member}
-          endReached={() => { void loadNextCatalogPage(); }}
-          components={{ List: ReferencePanelList }}
-          itemContent={(index, item) => (
-            <PageItem key={index} member={item}/>
-          )}
-        />
-      </ObjectCardBody>
-    </ObjectCard>
+        <Pagination view={view}/>
+      </header>
+      <Virtuoso
+        className='collection-list'
+        data={member}
+        components={{ List: ReferencePanelList }}
+        itemContent={(index, item) => (
+          <PageItem key={index} member={item} type={memberType}/>
+        )}
+      />
+    </section>
   );
+}
+
+function getShownItemsRange(collection: HydraCollection): string | null {
+  const { totalItems, member, view } = collection;
+  if (!totalItems || !view) {
+    return null;
+  }
+  const current = getPageNumber(view['@id']);
+  const last = getPageNumber(view.last);
+  if (!current || !last) {
+    return null;
+  }
+  const pageSize = Math.ceil(totalItems / last);
+  const start = (current - 1) * pageSize + 1;
+  const end = start + member.length - 1;
+  return `${start.toLocaleString()}-${end.toLocaleString()}`;
+}
+
+type PageItemProps = {
+  member: HydraMember;
+  type: LinkedArtEntityType;
+};
+
+function PageItem({ member, type }: PageItemProps) {
+  const uri = member['@id'];
+  const target = getHydraTarget(member);
+
+  return (
+    <ReferencePanelItem
+      title={
+        <Link {...target} className='collection-item-link'>
+          {member.title ?? uri}
+        </Link>
+      }
+      metadata={<EntityTypeBadge type={type}/>}
+      href={getHydraHref(member)}
+      hrefLabel='Open'
+      uri={uri}
+    />
+  );
+}
+
+function getCatalogEntityType(uri: string): LinkedArtEntityType {
+  const type = getLinkedArtEntityType(uri);
+  return type === 'unknown' && uri.includes('/group:')
+    ? 'organization'
+    : type;
 }
 
 const conceptTypes: LinkedArtEntityType[] = [
@@ -101,7 +142,7 @@ function SchemaCatalog({
 }) {
   const schemas = members.map((member) => ({
     member,
-    type: getLinkedArtEntityType(member['@id']),
+    type: getCatalogEntityType(member['@id']),
   }));
   const entities = schemas.filter(({ type }) => !conceptTypes.includes(type));
   const concepts = schemas.filter(({ type }) => conceptTypes.includes(type));
@@ -137,67 +178,16 @@ function SchemaGroup({
             schemaTitles[type] ?? member.title ?? member['@id'];
 
           return (
-            <Link
+            <CardArticle
               key={member['@id']}
-              {...getHydraTarget(member)}
-              aria-label={`Open ${schemaTitle} collection`}
-              className='catalog-schema-tile'
-              data-schema={type}
-            >
-              <span className='catalog-schema-tile-header'>
-                <span className='catalog-schema-tile-category'>
-                  {title === 'Entities' ? 'Entity' : 'Concept'}
-                </span>
-                <span className='catalog-schema-tile-title'>{schemaTitle}</span>
-              </span>
-              <IconEast
-                className='catalog-schema-tile-icon'
-                aria-hidden='true'
-              />
-            </Link>
+              href={getHydraHref(member)}
+              label={title === 'Entities' ? 'Entity' : 'Concept'}
+              title={schemaTitle}
+              className={`catalog-schema-tile catalog-schema-tile--${type}`}
+            />
           );
         })}
       </div>
     </section>
   );
-}
-
-type PageItemProps = {
-  member: HydraMember;
-};
-
-function PageItem({ member }: PageItemProps) {
-  const uri = member['@id'];
-  const openObjectCard = useNavigateToObjectCard();
-
-  return (
-    <ReferencePanelItem
-      title={
-        <ObjectCardAction
-          className='collection-item-link'
-          icon={<IconArrowTopRight aria-hidden='true'/>}
-          onPress={() => openObjectCard(uri)}
-        >
-          {getMemberLabel(member)}
-        </ObjectCardAction>
-      }
-    />
-  );
-}
-
-function getMemberLabel(member: HydraMember): string {
-  const appellations = Array.isArray(member.ascribes_appellation)
-    ? member.ascribes_appellation
-    : member.ascribes_appellation ? [member.ascribes_appellation] : [];
-  const content = appellations.find((appellation) => appellation.content?.trim())?.content;
-  if (content?.trim()) {
-    return content.trim();
-  }
-  const title = member.title?.trim();
-  if (title) {
-    return title;
-  }
-  const uri = member['@id'];
-  const lastPart = uri.split('/').pop();
-  return lastPart ? decodeURIComponent(lastPart) : uri;
 }

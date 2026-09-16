@@ -26,7 +26,7 @@ import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
 import './EntityCard.css';
 
-export function EntityCard({ onClose }: { onClose?: () => void }) {
+export function EntityCard() {
   const { uri, entity } = useEntity();
 
   if (!uri || !entity) {
@@ -39,7 +39,6 @@ export function EntityCard({ onClose }: { onClose?: () => void }) {
   return (
     <ObjectCard className="entity-card">
       <ObjectCardHeader
-        onClose={onClose}
         actions={
           <>
             <CardCopyAction uri={uri} label="Copy entity URI"/>

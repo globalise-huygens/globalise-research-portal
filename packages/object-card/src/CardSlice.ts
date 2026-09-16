@@ -26,10 +26,6 @@ export async function loadObjectCard(uri: string) {
   }
 }
 
-export function clearObjectCard() {
-  setObjectCardState({ cardState: { ...emptyCardState } });
-}
-
 export function useCard(): CardState {
   return useObjectCardStore((s) => s.cardState);
 }
