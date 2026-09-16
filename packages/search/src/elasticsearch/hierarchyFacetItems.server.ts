@@ -44,8 +44,6 @@ const hierarchyFacetItems = createServerFn({ method: 'POST' })
   });
 
 async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
-  console.log(JSON.stringify(data, undefined, 2));
-
   const result = await elastic.search({
     index: 'documents.2026.09.09',
     size: 0,
