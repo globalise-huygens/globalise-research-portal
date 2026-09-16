@@ -1,11 +1,6 @@
-import { ClientOnly, createFileRoute, lazyRouteComponent } from '@tanstack/react-router';
-
-const ManifestPage = lazyRouteComponent(() => import('../../ManifestPage.tsx'), 'ManifestPage');
+import { createFileRoute } from '@tanstack/react-router';
+import { ManifestPage } from '../../ManifestPage.tsx';
 
 export const Route = createFileRoute('/manifest/')({
-  component: () => (
-    <ClientOnly fallback={<p>Loading manifest viewer…</p>}>
-      <ManifestPage />
-    </ClientOnly>
-  ),
+  component: ManifestPage,
 });
