@@ -1,4 +1,4 @@
-import { CSSProperties, Suspense, useMemo } from 'react';
+import { CSSProperties, Suspense, useEffect, useMemo } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Checkbox, IconExpandSection } from '@globalise/design';
 import {
@@ -6,35 +6,52 @@ import {
   useHierarchy,
   useFilterFacet,
   useFilterFacetSelection,
+  useUpdateFacetValueLabels,
   useSearchState,
 } from '@knaw-huc/faceted-search-react';
 import { Tree, TreeItem, TreeItemContent, Button } from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions from './queries/hierarchyFacetItemsQueryOptions';
 import Facet from './Facet';
-import classes from './FilterFacet.module.css';
+import classes from './HierarchyFacet.module.css';
 
 import type { HierarchyFacetItem } from './elasticsearch/hierarchyFacetItems.server';
 
-export default function FilterFacet({ facetKey }: { facetKey: string }) {
+function mapLabels(results: HierarchyFacetItem[]) {
+  return results.reduce<Record<string, string>>((acc, result) => {
+    if (result.label) {
+      acc[result.id] = result.label;
+    }
+    if (result.children) {
+      Object.assign(acc, mapLabels(result.children));
+    }
+    return acc;
+  }, {});
+}
+
+export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFilterFacet(facetKey);
 
   return (
     <Facet label={label}>
       <Suspense fallback={'Loading...'}>
-        <FilterFacetItems facetKey={facetKey}/>
+        <HierarchyFacetItems facetKey={facetKey}/>
       </Suspense>
     </Facet>
   );
 }
 
-function FilterFacetItems({ facetKey }: { facetKey: string }) {
+function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const { query, facetValues } = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
+  const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
   const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions({
     key: facetKey,
     query,
-    facets: facetValues,
+    // Remove values this facet owns: we want all the available items of this facet with filters on the other facets
+    facets: (({ [facetKey]: _ownValues, ...values }) => values)(facetValues),
   }));
+
+  useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);
 
   const expandedKeys = useMemo(() => {
     const addExpandingKeys = (item: HierarchyFacetItem) => {
@@ -68,7 +85,7 @@ function TreeItems({ items }: { items: HierarchyFacetItem[] }) {
           hasChildItems={item.children && item.children.length > 0}>
           <TreeItemContent>
             {({ hasChildItems, isExpanded, level }) =>
-              <FilterFacetTreeItemContent item={item} level={level}
+              <HierarchyFacetTreeItemContent item={item} level={level}
                 hasChildren={hasChildItems} isOpen={isExpanded}/>}
           </TreeItemContent>
 
@@ -80,7 +97,7 @@ function TreeItems({ items }: { items: HierarchyFacetItem[] }) {
   );
 }
 
-function FilterFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
+function HierarchyFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
   item: HierarchyFacetItem,
   level: number,
   hasChildren: boolean,
