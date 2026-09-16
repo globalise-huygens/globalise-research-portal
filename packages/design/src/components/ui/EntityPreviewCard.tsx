@@ -1,5 +1,5 @@
-import { IconArrowTopRight, IconCopy } from '../icons';
-import { cn, useCopy } from '../../lib';
+import { IconArrowTopRight } from '../icons';
+import { cn } from '../../lib';
 import * as React from 'react';
 import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
@@ -18,7 +18,6 @@ export type EntityPreviewCardData = {
   icon?: React.ReactNode;
   openFullCardLabel?: string;
   openFullCardHref?: string;
-  copyValue?: string;
 };
 
 export type EntityPreviewCardProps = {
@@ -58,23 +57,14 @@ function getAutomationBadges(
 }
 
 function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
-  const { copied, copy } = useCopy();
   const automationBadges = getAutomationBadges(data.badges);
   const openFullCardLabel = data.openFullCardLabel ?? 'Open full object card';
   const categoryLabel = getEntityTypeLabel(data.type);
-  const copyValue = data.copyValue;
-
-  function copyIdentifier() {
-    if (copyValue) {
-      void copy(copyValue);
-    }
-  }
 
   return (
     <Popover
       size="compact"
       className={cn('entity-preview-card', className)}
-      data-copied={copied ? 'true' : 'false'}
     >
       <div className="header">
         <div className="identity">
@@ -114,17 +104,6 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
         </div>
 
         <div className="actions">
-          {copyValue && (
-            <button
-              type="button"
-              aria-label={`Copy URI ${copyValue}`}
-              className="icon-action"
-              title={copied ? `Copied ${copyValue}` : copyValue}
-              onClick={copyIdentifier}
-            >
-              <IconCopy className="icon-action-icon" />
-            </button>
-          )}
           {data.openFullCardHref && (
             <a
               href={data.openFullCardHref}
@@ -135,15 +114,6 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
             </a>
           )}
         </div>
-        {copyValue && (
-          <span
-            className="copy-status"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {copied ? 'URI copied!' : ''}
-          </span>
-        )}
       </div>
 
       {(data.properties?.length ?? 0) > 0 && (

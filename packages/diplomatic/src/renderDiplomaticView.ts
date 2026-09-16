@@ -163,9 +163,10 @@ export function renderDiplomaticView(
         $segment.tabIndex = 0;
         $segment.dataset.entityId = entity.id;
         $segment.setAttribute('role', 'button');
+        $segment.setAttribute('aria-haspopup', 'dialog');
         $segment.setAttribute(
           'aria-label',
-          `Preview entity: ${$segment.textContent}`,
+          `Select entity: ${$segment.textContent}`,
         );
 
         if (!$entityToSegments[entity.id]) {

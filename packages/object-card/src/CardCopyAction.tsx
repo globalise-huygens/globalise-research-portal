@@ -1,4 +1,4 @@
-import { IconCopy, ObjectCardAction, useCopy } from '@globalise/design';
+import { IconCopy, ObjectCardAction } from '@globalise/design';
 
 type CardCopyActionProps = {
   uri: string;
@@ -6,10 +6,8 @@ type CardCopyActionProps = {
 };
 
 export function CardCopyAction({ uri, label = 'Copy URI' }: CardCopyActionProps) {
-  const { copy } = useCopy();
-
   function handleCopy() {
-    void copy(uri);
+    navigator.clipboard.writeText(uri).catch(console.error);
   }
 
   return (

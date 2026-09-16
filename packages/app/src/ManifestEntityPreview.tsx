@@ -141,8 +141,8 @@ export function ManifestEntityPreview() {
         const preview = previewRef.current;
         const activeElement = document.activeElement;
         const previewActions = getFocusableElements(preview);
-        const firstAction = previewActions.at(0);
-        const lastAction = previewActions.at(-1);
+        const firstAction = previewActions.at(0) ?? preview;
+        const lastAction = previewActions.at(-1) ?? preview;
 
         if (!event.shiftKey && activeElement === anchor && firstAction) {
           event.preventDefault();
@@ -253,6 +253,7 @@ export function ManifestEntityPreview() {
       className="manifest-entity-preview"
       role="dialog"
       aria-label="Entity preview"
+      tabIndex={-1}
       style={position}
       onPointerEnter={() => {
         isPreviewHovered.current = true;
