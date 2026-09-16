@@ -71,7 +71,8 @@ export function WordHighlight(
       }}
       tabIndex={isEntityTrigger ? 0 : undefined}
       role={isEntityTrigger ? 'button' : undefined}
-      aria-label={isEntityTrigger ? `Preview entity: ${text}` : undefined}
+      aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
+      aria-label={isEntityTrigger ? `Select entity: ${text}` : undefined}
       onClick={() => toggleClicked(id)}
       onMouseEnter={(event) => handleHover(true, event)}
       onMouseMove={(event) => {

@@ -102,7 +102,8 @@ export function SegmentedText(
           key={segment.index}
           tabIndex={isEntityTrigger ? 0 : undefined}
           role={isEntityTrigger ? 'button' : undefined}
-          aria-label={isEntityTrigger ? `Preview entity: ${body}` : undefined}
+          aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
+          aria-label={isEntityTrigger ? `Select entity: ${body}` : undefined}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onFocus={handleFocus}

@@ -35,6 +35,14 @@ import './ManifestEntityPreview.css';
 
 const OPEN_DELAY = 300;
 const CLOSE_DELAY = 200;
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
 
 type EntityAnnotation = Annotation<EntityBody>;
 
@@ -109,7 +117,7 @@ export function ManifestEntityPreview() {
       window.clearTimeout(closeTimer.current);
       openTimer.current = undefined;
       isPreviewHovered.current = false;
-      const trigger = getHoverElement();
+      const trigger = anchor ?? getHoverElement();
       if (trigger) {
         removeHoverAttribute(trigger);
       }
@@ -128,16 +136,45 @@ export function ManifestEntityPreview() {
       }
     }
 
-    function handleEscape(event: KeyboardEvent) {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Tab' && displayedRef.current && anchor) {
+        const preview = previewRef.current;
+        const activeElement = document.activeElement;
+        const previewActions = getFocusableElements(preview);
+        const firstAction = previewActions.at(0);
+        const lastAction = previewActions.at(-1);
+
+        if (!event.shiftKey && activeElement === anchor && firstAction) {
+          event.preventDefault();
+          firstAction.focus({ preventScroll: true });
+          return;
+        }
+
+        if (event.shiftKey && activeElement === firstAction) {
+          event.preventDefault();
+          focusElement(anchor);
+          return;
+        }
+
+        if (!event.shiftKey && activeElement === lastAction && preview) {
+          const nextElement = getNextFocusableElement(anchor, preview);
+          if (nextElement) {
+            event.preventDefault();
+            dismiss();
+            nextElement.focus({ preventScroll: true });
+          }
+          return;
+        }
+      }
+
       if (event.key !== 'Escape' || (!displayedRef.current && openTimer.current === undefined)) {
         return;
       }
       event.preventDefault();
       event.stopPropagation();
-      const trigger = getHoverElement();
       if (previewRef.current?.contains(document.activeElement)
-        && (trigger instanceof HTMLElement || trigger instanceof SVGElement)) {
-        trigger.focus({ preventScroll: true });
+        && anchor?.isConnected) {
+        focusElement(anchor);
       }
       dismiss();
     }
@@ -145,14 +182,14 @@ export function ManifestEntityPreview() {
     window.addEventListener('scroll', handleMovement, true);
     window.addEventListener('wheel', handleMovement, { capture: true, passive: true });
     window.addEventListener('pointerdown', handleMovement, true);
-    window.addEventListener('keydown', handleEscape, true);
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => {
       window.removeEventListener('scroll', handleMovement, true);
       window.removeEventListener('wheel', handleMovement, true);
       window.removeEventListener('pointerdown', handleMovement, true);
-      window.removeEventListener('keydown', handleEscape, true);
+      window.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, []);
+  }, [anchor]);
 
   useLayoutEffect(() => {
     const preview = previewRef.current;
@@ -214,6 +251,8 @@ export function ManifestEntityPreview() {
     <div
       ref={previewRef}
       className="manifest-entity-preview"
+      role="dialog"
+      aria-label="Entity preview"
       style={position}
       onPointerEnter={() => {
         isPreviewHovered.current = true;
@@ -299,13 +338,15 @@ function findEntityForWord(
 }
 
 function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
-  const type = getEntityType(getCidocEntityClassificationId(annotation));
+  const definition = getPreviewDefinition(
+    getCidocEntityClassificationId(annotation),
+  );
   return {
-    type,
-    icon: <EntityIcon type={type} />,
+    type: definition.type,
+    icon: <EntityIcon type={definition.type} />,
     openFullCardHref: getLinkedObjectCardHref(annotation),
-    title: getPreviewTitle(annotation),
-    properties: getPreviewProperties(annotation),
+    title: getPreviewTitle(annotation, definition),
+    properties: getPreviewProperties(annotation, definition),
   };
 }
 
@@ -329,37 +370,34 @@ function getLinkedObjectCardHref(annotation: EntityAnnotation): string | undefin
   return `/object-card?uri=${encodeURIComponent(uri)}`;
 }
 
-function getPreviewTitle(annotation: EntityAnnotation) {
+function getPreviewTitle(
+  annotation: EntityAnnotation,
+  definition: EntityPreviewDefinition,
+) {
   const body = getPrimaryEntityBody(annotation);
   if (isClassificationOnly(annotation)) {
     return 'Unknown';
   }
   return body.label
     ?? body.ascribes_appellation?.content
-    ?? getQuantityTitle(body)
+    ?? definition.getTitle?.(body)
     ?? body.classified_as._label;
 }
 
 function getPreviewProperties(
   annotation: EntityAnnotation,
+  definition: EntityPreviewDefinition,
 ): EntityPreviewCardProperty[] {
   const body = getPrimaryEntityBody(annotation);
   const classificationId = getCidocEntityClassificationId(annotation);
   const properties: EntityPreviewCardProperty[] = [
     {
       label: 'Type',
-      value: classificationId === 'gan:CMTY_QUANT'
-        ? 'Exchange Unit'
-        : getEntityTypeLabel(getEntityType(classificationId)),
+      value: definition.typeLabel ?? getEntityTypeLabel(definition.type),
     },
+    ...(definition.getProperties?.(body) ?? []),
   ];
 
-  if (classificationId === 'gan:CMTY_QUANT') {
-    properties.push(
-      { label: 'Value', value: body.value ?? '-' },
-      { label: 'Unit', value: body.unit?._label ?? '-' },
-    );
-  }
   const date = getEntityDateTimespan(body);
   if (
     classificationId === 'gan:DATE'
@@ -385,15 +423,6 @@ function getPreviewProperties(
   }
   properties.push({ label: 'Classified by', value: body.classified_as._label });
   return properties;
-}
-
-function getQuantityTitle(body: EntityBody) {
-  if (body.classified_as.id !== 'gan:CMTY_QUANT' || body.value === undefined) {
-    return undefined;
-  }
-  return body.unit?._label
-    ? `${body.value} ${body.unit._label}`
-    : String(body.value);
 }
 
 const previewDateFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -422,26 +451,51 @@ function isClassificationOnly(annotation: EntityAnnotation) {
     || classificationId === 'gan:ETH_REL';
 }
 
-const entityTypeByClassificationId = {
-  'gan:PER_NAME': 'person',
-  'gan:PER_ATTR': 'person',
-  'gan:PRF': 'person',
-  'gan:STATUS': 'person',
-  'gan:ETH_REL': 'person',
-  'gan:ORG': 'organisation',
-  'gan:SHIP': 'ship',
-  'gan:SHIP_TYPE': 'ship',
-  'gan:CMTY_NAME': 'commodity',
-  'gan:CMTY_QUAL': 'commodity',
-  'gan:DATE': 'date',
-  'gan:LOC_NAME': 'place',
-  'gan:LOC_ADJ': 'place',
-  'gan:DOC': 'document',
-  'gan:CMTY_QUANT': 'dimensions',
-} as const satisfies Record<CidocEntityClassificationId, EntityPreviewCardType>;
+type EntityPreviewDefinition = {
+  type: EntityPreviewCardType;
+  typeLabel?: string;
+  getTitle?: (body: EntityBody) => string | undefined;
+  getProperties?: (body: EntityBody) => EntityPreviewCardProperty[];
+};
 
-function getEntityType(classificationId: CidocEntityClassificationId | undefined) {
-  return classificationId ? entityTypeByClassificationId[classificationId] : 'entity';
+const fallbackPreviewDefinition: EntityPreviewDefinition = { type: 'entity' };
+
+const previewDefinitionByClassificationId = {
+  'gan:PER_NAME': { type: 'person' },
+  'gan:PER_ATTR': { type: 'person' },
+  'gan:PRF': { type: 'person' },
+  'gan:STATUS': { type: 'person' },
+  'gan:ETH_REL': { type: 'person' },
+  'gan:ORG': { type: 'organisation' },
+  'gan:SHIP': { type: 'ship' },
+  'gan:SHIP_TYPE': { type: 'ship' },
+  'gan:CMTY_NAME': { type: 'commodity' },
+  'gan:CMTY_QUAL': { type: 'commodity' },
+  'gan:DATE': { type: 'date' },
+  'gan:LOC_NAME': { type: 'place' },
+  'gan:LOC_ADJ': { type: 'place' },
+  'gan:DOC': { type: 'document' },
+  'gan:CMTY_QUANT': {
+    type: 'dimensions',
+    typeLabel: 'Exchange Unit',
+    getTitle: (body: EntityBody) => body.value === undefined
+      ? undefined
+      : body.unit?._label
+        ? `${body.value} ${body.unit._label}`
+        : String(body.value),
+    getProperties: (body: EntityBody) => [
+      { label: 'Value', value: body.value ?? '-' },
+      { label: 'Unit', value: body.unit?._label ?? '-' },
+    ],
+  },
+} as const satisfies Record<CidocEntityClassificationId, EntityPreviewDefinition>;
+
+function getPreviewDefinition(
+  classificationId: CidocEntityClassificationId | undefined,
+): EntityPreviewDefinition {
+  return classificationId
+    ? previewDefinitionByClassificationId[classificationId]
+    : fallbackPreviewDefinition;
 }
 
 function placePreview(
@@ -472,4 +526,31 @@ function placePreview(
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
+}
+
+type FocusableElement = HTMLElement | SVGElement;
+
+function getFocusableElements(container: Element | null): FocusableElement[] {
+  if (!container) {
+    return [];
+  }
+  return Array.from(
+    container.querySelectorAll<FocusableElement>(FOCUSABLE_SELECTOR),
+  ).filter((element) => element.getClientRects().length > 0);
+}
+
+function getNextFocusableElement(
+  anchor: Element,
+  preview: Element,
+): FocusableElement | undefined {
+  const elements = getFocusableElements(document.body)
+    .filter((element) => !preview.contains(element));
+  const anchorIndex = elements.indexOf(anchor as FocusableElement);
+  return anchorIndex === -1 ? undefined : elements[anchorIndex + 1];
+}
+
+function focusElement(element: Element) {
+  if (element instanceof HTMLElement || element instanceof SVGElement) {
+    element.focus({ preventScroll: true });
+  }
 }
