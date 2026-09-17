@@ -1,0 +1,83 @@
+.manifest-entity-preview {
+  position: fixed;
+  width: max-content;
+  z-index: 100;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .manifest-entity-preview__stack {
+    position: absolute;
+    top: 0;
+    display: flex;
+    gap: var(--s8);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+    }
+
+    &.is-right {
+      left: calc(100% + var(--s8));
+    }
+
+    &.is-left {
+      right: calc(100% + var(--s8));
+      flex-direction: row-reverse;
+    }
+
+    &.is-below {
+      top: calc(100% + var(--s8));
+      left: 0;
+      max-width: calc(100vw - var(--s16));
+      overflow-x: auto;
+    }
+  }
+
+  .manifest-entity-preview__stack-card {
+    flex: none;
+  }
+
+  .manifest-entity-preview__linked-value {
+    display: inline-flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: 0.2em;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-brand-mint);
+    }
+
+    > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    svg {
+      width: 0.75rem;
+      height: 0.75rem;
+      flex: none;
+    }
+  }
+}
