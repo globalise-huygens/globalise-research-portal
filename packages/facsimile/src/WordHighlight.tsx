@@ -1,4 +1,5 @@
 import { type MouseEvent, useState } from 'react';
+import { usePointerDown } from '@knaw-huc/osd-iiif-viewer';
 import {
   CanvasId,
   removeHoverAttribute,
@@ -35,6 +36,9 @@ export function WordHighlight(
   const colors = getEntityHighlightColors(entityClassificationId
     ? getCidocClassNameByClassificationId(entityClassificationId)
     : undefined);
+  const handlePointerDown = usePointerDown({
+    onClick: () => toggleClicked(id),
+  });
 
   const fill = selected ? colors.fill
     : hovered ? colors.hoverFill
@@ -73,7 +77,7 @@ export function WordHighlight(
       role={isEntityTrigger ? 'button' : undefined}
       aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
       aria-label={isEntityTrigger ? `Select word: ${text}` : undefined}
-      onClick={() => toggleClicked(id)}
+      onPointerDown={handlePointerDown}
       onMouseEnter={(event) => handleHover(true, event)}
       onMouseMove={(event) => {
         if (!isEntityTrigger) {

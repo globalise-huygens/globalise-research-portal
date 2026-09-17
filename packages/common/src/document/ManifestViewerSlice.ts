@@ -14,7 +14,7 @@ import { orThrow } from '../util/orThrow.ts';
 import {
   AnnotationIndexes,
   indexAnnotations,
-} from '../annotation/indexAnnotations.ts';
+} from '../annotation';
 import { debounce } from 'lodash';
 
 export type CanvasId = string;
