@@ -3,8 +3,13 @@ packages:
 
 nodeLinker: hoisted
 
+# Dependencies must be older than one week:
 minimumReleaseAge: 10080
 minimumReleaseAgeStrict: true
+minimumReleaseAgeExclude:
+  - '@knaw-huc/*'
+  # TODO: remove
+  - openseadragon@6.1.1
 
 allowBuilds:
   msw: true
