@@ -9,8 +9,6 @@ import {
   getEntityClassificationDefinition,
   getEntityClassificationUri,
   getPrimaryEntityBody,
-  getEntityDateTimespan,
-  getEntitySubject,
   isEntity,
   type Annotation,
   type EntityBody,
@@ -49,13 +47,15 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import {
+  getInternalConceptUri,
+  getLinkedObjectCardHref,
+  getObjectCardHref,
+} from './ManifestEntityPreviewModel';
 import './ManifestEntityPreview.css';
 
 const OPEN_DELAY = 300;
 const CLOSE_DELAY = 200;
-const GLOBALISE_DATA_ORIGIN = 'https://data.globalise.huygens.knaw.nl';
-const GLOBALISE_THESAURUS_BASE =
-  `${GLOBALISE_DATA_ORIGIN}/hdl:20.500.14722/thesaurus:`;
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button:not([disabled])',
@@ -383,6 +383,8 @@ export function ManifestEntityPreview() {
     >
       <EntityAnnotationPreviewCard
         annotation={displayed}
+        controlledPreviewId={getStackCardId(0)}
+        expandedPreviewUri={previewStack[0]?.uri}
         onOpenPreview={(reference) => openPreviewAt(0, reference)}
         onSchedulePreviewClose={() => schedulePreviewStackClose(0)}
       />
@@ -396,7 +398,10 @@ export function ManifestEntityPreview() {
           {previewStack.map((reference, index) => (
             <LinkedPreview
               key={`${index}-${reference.uri}`}
+              id={getStackCardId(index)}
               reference={reference}
+              controlledPreviewId={getStackCardId(index + 1)}
+              expandedPreviewUri={previewStack[index + 1]?.uri}
               onOpenPreview={(nextReference) => openPreviewAt(index + 1, nextReference)}
               onScheduleClose={() => schedulePreviewStackClose(index + 1)}
               onKeepOpen={keepPreviewStackOpen}
@@ -411,10 +416,14 @@ export function ManifestEntityPreview() {
 
 function EntityAnnotationPreviewCard({
   annotation,
+  controlledPreviewId,
+  expandedPreviewUri,
   onOpenPreview,
   onSchedulePreviewClose,
 }: {
   annotation: EntityAnnotation;
+  controlledPreviewId: string;
+  expandedPreviewUri?: string;
   onOpenPreview: (reference: LinkedPreviewReference) => void;
   onSchedulePreviewClose: () => void;
 }) {
@@ -428,6 +437,8 @@ function EntityAnnotationPreviewCard({
         annotation,
         conceptReference,
         concept.data,
+        controlledPreviewId,
+        expandedPreviewUri,
         onOpenPreview,
         onSchedulePreviewClose,
       )}
@@ -436,12 +447,18 @@ function EntityAnnotationPreviewCard({
 }
 
 function LinkedPreview({
+  id,
   reference,
+  controlledPreviewId,
+  expandedPreviewUri,
   onOpenPreview,
   onScheduleClose,
   onKeepOpen,
 }: {
+  id: string;
   reference: LinkedPreviewReference;
+  controlledPreviewId: string;
+  expandedPreviewUri?: string;
   onOpenPreview: (reference: LinkedPreviewReference) => void;
   onScheduleClose: () => void;
   onKeepOpen: () => void;
@@ -449,6 +466,8 @@ function LinkedPreview({
   if (reference.kind === 'classification') {
     return (
       <LinkedPreviewContainer
+        id={id}
+        label={`Classification preview: ${reference.label}`}
         onScheduleClose={onScheduleClose}
         onKeepOpen={onKeepOpen}
       >
@@ -460,6 +479,9 @@ function LinkedPreview({
   return (
     <LinkedConceptPreview
       reference={reference}
+      id={id}
+      controlledPreviewId={controlledPreviewId}
+      expandedPreviewUri={expandedPreviewUri}
       onOpenPreview={onOpenPreview}
       onScheduleClose={onScheduleClose}
       onKeepOpen={onKeepOpen}
@@ -468,12 +490,18 @@ function LinkedPreview({
 }
 
 function LinkedConceptPreview({
+  id,
   reference,
+  controlledPreviewId,
+  expandedPreviewUri,
   onOpenPreview,
   onScheduleClose,
   onKeepOpen,
 }: {
+  id: string;
   reference: LinkedConceptReference;
+  controlledPreviewId: string;
+  expandedPreviewUri?: string;
   onOpenPreview: (reference: LinkedPreviewReference) => void;
   onScheduleClose: () => void;
   onKeepOpen: () => void;
@@ -482,6 +510,8 @@ function LinkedConceptPreview({
 
   return (
     <LinkedPreviewContainer
+      id={id}
+      label={`Concept preview: ${reference.fallbackLabel}`}
       onScheduleClose={onScheduleClose}
       onKeepOpen={onKeepOpen}
     >
@@ -489,6 +519,8 @@ function LinkedConceptPreview({
         data={getConceptPreviewData(
           reference,
           concept.data,
+          controlledPreviewId,
+          expandedPreviewUri,
           onOpenPreview,
           onScheduleClose,
         )}
@@ -498,17 +530,24 @@ function LinkedConceptPreview({
 }
 
 function LinkedPreviewContainer({
+  id,
+  label,
   children,
   onScheduleClose,
   onKeepOpen,
 }: {
+  id: string;
+  label: string;
   children: ReactNode;
   onScheduleClose: () => void;
   onKeepOpen: () => void;
 }) {
   return (
     <div
+      id={id}
       className="manifest-entity-preview__stack-card"
+      role="dialog"
+      aria-label={label}
       onPointerEnter={onKeepOpen}
       onPointerLeave={onScheduleClose}
       onFocusCapture={onKeepOpen}
@@ -600,6 +639,8 @@ function getPreviewData(
   annotation: EntityAnnotation,
   conceptReference: LinkedConceptReference | undefined,
   concept: SkosConcept | undefined,
+  controlledPreviewId: string,
+  expandedPreviewUri: string | undefined,
   onOpenPreview: (reference: LinkedPreviewReference) => void,
   onSchedulePreviewClose: () => void,
 ): EntityPreviewCardData {
@@ -625,6 +666,8 @@ function getPreviewData(
         body,
         concept,
         conceptReference,
+        controlledPreviewId,
+        expandedPreviewUri,
         onOpenPreview,
         onSchedulePreviewClose,
       }) ?? []),
@@ -633,6 +676,8 @@ function getPreviewData(
         value: classificationReference ? (
           <LinkedPreviewValue
             reference={classificationReference}
+            controlledPreviewId={controlledPreviewId}
+            expanded={expandedPreviewUri === classificationReference.uri}
             onOpenPreview={onOpenPreview}
             onSchedulePreviewClose={onSchedulePreviewClose}
           />
@@ -645,6 +690,8 @@ function getPreviewData(
 function getConceptPreviewData(
   reference: LinkedConceptReference,
   concept: SkosConcept | undefined,
+  controlledPreviewId: string,
+  expandedPreviewUri: string | undefined,
   onOpenPreview: (reference: LinkedPreviewReference) => void,
   onSchedulePreviewClose: () => void,
 ): EntityPreviewCardData {
@@ -663,6 +710,8 @@ function getConceptPreviewData(
       label: 'Scheme',
       value: renderConceptRelations(
         schemes,
+        controlledPreviewId,
+        expandedPreviewUri,
         onOpenPreview,
         onSchedulePreviewClose,
       ),
@@ -674,6 +723,8 @@ function getConceptPreviewData(
       label: 'Broader',
       value: renderConceptRelations(
         broader,
+        controlledPreviewId,
+        expandedPreviewUri,
         onOpenPreview,
         onSchedulePreviewClose,
       ),
@@ -736,27 +787,6 @@ function getClassificationReference(
   };
 }
 
-function getInternalConceptUri(uri: string): string | undefined {
-  try {
-    const parsed = new URL(uri);
-    if (
-      parsed.protocol === 'https:'
-      && parsed.origin === GLOBALISE_DATA_ORIGIN
-      && parsed.pathname.includes('/thesaurus:')
-    ) {
-      return uri.replace(/\.json$/, '');
-    }
-    const poolPartyMatch = parsed.hostname === 'digitaalerfgoed.poolparty.biz'
-      ? /^\/globalise\/([0-9a-f-]+)\/?$/i.exec(parsed.pathname)
-      : null;
-    return poolPartyMatch
-      ? `${GLOBALISE_THESAURUS_BASE}${poolPartyMatch[1]}`
-      : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
 function getConceptRelations(
   relations: SkosConcept[] | undefined,
 ): LinkedConceptReference[] {
@@ -772,6 +802,8 @@ function getConceptRelations(
 
 function renderConceptRelations(
   relations: LinkedConceptReference[],
+  controlledPreviewId: string,
+  expandedPreviewUri: string | undefined,
   onOpenPreview: (reference: LinkedPreviewReference) => void,
   onSchedulePreviewClose: () => void,
 ) {
@@ -780,6 +812,8 @@ function renderConceptRelations(
       {index > 0 && ', '}
       <LinkedPreviewValue
         reference={reference}
+        controlledPreviewId={controlledPreviewId}
+        expanded={expandedPreviewUri === reference.uri}
         onOpenPreview={onOpenPreview}
         onSchedulePreviewClose={onSchedulePreviewClose}
       />
@@ -790,11 +824,15 @@ function renderConceptRelations(
 function LinkedPreviewValue({
   reference,
   label = getLinkedPreviewLabel(reference),
+  controlledPreviewId,
+  expanded = false,
   onOpenPreview,
   onSchedulePreviewClose,
 }: {
   reference: LinkedPreviewReference;
   label?: string;
+  controlledPreviewId: string;
+  expanded?: boolean;
   onOpenPreview: (reference: LinkedPreviewReference) => void;
   onSchedulePreviewClose: () => void;
 }) {
@@ -819,6 +857,9 @@ function LinkedPreviewValue({
         type="button"
         onClick={() => onOpenPreview(reference)}
         aria-label={`Preview classification: ${label}`}
+        aria-haspopup="dialog"
+        aria-expanded={expanded}
+        aria-controls={controlledPreviewId}
       >
         {content}
       </button>
@@ -841,61 +882,10 @@ function getLinkedPreviewLabel(reference: LinkedPreviewReference): string {
     : reference.label;
 }
 
-function getLinkedObjectCardHref(body: EntityBody): string | undefined {
-  const subject = getEntitySubject(body);
-  const uri = subject?.id;
-  if (!uri || uri.includes('#') || uri.includes('/annotations:')) {
-    return undefined;
-  }
-  try {
-    const parsed = new URL(uri);
-    if (parsed.protocol !== 'https:' || parsed.origin !== GLOBALISE_DATA_ORIGIN) {
-      return undefined;
-    }
-  } catch {
-    return undefined;
-  }
-  return `/object-card?uri=${encodeURIComponent(uri)}`;
-}
-
-function getObjectCardHref(uri: string): string {
-  return `/object-card?uri=${encodeURIComponent(uri)}`;
-}
-
 function getNamedPreviewTitle(body: EntityBody) {
   return body.label
     ?? body.ascribes_appellation?.content
     ?? body.classified_as._label;
-}
-
-function getDatePreviewProperties(body: EntityBody): EntityPreviewCardProperty[] {
-  const date = getEntityDateTimespan(body);
-  if (date?.type !== 'TimeSpan') {
-    return [];
-  }
-
-  const dateBounds = [
-    ['Begin of the begin', date.begin_of_the_begin],
-    ['End of the begin', date.end_of_the_begin],
-    ['Begin of the end', date.begin_of_the_end],
-    ['End of the end', date.end_of_the_end],
-  ] as const;
-
-  return dateBounds.flatMap(([label, value]) => value
-    ? [{ label, value: formatPreviewDate(value) }]
-    : []);
-}
-
-const previewDateFormatter = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-
-function formatPreviewDate(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value.split('T')[0] : previewDateFormatter.format(date);
 }
 
 type EntityPreviewDefinition = {
@@ -909,6 +899,8 @@ type EntityPreviewContext = {
   body: EntityBody;
   concept?: SkosConcept;
   conceptReference?: LinkedConceptReference;
+  controlledPreviewId: string;
+  expandedPreviewUri?: string;
   onOpenPreview: (reference: LinkedPreviewReference) => void;
   onSchedulePreviewClose: () => void;
 };
@@ -928,6 +920,8 @@ const classificationPreview: EntityPreviewBehavior = {
     body,
     concept,
     conceptReference,
+    controlledPreviewId,
+    expandedPreviewUri,
     onOpenPreview,
     onSchedulePreviewClose,
   }) => [{
@@ -936,16 +930,13 @@ const classificationPreview: EntityPreviewBehavior = {
       <LinkedPreviewValue
         reference={conceptReference}
         label={concept ? getConceptLabel(concept) : conceptReference.fallbackLabel}
+        controlledPreviewId={controlledPreviewId}
+        expanded={expandedPreviewUri === conceptReference.uri}
         onOpenPreview={onOpenPreview}
         onSchedulePreviewClose={onSchedulePreviewClose}
       />
     ) : body.label ?? body.ascribes_appellation?.content ?? '—',
   }],
-};
-
-const datePreview: EntityPreviewBehavior = {
-  getTitle: getNamedPreviewTitle,
-  getProperties: ({ body }) => getDatePreviewProperties(body),
 };
 
 const dimensionPreview: EntityPreviewBehavior = {
@@ -965,7 +956,6 @@ const dimensionPreview: EntityPreviewBehavior = {
 const previewBehaviorByStrategy = {
   named: namedPreview,
   classification: classificationPreview,
-  date: datePreview,
   dimension: dimensionPreview,
 } satisfies Record<EntityPreviewStrategy, EntityPreviewBehavior>;
 
@@ -1044,4 +1034,8 @@ function focusElement(element: Element) {
   if (element instanceof HTMLElement || element instanceof SVGElement) {
     element.focus({ preventScroll: true });
   }
+}
+
+function getStackCardId(index: number): string {
+  return `manifest-entity-preview-card-${index}`;
 }

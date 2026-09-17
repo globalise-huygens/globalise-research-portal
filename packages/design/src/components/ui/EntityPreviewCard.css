@@ -65,36 +65,36 @@
       text-transform: uppercase;
     }
 
-    .category-trigger[data-type="concept"],
-    .category-trigger[data-type="ship"],
-    .category-trigger[data-type="organisation"] {
+    .category-trigger[data-type='concept'],
+    .category-trigger[data-type='ship'],
+    .category-trigger[data-type='organisation'] {
       --entity-preview-category-background: var(--color-turquoise-900);
       --entity-preview-category-border: var(--color-turquoise-700);
       --entity-preview-category-color: var(--color-turquoise-200);
     }
 
-    .category-trigger[data-type="person"] {
+    .category-trigger[data-type='person'] {
       --entity-preview-category-background: var(--color-vermilion-900);
       --entity-preview-category-border: var(--color-vermilion-700);
       --entity-preview-category-color: var(--color-vermilion-200);
     }
 
-    .category-trigger[data-type="place"] {
+    .category-trigger[data-type='place'] {
       --entity-preview-category-background: var(--color-mint-900);
       --entity-preview-category-border: var(--color-mint-700);
       --entity-preview-category-color: var(--color-mint-200);
     }
 
-    .category-trigger[data-type="commodity"],
-    .category-trigger[data-type="date"] {
+    .category-trigger[data-type='commodity'],
+    .category-trigger[data-type='date'] {
       --entity-preview-category-background: var(--color-parchment-900);
       --entity-preview-category-border: var(--color-parchment-700);
       --entity-preview-category-color: var(--color-parchment-200);
     }
 
-    .category-trigger[data-type="entity"],
-    .category-trigger[data-type="document"],
-    .category-trigger[data-type="dimensions"] {
+    .category-trigger[data-type='entity'],
+    .category-trigger[data-type='document'],
+    .category-trigger[data-type='dimensions'] {
       --entity-preview-category-background: var(--color-neutral-700);
       --entity-preview-category-border: var(--color-neutral-500);
       --entity-preview-category-color: var(--color-neutral-200);
@@ -134,8 +134,8 @@
 
     .icon-action {
       display: inline-flex;
-      width: var(--s16);
-      height: var(--s16);
+      width: var(--s24);
+      height: var(--s24);
       padding: 0;
       border: 0;
       background: transparent;
@@ -168,7 +168,7 @@
       display: grid;
       min-width: 0;
       grid-template-columns: minmax(96px, max-content) minmax(0, 1fr);
-      align-content: start;
+      align-items: baseline;
       gap: var(--s8);
     }
 

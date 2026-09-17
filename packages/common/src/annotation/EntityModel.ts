@@ -10,13 +10,6 @@ export type EntityBody = {
   classified_as: EntityClassification;
   label?: string;
   value?: string | number;
-  timespan?: {
-    type: string;
-    begin_of_the_begin?: string;
-    end_of_the_begin?: string;
-    begin_of_the_end?: string;
-    end_of_the_end?: string;
-  };
   ascribes_classification: {
     id: string,
     type: string,
@@ -42,16 +35,6 @@ export type EntitySubject = {
   id: string;
   type: string;
   _label?: string;
-  is_similarity_subject_of?: {
-    ascribes_similarity_relation?: string;
-    ascribes_similarity_target?: {
-      type: string;
-      begin_of_the_begin?: string;
-      end_of_the_begin?: string;
-      begin_of_the_end?: string;
-      end_of_the_end?: string;
-    };
-  };
 };
 const entityAnnotationBodyTypes = [
   'AppellativeStatus',
@@ -61,14 +44,6 @@ const entityAnnotationBodyTypes = [
 
 export type EntityAnnotationBodyType =
   (typeof entityAnnotationBodyTypes)[number];
-
-export function getEntityDateTimespan(body: EntityBody) {
-  const interpretation = body.has_appellative_subject?.is_similarity_subject_of;
-  const target = interpretation?.ascribes_similarity_target;
-  // The outer status timespan describes the status, not the date being named.
-  return interpretation?.ascribes_similarity_relation === 'la:equivalent'
-    && target?.type === 'TimeSpan' ? target : undefined;
-}
 
 export function getEntitySubject(body: EntityBody): EntitySubject | undefined {
   const subjectByBodyType: Record<EntityAnnotationBodyType, EntitySubject | undefined> = {

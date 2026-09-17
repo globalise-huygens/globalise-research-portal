@@ -29,7 +29,6 @@ export type EntityPresentationType =
 
 export type EntityPreviewStrategy =
   | 'classification'
-  | 'date'
   | 'dimension'
   | 'named';
 
@@ -129,7 +128,7 @@ const entityClassificationDefinitionById = {
     cidocClassName: 'cidoc-time-span',
     highlightLabel: 'Dates',
     presentationType: 'date',
-    previewStrategy: 'date',
+    previewStrategy: 'named',
   },
   'gan:LOC_NAME': {
     cidocClassName: 'cidoc-place',
