@@ -1,4 +1,5 @@
 import { type MouseEvent, useState } from 'react';
+import { usePointerDown } from '@knaw-huc/osd-iiif-viewer';
 import {
   CanvasId,
   setHovered,
@@ -27,6 +28,9 @@ export function WordHighlight(
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
   const colors = getEntityHighlightColors(tone);
+  const handlePointerDown = usePointerDown({
+    onClick: () => toggleClicked(id),
+  });
 
   const fill = selected ? colors.fill
     : hovered ? colors.hoverFill
@@ -53,7 +57,7 @@ export function WordHighlight(
         cursor: 'pointer',
         mixBlendMode: 'multiply',
       }}
-      onClick={() => toggleClicked(id)}
+      onPointerDown={handlePointerDown}
       onMouseEnter={(event) => handleHover(true, event)}
       onMouseMove={(event) => handleHover(true, event)}
       onMouseLeave={(event) => handleHover(false, event)}
