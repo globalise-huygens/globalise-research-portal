@@ -1,4 +1,126 @@
 @layer components {
+  .catalog-overview {
+    box-sizing: border-box;
+    display: grid;
+    min-height: 100%;
+    gap: var(--s48);
+    background: var(--color-background-fixed-card);
+    padding: clamp(var(--s24), 4vw, var(--s64));
+  }
+
+  .catalog-overview-header {
+    display: grid;
+    gap: var(--s8);
+
+    h1 {
+      max-width: 18ch;
+      margin: 0;
+      color: var(--color-brand-white);
+      font-family: var(--font-serif);
+      font-size: clamp(var(--text-4xl), 5vw, var(--text-6xl));
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+  }
+
+  .catalog-overview-eyebrow,
+  .catalog-schema-group > h2 {
+    margin: 0;
+    color: var(--color-neutral-300);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    line-height: var(--s20);
+    text-transform: uppercase;
+  }
+
+  .catalog-schema-group {
+    display: grid;
+    gap: var(--s16);
+  }
+
+  .catalog-schema-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s16);
+  }
+
+  .catalog-schema-tile {
+    aspect-ratio: 1;
+    min-height: var(--s176);
+    justify-content: space-between;
+    background: var(--catalog-schema-color, var(--color-neutral-200));
+    color: var(--color-brand-black);
+    padding: var(--s20);
+    text-decoration: none;
+  }
+
+  .catalog-schema-tile--person,
+  .catalog-schema-tile--place {
+    --catalog-schema-color: var(--color-brand-mint);
+  }
+
+  .catalog-schema-tile--organization,
+  .catalog-schema-tile--rulership {
+    --catalog-schema-color: var(--color-brand-vermilion);
+  }
+
+  .catalog-schema-tile--polity {
+    --catalog-schema-color: var(--color-mint-700);
+
+    color: var(--color-brand-white);
+  }
+
+  .catalog-schema-tile--ship,
+  .catalog-schema-tile--voyage {
+    --catalog-schema-color: var(--color-brand-turquoise);
+  }
+
+  .catalog-schema-tile--conversion {
+    --catalog-schema-color: var(--color-parchment-300);
+  }
+
+  .catalog-schema-tile--occurrence {
+    --catalog-schema-color: var(--color-brand-parchment);
+  }
+
+  .catalog-schema-tile--concept,
+  .catalog-schema-tile--conceptscheme,
+  .catalog-schema-tile--collection {
+    --catalog-schema-color: var(--color-neutral-200);
+  }
+
+  .catalog-schema-tile:hover {
+    filter: brightness(1.08);
+  }
+
+  .catalog-schema-tile .gds-card-article__title {
+    font-size: var(--text-3xl);
+  }
+
+  .catalog-schema-tile--polity .gds-card-article__title {
+    color: inherit;
+  }
+
+  @media (min-width: 560px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .catalog-schema-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
   .collection-page {
     display: flex;
     height: 100%;
