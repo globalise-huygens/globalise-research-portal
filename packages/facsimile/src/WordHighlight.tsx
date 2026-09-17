@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { memo, type MouseEvent, useState } from 'react';
 import { usePointerDown } from '@knaw-huc/osd-iiif-viewer';
 import {
   CanvasId,
@@ -22,7 +22,7 @@ type WordHighlightProps = {
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
-export function WordHighlight(
+export const WordHighlight = memo(function WordHighlight(
   { canvasId, id, points, text, tone, setTooltip }: WordHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
@@ -63,4 +63,4 @@ export function WordHighlight(
       onMouseLeave={(event) => handleHover(false, event)}
     />
   );
-}
+});

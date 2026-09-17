@@ -5,7 +5,7 @@ import {
   useAnnotations,
   useCanvasIndexes,
   usePartOf,
-  useSelectedAnnotationsInDiplomatic,
+  useSelectedIdsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '../src';
 import { RawPathOverlay } from './RawPathOverlay';
@@ -31,7 +31,7 @@ export function ScanOverlayDemo() {
   const annotations = useAnnotations(canvasId);
   const indexes = useCanvasIndexes(canvasId);
   const page = usePartOf(canvasId);
-  const { all: selectedIds } = useSelectedAnnotationsInDiplomatic(canvasId);
+  const selectedIds = useSelectedIdsInDiplomatic(canvasId);
   const selectedWords = useMemo(
     () => addToSelection(words, indexes),
     [indexes],
