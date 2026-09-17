@@ -70,6 +70,19 @@ export function getEntityDateTimespan(body: EntityBody) {
     && target?.type === 'TimeSpan' ? target : undefined;
 }
 
+export function getEntitySubject(body: EntityBody): EntitySubject | undefined {
+  const subjectByBodyType: Record<EntityAnnotationBodyType, EntitySubject | undefined> = {
+    AppellativeStatus: body.has_appellative_subject,
+    ClassificatoryStatus: body.has_classificatory_subject,
+    Dimension: body.has_dimension_subject,
+  };
+
+  return subjectByBodyType[body.type]
+    ?? body.has_appellative_subject
+    ?? body.has_classificatory_subject
+    ?? body.has_dimension_subject;
+}
+
 export function assertEntityBody(
   body: Body | undefined,
 ): asserts body is EntityBody {

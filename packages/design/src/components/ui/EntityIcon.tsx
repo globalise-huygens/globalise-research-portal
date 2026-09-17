@@ -1,5 +1,6 @@
 import {
   IconEntities,
+  IconConcept,
   IconEntityCommodity,
   IconEntityDate,
   IconEntityDimensions,
@@ -12,7 +13,9 @@ import {
 
 const entityPresentation = {
   entity: { label: 'Entity', Icon: IconEntities },
+  classification: { label: 'Classification', Icon: IconConcept },
   commodity: { label: 'Commodity', Icon: IconEntityCommodity },
+  concept: { label: 'Thesaurus', Icon: IconConcept },
   date: { label: 'Date', Icon: IconEntityDate },
   dimensions: { label: 'Measure', Icon: IconEntityDimensions },
   document: { label: 'Document', Icon: IconEntityDocument },

@@ -33,6 +33,10 @@ export type EntityPreviewCardProperty = {
 function getEntityBadgeType(
   type: EntityPreviewCardType,
 ): EntityBadgeType | 'entity' {
+  if (type === 'classification') {
+    return 'concept';
+  }
+
   if (type === 'polity') {
     return 'organisation';
   }

@@ -8,7 +8,10 @@ export { type CardType, type CardState } from './CardState.ts';
 export { loadObjectCard, useCard } from './CardSlice.ts';
 export {
   ConceptCard,
+  getConceptLabel,
+  isSkosConcept,
   SchemeList,
+  type SkosConcept,
   useConcept,
   useSchemes,
   loadSchemes,

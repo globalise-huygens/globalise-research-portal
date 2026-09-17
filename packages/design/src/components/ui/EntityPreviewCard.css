@@ -65,6 +65,7 @@
       text-transform: uppercase;
     }
 
+    .category-trigger[data-type="concept"],
     .category-trigger[data-type="ship"],
     .category-trigger[data-type="organisation"] {
       --entity-preview-category-background: var(--color-turquoise-900);

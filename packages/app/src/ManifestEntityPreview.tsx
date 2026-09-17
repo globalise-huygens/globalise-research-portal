@@ -1,12 +1,27 @@
 import {
+  fetchJson,
+  getJsonUrl,
+  getValue,
+  getValues,
+} from '@globalise/common';
+import {
   getCidocEntityClassificationId,
+  getEntityClassificationDefinition,
+  getEntityClassificationUri,
   getPrimaryEntityBody,
   getEntityDateTimespan,
+  getEntitySubject,
   isEntity,
   type Annotation,
   type EntityBody,
   type CidocEntityClassificationId,
+  type EntityPreviewStrategy,
 } from '@globalise/common/annotation';
+import {
+  getConceptLabel,
+  isSkosConcept,
+  type SkosConcept,
+} from '@globalise/object-card';
 import {
   getHoverDelay,
   getHoverElement,
@@ -19,22 +34,28 @@ import {
   EntityPreviewCard,
   EntityIcon,
   getEntityTypeLabel,
+  IconArrowTopRight,
   type EntityPreviewCardData,
   type EntityPreviewCardType,
   type EntityPreviewCardProperty,
 } from '@globalise/design';
+import { useQuery } from '@tanstack/react-query';
 import {
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import './ManifestEntityPreview.css';
 
 const OPEN_DELAY = 300;
 const CLOSE_DELAY = 200;
+const GLOBALISE_DATA_ORIGIN = 'https://data.globalise.huygens.knaw.nl';
+const GLOBALISE_THESAURUS_BASE =
+  `${GLOBALISE_DATA_ORIGIN}/hdl:20.500.14722/thesaurus:`;
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button:not([disabled])',
@@ -45,6 +66,24 @@ const FOCUSABLE_SELECTOR = [
 ].join(',');
 
 type EntityAnnotation = Annotation<EntityBody>;
+type LinkedConceptReference = {
+  kind: 'concept';
+  uri: string;
+  fallbackLabel: string;
+};
+
+type LinkedClassificationReference = {
+  kind: 'classification';
+  uri: string;
+  identifier: string;
+  label: string;
+};
+
+type LinkedPreviewReference =
+  | LinkedClassificationReference
+  | LinkedConceptReference;
+
+type PreviewStackSide = 'below' | 'left' | 'right';
 
 export function ManifestEntityPreview() {
   const [displayed, setDisplayed] = useState<EntityAnnotation | null>(null);
@@ -54,10 +93,14 @@ export function ManifestEntityPreview() {
     top: 0,
     visibility: 'hidden',
   });
+  const [previewStack, setPreviewStack] = useState<LinkedPreviewReference[]>([]);
+  const [previewStackSide, setPreviewStackSide] = useState<PreviewStackSide>('right');
   const previewRef = useRef<HTMLDivElement>(null);
+  const previewStackRef = useRef<HTMLDivElement>(null);
   const displayedRef = useRef<EntityAnnotation | null>(null);
   const openTimer = useRef<number | undefined>(undefined);
   const closeTimer = useRef<number | undefined>(undefined);
+  const previewStackCloseTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
 
   useEffect(() => useDocumentStore.subscribe(({ hoveredId }) => {
@@ -82,6 +125,7 @@ export function ManifestEntityPreview() {
         displayedRef.current = annotation;
         setDisplayed(annotation);
         setAnchor(nextAnchor);
+        setPreviewStack([]);
       }, displayedRef.current || openImmediately ? 0 : OPEN_DELAY);
       return;
     }
@@ -109,12 +153,14 @@ export function ManifestEntityPreview() {
   useEffect(() => () => {
     window.clearTimeout(openTimer.current);
     window.clearTimeout(closeTimer.current);
+    window.clearTimeout(previewStackCloseTimer.current);
   }, []);
 
   useEffect(() => {
     function dismiss() {
       window.clearTimeout(openTimer.current);
       window.clearTimeout(closeTimer.current);
+      window.clearTimeout(previewStackCloseTimer.current);
       openTimer.current = undefined;
       isPreviewHovered.current = false;
       const trigger = anchor ?? getHoverElement();
@@ -124,6 +170,7 @@ export function ManifestEntityPreview() {
       displayedRef.current = null;
       setDisplayed(null);
       setAnchor(null);
+      setPreviewStack([]);
       setHovered(null);
     }
 
@@ -224,6 +271,34 @@ export function ManifestEntityPreview() {
     };
   }, [anchor, displayed]);
 
+  useLayoutEffect(() => {
+    const preview = previewRef.current;
+    const stack = previewStackRef.current;
+    if (!preview || !stack || previewStack.length === 0) {
+      return;
+    }
+
+    const updateStackSide = () => {
+      const previewRect = preview.getBoundingClientRect();
+      const stackRect = stack.getBoundingClientRect();
+      const gap = 8;
+      const margin = 8;
+      const fitsRight = previewRect.right + gap + stackRect.width
+        <= window.innerWidth - margin;
+      const fitsLeft = previewRect.left - gap - stackRect.width >= margin;
+      setPreviewStackSide(fitsRight ? 'right' : fitsLeft ? 'left' : 'below');
+    };
+
+    updateStackSide();
+    const resizeObserver = new ResizeObserver(updateStackSide);
+    resizeObserver.observe(stack);
+    window.addEventListener('resize', updateStackSide);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateStackSide);
+    };
+  }, [previewStack]);
+
   if (!displayed) {
     return null;
   }
@@ -232,6 +307,28 @@ export function ManifestEntityPreview() {
     displayedRef.current = null;
     setDisplayed(null);
     setAnchor(null);
+    setPreviewStack([]);
+  }
+
+  function openPreviewAt(index: number, reference: LinkedPreviewReference) {
+    window.clearTimeout(previewStackCloseTimer.current);
+    setPreviewStack((current) => {
+      if (current[index]?.uri === reference.uri) {
+        return current.slice(0, index + 1);
+      }
+      return [...current.slice(0, index), reference];
+    });
+  }
+
+  function schedulePreviewStackClose(length: number) {
+    window.clearTimeout(previewStackCloseTimer.current);
+    previewStackCloseTimer.current = window.setTimeout(() => {
+      setPreviewStack((current) => current.slice(0, length));
+    }, CLOSE_DELAY);
+  }
+
+  function keepPreviewStackOpen() {
+    window.clearTimeout(previewStackCloseTimer.current);
   }
 
   function scheduleClose() {
@@ -258,6 +355,7 @@ export function ManifestEntityPreview() {
       onPointerEnter={() => {
         isPreviewHovered.current = true;
         window.clearTimeout(closeTimer.current);
+        keepPreviewStackOpen();
         setHovered(displayed.id);
       }}
       onPointerLeave={() => {
@@ -268,6 +366,7 @@ export function ManifestEntityPreview() {
       onFocusCapture={() => {
         isPreviewHovered.current = true;
         window.clearTimeout(closeTimer.current);
+        keepPreviewStackOpen();
         setHovered(displayed.id);
       }}
       onBlurCapture={(event) => {
@@ -282,10 +381,169 @@ export function ManifestEntityPreview() {
         scheduleClose();
       }}
     >
-      <EntityPreviewCard data={getPreviewData(displayed)} />
+      <EntityAnnotationPreviewCard
+        annotation={displayed}
+        onOpenPreview={(reference) => openPreviewAt(0, reference)}
+        onSchedulePreviewClose={() => schedulePreviewStackClose(0)}
+      />
+      {previewStack.length > 0 && (
+        <div
+          ref={previewStackRef}
+          className={`manifest-entity-preview__stack is-${previewStackSide}`}
+          onPointerEnter={keepPreviewStackOpen}
+          onFocusCapture={keepPreviewStackOpen}
+        >
+          {previewStack.map((reference, index) => (
+            <LinkedPreview
+              key={`${index}-${reference.uri}`}
+              reference={reference}
+              onOpenPreview={(nextReference) => openPreviewAt(index + 1, nextReference)}
+              onScheduleClose={() => schedulePreviewStackClose(index + 1)}
+              onKeepOpen={keepPreviewStackOpen}
+            />
+          ))}
+        </div>
+      )}
     </div>,
     document.body,
   );
+}
+
+function EntityAnnotationPreviewCard({
+  annotation,
+  onOpenPreview,
+  onSchedulePreviewClose,
+}: {
+  annotation: EntityAnnotation;
+  onOpenPreview: (reference: LinkedPreviewReference) => void;
+  onSchedulePreviewClose: () => void;
+}) {
+  const body = getPrimaryEntityBody(annotation);
+  const conceptReference = getClassificationConceptReference(body);
+  const concept = useLinkedConcept(conceptReference);
+
+  return (
+    <EntityPreviewCard
+      data={getPreviewData(
+        annotation,
+        conceptReference,
+        concept.data,
+        onOpenPreview,
+        onSchedulePreviewClose,
+      )}
+    />
+  );
+}
+
+function LinkedPreview({
+  reference,
+  onOpenPreview,
+  onScheduleClose,
+  onKeepOpen,
+}: {
+  reference: LinkedPreviewReference;
+  onOpenPreview: (reference: LinkedPreviewReference) => void;
+  onScheduleClose: () => void;
+  onKeepOpen: () => void;
+}) {
+  if (reference.kind === 'classification') {
+    return (
+      <LinkedPreviewContainer
+        onScheduleClose={onScheduleClose}
+        onKeepOpen={onKeepOpen}
+      >
+        <EntityPreviewCard data={getClassificationPreviewData(reference)} />
+      </LinkedPreviewContainer>
+    );
+  }
+
+  return (
+    <LinkedConceptPreview
+      reference={reference}
+      onOpenPreview={onOpenPreview}
+      onScheduleClose={onScheduleClose}
+      onKeepOpen={onKeepOpen}
+    />
+  );
+}
+
+function LinkedConceptPreview({
+  reference,
+  onOpenPreview,
+  onScheduleClose,
+  onKeepOpen,
+}: {
+  reference: LinkedConceptReference;
+  onOpenPreview: (reference: LinkedPreviewReference) => void;
+  onScheduleClose: () => void;
+  onKeepOpen: () => void;
+}) {
+  const concept = useLinkedConcept(reference);
+
+  return (
+    <LinkedPreviewContainer
+      onScheduleClose={onScheduleClose}
+      onKeepOpen={onKeepOpen}
+    >
+      <EntityPreviewCard
+        data={getConceptPreviewData(
+          reference,
+          concept.data,
+          onOpenPreview,
+          onScheduleClose,
+        )}
+      />
+    </LinkedPreviewContainer>
+  );
+}
+
+function LinkedPreviewContainer({
+  children,
+  onScheduleClose,
+  onKeepOpen,
+}: {
+  children: ReactNode;
+  onScheduleClose: () => void;
+  onKeepOpen: () => void;
+}) {
+  return (
+    <div
+      className="manifest-entity-preview__stack-card"
+      onPointerEnter={onKeepOpen}
+      onPointerLeave={onScheduleClose}
+      onFocusCapture={onKeepOpen}
+      onBlurCapture={(event) => {
+        if (
+          event.relatedTarget instanceof Node
+          && event.currentTarget.contains(event.relatedTarget)
+        ) {
+          return;
+        }
+        onScheduleClose();
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function useLinkedConcept(reference: LinkedConceptReference | undefined) {
+  return useQuery({
+    queryKey: ['manifest-entity-preview-concept', reference?.uri],
+    enabled: Boolean(reference),
+    staleTime: Infinity,
+    retry: false,
+    queryFn: async ({ signal }) => {
+      if (!reference) {
+        throw new Error('Expected a linked concept reference');
+      }
+      const value = await fetchJson<unknown>(getJsonUrl(reference.uri), { signal });
+      if (!isSkosConcept(value)) {
+        throw new Error(`Expected a SKOS concept at ${reference.uri}`);
+      }
+      return value;
+    },
+  });
 }
 
 function getHoveredAnnotation(
@@ -338,31 +596,260 @@ function findEntityForWord(
   }
 }
 
-function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
+function getPreviewData(
+  annotation: EntityAnnotation,
+  conceptReference: LinkedConceptReference | undefined,
+  concept: SkosConcept | undefined,
+  onOpenPreview: (reference: LinkedPreviewReference) => void,
+  onSchedulePreviewClose: () => void,
+): EntityPreviewCardData {
+  const body = getPrimaryEntityBody(annotation);
+  const classificationId = getCidocEntityClassificationId(annotation);
   const definition = getPreviewDefinition(
-    getCidocEntityClassificationId(annotation),
+    classificationId,
   );
+  const classificationReference = classificationId
+    ? getClassificationReference(body, classificationId)
+    : undefined;
   return {
     type: definition.type,
     icon: <EntityIcon type={definition.type} />,
-    openFullCardHref: getLinkedObjectCardHref(annotation),
-    title: getPreviewTitle(annotation, definition),
-    properties: getPreviewProperties(annotation, definition),
+    openFullCardHref: getLinkedObjectCardHref(body),
+    title: definition.getTitle(body),
+    properties: [
+      {
+        label: 'Entity type',
+        value: definition.typeLabel ?? getEntityTypeLabel(definition.type),
+      },
+      ...(definition.getProperties?.({
+        body,
+        concept,
+        conceptReference,
+        onOpenPreview,
+        onSchedulePreviewClose,
+      }) ?? []),
+      {
+        label: 'Classified by',
+        value: classificationReference ? (
+          <LinkedPreviewValue
+            reference={classificationReference}
+            onOpenPreview={onOpenPreview}
+            onSchedulePreviewClose={onSchedulePreviewClose}
+          />
+        ) : body.classified_as._label,
+      },
+    ],
   };
 }
 
-function getLinkedObjectCardHref(annotation: EntityAnnotation): string | undefined {
-  const body = getPrimaryEntityBody(annotation);
-  const subject = body.has_appellative_subject
-    ?? body.has_classificatory_subject
-    ?? body.has_dimension_subject;
+function getConceptPreviewData(
+  reference: LinkedConceptReference,
+  concept: SkosConcept | undefined,
+  onOpenPreview: (reference: LinkedPreviewReference) => void,
+  onSchedulePreviewClose: () => void,
+): EntityPreviewCardData {
+  const properties: EntityPreviewCardProperty[] = [];
+  const definition = getValue(concept?.definition);
+  const alternativeLabels = getValues(concept?.altLabel);
+  if (definition) {
+    properties.push({ label: 'Definition', value: definition });
+  }
+  if (alternativeLabels.length > 0) {
+    properties.push({ label: 'Alt label', value: alternativeLabels.join(', ') });
+  }
+  const schemes = getConceptRelations(concept?.inScheme);
+  if (schemes.length > 0) {
+    properties.push({
+      label: 'Scheme',
+      value: renderConceptRelations(
+        schemes,
+        onOpenPreview,
+        onSchedulePreviewClose,
+      ),
+    });
+  }
+  const broader = getConceptRelations(concept?.broader);
+  if (broader.length > 0) {
+    properties.push({
+      label: 'Broader',
+      value: renderConceptRelations(
+        broader,
+        onOpenPreview,
+        onSchedulePreviewClose,
+      ),
+    });
+  }
+
+  return {
+    type: 'concept',
+    icon: <EntityIcon type="concept" />,
+    openFullCardHref: getObjectCardHref(reference.uri),
+    openFullCardLabel: `Open ${concept
+      ? getConceptLabel(concept)
+      : reference.fallbackLabel} in a full object card`,
+    title: concept ? getConceptLabel(concept) : reference.fallbackLabel,
+    properties,
+  };
+}
+
+function getClassificationPreviewData(
+  reference: LinkedClassificationReference,
+): EntityPreviewCardData {
+  return {
+    type: 'classification',
+    icon: <EntityIcon type="classification" />,
+    title: reference.label,
+    properties: [
+      { label: 'Type', value: 'NER classification' },
+      { label: 'Identifier', value: reference.identifier },
+    ],
+  };
+}
+
+function getClassificationConceptReference(
+  body: EntityBody,
+): LinkedConceptReference | undefined {
+  const classification = body.ascribes_classification;
+  if (!classification?.id || classification.type !== 'Concept') {
+    return undefined;
+  }
+  const uri = getInternalConceptUri(classification.id);
+  if (!uri) {
+    return undefined;
+  }
+  return {
+    kind: 'concept',
+    uri,
+    fallbackLabel: classification._label ?? body.label ?? 'Concept',
+  };
+}
+
+function getClassificationReference(
+  body: EntityBody,
+  classificationId: CidocEntityClassificationId,
+): LinkedClassificationReference {
+  return {
+    kind: 'classification',
+    uri: getEntityClassificationUri(classificationId),
+    identifier: classificationId.replace(/^gan:/, ''),
+    label: body.classified_as._label,
+  };
+}
+
+function getInternalConceptUri(uri: string): string | undefined {
+  try {
+    const parsed = new URL(uri);
+    if (
+      parsed.protocol === 'https:'
+      && parsed.origin === GLOBALISE_DATA_ORIGIN
+      && parsed.pathname.includes('/thesaurus:')
+    ) {
+      return uri.replace(/\.json$/, '');
+    }
+    const poolPartyMatch = parsed.hostname === 'digitaalerfgoed.poolparty.biz'
+      ? /^\/globalise\/([0-9a-f-]+)\/?$/i.exec(parsed.pathname)
+      : null;
+    return poolPartyMatch
+      ? `${GLOBALISE_THESAURUS_BASE}${poolPartyMatch[1]}`
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function getConceptRelations(
+  relations: SkosConcept[] | undefined,
+): LinkedConceptReference[] {
+  return (relations ?? []).flatMap((relation) => {
+    const uri = getInternalConceptUri(relation.id);
+    return uri ? [{
+      kind: 'concept' as const,
+      uri,
+      fallbackLabel: getConceptLabel(relation) || relation.id,
+    }] : [];
+  });
+}
+
+function renderConceptRelations(
+  relations: LinkedConceptReference[],
+  onOpenPreview: (reference: LinkedPreviewReference) => void,
+  onSchedulePreviewClose: () => void,
+) {
+  return relations.map((reference, index) => (
+    <span key={reference.uri}>
+      {index > 0 && ', '}
+      <LinkedPreviewValue
+        reference={reference}
+        onOpenPreview={onOpenPreview}
+        onSchedulePreviewClose={onSchedulePreviewClose}
+      />
+    </span>
+  ));
+}
+
+function LinkedPreviewValue({
+  reference,
+  label = getLinkedPreviewLabel(reference),
+  onOpenPreview,
+  onSchedulePreviewClose,
+}: {
+  reference: LinkedPreviewReference;
+  label?: string;
+  onOpenPreview: (reference: LinkedPreviewReference) => void;
+  onSchedulePreviewClose: () => void;
+}) {
+  const sharedProps = {
+    className: 'manifest-entity-preview__linked-value',
+    onPointerEnter: () => onOpenPreview(reference),
+    onPointerLeave: onSchedulePreviewClose,
+    onFocus: () => onOpenPreview(reference),
+    onBlur: onSchedulePreviewClose,
+  };
+  const content = (
+    <>
+      <span>{label}</span>
+      <IconArrowTopRight aria-hidden="true" />
+    </>
+  );
+
+  if (reference.kind === 'classification') {
+    return (
+      <button
+        {...sharedProps}
+        type="button"
+        onClick={() => onOpenPreview(reference)}
+        aria-label={`Preview classification: ${label}`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <a
+      {...sharedProps}
+      href={getObjectCardHref(reference.uri)}
+    >
+      {content}
+    </a>
+  );
+}
+
+function getLinkedPreviewLabel(reference: LinkedPreviewReference): string {
+  return reference.kind === 'concept'
+    ? reference.fallbackLabel
+    : reference.label;
+}
+
+function getLinkedObjectCardHref(body: EntityBody): string | undefined {
+  const subject = getEntitySubject(body);
   const uri = subject?.id;
   if (!uri || uri.includes('#') || uri.includes('/annotations:')) {
     return undefined;
   }
   try {
     const parsed = new URL(uri);
-    if (parsed.protocol !== 'https:' || parsed.hostname !== 'data.globalise.huygens.knaw.nl') {
+    if (parsed.protocol !== 'https:' || parsed.origin !== GLOBALISE_DATA_ORIGIN) {
       return undefined;
     }
   } catch {
@@ -371,59 +858,32 @@ function getLinkedObjectCardHref(annotation: EntityAnnotation): string | undefin
   return `/object-card?uri=${encodeURIComponent(uri)}`;
 }
 
-function getPreviewTitle(
-  annotation: EntityAnnotation,
-  definition: EntityPreviewDefinition,
-) {
-  const body = getPrimaryEntityBody(annotation);
-  if (isClassificationOnly(annotation)) {
-    return 'Unknown';
-  }
+function getObjectCardHref(uri: string): string {
+  return `/object-card?uri=${encodeURIComponent(uri)}`;
+}
+
+function getNamedPreviewTitle(body: EntityBody) {
   return body.label
     ?? body.ascribes_appellation?.content
-    ?? definition.getTitle?.(body)
     ?? body.classified_as._label;
 }
 
-function getPreviewProperties(
-  annotation: EntityAnnotation,
-  definition: EntityPreviewDefinition,
-): EntityPreviewCardProperty[] {
-  const body = getPrimaryEntityBody(annotation);
-  const classificationId = getCidocEntityClassificationId(annotation);
-  const properties: EntityPreviewCardProperty[] = [
-    {
-      label: 'Type',
-      value: definition.typeLabel ?? getEntityTypeLabel(definition.type),
-    },
-    ...(definition.getProperties?.(body) ?? []),
-  ];
-
+function getDatePreviewProperties(body: EntityBody): EntityPreviewCardProperty[] {
   const date = getEntityDateTimespan(body);
-  if (
-    classificationId === 'gan:DATE'
-    && date?.type === 'TimeSpan'
-  ) {
-    const dateBounds = [
-      ['Begin of the begin', date.begin_of_the_begin],
-      ['End of the begin', date.end_of_the_begin],
-      ['Begin of the end', date.begin_of_the_end],
-      ['End of the end', date.end_of_the_end],
-    ] as const;
-    for (const [label, value] of dateBounds) {
-      if (value) {
-        properties.push({ label, value: formatPreviewDate(value) });
-      }
-    }
+  if (date?.type !== 'TimeSpan') {
+    return [];
   }
-  if (isClassificationOnly(annotation)) {
-    properties.push({
-      label: 'Classified as',
-      value: body.label ?? body.ascribes_appellation?.content ?? '—',
-    });
-  }
-  properties.push({ label: 'Classified by', value: body.classified_as._label });
-  return properties;
+
+  const dateBounds = [
+    ['Begin of the begin', date.begin_of_the_begin],
+    ['End of the begin', date.end_of_the_begin],
+    ['Begin of the end', date.begin_of_the_end],
+    ['End of the end', date.end_of_the_end],
+  ] as const;
+
+  return dateBounds.flatMap(([label, value]) => value
+    ? [{ label, value: formatPreviewDate(value) }]
+    : []);
 }
 
 const previewDateFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -438,65 +898,95 @@ function formatPreviewDate(value: string): string {
   return Number.isNaN(date.getTime()) ? value.split('T')[0] : previewDateFormatter.format(date);
 }
 
-function isClassificationOnly(annotation: EntityAnnotation) {
-  const classificationId = getCidocEntityClassificationId(annotation);
-  if (classificationId === 'gan:CMTY_QUAL') {
-    return false;
-  }
-  return classificationId === 'gan:DOC'
-    || classificationId === 'gan:ORG'
-    || classificationId === 'gan:PER_ATTR'
-    || classificationId === 'gan:SHIP_TYPE'
-    || classificationId === 'gan:PRF'
-    || classificationId === 'gan:STATUS'
-    || classificationId === 'gan:ETH_REL';
-}
-
 type EntityPreviewDefinition = {
   type: EntityPreviewCardType;
   typeLabel?: string;
-  getTitle?: (body: EntityBody) => string | undefined;
-  getProperties?: (body: EntityBody) => EntityPreviewCardProperty[];
+  getTitle: (body: EntityBody) => string;
+  getProperties?: (context: EntityPreviewContext) => EntityPreviewCardProperty[];
 };
 
-const fallbackPreviewDefinition: EntityPreviewDefinition = { type: 'entity' };
+type EntityPreviewContext = {
+  body: EntityBody;
+  concept?: SkosConcept;
+  conceptReference?: LinkedConceptReference;
+  onOpenPreview: (reference: LinkedPreviewReference) => void;
+  onSchedulePreviewClose: () => void;
+};
 
-const previewDefinitionByClassificationId = {
-  'gan:PER_NAME': { type: 'person' },
-  'gan:PER_ATTR': { type: 'person' },
-  'gan:PRF': { type: 'person' },
-  'gan:STATUS': { type: 'person' },
-  'gan:ETH_REL': { type: 'person' },
-  'gan:ORG': { type: 'organisation' },
-  'gan:SHIP': { type: 'ship' },
-  'gan:SHIP_TYPE': { type: 'ship' },
-  'gan:CMTY_NAME': { type: 'commodity' },
-  'gan:CMTY_QUAL': { type: 'commodity' },
-  'gan:DATE': { type: 'date' },
-  'gan:LOC_NAME': { type: 'place' },
-  'gan:LOC_ADJ': { type: 'place' },
-  'gan:DOC': { type: 'document' },
-  'gan:CMTY_QUANT': {
-    type: 'dimensions',
-    typeLabel: 'Exchange Unit',
-    getTitle: (body: EntityBody) => body.value === undefined
-      ? undefined
+type EntityPreviewBehavior = Pick<
+  EntityPreviewDefinition,
+  'getTitle' | 'getProperties'
+>;
+
+const namedPreview: EntityPreviewBehavior = {
+  getTitle: getNamedPreviewTitle,
+};
+
+const classificationPreview: EntityPreviewBehavior = {
+  getTitle: () => 'Unknown',
+  getProperties: ({
+    body,
+    concept,
+    conceptReference,
+    onOpenPreview,
+    onSchedulePreviewClose,
+  }) => [{
+    label: 'Classified as',
+    value: conceptReference ? (
+      <LinkedPreviewValue
+        reference={conceptReference}
+        label={concept ? getConceptLabel(concept) : conceptReference.fallbackLabel}
+        onOpenPreview={onOpenPreview}
+        onSchedulePreviewClose={onSchedulePreviewClose}
+      />
+    ) : body.label ?? body.ascribes_appellation?.content ?? '—',
+  }],
+};
+
+const datePreview: EntityPreviewBehavior = {
+  getTitle: getNamedPreviewTitle,
+  getProperties: ({ body }) => getDatePreviewProperties(body),
+};
+
+const dimensionPreview: EntityPreviewBehavior = {
+  getTitle: (body) => body.label
+    ?? body.ascribes_appellation?.content
+    ?? (body.value === undefined
+      ? body.classified_as._label
       : body.unit?._label
         ? `${body.value} ${body.unit._label}`
-        : String(body.value),
-    getProperties: (body: EntityBody) => [
-      { label: 'Value', value: body.value ?? '-' },
-      { label: 'Unit', value: body.unit?._label ?? '-' },
-    ],
-  },
-} as const satisfies Record<CidocEntityClassificationId, EntityPreviewDefinition>;
+        : String(body.value)),
+  getProperties: ({ body }) => [
+    { label: 'Value', value: body.value ?? '-' },
+    { label: 'Unit', value: body.unit?._label ?? '-' },
+  ],
+};
+
+const previewBehaviorByStrategy = {
+  named: namedPreview,
+  classification: classificationPreview,
+  date: datePreview,
+  dimension: dimensionPreview,
+} satisfies Record<EntityPreviewStrategy, EntityPreviewBehavior>;
+
+const fallbackPreviewDefinition: EntityPreviewDefinition = {
+  type: 'entity',
+  ...namedPreview,
+};
 
 function getPreviewDefinition(
   classificationId: CidocEntityClassificationId | undefined,
 ): EntityPreviewDefinition {
-  return classificationId
-    ? previewDefinitionByClassificationId[classificationId]
-    : fallbackPreviewDefinition;
+  if (!classificationId) {
+    return fallbackPreviewDefinition;
+  }
+
+  const definition = getEntityClassificationDefinition(classificationId);
+  return {
+    type: definition.presentationType,
+    typeLabel: definition.typeLabel,
+    ...previewBehaviorByStrategy[definition.previewStrategy],
+  };
 }
 
 function placePreview(

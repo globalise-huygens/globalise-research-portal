@@ -1,5 +1,7 @@
 import {
+  cidocEntityClassificationIds,
   getCidocClassNameByClassificationId,
+  getEntityClassificationDefinition,
   isCidocEntityClassificationId,
   type CidocEntityClassificationId,
 } from '@globalise/common/annotation';
@@ -8,15 +10,8 @@ import {
   useEntityHighlightCategories,
 } from '@globalise/common/document';
 import {
+  EntityIcon,
   IconEntities,
-  IconEntityCommodity,
-  IconEntityDate,
-  IconEntityDimensions,
-  IconEntityDocument,
-  IconEntityOrganisation,
-  IconEntityPerson,
-  IconEntityPlace,
-  IconEntityShip,
 } from '@globalise/design';
 import {
   EntityHighlightMenu,
@@ -37,70 +32,45 @@ type EntityHighlightCategoryConfig = {
   }[];
 };
 
-const entityCategoryConfigs: EntityHighlightCategoryConfig[] = [
-  {
-    id: 'persons',
-    label: 'Persons',
-    icon: <IconEntityPerson className={iconClassName} />,
-    subcategories: [
-      { id: 'gan:PER_NAME', label: 'by Name' },
-      { id: 'gan:PER_ATTR', label: 'by Attributes' },
-      { id: 'gan:PRF', label: 'by Profession' },
-      { id: 'gan:STATUS', label: 'by Civic Status' },
-      { id: 'gan:ETH_REL', label: 'by Ethno-Religious Appellation' },
-    ],
-  },
-  {
-    id: 'organisations',
-    label: 'Organisations',
-    icon: <IconEntityOrganisation className={iconClassName} />,
-    subcategories: [
-      { id: 'gan:ORG', label: 'by Name' },
-    ],
-  },
-  {
-    id: 'ships',
-    label: 'Ships',
-    icon: <IconEntityShip className={iconClassName} />,
-    subcategories: [
-      { id: 'gan:SHIP', label: 'by Name' },
-      { id: 'gan:SHIP_TYPE', label: 'by Type' },
-    ],
-  },
-  {
-    id: 'commodities',
-    label: 'Commodities',
-    icon: <IconEntityCommodity className={iconClassName} />,
-    subcategories: [
-      { id: 'gan:CMTY_NAME', label: 'by Name' },
-      { id: 'gan:CMTY_QUAL', label: 'by Qualifier' },
-    ],
-  },
-  {
-    id: 'gan:DATE',
-    label: 'Dates',
-    icon: <IconEntityDate className={iconClassName} />,
-  },
-  {
-    id: 'places',
-    label: 'Places',
-    icon: <IconEntityPlace className={iconClassName} />,
-    subcategories: [
-      { id: 'gan:LOC_NAME', label: 'by Name' },
-      { id: 'gan:LOC_ADJ', label: 'by Location Form' },
-    ],
-  },
-  {
-    id: 'gan:DOC',
-    label: 'Documents',
-    icon: <IconEntityDocument className={iconClassName} />,
-  },
-  {
-    id: 'gan:CMTY_QUANT',
-    label: 'Unit',
-    icon: <IconEntityDimensions className={iconClassName} />,
-  },
-];
+const entityCategoryConfigs = createEntityCategoryConfigs();
+
+function createEntityCategoryConfigs(): EntityHighlightCategoryConfig[] {
+  const categories = new Map<string, EntityHighlightCategoryConfig>();
+
+  for (const id of cidocEntityClassificationIds) {
+    const definition = getEntityClassificationDefinition(id);
+    const group = definition.highlightGroup;
+    if (!group) {
+      categories.set(id, {
+        id,
+        label: definition.highlightLabel,
+        icon: (
+          <EntityIcon
+            type={definition.presentationType}
+            className={iconClassName}
+          />
+        ),
+      });
+      continue;
+    }
+
+    const category: EntityHighlightCategoryConfig = categories.get(group.id) ?? {
+      id: group.id,
+      label: group.label,
+      icon: (
+        <EntityIcon
+          type={definition.presentationType}
+          className={iconClassName}
+        />
+      ),
+      subcategories: [],
+    };
+    category.subcategories?.push({ id, label: definition.highlightLabel });
+    categories.set(group.id, category);
+  }
+
+  return Array.from(categories.values());
+}
 
 const entityCategories: EntityHighlightCategory[] =
   entityCategoryConfigs.map((category) => {
