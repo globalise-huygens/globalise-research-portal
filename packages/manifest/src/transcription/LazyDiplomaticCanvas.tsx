@@ -7,7 +7,7 @@ import {
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import { CanvasLabel } from '../CanvasLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
@@ -39,7 +39,11 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
 }: Props) {
   const annotations = useHighlightedAnnotations(canvasId);
   const partOf = usePartOf(canvasId);
-  const selected = useSelectedAnnotationsInDiplomatic(canvasId);
+  const selectedIds = useSelectedAnnotationsInDiplomatic(canvasId);
+  const selected = useMemo(
+    () => selectedIds.filter((id) => annotations[id]),
+    [selectedIds, annotations],
+  );
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
   const isCurrentCanvas = selectedIndex === index;
@@ -112,7 +116,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
             <DiplomaticView
               id={canvasId}
               annotations={annotations}
-              selected={selected.all}
+              selected={selected}
               page={partOf}
               fit="width"
               showBlocks={showBlocks}

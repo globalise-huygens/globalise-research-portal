@@ -5,7 +5,7 @@ export * from './ManifestViewerSlice';
 export * from './SelectionAttribute';
 export * from './SelectionSlice';
 export * from './TocSlice';
-export * from './useSelectedAnnotations';
+export * from './Selection';
 export * from './useSelectedViewerAnnotations';
 export { useCanvasPages } from './useCanvasPages';
 export { useDocumentLifecycle } from './useDocumentLifeCycle';

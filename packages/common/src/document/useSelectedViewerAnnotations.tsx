@@ -1,88 +1,94 @@
 import { useMemo } from 'react';
 import { Id } from '../annotation';
-import { AnnotationIndexes } from '../annotation';
-import { CanvasId, useCanvasIndexes } from './ManifestViewerSlice';
-import { useSelectedAnnotations } from './useSelectedAnnotations.tsx';
+import { DocumentState, useDocumentStore } from './DocumentStore';
+import { CanvasId } from './ManifestViewerSlice';
+import { Selection } from './Selection';
 
-type EntitySelection = 'entity' | 'words';
-
-export type SelectedViewerAnnotations = {
-  hovered: Id[];
-  clicked: Id[];
-  all: Id[];
-};
-
-export function useSelectedAnnotationsInDiplomatic(
+export function useIsSelectedInFacsimile(
   canvasId: CanvasId,
-): SelectedViewerAnnotations {
-  return useSelectedViewerAnnotations(canvasId, 'words');
-}
-
-export function useSelectedAnnotationsInFacsimile(
-  canvasId: CanvasId,
-): SelectedViewerAnnotations {
-  return useSelectedViewerAnnotations(canvasId, 'words');
+  id: Id,
+): boolean {
+  return useDocumentStore((s) => isSelected(s, canvasId).includes(id));
 }
 
 export function useIsSelectedInLineByLine(
   canvasId: CanvasId,
   id: Id,
 ): boolean {
-  return useSelectedViewerAnnotations(canvasId, 'entity').all.includes(id);
+  return useDocumentStore((s) => isSelected(s, canvasId).includes(id));
 }
 
 export function useIsClickedInLineByLine(
   canvasId: CanvasId,
   id: Id,
 ): boolean {
-  return useSelectedViewerAnnotations(canvasId, 'entity').clicked.includes(id);
+  return useDocumentStore((s) =>
+    getSelectionIds(getCanvasSelection(s, canvasId, s.clicked)).includes(id));
 }
 
-export function useIsSelectedInFacsimile(
+export function useSelectedAnnotationsInFacsimile(
   canvasId: CanvasId,
-  id: Id,
-): boolean {
-  return useSelectedViewerAnnotations(canvasId, 'words').all.includes(id);
+): ReadonlySet<Id> {
+  const { hovered, clicked } = useCanvasSelection(canvasId);
+  return useMemo(
+    () => new Set([...getSelectionIds(hovered), ...getSelectionIds(clicked)]),
+    [hovered, clicked],
+  );
 }
 
-function useSelectedViewerAnnotations(
+export function useSelectedAnnotationsInDiplomatic(canvasId: CanvasId): Id[] {
+  const { hovered, clicked } = useCanvasSelection(canvasId);
+  return useMemo(
+    () => [...getSelectionIds(hovered), ...getSelectionIds(clicked)],
+    [hovered, clicked],
+  );
+}
+
+function useCanvasSelection(canvasId: CanvasId) {
+  const hovered = useDocumentStore((s) => getCanvasSelection(s, canvasId, s.hovered));
+  const clicked = useDocumentStore((s) => getCanvasSelection(s, canvasId, s.clicked));
+  return { hovered, clicked };
+}
+
+function isSelected(
+  state: DocumentState,
   canvasId: CanvasId,
-  entitySelection: EntitySelection,
-): SelectedViewerAnnotations {
-  const { hoveredId, clickedId } = useSelectedAnnotations(canvasId);
-  const indexes = useCanvasIndexes(canvasId);
-
-  return useMemo(() => {
-    const hovered = expandSelection(hoveredId, indexes, entitySelection);
-    const clicked = expandSelection(clickedId, indexes, entitySelection);
-    return { hovered, clicked, all: [...hovered, ...clicked] };
-  }, [hoveredId, clickedId, indexes, entitySelection]);
-}
-
-function expandSelection(
-  id: Id | null,
-  indexes: AnnotationIndexes,
-  entitySelection: EntitySelection,
 ): Id[] {
-  if (!id) {
+  return [
+    ...getSelectionIds(getCanvasSelection(state, canvasId, state.hovered)),
+    ...getSelectionIds(getCanvasSelection(state, canvasId, state.clicked)),
+  ];
+}
+
+function getCanvasSelection(
+  state: DocumentState,
+  canvasId: CanvasId,
+  selection: Selection | null,
+): Selection | null {
+  if (!selection) {
+    return null;
+  }
+  if (!state.canvases[canvasId]?.annotations?.[selection.id]) {
+    return null;
+  }
+  return selection;
+}
+
+function getSelectionIds(
+  selection: Selection | null,
+): Id[] {
+  if (!selection) {
     return [];
   }
-  const { entityToWords, entityToBlock, wordToBlock } = indexes;
-  const ids: Id[] = [id];
-
-  if (entitySelection === 'words') {
-    const wordsFromEntity = entityToWords[id];
-    if (wordsFromEntity) {
-      ids.push(...wordsFromEntity);
-    }
+  const ids = [selection.id];
+  if (selection.type === 'block') {
+    return ids;
   }
-  const blockFromWord = wordToBlock[id];
-  if (blockFromWord) {
-    ids.push(blockFromWord);
+  if (selection.type === 'entity') {
+    ids.push(...selection.words);
   }
-  const blockFromEntity = entityToBlock[id];
-  if (blockFromEntity) {
-    ids.push(blockFromEntity);
+  if (selection.block) {
+    ids.push(selection.block);
   }
   return ids;
 }
