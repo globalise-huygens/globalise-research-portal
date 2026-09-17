@@ -779,6 +779,11 @@
     justify-content: center;
   }
 
+  .gds-entity-badge__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
   .gds-entity-tag {
     position: relative;
     display: inline-flex;
@@ -801,6 +806,10 @@
   .gds-entity-tag[href]:hover,
   .gds-entity-tag[data-hovered] {
     opacity: 1;
+  }
+
+  .gds-entity-tag[data-interactive="true"] {
+    cursor: pointer;
   }
 
   .gds-entity-tag[data-pressed] {

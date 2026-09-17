@@ -24,5 +24,282 @@
       font-size: var(--text-sm);
       line-height: 1.5rem;
     }
+
+    .person-status-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s8);
+    }
+
+    .person-status-values.stacked {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+    }
+
+    .timespan-boundaries {
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    .person-status {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      border-left: 2px solid var(--color-neutral-600);
+      background: rgb(255 255 255 / 0.02);
+      transition:
+        background-color 75ms ease-out,
+        border-color 75ms ease-out;
+    }
+
+    .person-status:hover,
+    .person-status:focus-within {
+      border-color: var(--color-neutral-400);
+      background: rgb(255 255 255 / 0.06);
+    }
+
+    .person-status-header {
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
+    }
+
+    .person-status-summary {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      padding: var(--s12);
+    }
+
+    .person-status-summary-content {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+    }
+
+    .person-status-summary-property {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--s4);
+    }
+
+    .person-status-summary-label,
+    .person-status-summary-date {
+      color: var(--color-neutral-400);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-style: italic;
+      font-weight: 400;
+      line-height: var(--s20);
+    }
+
+    .person-status-summary-value {
+      min-width: 0;
+      color: var(--color-brand-white);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: var(--s20);
+      overflow-wrap: anywhere;
+    }
+
+    .person-status-toggle {
+      display: inline-flex;
+      width: var(--s36);
+      height: var(--s36);
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: var(--color-brand-white);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .person-status-toggle:hover {
+      background: rgb(255 255 255 / 0.08);
+    }
+
+    .person-status-toggle:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: -2px;
+    }
+
+    .person-status-toggle-icon {
+      width: var(--s16);
+      height: var(--s16);
+      rotate: 0deg;
+      transition: rotate 120ms ease-out;
+    }
+
+    .person-status-toggle[aria-expanded="true"]
+      .person-status-toggle-icon {
+      rotate: 180deg;
+    }
+
+    .person-status-content {
+      padding: 0 var(--s12) var(--s12);
+    }
+
+    .person-status-details {
+      gap: var(--s8);
+    }
+
+    .person-occupation-status {
+      background: var(--color-neutral-700);
+    }
+
+    .person-occupation-status .person-status-sources .source-list > li {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    &.person-card {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: 100%;
+      overflow: hidden;
+
+      > .body {
+        box-sizing: border-box;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .panel {
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--s16);
+      }
+
+      .panel[data-side="left"] {
+        border-right: 1px solid var(--color-neutral-600);
+        border-bottom: 0;
+        background: var(--color-neutral-900);
+      }
+
+      .panel[data-side="right"] {
+        background: var(--color-neutral-800);
+      }
+
+      .panel.person-reference-panel {
+        padding: 0;
+      }
+
+      .panel > .section + .section {
+        margin-top: var(--section-gap);
+      }
+
+      .person-overview {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s4) var(--s24);
+        color: var(--color-neutral-400);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-style: italic;
+        line-height: var(--s20);
+      }
+
+      .person-overview-fact {
+        display: inline-flex;
+        min-width: 0;
+        gap: var(--s4);
+      }
+
+      .person-overview-label {
+        flex-shrink: 0;
+      }
+
+      .person-overview-value {
+        min-width: 0;
+        color: var(--color-neutral-300);
+        overflow-wrap: anywhere;
+      }
+
+      .person-name-value {
+        font-style: italic;
+      }
+
+      .person-references-empty {
+        margin: 0 var(--panel-pad);
+        color: var(--color-neutral-400);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-style: italic;
+        line-height: var(--s20);
+      }
+
+      .source-list {
+        display: flex;
+        margin: 0;
+        flex-direction: column;
+        gap: var(--s4);
+        list-style: none;
+        padding: 0;
+      }
+
+      .source-page {
+        margin-right: var(--s8);
+      }
+
+      .source-citation {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+      }
+
+      .source-note {
+        display: block;
+        margin-top: var(--s4);
+        font-style: italic;
+      }
+
+      .gds-entity-tag {
+        max-width: 100%;
+      }
+
+      .gds-entity-tag__icon {
+        width: 1em;
+        height: 1em;
+      }
+
+      .gds-entity-tag__label {
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .entity-card.person-card {
+      height: auto;
+      max-height: none;
+      overflow: visible;
+
+      > .body,
+      .panel {
+        overflow: visible;
+      }
+
+      .panel[data-side="left"] {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-neutral-600);
+      }
+    }
   }
 }

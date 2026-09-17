@@ -31,10 +31,13 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
   const parts = uri?.split('/') ?? [];
   const pageType = pagePattern.exec(parts[parts.length - 1] ?? '')?.[1];
   const named = parts.filter((part) => part.includes(':'));
-  const segment = named[named.length - 1]?.split(':')[0];
+  const [segment, identifier] = named[named.length - 1]?.split(':') ?? [];
 
   return (
     toEntityType(pageType)
+    ?? linkedArtEntityTypes.find((type) =>
+      new RegExp(`(?:^|[_-])${type}(?:[_-]|\\d)`, 'i').test(identifier ?? ''),
+    )
     ?? toEntityType(segment)
     ?? (segment === thesaurusSegment ? 'concept' : 'unknown')
   );
