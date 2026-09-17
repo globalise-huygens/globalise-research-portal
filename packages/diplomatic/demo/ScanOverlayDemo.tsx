@@ -31,7 +31,7 @@ export function ScanOverlayDemo() {
   const annotations = useAnnotations(canvasId);
   const indexes = useCanvasIndexes(canvasId);
   const page = usePartOf(canvasId);
-  const { all: selectedIds } = useSelectedAnnotationsInDiplomatic(canvasId);
+  const selectedIds = useSelectedAnnotationsInDiplomatic(canvasId);
   const selectedWords = useMemo(
     () => addToSelection(words, indexes),
     [indexes],

@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { memo, type MouseEvent, useState } from 'react';
 import { usePointerDown } from '@knaw-huc/osd-iiif-viewer';
 import {
   CanvasId,
@@ -25,7 +25,7 @@ type WordHighlightProps = {
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
-export function WordHighlight(
+export const WordHighlight = memo(function WordHighlight(
   {
     canvasId, id, points, text, entityClassificationId, setTooltip,
   }: WordHighlightProps,
@@ -103,4 +103,4 @@ export function WordHighlight(
       }}
     />
   );
-}
+});
