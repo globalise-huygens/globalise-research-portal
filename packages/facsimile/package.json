@@ -13,7 +13,7 @@
   "dependencies": {
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
-    "@iiif/helpers": "^1.5.9",
+    "@iiif/helpers": "^4.0.0",
     "@knaw-huc/osd-iiif-viewer": "^0.5.0"
   },
   "peerDependencies": {
