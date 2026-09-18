@@ -14,8 +14,8 @@
   "dependencies": {
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
-    "@tanstack/react-router": "^1.170.4",
-    "markdown-it": "^15.0.0",
-    "react-virtuoso": "^4.18.7"
+    "@tanstack/react-router": "^1.170.35",
+    "markdown-it": "^15.0.2",
+    "react-virtuoso": "^4.18.13"
   }
 }
