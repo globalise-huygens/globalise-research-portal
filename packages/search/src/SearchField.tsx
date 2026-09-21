@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
+import { useQueryClient } from '@tanstack/react-query';
 import { getSVGElement } from '@globalise/common';
 import {
   svgEntityPlace,
@@ -12,16 +13,19 @@ import {
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { UpdateState, ThemeConfig, AutocompleteConfig } from '@knaw-huc/searchfield';
 import { default as SF, SearchFieldRef } from '@knaw-huc/searchfield/react';
+import autocompleteQueryOptions from './queries/autocompleteQueryOptions';
 import classes from './SearchField.module.css';
 
-import { entities, Entity } from './mock/AutocompleteEntities';
+import { type AutocompleteSuggestion } from './elasticsearch/autocomplete.server';
 
-const types = {
+const types: Record<string, { color: string, icon: SVGElement }> = {
   'Place': { color: 'var(--entity-place)', icon: getSVGElement(svgEntityPlace) },
   'Polity': { color: 'var(--entity-actor)', icon: getSVGElement(svgEntityPerson) },
+  'Person': { color: 'var(--entity-actor)', icon: getSVGElement(svgEntityPerson) },
 };
 
 export default function SearchField() {
+  const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
@@ -36,28 +40,22 @@ export default function SearchField() {
     },
   };
 
-  const autocomplete: AutocompleteConfig<Entity> = {
-    // TODO: To be replaced by an ElasticSearch autocomplete service
-    // eslint-disable-next-line @typescript-eslint/require-await
-    source: async (query: string) => {
-      const normalizedQuery = query.toLowerCase();
-      return entities.filter((entity) => {
-        const labelMatch = entity.label.toLowerCase().includes(normalizedQuery);
-        const alternativeMatch = entity.alternatives.some((alt) =>
-          alt.toLowerCase().includes(normalizedQuery));
-
-        return labelMatch || alternativeMatch;
-      });
-    },
-    entityRegex: /({"id":.*?,"type":.*?,"label":.*?,"alternatives":.*?})/g,
+  const autocomplete: AutocompleteConfig<AutocompleteSuggestion> = {
+    source: async (query) => queryClient.fetchQuery(autocompleteQueryOptions({ query })),
+    minimumChars: 2,
+    debounceMs: 300,
     id: 'id',
+    type: 'type',
     label: 'label',
     description: (entity) => [
       entity.type,
       entity.alternatives.join(', '),
     ].filter(Boolean).join(' • '),
-    color: (entity) => types[entity.type].color,
-    icon: (entity) => types[entity.type].icon,
+    icon: (sugg) => types[sugg.type]?.icon,
+    token: {
+      color: (token) => types[token.type]?.color,
+      icon: (token) => types[token.type]?.icon,
+    },
   };
 
   return (

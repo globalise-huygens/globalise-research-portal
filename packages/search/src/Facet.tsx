@@ -26,7 +26,6 @@ export default function Facet({ label, children }: FacetProps) {
 }
 
 function FacetHeader({ label }: { label: string }) {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { isExpanded } = useContext(DisclosureStateContext)!;
 
   return (
