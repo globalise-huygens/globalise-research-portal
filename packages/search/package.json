@@ -11,7 +11,7 @@
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
     "@knaw-huc/panoptes-react": "^0.0.13",
-    "@knaw-huc/searchfield": "^0.0.3",
+    "@knaw-huc/searchfield": "^0.0.4",
     "msw": "^2.15.0",
     "zod": "^4.6.2"
   },

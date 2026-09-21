@@ -81,6 +81,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off', // Unnecessary optional chain on a non-nullish value
       '@typescript-eslint/no-unsafe-argument': 'off', //Unsafe argument of type `any` assigned to a parameter of type `Error`
       '@typescript-eslint/no-dynamic-delete': 'off', // Do not delete dynamically computed property keys
+      '@typescript-eslint/no-non-null-assertion': 'off', // Allow non-null assertion when we know for sure there is a value
     },
   },
 

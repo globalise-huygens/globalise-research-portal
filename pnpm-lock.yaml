@@ -608,8 +608,8 @@ importers:
         specifier: ^0.0.13
         version: 0.0.13(@tanstack/react-query@5.101.4(react@19.2.8))(@tanstack/react-router@1.170.30(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/node@25.8.0)(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.8))
       '@knaw-huc/searchfield':
-        specifier: ^0.0.3
-        version: 0.0.3(react@19.2.8)
+        specifier: ^0.0.4
+        version: 0.0.4(react@19.2.8)
       msw:
         specifier: ^2.15.0
         version: 2.15.0(@types/node@25.8.0)(typescript@5.9.3)
@@ -1029,8 +1029,8 @@ packages:
       react: ^19.2.4
       react-dom: ^19.2.4
 
-  '@knaw-huc/searchfield@0.0.3':
-    resolution: {integrity: sha512-6KRBlpotkl9r9JFPtxNZmxtBbG1V4iAexnu808eRpEBBWS1NHlYTCNoUuYt2usWjjiKGTNLlcp2C6HF3TjtMAQ==}
+  '@knaw-huc/searchfield@0.0.4':
+    resolution: {integrity: sha512-1H5Rtiwo5K9Mo9GBk9UkwZw5W15MdMMgudK1hhu/buQWri7BRNedZ0IeGAINdkjPNAr/w+EMMuu5T3Hvl10s2w==}
     peerDependencies:
       react: '>=19'
     peerDependenciesMeta:
@@ -3724,7 +3724,7 @@ snapshots:
       - typescript
       - use-sync-external-store
 
-  '@knaw-huc/searchfield@0.0.3(react@19.2.8)':
+  '@knaw-huc/searchfield@0.0.4(react@19.2.8)':
     dependencies:
       '@lezer/lr': 1.4.10
       codemirror: 6.0.2

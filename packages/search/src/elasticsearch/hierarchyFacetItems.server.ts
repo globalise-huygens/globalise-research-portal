@@ -37,7 +37,6 @@ const hierarchyFacetItems = createServerFn({ method: 'POST' })
       if (!cache.has(data.key)) {
         cache.set(data.key, getHierarchyFacetItems(data));
       }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return cache.get(data.key)!;
     }
     return getHierarchyFacetItems(data);

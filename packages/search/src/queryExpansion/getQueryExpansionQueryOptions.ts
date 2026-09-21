@@ -19,14 +19,20 @@ export default function getQueryExpansionQueryOptions(query: string) {
   return queryOptions({
     queryKey: ['query_expansion', query],
     staleTime: 1000 * 60 * 5, // 5 minutes
-    queryFn: async (): Promise<QueryExpansion> => {
-      const result = await fetch(`${url}?q=${encodeURIComponent(query)}`);
+    queryFn: async () => {
+      try {
+        const result = await fetch(`${url}?q=${encodeURIComponent(query)}`);
+        if (!result.ok) {
+          throw new Error(`Failed to obtain query expansions for: ${query}`);
+        }
 
-      if (!result.ok) {
-        throw new Error(`Failed to obtain query expansions for: ${query}`);
+        return await result.json() as QueryExpansion;
       }
-
-      return result.json() as Promise<QueryExpansion>;
+      // TODO: Disable query expansion while using dev instance
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      catch (e: unknown) {
+        return { original_query: query, query, query_expansion_template: query, terms: {} };
+      }
     },
   });
 }
