@@ -10,9 +10,8 @@
     "@elastic/elasticsearch": "^9.5.1",
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
-    "@knaw-huc/panoptes-react": "^0.0.13",
-    "@knaw-huc/searchfield": "^0.0.4",
-    "msw": "^2.15.0",
+    "@knaw-huc/faceted-search-react": "^0.0.23",
+    "@knaw-huc/searchfield": "^0.0.5",
     "zod": "^4.6.2"
   },
   "peerDependencies": {

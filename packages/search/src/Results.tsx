@@ -1,28 +1,11 @@
 import { Suspense, useCallback, useEffect, useRef } from 'react';
-import { useInfiniteSearch } from '@knaw-huc/panoptes-react';
-import { useSearchState } from '@knaw-huc/faceted-search-react';
-import { EntityTagType } from '@globalise/design';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { usePagination, useSearchState } from '@knaw-huc/faceted-search-react';
+import searchQueryOptions from './queries/searchQueryOptions';
 import Result, { DocumentResultContent } from './Result';
 import classes from './Results.module.css';
 
-export type SearchResult = {
-  id: string;
-  type: EntityTagType;
-  title: string;
-};
-
-export type DocumentSearchResult = SearchResult & {
-  type: 'document';
-  archive: string[];
-  text: string;
-  observances: {
-    type: EntityTagType;
-    observedText: string;
-    from: number,
-    to: number,
-    id: string;
-  }[];
-};
+import type { DocumentSearchResult, SearchResult } from './elasticsearch/search.server';
 
 const isDocument = (result: SearchResult): result is DocumentSearchResult => result.type === 'document';
 
@@ -35,14 +18,19 @@ export default function Results() {
 }
 
 function ResultPages() {
-  const state = useSearchState();
-  const { items, fetchNextPage, isFetchingNextPage } = useInfiniteSearch<SearchResult>(state);
+  const { pageSize } = usePagination();
+  const { query, facetValues } = useSearchState();
+  const {
+    data: { pages },
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery(searchQueryOptions({ query: query ?? '', facets: facetValues }, pageSize));
   const loadingResultsRef = useRef<HTMLDivElement>(null);
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {
     const target = entries[0];
     if (target.isIntersecting) {
-      fetchNextPage();
+      void fetchNextPage();
     }
   }, [fetchNextPage]);
 
@@ -51,14 +39,13 @@ function ResultPages() {
     if (loadingResultsRef.current) {
       observer.observe(loadingResultsRef.current);
     }
-
     return () => observer.disconnect();
   }, [observerCallback]);
 
   return (
     <div className={classes.results}>
       <ul>
-        {items.map((pageItems, idx) =>
+        {pages.map((pageItems, idx) =>
           <ResultItems key={idx} items={pageItems}/>)}
       </ul>
 
