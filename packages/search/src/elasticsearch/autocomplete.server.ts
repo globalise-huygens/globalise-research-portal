@@ -29,8 +29,6 @@ const AutocompleteRequestSchema = z.object({
 const autocomplete = createServerFn({ method: 'POST' })
   .validator(AutocompleteRequestSchema)
   .handler(async ({ data }): Promise<AutocompleteSuggestion[]> => {
-    console.log(`Autocomplete suggestions for "${data.query}"`);
-
     const result = await elastic.search<AutocompleteSource>({
       index: 'autocomplete',
       suggest: {

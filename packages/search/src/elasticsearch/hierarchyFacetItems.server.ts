@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { AggregationsStringTermsAggregate, AggregationsStringTermsBucket } from '@elastic/elasticsearch/lib/api/types';
 import elastic from './client.server';
 import { getLabel } from './labels.server';
-import { facets, getSearchQuery } from './search.server';
+import { facets, getSearchQuery } from './elastic.server';
 
 export type HierarchyFacetItemsRequest = {
   key: string;
@@ -44,7 +44,7 @@ const hierarchyFacetItems = createServerFn({ method: 'POST' })
 
 async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
   const result = await elastic.search({
-    index: 'documents.2026.09.09',
+    index: 'documents',
     size: 0,
     aggs: {
       items: {
