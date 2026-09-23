@@ -45,7 +45,7 @@ export type EntityClassificationDefinition = {
 };
 
 const nerClassificationBase =
-  'https://digitaalerfgoed.poolparty.biz/globalise/annotation/ner/';
+  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:';
 
 const personHighlightGroup = { id: 'persons', label: 'Persons' } as const;
 const organisationHighlightGroup = { id: 'organisations', label: 'Organisations' } as const;
@@ -54,103 +54,103 @@ const commodityHighlightGroup = { id: 'commodities', label: 'Commodities' } as c
 const placeHighlightGroup = { id: 'places', label: 'Places' } as const;
 
 const entityClassificationDefinitionById = {
-  'gan:PER_NAME': {
+  'ner:per_name': {
     cidocClassName: 'cidoc-actor',
     highlightLabel: 'by Name',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
     previewStrategy: 'named',
   },
-  'gan:PER_ATTR': {
+  'ner:per_attr': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Attributes',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
     previewStrategy: 'classification',
   },
-  'gan:PRF': {
+  'ner:prf': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Profession',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
     previewStrategy: 'classification',
   },
-  'gan:STATUS': {
+  'ner:status': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Civic Status',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
     previewStrategy: 'classification',
   },
-  'gan:ETH_REL': {
+  'ner:eth_rel': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Ethno-Religious Appellation',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
     previewStrategy: 'classification',
   },
-  'gan:ORG': {
+  'ner:org': {
     cidocClassName: 'cidoc-actor',
     highlightLabel: 'by Name',
     highlightGroup: organisationHighlightGroup,
     presentationType: 'organisation',
     previewStrategy: 'classification',
   },
-  'gan:SHIP': {
+  'ner:ship': {
     cidocClassName: 'cidoc-physical-thing',
     highlightLabel: 'by Name',
     highlightGroup: shipHighlightGroup,
     presentationType: 'ship',
     previewStrategy: 'named',
   },
-  'gan:SHIP_TYPE': {
+  'ner:ship_type': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Type',
     highlightGroup: shipHighlightGroup,
     presentationType: 'ship',
     previewStrategy: 'classification',
   },
-  'gan:CMTY_NAME': {
+  'ner:cmty_name': {
     cidocClassName: 'cidoc-physical-thing',
     highlightLabel: 'by Name',
     highlightGroup: commodityHighlightGroup,
     presentationType: 'commodity',
     previewStrategy: 'named',
   },
-  'gan:CMTY_QUAL': {
+  'ner:cmty_qual': {
     cidocClassName: 'cidoc-type',
     highlightLabel: 'by Qualifier',
     highlightGroup: commodityHighlightGroup,
     presentationType: 'commodity',
     previewStrategy: 'named',
   },
-  'gan:DATE': {
+  'ner:date': {
     cidocClassName: 'cidoc-time-span',
     highlightLabel: 'Dates',
     presentationType: 'date',
     previewStrategy: 'named',
   },
-  'gan:LOC_NAME': {
+  'ner:loc_name': {
     cidocClassName: 'cidoc-place',
     highlightLabel: 'by Name',
     highlightGroup: placeHighlightGroup,
     presentationType: 'place',
     previewStrategy: 'named',
   },
-  'gan:LOC_ADJ': {
+  'ner:loc_adj': {
     cidocClassName: 'cidoc-place',
     highlightLabel: 'by Location Form',
     highlightGroup: placeHighlightGroup,
     presentationType: 'place',
     previewStrategy: 'named',
   },
-  'gan:DOC': {
+  'ner:doc': {
     cidocClassName: 'cidoc-conceptual-object',
     highlightLabel: 'Documents',
     presentationType: 'document',
     previewStrategy: 'classification',
   },
-  'gan:CMTY_QUANT': {
+  'ner:cmty_quant': {
     cidocClassName: 'cidoc-dimension',
     highlightLabel: 'Unit',
     presentationType: 'dimensions',
@@ -191,7 +191,7 @@ export function getEntityClassificationDefinition(
 export function getEntityClassificationUri(
   classificationId: CidocEntityClassificationId,
 ): string {
-  return `${nerClassificationBase}${classificationId.replace(/^gan:/, '')}`;
+  return `${nerClassificationBase}${classificationId.replace(/^ner:/, '')}`;
 }
 
 export function getCidocEntityClassificationId(

@@ -782,7 +782,7 @@ function getClassificationReference(
   return {
     kind: 'classification',
     uri: getEntityClassificationUri(classificationId),
-    identifier: classificationId.replace(/^gan:/, ''),
+    identifier: classificationId.replace(/^ner:/, ''),
     label: body.classified_as._label,
   };
 }
