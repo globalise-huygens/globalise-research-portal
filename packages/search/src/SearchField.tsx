@@ -62,7 +62,7 @@ export default function SearchField() {
     <div className={classes.searchField}>
       <div className={classes.input}>
         <SF className={classes.inputContainer} ref={searchFieldRef}
-          query={query} onSearch={onSearch}
+          query={query} onSearch={(query) => onSearch(query.source)}
           onUpdate={({ canUndo, canRedo }) => updateHistory({ canUndo, canRedo })}
           theme={{ dark: darkTheme }} autocomplete={autocomplete}
           enableHistory enableLuceneQuerySyntax/>
