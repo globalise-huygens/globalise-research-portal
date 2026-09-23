@@ -1,7 +1,8 @@
 import { JSX, ReactNode } from 'react';
 import { cn, EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
-import { DocumentSearchResult } from './Results';
 import classes from './Result.module.css';
+
+import type { DocumentSearchResult } from './elasticsearch/search.server';
 
 export type ResultProps = {
   type: EntityTagType;
