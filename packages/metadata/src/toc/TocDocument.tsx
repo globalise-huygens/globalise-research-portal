@@ -8,6 +8,8 @@ import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
+import { toDocumentPageSections } from './toDocumentPageSections.ts';
+import { formatDocumentPageSections } from './formatDocumentPageSection.ts';
 
 export type TocDocumentProps = {
   document: ManifestDocument;
@@ -31,28 +33,29 @@ export function TocDocument(
           type="button"
           className="select"
           aria-current={isCurrent || undefined}
-          disabled={!firstScan}
           onClick={() => setSelectedCanvas(firstScan.canvasId, 'external')}
         >
           <IconEntityDocument className="document-icon"/>
           <span>{document.label}</span>
           <small>
             {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
+            {' '}
+            {formatDocumentPageSections(
+              toDocumentPageSections(document.scans),
+            )}
           </small>
         </button>
-        {!!firstScan && (
-          <button
-            type="button"
-            className="toggle"
-            aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
-            aria-expanded={isExpanded}
-            onClick={() => toggleTocDocument(document.id)}
-          >
-            <IconExpandSection
-              className="disclosure-icon"
-            />
-          </button>
-        )}
+        <button
+          type="button"
+          className="toggle"
+          aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
+          aria-expanded={isExpanded}
+          onClick={() => toggleTocDocument(document.id)}
+        >
+          <IconExpandSection
+            className="disclosure-icon"
+          />
+        </button>
       </div>
 
       {isExpanded && <TocDocumentMetadata document={document}/>}

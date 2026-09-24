@@ -5,6 +5,8 @@ import {
   CreatorField, DocumentPageField, PlacesField, TimespanField, TypeField,
 } from '../fields';
 import type { ManifestDocument } from './toToc';
+import { toDocumentPageSections } from './toDocumentPageSections.ts';
+import { formatDocumentPageSection } from './formatDocumentPageSection.ts';
 
 export type TocDocumentMetadataProps = {
   document: ManifestDocument;
@@ -38,6 +40,9 @@ export function TocDocumentMetadata({ document }: TocDocumentMetadataProps) {
       <TimespanField url={metadataUrl} label="Date" fallback={fallback}/>
       <PlacesField url={metadataUrl} label="Location" fallback={fallback}/>
       {document.tanapId && <Pair label="TANAP">{document.tanapId}</Pair>}
+      <Pair label="Scans">{formatDocumentPageSection(
+        toDocumentPageSections(document.scans),
+      )}</Pair>
       <DocumentPageField url={metadataUrl} fallback={fallback}/>
     </dl>
   );

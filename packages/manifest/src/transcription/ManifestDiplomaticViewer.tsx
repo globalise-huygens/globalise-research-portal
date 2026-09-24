@@ -2,6 +2,7 @@ import { useSelectedCanvas } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useCanvasDocuments } from '@globalise/metadata';
 import {
   CSSProperties,
   useEffect,
@@ -38,6 +39,7 @@ export function ManifestDiplomaticViewer({
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
   const diplomaticViewScale = useDiplomaticViewScale();
+  const canvasDocuments = useCanvasDocuments();
   const scaleFactor = diplomaticViewScale / 100;
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasListRef = useRef<HTMLDivElement>(null);
@@ -271,6 +273,7 @@ export function ManifestDiplomaticViewer({
               canvasHeight={info.height}
               containerWidth={containerWidth}
               annotationUrls={info.annotationUrls}
+              canvasDocuments={canvasDocuments.get(info.canvasId)}
               index={i}
               isVisible={visibleCanvases.has(i)}
               renderDistance={renderDistance}

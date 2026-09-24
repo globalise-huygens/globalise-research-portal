@@ -3,7 +3,6 @@ import { Rect } from 'openseadragon';
 import { Overlay } from '@knaw-huc/osd-iiif-viewer';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
-import { CanvasLabel } from '../CanvasLabel.tsx';
 import './CurrentCanvasOverlay.css';
 
 export function CurrentCanvasOverlay() {
@@ -26,9 +25,7 @@ export function CurrentCanvasOverlay() {
 
   return (
     <Overlay location={location}>
-      <div className="current-canvas-overlay">
-        <CanvasLabel canvasId={id} isCurrent />
-      </div>
+      <div className="current-canvas-overlay"/>
     </Overlay>
   );
 }

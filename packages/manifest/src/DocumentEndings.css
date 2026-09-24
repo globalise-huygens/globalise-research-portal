@@ -1,0 +1,13 @@
+.document-endings {
+  inset: auto 0 0;
+  align-items: flex-end;
+
+  .canvas-chip:not(:hover) {
+    opacity: 0.5;
+  }
+
+  .canvas-chip .arrow {
+    border-top: 0;
+    border-bottom: 0.4rem solid currentColor;
+  }
+}
