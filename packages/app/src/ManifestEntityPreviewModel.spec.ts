@@ -20,9 +20,9 @@ function createBody(
   };
   return {
     type,
-    classified_as: { id: 'gan:PER_NAME', type: 'Type', _label: 'Name of Person' },
+    classified_as: { id: 'ner:per_name', type: 'Type', _label: 'Name of Person' },
     ascribes_classification: {
-      id: 'gan:PER_NAME',
+      id: 'ner:per_name',
       type: 'Type',
       _label: 'Name of Person',
     },
