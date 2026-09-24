@@ -1,10 +1,6 @@
 .canvas-label {
-  position: absolute;
-  top: 0.625rem;
-  right: 0.625rem;
-  z-index: 2;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.35rem;
   border: 1px solid var(--color-parchment-400);
   background: color-mix(
@@ -19,19 +15,112 @@
   font-weight: 600;
   line-height: 1rem;
   padding: 0.2rem 0.4rem;
+  --label-muted: var(--color-parchment-700);
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: auto;
+  opacity: 0.5;
 
-  .prefix {
-    color: var(--color-parchment-700);
+  .prefix,
+  .separator,
+  .document:not([data-edge]) {
+    color: var(--label-muted);
     font-weight: 400;
+  }
+
+  .scan,
+  .documents,
+  .document {
+    display: inline-flex;
+    gap: 0.35rem;
+  }
+
+  .documents,
+  .document {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .scan,
+  .more-documents {
+    flex-shrink: 0;
+  }
+
+  .truncated-title {
+    display: inline-flex;
+    min-width: 0;
+    white-space: pre;
+
+    .head {
+      min-width: var(--tail-length);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tail {
+      flex-shrink: 0;
+    }
+  }
+
+  .arrow {
+    flex-shrink: 0;
+    align-self: center;
+    border-inline: 0.3rem solid transparent;
+    border-top: 0.4rem solid currentColor;
+  }
+
+  .document:not([data-edge]),
+  .separator:not([data-edge]) {
+    display: none;
+  }
+
+  &:hover .document,
+  &:hover .separator {
+    display: inline-flex;
+  }
+
+  &[aria-current="true"],
+  &:hover {
+    opacity: 1;
   }
 
   &[aria-current="true"] {
     border-color: var(--color-brand-white);
     background: var(--color-turquoise-800);
     color: var(--color-brand-white);
+    --label-muted: rgb(255 255 255 / 0.78);
+  }
+}
 
+.canvas-label-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  box-sizing: border-box;
+  padding: 0.625rem;
+  pointer-events: none;
+  container-type: inline-size;
+
+  &[data-position="bottom"] {
+    inset: auto 0 0;
+
+    .arrow {
+      rotate: 180deg;
+    }
+  }
+}
+
+@container (width < 8rem) {
+  .canvas-label {
+    .separator,
+    &:hover .separator,
     .prefix {
-      color: rgb(255 255 255 / 0.78);
+      display: none;
     }
   }
 }
