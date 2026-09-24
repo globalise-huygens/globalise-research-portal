@@ -20,8 +20,11 @@ import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './layout/ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
-import { SplitPaneLayout } from './layout/splitpane';
+import { SplitPaneLayout } from './layout';
 import { TooltipIconButton } from './layout/TooltipIconButton';
+import { debugManifest } from './debugManifest.tsx';
+
+Object.assign(window, debugManifest);
 
 export type ManifestViewerProps = {
   topLeft?: React.ReactNode;
