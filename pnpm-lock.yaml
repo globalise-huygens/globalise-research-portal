@@ -429,6 +429,9 @@ importers:
       '@knaw-huc/osd-iiif-viewer':
         specifier: ^0.5.0
         version: 0.5.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
+      openseadragon:
+        specifier: ^6.1.1
+        version: 6.1.1
       react:
         specifier: '>=18'
         version: 19.2.8

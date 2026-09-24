@@ -1,6 +1,7 @@
 import {
   IconBrightness,
   IconContrast,
+  IconFitWidth,
   IconInvert,
   IconReset,
   IconRotate,
@@ -12,7 +13,7 @@ import {
   Tooltip,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
-import { type Point, type Rect } from 'openseadragon';
+import { type Point, Rect } from 'openseadragon';
 import {
   type CSSProperties,
   type RefObject,
@@ -273,6 +274,19 @@ export function FacsimileControls({
     applyZoomPercent(zoomPercent - 10);
   }
 
+  function handleFitWidth() {
+    if (!viewer) {
+      return;
+    }
+    const { viewport } = viewer;
+    const center = viewport.getCenter();
+    const content = viewer.world.getHomeBounds();
+    const height = content.width / viewport.getAspectRatio();
+    viewport.fitBoundsWithConstraints(
+      new Rect(content.x, center.y - height / 2, content.width, height),
+    );
+  }
+
   function handleResetView() {
     setBrightness(DEFAULT_SCAN_FILTER_VALUE);
     setContrast(DEFAULT_SCAN_FILTER_VALUE);
@@ -385,6 +399,14 @@ export function FacsimileControls({
           aria-label="Reset scan view"
           icon={<IconReset />}
           onPress={handleResetView}
+          size="compact"
+        />
+      </Tooltip>
+      <Tooltip label="Fit scan to available width">
+        <ToolButton
+          aria-label="Fit scan to width"
+          icon={<IconFitWidth />}
+          onPress={handleFitWidth}
           size="compact"
         />
       </Tooltip>
