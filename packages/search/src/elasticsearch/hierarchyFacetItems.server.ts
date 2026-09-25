@@ -42,6 +42,17 @@ const hierarchyFacetItems = createServerFn({ method: 'POST' })
     return getHierarchyFacetItems(data);
   });
 
+function countMissing(items: HierarchyFacetItem[]) {
+  for (const item of items) {
+    if (item.children && item.children.length > 0) {
+      countMissing(item.children);
+      if (item.count === 0) {
+        item.count = item.children.reduce((sum, child) => sum + child.count, 0);
+      }
+    }
+  }
+}
+
 async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
   const result = await elastic.search({
     index: 'documents',
@@ -57,18 +68,19 @@ async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
         },
       },
     },
-    query: getSearchQuery(data.query, data.facets),
+    query: getSearchQuery(data.query, data.facets) ?? undefined,
   });
 
-  return ((result.aggregations?.items as AggregationsStringTermsAggregate)
+  const tree = ((result.aggregations?.items as AggregationsStringTermsAggregate)
     ?.buckets as AggregationsStringTermsBucket[])
     ?.reduce<HierarchyFacetItem[]>((tree, bucket) => {
       (bucket.key as string).split(separator).reduce((children, id, idx, parts) => {
-        let item = children.find((x) => x.id === id);
+        const path = parts.slice(0, idx + 1).join(separator);
+        let item = children.find((x) => x.id === path);
         if (!item) {
           const label = getLabel(data.key, id).join(' ').trim();
           item = {
-            id,
+            id: path,
             label: label.length > 0 ? label : id,
             count: 0,
             children: [],
@@ -85,6 +97,9 @@ async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
 
       return tree;
     }, []) ?? [];
+
+  countMissing(tree);
+  return tree;
 }
 
 export default hierarchyFacetItems;
