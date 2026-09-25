@@ -1,6 +1,7 @@
 import {
   IconBrightness,
   IconContrast,
+  IconFitWidth,
   IconInvert,
   IconReset,
   IconRotate,
@@ -12,7 +13,7 @@ import {
   Tooltip,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
-import { type Point, type Rect } from 'openseadragon';
+import { type Point, Rect } from 'openseadragon';
 import {
   type CSSProperties,
   type RefObject,
@@ -30,89 +31,28 @@ import './ScanSettings.css';
 type FacsimileControlsProps = {
   fullscreenRef: RefObject<HTMLDivElement | null>;
   onScanFilterChange?: (filter: string) => void;
+  minZoomPercent?: number;
+  maxZoomPercent?: number;
+  defaultScanFilterValue?: number;
 };
 
-const MIN_ZOOM_PERCENT = 10;
-const MAX_ZOOM_PERCENT = 400;
-const DEFAULT_SCAN_FILTER_VALUE = 100;
-const SETTINGS_PANEL_WIDTH = 216;
-const SETTINGS_PANEL_MARGIN = 12;
-const SETTINGS_PANEL_GAP = 8;
-const SETTINGS_PANEL_MIN_HEIGHT = 140;
-
-type ScanSetting = {
-  icon: ReactNode;
-  label: string;
-  max: number;
-  min: number;
-  onChange: (value: number) => void;
-  value: number;
-};
-
-type InitialView = {
-  center: Point;
-  zoom: number;
-};
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function getSliderFillStyle(value: number, min: number, max: number) {
-  const percent = ((value - min) / (max - min)) * 100;
-
-  return {
-    ['--slider-fill' as string]: `${percent}%`,
-  };
-}
-
-function getSettingsPanelStyle(buttonRect: DOMRect): CSSProperties {
-  const width = Math.min(
-    SETTINGS_PANEL_WIDTH,
-    window.innerWidth - SETTINGS_PANEL_MARGIN * 2,
-  );
-  const left = clamp(
-    buttonRect.left + buttonRect.width / 2 - width / 2,
-    SETTINGS_PANEL_MARGIN,
-    window.innerWidth - width - SETTINGS_PANEL_MARGIN,
-  );
-  const belowTop = buttonRect.bottom + SETTINGS_PANEL_GAP;
-  const availableBelow = window.innerHeight - belowTop - SETTINGS_PANEL_MARGIN;
-  const availableAbove =
-    buttonRect.top - SETTINGS_PANEL_GAP - SETTINGS_PANEL_MARGIN;
-
-  if (
-    availableBelow < SETTINGS_PANEL_MIN_HEIGHT &&
-    availableAbove > availableBelow
-  ) {
-    return {
-      bottom: window.innerHeight - buttonRect.top + SETTINGS_PANEL_GAP,
-      left,
-      maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableAbove),
-      width,
-    };
-  }
-
-  return {
-    left,
-    maxHeight: Math.max(SETTINGS_PANEL_MIN_HEIGHT, availableBelow),
-    top: belowTop,
-    width,
-  };
-}
-
-export function FacsimileControls({
-  fullscreenRef,
-  onScanFilterChange,
-}: FacsimileControlsProps) {
+export function FacsimileControls(
+  {
+    fullscreenRef,
+    onScanFilterChange,
+    minZoomPercent = 10,
+    maxZoomPercent = 400,
+    defaultScanFilterValue = 100,
+  }: FacsimileControlsProps,
+) {
   const viewer = useViewer();
   const { home, rotate, rotation } = useViewerControls(fullscreenRef);
   const [zoomPercent, setZoomPercent] = useState(100);
   const [zoomInput, setZoomInput] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [brightness, setBrightness] = useState(DEFAULT_SCAN_FILTER_VALUE);
-  const [contrast, setContrast] = useState(DEFAULT_SCAN_FILTER_VALUE);
-  const [saturation, setSaturation] = useState(DEFAULT_SCAN_FILTER_VALUE);
+  const [brightness, setBrightness] = useState(defaultScanFilterValue);
+  const [contrast, setContrast] = useState(defaultScanFilterValue);
+  const [saturation, setSaturation] = useState(defaultScanFilterValue);
   const [isInverted, setIsInverted] = useState(false);
   const [settingsPanelStyle, setSettingsPanelStyle] =
     useState<CSSProperties | null>(null);
@@ -224,11 +164,7 @@ export function FacsimileControls({
   }, [isSettingsOpen]);
 
   function setViewerZoomPercent(value: number) {
-    const requestedZoomPercent = clamp(
-      value,
-      MIN_ZOOM_PERCENT,
-      MAX_ZOOM_PERCENT,
-    );
+    const requestedZoomPercent = clamp(value, minZoomPercent, maxZoomPercent);
     if (viewer) {
       const { viewport } = viewer;
       const initialView = getInitialView();
@@ -273,10 +209,23 @@ export function FacsimileControls({
     applyZoomPercent(zoomPercent - 10);
   }
 
+  function handleFitWidth() {
+    if (!viewer) {
+      return;
+    }
+    const { viewport } = viewer;
+    const center = viewport.getCenter();
+    const content = viewer.world.getHomeBounds();
+    const height = content.width / viewport.getAspectRatio();
+    viewport.fitBoundsWithConstraints(
+      new Rect(content.x, center.y - height / 2, content.width, height),
+    );
+  }
+
   function handleResetView() {
-    setBrightness(DEFAULT_SCAN_FILTER_VALUE);
-    setContrast(DEFAULT_SCAN_FILTER_VALUE);
-    setSaturation(DEFAULT_SCAN_FILTER_VALUE);
+    setBrightness(defaultScanFilterValue);
+    setContrast(defaultScanFilterValue);
+    setSaturation(defaultScanFilterValue);
     setIsInverted(false);
 
     if (viewer) {
@@ -309,7 +258,7 @@ export function FacsimileControls({
 
   const scanSettings: ScanSetting[] = [
     {
-      icon: <IconBrightness />,
+      icon: <IconBrightness/>,
       label: 'Brightness',
       max: 150,
       min: 50,
@@ -317,7 +266,7 @@ export function FacsimileControls({
       value: brightness,
     },
     {
-      icon: <IconContrast />,
+      icon: <IconContrast/>,
       label: 'Contrast',
       max: 150,
       min: 50,
@@ -325,7 +274,7 @@ export function FacsimileControls({
       value: contrast,
     },
     {
-      icon: <IconSaturation />,
+      icon: <IconSaturation/>,
       label: 'Saturation',
       max: 200,
       min: 0,
@@ -340,14 +289,14 @@ export function FacsimileControls({
         <Tooltip label="Zoom out to see more of the scan">
           <ToolButton
             aria-label="Zoom out"
-            icon={<IconZoomOut />}
+            icon={<IconZoomOut/>}
             onPress={handleZoomOut}
             size="compact"
           />
         </Tooltip>
         <label className="zoom-field">
           <input
-            aria-label="Scan zoom percentage, 10 to 400"
+            aria-label={`Scan zoom percentage, ${minZoomPercent} to ${maxZoomPercent}`}
             className="zoom-input"
             inputMode="numeric"
             maxLength={3}
@@ -373,38 +322,47 @@ export function FacsimileControls({
         <Tooltip label="Zoom in to inspect more detail in the scan">
           <ToolButton
             aria-label="Zoom in"
-            icon={<IconZoomIn />}
+            icon={<IconZoomIn/>}
             onPress={handleZoomIn}
             size="compact"
           />
         </Tooltip>
       </div>
-      <span className="toolbar-divider" aria-hidden="true" />
+      <span className="toolbar-divider" aria-hidden="true"/>
       <Tooltip label="Reset scan position, zoom, and rotation">
         <ToolButton
           aria-label="Reset scan view"
-          icon={<IconReset />}
+          icon={<IconReset/>}
           onPress={handleResetView}
+          size="compact"
+        />
+      </Tooltip>
+      <Tooltip label="Fit scan to available width">
+        <ToolButton
+          aria-label="Fit scan to width"
+          icon={<IconFitWidth/>}
+          onPress={handleFitWidth}
           size="compact"
         />
       </Tooltip>
       <Tooltip label="Rotate scan 90 degrees clockwise">
         <ToolButton
           aria-label="Rotate scan"
-          icon={<IconRotate />}
+          icon={<IconRotate/>}
           onPress={() => {
             rotate(90);
           }}
           size="compact"
         />
       </Tooltip>
-      <Tooltip label="Adjust scan brightness, contrast, saturation, and inversion">
+      <Tooltip
+        label="Adjust scan brightness, contrast, saturation, and inversion">
         <ToolButton
           ref={settingsButtonRef}
           aria-label="Scan image settings"
           aria-controls={settingsPanelId}
           aria-expanded={isSettingsOpen}
-          icon={<IconSetting />}
+          icon={<IconSetting/>}
           isActive={isSettingsOpen}
           onPress={() => {
             if (isSettingsOpen) {
@@ -437,7 +395,7 @@ export function FacsimileControls({
             ))}
             <label className="row checkbox-row">
               <SettingsIcon label="Invert">
-                <IconInvert />
+                <IconInvert/>
               </SettingsIcon>
               <input
                 aria-label="Invert scan image"
@@ -455,6 +413,20 @@ export function FacsimileControls({
     </>
   );
 }
+
+type InitialView = {
+  center: Point;
+  zoom: number;
+};
+
+type ScanSetting = {
+  icon: ReactNode;
+  label: string;
+  max: number;
+  min: number;
+  onChange: (value: number) => void;
+  value: number;
+};
 
 function ScanSettingSlider({
   icon,
@@ -507,4 +479,47 @@ function SettingsIcon({
       </span>
     </span>
   );
+}
+
+function getSettingsPanelStyle(
+  buttonRect: DOMRect,
+  { maxWidth = 216, margin = 12, gap = 8, minHeight = 140 } = {},
+): CSSProperties {
+  const width = Math.min(maxWidth, window.innerWidth - margin * 2);
+  const left = clamp(
+    buttonRect.left + buttonRect.width / 2 - width / 2,
+    margin,
+    window.innerWidth - width - margin,
+  );
+  const belowTop = buttonRect.bottom + gap;
+  const availableBelow = window.innerHeight - belowTop - margin;
+  const availableAbove = buttonRect.top - gap - margin;
+
+  if (availableBelow < minHeight && availableAbove > availableBelow) {
+    return {
+      bottom: window.innerHeight - buttonRect.top + gap,
+      left,
+      maxHeight: Math.max(minHeight, availableAbove),
+      width,
+    };
+  }
+
+  return {
+    left,
+    maxHeight: Math.max(minHeight, availableBelow),
+    top: belowTop,
+    width,
+  };
+}
+
+function getSliderFillStyle(value: number, min: number, max: number) {
+  const percent = ((value - min) / (max - min)) * 100;
+
+  return {
+    ['--slider-fill' as string]: `${percent}%`,
+  };
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
