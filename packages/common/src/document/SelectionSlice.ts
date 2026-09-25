@@ -1,22 +1,58 @@
-import { useDocumentStore } from './DocumentStore';
-import { Id } from '../annotation';
+import { Annotation, Id, isBlock, isEntity, isWord } from '../annotation';
+import { DocumentState, setState } from './DocumentStore';
+import { Selection } from './Selection';
+import { CanvasState } from './ManifestViewerSlice';
 
 export type SelectionSlice = {
-  hoveredId: Id | null;
-  clickedId: Id | null;
+  hovered: Selection | null;
+  clicked: Selection | null;
 };
 
 export function setHovered(id: Id | null) {
-  useDocumentStore.setState({ hoveredId: id });
+  setState((s) => ({ hovered: createSelection(s, id) }));
 }
 
 export function toggleClicked(id: Id) {
-  const { clickedId } = useDocumentStore.getState();
-  useDocumentStore.setState({
-    clickedId: id === clickedId ? null : id,
-  });
+  setState((s) => ({
+    clicked: s.clicked?.id === id ? null : createSelection(s, id),
+  }));
 }
 
-export function clearSelection() {
-  useDocumentStore.setState({ hoveredId: null, clickedId: null });
+function createSelection(state: DocumentState, id: Id | null): Selection | null {
+  if (!id) {
+    return null;
+  }
+  for (const canvas of Object.values(state.canvases)) {
+    const annotation = canvas.annotations?.[id];
+    if(!annotation) {
+      continue;
+    }
+    return createCanvasSelection(canvas, annotation);
+  }
+  return null;
 }
+
+export function createCanvasSelection(
+  canvas: CanvasState,
+  annotation: Annotation,
+): Selection | null {
+  const { indexes } = canvas;
+  const { id } = annotation;
+
+  if (isEntity(annotation)) {
+    return {
+      type: 'entity',
+      id: annotation.id,
+      words: indexes.entityToWords[id] ?? [],
+      block: indexes.entityToBlock[id],
+    };
+  }
+  if (isWord(annotation)) {
+    return { type: 'word', id, block: indexes.wordToBlock[id] };
+  }
+  if (isBlock(annotation)) {
+    return { type: 'block', id };
+  }
+  return null;
+}
+

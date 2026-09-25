@@ -53,8 +53,8 @@ export function ManifestPage() {
 
   function navigateToObjectCard() {
     return useDocumentStore.subscribe((state, prev) => {
-      const currentClickedId = state.clickedId;
-      const prevClickedId = prev.clickedId;
+      const currentClickedId = state.clicked?.id;
+      const prevClickedId = prev.clicked?.id;
       if (!currentClickedId || currentClickedId === prevClickedId) {
         return;
       }
