@@ -16,27 +16,39 @@ export const facets: Record<string, Facet> = {
   },
 };
 
-export function getSearchQuery(query?: string, selected?: Record<string, string[]>): QueryDslQueryContainer | undefined {
+export function getSearchQuery(query?: string, selected?: Record<string, string[]>): QueryDslQueryContainer | null {
   if (!query && !selected) {
-    return undefined;
+    return null;
   }
+
+  const esQuery = applyQueryString(query);
+  const filters = applySelectedFacets(selected);
 
   return {
     bool: {
-      must: [
-        ...(query ? [{
-          query_string: {
-            query: query,
-            default_field: 'text',
-          },
-        }] : []),
-        ...(selected && Object.keys(selected).length > 0 ? [{
-          terms: Object.keys(selected).reduce<Record<string, string[]>>((acc, key) => {
-            acc[facets[key].tree] = selected[key];
-            return acc;
-          }, {}),
-        }] : []),
-      ],
+      must: esQuery ?? undefined,
+      filter: filters ?? undefined,
     },
   };
+}
+
+function applyQueryString(query?: string): QueryDslQueryContainer[] | null {
+  if (!query || query === '') {
+    return null;
+  }
+
+  return [{
+    query_string: {
+      query: query,
+      default_field: 'text',
+    },
+  }];
+}
+
+function applySelectedFacets(selected?: Record<string, string[]>): QueryDslQueryContainer[] | null {
+  if (!selected || Object.keys(selected).length === 0) {
+    return null;
+  }
+
+  return Object.entries(selected).map(([key, value]) => ({ terms: { [facets[key].tree]: value } }));
 }
