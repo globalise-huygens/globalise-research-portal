@@ -93,10 +93,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return words;
     }
-    if(!selected.all.length) {
-      return [];
-    }
-    return words.filter((w) => selected.all.includes(w.id));
+    return words.filter((w) => selected.has(w.id));
   },
   [isScrolling, words, selected]);
 
@@ -107,10 +104,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return blocks;
     }
-    if(!selected.all.length) {
-      return [];
-    }
-    return blocks.filter((b) => selected.all.includes(b.id));
+    return blocks.filter((b) => selected.has(b.id));
   },
   [isScrolling, blocks, selected, showLayoutElements]);
 

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { CanvasId, setHovered, useIsSelectedInFacsimile } from '@globalise/common/document';
 import { Id } from '@globalise/common/annotation';
 
@@ -7,7 +8,7 @@ type BlockHighlightProps = {
   points: string;
 };
 
-export function BlockHighlight(
+export const BlockHighlight = memo(function BlockHighlight(
   { canvasId, id, points }: BlockHighlightProps,
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
@@ -23,4 +24,4 @@ export function BlockHighlight(
       <polygon className="layout-element-shape" points={points} />
     </g>
   );
-}
+});

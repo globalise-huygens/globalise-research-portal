@@ -27,6 +27,7 @@ import {
   setHovered,
   useDocumentStore,
   type DocumentState,
+  type Selection,
 } from '@globalise/common/document';
 import {
   EntityPreviewCard,
@@ -103,13 +104,13 @@ export function ManifestEntityPreview() {
   const previewStackCloseTimer = useRef<number | undefined>(undefined);
   const isPreviewHovered = useRef(false);
 
-  useEffect(() => useDocumentStore.subscribe(({ hoveredId }) => {
-    const nextAnchor = hoveredId
+  useEffect(() => useDocumentStore.subscribe(({ hovered }) => {
+    const nextAnchor = hovered
       ? getHoverElement()
       : null;
     const annotation = getHoveredAnnotation(
       useDocumentStore.getState(),
-      hoveredId,
+      hovered,
     );
     if (annotation && nextAnchor) {
       const openImmediately = getHoverDelay(nextAnchor) === 'immediate';
@@ -140,7 +141,7 @@ export function ManifestEntityPreview() {
     closeTimer.current = window.setTimeout(() => {
       if (
         isPreviewHovered.current ||
-        useDocumentStore.getState().hoveredId !== null
+        useDocumentStore.getState().hovered !== null
       ) {
         return;
       }
@@ -336,7 +337,7 @@ export function ManifestEntityPreview() {
     closeTimer.current = window.setTimeout(() => {
       if (
         isPreviewHovered.current ||
-        useDocumentStore.getState().hoveredId !== null
+        useDocumentStore.getState().hovered !== null
       ) {
         return;
       }
@@ -587,29 +588,25 @@ function useLinkedConcept(reference: LinkedConceptReference | undefined) {
 
 function getHoveredAnnotation(
   state: DocumentState,
-  hoveredId: string | null,
+  hovered: Selection | null,
 ): EntityAnnotation | null {
-  if (!hoveredId) {
+  if (!hovered || hovered.type === 'block') {
     return null;
   }
 
-  for (const canvas of Object.values(state.canvases)) {
-    if (!canvas.annotations) {
+  for (const { annotations, indexes } of Object.values(state.canvases)) {
+    const annotation = annotations?.[hovered.id];
+    if (!annotations || !annotation) {
       continue;
     }
-
-    const direct = canvas.annotations[hoveredId];
-    if (!direct) {
-      continue;
-    }
-    if (isEntity(direct)) {
-      return direct;
+    if (isEntity(annotation)) {
+      return annotation;
     }
 
     return findEntityForWord(
-      hoveredId,
-      canvas.annotations,
-      canvas.indexes.entityToWords,
+      hovered.id,
+      annotations,
+      indexes.entityToWords,
       state.entityHighlightCategories,
     ) ?? null;
   }

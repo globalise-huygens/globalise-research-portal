@@ -25,8 +25,8 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
 };
 
 const defaultSelectionSlice: SelectionSlice = {
-  hoveredId: null,
-  clickedId: null,
+  hovered: null,
+  clicked: null,
 };
 
 const defaultLayoutElementsSlice: LayoutElementsSlice = {
