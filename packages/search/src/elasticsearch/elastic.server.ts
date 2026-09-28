@@ -1,4 +1,6 @@
+import type { TreeQuery } from '@knaw-huc/searchfield';
 import type { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
+import parseQuery from './parseQuery.server';
 
 export type Facet = {
   tree: string;
@@ -16,39 +18,20 @@ export const facets: Record<string, Facet> = {
   },
 };
 
-export function getSearchQuery(query?: string, selected?: Record<string, string[]>): QueryDslQueryContainer | null {
+export function getSearchQuery(query?: TreeQuery, selected?: Record<string, string[]>): QueryDslQueryContainer | null {
   if (!query && !selected) {
     return null;
   }
 
-  const esQuery = applyQueryString(query);
-  const filters = applySelectedFacets(selected);
-
+  const esQuery = query ? parseQuery(query) : undefined;
+  const filters = selected && Object.keys(selected).length > 0
+    ? Object.entries(selected).map(([key, value]) => ({ terms: { [facets[key].tree]: value } }))
+    : undefined;
+  
   return {
     bool: {
-      must: esQuery ?? undefined,
-      filter: filters ?? undefined,
+      must: esQuery,
+      filter: filters,
     },
   };
-}
-
-function applyQueryString(query?: string): QueryDslQueryContainer[] | null {
-  if (!query || query === '') {
-    return null;
-  }
-
-  return [{
-    query_string: {
-      query: query,
-      default_field: 'text',
-    },
-  }];
-}
-
-function applySelectedFacets(selected?: Record<string, string[]>): QueryDslQueryContainer[] | null {
-  if (!selected || Object.keys(selected).length === 0) {
-    return null;
-  }
-
-  return Object.entries(selected).map(([key, value]) => ({ terms: { [facets[key].tree]: value } }));
 }

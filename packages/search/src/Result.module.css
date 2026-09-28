@@ -93,4 +93,12 @@
             font-style: italic;
         }
     }
+
+    pre {
+        margin: 0;
+        display: block;
+        font-family: monospace;
+        padding: 1em;
+        overflow-x: scroll;
+    }
 }

@@ -44,12 +44,10 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const { query, facetValues } = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
-  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions({
-    key: facetKey,
-    query,
+  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, query ?? '',
     // Remove values this facet owns: we want all the available items of this facet with filters on the other facets
-    facets: (({ [facetKey]: _ownValues, ...values }) => values)(facetValues),
-  }));
+    (({ [facetKey]: _ownValues, ...values }) => values)(facetValues),
+  ));
 
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);
 
