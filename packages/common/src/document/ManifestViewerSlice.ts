@@ -1,10 +1,12 @@
 import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
-  AnnotationPage,
+  EmbeddedCanvasAnnotationPage,
+  CanvasAnnotationPage,
   findTextPositionSelector,
   getPageText,
   Id,
+  isEmbeddedAnnotationPage,
   isEntity,
   PartOf,
 } from '../annotation';
@@ -62,7 +64,7 @@ const emptyCanvasState: CanvasState = {
   error: null,
 };
 
-function createReadyCanvas(pages: AnnotationPage[]) {
+function createReadyCanvas(pages: EmbeddedCanvasAnnotationPage[]) {
   const mapped: Record<Id, Annotation> = {};
   for (const page of pages) {
     for (const item of page.items) {
@@ -81,7 +83,7 @@ function createReadyCanvas(pages: AnnotationPage[]) {
       delete mapped[id];
     }
   }
-  const partOf = pages[0]?.partOf ?? null;
+  const partOf = pages.find((page) => page.partOf)?.partOf ?? null;
   const indexes = indexAnnotations(mapped, pageId);
 
   return {
@@ -113,7 +115,7 @@ export function initCanvases(canvasIds: Id[], selectedCanvasId?: CanvasId) {
 /**
  * Set canvas state from already fetched pages
  */
-export function setCanvasPages(canvasId: CanvasId, pages: AnnotationPage[]) {
+export function setCanvasPages(canvasId: CanvasId, pages: EmbeddedCanvasAnnotationPage[]) {
   setState((s) => ({
     canvases: {
       ...s.canvases,
@@ -125,7 +127,7 @@ export function setCanvasPages(canvasId: CanvasId, pages: AnnotationPage[]) {
 
 export async function loadCanvasAnnotationPages(
   canvasId: CanvasId,
-  annotationPageUrls: string[],
+  pages: CanvasAnnotationPage[],
 ) {
   const state = useDocumentStore.getState();
   const existing = state.canvases[canvasId];
@@ -135,7 +137,7 @@ export async function loadCanvasAnnotationPages(
   if (existing.isReady || existing.isLoading || existing.error) {
     return;
   }
-  if (!annotationPageUrls.length) {
+  if (!pages.length) {
     setState((s) => ({
       canvases: {
         ...s.canvases,
@@ -152,11 +154,9 @@ export async function loadCanvasAnnotationPages(
   }));
 
   try {
-    const results = await Promise.allSettled(
-      annotationPageUrls.map((url) => fetchJson<AnnotationPage>(url)),
-    );
+    const results = await Promise.allSettled(pages.map(resolvePage));
 
-    const success: AnnotationPage[] = [];
+    const success: EmbeddedCanvasAnnotationPage[] = [];
     const errors: Error[] = [];
 
     for (const result of results) {
@@ -198,6 +198,12 @@ export async function loadCanvasAnnotationPages(
       },
     }));
   }
+}
+
+async function resolvePage(
+  page: CanvasAnnotationPage,
+): Promise<EmbeddedCanvasAnnotationPage> {
+  return isEmbeddedAnnotationPage(page) ? page : fetchJson<EmbeddedCanvasAnnotationPage>(page.id);
 }
 
 export function setSelectedCanvas(canvasId: CanvasId, source: CanvasSource) {

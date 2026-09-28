@@ -8,10 +8,23 @@ import type {
 import { EntityBody } from './EntityModel.ts';
 import { Id } from './Id.ts';
 
-export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
-  partOf: PartOf;
+export type CanvasAnnotationPage =
+  | EmbeddedCanvasAnnotationPage
+  | CanvasAnnotationPageReference;
+
+export type EmbeddedCanvasAnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
+  partOf?: PartOf;
   items: Annotation[];
 };
+
+export type CanvasAnnotationPageReference = {
+  id: Id;
+  type: 'AnnotationPage';
+};
+
+export const isEmbeddedAnnotationPage = (
+  page: CanvasAnnotationPage,
+): page is EmbeddedCanvasAnnotationPage => 'items' in page;
 
 export type Annotation<BODY extends Body = Body> = Omit<IiifAnnotation, 'body' | 'target'> & {
   body: BODY[] | BODY;

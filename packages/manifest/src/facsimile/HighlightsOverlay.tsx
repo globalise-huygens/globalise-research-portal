@@ -9,6 +9,7 @@ import {
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
+  getAnnotationPages,
   loadCanvasAnnotationPages,
   useAnnotations,
   useWordEntityClassifications,
@@ -24,7 +25,6 @@ import {
   WordHighlight,
 } from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
@@ -46,19 +46,19 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
 
-  const annotationUrls = useMemo(() => {
+  const annotationPages = useMemo(() => {
     if (!vault) {
       return [];
     }
     const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
-    return getAnnotationPageUrls(canvas.annotations);
+    return getAnnotationPages(vault, canvas);
   }, [vault, lazyCanvas.canvasId]);
 
   useEffect(() => {
-    if (isTileLoaded && annotationUrls.length) {
-      void loadCanvasAnnotationPages(lazyCanvas.canvasId, annotationUrls);
+    if (isTileLoaded && annotationPages.length) {
+      void loadCanvasAnnotationPages(lazyCanvas.canvasId, annotationPages);
     }
-  }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
+  }, [isTileLoaded, lazyCanvas.canvasId, annotationPages]);
 
 
   let canvasSize: { width: number; height: number } | null = null;

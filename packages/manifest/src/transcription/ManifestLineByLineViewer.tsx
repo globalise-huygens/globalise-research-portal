@@ -1,4 +1,6 @@
+import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import {
+  getAnnotationPages,
   loadCanvasAnnotationPages,
   useSelectedCanvas,
 } from '@globalise/common/document';
@@ -7,7 +9,6 @@ import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useRef } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import {
   canvasIndexAttribute,
   canvasIndexSelector,
@@ -17,7 +18,7 @@ import { LazyLineByLineCanvas } from './LazyLineByLineCanvas.tsx';
 
 type CanvasInfo = {
   canvasId: string;
-  annotationUrls: string[];
+  annotationPages: CanvasAnnotationPage[];
 };
 
 type Props = {
@@ -47,7 +48,7 @@ export function ManifestLineByLineViewer({
       const canvas: CanvasNormalized = vault.get(item);
       return {
         canvasId: canvas.id,
-        annotationUrls: getAnnotationPageUrls(canvas.annotations),
+        annotationPages: getAnnotationPages(vault, canvas),
       };
     });
   }, [vault, manifestId, isManifestReady]);
@@ -91,8 +92,8 @@ export function ManifestLineByLineViewer({
     const to = Math.min(canvasInfos.length - 1, endIndex + CANVAS_BUFFER_RANGE);
     for (let i = from; i <= to; i++) {
       const info = canvasInfos[i];
-      if (info?.annotationUrls.length) {
-        void loadCanvasAnnotationPages(info.canvasId, info.annotationUrls);
+      if (info?.annotationPages.length) {
+        void loadCanvasAnnotationPages(info.canvasId, info.annotationPages);
       }
     }
   }
@@ -161,7 +162,7 @@ export function ManifestLineByLineViewer({
         <div {...{ [canvasIndexAttribute]: index }}>
           <LazyLineByLineCanvas
             canvasId={canvasInfos[index].canvasId}
-            annotationUrls={canvasInfos[index].annotationUrls}
+            annotationPages={canvasInfos[index].annotationPages}
             scale={transcriptionScale}
             showLayoutElements={showLayoutElements}
             isCurrentCanvas={selectedCanvasId === canvasInfos[index].canvasId}
