@@ -24,7 +24,7 @@ function ResultPages() {
     data: { pages },
     fetchNextPage,
     isFetchingNextPage,
-  } = useSuspenseInfiniteQuery(searchQueryOptions({ query: query ?? '', facets: facetValues }, pageSize));
+  } = useSuspenseInfiniteQuery(searchQueryOptions(query ?? '', facetValues, pageSize));
   const loadingResultsRef = useRef<HTMLDivElement>(null);
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {

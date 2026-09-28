@@ -46,11 +46,11 @@ export default function Result({ type, begin, end, title, subline, children }: R
   );
 }
 
-export function DocumentResultContent({ archive }: DocumentSearchResult) {
+export function DocumentResultContent(result: DocumentSearchResult) {
   return (
     <>
       <ul className={cn(classes.metadata, classes.archive)}>
-        {archive.map((item, idx) => <li key={idx}>{item}</li>)}
+        {result.archive.map((item, idx) => <li key={idx}>{item}</li>)}
       </ul>
 
       <ul className={classes.mentions}>
@@ -63,6 +63,12 @@ export function DocumentResultContent({ archive }: DocumentSearchResult) {
         <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
         <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
       </ul>
+
+      <pre>
+        <code>
+          {JSON.stringify(result, null, 2)}
+        </code>
+      </pre>
     </>
   );
 }
