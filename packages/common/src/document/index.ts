@@ -8,6 +8,7 @@ export * from './TocSlice';
 export * from './Selection';
 export * from './useSelectedViewerAnnotations';
 export { useCanvasPages } from './useCanvasPages';
+export { getAnnotationPages } from './getAnnotationPages';
 export { useDocumentLifecycle } from './useDocumentLifeCycle';
 export { logTextSelector } from './logTextSelector.ts';
 export * from './SettingsStore';

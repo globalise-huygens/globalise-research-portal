@@ -6,6 +6,7 @@ import {
   useSelectedCanvasIndex,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
+import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
@@ -17,7 +18,7 @@ type Props = {
   canvasWidth: number;
   canvasHeight: number;
   containerWidth: number;
-  annotationUrls: string[];
+  annotationPages: CanvasAnnotationPage[];
   index: number;
   scaleFactor: number;
   isVisible: boolean;
@@ -29,7 +30,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   canvasId,
   canvasWidth,
   canvasHeight,
-  annotationUrls,
+  annotationPages,
   containerWidth,
   index,
   scaleFactor,
@@ -53,10 +54,10 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
   useEffect(() => {
-    if (isVisible && annotationUrls.length) {
-      void loadCanvasAnnotationPages(canvasId, annotationUrls);
+    if (isVisible && annotationPages.length) {
+      void loadCanvasAnnotationPages(canvasId, annotationPages);
     }
-  }, [isVisible, canvasId, annotationUrls]);
+  }, [isVisible, canvasId, annotationPages]);
 
   const width = containerWidth * scaleFactor;
   const height = (canvasHeight / canvasWidth) * width;
@@ -66,8 +67,8 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
     Number.isFinite(height) &&
     height > 0;
   const isDataReady = isCanvasReady && hasAnnotations;
-  const hasNoAnnotations = !annotationUrls.length;
-  const isLoading = !error && !!annotationUrls.length && !isDataReady;
+  const hasNoAnnotations = !annotationPages.length;
+  const isLoading = !error && !!annotationPages.length && !isDataReady;
   const isContentReady = !error && !hasNoAnnotations && isDataReady;
 
   return (
