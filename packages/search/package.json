@@ -12,6 +12,7 @@
     "@globalise/design": "workspace:*",
     "@knaw-huc/faceted-search-react": "^0.0.23",
     "@knaw-huc/searchfield": "^0.0.7",
+    "d3": "^7.9.0",
     "zod": "^4.6.2"
   },
   "peerDependencies": {

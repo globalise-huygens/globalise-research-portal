@@ -1,0 +1,74 @@
+.slider-track {
+    height: var(--s4);
+    margin-top: var(--s8);
+    margin-inline: var(--s4);
+    background: var(--color-neutral-100);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+
+    .fill {
+        position: absolute;
+        background: var(--color-neutral-300);
+        height: 100%;
+        width: var(--size);
+        inset-inline-start: var(--start, 0);
+    }
+
+    .thumb {
+        display: block;
+        width: var(--s12);
+        height: var(--s12);
+        margin-top: calc(var(--s4) / 2);
+        background: var(--color-neutral-300);
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+        border: 1px solid var(--color-neutral-300);
+        border-radius: 50%;
+    }
+}
+
+.range-inputs {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--s12);
+
+    .number-input-slot {
+        display: flex;
+        gap: var(--s8);
+
+        .number-input {
+            display: flex;
+            gap: var(--s4);
+            height: var(--s20);
+            background: var(--color-neutral-100);
+
+            > input {
+                width: var(--s40);
+                color: var(--color-brand-black);
+                border: none;
+                background: none;
+            }
+
+            .stepper-buttons {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+
+                .button {
+                    display: flex;
+                    flex: 1;
+                    border: none;
+                    background: none;
+
+                    > svg {
+                        width: var(--s10);
+                        height: var(--s10);
+                        fill: var(--color-brand-black);
+                    }
+
+                    &.increment > svg {
+                        rotate: 180deg;
+                    }
+                }
+            }
+        }
+    }
+}
