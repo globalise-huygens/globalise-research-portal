@@ -5,8 +5,6 @@ import {
   CreatorField, DocumentPageField, PlacesField, TimespanField, TypeField,
 } from '../fields';
 import type { ManifestDocument } from './toToc';
-import { toDocumentPageSections } from './toDocumentPageSections.ts';
-import { formatDocumentPageSections } from './formatDocumentPageSections.ts';
 
 export type TocDocumentMetadataProps = {
   document: ManifestDocument;
