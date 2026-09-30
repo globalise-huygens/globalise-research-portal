@@ -24,7 +24,7 @@ function getComponents(el: Element): Component[] {
       }
 
       components.push({
-        name: componentType.displayName || componentType.name || 'Anonymous',
+        name: componentType.displayName ?? componentType.name ?? 'Anonymous',
         props: { ...fiber.memoizedProps },
         state,
       });
