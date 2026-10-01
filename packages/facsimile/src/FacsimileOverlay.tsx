@@ -9,7 +9,7 @@ import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
 import { SelectedWordHighlights } from './SelectedWordHighlights.tsx';
 import { WordHighlights } from './WordHighlights.tsx';
-import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightShape.ts';
+import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightConfig.ts';
 
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
