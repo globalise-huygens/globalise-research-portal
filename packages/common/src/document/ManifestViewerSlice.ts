@@ -315,6 +315,10 @@ export function useSelectedCanvas(): CanvasStatus {
   }));
 }
 
+export function useIsSelectedCanvas(canvasId: CanvasId): boolean {
+  return useDocumentStore((s) => s.selectedCanvasId === canvasId);
+}
+
 export function useIsCanvasInit(id?: CanvasId): boolean {
   return useDocumentStore((s) => !!(id && s.canvases[id]));
 }

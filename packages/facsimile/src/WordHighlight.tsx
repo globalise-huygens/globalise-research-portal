@@ -1,24 +1,20 @@
-import { memo, type MouseEvent, useState } from 'react';
+import { memo, type MouseEvent } from 'react';
 import { usePointerDown } from '@knaw-huc/osd-iiif-viewer';
 import {
-  CanvasId,
   removeHoverAttribute,
   setHoverAttribute,
   setHovered,
   toggleClicked,
-  useIsSelectedInFacsimile,
 } from '@globalise/common/document';
 import { useDebugRerenders } from '@globalise/common/debug';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import {
   type Id,
   type CidocEntityClassificationId,
-  getCidocClassNameByClassificationId,
 } from '@globalise/common/annotation';
-import { getEntityHighlightColors } from './EntityHighlightTone.ts';
+import './WordHighlight.css';
 
 type WordHighlightProps = {
-  canvasId: CanvasId;
   id: Id;
   points: string;
   text: string;
@@ -28,28 +24,18 @@ type WordHighlightProps = {
 
 export const WordHighlight = memo(function WordHighlight(
   {
-    canvasId, id, points, text, entityClassificationId, setTooltip,
+    id, points, text, entityClassificationId, setTooltip,
   }: WordHighlightProps,
 ) {
-  const selected = useIsSelectedInFacsimile(canvasId, id);
-  const [hovered, setHoveredLocal] = useState(false);
   useDebugRerenders(WordHighlight.name, {
-    canvasId, id, points, text, entityClassificationId, setTooltip, selected, hovered,
+    id, points, text, entityClassificationId, setTooltip,
   }, 1000);
   const isEntityTrigger = entityClassificationId !== undefined;
-  const colors = getEntityHighlightColors(entityClassificationId
-    ? getCidocClassNameByClassificationId(entityClassificationId)
-    : undefined);
   const handlePointerDown = usePointerDown({
     onClick: () => toggleClicked(id),
   });
 
-  const fill = selected ? colors.fill
-    : hovered ? colors.hoverFill
-      : 'transparent';
-
   function handleHover(hovering: boolean, event: MouseEvent) {
-    setHoveredLocal(hovering);
     if (!hovering && document.activeElement === event.currentTarget) {
       return;
     }
@@ -68,15 +54,8 @@ export const WordHighlight = memo(function WordHighlight(
 
   return (
     <polygon
+      className="word-highlight"
       points={points}
-      fill={fill}
-      stroke="none"
-      strokeWidth={0}
-      style={{
-        pointerEvents: 'auto',
-        cursor: 'pointer',
-        mixBlendMode: 'multiply',
-      }}
       tabIndex={isEntityTrigger ? 0 : undefined}
       role={isEntityTrigger ? 'button' : undefined}
       aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
