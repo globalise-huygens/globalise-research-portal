@@ -79,8 +79,12 @@ export function ManifestDiplomaticViewer({
   );
   const lastScrolledCanvas = useRef<number | null>(initialCanvas);
   const { id: selectedCanvasId } = useSelectedCanvas();
+  const selectedIndex = useMemo(
+    () => canvasInfos.findIndex((c) => c.canvasId === selectedCanvasId),
+    [canvasInfos, selectedCanvasId],
+  );
 
-  useScrollToTranscription(scrollRef, canvasListRef, containerWidth);
+  useScrollToTranscription(scrollRef, canvasListRef, containerWidth, selectedIndex);
 
   useEffect(observeCanvases, [onCanvasChange, canvasInfos, containerWidth]);
   function observeCanvases() {
@@ -251,6 +255,11 @@ export function ManifestDiplomaticViewer({
     );
   }, [viewportHeight, canvasInfos, containerWidth, scaleFactor]);
 
+  function isInRenderRange(index: number): boolean {
+    return visibleCanvases.has(index)
+      || (selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance);
+  }
+
   const containerStyle: CSSProperties = {
     maxWidth: 800,
     margin: '0 auto',
@@ -276,7 +285,8 @@ export function ManifestDiplomaticViewer({
               canvasDocuments={canvasDocuments.get(info.canvasId)}
               index={i}
               isVisible={visibleCanvases.has(i)}
-              renderDistance={renderDistance}
+              isCurrent={i === selectedIndex}
+              isInRenderRange={isInRenderRange(i)}
               showBlocks={showLayoutElements}
             />
           ))}
