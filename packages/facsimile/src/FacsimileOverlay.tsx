@@ -1,21 +1,15 @@
 import { Overlay, useImageInfo } from '@knaw-huc/osd-iiif-viewer';
 import { useMemo, useState } from 'react';
 import {
-  findSvgPath,
-  findTextualBodyValue,
-  isBlock,
-  isWord,
-  parseSvgPath,
-} from '@globalise/common/annotation';
-import {
   CanvasId,
   useAnnotations,
   useWordEntityClassifications,
 } from '@globalise/common/document';
 import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
-import { WordHighlight } from './WordHighlight.tsx';
-import { orThrow } from '@globalise/common';
+import { SelectedWordHighlights } from './SelectedWordHighlights.tsx';
+import { WordHighlights } from './WordHighlights.tsx';
+import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightShape.ts';
 
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
@@ -23,30 +17,11 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const entityClassificationByWord = useWordEntityClassifications(canvasId);
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
 
-  const words = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
-    return Object.values(annotations)
-      .filter(isWord)
-      .map((a) => ({
-        id: a.id,
-        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
-        text: findTextualBodyValue(a) ?? orThrow('No body value'),
-      }));
-  }, [annotations]);
-
-  const blocks = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
-    return Object.values(annotations)
-      .filter(isBlock)
-      .map((a) => ({
-        id: a.id,
-        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
-      }));
-  }, [annotations]);
+  const words = useMemo(
+    () => toWordHighlightConfigs(annotations, entityClassificationByWord),
+    [annotations, entityClassificationByWord],
+  );
+  const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
   if (!imageInfo) {
     return null;
@@ -67,17 +42,8 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
               points={path}
             />
           ))}
-          {words.map(({ id, path, text }) => (
-            <WordHighlight
-              key={id}
-              canvasId={canvasId}
-              id={id}
-              points={path}
-              text={text}
-              entityClassificationId={entityClassificationByWord[id]}
-              setTooltip={setTooltip}
-            />
-          ))}
+          <SelectedWordHighlights canvasId={canvasId} words={words}/>
+          <WordHighlights words={words} setTooltip={setTooltip}/>
         </svg>
       </Overlay>
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
