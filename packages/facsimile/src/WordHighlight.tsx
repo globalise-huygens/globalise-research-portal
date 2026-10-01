@@ -6,7 +6,6 @@ import {
   setHovered,
   toggleClicked,
 } from '@globalise/common/document';
-import { useDebugRerenders } from '@globalise/common/debug';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import {
   type Id,
@@ -27,9 +26,6 @@ export const WordHighlight = memo(function WordHighlight(
     id, points, text, entityClassificationId, setTooltip,
   }: WordHighlightProps,
 ) {
-  useDebugRerenders(WordHighlight.name, {
-    id, points, text, entityClassificationId, setTooltip,
-  }, 1000);
   const isEntityTrigger = entityClassificationId !== undefined;
   const handlePointerDown = usePointerDown({
     onClick: () => toggleClicked(id),
