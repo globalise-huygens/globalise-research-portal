@@ -5,7 +5,6 @@ import {
   usePartOf,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
-import { useDebugRerenders } from '@globalise/common/debug';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
@@ -52,11 +51,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
     [selectedIds, annotations],
   );
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
-  useDebugRerenders(LazyDiplomaticCanvas.name, {
-    canvasId, canvasWidth, canvasHeight, annotationPages, canvasDocuments, containerWidth,
-    index, scaleFactor, isVisible, isCurrent, isInRenderRange, showBlocks,
-    annotations, partOf, selected, isCanvasReady, error, hasAnnotations,
-  }, 50);
+
   useEffect(() => {
     if (isVisible && annotationPages.length) {
       void loadCanvasAnnotationPages(canvasId, annotationPages);
