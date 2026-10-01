@@ -3,6 +3,7 @@ import {
   useLoadManifest,
   useManifest,
 } from '@knaw-huc/osd-iiif-viewer';
+import { preloadManifest } from './preloadManifest.ts';
 
 
 type ManifestLoaderProps = {
@@ -19,7 +20,8 @@ export function ManifestLoader(
   const manifest = useManifest();
 
   useEffect(() => {
-    void loadManifest(url, canvasId);
+    void preloadManifest(manifest.vault, url)
+      .then(() => loadManifest(url, canvasId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadManifest, url]);
 

@@ -6,12 +6,14 @@ import {
   useSelectedCanvasIndex,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
-import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
+import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasLabel } from '../CanvasLabel.tsx';
+import { CanvasEndingsLabel } from '../CanvasEndingsLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
+import { CanvasAnnotationPage } from '@globalise/common/annotation';
 
 type Props = {
   canvasId: string;
@@ -19,6 +21,7 @@ type Props = {
   canvasHeight: number;
   containerWidth: number;
   annotationPages: CanvasAnnotationPage[];
+  canvasDocuments?: CanvasDocuments;
   index: number;
   scaleFactor: number;
   isVisible: boolean;
@@ -30,7 +33,8 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   canvasId,
   canvasWidth,
   canvasHeight,
-  annotationPages,
+  annotationPages, 
+  canvasDocuments,
   containerWidth,
   index,
   scaleFactor,
@@ -94,36 +98,43 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           color="indianred"
           background="rgb(248 243 243)"
         >
-          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Error: {error}
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && hasNoAnnotations && (
         <TranscriptionPlaceholder>
-          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           No transcription
         </TranscriptionPlaceholder>
       )}
       {isInRenderRange && isLoading && (
         <TranscriptionPlaceholder>
-          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
           Loading...
         </TranscriptionPlaceholder>
       )}
       {isVisible && isContentReady && partOf && hasRenderableSize && (
+        <div style={{ height: '100%', width }}>
+          <DiplomaticView
+            id={canvasId}
+            annotations={annotations}
+            selected={selected}
+            page={partOf}
+            fit="width"
+            showBlocks={showBlocks}
+            showScanMargin={true}
+          />
+        </div>
+      )}
+      {isInRenderRange && (
         <>
-          <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
-          <div style={{ height: '100%', width }}>
-            <DiplomaticView
-              id={canvasId}
-              annotations={annotations}
-              selected={selected}
-              page={partOf}
-              fit="width"
-              showBlocks={showBlocks}
-              showScanMargin={true}
-            />
-          </div>
+          <CanvasLabel
+            canvasId={canvasId}
+            canvasDocuments={canvasDocuments}
+            isCurrent={isCurrentCanvas}
+          />
+          <CanvasEndingsLabel
+            canvasDocuments={canvasDocuments}
+            isCurrent={isCurrentCanvas}
+          />
         </>
       )}
     </div>
