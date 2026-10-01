@@ -8,6 +8,7 @@ import {
   toggleClicked,
   useIsSelectedInFacsimile,
 } from '@globalise/common/document';
+import { useDebugRerenders } from '@globalise/common/debug';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import {
   type Id,
@@ -32,6 +33,9 @@ export const WordHighlight = memo(function WordHighlight(
 ) {
   const selected = useIsSelectedInFacsimile(canvasId, id);
   const [hovered, setHoveredLocal] = useState(false);
+  useDebugRerenders(WordHighlight.name, {
+    canvasId, id, points, text, entityClassificationId, setTooltip, selected, hovered,
+  }, 1000);
   const isEntityTrigger = entityClassificationId !== undefined;
   const colors = getEntityHighlightColors(entityClassificationId
     ? getCidocClassNameByClassificationId(entityClassificationId)
