@@ -9,11 +9,11 @@ pnpm demo
 ## Screenshot
 First time:
 ```shell
-pnpm exec playwright install chromium
+pnpm dlx playwright@1.63.0 install chromium
 ```
 
+Start demo server and create screenshot:
 ```shell
-pnpm demo
 pnpm screenshot
 ```
 
