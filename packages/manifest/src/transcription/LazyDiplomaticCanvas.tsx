@@ -6,6 +6,7 @@ import {
   useSelectedCanvasIndex,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
+import { useDebugRerenders } from '@globalise/common/debug';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
@@ -52,6 +53,11 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
   const selectedIndex = useSelectedCanvasIndex();
   const isCurrentCanvas = selectedIndex === index;
+  useDebugRerenders(LazyDiplomaticCanvas.name, {
+    canvasId, canvasWidth, canvasHeight, annotationPages, canvasDocuments, containerWidth,
+    index, scaleFactor, isVisible, renderDistance, showBlocks,
+    annotations, partOf, selected, isCanvasReady, error, hasAnnotations, selectedIndex,
+  }, 50);
   const isInRenderRangeByDistance =
     selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
 
