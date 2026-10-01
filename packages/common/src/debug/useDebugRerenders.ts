@@ -1,44 +1,57 @@
 import { useEffect, useRef } from 'react';
-import { DebugRerenderState } from './DebugRerenderState.ts';
 
-type RenderValues = Record<string, unknown>;
+type RerenderContext = Record<string, unknown>;
 
-const budgets = new Map<string, DebugRerenderState>();
+type RenderCount = {
+  total: number;
+  reasons: Record<string, number>;
+};
+
+const intervalMs = 1000;
+const renderCounts = new Map<string, RenderCount>();
 
 export function useDebugRerenders(
   name: string,
-  values: RenderValues,
+  values: RerenderContext,
   maxRenders: number,
-): void {
-  const previousRef = useRef<RenderValues | null>(null);
+) {
+  const previousRef = useRef<RerenderContext | null>(null);
 
   useEffect(() => {
     if (!import.meta.env.DEV || previousRef.current === values) {
       return;
     }
-    const reason = describeRenderReason(previousRef.current, values);
+    countRender(name, getReason(previousRef.current, values), maxRenders);
     previousRef.current = values;
-    getBudget(name, maxRenders).record(reason);
   });
 }
 
-export function describeRenderReason(
-  previous: RenderValues | null,
-  current: RenderValues,
-): string {
+function countRender(name: string, reason: string, maxRenders: number) {
+  const count = renderCounts.get(name) ?? startCounting(name, maxRenders);
+  count.total++;
+  count.reasons[reason] = (count.reasons[reason] ?? 0) + 1;
+}
+
+function startCounting(name: string, maxRenders: number): RenderCount {
+  const count: RenderCount = { total: 0, reasons: {} };
+  renderCounts.set(name, count);
+  setTimeout(() => {
+    renderCounts.delete(name);
+    if (count.total > maxRenders) {
+      console.warn(
+        `[debug rerenders] ${name}: ${count.total} renders in ${intervalMs} ms (max ${maxRenders})`,
+        count.reasons,
+      );
+    }
+  }, intervalMs);
+  return count;
+}
+
+function getReason(previous: RerenderContext | null, current: RerenderContext): string {
   if (!previous) {
     return 'mount';
   }
   const changed = Object.keys(current)
-    .filter((key) => !Object.is(previous[key], current[key]));
+    .filter((key) => previous[key] !== current[key]);
   return changed.length ? changed.join(', ') : 'state';
-}
-
-function getBudget(name: string, maxRenders: number): DebugRerenderState {
-  let budget = budgets.get(name);
-  if (!budget) {
-    budget = new DebugRerenderState(name, { maxRenders });
-    budgets.set(name, budget);
-  }
-  return budget;
 }

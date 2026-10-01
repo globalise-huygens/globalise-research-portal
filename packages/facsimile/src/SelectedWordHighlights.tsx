@@ -1,7 +1,7 @@
 import { CanvasId, useSelectedAnnotationsInFacsimile } from '@globalise/common/document';
 import { getCidocClassNameByClassificationId } from '@globalise/common/annotation';
 import { getEntityHighlightColors } from './EntityHighlightTone.ts';
-import { WordHighlightConfig } from './HighlightShape.ts';
+import { WordHighlightConfig } from './HighlightConfig.ts';
 import './WordHighlight.css';
 
 type SelectedWordHighlightsProps = {

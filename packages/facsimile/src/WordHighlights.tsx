@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
-import { WordHighlightConfig } from './HighlightShape.ts';
+import { WordHighlightConfig } from './HighlightConfig.ts';
 import { WordHighlight } from './WordHighlight.tsx';
 
 type WordHighlightsProps = {
