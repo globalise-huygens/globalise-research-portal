@@ -3,7 +3,6 @@ import {
   useHighlightedAnnotations,
   usePages,
   usePartOf,
-  useSelectedCanvasIndex,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { useDebugRerenders } from '@globalise/common/debug';
@@ -26,7 +25,8 @@ type Props = {
   index: number;
   scaleFactor: number;
   isVisible: boolean;
-  renderDistance: number;
+  isCurrent: boolean;
+  isInRenderRange: boolean;
   showBlocks: boolean;
 };
 
@@ -40,7 +40,8 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   index,
   scaleFactor,
   isVisible,
-  renderDistance,
+  isCurrent,
+  isInRenderRange,
   showBlocks,
 }: Props) {
   const annotations = useHighlightedAnnotations(canvasId);
@@ -51,18 +52,11 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
     [selectedIds, annotations],
   );
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
-  const selectedIndex = useSelectedCanvasIndex();
-  const isCurrentCanvas = selectedIndex === index;
   useDebugRerenders(LazyDiplomaticCanvas.name, {
     canvasId, canvasWidth, canvasHeight, annotationPages, canvasDocuments, containerWidth,
-    index, scaleFactor, isVisible, renderDistance, showBlocks,
-    annotations, partOf, selected, isCanvasReady, error, hasAnnotations, selectedIndex,
+    index, scaleFactor, isVisible, isCurrent, isInRenderRange, showBlocks,
+    annotations, partOf, selected, isCanvasReady, error, hasAnnotations,
   }, 50);
-  const isInRenderRangeByDistance =
-    selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
-
-  const isInRenderRange = isVisible || isInRenderRangeByDistance;
-
   useEffect(() => {
     if (isVisible && annotationPages.length) {
       void loadCanvasAnnotationPages(canvasId, annotationPages);
@@ -135,11 +129,11 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           <CanvasHeaderLabel
             canvasId={canvasId}
             canvasDocuments={canvasDocuments}
-            isCurrent={isCurrentCanvas}
+            isCurrent={isCurrent}
           />
           <CanvasFooterLabel
             canvasDocuments={canvasDocuments}
-            isCurrent={isCurrentCanvas}
+            isCurrent={isCurrent}
           />
         </>
       )}
