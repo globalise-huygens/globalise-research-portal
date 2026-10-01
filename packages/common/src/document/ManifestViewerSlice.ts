@@ -315,15 +315,8 @@ export function useSelectedCanvas(): CanvasStatus {
   }));
 }
 
-/**
- * @returns index of selected canvas in manifest, or -1 if no canvas is selected
- */
-export function useSelectedCanvasIndex(): number {
-  return useDocumentStore((s) =>
-    s.selectedCanvasId
-      ? Object.keys(s.canvases).indexOf(s.selectedCanvasId)
-      : -1,
-  );
+export function useIsSelectedCanvas(canvasId: CanvasId): boolean {
+  return useDocumentStore((s) => s.selectedCanvasId === canvasId);
 }
 
 export function useIsCanvasInit(id?: CanvasId): boolean {

@@ -10,7 +10,6 @@
     "build:app": "pnpm --filter @globalise/app build",
     "build": "pnpm test && pnpm typecheck && pnpm lint && pnpm build:app",
     "serve": "pnpm --filter @globalise/app serve",
-    "diplomatic:demo": "pnpm --filter @globalise/diplomatic demo",
     "diplomatic:screenshot": "pnpm --filter @globalise/diplomatic screenshot",
     "preview": "pnpm --filter @globalise/app build && pnpm --filter @globalise/app preview",
     "typecheck": "tsc -b --clean && tsc -b",

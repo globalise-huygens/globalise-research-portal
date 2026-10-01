@@ -3,7 +3,6 @@ import {
   useHighlightedAnnotations,
   usePages,
   usePartOf,
-  useSelectedCanvasIndex,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
@@ -25,7 +24,8 @@ type Props = {
   index: number;
   scaleFactor: number;
   isVisible: boolean;
-  renderDistance: number;
+  isCurrent: boolean;
+  isInRenderRange: boolean;
   showBlocks: boolean;
 };
 
@@ -39,7 +39,8 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   index,
   scaleFactor,
   isVisible,
-  renderDistance,
+  isCurrent,
+  isInRenderRange,
   showBlocks,
 }: Props) {
   const annotations = useHighlightedAnnotations(canvasId);
@@ -50,12 +51,6 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
     [selectedIds, annotations],
   );
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
-  const selectedIndex = useSelectedCanvasIndex();
-  const isCurrentCanvas = selectedIndex === index;
-  const isInRenderRangeByDistance =
-    selectedIndex !== -1 && Math.abs(index - selectedIndex) <= renderDistance;
-
-  const isInRenderRange = isVisible || isInRenderRangeByDistance;
 
   useEffect(() => {
     if (isVisible && annotationPages.length) {
@@ -86,57 +81,64 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
         boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
         contentVisibility: 'auto',
         containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,
-
-        /**
-         * Prevent browser painting calculation outside of window:
-         */
-        visibility: isVisible ? 'visible' : 'hidden',
       }}
     >
-      {isInRenderRange && error && (
-        <TranscriptionPlaceholder
-          color="indianred"
-          background="rgb(248 243 243)"
-        >
-          Error: {error}
-        </TranscriptionPlaceholder>
-      )}
-      {isInRenderRange && hasNoAnnotations && (
-        <TranscriptionPlaceholder>
-          No transcription
-        </TranscriptionPlaceholder>
-      )}
-      {isInRenderRange && isLoading && (
-        <TranscriptionPlaceholder>
-          Loading...
-        </TranscriptionPlaceholder>
-      )}
-      {isVisible && isContentReady && partOf && hasRenderableSize && (
-        <div style={{ height: '100%', width }}>
-          <DiplomaticView
-            id={canvasId}
-            annotations={annotations}
-            selected={selected}
-            page={partOf}
-            fit="width"
-            showBlocks={showBlocks}
-            showScanMargin={true}
-          />
-        </div>
-      )}
-      {isInRenderRange && (
-        <>
-          <CanvasLabel
-            canvasId={canvasId}
-            canvasDocuments={canvasDocuments}
-            isCurrent={isCurrentCanvas}
-          />
-          <CanvasEndingsLabel
-            canvasDocuments={canvasDocuments}
-            isCurrent={isCurrentCanvas}
-          />
-        </>
-      )}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          /**
+           * Prevent browser painting all the words when a page is not in view,
+           * but do show the page to prevent background flickering.
+           */
+          visibility: isVisible ? 'visible' : 'hidden',
+        }}
+      >
+        {isInRenderRange && error && (
+          <TranscriptionPlaceholder
+            color="indianred"
+            background="rgb(248 243 243)"
+          >
+            Error: {error}
+          </TranscriptionPlaceholder>
+        )}
+        {isInRenderRange && hasNoAnnotations && (
+          <TranscriptionPlaceholder>
+            No transcription
+          </TranscriptionPlaceholder>
+        )}
+        {isInRenderRange && isLoading && (
+          <TranscriptionPlaceholder>
+            Loading...
+          </TranscriptionPlaceholder>
+        )}
+        {isVisible && isContentReady && partOf && hasRenderableSize && (
+          <div style={{ height: '100%', width }}>
+            <DiplomaticView
+              id={canvasId}
+              annotations={annotations}
+              selected={selected}
+              page={partOf}
+              fit="width"
+              showBlocks={showBlocks}
+              showScanMargin={true}
+            />
+          </div>
+        )}
+        {isInRenderRange && (
+          <>
+            <CanvasLabel
+              canvasId={canvasId}
+              canvasDocuments={canvasDocuments}
+              isCurrent={isCurrent}
+            />
+            <CanvasEndingsLabel
+              canvasDocuments={canvasDocuments}
+              isCurrent={isCurrent}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 });
