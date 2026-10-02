@@ -1,22 +1,19 @@
 import { infiniteQueryOptions } from '@tanstack/react-query';
-import { getQuery } from '@knaw-huc/searchfield';
 import search from '../elasticsearch/search.server';
+import type { GlobaliseSearchState } from '../utils/getSearchState';
 
-export default function searchQueryOptions(query: string, facets: Record<string, string[]>, pageSize: number) {
+export default function searchQueryOptions(state: GlobaliseSearchState, pageSize: number) {
   return infiniteQueryOptions({
-    queryKey: ['search', query, facets],
+    queryKey: ['search', pageSize, state.query, state.facets],
     staleTime: 1000 * 60 * 5, // 5 minutes
-    queryFn: ({ pageParam }) => {
-      const parsedQuery = getQuery(query);
-      return search({
-        data: {
-          query: parsedQuery.query,
-          facets,
-          offset: pageSize * pageParam,
-          limit: pageSize,
-        },
-      });
-    },
+    queryFn: ({ pageParam }) => search({
+      data: {
+        query: state.query,
+        facets: state.facets,
+        offset: pageSize * pageParam,
+        limit: pageSize,
+      },
+    }),
     initialPageParam: 0,
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => lastPageParam + 1,
   });

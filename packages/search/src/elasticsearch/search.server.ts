@@ -42,8 +42,7 @@ type ElasticDocument = {
 };
 
 const SearchRequestSchema = z.object({
-
-  query: z.looseObject({}).nullable() as unknown as z.ZodType<TreeQuery | undefined>,
+  query: z.looseObject({}).optional() as unknown as z.ZodType<TreeQuery | undefined>,
   facets: z.record(z.string(), z.array(z.string())).refine(
     (record) => Object.keys(record).every((key) => Object.keys(facets).includes(key)),
     { error: 'Invalid facet key applied!' },

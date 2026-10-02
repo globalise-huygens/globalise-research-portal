@@ -1,20 +1,14 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getQuery } from '@knaw-huc/searchfield';
 import hierarchyFacetItems from '../elasticsearch/hierarchyFacetItems.server';
+import type { GlobaliseSearchState } from '../utils/getSearchState';
 
-export default function hierarchyFacetItemsQueryOptions(key: string, query: string, facets: Record<string, string[]>) {
+export default function hierarchyFacetItemsQueryOptions(key: string, state: GlobaliseSearchState) {
+  // Remove values this facet owns: we want all the available items of this facet with filters on the other facets
+  const facets = (({ [key]: _ownValues, ...values }) => values)(state.facets);
+
   return queryOptions({
-    queryKey: ['hierarchy', key, query, facets],
+    queryKey: ['hierarchy', key, state.query, facets],
     staleTime: 1000 * 60 * 5, // 5 minutes
-    queryFn: () => {
-      const parsedQuery = getQuery(query);
-      return hierarchyFacetItems({
-        data: {
-          key,
-          query: parsedQuery.query,
-          facets,
-        },
-      });
-    },
+    queryFn: () => hierarchyFacetItems({ data: { key, query: state.query, facets } }),
   });
 }
