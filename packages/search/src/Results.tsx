@@ -2,6 +2,7 @@ import { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { usePagination, useSearchState } from '@knaw-huc/faceted-search-react';
 import searchQueryOptions from './queries/searchQueryOptions';
+import getSearchState from './utils/getSearchState';
 import Result, { DocumentResultContent } from './Result';
 import classes from './Results.module.css';
 
@@ -19,12 +20,12 @@ export default function Results() {
 
 function ResultPages() {
   const { pageSize } = usePagination();
-  const { query, facetValues } = useSearchState();
+  const state = useSearchState();
   const {
     data: { pages },
     fetchNextPage,
     isFetchingNextPage,
-  } = useSuspenseInfiniteQuery(searchQueryOptions({ query: query ?? '', facets: facetValues }, pageSize));
+  } = useSuspenseInfiniteQuery(searchQueryOptions(getSearchState(state), pageSize));
   const loadingResultsRef = useRef<HTMLDivElement>(null);
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {
