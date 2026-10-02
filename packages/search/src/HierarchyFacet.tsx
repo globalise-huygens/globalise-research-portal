@@ -11,6 +11,7 @@ import {
 } from '@knaw-huc/faceted-search-react';
 import { Tree, TreeItem, TreeItemContent, Button } from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions from './queries/hierarchyFacetItemsQueryOptions';
+import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
 import classes from './HierarchyFacet.module.css';
 
@@ -41,13 +42,10 @@ export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
 }
 
 function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
-  const { query, facetValues } = useSearchState();
+  const state = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
-  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, query ?? '',
-    // Remove values this facet owns: we want all the available items of this facet with filters on the other facets
-    (({ [facetKey]: _ownValues, ...values }) => values)(facetValues),
-  ));
+  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, getSearchState(state)));
 
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);
 
