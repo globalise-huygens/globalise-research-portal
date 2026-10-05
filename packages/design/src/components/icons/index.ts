@@ -27,6 +27,7 @@ export { IconEntityShip } from './IconEntityShip';
 export { IconEvents } from './IconEvents';
 export { IconExpandSection } from './IconExpandSection';
 export { IconExternalLink } from './IconExternalLink';
+export { IconFitWidth } from './IconFitWidth';
 export { IconInventory } from './IconInventory';
 export { IconInvert } from './IconInvert';
 export { IconLayoutElements } from './IconLayoutElements';
