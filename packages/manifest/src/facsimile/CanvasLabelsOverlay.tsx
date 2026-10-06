@@ -3,8 +3,8 @@ import { Rect } from 'openseadragon';
 import { Overlay } from '@knaw-huc/osd-iiif-viewer';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { CanvasEndingsLabel } from '../CanvasEndingsLabel.tsx';
-import { CanvasLabel } from '../CanvasLabel.tsx';
+import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
+import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
 
 type Props = {
   lazyCanvas: LazyTiledImage;
@@ -34,13 +34,13 @@ export const CanvasLabelsOverlay = memo(function CanvasLabelsOverlay(
         pointerEvents: 'none',
       }}>
         {hasLabel && (
-          <CanvasLabel
+          <CanvasHeaderLabel
             canvasId={lazyCanvas.canvasId}
             canvasDocuments={canvasDocuments}
             isCurrent={isCurrent}
           />
         )}
-        <CanvasEndingsLabel
+        <CanvasFooterLabel
           canvasDocuments={canvasDocuments}
           isCurrent={isCurrent}
         />

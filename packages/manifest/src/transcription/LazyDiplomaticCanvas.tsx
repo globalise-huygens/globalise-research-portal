@@ -10,8 +10,8 @@ import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import type { CanvasDocuments } from '@globalise/metadata';
-import { CanvasLabel } from '../CanvasLabel.tsx';
-import { CanvasEndingsLabel } from '../CanvasEndingsLabel.tsx';
+import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
+import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { CanvasAnnotationPage } from '@globalise/common/annotation';
 
@@ -126,12 +126,12 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
       )}
       {isInRenderRange && (
         <>
-          <CanvasLabel
+          <CanvasHeaderLabel
             canvasId={canvasId}
             canvasDocuments={canvasDocuments}
             isCurrent={isCurrentCanvas}
           />
-          <CanvasEndingsLabel
+          <CanvasFooterLabel
             canvasDocuments={canvasDocuments}
             isCurrent={isCurrentCanvas}
           />

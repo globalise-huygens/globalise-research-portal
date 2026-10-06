@@ -1,17 +1,17 @@
-import type { Vault } from '@iiif/helpers/vault';
-
 type RangeRef = { id: string };
 type ManifestJson = { structures?: { items?: RangeRef[] }[] };
 
 // TODO: remove when document ranges in the manifest have unique ids:
 //  the vault merges ranges with the same id into one range.
-export async function preloadManifest(vault: Vault, url: string): Promise<void> {
+export async function fetchPatchManifest(
+  url: string,
+): Promise<ManifestJson | undefined> {
   try {
     const manifest: ManifestJson = await (await fetch(url)).json();
     manifest.structures?.forEach((range) => makeIdsUnique(range.items ?? []));
-    await vault.loadManifest(url, manifest);
+    return manifest;
   } catch {
-    return;
+    return undefined;
   }
 }
 

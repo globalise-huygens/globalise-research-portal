@@ -7,12 +7,12 @@ type Props = {
   isCurrent?: boolean;
 };
 
-export function CanvasEndingsLabel({ canvasDocuments, isCurrent = false }: Props) {
+export function CanvasFooterLabel({ canvasDocuments, isCurrent = false }: Props) {
   if (!canvasDocuments?.ending.length) {
     return null;
   }
   return (
-    <span className="canvas-label-bar" data-position="bottom">
+    <span className="canvas-footer">
       <span
         aria-current={isCurrent ? 'true' : undefined}
         className="canvas-label"

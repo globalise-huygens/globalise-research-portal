@@ -10,12 +10,12 @@ type Props = {
   isCurrent?: boolean;
 };
 
-export function CanvasLabel({ canvasId, canvasDocuments, isCurrent = false }: Props) {
+export function CanvasHeaderLabel({ canvasId, canvasDocuments, isCurrent = false }: Props) {
   const { documents = [], starting = [] } = canvasDocuments ?? {};
   const continuing = documents.filter((document) => !starting.includes(document));
 
   return (
-    <span className="canvas-label-bar" data-position="top">
+    <span className="canvas-header">
       <span
         aria-current={isCurrent ? 'true' : undefined}
         className="canvas-label"

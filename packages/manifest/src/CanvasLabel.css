@@ -94,9 +94,9 @@
   }
 }
 
-.canvas-label-bar {
+.canvas-header,
+.canvas-footer {
   position: absolute;
-  inset: 0 0 auto;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -105,13 +105,17 @@
   padding: 0.625rem;
   pointer-events: none;
   container-type: inline-size;
+}
 
-  &[data-position="bottom"] {
-    inset: auto 0 0;
+.canvas-header {
+  inset: 0 0 auto;
+}
 
-    .arrow {
-      rotate: 180deg;
-    }
+.canvas-footer {
+  inset: auto 0 0;
+
+  .arrow {
+    rotate: 180deg;
   }
 }
 

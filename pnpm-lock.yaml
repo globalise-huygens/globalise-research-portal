@@ -314,8 +314,8 @@ importers:
         specifier: ^1.5.9
         version: 1.5.9(@iiif/parser@2.2.10)
       '@knaw-huc/osd-iiif-viewer':
-        specifier: ^0.5.0
-        version: 0.5.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
+        specifier: ^0.6.0
+        version: 0.6.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
       '@tanstack/react-query':
         specifier: ^5.101.4
         version: 5.101.4(react@19.2.8)
@@ -427,8 +427,8 @@ importers:
         specifier: ^1.5.9
         version: 1.5.9(@iiif/parser@2.2.10)
       '@knaw-huc/osd-iiif-viewer':
-        specifier: ^0.5.0
-        version: 0.5.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
+        specifier: ^0.6.0
+        version: 0.6.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
@@ -1010,8 +1010,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  '@knaw-huc/osd-iiif-viewer@0.5.0':
-    resolution: {integrity: sha512-EfbA9G3ift7VPGpr65DlFW4vmCINJBZRptRIKuydLFLDTr+8t843GoOfvD1DL8026jC/9R1S04SiW4LIqkdGNg==}
+  '@knaw-huc/osd-iiif-viewer@0.6.0':
+    resolution: {integrity: sha512-Ks+waoVHt1npAbgGwj0apEjBaYm24L3cQsaxlt/ueZpEQPUkT9Y6pn5IzoWedOGK0AtGh5hFKjdDlXDIXzpSbA==}
     peerDependencies:
       '@iiif/helpers': ^1.5.9
       '@iiif/presentation-3': ^2.2.3
@@ -3649,7 +3649,7 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@knaw-huc/osd-iiif-viewer@0.5.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))':
+  '@knaw-huc/osd-iiif-viewer@0.6.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))':
     dependencies:
       '@iiif/helpers': 1.5.9(@iiif/parser@2.2.10)
       openseadragon: 6.1.1
