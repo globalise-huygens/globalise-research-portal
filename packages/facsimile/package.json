@@ -14,7 +14,7 @@
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
     "@iiif/helpers": "^1.5.9",
-    "@knaw-huc/osd-iiif-viewer": "^0.5.0",
+    "@knaw-huc/osd-iiif-viewer": "^0.6.0",
     "openseadragon": "^6.1.1"
   },
   "peerDependencies": {
@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "typescript": "^5.9.2",
     "vitest": "^4.0.16"
   }
