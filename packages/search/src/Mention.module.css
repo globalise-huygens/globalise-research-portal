@@ -1,0 +1,33 @@
+.mention {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--color-neutral-800, #363636);
+    cursor: pointer;
+
+    mark {
+        color: inherit;
+        background: none;
+        font-weight: bold;
+    }
+
+    &.pending {
+        cursor: progress;
+        opacity: 0.6;
+
+        .spinner {
+            opacity: 1;
+        }
+    }
+
+    .snippet {
+        flex: 1;
+    }
+
+    .spinner {
+        flex-shrink: 0;
+        opacity: 0;
+        transition: opacity 0.25s ease-in;
+    }
+}

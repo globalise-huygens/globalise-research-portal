@@ -18,10 +18,10 @@ import classes from './SearchField.module.css';
 
 import { type AutocompleteSuggestion } from './elasticsearch/autocomplete.server';
 
-const types: Record<string, { color: string, icon: SVGElement }> = {
-  'Place': { color: 'var(--entity-place)', icon: getSVGElement(svgEntityPlace) },
-  'Polity': { color: 'var(--entity-actor)', icon: getSVGElement(svgEntityPerson) },
-  'Person': { color: 'var(--entity-actor)', icon: getSVGElement(svgEntityPerson) },
+const types: Record<string, { color: string, svg: string }> = {
+  'Place': { color: 'var(--entity-place)', svg: svgEntityPlace },
+  'Polity': { color: 'var(--entity-actor)', svg: svgEntityPerson },
+  'Person': { color: 'var(--entity-actor)', svg: svgEntityPerson },
 };
 
 export default function SearchField() {
@@ -51,10 +51,10 @@ export default function SearchField() {
       entity.type,
       entity.alternatives.join(', '),
     ].filter(Boolean).join(' • '),
-    icon: (sugg) => types[sugg.type]?.icon,
+    icon: (sugg) => toIcon(sugg.type),
     token: {
       color: (token) => types[token.type]?.color,
-      icon: (token) => types[token.type]?.icon,
+      icon: (token) => toIcon(token.type),
     },
   };
 
@@ -86,4 +86,9 @@ export default function SearchField() {
       </div>
     </div>
   );
+}
+
+function toIcon(type: string): SVGElement | undefined {
+  const svg = types[type]?.svg;
+  return svg ? getSVGElement(svg) : undefined;
 }

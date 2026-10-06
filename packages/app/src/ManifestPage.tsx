@@ -1,15 +1,16 @@
 import {
+  CANVAS,
+  DOCUMENT,
   type DocumentState,
-  setSelectedCanvas,
+  HIT,
+  MANIFEST,
+  parseDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
-  ManifestCanvasNavigation,
-  ManifestViewer,
   ManifestDropdown,
-  ManifestFacsimileViewer,
-  ManifestTranscriptionViewer,
+  ManifestViewer,
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
@@ -26,13 +27,12 @@ const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +
   'hdl:20.500.14722/inventory:collection';
 
-const MANIFEST = 'manifest';
-const CANVAS = 'canvas';
 
 export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
+  const documentHit = parseDocumentHit(params);
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
@@ -101,6 +101,8 @@ export function ManifestPage() {
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set(MANIFEST, url);
     newUrl.searchParams.delete(CANVAS);
+    newUrl.searchParams.delete(DOCUMENT);
+    newUrl.searchParams.delete(HIT);
     history.pushState({}, '', newUrl);
   }
 
@@ -108,6 +110,8 @@ export function ManifestPage() {
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
         <ManifestViewer
+          canvasId={initialCanvasId}
+          documentHit={documentHit}
           onClose={() => void navigate({ to: '/' })}
           topLeft={
             <ManifestDropdown
@@ -116,21 +120,8 @@ export function ManifestPage() {
               onChange={handleManifestChange}
             />
           }
-          scan={
-            <ManifestFacsimileViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
-            />
-          }
-          transcription={
-            <ManifestTranscriptionViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
-            />
-          }
-          bottom={<ManifestCanvasNavigation/>}
         />
-        <ManifestEntityPreview />
+        <ManifestEntityPreview/>
       </ManifestLoader>
     </ViewerProvider>
   );
