@@ -1,5 +1,7 @@
 import { JSX, ReactNode } from 'react';
 import { cn, EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
+import { Highlight } from '@knaw-huc/faceted-search-react';
+import { POST_TAG, PRE_TAG } from './elasticsearch/highlightTags';
 import classes from './Result.module.css';
 
 import type { DocumentSearchResult } from './elasticsearch/search.server';
@@ -54,14 +56,16 @@ export function DocumentResultContent(result: DocumentSearchResult) {
       </ul>
 
       <ul className={classes.mentions}>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        {result.mentions.map((mention, idx) => (
+          <li key={idx}>
+            <Highlight
+              text={mention}
+              startMarker={PRE_TAG}
+              endMarker={POST_TAG}
+              render={(text) => <em>{text}</em>}
+            />
+          </li>
+        ))}
       </ul>
 
       <pre>
