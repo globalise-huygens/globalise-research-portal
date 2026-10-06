@@ -2,12 +2,10 @@ import { z } from 'zod';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { facets, getSearchQuery } from './elastic.server';
+import { POST_TAG, PRE_TAG } from './highlightTags';
 
 import type { EntityTagType } from '@globalise/design';
 import type { TreeQuery } from '@knaw-huc/searchfield';
-
-const PRE_TAG = '\uE000';
-const POST_TAG = '\uE001';
 
 export type SearchRequest = {
   query?: TreeQuery;
@@ -29,7 +27,7 @@ export type DocumentSearchResult = SearchResult & {
   settlement: string;
   startDate: string;
   endDate: string;
-  text?: string;
+  mentions: string[];
 };
 
 type ElasticDocument = {
@@ -62,8 +60,6 @@ const search = createServerFn({ method: 'POST' })
       from: data.offset ?? 0,
       size: data.limit ?? 10,
       highlight: {
-        type: 'unified',
-        number_of_fragments: 0,
         pre_tags: [PRE_TAG],
         post_tags: [POST_TAG],
         fields: {
@@ -98,7 +94,7 @@ const search = createServerFn({ method: 'POST' })
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,
       endDate: hit._source!.endDate,
-      text: hit.highlight?.text ? hit.highlight?.text[0] : undefined,
+      mentions: hit.highlight?.text ?? [],
     }));
   });
 
