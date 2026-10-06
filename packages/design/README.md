@@ -1,4 +1,6 @@
-# naming notes
+# Design 
+
+## naming notes
 
 the main idea: keep this simple. names should tell us what something actually is, and files should live with the feature that owns them.
 
@@ -31,3 +33,28 @@ for css:
 ```
 
 `src/styles.css` stays the public css entry. shared tokens are in `src/styles/globals.css`, general component css is collected by `src/components/ui/ui.css`, and a component can have its own matching css file when needed
+
+## icons
+
+These icons are [Material Symbols](https://fonts.google.com/icons) by Google, licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0):
+
+- `IconArrowTopRight`
+- `IconClose`
+- `IconConcept`
+- `IconCopy`
+- `IconDownload`
+- `IconEntityCommodity`
+- `IconEntityDate`
+- `IconEntityDimensions`
+- `IconEntityDocument`
+- `IconEntityOrganisation`
+- `IconEntityShip`
+- `IconExpandSection`
+- `IconExternalLink`
+- `IconFitWidth`
+- `IconLeftPanelClose`
+- `IconLeftPanelOpen`
+- `IconMenu`
+- `IconProgressActivity`
+- `IconSearch`
+- `IconShowMore`

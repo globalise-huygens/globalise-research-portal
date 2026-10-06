@@ -23,6 +23,7 @@ export type SearchResult = {
 export type DocumentSearchResult = SearchResult & {
   type: 'document';
   archive: string[];
+  name: string;
   inventoryNumber: string;
   settlement: string;
   startDate: string;
@@ -32,6 +33,7 @@ export type DocumentSearchResult = SearchResult & {
 
 type ElasticDocument = {
   identifier: string;
+  name: string;
   inventoryNumber: string;
   title: string;
   settlement: string;
@@ -68,6 +70,7 @@ const search = createServerFn({ method: 'POST' })
       },
       _source: [
         'identifier',
+        'name',
         'inventoryNumber',
         'title',
         'settlement',
@@ -90,6 +93,7 @@ const search = createServerFn({ method: 'POST' })
         '1053-1055 Overgekomen brieven en papieren uit Indië aan de Heren XVII en de kamer Amsterdam. Met inhoudsopgaven',
         '1053 Stukken betreffende de Molukken, Banda, Ambon, Bantam, Makassar en Gresik',
       ],
+      name: hit._source!.name,
       inventoryNumber: hit._source!.inventoryNumber,
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,

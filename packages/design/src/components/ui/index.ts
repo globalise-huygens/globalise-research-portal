@@ -165,3 +165,6 @@ export type { SearchBarProps } from './SearchBar';
 export { ArticleRow } from './ArticleRow';
 export type { ArticleRowProps } from './ArticleRow';
 export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';
+
+export { Spinner } from './Spinner';
+export type { SpinnerProps } from './Spinner';
