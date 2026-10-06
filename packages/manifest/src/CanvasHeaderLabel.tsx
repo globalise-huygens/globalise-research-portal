@@ -20,9 +20,9 @@ export function CanvasHeaderLabel({ canvasId, canvasDocuments, isCurrent = false
         aria-current={isCurrent ? 'true' : undefined}
         className="canvas-label"
       >
-        <DocumentsLabel edges={starting} others={continuing}/>
+        <DocumentsLabel boundaries={starting} others={continuing}/>
         {documents.length > 0 && (
-          <Separator isEdge={starting.length > 0}/>
+          <Separator isBoundary={starting.length > 0}/>
         )}
         <span className="scan">
           <span className="prefix">Scan</span>

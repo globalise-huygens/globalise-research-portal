@@ -1,7 +1,7 @@
 type Props = {
-  isEdge: boolean;
+  isBoundary: boolean;
 };
 
-export function Separator({ isEdge }: Props) {
-  return <span className="separator" data-edge={isEdge ? 'true' : undefined}>|</span>;
+export function Separator({ isBoundary }: Props) {
+  return <span className="separator" data-boundary={isBoundary ? 'true' : undefined}>|</span>;
 }

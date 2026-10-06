@@ -3,17 +3,17 @@ import { TruncatedTitle } from './TruncatedTitle.tsx';
 
 type Props = {
   document: ManifestDocument;
-  isEdge?: boolean;
+  isBoundary?: boolean;
 };
 
-export function DocumentLabel({ document, isEdge = false }: Props) {
+export function DocumentLabel({ document, isBoundary = false }: Props) {
   return (
     <span
       className="document"
-      data-edge={isEdge ? 'true' : undefined}
+      data-boundary={isBoundary ? 'true' : undefined}
       title={`document: ${document.label}`}
     >
-      {isEdge && <span className="arrow"/>}
+      {isBoundary && <span className="arrow"/>}
       <TruncatedTitle text={document.label}/>
     </span>
   );

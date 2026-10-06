@@ -25,7 +25,7 @@
 
   .prefix,
   .separator,
-  .document:not([data-edge]) {
+  .document:not([data-boundary]) {
     color: var(--label-muted);
     font-weight: 400;
   }
@@ -71,8 +71,8 @@
     border-top: 0.4rem solid currentColor;
   }
 
-  .document:not([data-edge]),
-  .separator:not([data-edge]) {
+  .document:not([data-boundary]),
+  .separator:not([data-boundary]) {
     display: none;
   }
 

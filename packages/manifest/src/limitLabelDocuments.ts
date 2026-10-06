@@ -3,18 +3,18 @@ import type { ManifestDocument } from '@globalise/metadata';
 export type LabelDocumentsLimit = {
   shown: ManifestDocument[];
   hidden: ManifestDocument[];
-  hidesEdge: boolean;
+  hidesBoundary: boolean;
 };
 
 export function limitLabelDocuments(
-  edges: ManifestDocument[],
+  boundaries: ManifestDocument[],
   others: ManifestDocument[],
   max: number,
 ): LabelDocumentsLimit {
-  const documents = [...edges, ...others];
+  const documents = [...boundaries, ...others];
   return {
     shown: documents.slice(0, max),
     hidden: documents.slice(max),
-    hidesEdge: edges.length > max,
+    hidesBoundary: boundaries.length > max,
   };
 }

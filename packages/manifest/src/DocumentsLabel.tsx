@@ -5,14 +5,14 @@ import { Separator } from './Separator.tsx';
 import { limitLabelDocuments } from './limitLabelDocuments.ts';
 
 type Props = {
-  edges: ManifestDocument[];
+  boundaries: ManifestDocument[];
   others?: ManifestDocument[];
   maxDocuments?: number;
 };
 
 export function DocumentsLabel(
   {
-    edges,
+    boundaries,
     others = [],
     maxDocuments = 3,
   }: Props,
@@ -20,8 +20,8 @@ export function DocumentsLabel(
   const {
     shown,
     hidden,
-    hidesEdge,
-  } = limitLabelDocuments(edges, others, maxDocuments);
+    hidesBoundary,
+  } = limitLabelDocuments(boundaries, others, maxDocuments);
 
   if (!shown.length) {
     return null;
@@ -30,20 +30,20 @@ export function DocumentsLabel(
   return (
     <span className="documents">
       {shown.map((document, index) => {
-        const isEdge = edges.includes(document);
+        const isBoundary = boundaries.includes(document);
         return (
           <Fragment key={document.id}>
-            {index > 0 && <Separator isEdge={isEdge}/>}
-            <DocumentLabel document={document} isEdge={isEdge}/>
+            {index > 0 && <Separator isBoundary={isBoundary}/>}
+            <DocumentLabel document={document} isBoundary={isBoundary}/>
           </Fragment>
         );
       })}
       {hidden.length > 0 && (
         <>
-          <Separator isEdge={hidesEdge}/>
+          <Separator isBoundary={hidesBoundary}/>
           <span
             className="document more-documents"
-            data-edge={hidesEdge ? 'true' : undefined}
+            data-boundary={hidesBoundary ? 'true' : undefined}
             title={hidden.map((document) => document.label).join('\n')}
           >
             (+{hidden.length})

@@ -17,7 +17,7 @@ export function CanvasFooterLabel({ canvasDocuments, isCurrent = false }: Props)
         aria-current={isCurrent ? 'true' : undefined}
         className="canvas-label"
       >
-        <DocumentsLabel edges={canvasDocuments.ending}/>
+        <DocumentsLabel boundaries={canvasDocuments.ending}/>
       </span>
     </span>
   );
