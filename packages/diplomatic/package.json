@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
-    "@iiif/presentation-3": "^2.2.3",
-    "@knaw-huc/original-layout": "^0.2.1",
+    "@iiif/presentation-3": "^2.2.4",
+    "@knaw-huc/original-layout": "^0.2.3",
     "d3-polygon": "^3.0.1",
     "d3-selection": "^3.0.0",
     "d3-shape": "^3.2.0"
@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "@types/d3-polygon": "^3.0.2",
-    "@types/d3-selection": "^3.0.11",
-    "@types/d3-shape": "^3.1.7",
+    "@types/d3-selection": "^3.0.12",
+    "@types/d3-shape": "^3.2.0",
     "@types/node": "^25.2.3",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "typescript": "^5.9.2",
     "vitest": "^4.0.16"
   }
