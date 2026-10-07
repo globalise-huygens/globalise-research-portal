@@ -9,7 +9,7 @@ import {
   useUpdateFacetValueLabels,
   useSearchState,
 } from '@knaw-huc/faceted-search-react';
-import { Tree, TreeItem, TreeItemContent, Button } from 'react-aria-components';
+import { Tree, TreeItem, TreeItemContent, Button, Virtualizer, ListLayout } from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions from './queries/hierarchyFacetItemsQueryOptions';
 import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
@@ -66,9 +66,12 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   return (
     <Hierarchy items={items} selected={selected} setSelected={onSelect}
       getKey={(item) => item.id} getChildren={(item) => item.children}>
-      <Tree selectionMode="multiple" aria-label="Facet items" defaultExpandedKeys={expandedKeys}>
-        <TreeItems items={items}/>
-      </Tree>
+      <Virtualizer layout={ListLayout} layoutOptions={{ estimatedRowSize: 24, gap: 8 }}>
+        <Tree selectionMode="multiple" aria-label="Facet items" className={classes.tree}
+          defaultExpandedKeys={expandedKeys}>
+          <TreeItems items={items}/>
+        </Tree>
+      </Virtualizer>
     </Hierarchy>
   );
 }
