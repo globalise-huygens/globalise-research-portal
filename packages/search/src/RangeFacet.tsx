@@ -1,16 +1,13 @@
 import { startTransition, useEffect, Suspense, useState, type CSSProperties } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Slider, SliderTrack, SliderThumb, Group, Button, NumberField, Input, Label } from 'react-aria-components';
-import { useFacet, useNumericRangeFacet } from '@knaw-huc/faceted-search-react';
+import { useFacet, useNumericRangeFacet, useSearchState } from '@knaw-huc/faceted-search-react';
 import { cn, IconExpandSection } from '@globalise/design';
+import rangeFacetItemsQueryOptions from './queries/rangeFacetItemsQueryOptions';
+import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
 import Histogram from './Histogram';
 import classes from './RangeFacet.module.css';
-
-export type Term = {
-  start: number;
-  end: number;
-  count: number;
-};
 
 export default function RangeFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFacet(facetKey, '');
@@ -25,16 +22,12 @@ export default function RangeFacet({ facetKey }: { facetKey: string }) {
 }
 
 function RangeSlider({ facetKey }: { facetKey: string }) {
-  const terms: Term[] = [
-    { start: 1600, end: 1649, count: 200 },
-    { start: 1650, end: 1699, count: 300 },
-    { start: 1700, end: 1749, count: 900 },
-    { start: 1750, end: 1799, count: 1000 },
-    { start: 1800, end: 1849, count: 800 },
-    { start: 1850, end: 1899, count: 500 },
-  ];
+  const state = useSearchState();
+  const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(facetKey, getSearchState(state)));
+
   const min = terms[0].start;
   const max = terms[terms.length - 1].end;
+
   const { value, onChange } = useNumericRangeFacet(facetKey, min, max);
   const [curMinMax, setCurMinMax] = useState<[number, number]>([min, max]);
 
