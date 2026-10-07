@@ -40,7 +40,7 @@ function mapLabels(results: HierarchyFacetItem[]) {
 
 export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFilterFacet(facetKey);
-  const isFetching = useIsFetching({ queryKey: hierarchyFacetItemsQueryKey(facetKey) }) > 0;
+  const isFetching = useIsFetching({ queryKey: hierarchyFacetItemsQueryKey }) > 0;
 
   return (
     <Facet label={label} isPending={isFetching}>
