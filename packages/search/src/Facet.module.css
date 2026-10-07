@@ -50,6 +50,17 @@
             font-weight: 500;
             letter-spacing: normal;
             line-height: 1.1;
+
+            .spinner {
+                margin-left: var(--s8, 8px);
+                vertical-align: middle;
+                opacity: 0;
+                transition: opacity 0.25s ease-in;
+
+                &.pending {
+                    opacity: 1;
+                }
+            }
         }
 
         > svg {

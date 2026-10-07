@@ -1,5 +1,5 @@
 import { CSSProperties, Suspense, useEffect, useMemo } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useIsFetching, useSuspenseQuery } from '@tanstack/react-query';
 import { Checkbox, IconExpandSection } from '@globalise/design';
 import {
   Hierarchy,
@@ -10,7 +10,7 @@ import {
   useSearchState,
 } from '@knaw-huc/faceted-search-react';
 import { Tree, TreeItem, TreeItemContent, Button, Virtualizer, ListLayout } from 'react-aria-components';
-import hierarchyFacetItemsQueryOptions from './queries/hierarchyFacetItemsQueryOptions';
+import hierarchyFacetItemsQueryOptions, { hierarchyFacetItemsQueryKey } from './queries/hierarchyFacetItemsQueryOptions';
 import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
 import classes from './HierarchyFacet.module.css';
@@ -31,10 +31,11 @@ function mapLabels(results: HierarchyFacetItem[]) {
 
 export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFilterFacet(facetKey);
+  const isFetching = useIsFetching({ queryKey: hierarchyFacetItemsQueryKey(facetKey) }) > 0;
 
   return (
-    <Facet label={label}>
-      <Suspense fallback={'Loading...'}>
+    <Facet label={label} isPending={isFetching}>
+      <Suspense>
         <HierarchyFacetItems facetKey={facetKey}/>
       </Suspense>
     </Facet>
@@ -49,26 +50,11 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
 
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);
 
-  const expandedKeys = useMemo(() => {
-    const addExpandingKeys = (item: HierarchyFacetItem) => {
-      if (item.children) {
-        keys.add(item.id);
-        item.children.map(addExpandingKeys);
-      }
-    };
-
-    const keys = new Set<string>();
-    items.map(addExpandingKeys);
-
-    return keys;
-  }, [items]);
-
   return (
     <Hierarchy items={items} selected={selected} setSelected={onSelect}
       getKey={(item) => item.id} getChildren={(item) => item.children}>
       <Virtualizer layout={ListLayout} layoutOptions={{ estimatedRowSize: 24, gap: 8 }}>
-        <Tree selectionMode="multiple" aria-label="Facet items" className={classes.tree}
-          defaultExpandedKeys={expandedKeys}>
+        <Tree selectionMode="multiple" aria-label="Facet items" className={classes.tree}>
           <TreeItems items={items}/>
         </Tree>
       </Virtualizer>
