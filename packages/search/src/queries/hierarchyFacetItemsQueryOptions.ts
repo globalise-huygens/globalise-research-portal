@@ -7,8 +7,10 @@ export default function hierarchyFacetItemsQueryOptions(key: string, state: Glob
   const facets = (({ [key]: _ownValues, ...values }) => values)(state.facets);
 
   return queryOptions({
-    queryKey: ['hierarchy', key, state.query, facets],
+    queryKey: [...hierarchyFacetItemsQueryKey, key, state.query, facets],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: () => hierarchyFacetItems({ data: { key, query: state.query, facets } }),
   });
 }
+
+export const hierarchyFacetItemsQueryKey = ['hierarchy'];

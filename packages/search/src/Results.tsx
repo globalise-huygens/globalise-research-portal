@@ -61,8 +61,14 @@ function ResultItems({ items }: { items: SearchResult[] }) {
   return (
     <>
       {items.map((result) => (
-        <Result key={result.id} type={result.type} begin="01.01.1610" end="31.12.1610" title={result.title}
-          subline={['scan(s): 23', 'location(s): Amsterdam, Bantum']}>
+        <Result
+          key={result.id}
+          type={result.type}
+          begin="TODO"
+          end="TODO"
+          title={result.title}
+          subline={['scan(s): TODO', 'location(s): TODO']}
+        >
           {isDocument(result) && <DocumentResultContent {...result}/>}
         </Result>
       ))}
