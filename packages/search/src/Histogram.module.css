@@ -13,7 +13,7 @@
             height: 100%;
 
             transition: all 0.15s ease-in-out;
-            animation: show 0.15s ease-in-out forwards;
+            /*animation: show 0.15s ease-in-out forwards;*/
             /*transform-origin: bottom right;*/
             /*transform: scale(0);*/
 
@@ -29,7 +29,7 @@
 
             .barchart-bar-fill {
                 transition: all 0.15s ease-in-out;
-                animation: show 0.15s ease-in-out forwards;
+                /*animation: show 0.15s ease-in-out forwards;*/
                 /*transform-origin: bottom right;*/
                 /*transform: scale(0);*/
                 opacity: .4;
@@ -78,9 +78,9 @@
         }
     }
 
-    @keyframes show {
-        100% {
-            transform: none;
-        }
-    }
+    /*@keyframes show {*/
+    /*    100% {*/
+    /*        transform: none;*/
+    /*    }*/
+    /*}*/
 }
