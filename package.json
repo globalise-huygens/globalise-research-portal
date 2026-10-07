@@ -14,8 +14,8 @@
     "diplomatic:screenshot": "pnpm --filter @globalise/diplomatic screenshot",
     "preview": "pnpm --filter @globalise/app build && pnpm --filter @globalise/app preview",
     "typecheck": "tsc -b --clean && tsc -b",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint packages",
+    "lint:fix": "eslint packages --fix --quiet",
     "test": "vitest run"
   },
   "dependencies": {

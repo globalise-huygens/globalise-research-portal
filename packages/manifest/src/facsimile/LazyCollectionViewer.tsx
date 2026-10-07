@@ -14,6 +14,7 @@ import { Point, Viewer as OsdViewer } from 'openseadragon';
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import { findCenterScan } from './findCenterScan.ts';
 import {
+  resetLazyCollectionViewer,
   setLazyCanvases,
   setLoaded,
   setScrolling,
@@ -71,6 +72,8 @@ export function LazyCollectionViewer({
   useEffect(() => {
     onCanvasChangeRef.current = onCanvasChange;
   }, [onCanvasChange]);
+
+  useEffect(() => resetLazyCollectionViewer, []);
 
   useEffect(syncLazyCanvases, [lazyCanvases]);
 

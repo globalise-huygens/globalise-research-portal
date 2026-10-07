@@ -21,7 +21,7 @@ const placesGeoJSON: FeatureCollection<Point> = {
   features: places.filter((place) => place.geometry).map((place) => {
     const { geometry, ...properties } = place;
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     const match = /^POINT\s*\(\s*(-?\d+(\.\d+)?)\s+(-?\d+(\.\d+)?)\s*\)$/i.exec((geometry!));
     if (!match) {
       throw new Error(`Invalid WKT: ${geometry}`);
