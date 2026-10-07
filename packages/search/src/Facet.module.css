@@ -71,14 +71,17 @@
         min-height: 0;
         height: auto;
         flex: 1 1 0%;
-        overflow: hidden auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
         border: 0;
         background: transparent;
-        scrollbar-color: var(--color-neutral-600, #666) transparent;
-        scrollbar-gutter: stable;
-        scrollbar-width: thin;
 
         > .content {
+            display: flex;
+            min-height: 0;
+            flex: 1 1 auto;
+            flex-direction: column;
             padding:
                     0
                     var(--s16, 16px)
