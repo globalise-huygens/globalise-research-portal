@@ -1,13 +1,12 @@
 .histogram {
+    position: relative;
     margin: 0 var(--s8) var(--s8);
 
     svg {
-        width: 100%;
-
         > g {
             stroke: currentColor;
             stroke-width: 1;
-            fill: var(--color-neutral-100);
+            fill: var(--color-neutral-50);
         }
 
         .barchart-bar {
@@ -15,8 +14,8 @@
 
             transition: all 0.15s ease-in-out;
             animation: show 0.15s ease-in-out forwards;
-            transform-origin: bottom right;
-            transform: scale(0);
+            /*transform-origin: bottom right;*/
+            /*transform: scale(0);*/
 
             text {
                 visibility: hidden;
@@ -24,16 +23,15 @@
                 z-index: -10;
             }
 
-
             .barchart-bar-background {
-                fill: white;
+                fill: none;
             }
 
             .barchart-bar-fill {
                 transition: all 0.15s ease-in-out;
                 animation: show 0.15s ease-in-out forwards;
-                transform-origin: bottom right;
-                transform: scale(0);
+                /*transform-origin: bottom right;*/
+                /*transform: scale(0);*/
                 opacity: .4;
             }
 
@@ -49,7 +47,7 @@
                 }
 
                 .barchart-bar-background {
-                    fill: var(--color-neutral-50);
+                    fill: var(--color-neutral-800);
                 }
 
                 .barchart-bar-fill {
@@ -61,14 +59,23 @@
 
     .tooltip {
         pointer-events: none;
-        position: fixed;
+        position: absolute;
         display: inline-block;
-        background-color: #FFF;
+        background-color: var(--color-neutral-800);
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         transition: all 0.15s ease-in-out;
         font-size: .6em;
         padding: .25em .5em;
         border-radius: .5em;
+        z-index: 1;
+
+        .years {
+            font-weight: 700;
+        }
+
+        &.hide {
+            display: none;
+        }
     }
 
     @keyframes show {
