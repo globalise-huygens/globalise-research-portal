@@ -3,15 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { AggregationsStringTermsAggregate, AggregationsStringTermsBucket } from '@elastic/elasticsearch/lib/api/types';
 import elastic from './client.server';
 import { getLabel } from './labels.server';
-import { facets, getSearchQuery } from './elastic.server';
-
-import type { TreeQuery } from '@knaw-huc/searchfield';
-
-export type HierarchyFacetItemsRequest = {
-  key: string;
-  query?: TreeQuery;
-  facets?: Record<string, string[]>;
-};
+import { getSearchQuery, hierarchyFacets as items, GlobaliseSearchStateSchema, type FacetRequest } from './elastic.server';
 
 export type HierarchyFacetItem = {
   id: string;
@@ -20,13 +12,8 @@ export type HierarchyFacetItem = {
   children?: HierarchyFacetItem[];
 };
 
-const HierarchyFacetItemsRequestSchema = z.object({
-  key: z.enum(Object.keys(facets)),
-  query: z.looseObject({}).optional() as unknown as z.ZodType<TreeQuery | undefined>,
-  facets: z.record(z.string(), z.array(z.string())).refine(
-    (record) => Object.keys(record).every((key) => Object.keys(facets).includes(key)),
-    { error: 'Invalid facet key requested!' },
-  ).optional(),
+const HierarchyFacetItemsRequestSchema = GlobaliseSearchStateSchema.extend({
+  key: z.enum(Object.keys(items)),
 });
 
 const separator = '|';
@@ -55,14 +42,14 @@ function countMissing(items: HierarchyFacetItem[]) {
   }
 }
 
-async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
+async function getHierarchyFacetItems(data: FacetRequest) {
   const result = await elastic.search({
     index: 'documents',
     size: 0,
     aggs: {
       items: {
         terms: {
-          field: facets[data.key].tree,
+          field: items[data.key].tree,
           size: 10000,
           order: {
             _count: 'desc',

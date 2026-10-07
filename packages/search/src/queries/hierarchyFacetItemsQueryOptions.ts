@@ -4,7 +4,7 @@ import type { GlobaliseSearchState } from '../utils/getSearchState';
 
 export default function hierarchyFacetItemsQueryOptions(key: string, state: GlobaliseSearchState) {
   // Remove values this facet owns: we want all the available items of this facet with filters on the other facets
-  const facets = (({ [key]: _ownValues, ...values }) => values)(state.facets);
+  const facets = state.facets ? (({ [key]: _ownValues, ...values }) => values)(state.facets) : undefined;
 
   return queryOptions({
     queryKey: ['hierarchy', key, state.query, facets],

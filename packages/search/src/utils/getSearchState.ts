@@ -4,7 +4,7 @@ import { facets } from '../Facets';
 
 export type GlobaliseSearchState = {
   query?: TreeQuery;
-  facets: FacetValues;
+  facets?: FacetValues;
 };
 
 export default function getSearchState(state?: SearchState): GlobaliseSearchState {
