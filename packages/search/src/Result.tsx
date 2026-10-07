@@ -58,7 +58,7 @@ export function DocumentResultContent(result: DocumentSearchResult) {
         {result.mentions.map((mention, idx) => <Mention
           key={idx}
           document={result}
-          snippet={mention}/>
+          snippet={mention}/>,
         )}
       </ul>
 
