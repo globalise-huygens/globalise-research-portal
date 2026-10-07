@@ -2,8 +2,9 @@ import { useRef, useState } from 'react';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { extent } from 'd3-array';
 import { cn } from '@globalise/design';
-import { Term } from './RangeFacet';
 import classes from './Histogram.module.css';
+
+import type { Term } from './elasticsearch/rangeFacetItems.server';
 
 const width = 300;
 const height = 150;
