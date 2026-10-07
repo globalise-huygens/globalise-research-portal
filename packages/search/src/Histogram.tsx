@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { extent } from 'd3-array';
+import { cn } from '@globalise/design';
 import { Term } from './RangeFacet';
 import classes from './Histogram.module.css';
 
@@ -45,29 +46,28 @@ function HistogramVisualization({ terms, setTooltipData, selection }: {
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const data_years = terms.map((item) => item.start);
-  const data_amounts = terms.map((item) => item.count);
+  const dataYears = terms.map((item) => item.start);
+  const dataAmounts = terms.map((item) => item.count);
   const data = terms.map((item) => ({ x: item.start, y: item.count }));
 
-  const x = scaleBand(data_years, [marginLeft, width - marginRight]).padding(0);
-  const y = scaleLinear(extent(data_amounts) as [number, number], [height - marginBottom, marginTop]);
+  const x = scaleBand(dataYears, [marginLeft, width - marginRight]).padding(0);
+  const y = scaleLinear(extent(dataAmounts) as [number, number], [height - marginBottom, marginTop]);
 
   return (
     <svg onMouseLeave={() => setTooltipData((tooltipData) => ({ ...tooltipData, term: null }))}
-      viewBox={'0 0 ' + width.toString() + ' ' + height.toString()} ref={svgRef}>
+      viewBox={`0 0 ${width} ${height}`} ref={svgRef}>
       <g>
         {data.map((d) => (
           <g onMouseEnter={() => {
-            const bounding = svgRef.current!.getBoundingClientRect();
-            const tx = (x(d.x)!) + bounding.left;
-            const ty = y(d.y) + bounding.top - 50;
+            const tx = (x(d.x)!);
+            const ty = y(d.y) - 50;
             setTooltipData({
               x: tx,
               y: ty,
-              term: terms[data_years.indexOf(d.x)],
+              term: terms[dataYears.indexOf(d.x)],
             });
           }}
-          className={classes.barchartBar + (isActive(terms[data_years.indexOf(d.x)], selection) ? (' ' + classes.active) : '')}
+          className={cn(classes.barchartBar, isActive(terms[dataYears.indexOf(d.x)], selection) && classes.active)}
           key={`${d.x}-${d.y}`}>
             <rect className={classes.barchartBarBackground}
               x={Math.floor(x(d.x)!)} y={marginTop} width={Math.ceil(x.bandwidth())} height={height - marginTop}
@@ -82,12 +82,9 @@ function HistogramVisualization({ terms, setTooltipData, selection }: {
 }
 
 function Tooltip({ x, y, term }: TooltipData) {
-  const startReadable = typeof term?.start == 'string' ? new Date(term?.start).toDateString() : term?.start;
-  const endReadable = typeof term?.end == 'string' ? new Date(term?.end).toDateString() : term?.end;
-
   return (
-    <div hidden={term === null} className={classes.tooltip} style={{ top: y, left: x }}>
-      <strong>{startReadable} - {endReadable}</strong><br/>
+    <div className={cn(classes.tooltip, term === null && classes.hide)} style={{ top: y, left: x }}>
+      <div className={classes.years}>{term?.start} - {term?.end}</div>
       {term?.count} results
     </div>
   );

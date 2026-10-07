@@ -26,9 +26,12 @@ export default function RangeFacet({ facetKey }: { facetKey: string }) {
 
 function RangeSlider({ facetKey }: { facetKey: string }) {
   const terms: Term[] = [
-    { start: 1600, end: 1699, count: 500 },
-    { start: 1700, end: 1799, count: 1000 },
-    { start: 1800, end: 1899, count: 700 },
+    { start: 1600, end: 1649, count: 200 },
+    { start: 1650, end: 1699, count: 300 },
+    { start: 1700, end: 1749, count: 900 },
+    { start: 1750, end: 1799, count: 1000 },
+    { start: 1800, end: 1849, count: 800 },
+    { start: 1850, end: 1899, count: 500 },
   ];
   const min = terms[0].start;
   const max = terms[terms.length - 1].end;
