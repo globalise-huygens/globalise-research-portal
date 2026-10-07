@@ -9,7 +9,16 @@ import {
   useUpdateFacetValueLabels,
   useSearchState,
 } from '@knaw-huc/faceted-search-react';
-import { Tree, TreeItem, TreeItemContent, Button, Virtualizer, ListLayout, type Key } from 'react-aria-components';
+import {
+  Tree,
+  TreeItem,
+  TreeItemContent,
+  Button,
+  Collection,
+  Virtualizer,
+  ListLayout,
+  type Key,
+} from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions, { hierarchyFacetItemsQueryKey } from './queries/hierarchyFacetItemsQueryOptions';
 import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
@@ -60,36 +69,52 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
           selectionMode="multiple"
           aria-label="Facet items"
           className={classes.tree}
+          items={items}
           expandedKeys={expandedKeys}
           onExpandedChange={setExpandedKeys}
+          dependencies={[expandedKeys]}
         >
-          <TreeItems
-            items={items}
+          {(item) => <HierarchyFacetTreeItem
+            item={item}
             expandedKeys={expandedKeys}
-          />
+          />}
         </Tree>
       </Virtualizer>
     </Hierarchy>
   );
 }
 
-function TreeItems({ items, expandedKeys }: { items: HierarchyFacetItem[], expandedKeys: Set<Key> }) {
-  return (
-    <>
-      {items.map((item) => (
-        <TreeItem key={item.id} id={item.id} textValue={item.label}
-          hasChildItems={item.children && item.children.length > 0}>
-          <TreeItemContent>
-            {({ hasChildItems, isExpanded, level }) =>
-              <HierarchyFacetTreeItemContent item={item} level={level}
-                hasChildren={hasChildItems} isOpen={isExpanded}/>}
-          </TreeItemContent>
+type HierarchyFacetTreeItemProps = {
+  item: HierarchyFacetItem,
+  expandedKeys: Set<Key>,
+};
 
-          {item.children && expandedKeys.has(item.id) &&
-              <TreeItems items={item.children} expandedKeys={expandedKeys}/>}
-        </TreeItem>
-      ))}
-    </>
+function HierarchyFacetTreeItem(
+  { item, expandedKeys }: HierarchyFacetTreeItemProps,
+) {
+  return (
+    <TreeItem
+      id={item.id}
+      textValue={item.label}
+      hasChildItems={item.children && item.children.length > 0}
+    >
+      <TreeItemContent>
+        {({ hasChildItems, isExpanded, level }) => <HierarchyFacetTreeItemContent
+          item={item}
+          level={level}
+          hasChildren={hasChildItems}
+          isOpen={isExpanded}
+        />}
+      </TreeItemContent>
+
+      {item.children && expandedKeys.has(item.id) &&
+        <Collection items={item.children} dependencies={[expandedKeys]}>
+          {(child) => <HierarchyFacetTreeItem
+            item={child}
+            expandedKeys={expandedKeys}
+          />}
+        </Collection>}
+    </TreeItem>
   );
 }
 
