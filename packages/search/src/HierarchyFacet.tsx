@@ -1,4 +1,4 @@
-import { CSSProperties, Suspense, useEffect, useMemo } from 'react';
+import { CSSProperties, Suspense, useEffect, useMemo, useState } from 'react';
 import { useIsFetching, useSuspenseQuery } from '@tanstack/react-query';
 import { Checkbox, IconExpandSection } from '@globalise/design';
 import {
@@ -9,7 +9,7 @@ import {
   useUpdateFacetValueLabels,
   useSearchState,
 } from '@knaw-huc/faceted-search-react';
-import { Tree, TreeItem, TreeItemContent, Button, Virtualizer, ListLayout } from 'react-aria-components';
+import { Tree, TreeItem, TreeItemContent, Button, Virtualizer, ListLayout, type Key } from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions, { hierarchyFacetItemsQueryKey } from './queries/hierarchyFacetItemsQueryOptions';
 import getSearchState from './utils/getSearchState';
 import Facet from './Facet';
@@ -48,21 +48,32 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
   const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, getSearchState(state)));
 
+  const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(new Set());
+
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);
 
   return (
     <Hierarchy items={items} selected={selected} setSelected={onSelect}
       getKey={(item) => item.id} getChildren={(item) => item.children}>
       <Virtualizer layout={ListLayout} layoutOptions={{ estimatedRowSize: 24, gap: 8 }}>
-        <Tree selectionMode="multiple" aria-label="Facet items" className={classes.tree}>
-          <TreeItems items={items}/>
+        <Tree
+          selectionMode="multiple"
+          aria-label="Facet items"
+          className={classes.tree}
+          expandedKeys={expandedKeys}
+          onExpandedChange={setExpandedKeys}
+        >
+          <TreeItems
+            items={items}
+            expandedKeys={expandedKeys}
+          />
         </Tree>
       </Virtualizer>
     </Hierarchy>
   );
 }
 
-function TreeItems({ items }: { items: HierarchyFacetItem[] }) {
+function TreeItems({ items, expandedKeys }: { items: HierarchyFacetItem[], expandedKeys: Set<Key> }) {
   return (
     <>
       {items.map((item) => (
@@ -74,8 +85,8 @@ function TreeItems({ items }: { items: HierarchyFacetItem[] }) {
                 hasChildren={hasChildItems} isOpen={isExpanded}/>}
           </TreeItemContent>
 
-          {item.children && item.children.length > 0 &&
-              <TreeItems items={item.children}/>}
+          {item.children && expandedKeys.has(item.id) &&
+              <TreeItems items={item.children} expandedKeys={expandedKeys}/>}
         </TreeItem>
       ))}
     </>
