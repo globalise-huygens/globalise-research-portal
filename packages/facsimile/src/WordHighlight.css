@@ -1,0 +1,10 @@
+.word-highlight {
+    fill: transparent;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.selected-word-highlight {
+    mix-blend-mode: multiply;
+    pointer-events: none;
+}

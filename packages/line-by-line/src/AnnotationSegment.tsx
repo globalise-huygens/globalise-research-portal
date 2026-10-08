@@ -41,6 +41,7 @@ export function AnnotationSegment(
 function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
   const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
   const isClicked = useIsClickedInLineByLine(canvasId, annotation.id);
+
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {

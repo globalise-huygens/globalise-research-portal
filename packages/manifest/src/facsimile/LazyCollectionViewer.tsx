@@ -22,6 +22,8 @@ import { useContainerSize } from './useContainerSize.tsx';
 import { useLazyCanvasLoader } from './useLazyCanvasLoader.tsx';
 import { createLazyTiledImages } from './util/createLazyTiledImages.ts';
 import { observeResize } from './util/observeResize.tsx';
+import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
+import './LazyCollectionViewer.css';
 
 type Props = PropsWithChildren<{
   gap?: number;
@@ -53,6 +55,7 @@ export function LazyCollectionViewer({
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
   const isScrollReady = size.width && size.height;
+  const isScrolling = useIsViewerScrolling();
 
   const lazyCanvases = useMemo(() => {
     if (!vault || !manifestId || !isReady) {
@@ -227,6 +230,8 @@ export function LazyCollectionViewer({
       </FloatingToolbar>
       <div
         ref={containerRef}
+        className="lazy-collection-viewer"
+        data-scrolling={isScrolling || undefined}
         style={{
           width: '100%',
           height: '100%',
