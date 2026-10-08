@@ -22,9 +22,6 @@ import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMen
 import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
 import { SplitPaneLayout } from './layout';
 import { TooltipIconButton } from './layout/TooltipIconButton';
-import { debugManifest } from './debugManifest.tsx';
-
-Object.assign(window, debugManifest);
 
 export type ManifestViewerProps = {
   topLeft?: React.ReactNode;
