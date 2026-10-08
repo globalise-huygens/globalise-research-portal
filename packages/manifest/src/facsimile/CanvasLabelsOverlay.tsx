@@ -5,6 +5,7 @@ import type { CanvasDocuments } from '@globalise/metadata';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
+import '../CanvasLabel.css';
 
 type Props = {
   lazyCanvas: LazyTiledImage;
@@ -27,12 +28,7 @@ export const CanvasLabelsOverlay = memo(function CanvasLabelsOverlay(
 
   return (
     <Overlay location={location}>
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-      }}>
+      <div className="canvas-labels-overlay">
         {hasLabel && (
           <CanvasHeaderLabel
             canvasId={lazyCanvas.canvasId}
