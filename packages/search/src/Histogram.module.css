@@ -1,86 +1,47 @@
 .histogram {
-    position: relative;
-    margin: 0 var(--s8) var(--s8);
+    margin-inline: var(--s8);
+    fill: var(--color-neutral-50);
 
-    svg {
-        > g {
-            stroke: currentColor;
-            stroke-width: 1;
-            fill: var(--color-neutral-50);
+    .barchart-bar {
+         pointer-events: all;
+
+        .background {
+            fill: none;
+            stroke: none;
         }
 
-        .barchart-bar {
-            height: 100%;
+        .fill {
+            opacity: .4;
+            stroke-opacity: 0;
+            transition: opacity 0.15s ease-in-out;
+        }
 
-            transition: all 0.15s ease-in-out;
-            /*animation: show 0.15s ease-in-out forwards;*/
-            /*transform-origin: bottom right;*/
-            /*transform: scale(0);*/
+        &.active .fill {
+            opacity: .8
+        }
 
-            text {
-                visibility: hidden;
-                font-weight: lighter;
-                z-index: -10;
+        &:hover {
+            .background {
+                fill: var(--color-neutral-800);
             }
 
-            .barchart-bar-background {
-                fill: none;
-            }
-
-            .barchart-bar-fill {
-                transition: all 0.15s ease-in-out;
-                /*animation: show 0.15s ease-in-out forwards;*/
-                /*transform-origin: bottom right;*/
-                /*transform: scale(0);*/
-                opacity: .4;
-            }
-
-            &.active {
-                .barchart-bar-fill {
-                    opacity: .8;
-                }
-            }
-
-            &:hover {
-                text {
-                    visibility: visible;
-                }
-
-                .barchart-bar-background {
-                    fill: var(--color-neutral-800);
-                }
-
-                .barchart-bar-fill {
-                    opacity: 1;
-                }
+            .fill {
+                opacity: 1;
             }
         }
     }
+}
 
-    .tooltip {
-        pointer-events: none;
-        position: absolute;
-        display: inline-block;
-        background-color: var(--color-neutral-800);
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        transition: all 0.15s ease-in-out;
-        font-size: .6em;
-        padding: .25em .5em;
-        border-radius: .5em;
-        z-index: 1;
+.tooltip {
+    pointer-events: none;
+    background-color: var(--color-neutral-800);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.15s ease-in-out;
+    font-size: .6em;
+    padding: .25em .5em;
+    border-radius: .5em;
 
-        .years {
-            font-weight: 700;
-        }
-
-        &.hide {
-            display: none;
-        }
+    .years {
+        font-weight: 700;
     }
-
-    /*@keyframes show {*/
-    /*    100% {*/
-    /*        transform: none;*/
-    /*    }*/
-    /*}*/
 }

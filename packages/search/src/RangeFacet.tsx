@@ -61,7 +61,7 @@ function RangeSlider({ facetKey }: { facetKey: string }) {
   return (
     <Slider aria-label="Range slider" value={curMinMax} minValue={min} maxValue={max} step={1}
       onChange={setCurMinMax} onChangeEnd={onValueCommit}>
-      <Histogram terms={terms} selection={{ start: curMinMax[0], end: curMinMax[1] }}/>
+      <Histogram terms={terms} curMinMax={curMinMax}/>
       <RangeSliderTrack/>
       <RangeInputs min={min} max={max} curMinMax={curMinMax} onRangeChange={onRangeChange}/>
     </Slider>
