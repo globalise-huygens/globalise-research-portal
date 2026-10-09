@@ -12,13 +12,13 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@globalise/design": "*",
-    "@globalise/common": "*",
-    "@globalise/diplomatic": "*",
-    "@globalise/facsimile": "*",
-    "@globalise/line-by-line": "*",
-    "@globalise/metadata": "*",
-    "openseadragon": "^5.0.1",
+    "@globalise/design": "workspace:*",
+    "@globalise/common": "workspace:*",
+    "@globalise/diplomatic": "workspace:*",
+    "@globalise/facsimile": "workspace:*",
+    "@globalise/line-by-line": "workspace:*",
+    "@globalise/metadata": "workspace:*",
+    "openseadragon": "^6.1.1",
     "react-split-pane": "^3.2.0"
   },
   "devDependencies": {

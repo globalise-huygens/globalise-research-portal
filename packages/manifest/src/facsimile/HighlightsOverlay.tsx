@@ -4,20 +4,15 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   findSvgPath,
   findTextualBodyValue,
-  getCidocClassName,
-  type Annotation,
-  type CidocEntityClassificationId,
-  type Id,
   isBlock,
-  isHighlightedEntity,
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
 import {
+  getAnnotationPages,
   loadCanvasAnnotationPages,
   useAnnotations,
-  useCanvasIndexes,
-  useEntityHighlightCategories,
+  useWordEntityClassifications,
   useIsLayoutElementsVisible,
   usePages,
   useSelectedAnnotationsInFacsimile,
@@ -25,13 +20,11 @@ import {
 import { orThrow } from '@globalise/common';
 import {
   BlockHighlight,
-  type EntityHighlightTone,
   FacsimileTooltip,
   FacsimileTooltipProps,
   WordHighlight,
 } from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
@@ -48,25 +41,24 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
   const annotations = useAnnotations(lazyCanvas.canvasId);
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
-  const indexes = useCanvasIndexes(lazyCanvas.canvasId);
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
 
-  const annotationUrls = useMemo(() => {
+  const annotationPages = useMemo(() => {
     if (!vault) {
       return [];
     }
     const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
-    return getAnnotationPageUrls(canvas.annotations);
+    return getAnnotationPages(vault, canvas);
   }, [vault, lazyCanvas.canvasId]);
 
   useEffect(() => {
-    if (isTileLoaded && annotationUrls.length) {
-      void loadCanvasAnnotationPages(lazyCanvas.canvasId, annotationUrls);
+    if (isTileLoaded && annotationPages.length) {
+      void loadCanvasAnnotationPages(lazyCanvas.canvasId, annotationPages);
     }
-  }, [isTileLoaded, lazyCanvas.canvasId, annotationUrls]);
+  }, [isTileLoaded, lazyCanvas.canvasId, annotationPages]);
 
 
   let canvasSize: { width: number; height: number } | null = null;
@@ -74,28 +66,6 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     const canvas = vault.get({ id: lazyCanvas.canvasId, type: 'Canvas' });
     canvasSize = { width: canvas.width, height: canvas.height };
   }
-
-  const wordHighlightTones = useMemo(() => {
-    const tones: Partial<Record<Id, EntityHighlightTone>> = {};
-    for (const [entityId, wordIds] of Object.entries(indexes.entityToWords)) {
-      const tone = getEntityHighlightTone(
-        entityId,
-        annotations,
-        highlightedEntityCategories,
-      );
-      if (!tone) {
-        continue;
-      }
-      wordIds.forEach((wordId) => {
-        tones[wordId] = tone;
-      });
-    }
-    return tones;
-  }, [
-    annotations,
-    highlightedEntityCategories,
-    indexes.entityToWords,
-  ]);
 
   const location = useMemo(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
@@ -108,8 +78,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       id: a.id,
       path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       text: findTextualBodyValue(a) ?? orThrow('No body value'),
-      tone: wordHighlightTones[a.id],
-    })), [annotations, wordHighlightTones]);
+      entityClassificationId: entityClassificationByWord[a.id],
+    })), [annotations, entityClassificationByWord]);
 
   const blocks = useMemo(() => Object.values(annotations)
     .filter(isBlock)
@@ -123,10 +93,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return words;
     }
-    if(!selected.all.length) {
-      return [];
-    }
-    return words.filter((w) => selected.all.includes(w.id));
+    return words.filter((w) => selected.has(w.id));
   },
   [isScrolling, words, selected]);
 
@@ -137,10 +104,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     if(!isScrolling) {
       return blocks;
     }
-    if(!selected.all.length) {
-      return [];
-    }
-    return blocks.filter((b) => selected.all.includes(b.id));
+    return blocks.filter((b) => selected.has(b.id));
   },
   [isScrolling, blocks, selected, showLayoutElements]);
 
@@ -167,14 +131,14 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
-          {visibleWords.map(({ id, path, text, tone }) => (
+          {visibleWords.map(({ id, path, text, entityClassificationId }) => (
             <WordHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
               id={id}
               points={path}
               text={text}
-              tone={tone}
+              entityClassificationId={entityClassificationId}
               setTooltip={setTooltip}
             />
           ))}
@@ -184,18 +148,3 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     </>
   );
 });
-
-function getEntityHighlightTone(
-  entityId: Id,
-  annotations: Record<Id, Annotation>,
-  highlightedEntityCategories: Set<CidocEntityClassificationId>,
-): EntityHighlightTone | undefined {
-  const annotation = annotations[entityId];
-  if (!annotation) {
-    return undefined;
-  }
-  if (!isHighlightedEntity(annotation, highlightedEntityCategories)) {
-    return undefined;
-  }
-  return getCidocClassName(annotation);
-}

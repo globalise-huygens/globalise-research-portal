@@ -8,17 +8,33 @@ import {
 export type EntityBody = {
   type: EntityAnnotationBodyType;
   classified_as: EntityClassification;
+  label?: string;
+  value?: string | number;
   ascribes_classification: {
     id: string,
     type: string,
     _label: string
-  }
+  };
+  ascribes_appellation?: {
+    type: string;
+    content: string;
+  };
+  has_appellative_subject?: EntitySubject;
+  has_classificatory_subject?: EntitySubject;
+  has_dimension_subject?: EntitySubject;
+  unit?: EntityClassification;
 };
 
 export type EntityClassification = {
   id: string;
   type: string;
   _label: string;
+};
+
+export type EntitySubject = {
+  id: string;
+  type: string;
+  _label?: string;
 };
 const entityAnnotationBodyTypes = [
   'AppellativeStatus',
@@ -28,6 +44,19 @@ const entityAnnotationBodyTypes = [
 
 export type EntityAnnotationBodyType =
   (typeof entityAnnotationBodyTypes)[number];
+
+export function getEntitySubject(body: EntityBody): EntitySubject | undefined {
+  const subjectByBodyType: Record<EntityAnnotationBodyType, EntitySubject | undefined> = {
+    AppellativeStatus: body.has_appellative_subject,
+    ClassificatoryStatus: body.has_classificatory_subject,
+    Dimension: body.has_dimension_subject,
+  };
+
+  return subjectByBodyType[body.type]
+    ?? body.has_appellative_subject
+    ?? body.has_classificatory_subject
+    ?? body.has_dimension_subject;
+}
 
 export function assertEntityBody(
   body: Body | undefined,

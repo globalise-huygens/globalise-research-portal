@@ -1,20 +1,58 @@
 .search-field {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    min-width: 0;
     width: 100%;
-    padding-block: 0.25rem;
-    padding-inline: 0.75rem;
+    height: var(--s48, 48px);
+    align-items: stretch;
+    border-bottom: 1px solid rgb(255 255 255 / 0.5);
+
+    .input {
+        display: flex;
+        min-width: 0;
+        height: 100%;
+        flex: 1 1 auto;
+        align-items: center;
+        cursor: text;
+    }
 
     .input-container {
-        flex-grow: 1;
+        min-width: 0;
+        height: 100%;
+        flex: 1 1 auto;
+
+        :global(.cm-editor) {
+            height: 100%;
+            background: transparent;
+        }
+
+        :global(.cm-scroller) {
+            height: 100%;
+            align-items: center;
+        }
 
         :global(.cm-content) {
+            min-height: 100%;
+            align-content: center;
+            padding-block: 0;
             padding-inline: var(--s4, 4px);
+        }
+
+        :global(.cm-editor:not(.cm-focused) .cm-content > .cm-line:only-child:empty)::before,
+        :global(.cm-editor:not(.cm-focused) .cm-content > .cm-line:only-child:has(> br:only-child))::before {
+            content: 'Type to search…';
+            color: var(--color-neutral-400, #999);
+            font-family: var(--font-serif, "Noto Serif", serif);
+            font-size: var(--text-lg, 1.125rem);
+            font-style: italic;
         }
 
         .searchText {
             color: var(--color-brand-white, #fff);
+        }
+
+        /* The library's fallback Lucene theme is injected after this stylesheet. */
+        :global(.cm-content .cm-line > span:not(.cm-entity)) {
+            color: var(--color-brand-white, #fff) !important;
         }
 
         :global(.cm-tooltip.cm-tooltip-autocomplete) {
@@ -81,12 +119,12 @@
 
     .buttons {
         display: flex;
-        height: var(--s48, 48px);
+        height: 100%;
         padding: var(--s4, 4px);
         align-items: center;
         gap: var(--s4, 4px);
         flex-shrink: 0;
-        background: #242529;
+        background: var(--color-neutral-800, #363636);
         box-shadow: 0 4px 12px 0 rgb(0 0 0 / 15%);
 
         button {
@@ -120,7 +158,4 @@
         }
     }
 
-    .entity {
-        border-radius: 0;
-    }
 }

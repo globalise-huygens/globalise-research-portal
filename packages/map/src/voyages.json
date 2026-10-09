@@ -1,0 +1,1005 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.217612,
+            6.033871
+          ],
+          [
+            122.07389,
+            6.91028
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Galle (city)",
+        "to": "Zamboanga"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            104.40581,
+            -0.85907
+          ],
+          [
+            80.71648,
+            7.60632
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Berhala",
+        "to": "Sri Lanka"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            81.5,
+            6.366666667
+          ],
+          [
+            79.19842,
+            9.28106
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Yala",
+        "to": "Pamban Channel"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            79.49353,
+            10.39505
+          ],
+          [
+            134.55059,
+            -6.1921
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Muthupet",
+        "to": "Southwestern Islands"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            127.4,
+            0.433333333
+          ],
+          [
+            100.6571,
+            -0.8006
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Moty",
+        "to": "Solok"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.93983,
+            8.60635
+          ],
+          [
+            127.60933,
+            -1.83535
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Alwa Tirunagari",
+        "to": "Pulau Gommu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            128.697814,
+            -3.585852
+          ],
+          [
+            83.89751,
+            18.2989
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Siri-Sori",
+        "to": "Srikakulam"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            78.5,
+            9.5
+          ],
+          [
+            102.26554,
+            -3.80044
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Marava kingdom",
+        "to": "Bengkulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            125.4166667,
+            2.75
+          ],
+          [
+            100.8756,
+            -1.9171
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Siau",
+        "to": "Airhaji"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            91.825347,
+            22.327767
+          ],
+          [
+            78.11906,
+            8.49725
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Chattogram",
+        "to": "Tiruchchendur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            79.927593,
+            8.793984
+          ],
+          [
+            100.34122,
+            -0.99194
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Arippu",
+        "to": "Pulau Pisang (West Sumatra)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            43.55506,
+            15.01145
+          ],
+          [
+            118.91083,
+            -3.46667
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Al Muh\u0101b",
+        "to": "Pambuang"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36304,
+            22.56263
+          ],
+          [
+            125.41667,
+            2.34583
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kolkata",
+        "to": "Tahulandang"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            79.998829,
+            6.420475
+          ],
+          [
+            79.97171,
+            8.83635
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Bentota",
+        "to": "Nanaddan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            123.098,
+            -4.9915
+          ],
+          [
+            106.90667,
+            -6.10806
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kulisusu",
+        "to": "Kali Sunter"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            105.2706,
+            -5.8258
+          ],
+          [
+            99.01165,
+            12.09032
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Legundi",
+        "to": "Tanintharyi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            43.33557,
+            12.60416
+          ],
+          [
+            101.2473,
+            2.91865
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Bab el Mandeb",
+        "to": "Pulau Pintu Gedung"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.401654,
+            22.898553
+          ],
+          [
+            86.77755,
+            23.62085
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Hugli",
+        "to": "Panchet"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            99.01165,
+            12.09032
+          ],
+          [
+            72.97065,
+            18.3023
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Tanintharyi",
+        "to": "Danda-Rajpuri"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            78.05198,
+            8.39885
+          ],
+          [
+            110.43333,
+            -5.86667
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kulasekarapatnam",
+        "to": "Karimunjawa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            104.8333,
+            -2.3667
+          ],
+          [
+            120.8195,
+            1.0324
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Sungsang",
+        "to": "Baru"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            78.48358,
+            9.84701
+          ],
+          [
+            64.785432,
+            33.301655
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Sivaganga",
+        "to": "Afghanistan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            113.4746,
+            -7.1568
+          ],
+          [
+            72.96134,
+            20.76957
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pamekasan",
+        "to": "Bilimora"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            101.2473,
+            2.91865
+          ],
+          [
+            78.83077,
+            9.37158
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Pintu Gedung",
+        "to": "Ramanathapuram"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            101.089515,
+            4.616041
+          ],
+          [
+            85.87927,
+            20.46497
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Perak",
+        "to": "Cuttack"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            113.4746,
+            -7.1568
+          ],
+          [
+            78.5788,
+            9.10692
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pamekasan",
+        "to": "Nalla Tanni T\u012bvu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            127.3666667,
+            0.333333333
+          ],
+          [
+            109.676113,
+            -6.879051
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Makian",
+        "to": "Pekalongan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.833333,
+            6.5
+          ],
+          [
+            105.3166667,
+            -4.5
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Caduatte-corle",
+        "to": "Tulang Bawang"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            106.70083,
+            -6.55472
+          ],
+          [
+            87.9113,
+            21.79673
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Ciampea",
+        "to": "Hijli"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            75.02263,
+            14.13518
+          ],
+          [
+            100.5,
+            13.73333333
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kanara",
+        "to": "Bangkok"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            126.20823,
+            -8.71667
+          ],
+          [
+            101.250422,
+            6.869635
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Ade",
+        "to": "Pattani [Thailand]"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            101.9732,
+            2.3911
+          ],
+          [
+            123.098,
+            -4.9915
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Sungai Linggi",
+        "to": "Teluk Kulisusu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            130.3638,
+            -2.9908
+          ],
+          [
+            79.41875,
+            10.77378
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Hoti (river)",
+        "to": "Needamangalam"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            57.71899,
+            -20.37444
+          ],
+          [
+            105.8,
+            -5.83333
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Vieux Grand Port",
+        "to": "Kepulauan Sumur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.27171,
+            24.1839
+          ],
+          [
+            133.4325,
+            -4.1993
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Karimabad",
+        "to": "Pulau Adi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            114.95,
+            -8.25
+          ],
+          [
+            110.82611,
+            -7.57861
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Buleleng",
+        "to": "Keraton Surakarta Hadiningrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            104.8289,
+            -2.2849
+          ],
+          [
+            101.250422,
+            6.869635
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Air Banyuasin",
+        "to": "Pattani [Thailand]"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            111.0407,
+            -6.5671
+          ],
+          [
+            83.41148,
+            18.11692
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Tanjong",
+        "to": "Vizianagaram"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            106.775969,
+            -6.143392
+          ],
+          [
+            103.0,
+            5.0
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Angke, fort",
+        "to": "Terengganu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            110.15528,
+            -7.27667
+          ],
+          [
+            123.4053,
+            -10.6235
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kedu",
+        "to": "Batuisi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            110.45,
+            -5.85
+          ],
+          [
+            130.3638,
+            -2.9908
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Karimunjawa",
+        "to": "Hoti (river)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            55.524867,
+            -21.108332
+          ],
+          [
+            105.67771,
+            -6.04129
+          ]
+        ]
+      },
+      "properties": {
+        "from": "R\u00e9union",
+        "to": "Selat Sunda"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            101.9732,
+            2.3911
+          ],
+          [
+            -0.420341,
+            52.103321
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Sungai Linggi",
+        "to": "England"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            106.92528,
+            -6.12444
+          ],
+          [
+            81.134348,
+            16.187475
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Tugu",
+        "to": "Machilipatnam"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            79.87559,
+            10.29656
+          ],
+          [
+            65.71013,
+            31.61332
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Point Calimere",
+        "to": "Kandahar (Afghanistan)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            125.4166667,
+            2.75
+          ],
+          [
+            59.0,
+            35.0
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Pulau Siau",
+        "to": "Khorasan Province"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            129.456027,
+            -3.075147
+          ],
+          [
+            110.814915,
+            -7.56195
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Seram Island",
+        "to": "Surakarta"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.549644,
+            8.07988
+          ],
+          [
+            103.5,
+            2.0
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Kanniy\u0101kum\u0101ri",
+        "to": "Johor"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            129.872814,
+            32.742923
+          ],
+          [
+            86.71094,
+            20.29541
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Nagasaki",
+        "to": "Harispur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            122.989612,
+            -8.342583
+          ],
+          [
+            98.60028,
+            12.43954
+          ]
+        ]
+      },
+      "properties": {
+        "from": "Larantuka",
+        "to": "Myeik"
+      }
+    }
+  ]
+}

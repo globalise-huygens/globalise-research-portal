@@ -1,4 +1,8 @@
-import { setSelectedCanvas, useDocumentStore } from '@globalise/common/document';
+import {
+  type DocumentState,
+  setSelectedCanvas,
+  useDocumentStore,
+} from '@globalise/common/document';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestCanvasNavigation,
@@ -11,8 +15,9 @@ import {
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { isEntity } from '@globalise/common/annotation';
+import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
+import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
@@ -48,12 +53,24 @@ export function ManifestPage() {
     });
   }
 
+  useEffect(logTextRanges, []);
+
+  function logTextRanges() {
+    return useDocumentStore.subscribe((state, prev) => {
+      const annotations = findSelectedAnnotations(state);
+      if (!annotations || annotations === findSelectedAnnotations(prev)) {
+        return;
+      }
+      console.info('textRanges', state.selectedCanvasId, findTextRanges(annotations));
+    });
+  }
+
   useEffect(navigateToObjectCard, []);
 
   function navigateToObjectCard() {
     return useDocumentStore.subscribe((state, prev) => {
-      const currentClickedId = state.clickedId;
-      const prevClickedId = prev.clickedId;
+      const currentClickedId = state.clicked?.id;
+      const prevClickedId = prev.clicked?.id;
       if (!currentClickedId || currentClickedId === prevClickedId) {
         return;
       }
@@ -113,7 +130,13 @@ export function ManifestPage() {
           }
           bottom={<ManifestCanvasNavigation/>}
         />
+        <ManifestEntityPreview />
       </ManifestLoader>
     </ViewerProvider>
   );
+}
+
+function findSelectedAnnotations(state: DocumentState) {
+  const { selectedCanvasId, canvases } = state;
+  return selectedCanvasId ? canvases[selectedCanvasId]?.annotations : undefined;
 }

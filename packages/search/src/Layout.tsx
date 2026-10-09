@@ -2,18 +2,28 @@ import Facets from './Facets';
 import Selection from './Selection';
 import SearchField from './SearchField';
 import Results from './Results';
+import ResultsHeader from './ResultsHeader';
 import classes from './Layout.module.css';
 
 export default function Layout() {
   return (
     <div className={classes.search}>
+      <div className={classes.searchHeader}>
+        <SearchField/>
+      </div>
+
+      <div className={classes.facetSearch} aria-hidden="true"/>
+
       <div className={classes.facets}>
         <Facets/>
       </div>
 
-      <div className={classes.results}>
+      <div className={classes.selectionSlot}>
         <Selection/>
-        <SearchField/>
+      </div>
+
+      <div className={classes.resultList}>
+        <ResultsHeader/>
         <Results/>
       </div>
     </div>

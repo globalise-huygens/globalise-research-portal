@@ -73,20 +73,10 @@ export type {
 export { EntityPreviewCard } from './EntityPreviewCard';
 export type {
   EntityPreviewCardAutomationBadge,
-  EntityPreviewCardBaseData,
-  EntityPreviewCardCommodityData,
   EntityPreviewCardData,
-  EntityPreviewCardDateData,
-  EntityPreviewCardDimensionsData,
-  EntityPreviewCardDocumentData,
-  EntityPreviewCardKind,
-  EntityPreviewCardOrganisationData,
-  EntityPreviewCardPersonData,
-  EntityPreviewCardPlaceData,
-  EntityPreviewCardPolityData,
+  EntityPreviewCardType,
+  EntityPreviewCardProperty,
   EntityPreviewCardProps,
-  EntityPreviewCardQuantityData,
-  EntityPreviewCardShipData,
 } from './EntityPreviewCard';
 
 export { EntityTag, entityTagVariants } from './EntityTag';
@@ -174,3 +164,4 @@ export type { SearchBarProps } from './SearchBar';
 
 export { ArticleRow } from './ArticleRow';
 export type { ArticleRowProps } from './ArticleRow';
+export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';

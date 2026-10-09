@@ -3,18 +3,18 @@
 ## Demo
 
 ```shell
-npm run demo
+pnpm demo
 ```
 
 ## Screenshot
 First time:
 ```shell
-npx playwright install chromium
+pnpm exec playwright install chromium
 ```
 
 ```shell
-npm run demo
-npm run screenshot
+pnpm demo
+pnpm screenshot
 ```
 
 Word and highlight locations in generated `demo/static/3598_0797-screenshot.jpg` should match up with `3598_0797-valid.jpg`.

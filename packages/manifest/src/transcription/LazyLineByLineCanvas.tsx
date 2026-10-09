@@ -4,34 +4,35 @@ import {
   useAnnotations,
   usePages,
 } from '@globalise/common/document';
+import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
 import { CanvasLabel } from '../CanvasLabel.tsx';
 
 type Props = {
   canvasId: string;
-  annotationUrls: string[];
+  annotationPages: CanvasAnnotationPage[];
   scale: number;
   showLayoutElements: boolean;
   isCurrentCanvas: boolean;
 };
 
 export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
-  { canvasId, annotationUrls, scale, showLayoutElements, isCurrentCanvas }: Props,
+  { canvasId, annotationPages, scale, showLayoutElements, isCurrentCanvas }: Props,
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(
     () => {
-      if (annotationUrls.length) {
-        void loadCanvasAnnotationPages(canvasId, annotationUrls);
+      if (annotationPages.length) {
+        void loadCanvasAnnotationPages(canvasId, annotationPages);
       }
     },
-    [canvasId, annotationUrls],
+    [canvasId, annotationPages],
   );
 
   const isDataReady = isCanvasReady && hasAnnotations;
-  const hasAnnotationPages = !!annotationUrls.length;
+  const hasAnnotationPages = !!annotationPages.length;
   const isLoading = !error && hasAnnotationPages && !isDataReady;
   const isContentReady = !error && hasAnnotationPages && isDataReady;
 

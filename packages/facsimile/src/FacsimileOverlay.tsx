@@ -10,6 +10,7 @@ import {
 import {
   CanvasId,
   useAnnotations,
+  useWordEntityClassifications,
 } from '@globalise/common/document';
 import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
@@ -19,6 +20,7 @@ import { orThrow } from '@globalise/common';
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations(canvasId);
+  const entityClassificationByWord = useWordEntityClassifications(canvasId);
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
 
   const words = useMemo(() => {
@@ -72,6 +74,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
               id={id}
               points={path}
               text={text}
+              entityClassificationId={entityClassificationByWord[id]}
               setTooltip={setTooltip}
             />
           ))}

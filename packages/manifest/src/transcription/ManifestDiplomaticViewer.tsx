@@ -1,4 +1,5 @@
-import { useSelectedCanvas } from '@globalise/common/document';
+import type { CanvasAnnotationPage } from '@globalise/common/annotation';
+import { getAnnotationPages, useSelectedCanvas } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
@@ -10,7 +11,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { getAnnotationPageUrls } from '../getAnnotationPageUrls.ts';
 import { getCanvasIndex } from './canvasIndexAttribute.ts';
 import { LazyDiplomaticCanvas } from './LazyDiplomaticCanvas.tsx';
 import { useScrollToTranscription } from './useScrollToTranscription.tsx';
@@ -19,7 +19,7 @@ type CanvasInfo = {
   canvasId: string;
   width: number;
   height: number;
-  annotationUrls: string[];
+  annotationPages: CanvasAnnotationPage[];
 };
 
 type Props = {
@@ -60,7 +60,7 @@ export function ManifestDiplomaticViewer({
         canvasId: canvas.id,
         width: canvas.width,
         height: canvas.height,
-        annotationUrls: getAnnotationPageUrls(canvas.annotations),
+        annotationPages: getAnnotationPages(vault, canvas),
       };
     });
   }, [vault, manifestId, isManifestReady]);
@@ -270,7 +270,7 @@ export function ManifestDiplomaticViewer({
               canvasWidth={info.width}
               canvasHeight={info.height}
               containerWidth={containerWidth}
-              annotationUrls={info.annotationUrls}
+              annotationPages={info.annotationPages}
               index={i}
               isVisible={visibleCanvases.has(i)}
               renderDistance={renderDistance}

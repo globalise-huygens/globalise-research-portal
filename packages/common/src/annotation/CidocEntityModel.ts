@@ -17,29 +17,153 @@ export const cidocClassNames = [
 
 export type CidocClassName = (typeof cidocClassNames)[number];
 
-const cidocClassNameByClassificationId = {
-  'gan:DATE': 'cidoc-time-span',
-  'gan:PER_NAME': 'cidoc-actor',
-  'gan:ORG': 'cidoc-actor',
-  'gan:LOC_NAME': 'cidoc-place',
-  'gan:LOC_ADJ': 'cidoc-place',
-  'gan:DOC': 'cidoc-conceptual-object',
-  'gan:CMTY_QUANT': 'cidoc-dimension',
-  'gan:CMTY_NAME': 'cidoc-physical-thing',
-  'gan:SHIP': 'cidoc-physical-thing',
-  'gan:CMTY_QUAL': 'cidoc-type',
-  'gan:ETH_REL': 'cidoc-type',
-  'gan:PER_ATTR': 'cidoc-type',
-  'gan:PRF': 'cidoc-type',
-  'gan:SHIP_TYPE': 'cidoc-type',
-  'gan:STATUS': 'cidoc-type',
-} as const satisfies Record<string, CidocClassName>;
+export type EntityPresentationType =
+  | 'commodity'
+  | 'date'
+  | 'dimensions'
+  | 'document'
+  | 'organisation'
+  | 'person'
+  | 'place'
+  | 'ship';
+
+export type EntityPreviewStrategy =
+  | 'classification'
+  | 'dimension'
+  | 'named';
+
+export type EntityClassificationDefinition = {
+  cidocClassName: CidocClassName;
+  highlightLabel: string;
+  highlightGroup?: {
+    id: string;
+    label: string;
+  };
+  presentationType: EntityPresentationType;
+  previewStrategy: EntityPreviewStrategy;
+  typeLabel?: string;
+};
+
+const nerClassificationBase =
+  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:';
+
+const personHighlightGroup = { id: 'persons', label: 'Persons' } as const;
+const organisationHighlightGroup = { id: 'organisations', label: 'Organisations' } as const;
+const shipHighlightGroup = { id: 'ships', label: 'Ships' } as const;
+const commodityHighlightGroup = { id: 'commodities', label: 'Commodities' } as const;
+const placeHighlightGroup = { id: 'places', label: 'Places' } as const;
+
+const entityClassificationDefinitionById = {
+  'ner:per_name': {
+    cidocClassName: 'cidoc-actor',
+    highlightLabel: 'by Name',
+    highlightGroup: personHighlightGroup,
+    presentationType: 'person',
+    previewStrategy: 'named',
+  },
+  'ner:per_attr': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Attributes',
+    highlightGroup: personHighlightGroup,
+    presentationType: 'person',
+    previewStrategy: 'classification',
+  },
+  'ner:prf': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Profession',
+    highlightGroup: personHighlightGroup,
+    presentationType: 'person',
+    previewStrategy: 'classification',
+  },
+  'ner:status': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Civic Status',
+    highlightGroup: personHighlightGroup,
+    presentationType: 'person',
+    previewStrategy: 'classification',
+  },
+  'ner:eth_rel': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Ethno-Religious Appellation',
+    highlightGroup: personHighlightGroup,
+    presentationType: 'person',
+    previewStrategy: 'classification',
+  },
+  'ner:org': {
+    cidocClassName: 'cidoc-actor',
+    highlightLabel: 'by Name',
+    highlightGroup: organisationHighlightGroup,
+    presentationType: 'organisation',
+    previewStrategy: 'classification',
+  },
+  'ner:ship': {
+    cidocClassName: 'cidoc-physical-thing',
+    highlightLabel: 'by Name',
+    highlightGroup: shipHighlightGroup,
+    presentationType: 'ship',
+    previewStrategy: 'named',
+  },
+  'ner:ship_type': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Type',
+    highlightGroup: shipHighlightGroup,
+    presentationType: 'ship',
+    previewStrategy: 'classification',
+  },
+  'ner:cmty_name': {
+    cidocClassName: 'cidoc-physical-thing',
+    highlightLabel: 'by Name',
+    highlightGroup: commodityHighlightGroup,
+    presentationType: 'commodity',
+    previewStrategy: 'named',
+  },
+  'ner:cmty_qual': {
+    cidocClassName: 'cidoc-type',
+    highlightLabel: 'by Qualifier',
+    highlightGroup: commodityHighlightGroup,
+    presentationType: 'commodity',
+    previewStrategy: 'named',
+  },
+  'ner:date': {
+    cidocClassName: 'cidoc-time-span',
+    highlightLabel: 'Dates',
+    presentationType: 'date',
+    previewStrategy: 'named',
+  },
+  'ner:loc_name': {
+    cidocClassName: 'cidoc-place',
+    highlightLabel: 'by Name',
+    highlightGroup: placeHighlightGroup,
+    presentationType: 'place',
+    previewStrategy: 'named',
+  },
+  'ner:loc_adj': {
+    cidocClassName: 'cidoc-place',
+    highlightLabel: 'by Location Form',
+    highlightGroup: placeHighlightGroup,
+    presentationType: 'place',
+    previewStrategy: 'named',
+  },
+  'ner:doc': {
+    cidocClassName: 'cidoc-conceptual-object',
+    highlightLabel: 'Documents',
+    presentationType: 'document',
+    previewStrategy: 'classification',
+  },
+  'ner:cmty_quant': {
+    cidocClassName: 'cidoc-dimension',
+    highlightLabel: 'Unit',
+    presentationType: 'dimensions',
+    previewStrategy: 'dimension',
+    typeLabel: 'Exchange Unit',
+  },
+} as const satisfies Record<string, EntityClassificationDefinition>;
 
 export type CidocEntityClassificationId =
-  keyof typeof cidocClassNameByClassificationId;
+  keyof typeof entityClassificationDefinitionById;
 
 export const cidocEntityClassificationIds = Object.keys(
-  cidocClassNameByClassificationId,
+  entityClassificationDefinitionById,
 ) as CidocEntityClassificationId[];
 
 export function getCidocClassName(
@@ -55,7 +179,19 @@ export function getCidocClassName(
 export function getCidocClassNameByClassificationId(
   classificationId: CidocEntityClassificationId,
 ) {
-  return cidocClassNameByClassificationId[classificationId];
+  return getEntityClassificationDefinition(classificationId).cidocClassName;
+}
+
+export function getEntityClassificationDefinition(
+  classificationId: CidocEntityClassificationId,
+): EntityClassificationDefinition {
+  return entityClassificationDefinitionById[classificationId];
+}
+
+export function getEntityClassificationUri(
+  classificationId: CidocEntityClassificationId,
+): string {
+  return `${nerClassificationBase}${classificationId.replace(/^ner:/, '')}`;
 }
 
 export function getCidocEntityClassificationId(
@@ -88,4 +224,3 @@ function getFallbackCidocClassName(
       return 'cidoc-dimension';
   }
 }
-

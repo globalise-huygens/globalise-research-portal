@@ -31,7 +31,7 @@ export function FacsimileView(
       >
         <Viewer options={{
           showNavigationControl: false,
-          gestureSettingsMouse: { clickToZoom: false },
+          gestureSettingsMouse: { clickToZoom: false, dblClickToZoom: true },
         }}/>
       </div>
       <FacsimileOverlay canvasId={canvasId}/>

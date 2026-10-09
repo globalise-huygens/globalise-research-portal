@@ -1,19 +1,25 @@
 # Build
 FROM node:24-alpine AS builder
-RUN apk add --no-cache git
-RUN corepack enable
-WORKDIR /repos
 
-RUN git clone --depth 1 https://github.com/globalise-huygens/globalise-design-system.git
-RUN cd globalise-design-system && pnpm install --frozen-lockfile && pnpm build
+RUN apk add --no-cache git
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
+RUN ENV="$HOME/.shrc" SHELL=/bin/sh npx --yes get-pnpm 11.25.0 \
+    && command -v pnpm \
+    && pnpm --version
 
 WORKDIR /repos/globalise-research-portal
+
 COPY . .
-RUN npm ci
-RUN npm run build
+
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
 # Run
 FROM node:24-alpine AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production

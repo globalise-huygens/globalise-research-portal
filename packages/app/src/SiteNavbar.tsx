@@ -23,6 +23,7 @@ export function SiteNavbar() {
           <NavLink href="/manifest">Manifest Viewer</NavLink>
           <NavLink href="/catalog">Catalog</NavLink>
           <NavLink href="/object-card">Object Card</NavLink>
+          <NavLink href="/map">World map</NavLink>
         </NavLinks>
       </Navbar>
     </header>

@@ -5,6 +5,7 @@ import {
   useLoadCanvas,
   setSelectedCanvas,
   useIsCanvasInit,
+  getAnnotationPages,
 } from '@globalise/common/document';
 
 export function useCanvasPages(
@@ -43,10 +44,7 @@ export function useCanvasPages(
       return;
     }
     setSelectedCanvas(current.id, 'external');
-    const urls = current.annotations
-      .filter((a) => a.type === 'AnnotationPage')
-      .map((a) => a.id);
-    void loadPages(current.id, urls);
+    void loadPages(current.id, getAnnotationPages(vault, current));
     if (current.id !== canvasId) {
       onPageChange(current.id);
     }

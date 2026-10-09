@@ -17,6 +17,7 @@ import {
   type LanguageValue,
 } from '@globalise/common';
 import {
+  ConceptHierarchy,
   ConceptList,
   getConceptLabel,
   MatchList,
@@ -75,6 +76,7 @@ export function ConceptCard() {
     (concept.hasTopConcept?.length ?? 0) +
     (concept.broader?.length ?? 0) +
     (concept.narrower?.length ?? 0) +
+    (concept.topConceptOf?.length ?? 0) +
     (concept.related?.length ?? 0) >
     0;
   const hasLeftPanel = hasDefinitions || hasExternal;
@@ -185,25 +187,12 @@ export function ConceptCard() {
             <ObjectCardPanel side="right">
               <ObjectCardSection title="Concept Graph" className="graph">
                 <ConceptList
-                  title="Scheme"
-                  concepts={concept.inScheme}
-                  onSelect={handleSelect}
-                />
-                <ConceptList
                   title="Top concepts"
                   concepts={concept.hasTopConcept}
                   onSelect={handleSelect}
                 />
-                <ConceptList
-                  title="Broader"
-                  concepts={concept.broader}
-                  childKey="broader"
-                  onSelect={handleSelect}
-                />
-                <ConceptList
-                  title="Narrower"
-                  concepts={concept.narrower}
-                  childKey="narrower"
+                <ConceptHierarchy
+                  concept={concept}
                   onSelect={handleSelect}
                 />
                 <ConceptList
