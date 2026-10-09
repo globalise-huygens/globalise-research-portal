@@ -1,0 +1,47 @@
+.histogram {
+    margin-inline: var(--s8);
+    fill: var(--color-neutral-50);
+
+    .barchart-bar {
+         pointer-events: all;
+
+        .background {
+            fill: none;
+            stroke: none;
+        }
+
+        .fill {
+            opacity: .4;
+            stroke-opacity: 0;
+            transition: opacity 0.15s ease-in-out;
+        }
+
+        &.active .fill {
+            opacity: .8
+        }
+
+        &:hover {
+            .background {
+                fill: var(--color-neutral-800);
+            }
+
+            .fill {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.tooltip {
+    pointer-events: none;
+    background-color: var(--color-neutral-800);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.15s ease-in-out;
+    font-size: .6em;
+    padding: .25em .5em;
+    border-radius: .5em;
+
+    .years {
+        font-weight: 700;
+    }
+}

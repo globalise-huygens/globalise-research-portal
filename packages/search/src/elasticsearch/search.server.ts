@@ -1,17 +1,15 @@
 import { z } from 'zod';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
-import { facets, getSearchQuery } from './elastic.server';
+import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 
 import type { EntityTagType } from '@globalise/design';
-import type { TreeQuery } from '@knaw-huc/searchfield';
+import type { GlobaliseSearchState } from '../utils/getSearchState';
 
 const PRE_TAG = '\uE000';
 const POST_TAG = '\uE001';
 
-export type SearchRequest = {
-  query?: TreeQuery;
-  facets: Record<string, string[]>;
+export type SearchRequest = GlobaliseSearchState & {
   offset?: number;
   limit?: number;
 };
@@ -41,12 +39,7 @@ type ElasticDocument = {
   endDate: string;
 };
 
-const SearchRequestSchema = z.object({
-  query: z.looseObject({}).optional() as unknown as z.ZodType<TreeQuery | undefined>,
-  facets: z.record(z.string(), z.array(z.string())).refine(
-    (record) => Object.keys(record).every((key) => Object.keys(facets).includes(key)),
-    { error: 'Invalid facet key applied!' },
-  ),
+const SearchRequestSchema = GlobaliseSearchStateSchema.extend({
   offset: z.number().min(0).optional(),
   limit: z.number().min(1).optional(),
 });
