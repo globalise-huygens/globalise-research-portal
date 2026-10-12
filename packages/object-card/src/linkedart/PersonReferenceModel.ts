@@ -1,8 +1,9 @@
 import { asArray, fetchJson, findByPath, getJsonUrl, isUrl, type LinkedArtNode } from '@globalise/common';
 import type { ReferencePanelItemData } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
+import { createResourceCache } from './ResourceCache.ts';
 
-const requests = new Map<string, Promise<ReferencePanelItemData[]>>();
+const cachedCollection = createResourceCache<ReferencePanelItemData[]>(32);
 
 function resource(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -85,11 +86,12 @@ async function loadCollection(uri: string): Promise<ReferencePanelItemData[]> {
   let next = resourceUri(collection.first);
   const visited = new Set<string>();
   while (next) {
-    if (visited.has(next)) {
+    const pageUri = jsonUri(next);
+    if (visited.has(pageUri)) {
       throw new Error('Repeated annotation page');
     }
-    visited.add(next);
-    const page = resource(await fetchJson<unknown>(jsonUri(next)));
+    visited.add(pageUri);
+    const page = resource(await fetchJson<unknown>(pageUri));
     if (!page) {
       throw new Error('Invalid annotation page');
     }
@@ -104,19 +106,14 @@ export async function loadPersonReferences(entity: LinkedArtNode): Promise<Refer
   const collections = findByPath(entity, ['subject_of'])
     .filter((reference) => hasType(reference, 'AnnotationCollection'));
   const groups = await Promise.all(links.map(async (link) => {
-    if (!link.id || !collections.some((reference) => reference.id === link.id)) {
+    const uri = link.id;
+    if (!uri || !collections.some((reference) => reference.id === uri)) {
       return [link];
     }
-    let request = requests.get(link.id);
-    if (!request) {
-      request = loadCollection(link.id);
-      requests.set(link.id, request);
-    }
     try {
-      const items = await request;
+      const items = await cachedCollection(uri, () => loadCollection(uri));
       return items.length ? items : [link];
     } catch {
-      requests.delete(link.id);
       return [link];
     }
   }));

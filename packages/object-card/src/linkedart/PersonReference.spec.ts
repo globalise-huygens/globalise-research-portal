@@ -86,4 +86,15 @@ describe('person corpus references', () => {
     expect(await loadPersonReferences(entity)).toHaveLength(1);
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it('recognizes a repeated page with and without the JSON suffix', async () => {
+    const entity = person('normalized-cycle');
+    const page = `${base}person:normalized-cycle.annotations/page-1`;
+    const fetch = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ first: page })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ items: [], next: `${page}.json` })));
+    vi.stubGlobal('fetch', fetch);
+    expect(await loadPersonReferences(entity)).toEqual(getPersonReferenceLinks(entity));
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });
