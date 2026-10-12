@@ -191,6 +191,20 @@ export type ObjectCardSectionProps = {
   children?: React.ReactNode;
 };
 
+export type ObjectCardDisclosureButtonProps = Omit<AriaButtonProps, 'className' | 'style' | 'children'> & {
+  className?: string;
+  children?: React.ReactNode;
+};
+
+function ObjectCardDisclosureButton({ className, children, ...props }: ObjectCardDisclosureButtonProps) {
+  return (
+    <AriaButton className={cn('section-toggle', className)} {...props}>
+      {children}
+      <IconExpandSection aria-hidden="true" className="section-toggle-icon" />
+    </AriaButton>
+  );
+}
+
 function ObjectCardSection({
   title,
   scrollable,
@@ -219,18 +233,13 @@ function ObjectCardSection({
     >
       {title && isCollapsible ? (
         <AriaHeading level={3} id={headingId} className="section-heading">
-          <AriaButton
+          <ObjectCardDisclosureButton
             aria-controls={contentId}
             aria-expanded={isExpanded}
-            className="section-toggle"
             onPress={() => setIsExpanded((expanded) => !expanded)}
           >
             <span>{title}</span>
-            <IconExpandSection
-              aria-hidden="true"
-              className="section-toggle-icon"
-            />
-          </AriaButton>
+          </ObjectCardDisclosureButton>
         </AriaHeading>
       ) : title ? (
         <AriaHeading
@@ -410,6 +419,7 @@ export {
   ObjectCardAction,
   objectCardActionVariants,
   ObjectCardBody,
+  ObjectCardDisclosureButton,
   ObjectCardExternalLink,
   ObjectCardFooter,
   ObjectCardHeader,
