@@ -1,4 +1,9 @@
 import './metadata.css';
 
 export { MetadataPanel } from './MetadataPanel.tsx';
-export { TocPanel } from './toc';
+export {
+  TocPanel,
+  useCanvasDocuments,
+  type CanvasDocuments,
+  type ManifestDocument,
+} from './toc';

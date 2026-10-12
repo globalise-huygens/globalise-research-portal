@@ -6,18 +6,28 @@ import {
 } from '@globalise/common/document';
 import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
-import { CanvasLabel } from '../CanvasLabel.tsx';
+import type { CanvasDocuments } from '@globalise/metadata';
+import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
+import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 
 type Props = {
   canvasId: string;
   annotationPages: CanvasAnnotationPage[];
+  canvasDocuments?: CanvasDocuments;
   scale: number;
   showLayoutElements: boolean;
   isCurrentCanvas: boolean;
 };
 
 export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
-  { canvasId, annotationPages, scale, showLayoutElements, isCurrentCanvas }: Props,
+  {
+    canvasId,
+    annotationPages,
+    canvasDocuments,
+    scale,
+    showLayoutElements,
+    isCurrentCanvas,
+  }: Props,
 ) {
   const annotations = useAnnotations(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
@@ -46,7 +56,12 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
       background: 'var(--color-parchment-50)',
       boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
     }}>
-      <CanvasLabel canvasId={canvasId} isCurrent={isCurrentCanvas} />
+      <CanvasHeaderLabel
+        canvasId={canvasId}
+        canvasDocuments={canvasDocuments}
+        isCurrent={isCurrentCanvas}
+      />
+      <CanvasFooterLabel canvasDocuments={canvasDocuments} isCurrent={isCurrentCanvas}/>
       {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
       {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}

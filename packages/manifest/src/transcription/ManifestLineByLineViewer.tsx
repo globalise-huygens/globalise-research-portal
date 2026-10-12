@@ -7,6 +7,7 @@ import {
 import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useCanvasDocuments } from '@globalise/metadata';
 import { useEffect, useMemo, useRef } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 import {
@@ -38,6 +39,7 @@ export function ManifestLineByLineViewer({
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
   const transcriptionScale = useDiplomaticViewScale();
+  const canvasDocuments = useCanvasDocuments();
 
   const canvasInfos: CanvasInfo[] = useMemo(() => {
     if (!manifestId || !isManifestReady) {
@@ -163,6 +165,7 @@ export function ManifestLineByLineViewer({
           <LazyLineByLineCanvas
             canvasId={canvasInfos[index].canvasId}
             annotationPages={canvasInfos[index].annotationPages}
+            canvasDocuments={canvasDocuments.get(canvasInfos[index].canvasId)}
             scale={transcriptionScale}
             showLayoutElements={showLayoutElements}
             isCurrentCanvas={selectedCanvasId === canvasInfos[index].canvasId}

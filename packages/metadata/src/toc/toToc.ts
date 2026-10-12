@@ -1,5 +1,6 @@
 import type { Vault } from '@iiif/helpers/vault';
 import { getValue } from '@iiif/helpers';
+import type { MetadataItem } from '@iiif/presentation-3';
 import type { CanvasId } from '@globalise/common/document';
 import { findThumbnail } from '@knaw-huc/osd-iiif-viewer';
 
@@ -21,6 +22,8 @@ export type ManifestDocument = {
  * Create a table of contents from manifest ranges:
  * the root manifest range contains document ranges,
  * each one referring to all of its canvases.
+ * Documents are sorted by scan range.
+ * Documents without scans are filtered out.
  */
 export function toToc(
   vault: Vault,
@@ -42,7 +45,14 @@ export function toToc(
 
   return manifestRange.items
     .filter((item) => item.type === 'Range')
-    .map((item) => toDocument(vault, item.id, scanNumbers));
+    .map((item) => toDocument(vault, item.id, scanNumbers))
+    .filter((document) => document.scans.length)
+    .sort(compareScanRanges);
+}
+
+function compareScanRanges(a: ManifestDocument, b: ManifestDocument): number {
+  return a.scans[0].scanNumber - b.scans[0].scanNumber
+    || a.scans.at(-1)!.scanNumber - b.scans.at(-1)!.scanNumber;
 }
 
 function toScanNumbers(canvasRefs: { id: string }[]): Map<CanvasId, number> {
@@ -77,14 +87,21 @@ function toDocument(
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
     scans.push({ canvasId: canvasId, scanNumber, thumbnailUrl });
   }
-  const tanap = range.metadata.find(
-    (item) => getValue(item.label) === 'TANAP-id',
-  );
+  scans.sort((a, b) => a.scanNumber - b.scanNumber);
+  const title = findMetadataValue(range.metadata, 'Title');
   return {
     id: range.id,
-    label: getValue(range.label),
+    label: title ?? getValue(range.label),
     metadataUrl: range.seeAlso[0]?.id,
-    tanapId: tanap && getValue(tanap.value),
+    tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
     scans,
   };
+}
+
+function findMetadataValue(
+  metadata: MetadataItem[],
+  label: string,
+): string | undefined {
+  const item = metadata.find((item) => getValue(item.label) === label);
+  return item && getValue(item.value);
 }
