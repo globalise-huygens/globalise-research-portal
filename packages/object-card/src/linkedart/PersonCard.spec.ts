@@ -12,7 +12,7 @@ import {
 import { getRelationValue } from './RelationValueModel.ts';
 import { resolveRelationValue } from './RelationValueResolver.ts';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
-import { formatDateRange, formatTimespan, formatTimespanBoundaries } from './TimespanFormat.ts';
+import { formatDateRange, formatTimespan, formatTimespanBoundaries, formatTimespanSummary } from './TimespanFormat.ts';
 import { SourceList } from './SourceList.tsx';
 
 // The shared barrel initializes a browser-only SVG parser; these tests render HTML.
@@ -91,8 +91,8 @@ describe('person claim evidence', () => {
     }));
     expect(html).not.toContain('Directeur');
     expect(html).not.toContain('Gouverneur');
-    expect(html.match(/Occupation or status not recorded/g)).toHaveLength(2);
-    expect(html.match(/Earliest start: 1722-01-01/g)).toHaveLength(2);
+    expect(html).not.toContain('Occupation or status not recorded');
+    expect(html.match(/Start: on or after 1722-01-01/g)).toHaveLength(2);
     expect(html).toContain('director');
     expect(html.match(/Occupations and statuses/g)).toHaveLength(1);
   });
@@ -373,7 +373,7 @@ describe('readable person sources', () => {
 });
 
 describe('person dates and event details', () => {
-  it('shows full date bounds once in the occupation header without creating empty details', () => {
+  it('shows a compact date summary once in the occupation header without creating empty details', () => {
     const body = renderToStaticMarkup(createElement(PersonCardBody, {
       entity: { type: 'Person', is_social_status_subject_of: [{
         type: 'SocialStatus', ascribes_social_status: [occupation],
@@ -389,13 +389,35 @@ describe('person dates and event details', () => {
     expect(body).toContain('Occupations and statuses');
     expect(body).not.toContain('Date bounds');
     expect(body).not.toContain('person-status-content');
-    expect(body.match(/Earliest start:/g)).toHaveLength(1);
-    expect(body).toContain('Earliest start: 1776-09-19');
-    expect(body).toContain('Latest start: 1776-09-19');
-    expect(body).toContain('Earliest end: 1777-08-17');
-    expect(body).toContain('Latest end: 1777-08-17');
+    expect(body.match(/Start: 1776-09-19/g)).toHaveLength(1);
+    expect(body.match(/End: 1777-08-17/g)).toHaveLength(1);
+    expect(body).not.toContain('Earliest start:');
     expect(body).not.toContain('00:00:00');
     expect(body).not.toContain('23:59:59');
+  });
+
+  it('keeps all four full-year bounds explicit on two lines without inventing an occupation', () => {
+    const timespan = { type: 'TimeSpan', begin_of_the_begin: '1726-01-01T00:00:00',
+      end_of_the_begin: '1726-12-31T23:59:59', begin_of_the_end: '1729-01-01T00:00:00',
+      end_of_the_end: '1729-12-31T23:59:59',
+    };
+    const body = renderToStaticMarkup(createElement(PersonCardBody, {
+      entity: { type: 'Person', is_social_status_subject_of: [{ type: 'SocialStatus', timespan,
+        ascribes_social_status: [], _label: 'Social Status Gouverneur of Person identified by Person_1',
+      }] },
+    }));
+    expect(body).toContain('Start: between 1726-01-01 and 1726-12-31');
+    expect(body).toContain('End: between 1729-01-01 and 1729-12-31');
+    expect(body).not.toContain('Earliest start:');
+    expect(body).not.toContain('00:00:00');
+    expect(body).not.toContain('23:59:59');
+    expect(body).not.toContain('Gouverneur');
+    expect(body).not.toContain('Occupation or status not recorded');
+    expect(formatTimespanSummary({ beginOfTheBegin: '1726-04-01', endOfTheBegin: '1726-09-30',
+      beginOfTheEnd: '1729-04-01', endOfTheEnd: '1729-09-30',
+    })).toEqual(['Start: between 1726-04-01 and 1726-09-30', 'End: between 1729-04-01 and 1729-09-30']);
+    expect(formatTimespanSummary({ endOfTheBegin: '1726-12-31' }))
+      .toEqual(['Start: on or before 1726-12-31', 'End: not recorded']);
   });
   it('retains all four uncertainty bounds at date precision', () => {
     expect(formatTimespanBoundaries({

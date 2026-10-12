@@ -567,7 +567,7 @@ function PersonStatusGroup({
                 <div key={recordIndex} className="person-status-summary-date">
                   <ClaimRecordLabel index={recordIndex} />
                   {recordTimespan
-                    ? <TimespanValue timespan={recordTimespan} boundaries />
+                    ? <TimespanValue timespan={recordTimespan} summary />
                     : recordDates
                       ? <RecordedDatesValue dates={recordDates} />
                       : 'Date: not recorded'}
@@ -654,7 +654,9 @@ function PersonStatusSummary({
         value={<StatusValues values={property.values} linked={property.linked} stacked={property.stacked} />}
       />
     ))
-    : <span className="person-status-summary-label">{isOccupation ? 'Occupation or status not recorded' : group.title}</span>;
+    : isOccupation && (timespan || recordedDates)
+      ? null
+      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.title}</span>;
   const renderConnection = (text: string) => {
     const residenceLabel = getResidenceLabel([text]);
     return residenceLabel && place
@@ -665,7 +667,7 @@ function PersonStatusSummary({
     <div className="person-status-summary-content">
       {timespan && (
         <span className="person-status-summary-date">
-          <TimespanValue timespan={timespan} boundaries />
+          <TimespanValue timespan={timespan} summary />
         </span>
       )}
       {recordedDates && <RecordedDatesValue dates={recordedDates} />}

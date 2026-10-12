@@ -10,7 +10,7 @@ export function formatTimespanBoundaries(timespan: Timespan): string[] {
   ].map(([label, date]) => `${label}: ${date ? formatRecordedDate(date) : 'not recorded'}`);
 }
 
-export function formatDateRange(earliest?: string, latest?: string): string | undefined {
+export function formatDateRange(earliest?: string, latest?: string, abbreviateYear = true): string | undefined {
   const start = earliest && formatRecordedDate(earliest);
   const end = latest && formatRecordedDate(latest);
   if (!start && !end) {
@@ -26,10 +26,17 @@ export function formatDateRange(earliest?: string, latest?: string): string | un
     return `on or after ${start}`;
   }
   const year = /^(\d{4})-01-01$/.exec(start)?.[1];
-  if (year && end === `${year}-12-31`) {
+  if (abbreviateYear && year && end === `${year}-12-31`) {
     return year;
   }
   return `between ${start} and ${end}`;
+}
+
+export function formatTimespanSummary(timespan: Timespan): string[] {
+  return [
+    `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin, false) ?? 'not recorded'}`,
+    `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd, false) ?? 'not recorded'}`,
+  ];
 }
 
 export function formatTimespan(timespan: Timespan, event = false): string[] {
@@ -41,11 +48,9 @@ export function formatTimespan(timespan: Timespan, event = false): string[] {
     return date ? [date] : [];
   }
   if (timespan.endOfTheBegin || timespan.beginOfTheEnd) {
-    const start = formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin);
-    const end = formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd);
     return [
-      `Start: ${start ?? 'not recorded'}`,
-      `End: ${end ?? 'not recorded'}`,
+      `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin) ?? 'not recorded'}`,
+      `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd) ?? 'not recorded'}`,
     ];
   }
   if (timespan.label) {
