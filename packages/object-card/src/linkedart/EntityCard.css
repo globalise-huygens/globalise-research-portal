@@ -61,9 +61,24 @@
     }
 
     .person-status-header {
+      position: relative;
+      isolation: isolate;
       display: flex;
       min-width: 0;
       align-items: flex-start;
+    }
+
+    /* The disclosure button covers the header; links stay above it and retain
+       their own pointer and keyboard behavior without nesting in a button. */
+    .person-status-header .person-status-summary {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+      padding-right: var(--s56);
+    }
+
+    .person-status-header .person-status-summary :is(a, button, [role="link"]) {
+      pointer-events: auto;
     }
 
     .person-status-summary {
@@ -144,11 +159,16 @@
     }
 
     .person-status-toggle {
-      width: auto;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
       min-width: var(--s44);
       min-height: var(--s44);
       flex-shrink: 0;
-      justify-content: center;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: var(--s12);
     }
 
     .person-status-content {
@@ -256,7 +276,7 @@
         flex-wrap: wrap;
         align-items: baseline;
         gap: var(--s4) var(--s24);
-        color: var(--color-neutral-400);
+        color: var(--color-neutral-300);
         font-family: var(--font-sans);
         font-size: var(--text-sm);
         font-style: italic;
@@ -354,8 +374,7 @@
     .entity-card.person-card .section-toggle-icon,
     .entity-card.person-card .external-link,
     .entity-card.person-card .gds-reference-panel__load-more,
-    .entity-card.person-card .gds-reference-panel-item__action,
-    .entity-card.person-card .gds-reference-panel-item__action-tooltip {
+    .entity-card.person-card .gds-reference-panel-item__action {
       transition: none;
     }
   }
