@@ -67,13 +67,6 @@
       padding-top: var(--s12);
     }
 
-    .person-detail-heading {
-      margin: var(--s12) 0 var(--s4);
-      color: var(--color-brand-white);
-      font-size: var(--text-sm);
-      font-weight: 500;
-    }
-
     .person-status-summary-content {
       display: flex;
       min-width: 0;

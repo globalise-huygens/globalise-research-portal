@@ -54,6 +54,7 @@ describe('person claim evidence', () => {
     expect(body).toContain('Relationships');
     expect(body).toContain('Detached relationship evidence');
     expect(body).not.toContain('Family relationships');
+    expect(body).not.toContain('Personal details');
   });
   it('does not derive an origin heading from an embedded label while the linked connection is unresolved', () => {
     const body = renderToStaticMarkup(createElement(PersonCardBody, {
