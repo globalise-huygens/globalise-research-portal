@@ -1,10 +1,8 @@
 import {
   findByPath,
   getContent,
-  getValue,
   getValues,
   isLinkedArtNode,
-  label,
   LinkedArtNode,
 } from '@globalise/common';
 import {
@@ -28,7 +26,8 @@ import {
   getStatusValues,
   groupPersonClaims,
   groupRecords,
-  isPreferredPersonName,
+  getPersonNameRecords,
+  sortPersonNames,
   uniqueClaimValues,
   type RecordedDates,
 } from './PersonClaimModel.ts';
@@ -55,12 +54,6 @@ type StatusGroup = StatusDefinition & {
 };
 
 type StatusValue = LinkedArtNode | string;
-
-const personNameDefinition: StatusDefinition = {
-  key: 'is_appellative_subject_of',
-  type: 'AppellativeStatus',
-  properties: [],
-};
 
 const personStatusGroups: StatusGroup[] = [
   {
@@ -360,7 +353,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
           <span key={index}>
             {index > 0 && '; '}
             {timespan
-              ? <TimespanValue timespan={timespan} event />
+              ? <TimespanValue timespan={timespan} mode="event" />
               : dates && <RecordedDatesValue dates={dates} />}
             {!!places.length && (
               <>
@@ -414,11 +407,9 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
 }
 
 function hasNameDetails(status: LinkedArtNode): boolean {
-  return getStatusValues(status, ['classified_as']).length > 0
+  return hasClaimEvidence(status)
     || !!getPersonTimespan(status)
-    || !!getRecordedDates(status)
-    || getVisibleSources(status).length > 0
-    || getNotes(status).length > 0;
+    || !!getRecordedDates(status);
 }
 
 function ClaimRecordCount({ count }: { count: number }) {
@@ -435,7 +426,7 @@ function ClaimDateProperty({ node, showMissing = false }: { node: LinkedArtNode;
   return !!timespan || !!dates || showMissing ? (
     <ObjectCardProperty
       label={timespan ? 'Date bounds' : 'Date'}
-      value={timespan ? <TimespanValue timespan={timespan} boundaries /> : dates ? <RecordedDatesValue dates={dates} /> : 'Not recorded'}
+      value={timespan ? <TimespanValue timespan={timespan} mode="boundaries" /> : dates ? <RecordedDatesValue dates={dates} /> : 'Not recorded'}
     />
   ) : null;
 }
@@ -471,7 +462,7 @@ function PersonEventSection({
         <div className="person-status-summary-content">
           <PersonSummaryProperty
             label={title}
-            value={timespan ? <TimespanValue timespan={timespan} event /> : dates && <RecordedDatesValue dates={dates} />}
+            value={timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
           />
           {!!locations.length && (
             <PersonSummaryProperty
@@ -568,7 +559,7 @@ function PersonStatusGroup({
                 <div key={recordIndex} className="person-status-summary-date">
                   <ClaimRecordLabel index={recordIndex} />
                   {recordTimespan
-                    ? <TimespanValue timespan={recordTimespan} summary />
+                    ? <TimespanValue timespan={recordTimespan} mode="summary" />
                     : recordDates
                       ? <RecordedDatesValue dates={recordDates} />
                       : 'Date: not recorded'}
@@ -668,7 +659,7 @@ function PersonStatusSummary({
     <div className="person-status-summary-content">
       {timespan && (
         <span className="person-status-summary-date">
-          <TimespanValue timespan={timespan} summary />
+          <TimespanValue timespan={timespan} mode="summary" />
         </span>
       )}
       {recordedDates && <RecordedDatesValue dates={recordedDates} />}
@@ -700,12 +691,16 @@ function PersonSummaryProperty({ label: propertyLabel, value }: PersonSummaryPro
   );
 }
 
-function hasStatusDetails(status: LinkedArtNode, group: StatusGroup): boolean {
+function hasClaimEvidence(status: LinkedArtNode, includeSources = true): boolean {
+  return getStatusValues(status, ['classified_as']).length > 0
+    || includeSources && getVisibleSources(status).length > 0
+    || getNotes(status).length > 0;
+}
+
+function hasStatusDetails(status: LinkedArtNode, group: StatusGroup, includeSources = true): boolean {
   return getAdditionalStatusProperties(status, group).length > 0
     || getStatusValues(status, ['has_geographic_scope']).length > 0
-    || getStatusValues(status, ['classified_as']).length > 0
-    || getVisibleSources(status).length > 0
-    || getNotes(status).length > 0;
+    || hasClaimEvidence(status, includeSources);
 }
 
 function getAdditionalStatusNodes(entity: LinkedArtNode, group: StatusGroup) {
@@ -721,13 +716,9 @@ function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
 function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
   return group.properties.some((property) =>
     getStatusValues(status, property.keys).length > 0,
-  ) || getAdditionalStatusProperties(status, group).length > 0
-    || getStatusValues(status, ['has_geographic_scope']).length > 0
-    || getStatusValues(status, ['classified_as']).length > 0
+  ) || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
     || !!getPersonTimespan(status)
-    || !!getRecordedDates(status)
-    || group.type !== 'ResidentialStatus' && getVisibleSources(status).length > 0
-    || getNotes(status).length > 0;
+    || !!getRecordedDates(status);
 }
 
 function getStatusNodes(
@@ -873,33 +864,4 @@ function getPropertyLabel(key: string): string {
     .slice(key.indexOf(prefix) + prefix.length)
     .replaceAll('_', ' ');
   return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
-}
-
-function getStatusValueText(value: StatusValue): string {
-  return typeof value === 'string'
-    ? value
-    : getContent(value) ||
-        getValue(value.value) ||
-        (value.type === 'Type' ? label(value) : '');
-}
-
-function getPersonNameRecords(entity: LinkedArtNode) {
-  return getStatusNodes(entity, personNameDefinition)
-    .flatMap((status, statusIndex) =>
-      getStatusValues(status, [
-        'ascribes_appellation',
-        'aaao:ZP6_ascribes_appellation',
-      ]).map((value, valueIndex) => ({
-        key: `${status.id ?? statusIndex}-${valueIndex}`,
-        name: getStatusValueText(value),
-        status,
-      })),
-    )
-    .filter((record) => !!record.name);
-}
-
-function sortPersonNames<T extends { name: string; status: LinkedArtNode }>(records: T[]): T[] {
-  return [...records].sort((left, right) =>
-    Number(isPreferredPersonName(right.status)) - Number(isPreferredPersonName(left.status)),
-  );
 }

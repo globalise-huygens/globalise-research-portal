@@ -144,6 +144,17 @@ describe('person claim evidence', () => {
     expect(getRelationValue(entity)).toBe('Carel Aalstroom');
   });
 
+  it('keeps legacy literal names consistent when the preferred name is empty', () => {
+    const entity: LinkedArtNode = { type: 'Person', is_appellative_subject_of: [
+      { type: 'AppellativeStatus', ascribes_appellation: [{ type: 'Name', content: '' }],
+        classified_as: [{ type: 'Type', id: `${base}thesaurus:31baab68-ad9e-4eb4-baba-0c4b163fc00c` }] },
+      { type: 'AppellativeStatus', 'aaao:ZP6_ascribes_appellation': [{ '@value': 'Recorded name', '@language': 'nl' }] },
+    ] };
+    expect(getPersonTitle(entity)).toBe('Recorded name');
+    expect(getRelationValue(entity)).toBe('Recorded name');
+    expect(renderToStaticMarkup(createElement(PersonCardBody, { entity }))).toContain('Recorded name');
+  });
+
   it('keeps a corpus mentions link visible while its annotation collection loads', () => {
     const uri = `${base}person:Person_15.annotations`;
     const body = renderToStaticMarkup(createElement(PersonCardBody, {
