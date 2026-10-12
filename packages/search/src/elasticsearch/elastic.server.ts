@@ -39,8 +39,10 @@ export const rangeFacets: Record<string, RangeFacet> = {
   },
 };
 
+const TreeQuerySchema = z.looseObject({}) as unknown as z.ZodType<TreeQuery>;
+
 export const GlobaliseSearchStateSchema = z.object({
-  query: z.looseObject({}).optional() as unknown as z.ZodType<TreeQuery | undefined>,
+  query: TreeQuerySchema.optional(),
   facets: z.record(z.string(), z.array(z.string())).refine(
     (record) => Object.keys(record).every((key) => [
       ...Object.keys(hierarchyFacets),

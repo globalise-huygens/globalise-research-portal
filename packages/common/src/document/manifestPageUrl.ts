@@ -3,7 +3,8 @@ import type { CanvasId } from './ManifestViewerSlice';
 export const MANIFEST = 'manifest';
 export const CANVAS = 'canvas';
 export const DOCUMENT = 'document';
-export const HIT = 'hit';
+export const DOCUMENT_ID = 'documentId';
+export const SNIPPET = 'snippet';
 
 const globaliseDataUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/';
 
@@ -16,33 +17,28 @@ export type DocumentHit = {
 export type ManifestHrefParams = {
   inventoryNumber: string;
   document: string;
-  hit: { start: number; end: number } | null;
+  documentId: string;
+  snippet: string;
+  search: string;
 };
 
-export function toManifestHref({ inventoryNumber, document, hit }: ManifestHrefParams): string {
-  const params = new URLSearchParams({
-    [MANIFEST]: toManifestId(inventoryNumber),
-    [DOCUMENT]: document,
-  });
-  if (hit) {
-    params.set(HIT, `${hit.start}-${hit.end}`);
-  }
+export function toManifestHref({ inventoryNumber, document, documentId, snippet, search }: ManifestHrefParams): string {
+  const params = new URLSearchParams(search);
+  params.set(MANIFEST, toManifestId(inventoryNumber));
+  params.set(DOCUMENT, document);
+  params.set(DOCUMENT_ID, documentId);
+  params.set(SNIPPET, snippet);
   return `/manifest?${params}`;
 }
 
-export function parseDocumentHit(params: URLSearchParams): DocumentHit | undefined {
-  const document = params.get(DOCUMENT);
-  if (!document) {
-    return;
-  }
+export function toDocumentHit(document: string, startCharOffset: number): DocumentHit {
   const startCanvasName = document.replace(/-\d+$/u, '');
   const endPage = /-(\d+)$/u.exec(document)?.[1];
   const endCanvasName = endPage ? startCanvasName.replace(/\d+$/u, endPage) : startCanvasName;
-  const [start] = (params.get(HIT) ?? '0').split('-');
   return {
     startCanvasId: toCanvasId(startCanvasName),
     endCanvasId: toCanvasId(endCanvasName),
-    startCharOffset: Number(start),
+    startCharOffset,
   };
 }
 

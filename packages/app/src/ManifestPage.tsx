@@ -1,12 +1,15 @@
 import {
   CANVAS,
   DOCUMENT,
+  DOCUMENT_ID,
   type DocumentState,
-  HIT,
   MANIFEST,
-  parseDocumentHit,
+  SNIPPET,
+  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
+import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
+import { Spinner } from '@globalise/design';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestDropdown,
@@ -15,6 +18,7 @@ import {
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { useNavigate } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
@@ -32,7 +36,13 @@ export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const documentHit = parseDocumentHit(params);
+  const documentName = params.get(DOCUMENT);
+  const { data: highlights, isLoading: isHighlighting } = useQuery(
+    highlightDocumentQueryOptions(getManifestSearchState()),
+  );
+  const documentHit = documentName
+    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
+    : undefined;
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
@@ -51,6 +61,14 @@ export function ManifestPage() {
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
     });
+  }
+
+  useEffect(logHighlights, [highlights]);
+
+  function logHighlights() {
+    if (highlights) {
+      console.info('highlights', highlights);
+    }
   }
 
   useEffect(logTextRanges, []);
@@ -102,25 +120,28 @@ export function ManifestPage() {
     newUrl.searchParams.set(MANIFEST, url);
     newUrl.searchParams.delete(CANVAS);
     newUrl.searchParams.delete(DOCUMENT);
-    newUrl.searchParams.delete(HIT);
+    newUrl.searchParams.delete(DOCUMENT_ID);
+    newUrl.searchParams.delete(SNIPPET);
     history.pushState({}, '', newUrl);
   }
 
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
-        <ManifestViewer
-          canvasId={initialCanvasId}
-          documentHit={documentHit}
-          onClose={() => void navigate({ to: '/' })}
-          topLeft={
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
-          }
-        />
+        {isHighlighting ? <Spinner/> : (
+          <ManifestViewer
+            canvasId={initialCanvasId}
+            documentHit={documentHit}
+            onClose={() => void navigate({ to: '/' })}
+            topLeft={
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+            }
+          />
+        )}
         <ManifestEntityPreview/>
       </ManifestLoader>
     </ViewerProvider>
