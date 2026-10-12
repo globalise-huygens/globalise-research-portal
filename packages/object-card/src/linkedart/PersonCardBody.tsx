@@ -185,7 +185,6 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     || getPersonEvents(entity, 'born').length > 0
     || getPersonEvents(entity, 'died').length > 0
     || profileGroups.some((group) => hasGroupInformation(entity, group))
-    || relationshipGroups.length > 0
     || unassignedDates.length > 0
     || notes.length > 0
     || sources.length > 0;
@@ -223,14 +222,6 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
                 section={false}
               />
             ))}
-            {!!relationshipGroups.length && (
-              <>
-                <h4 className="person-detail-heading">Relationships</h4>
-                {relationshipGroups.map((group) => (
-                  <PersonStatusGroup key={group.title} entity={entity} group={group} section={false} />
-                ))}
-              </>
-            )}
             {!!unassignedDates.length && (
               <ObjectCardDisclosure
                 summary={<PersonSummaryProperty label="Recorded status dates" value={unassignedDates.join(', ')} />}
@@ -260,6 +251,15 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             )}
           </div>
         </ObjectCardSection>}
+        {!!relationshipGroups.length && (
+          <ObjectCardSection title="Relationships" collapsible>
+            <div className="person-status-list">
+              {relationshipGroups.map((group) => (
+                <PersonStatusGroup key={group.title} entity={entity} group={group} section={false} />
+              ))}
+            </div>
+          </ObjectCardSection>
+        )}
       </ObjectCardPanel>
       <PersonReferencePanel entity={entity} />
     </ObjectCardBody>
