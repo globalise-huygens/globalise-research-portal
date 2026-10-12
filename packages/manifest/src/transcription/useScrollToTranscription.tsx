@@ -1,4 +1,4 @@
-import { useSelectedCanvas, useSelectedCanvasIndex } from '@globalise/common/document';
+import { useSelectedCanvas } from '@globalise/common/document';
 import { isCentered } from '@globalise/common';
 import { RefObject, useEffect } from 'react';
 
@@ -6,24 +6,24 @@ export function useScrollToTranscription(
   scrollRef: RefObject<HTMLDivElement | null>,
   canvasListRef: RefObject<HTMLDivElement | null>,
   containerWidth: number,
+  selectedIndex: number,
 ) {
-  const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
-  const selectedCanvas = useSelectedCanvasIndex();
+  const { selectedCanvasSource } = useSelectedCanvas();
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     const canvasList = canvasListRef.current;
 
-    if (!scrollContainer || !canvasList || !containerWidth || selectedCanvas === -1) {
+    if (!scrollContainer || !canvasList || !containerWidth || selectedIndex === -1) {
       return;
     }
     if (selectedCanvasSource === 'transcription') {
       return;
     }
 
-    const child = canvasList.children[selectedCanvas];
+    const child = canvasList.children[selectedIndex];
     if (child instanceof HTMLElement && !isCentered(scrollContainer, child)) {
       child.scrollIntoView({ block: 'center', behavior: 'auto' });
     }
-  }, [selectedCanvasId, selectedCanvas, containerWidth, scrollRef, canvasListRef]);
+  }, [selectedIndex, containerWidth, scrollRef, canvasListRef]);
 }

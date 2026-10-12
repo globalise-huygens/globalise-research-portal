@@ -1,31 +1,25 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Rect } from 'openseadragon';
 import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
-import {
-  findSvgPath,
-  findTextualBodyValue,
-  isBlock,
-  isWord,
-  parseSvgPath,
-} from '@globalise/common/annotation';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
   useAnnotations,
   useWordEntityClassifications,
   useIsLayoutElementsVisible,
+  useIsSelectedCanvas,
   usePages,
-  useSelectedAnnotationsInFacsimile,
 } from '@globalise/common/document';
-import { orThrow } from '@globalise/common';
 import {
   BlockHighlight,
   FacsimileTooltip,
   FacsimileTooltipProps,
-  WordHighlight,
+  SelectedWordHighlights,
+  toBlockHighlightConfigs,
+  toWordHighlightConfigs,
+  WordHighlights,
 } from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { useIsViewerScrolling } from './useIsViewerScrolling.tsx';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
 type HighlightsOverlayProps = {
@@ -44,7 +38,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
-  const selected = useSelectedAnnotationsInFacsimile(lazyCanvas.canvasId);
+  const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
+  const isInteractive = useDeferredValue(isSelectedCanvas, false);
 
   const annotationPages = useMemo(() => {
     if (!vault) {
@@ -68,51 +63,17 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   }
 
   const location = useMemo(
-    () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height), 
+    () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height),
     [lazyCanvas.y, lazyCanvas.height],
   );
 
-  const words = useMemo(() => Object.values(annotations)
-    .filter(isWord)
-    .map((a) => ({
-      id: a.id,
-      path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
-      text: findTextualBodyValue(a) ?? orThrow('No body value'),
-      entityClassificationId: entityClassificationByWord[a.id],
-    })), [annotations, entityClassificationByWord]);
-
-  const blocks = useMemo(() => Object.values(annotations)
-    .filter(isBlock)
-    .map((a) => ({
-      id: a.id,
-      path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
-    })), [annotations]);
-
-  const isScrolling = useIsViewerScrolling();
-  const visibleWords = useMemo(() => {
-    if(!isScrolling) {
-      return words;
-    }
-    return words.filter((w) => selected.has(w.id));
-  },
-  [isScrolling, words, selected]);
-
-  const visibleBlocks = useMemo(() => {
-    if (!showLayoutElements) {
-      return [];
-    }
-    if(!isScrolling) {
-      return blocks;
-    }
-    return blocks.filter((b) => selected.has(b.id));
-  },
-  [isScrolling, blocks, selected, showLayoutElements]);
+  const words = useMemo(
+    () => toWordHighlightConfigs(annotations, entityClassificationByWord),
+    [annotations, entityClassificationByWord],
+  );
+  const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
   if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
-    return null;
-  }
-
-  if (!visibleWords.length && !visibleBlocks.length) {
     return null;
   }
 
@@ -123,7 +84,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
-          {visibleBlocks.map(({ id, path }) => (
+          {showLayoutElements && blocks.map(({ id, path }) => (
             <BlockHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
@@ -131,17 +92,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
-          {visibleWords.map(({ id, path, text, entityClassificationId }) => (
-            <WordHighlight
-              key={id}
-              canvasId={lazyCanvas.canvasId}
-              id={id}
-              points={path}
-              text={text}
-              entityClassificationId={entityClassificationId}
-              setTooltip={setTooltip}
-            />
-          ))}
+          <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
+          {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>
       </Overlay>
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
