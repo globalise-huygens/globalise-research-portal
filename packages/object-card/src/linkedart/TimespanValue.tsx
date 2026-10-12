@@ -3,17 +3,15 @@ import { formatTimespan, formatTimespanBoundaries, formatTimespanSummary } from 
 
 type TimespanValueProps = {
   timespan: Timespan | null;
-  event?: boolean;
-  boundaries?: boolean;
-  summary?: boolean;
+  mode?: 'range' | 'event' | 'boundaries' | 'summary';
 };
 
-export function TimespanValue({ timespan, event = false, boundaries = false, summary = false }: TimespanValueProps) {
+export function TimespanValue({ timespan, mode = 'range' }: TimespanValueProps) {
   if (!timespan) {
     return null;
   }
-  const lines = boundaries ? formatTimespanBoundaries(timespan)
-    : summary ? formatTimespanSummary(timespan) : formatTimespan(timespan, event);
+  const lines = mode === 'boundaries' ? formatTimespanBoundaries(timespan)
+    : mode === 'summary' ? formatTimespanSummary(timespan) : formatTimespan(timespan, mode === 'event');
   if (lines.length === 1) {
     return <>{lines[0]}</>;
   }

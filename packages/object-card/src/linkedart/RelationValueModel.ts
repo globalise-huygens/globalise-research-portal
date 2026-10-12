@@ -1,14 +1,12 @@
 import {
-  asArray,
   findByPath,
   getContent,
   getValue,
   getValues,
-  isLinkedArtNode,
   type LinkedArtNode,
 } from '@globalise/common';
 import { isInternalUri } from '../isInternalUri.ts';
-import { isPreferredPersonName } from './PersonClaimModel.ts';
+import { getPersonNameRecords, sortPersonNames } from './PersonClaimModel.ts';
 
 export function getRelationValue(node: LinkedArtNode): string {
   const names = findByPath(node, ['identified_by']).filter((name) => name.type === 'Name');
@@ -19,13 +17,7 @@ export function getRelationValue(node: LinkedArtNode): string {
   const preferredName = ['en', 'nl'].map((language) => candidates.find((name) =>
     findByPath(name, ['language']).some((value) => value.id?.endsWith(`/${language}`)),
   )).find(Boolean) ?? candidates[0];
-  const appellation = findByPath(node, ['is_appellative_subject_of'])
-    .sort((left, right) => Number(isPreferredPersonName(right)) - Number(isPreferredPersonName(left)))
-    .flatMap((status) => Object.entries(status)
-      .filter(([key]) => key.endsWith('ascribes_appellation'))
-      .flatMap(([, value]) => asArray(value)))
-    .map((value) => isLinkedArtNode(value) ? getContent(value) : getValue(value))
-    .find((value) => !!value);
+  const appellation = sortPersonNames(getPersonNameRecords(node))[0]?.name;
   const labels = getValues(node._label);
   // An embedded vocabulary label list contains variants, not a preferred term.
   const label = node.type === 'Type' && labels.length > 1

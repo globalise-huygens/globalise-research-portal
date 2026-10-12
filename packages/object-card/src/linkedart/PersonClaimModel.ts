@@ -1,10 +1,12 @@
 import {
   asArray,
+  findByPath,
   findTimespan,
   getContent,
   getValue,
   getValues,
   isLinkedArtNode,
+  label,
   type LinkedArtNode,
 } from '@globalise/common';
 
@@ -29,6 +31,27 @@ export function getStatusValues(node: LinkedArtNode, keys: string[]): PersonClai
     }
   }
   return [];
+}
+
+export function getPersonNameRecords(entity: LinkedArtNode) {
+  return findByPath(entity, ['is_appellative_subject_of'])
+    .filter((status) => status.type === 'AppellativeStatus')
+    .flatMap((status, statusIndex) =>
+      getStatusValues(status, ['ascribes_appellation', 'aaao:ZP6_ascribes_appellation'])
+        .map((value, valueIndex) => ({
+          key: `${status.id ?? statusIndex}-${valueIndex}`,
+          name: typeof value === 'string' ? value
+            : getContent(value) || getValue(value.value) || (value.type === 'Type' ? label(value) : ''),
+          status,
+        })),
+    )
+    .filter((record) => !!record.name);
+}
+
+export function sortPersonNames<T extends { name: string; status: LinkedArtNode }>(records: T[]): T[] {
+  return [...records].sort((left, right) =>
+    Number(isPreferredPersonName(right.status)) - Number(isPreferredPersonName(left.status)),
+  );
 }
 
 function valueKey(value: unknown): string {
