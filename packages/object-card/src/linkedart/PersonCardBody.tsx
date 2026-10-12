@@ -508,14 +508,12 @@ type PersonStatusGroupProps = {
   entity: LinkedArtNode;
   group: StatusGroup;
   section?: boolean;
-  title?: string;
 };
 
 function PersonStatusGroup({
   entity,
   group,
   section = true,
-  title = group.title,
 }: PersonStatusGroupProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
@@ -588,7 +586,7 @@ function PersonStatusGroup({
     );
   });
   return section ? (
-    <ObjectCardSection title={title} collapsible>
+    <ObjectCardSection title={group.title} collapsible>
       <div className="person-status-list">
         {content}
         <UnassignedStatusInformation nodes={additionalNodes} />
