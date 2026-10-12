@@ -26,7 +26,7 @@ export function SourceList({
   sources,
 }: SourceListProps) {
   const items = sources
-    .filter((source) => isVisibleSource(source, includeInternalLabels))
+    .filter((source) => isVisibleSource(source, includeInternalLabels, showNotes))
     .map((source, index) => {
       const sourceWorks = findByPath(source, ['part_of']);
       const visibleWorks = sourceWorks.filter(shouldShowSourceWork);
@@ -113,6 +113,7 @@ function CitationText({ text }: { text: string }) {
 export function isVisibleSource(
   source: LinkedArtNode,
   includeInternalLabels = false,
+  showNotes = false,
 ): boolean {
   const sourceWorks = findByPath(source, ['part_of']);
   const identifiers = getSourceIdentifiers(source);
@@ -124,7 +125,8 @@ export function isVisibleSource(
   );
   return identifiers.length > 0
     || sourceWorks.some(shouldShowSourceWork)
-    || !!sourceText;
+    || !!sourceText
+    || showNotes && getNotes(source).some(isReadableSourceText);
 }
 
 export function getNotes(node: LinkedArtNode): string[] {
@@ -138,7 +140,7 @@ export function getNotes(node: LinkedArtNode): string[] {
         ...getValues(note.value),
         ...getValues(note._label),
       ];
-    }).filter((note) => !!note),
+    }).filter(isReadableSourceText),
   )];
 }
 

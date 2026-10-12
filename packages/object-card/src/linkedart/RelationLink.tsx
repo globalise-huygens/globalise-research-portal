@@ -13,14 +13,12 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue } from './RelationValueModel.ts';
 import { resolveRelationValue } from './RelationValueResolver.ts';
-import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
 };
 
 export function RelationLink({ node }: RelationLinkProps) {
-  const navigateToObjectCard = useNavigateToObjectCard();
   const href = url(node);
   const text = useRelationValue(node, href);
 
@@ -28,7 +26,7 @@ export function RelationLink({ node }: RelationLinkProps) {
     return (
       <EntityTag
         type={getEntityTagType(getLinkedArtEntityType(href))}
-        onPress={() => navigateToObjectCard(href)}
+        href={`/object-card?${new URLSearchParams({ uri: href })}`}
       >
         {text}
       </EntityTag>

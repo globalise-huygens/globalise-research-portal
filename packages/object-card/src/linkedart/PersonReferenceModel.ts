@@ -116,6 +116,7 @@ export async function loadPersonReferences(entity: LinkedArtNode): Promise<Refer
       const items = await request;
       return items.length ? items : [link];
     } catch {
+      requests.delete(link.id);
       return [link];
     }
   }));

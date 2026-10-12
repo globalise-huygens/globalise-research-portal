@@ -26,7 +26,10 @@ export function resolveRelationValue(uri: string): Promise<string | undefined> {
       return label && label !== value.id && label !== value.type && label !== 'Vocabulary term' && label !== 'Resource'
         ? label : undefined;
     })
-    .catch(() => undefined);
+    .catch(() => {
+      requests.delete(uri);
+      return undefined;
+    });
   requests.set(uri, request);
   return request;
 }

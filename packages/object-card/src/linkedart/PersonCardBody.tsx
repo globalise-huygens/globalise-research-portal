@@ -182,12 +182,20 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
   ).values()];
   const relationshipTypes = ['FamilyStatus', 'SocialRelationStatus', 'MembershipStatus'];
   const relationshipGroups = personStatusGroups.filter((group) =>
-    relationshipTypes.includes(group.type) && getStatusNodes(entity, group).some((status) => hasStatusValues(status, group)),
+    relationshipTypes.includes(group.type) && hasGroupInformation(entity, group),
   );
   const unassignedDates = [...new Set(getValues(entity['aaao:ZP17i_is_social_status_subject_of']).map(formatRecordedDate))];
   const profileGroups = personStatusGroups.filter(
     (group) => group !== occupationGroup && group !== locationGroup && !relationshipTypes.includes(group.type),
   );
+  const hasPersonalDetails = getPersonNameRecords(entity).length > 0
+    || getPersonEvents(entity, 'born').length > 0
+    || getPersonEvents(entity, 'died').length > 0
+    || profileGroups.some((group) => hasGroupInformation(entity, group))
+    || relationshipGroups.length > 0
+    || unassignedDates.length > 0
+    || notes.length > 0
+    || sources.length > 0;
 
   return (
     <ObjectCardBody>
@@ -201,7 +209,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             group={locationGroup}
           />
         )}
-        <ObjectCardSection title="Personal details" collapsible>
+        {hasPersonalDetails && <ObjectCardSection title="Personal details" collapsible>
           <div className="person-status-list">
             <PersonNameDetailsSection entity={entity} />
             <PersonEventSection
@@ -258,7 +266,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               </PersonDisclosure>
             )}
           </div>
-        </ObjectCardSection>
+        </ObjectCardSection>}
       </ObjectCardPanel>
       <PersonReferencePanel entity={entity} />
     </ObjectCardBody>
@@ -443,19 +451,7 @@ function PersonEventSection({
   property,
   title,
 }: PersonEventSectionProps) {
-  const events = findByPath(entity, [property])
-    .map((event) => ({
-      event,
-      locations: getStatusValues(event, ['took_place_at']),
-      classifications: getStatusValues(event, ['classified_as']),
-      dates: getRecordedDates(event),
-      notes: getNotes(event),
-      sources: getVisibleSources(event),
-      timespan: getPersonTimespan(event),
-    }))
-    .filter(({ locations, classifications, dates, notes, sources, timespan }) =>
-      locations.length > 0 || classifications.length > 0 || !!dates || notes.length > 0 || sources.length > 0 || !!timespan,
-    );
+  const events = getPersonEvents(entity, property);
   if (!events.length) {
     return null;
   }
@@ -501,6 +497,22 @@ function PersonEventSection({
   return <>{content}</>;
 }
 
+function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
+  return findByPath(entity, [property])
+    .map((event) => ({
+      event,
+      locations: getStatusValues(event, ['took_place_at']),
+      classifications: getStatusValues(event, ['classified_as']),
+      dates: getRecordedDates(event),
+      notes: getNotes(event),
+      sources: getVisibleSources(event),
+      timespan: getPersonTimespan(event),
+    }))
+    .filter(({ locations, classifications, dates, notes, sources, timespan }) =>
+      locations.length > 0 || classifications.length > 0 || !!dates || notes.length > 0 || sources.length > 0 || !!timespan,
+    );
+}
+
 type PersonStatusGroupProps = {
   entity: LinkedArtNode;
   group: StatusGroup;
@@ -516,8 +528,7 @@ function PersonStatusGroup({
 }: PersonStatusGroupProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
-  const additionalNodes = findByPath(entity, [group.key])
-    .filter((node) => node.type !== group.type);
+  const additionalNodes = getAdditionalStatusNodes(entity, group);
   const isOccupationGroup = group.type === 'SocialStatus';
   if (!statuses.length && !additionalNodes.length) {
     return null;
@@ -595,7 +606,7 @@ function PersonStatusGroup({
 }
 
 function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
-  const sources = nodes.filter((node) => node.type === 'LinguisticObject' && isVisibleSource(node, true));
+  const sources = nodes.filter((node) => node.type === 'LinguisticObject' && isVisibleSource(node, true, true));
   const places = nodes.filter((node) => node.type === 'Place');
   const terms = nodes.filter((node) => node.type === 'Type');
   const other = nodes.filter((node) => !['LinguisticObject', 'Place', 'Type'].includes(node.type));
@@ -631,13 +642,25 @@ function PersonStatusSummary({
   timespan,
 }: PersonStatusSummaryProps) {
   const isOccupation = group.type === 'SocialStatus';
-  const residenceLabel = group.type === 'ResidentialStatus'
-    ? getResidenceLabel(properties.find((property) => property.keys.includes('ascribes_residence_relation'))?.values ?? [])
+  const connection = group.type === 'ResidentialStatus'
+    ? properties.find((property) => property.keys.includes('ascribes_residence_relation'))
     : undefined;
-  const displayedProperties = residenceLabel && properties.some((property) => property.keys.includes('ascribes_residence_place'))
-    ? properties.filter((property) => property.keys.includes('ascribes_residence_place'))
-      .map((property) => ({ ...property, label: residenceLabel }))
-    : properties;
+  const place = properties.find((property) => property.keys.includes('ascribes_residence_place'));
+  const renderProperties = (displayedProperties: typeof properties) => displayedProperties.length
+    ? displayedProperties.map((property, index) => (
+      <PersonSummaryProperty
+        key={property.label}
+        label={isOccupation && index === 0 ? undefined : property.label}
+        value={<StatusValues values={property.values} linked={property.linked} stacked={property.stacked} />}
+      />
+    ))
+    : <span className="person-status-summary-label">{isOccupation ? 'Occupation or status not recorded' : group.title}</span>;
+  const renderConnection = (text: string) => {
+    const residenceLabel = getResidenceLabel([text]);
+    return residenceLabel && place
+      ? renderProperties([{ ...place, label: residenceLabel }])
+      : renderProperties(properties);
+  };
   return (
     <div className="person-status-summary-content">
       {timespan && (
@@ -646,21 +669,11 @@ function PersonStatusSummary({
         </span>
       )}
       {recordedDates && <RecordedDatesValue dates={recordedDates} />}
-      {displayedProperties.length ? displayedProperties.map((property, index) => (
-        <PersonSummaryProperty
-          key={property.label}
-          label={isOccupation && index === 0 ? undefined : property.label}
-          value={(
-            <StatusValues
-              values={property.values}
-              linked={property.linked}
-              stacked={property.stacked}
-            />
-          )}
-        />
-      )) : (
-        <span className="person-status-summary-label">{isOccupation ? 'Occupation or status not recorded' : group.title}</span>
-      )}
+      {connection?.values.length === 1 && place
+        ? isLinkedArtNode(connection.values[0])
+          ? <RelationValue node={connection.values[0]} render={renderConnection} />
+          : renderConnection(connection.values[0])
+        : renderProperties(properties)}
     </div>
   );
 }
@@ -741,6 +754,16 @@ function hasStatusDetails(status: LinkedArtNode, group: StatusGroup): boolean {
     || getStatusValues(status, ['classified_as']).length > 0
     || getVisibleSources(status).length > 0
     || getNotes(status).length > 0;
+}
+
+function getAdditionalStatusNodes(entity: LinkedArtNode, group: StatusGroup) {
+  return findByPath(entity, [group.key]).filter((node) => node.type !== group.type
+    && (node.type !== 'LinguisticObject' || isVisibleSource(node, true, true)));
+}
+
+function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
+  return getStatusNodes(entity, group).some((status) => hasStatusValues(status, group))
+    || getAdditionalStatusNodes(entity, group).length > 0;
 }
 
 function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
@@ -840,7 +863,7 @@ function SourcesProperty({
 
 function getVisibleSources(node: LinkedArtNode): LinkedArtNode[] {
   return findByPath(node, ['referred_to_by'])
-    .filter((source) => isVisibleSource(source, true));
+    .filter((source) => isVisibleSource(source, true, true));
 }
 
 function NotesProperty({ node }: { node: LinkedArtNode }) {

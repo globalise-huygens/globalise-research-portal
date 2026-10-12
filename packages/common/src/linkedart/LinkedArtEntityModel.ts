@@ -35,11 +35,12 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
 
   return (
     toEntityType(pageType)
+    ?? toEntityType(segment)
+    ?? (segment === thesaurusSegment ? 'concept' : undefined)
     ?? linkedArtEntityTypes.find((type) =>
       new RegExp(`(?:^|[_-])${type}(?:[_-]|\\d)`, 'i').test(identifier ?? ''),
     )
-    ?? toEntityType(segment)
-    ?? (segment === thesaurusSegment ? 'concept' : 'unknown')
+    ?? 'unknown'
   );
 }
 
