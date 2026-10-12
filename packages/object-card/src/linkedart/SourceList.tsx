@@ -99,8 +99,10 @@ function CitationText({ text }: { text: string }) {
   const parts = matches.map((match) => {
     let value = match[0].replace(/[.,;:!?]+$/, '');
     // Exclude prose parentheses, retaining balanced parentheses inside DOI URLs.
-    while (value.endsWith(')') && (value.match(/\)/g)?.length ?? 0) > (value.match(/\(/g)?.length ?? 0)) {
+    let unmatchedClosings = (value.match(/\)/g)?.length ?? 0) - (value.match(/\(/g)?.length ?? 0);
+    while (value.endsWith(')') && unmatchedClosings > 0) {
       value = value.slice(0, -1);
+      unmatchedClosings--;
     }
     const preceding = text.slice(offset, match.index);
     offset = match.index + value.length;
