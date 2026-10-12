@@ -200,6 +200,41 @@ function ObjectCardDisclosureButton({ className, children, ...props }: ObjectCar
   );
 }
 
+export type ObjectCardDisclosureProps = {
+  summary: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+  defaultExpanded?: boolean;
+};
+
+function ObjectCardDisclosure({ summary, children, className, defaultExpanded = false }: ObjectCardDisclosureProps) {
+  const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const contentId = React.useId();
+  const summaryId = React.useId();
+  const actionLabelId = React.useId();
+
+  if (!React.Children.toArray(children).length) {
+    return <div className={cn('disclosure', className)}><div className="disclosure-summary">{summary}</div></div>;
+  }
+
+  return (
+    <div className={cn('disclosure', className)}>
+      <div className="disclosure-header">
+        <div id={summaryId} className="disclosure-summary">{summary}</div>
+        <span id={actionLabelId} className="disclosure-action-label">Details for</span>
+        <ObjectCardDisclosureButton
+          aria-controls={contentId}
+          aria-expanded={isExpanded}
+          aria-labelledby={`${actionLabelId} ${summaryId}`}
+          className="disclosure-toggle"
+          onPress={() => setIsExpanded((expanded) => !expanded)}
+        />
+      </div>
+      <div id={contentId} hidden={!isExpanded} className="disclosure-content">{children}</div>
+    </div>
+  );
+}
+
 function ObjectCardSection({
   title,
   scrollable,
@@ -414,6 +449,7 @@ export {
   ObjectCardAction,
   objectCardActionVariants,
   ObjectCardBody,
+  ObjectCardDisclosure,
   ObjectCardDisclosureButton,
   ObjectCardExternalLink,
   ObjectCardFooter,
