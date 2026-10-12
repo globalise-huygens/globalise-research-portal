@@ -3,10 +3,13 @@ import type { EntityPreviewCardData, EntityPreviewCardProperty, EntityPreviewCar
 import { getPersonNameRecords, getPersonTimespan } from './PersonClaimModel.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { formatTimespan } from './TimespanFormat.ts';
+import { createElement, type ReactNode } from 'react';
+import { EntityIcon } from '@globalise/design';
+import { isInternalUri } from '../isInternalUri.ts';
 
-// Preview only explicit details in the resolved record. A label alone adds no information.
-export function getResourcePreview(resource: LinkedArtNode, uri: string): EntityPreviewCardData | undefined {
+export function getResourcePreview(resource: LinkedArtNode, uri: string, renderRelations?: (nodes: LinkedArtNode[]) => ReactNode): EntityPreviewCardData {
   const title = getResolvedRelationValue(resource) ?? getRelationValue(resource);
+  const type = previewType(resource, uri);
   const properties: EntityPreviewCardProperty[] = [];
   const definition = getValue(resource.definition).trim();
   if (definition) {
@@ -18,7 +21,13 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string): Entity
     ...getPersonNameRecords(resource).map((record) => record.name),
   ].map((name) => name.trim()).filter((name) => name && name !== title))];
   if (names.length) {
-    properties.push({ label: 'Also called', value: names.join(', ') });
+    properties.push({ label: type === 'concept' ? 'Alt label' : 'Also called', value: names.join(', ') });
+  }
+  if (type === 'concept' && renderRelations) {
+    for (const [key, label] of [['inScheme', 'Scheme'], ['broader', 'Broader']] as const) {
+      const nodes = findByPath(resource, [key]);
+      if (nodes.length) {properties.push({ label, value: renderRelations(nodes) });}
+    }
   }
   for (const [key, label] of [['born', 'Born'], ['died', 'Died']] as const) {
     const dates = findByPath(resource, [key]).flatMap((event) => {
@@ -29,7 +38,11 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string): Entity
       properties.push({ label, value: [...new Set(dates)].join('; ') });
     }
   }
-  return properties.length ? { type: previewType(resource, uri), title, properties } : undefined;
+  return {
+    type, title, properties, icon: createElement(EntityIcon, { type }),
+    openFullCardHref: isInternalUri(uri) ? `/object-card?${new URLSearchParams({ uri })}` : uri,
+    openFullCardLabel: isInternalUri(uri) ? `Open ${title} in a full object card` : `Open ${title}`,
+  };
 }
 
 function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardType {

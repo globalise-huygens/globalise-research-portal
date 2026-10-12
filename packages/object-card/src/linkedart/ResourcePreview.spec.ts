@@ -9,11 +9,11 @@ const base = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/';
 afterEach(() => vi.unstubAllGlobals());
 
 describe('resolved resource previews', () => {
-  it('does not show a preview for a label alone or an internal record identifier', () => {
-    expect(getResourcePreview({ type: 'Concept', prefLabel: 'Seaman' }, `${base}thesaurus:label-only`)).toBeUndefined();
+  it('previews label-only concepts and hides technical person identifiers', () => {
+    expect(getResourcePreview({ type: 'Concept', prefLabel: 'Seaman' }, `${base}thesaurus:label-only`)).toMatchObject({ type: 'concept', title: 'Seaman', properties: [], openFullCardHref: expect.stringContaining('/object-card?') });
     expect(getResourcePreview({ type: 'Person', _label: 'Person Identified by Person_1',
       identified_by: [{ type: 'Identifier', content: 'Person_1' }],
-    }, `${base}person:Person_1`)).toBeUndefined();
+    }, `${base}person:Person_1`)).toMatchObject({ title: 'Name not recorded', properties: [] });
   });
 
   it('uses resolved preferred labels and definitions with distinct alternative names', () => {
@@ -23,10 +23,10 @@ describe('resolved resource previews', () => {
       definition: [{ '@language': 'nl', '@value': 'Dutch definition' }, { '@language': 'en', '@value': 'English definition' }],
       altLabel: ['junior ordinary seaman', ' junior ordinary seaman ', 'junior seaman'],
     };
-    expect(getResourcePreview(concept, `${base}thesaurus:seaman`)).toEqual({
+    expect(getResourcePreview(concept, `${base}thesaurus:seaman`)).toMatchObject({
       type: 'concept', title: 'junior seaman', properties: [
         { label: 'Definition', value: 'English definition' },
-        { label: 'Also called', value: 'junior ordinary seaman' },
+        { label: 'Alt label', value: 'junior ordinary seaman' },
       ],
     });
   });
@@ -39,7 +39,7 @@ describe('resolved resource previews', () => {
       begin_of_the_begin: '1700-04-01T00:00:00', end_of_the_end: '1700-09-30T23:59:59',
       _label: 'Generated event description',
     } } };
-    expect(getResourcePreview(person, `${base}person:preview-person`)).toEqual({
+    expect(getResourcePreview(person, `${base}person:preview-person`)).toMatchObject({
       type: 'person', title: 'Recorded name', properties: [
         { label: 'Also called', value: 'Other name' },
         { label: 'Born', value: 'between 1700-04-01 and 1700-09-30' },
@@ -50,7 +50,7 @@ describe('resolved resource previews', () => {
   it('does not turn conflicting event dates into a paired interval', () => {
     expect(getResourcePreview({ type: 'Person', content: 'Recorded name',
       born: { type: 'Birth', 'crm:P4_has_time-span': ['1700-01-01', '1705-01-01'] },
-    }, `${base}person:conflicting-preview`)).toBeUndefined();
+    }, `${base}person:conflicting-preview`)).toMatchObject({ properties: [] });
   });
 
   it('shares the existing label request with the preview resource', async () => {

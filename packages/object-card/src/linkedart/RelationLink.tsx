@@ -2,8 +2,6 @@ import {
   EntityTag,
   type EntityTagType,
   ObjectCardExternalLink,
-  EntityPreviewCard,
-  Tooltip,
 } from '@globalise/design';
 import {
   getLinkedArtEntityType,
@@ -17,7 +15,7 @@ import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
-import './ResourcePreview.css';
+import { ResourcePreview } from './ResourcePreview.tsx';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -26,35 +24,33 @@ type RelationLinkProps = {
 export function RelationLink({ node }: RelationLinkProps) {
   const href = url(node);
   const { text, resource } = useRelationValue(node, href);
-  const preview = resource && href ? getResourcePreview(resource, href) : undefined;
-  // Keep the trigger mounted while its resource resolves, preserving keyboard focus.
-  const withPreview = (link: ReactNode) => (
-    <Tooltip
-      label={preview ? <EntityPreviewCard data={preview} /> : null}
-      isDisabled={!preview}
-      className="gds resource-preview"
-      placement="right"
-      delay={350}
-      closeDelay={200}
-    >
-      {link}
-    </Tooltip>
-  );
+  const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
+    <span key={related.id ?? index}>
+      {index > 0 && ', '}
+      <RelationValue node={related} render={(label) => {
+        const uri = url(related);
+        return uri && isInternalUri(uri)
+          ? <EntityTag type="concept" href={`/object-card?${new URLSearchParams({ uri })}`}>{label}</EntityTag>
+          : uri ? <ObjectCardExternalLink href={uri}>{label}</ObjectCardExternalLink> : label;
+      }} />
+    </span>
+  ))) : undefined;
 
   if (href && isInternalUri(href)) {
-    return withPreview(
+    return <ResourcePreview data={preview}>{(attributes) => (
       <EntityTag
+        {...attributes}
         type={getEntityTagType(getLinkedArtEntityType(href))}
         href={`/object-card?${new URLSearchParams({ uri: href })}`}
       >
         {text}
-      </EntityTag>,
-    );
+      </EntityTag>
+    )}</ResourcePreview>;
   }
   if (href) {
-    return withPreview(
-      <ObjectCardExternalLink href={href}>{text}</ObjectCardExternalLink>,
-    );
+    return <ResourcePreview data={preview}>{(attributes) => (
+      <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
+    )}</ResourcePreview>;
   }
   return <span className="relation">{text}</span>;
 }
