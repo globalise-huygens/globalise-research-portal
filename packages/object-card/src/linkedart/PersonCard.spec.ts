@@ -11,13 +11,9 @@ import {
 } from './PersonClaimModel.ts';
 import { getRelationValue } from './RelationValueModel.ts';
 import { resolveRelationValue } from './RelationValueResolver.ts';
-import { RelationValue } from './RelationLink.tsx';
+import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { formatDateRange, formatTimespan, formatTimespanBoundaries } from './TimespanFormat.ts';
 import { SourceList } from './SourceList.tsx';
-
-vi.mock('../useNavigateToObjectCard.ts', () => ({
-  useNavigateToObjectCard: () => vi.fn(),
-}));
 
 // The shared barrel initializes a browser-only SVG parser; these tests render HTML.
 vi.mock('../../../common/src/util/getSVGElement.ts', () => ({ getSVGElement: vi.fn() }));
@@ -39,6 +35,48 @@ function claim(date: string, source: string): LinkedArtNode {
 }
 
 describe('person claim evidence', () => {
+  it('does not show an empty Personal details section for a person with only occupation data', () => {
+    const body = renderToStaticMarkup(createElement(PersonCardBody, {
+      entity: { type: 'Person', born: [{ type: 'Birth' }], died: [{ type: 'Death' }],
+        is_social_status_subject_of: [claim('1737-01-01', 'Source')],
+      },
+    }));
+    expect(body).toContain('Occupations and statuses');
+    expect(body).not.toContain('Personal details');
+  });
+
+  it('retains detached relationship evidence even when it is not a FamilyStatus claim', () => {
+    const body = renderToStaticMarkup(createElement(PersonCardBody, {
+      entity: { type: 'Person', is_familial_subject_of: [{
+        type: 'LinguisticObject', content: 'Detached relationship evidence',
+      }] },
+    }));
+    expect(body).toContain('Relationships');
+    expect(body).toContain('Detached relationship evidence');
+    expect(body).not.toContain('Family relationships');
+  });
+  it('does not derive an origin heading from an embedded label while the linked connection is unresolved', () => {
+    const body = renderToStaticMarkup(createElement(PersonCardBody, {
+      entity: { type: 'Person', is_residence_subject_of: [{ type: 'ResidentialStatus',
+        ascribes_residence_relation: [{ type: 'Type', id: `${base}thesaurus:unresolved-origin`, _label: 'place_of_origin' }],
+        ascribes_residence_place: [{ type: 'Place', _label: 'Stockholm' }],
+      }] },
+    }));
+    expect(body).not.toContain('Origin:');
+    expect(body).not.toContain('place_of_origin');
+    expect(body).toContain('Connection:');
+    expect(body).toContain('Stockholm');
+  });
+
+  it('uses real destinations for related entities so native link operations remain available', () => {
+    const uri = `${base}person:Person_10051`;
+    const body = renderToStaticMarkup(createElement(RelationLink, {
+      node: { type: 'Person', id: uri, prefLabel: 'Elizabeth Helena Forster' },
+    }));
+    expect(body).toContain('<a ');
+    expect(body).toContain(`href="/object-card?${new URLSearchParams({ uri })}"`);
+    expect(body).toContain('Elizabeth Helena Forster');
+  });
   it('does not infer occupations from record labels or merge records with missing occupations', () => {
     const dated = (name: string) => ({ type: 'SocialStatus',
       _label: `Social Status ${name} of Person identified by Person_1`,
@@ -236,6 +274,26 @@ describe('person claim evidence', () => {
 });
 
 describe('readable person sources', () => {
+  it('preserves notes on sources without titles or visible identifiers', () => {
+    const source = { type: 'LinguisticObject', id: '_:b1', note: 'Recorded provenance note' };
+    const html = renderToStaticMarkup(createElement(PersonCardBody, {
+      entity: { type: 'Person', referred_to_by: [source] },
+    }));
+    expect(html).toContain('Recorded provenance note');
+    expect(html).not.toContain('_:b1');
+    expect(renderToStaticMarkup(createElement(SourceList, { sources: [source] }))).toBe('');
+  });
+
+  it('does not expose blank-node or observation labels inside otherwise readable source notes', () => {
+    const html = renderToStaticMarkup(createElement(SourceList, { showNotes: true, sources: [{
+      type: 'LinguisticObject', content: 'Readable source', note: [
+        { type: 'LinguisticObject', _label: '_:b8' }, 'vocop_obs_1336719', 'Readable note',
+      ],
+    }] }));
+    expect(html).toContain('Readable note');
+    expect(html).not.toContain('_:b8');
+    expect(html).not.toContain('vocop_obs_1336719');
+  });
   it('keeps bibliographic prose plain and links only its DOI and source URI', () => {
     const citation = 'Petram, L., Koolen, M., Wevers, M., van Koert, R., and van Lottum, J. “The Dutch East India Company’s Eighteenth-Century Workforce: An Enriched Data Collection.” Version 0.1.0. Zenodo, February 12, 2024. https://doi.org/10.5281/zenodo.10599528.';
     const href = 'https://www.zotero.org/groups/4678659/items/3Y86C5R6';
@@ -477,6 +535,16 @@ describe('person dates and event details', () => {
 
 describe('person vocabulary values', () => {
   afterEach(() => vi.unstubAllGlobals());
+
+  it('allows a later lookup to recover after a temporary fetch failure', async () => {
+    const uri = `${base}thesaurus:retry-label`;
+    const fetch = vi.fn().mockRejectedValueOnce(new Error('Offline'))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ type: 'Type', prefLabel: 'Recovered term' })));
+    vi.stubGlobal('fetch', fetch);
+    expect(await resolveRelationValue(uri)).toBeUndefined();
+    expect(await resolveRelationValue(uri)).toBe('Recovered term');
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 
   it('resolves the preferred English Getty name rather than an embedded or alternative label', async () => {
     const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({

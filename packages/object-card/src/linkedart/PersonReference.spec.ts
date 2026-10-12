@@ -19,6 +19,17 @@ const annotation = (name: string, scan: string) => ({
 afterEach(() => vi.unstubAllGlobals());
 
 describe('person corpus references', () => {
+  it('retries a failed collection when it is opened again', async () => {
+    const entity = person('retry-collection');
+    const fetch = vi.fn().mockRejectedValueOnce(new Error('Offline'))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ items: [annotation('retry', 'NL-HaNA_1.04.02_2134_0305')] })));
+    vi.stubGlobal('fetch', fetch);
+    expect(await loadPersonReferences(entity)).toEqual(getPersonReferenceLinks(entity));
+    const items = await loadPersonReferences(entity);
+    expect(items).toHaveLength(1);
+    expect(items[0].title).toBe('NL-HaNA_1.04.02_2134_0305');
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
   it('loads all pages, deduplicates mentions, and opens the exact scan in the existing viewer', async () => {
     const entity = person('paginated');
     const collectionUri = `${base}person:paginated.annotations`;

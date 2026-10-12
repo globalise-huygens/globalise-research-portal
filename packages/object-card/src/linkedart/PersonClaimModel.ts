@@ -139,12 +139,11 @@ function uniqueDates(dates: string[]): string[] {
   return [...new Set(dates.map(formatRecordedDate))];
 }
 
-export function getResidenceLabel(values: PersonClaimValue[]): string | undefined {
+export function getResidenceLabel(values: string[]): string | undefined {
   if (values.length !== 1) {
     return undefined;
   }
-  const value = values[0];
-  const text = (typeof value === 'string' ? value : getValue(value._label))
+  const text = values[0]
     .replaceAll('_', ' ').toLowerCase();
   if (['origin', 'place of origin'].includes(text)) {
     return 'Origin';
