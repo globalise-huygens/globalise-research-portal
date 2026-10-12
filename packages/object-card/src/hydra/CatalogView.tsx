@@ -34,7 +34,7 @@ export function CatalogView() {
   const { title, totalItems, member, view } = collection;
 
   const memberType = getCatalogEntityType(collection['@id']);
-  if (member.length > 0 && member.every(isCollectionMember)) {
+  if (member.length > 0 && member.some(isCollectionMember)) {
     return <SchemaCatalog title={title} members={member}/>;
   }
 
