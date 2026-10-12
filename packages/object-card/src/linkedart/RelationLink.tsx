@@ -4,31 +4,20 @@ import {
   ObjectCardExternalLink,
 } from '@globalise/design';
 import {
-  asArray,
-  fetchJson,
-  findByPath,
-  getContent,
-  getJsonUrl,
   getLinkedArtEntityType,
-  getValue,
-  getValues,
-  isLinkedArtNode,
   type LinkedArtEntityType,
   type LinkedArtNode,
   url,
 } from '@globalise/common';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { isInternalUri } from '../isInternalUri.ts';
+import { getRelationValue } from './RelationValueModel.ts';
+import { resolveRelationValue } from './RelationValueResolver.ts';
 import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
 };
-
-const relationValueRequests = new Map<
-  string,
-  Promise<string | undefined>
->();
 
 export function RelationLink({ node }: RelationLinkProps) {
   const navigateToObjectCard = useNavigateToObjectCard();
@@ -53,86 +42,37 @@ export function RelationLink({ node }: RelationLinkProps) {
   return <span className="relation">{text}</span>;
 }
 
-export function RelationValue({ node }: RelationLinkProps) {
-  return <>{useRelationValue(node, url(node))}</>;
-}
-
-function getFirstValue(...values: (string | undefined)[]): string {
-  return values.find((value) => !!value) ?? '';
+export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
+  const text = useRelationValue(node, url(node));
+  return <>{render ? render(text) : text}</>;
 }
 
 function useRelationValue(node: LinkedArtNode, href?: string): string {
-  const fallback = getNodeValue(node);
-  const internalUri = href && isInternalUri(href) ? href : undefined;
-  // Temporary fallback until all internal entity IDs resolve.
-  const temporaryLabelFallback = getValue(node._label);
-  const safeFallback = internalUri
-    ? getFirstValue(
-      isInternalUri(fallback) ? undefined : fallback,
-      temporaryLabelFallback,
-      node.type,
-    )
-    : fallback;
+  const safeFallback = getRelationValue(node);
+  const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
   const [resolved, setResolved] = useState<{
     uri: string;
-    value: string;
+    value?: string;
   }>();
 
   useEffect(() => {
-    if (!internalUri) {
+    if (!href) {
       return;
     }
     let active = true;
-    void resolveRelationValue(internalUri).then((value) => {
-      if (active && value) {
-        setResolved({ uri: internalUri, value });
+    void resolveRelationValue(href).then((value) => {
+      if (active) {
+        setResolved({ uri: href, value });
       }
     });
     return () => {
       active = false;
     };
-  }, [internalUri]);
+  }, [href]);
 
-  return resolved && resolved.uri === internalUri
-    ? resolved.value
-    : safeFallback;
-}
-
-function resolveRelationValue(uri: string): Promise<string | undefined> {
-  const existing = relationValueRequests.get(uri);
-  if (existing) {
-    return existing;
-  }
-  const request = fetchJson<unknown>(getJsonUrl(uri))
-    .then((value) => isLinkedArtNode(value) ? getNodeValue(value) : undefined)
-    .catch(() => undefined);
-  relationValueRequests.set(uri, request);
-  return request;
-}
-
-function getNodeValue(node: LinkedArtNode): string {
-  const typeLabels = node.type === 'Type' ? getValues(node._label) : [];
-  return getFirstValue(
-    getContent(node),
-    getValue(node.value),
-    getValue(node.prefLabel),
-    getAppellationValue(node),
-    !node.id ? getValue(node._label) : undefined,
-    typeLabels.length === 1 ? typeLabels[0] : undefined,
-    node.id,
-    node.type,
-  );
-}
-
-function getAppellationValue(node: LinkedArtNode): string | undefined {
-  return findByPath(node, ['is_appellative_subject_of'])
-    .flatMap((status) => Object.entries(status)
-      .filter(([key]) => key.endsWith('ascribes_appellation'))
-      .flatMap(([, value]) => asArray(value)))
-    .map((value) => isLinkedArtNode(value)
-      ? getContent(value)
-      : getValue(value))
-    .find((value) => !!value);
+  return resolved && resolved.uri === href
+    ? resolved.value ?? safeFallback
+    : pendingValue;
 }
 
 function getEntityTagType(type: LinkedArtEntityType): EntityTagType {
