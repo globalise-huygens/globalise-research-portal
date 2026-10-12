@@ -5,6 +5,7 @@ import {
   IconExternalLink,
 } from '../icons';
 import { cn } from '../../lib';
+import { Tooltip } from './Tooltip';
 import * as React from 'react';
 import {
   Button as AriaButton,
@@ -86,13 +87,7 @@ function ObjectCardActionTooltip({
 
   return (
     <span className="action-with-tooltip">
-      {children}
-      <span
-        aria-hidden="true"
-        className="action-tooltip tooltip"
-      >
-        {label}
-      </span>
+      <Tooltip label={label}>{children}</Tooltip>
     </span>
   );
 }
@@ -310,7 +305,7 @@ const ObjectCardExternalLink = React.forwardRef<
   const content = (
     <>
       <span className="external-link-label">{children}</span>
-      <IconExternalLink className="external-link-icon"/>
+      <IconExternalLink aria-hidden="true" className="external-link-icon"/>
     </>
   );
 

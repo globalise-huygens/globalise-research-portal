@@ -119,34 +119,6 @@
     .action-with-tooltip {
       position: relative;
       display: inline-flex;
-
-      &:hover .action-tooltip,
-      &:focus-within .action-tooltip,
-      .action[data-hovered] + .action-tooltip,
-      .action[data-focus-visible] + .action-tooltip,
-      .close[data-hovered] + .action-tooltip,
-      .close[data-focus-visible] + .action-tooltip {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .action-tooltip {
-      position: absolute;
-      top: calc(100% + var(--s8));
-      right: 0;
-      z-index: 70;
-      width: max-content;
-      max-width: 240px;
-      transform: translateY(-4px);
-      overflow-wrap: anywhere;
-      opacity: 0;
-      pointer-events: none;
-      text-align: left;
-      transition:
-        opacity 75ms ease-out,
-        transform 75ms ease-out;
-      white-space: normal;
     }
 
     .close {
