@@ -1,15 +1,23 @@
 @layer components {
-  .tooltip.resource-preview {
-    padding: 0;
-    overflow: visible;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    max-width: min(260px, calc(100vw - var(--s16)));
-  }
+  .resource-preview {
+    z-index: 100;
+    width: max-content;
+    outline: none;
 
-  .resource-preview .entity-preview-card.popover {
-    max-height: min(320px, calc(100vh - var(--s32)));
-    overflow-y: auto;
+    &::before {
+      position: absolute;
+      inset: -12px;
+      content: '';
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .entity-preview-card.popover {
+      max-height: calc(100vh - var(--s16));
+      overflow-y: auto;
+    }
   }
 }

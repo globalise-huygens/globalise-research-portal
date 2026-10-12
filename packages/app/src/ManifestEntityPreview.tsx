@@ -31,6 +31,7 @@ import {
 } from '@globalise/common/document';
 import {
   EntityPreviewCard,
+  placeEntityPreview,
   EntityIcon,
   getEntityTypeLabel,
   IconArrowTopRight,
@@ -258,7 +259,7 @@ export function ManifestEntityPreview() {
         setPosition((current) => ({ ...current, visibility: 'hidden' }));
         return;
       }
-      setPosition(placePreview(anchorRect, rect.width, rect.height));
+      setPosition(placeEntityPreview(anchorRect, rect.width, rect.height, window.innerWidth, window.innerHeight));
     };
 
     updatePosition();
@@ -974,36 +975,6 @@ function getPreviewDefinition(
     typeLabel: definition.typeLabel,
     ...previewBehaviorByStrategy[definition.previewStrategy],
   };
-}
-
-function placePreview(
-  anchor: Pick<DOMRect, 'bottom' | 'left' | 'right' | 'top'>,
-  cardWidth: number,
-  cardHeight: number,
-): CSSProperties {
-  const margin = 8;
-  const gap = 8;
-  const maxLeft = Math.max(margin, window.innerWidth - cardWidth - margin);
-  const maxTop = Math.max(margin, window.innerHeight - cardHeight - margin);
-  const left = clamp(anchor.left, margin, maxLeft);
-  const belowTop = anchor.bottom + gap;
-  const aboveTop = anchor.top - cardHeight - gap;
-  const spaceBelow = window.innerHeight - margin - belowTop;
-  const spaceAbove = anchor.top - gap - margin;
-  const preferredTop = cardHeight <= spaceBelow
-    ? belowTop
-    : cardHeight <= spaceAbove
-      ? aboveTop
-      : spaceBelow >= spaceAbove
-        ? belowTop
-        : aboveTop;
-  const top = clamp(preferredTop, margin, maxTop);
-
-  return { left, top, visibility: 'visible' };
-}
-
-function clamp(value: number, minimum: number, maximum: number): number {
-  return Math.min(Math.max(value, minimum), maximum);
 }
 
 type FocusableElement = HTMLElement | SVGElement;

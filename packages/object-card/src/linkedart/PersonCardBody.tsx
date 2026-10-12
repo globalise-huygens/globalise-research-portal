@@ -96,7 +96,6 @@ const personStatusGroups: StatusGroup[] = [
       {
         label: 'Relationship',
         keys: ['ascribes_familial_relation'],
-        linked: false,
       },
       { label: 'Person', keys: ['ascribes_relative'], stacked: true },
     ],
