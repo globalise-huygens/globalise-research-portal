@@ -245,6 +245,76 @@
       rotate: 180deg;
     }
 
+    .disclosure {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      border-left: 2px solid var(--color-neutral-600);
+      background: rgb(255 255 255 / 0.02);
+      transition: background-color 75ms ease-out, border-color 75ms ease-out;
+    }
+
+    .disclosure:hover,
+    .disclosure:focus-within {
+      border-color: var(--color-neutral-400);
+      background: rgb(255 255 255 / 0.06);
+    }
+
+    .disclosure-header {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
+    }
+
+    .disclosure-summary {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+      padding: var(--s12);
+    }
+
+    /* Keep links independent of the button covering the rest of the header. */
+    .disclosure-header .disclosure-summary {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+      padding-right: var(--s56);
+    }
+
+    .disclosure-header .disclosure-summary :is(a, button, input, select, textarea, label, [role="link"], [role="button"]) {
+      pointer-events: auto;
+    }
+
+    .disclosure-toggle {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      min-width: var(--s44);
+      min-height: var(--s44);
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: var(--s12);
+    }
+
+    .disclosure-content {
+      padding: 0 var(--s12) var(--s12);
+    }
+
+    .disclosure-action-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
     .section-content {
       display: flex;
       min-width: 0;
@@ -445,6 +515,13 @@
       --overlay-object-card-inset-x: var(--s40);
       --overlay-object-card-inset-top: var(--s40);
       --overlay-object-card-inset-bottom: var(--s40);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .object-card .disclosure,
+    .object-card .section-toggle-icon {
+      transition: none;
     }
   }
 

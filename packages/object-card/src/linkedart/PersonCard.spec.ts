@@ -183,7 +183,7 @@ describe('person claim evidence', () => {
     const headerFirstRecord = body.indexOf('>Record 1<');
     const headerSecondRecord = body.indexOf('>Record 2<');
     expect(body.slice(headerFirstRecord, headerSecondRecord)).toContain('1751-10-23');
-    expect(body.slice(headerSecondRecord, body.indexOf('person-status-content'))).toContain('1754-10-02');
+    expect(body.slice(headerSecondRecord, body.indexOf('disclosure-content'))).toContain('1754-10-02');
     const firstRecord = body.lastIndexOf('>Record 1<');
     const secondRecord = body.lastIndexOf('>Record 2<');
     expect(body.slice(firstRecord, secondRecord)).toContain('Source A');
@@ -235,7 +235,7 @@ describe('person claim evidence', () => {
       },
     }));
     expect(body).toContain('Pieter Vuyst');
-    expect(body).not.toContain('person-status-toggle');
+    expect(body).not.toContain('disclosure-toggle');
     expect(body).not.toContain('vocop_obs_1336719');
     expect(body).not.toContain('Record ID');
   });
@@ -244,9 +244,9 @@ describe('person claim evidence', () => {
     const body = renderToStaticMarkup(createElement(PersonCardBody, {
       entity: { type: 'Person', is_social_status_subject_of: [claim('1737-01-01', 'Source')] },
     }));
-    expect(body).toContain('class="section-toggle person-status-toggle"');
+    expect(body).toContain('class="section-toggle disclosure-toggle"');
     expect(body).toContain('section-toggle-icon');
-    expect(body).not.toContain('person-status-toggle-icon');
+    expect(body).not.toContain('disclosure-toggle-icon');
   });
 
   it('names disclosure buttons from their summaries and connects them to panels with the correct hidden state', () => {
@@ -255,7 +255,7 @@ describe('person claim evidence', () => {
         referred_to_by: [{ type: 'LinguisticObject', content: 'Person source' }],
       },
     }));
-    const buttons = [...body.matchAll(/<button\b[^>]*class="section-toggle person-status-toggle"[^>]*>/g)];
+    const buttons = [...body.matchAll(/<button\b[^>]*class="section-toggle disclosure-toggle"[^>]*>/g)];
     expect(buttons.length).toBeGreaterThan(1);
     for (const [button] of buttons) {
       const controls = /aria-controls="([^"]+)"/.exec(button)?.[1];
@@ -266,7 +266,7 @@ describe('person claim evidence', () => {
         expect(body).toContain(`id="${labelId}"`);
       }
       const panel = body.slice(body.indexOf(`<div id="${controls}"`)).split('>')[0];
-      expect(panel).toContain('person-status-content');
+      expect(panel).toContain('disclosure-content');
       expect(panel.includes('hidden=""')).toBe(button.includes('aria-expanded="false"'));
     }
     expect(body).toContain('>Details for</span>');
@@ -388,7 +388,7 @@ describe('person dates and event details', () => {
     }));
     expect(body).toContain('Occupations and statuses');
     expect(body).not.toContain('Date bounds');
-    expect(body).not.toContain('person-status-content');
+    expect(body).not.toContain('disclosure-content');
     expect(body.match(/Start: 1776-09-19/g)).toHaveLength(1);
     expect(body.match(/End: 1777-08-17/g)).toHaveLength(1);
     expect(body).not.toContain('Earliest start:');

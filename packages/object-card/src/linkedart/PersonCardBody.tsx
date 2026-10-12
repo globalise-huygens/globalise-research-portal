@@ -9,13 +9,13 @@ import {
 } from '@globalise/common';
 import {
   ObjectCardBody,
-  ObjectCardDisclosureButton,
+  ObjectCardDisclosure,
   ObjectCardPanel,
   ObjectCardProperty,
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import { type ReactNode, useId, useState } from 'react';
+import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
@@ -239,23 +239,23 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               </>
             )}
             {!!unassignedDates.length && (
-              <PersonDisclosure
+              <ObjectCardDisclosure
                 summary={<PersonSummaryProperty label="Recorded status dates" value={unassignedDates.join(', ')} />}
               >
                 <p className="person-claim-note">These dates are not linked to a specific occupation or status in this record.</p>
-              </PersonDisclosure>
+              </ObjectCardDisclosure>
             )}
             {!!notes.length && (
-              <PersonDisclosure
+              <ObjectCardDisclosure
                 summary={<span className="person-status-summary-label">Notes</span>}
               >
                 <span className="person-status-summary-value">
                   <StatusValues linked={false} stacked values={notes} />
                 </span>
-              </PersonDisclosure>
+              </ObjectCardDisclosure>
             )}
             {!!sources.length && (
-              <PersonDisclosure
+              <ObjectCardDisclosure
                 summary={<span className="person-status-summary-label">Sources</span>}
               >
                 <SourceList
@@ -263,7 +263,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
                   showNotes
                   sources={sources}
                 />
-              </PersonDisclosure>
+              </ObjectCardDisclosure>
             )}
           </div>
         </ObjectCardSection>}
@@ -385,7 +385,7 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
   return <>{groups.map(({ key, records }) => {
     const details = records.some(({ status }) => hasNameDetails(status)) ? records : [];
     return (
-      <PersonDisclosure
+      <ObjectCardDisclosure
         key={key}
         summary={(
           <>
@@ -408,7 +408,7 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
             </ObjectCardPropertyList>
           </div>
         )) : null}
-      </PersonDisclosure>
+      </ObjectCardDisclosure>
     );
   })}</>;
 }
@@ -465,7 +465,7 @@ function PersonEventSection({
     sources,
     timespan,
   }, index) => (
-    <PersonDisclosure
+    <ObjectCardDisclosure
       key={index}
       summary={(
         <div className="person-status-summary-content">
@@ -492,7 +492,7 @@ function PersonEventSection({
           <SourcesProperty node={event} />
         </ObjectCardPropertyList>
       ) : null}
-    </PersonDisclosure>
+    </ObjectCardDisclosure>
   ));
   return <>{content}</>;
 }
@@ -539,7 +539,8 @@ function PersonStatusGroup({
     const dateKey = (node: LinkedArtNode) => JSON.stringify([
       getPersonTimespan(node), getRecordedDates(node),
     ]);
-    const sharedDates = records.every((record) => dateKey(record) === dateKey(status));
+    const statusDates = dateKey(status);
+    const sharedDates = records.every((record) => dateKey(record) === statusDates);
     const timespan = sharedDates ? getPersonTimespan(status) : null;
     const recordedDates = sharedDates && !timespan ? getRecordedDates(status) : null;
     const summaryProperties = group.properties
@@ -548,7 +549,7 @@ function PersonStatusGroup({
     const details = records.some((record) => hasStatusDetails(record, group)) ? records : [];
 
     return (
-      <PersonDisclosure
+      <ObjectCardDisclosure
         key={key}
         className={isOccupationGroup ? 'person-occupation-status' : undefined}
         defaultExpanded={section && index === 0}
@@ -592,7 +593,7 @@ function PersonStatusGroup({
             </ObjectCardPropertyList>
           </div>
         )) : null}
-      </PersonDisclosure>
+      </ObjectCardDisclosure>
     );
   });
   return section ? (
@@ -614,7 +615,7 @@ function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
     return null;
   }
   return (
-    <PersonDisclosure summary={<span className="person-status-summary-label">Other recorded information</span>}>
+    <ObjectCardDisclosure summary={<span className="person-status-summary-label">Other recorded information</span>}>
       <p className="person-claim-note">This information is recorded separately from individual claims.</p>
       <ObjectCardPropertyList className="person-status-details">
         <StatusValuesProperty label="Places mentioned" values={places} />
@@ -624,7 +625,7 @@ function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
           <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes />} />
         )}
       </ObjectCardPropertyList>
-    </PersonDisclosure>
+    </ObjectCardDisclosure>
   );
 }
 
@@ -696,57 +697,6 @@ function PersonSummaryProperty({ label: propertyLabel, value }: PersonSummaryPro
       )}
       <span className="person-status-summary-value">{value}</span>
     </span>
-  );
-}
-
-type PersonDisclosureProps = {
-  children?: ReactNode;
-  className?: string;
-  defaultExpanded?: boolean;
-  summary: ReactNode;
-};
-
-function PersonDisclosure({
-  children,
-  className,
-  defaultExpanded = false,
-  summary,
-}: PersonDisclosureProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  const contentId = useId();
-  const summaryId = useId();
-  const actionLabelId = useId();
-  const classes = `person-status${className ? ` ${className}` : ''}`;
-
-  if (!children || (Array.isArray(children) && !children.some(Boolean))) {
-    return (
-      <div className={classes}>
-        <div className="person-status-summary">{summary}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={classes}>
-      <div className="person-status-header">
-        <div id={summaryId} className="person-status-summary">{summary}</div>
-        <span id={actionLabelId} className="person-disclosure-action-label">Details for</span>
-        <ObjectCardDisclosureButton
-          aria-controls={contentId}
-          aria-expanded={isExpanded}
-          aria-labelledby={`${actionLabelId} ${summaryId}`}
-          className="person-status-toggle"
-          onPress={() => setIsExpanded((expanded) => !expanded)}
-        />
-      </div>
-      <div
-        id={contentId}
-        hidden={!isExpanded}
-        className="person-status-content"
-      >
-        {children}
-      </div>
-    </div>
   );
 }
 

@@ -47,11 +47,11 @@ export function uniqueClaimValues(values: PersonClaimValue[]): PersonClaimValue[
 
 // Dates and evidence remain on each record; only equivalent claims share a row.
 export function groupPersonClaims(records: LinkedArtNode[]) {
-  return groupRecords(records, (record) => JSON.stringify([
+  return groupRecords(records, (record, index) => JSON.stringify([
     // Missing occupations do not establish equivalent claims, even if the
     // remaining fields match. Keep their evidence on separate rows.
     record.type === 'SocialStatus' && !getStatusValues(record, ['ascribes_social_status']).length
-      ? records.indexOf(record)
+      ? index
       : null,
     Object.keys(record)
       .filter((key) => key.includes('ascribes_')
@@ -62,10 +62,10 @@ export function groupPersonClaims(records: LinkedArtNode[]) {
   ]));
 }
 
-export function groupRecords<T>(records: T[], keyFor: (record: T) => string) {
+export function groupRecords<T>(records: T[], keyFor: (record: T, index: number) => string) {
   const groups = new Map<string, { key: string; records: T[] }>();
-  for (const record of records) {
-    const key = keyFor(record);
+  for (const [index, record] of records.entries()) {
+    const key = keyFor(record, index);
     const group = groups.get(key);
     if (group) {
       group.records.push(record);
