@@ -1,23 +1,18 @@
-import { fetchJson, getJsonUrl, isLinkedArtNode } from '@globalise/common';
+import { fetchJson, getJsonUrl, isLinkedArtNode, type LinkedArtNode } from '@globalise/common';
 import { queryOptions } from '@tanstack/react-query';
 import { isInternalUri } from '../isInternalUri.ts';
-import { getRelationValue } from './RelationValueModel.ts';
 
-export function relationValueQueryOptions(uri: string) {
+export function entityResourceQueryOptions(uri: string) {
   return queryOptions({
-    queryKey: ['relation-value', uri],
+    queryKey: ['entity-resource', uri],
     enabled: !!uri,
     staleTime: Infinity,
     retry: false,
-    queryFn: async ({ signal }) => await fetchEntityLabel(uri, signal) ?? null,
+    queryFn: async ({ signal }) => await fetchEntityResource(uri, signal) ?? null,
   });
 }
 
-/**
- * Return "Name not recorded" for a person without a name, or undefined when
- * no usable label is found.
- */
-export async function fetchEntityLabel(uri: string, signal?: AbortSignal): Promise<string | undefined> {
+export async function fetchEntityResource(uri: string, signal?: AbortSignal): Promise<LinkedArtNode | undefined> {
   const gettyUri = /^https?:\/\/vocab\.getty\.edu\/(aat|ulan|tgn)\/\d+$/.test(uri);
   const endpoint = isInternalUri(uri) ? getJsonUrl(uri)
     : gettyUri ? getJsonUrl(uri.replace(/^http:/, 'https:')) : uri;
@@ -25,13 +20,5 @@ export async function fetchEntityLabel(uri: string, signal?: AbortSignal): Promi
     signal,
     headers: { Accept: 'application/ld+json, application/json' },
   });
-  if (!isLinkedArtNode(value)) {
-    return undefined;
-  }
-  const label = getRelationValue(value);
-  if (value.type === 'Person' && label === 'Person') {
-    return 'Name not recorded';
-  }
-  return label && label !== value.id && label !== value.type && label !== 'Vocabulary term' && label !== 'Resource'
-    ? label : undefined;
+  return isLinkedArtNode(value) ? value : undefined;
 }
