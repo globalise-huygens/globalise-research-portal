@@ -5,11 +5,13 @@ import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { POST_TAG, PRE_TAG } from './highlightTags';
 import { getSnippetOffsets } from './getSnippetOffsets';
+import { calculateHtrOffsets, type PageOffsets } from './calculateHtrOffsets';
+import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
 import type { ManifestSearchState } from '../utils/getManifestSearchState';
 
 export type DocumentHighlights = {
-  hits: Offsets[];
+  hits: PageOffsets[];
   snippet: Offsets | null;
 };
 
@@ -28,9 +30,9 @@ const highlightDocument = createServerFn({ method: 'POST' })
     }
     // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans } = getHighlight(taggedText, PRE_TAG, POST_TAG);
-    // TODO: convert to htr using text-coordinate-mapping:
-    // const hits = calculateHtrOffsets(spans, data.documentId)
-    return { hits: spans, snippet: getSnippetOffsets(text, data.snippet) };
+    const mappings = selectTextRangeMappings(data.documentId);
+    const hits = calculateHtrOffsets(spans, mappings);
+    return { hits, snippet: getSnippetOffsets(text, data.snippet) };
   });
 
 export default highlightDocument;

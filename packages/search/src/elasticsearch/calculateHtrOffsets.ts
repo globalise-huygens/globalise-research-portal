@@ -12,10 +12,10 @@ export type PageOffsets = Offsets & {
 };
 
 export function calculateHtrOffsets(
-  spans: Offsets[],
+  offsets: Offsets[],
   mappings: TextRangeMapping[],
 ): PageOffsets[] {
-  return spans.flatMap((span) => mappings
+  return offsets.flatMap((span) => mappings
     .filter((mapping) => overlaps(span, mapping))
     .map((mapping) => toPageOffsets(span, mapping)));
 }
