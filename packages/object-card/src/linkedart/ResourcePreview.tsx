@@ -35,6 +35,7 @@ export function ResourcePreview({ data, children }: {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
   const visible = open && !!data && (!parent || parent.activeChild === id);
+  const isRoot = !parent;
   const cancelTimer = () => {
     clearTimeout(timer.current);
     timer.current = undefined;
@@ -52,12 +53,29 @@ export function ResourcePreview({ data, children }: {
   const scheduleClose = () => {
     cancelTimer();
     timer.current = setTimeout(() => {
+      timer.current = undefined;
       if (!trigger.current?.contains(document.activeElement) && !popup.current?.contains(document.activeElement)) {
         setOpen(false);
       }
     }, 200);
   };
   useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => {
+    if (!visible || !isRoot) {return;}
+    const dismissOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') {return;}
+      event.preventDefault();
+      event.stopPropagation();
+      if (popup.current?.contains(document.activeElement)) {
+        trigger.current?.querySelector<HTMLElement>('a[href]')?.focus({ preventScroll: true });
+      }
+      clearTimeout(timer.current);
+      timer.current = undefined;
+      setOpen(false);
+    };
+    document.addEventListener('keydown', dismissOnEscape, true);
+    return () => document.removeEventListener('keydown', dismissOnEscape, true);
+  }, [visible, isRoot]);
   useLayoutEffect(() => {
     if (!visible || !trigger.current || !popupElement) {return;}
     const anchor = trigger.current;
@@ -133,7 +151,8 @@ export function ResourcePreview({ data, children }: {
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
         if (event.defaultPrevented) {return;}
-        if (event.key === 'Escape' && open) {
+        if (event.key === 'Escape' && (open || timer.current !== undefined)) {
+          event.preventDefault();
           event.stopPropagation();
           close();
         }
