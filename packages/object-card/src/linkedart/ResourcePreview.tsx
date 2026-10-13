@@ -1,9 +1,8 @@
-import { EntityPreviewCard, type EntityPreviewCardData, placeEntityPreview } from '@globalise/design';
+import { EntityPreviewCard, type EntityPreviewCardData, placeEntityPreview, placeEntityPreviewBeside } from '@globalise/design';
 import { createContext, useContext, useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
 import './ResourcePreview.css';
-import { placeResourcePreviewBeside } from './ResourcePreviewPosition.ts';
 
 const PreviewContext = createContext<{
   element: HTMLElement | null;
@@ -83,7 +82,7 @@ export function ResourcePreview({ data, children }: {
     const update = () => {
       const rect = card.getBoundingClientRect();
       setPosition(parentElement
-        ? placeResourcePreviewBeside(parentElement.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight)
+        ? placeEntityPreviewBeside(parentElement.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight)
         : placeEntityPreview(anchor.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight));
     };
     update();
@@ -108,12 +107,6 @@ export function ResourcePreview({ data, children }: {
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
         if (event.defaultPrevented) {return;}
-        if (event.key === 'Escape') {
-          event.stopPropagation();
-          trigger.current?.querySelector<HTMLElement>('a[href]')?.focus({ preventScroll: true });
-          close();
-          return;
-        }
         if (event.key !== 'Tab' || !popup.current || !trigger.current) {return;}
         const elements = focusable(popup.current);
         const anchor = trigger.current.querySelector<HTMLElement>('a[href]');

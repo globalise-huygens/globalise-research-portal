@@ -30,23 +30,20 @@ export function RelationLink({ node }: RelationLinkProps) {
     </span>
   ))) : undefined;
 
-  if (href && isInternalUri(href)) {
-    return <ResourcePreview data={preview}>{(attributes) => (
-      <EntityTag
-        {...attributes}
-        type={getEntityTagType(getLinkedArtEntityType(href))}
-        href={`/object-card?${new URLSearchParams({ uri: href })}`}
-      >
-        {text}
-      </EntityTag>
-    )}</ResourcePreview>;
+  if (!href) {
+    return <span className="relation">{text}</span>;
   }
-  if (href) {
-    return <ResourcePreview data={preview}>{(attributes) => (
-      <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
-    )}</ResourcePreview>;
-  }
-  return <span className="relation">{text}</span>;
+  return <ResourcePreview data={preview}>{(attributes) => isInternalUri(href) ? (
+    <EntityTag
+      {...attributes}
+      type={getEntityTagType(getLinkedArtEntityType(href))}
+      href={`/object-card?${new URLSearchParams({ uri: href })}`}
+    >
+      {text}
+    </EntityTag>
+  ) : (
+    <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
+  )}</ResourcePreview>;
 }
 
 export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
