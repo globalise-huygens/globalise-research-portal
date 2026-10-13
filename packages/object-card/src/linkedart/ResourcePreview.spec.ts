@@ -52,6 +52,21 @@ describe('resolved resource previews', () => {
       born: { type: 'Birth', 'crm:P4_has_time-span': ['1700-01-01', '1705-01-01'] },
     }, `${base}person:conflicting-preview`)).toMatchObject({ properties: [] });
   });
+  it('uses Alt label for place names', () => {
+    expect(getResourcePreview({ type: 'Place', prefLabel: 'Cape Town', altLabel: ['Kaapstad'],
+      identified_by: [{ type: 'Name', content: 'Cape Town' }],
+    }, `${base}place:1`)).toMatchObject({ type: 'place', properties: [{ label: 'Alt label', value: 'Kaapstad' }] });
+  });
+  it('passes scheme and broader resources to the preview link renderer', () => {
+    const scheme = { type: 'ConceptScheme', id: `${base}thesaurus:scheme` };
+    const broader = { type: 'Concept', id: `${base}thesaurus:broader` };
+    const render = vi.fn().mockReturnValue('Linked preview');
+    expect(getResourcePreview({ type: 'Concept', prefLabel: 'Seaman', inScheme: [scheme], broader: [broader] },
+      `${base}thesaurus:seaman`, render)).toMatchObject({ properties: [
+      { label: 'Scheme', value: 'Linked preview' }, { label: 'Broader', value: 'Linked preview' },
+    ] });
+    expect(render.mock.calls).toEqual([[ [scheme] ], [ [broader] ]]);
+  });
 
   it('shares the existing label request with the preview resource', async () => {
     const resource = { type: 'Concept', prefLabel: 'Seaman', definition: 'A maritime occupation.' };

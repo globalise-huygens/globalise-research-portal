@@ -21,7 +21,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
     ...getPersonNameRecords(resource).map((record) => record.name),
   ].map((name) => name.trim()).filter((name) => name && name !== title))];
   if (names.length) {
-    properties.push({ label: type === 'concept' ? 'Alt label' : 'Also called', value: names.join(', ') });
+    properties.push({ label: type === 'person' ? 'Also called' : 'Alt label', value: names.join(', ') });
   }
   if (type === 'concept' && renderRelations) {
     for (const [key, label] of [['inScheme', 'Scheme'], ['broader', 'Broader']] as const) {
@@ -46,7 +46,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
 }
 
 function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardType {
-  if (resource.type === 'Concept' || resource.type === 'Type' || resource.prefLabel) {
+  if (resource.type === 'Concept' || resource.type === 'Type') {
     return 'concept';
   }
   switch (getLinkedArtEntityType(uri)) {
@@ -56,7 +56,8 @@ function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardTyp
     case 'ship': return 'ship';
     case 'polity': return 'polity';
     case 'conceptscheme':
+    case 'concept':
     case 'collection': return 'concept';
-    default: return 'entity';
+    default: return resource.prefLabel ? 'concept' : 'entity';
   }
 }

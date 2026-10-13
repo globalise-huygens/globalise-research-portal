@@ -1,7 +1,16 @@
 import { EntityPreviewCard, type EntityPreviewCardData, placeEntityPreview } from '@globalise/design';
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
+import { createContext, useContext, useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { Popover } from 'react-aria-components';
+import { createPortal } from 'react-dom';
 import './ResourcePreview.css';
+import { placeResourcePreviewBeside } from './ResourcePreviewPosition.ts';
+
+const PreviewContext = createContext<{
+  element: HTMLElement | null;
+  activeChild?: string;
+  openChild: (id: string) => void;
+  keepOpen: () => void;
+} | undefined>(undefined);
 
 const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 const focusable = (container: Element) => Array.from(container.querySelectorAll<HTMLElement>(focusableSelector))
@@ -12,6 +21,9 @@ export function ResourcePreview({ data, children }: {
   children: (attributes: AriaAttributes) => ReactNode;
 }) {
   const id = useId();
+  const parent = useContext(PreviewContext);
+  const parentElement = parent?.element;
+  const [activeChild, setActiveChild] = useState<string>();
   const trigger = useRef<HTMLSpanElement>(null);
   const popup = useRef<HTMLElement>(null);
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
@@ -22,7 +34,7 @@ export function ResourcePreview({ data, children }: {
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
-  const visible = open && !!data;
+  const visible = open && !!data && (!parent || parent.activeChild === id);
   const cancelTimer = () => {
     clearTimeout(timer.current);
     timer.current = undefined;
@@ -33,6 +45,8 @@ export function ResourcePreview({ data, children }: {
   };
   const keepOpen = () => {
     cancelTimer();
+    parent?.keepOpen();
+    parent?.openChild(id);
     setOpen(true);
   };
   const scheduleClose = () => {
@@ -50,7 +64,9 @@ export function ResourcePreview({ data, children }: {
     const card = popupElement;
     const update = () => {
       const rect = card.getBoundingClientRect();
-      setPosition(placeEntityPreview(anchor.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight));
+      setPosition(parentElement
+        ? placeResourcePreviewBeside(parentElement.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight)
+        : placeEntityPreview(anchor.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight));
     };
     update();
     const observer = new ResizeObserver(update);
@@ -61,7 +77,48 @@ export function ResourcePreview({ data, children }: {
       observer.disconnect();
       window.removeEventListener('resize', update);
     };
-  }, [visible, popupElement]);
+  }, [visible, popupElement, parentElement]);
+
+  const card = (
+    <div
+      role="dialog"
+      id={id}
+      aria-label="Linked resource preview"
+      onPointerEnter={keepOpen}
+      onPointerLeave={scheduleClose}
+      onFocusCapture={keepOpen}
+      onBlurCapture={scheduleClose}
+      onKeyDown={(event) => {
+        if (event.defaultPrevented) {return;}
+        if (event.key === 'Escape') {
+          event.stopPropagation();
+          trigger.current?.querySelector<HTMLElement>('a[href]')?.focus({ preventScroll: true });
+          close();
+          return;
+        }
+        if (event.key !== 'Tab' || !popup.current || !trigger.current) {return;}
+        const elements = focusable(popup.current);
+        const anchor = trigger.current.querySelector<HTMLElement>('a[href]');
+        if (!anchor) {return;}
+        if (event.shiftKey && event.target === elements[0]) {
+          event.preventDefault();
+          anchor.focus({ preventScroll: true });
+        } else if (!event.shiftKey && event.target === elements.at(-1)) {
+          const outside = focusable(document.body).filter((element) => !popup.current?.contains(element));
+          const next = outside[outside.indexOf(anchor) + 1];
+          if (next) {
+            event.preventDefault();
+            next.focus({ preventScroll: true });
+            close();
+          }
+        }
+      }}
+    >
+      <PreviewContext.Provider value={{ element: popupElement, activeChild, openChild: setActiveChild, keepOpen }}>
+        {data && <EntityPreviewCard data={data} />}
+      </PreviewContext.Provider>
+    </div>
+  );
 
   return (
     <span
@@ -69,12 +126,13 @@ export function ResourcePreview({ data, children }: {
       onPointerEnter={(event) => {
         if (event.pointerType === 'touch') {return;}
         cancelTimer();
-        timer.current = setTimeout(() => setOpen(true), 350);
+        timer.current = setTimeout(keepOpen, parent ? 0 : 350);
       }}
       onPointerLeave={scheduleClose}
       onFocusCapture={keepOpen}
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
+        if (event.defaultPrevented) {return;}
         if (event.key === 'Escape' && open) {
           event.stopPropagation();
           close();
@@ -89,51 +147,24 @@ export function ResourcePreview({ data, children }: {
       }}
     >
       {children(data ? { 'aria-haspopup': 'dialog', 'aria-expanded': visible, 'aria-controls': visible ? id : undefined } : {})}
-      <Popover
-        ref={popupRef}
-        triggerRef={trigger}
-        isOpen={visible}
-        onOpenChange={(next) => { if (!next) {close();} }}
-        isNonModal
-        className="gds resource-preview"
-        style={{ ...position, position: 'fixed' }}
-      >
-        <div
-          role="dialog"
-          id={id}
-          aria-label="Linked resource preview"
-          onPointerEnter={keepOpen}
-          onPointerLeave={scheduleClose}
-          onFocusCapture={keepOpen}
-          onBlurCapture={scheduleClose}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape') {
-              event.stopPropagation();
-              trigger.current?.querySelector<HTMLElement>('a[href]')?.focus({ preventScroll: true });
-              close();
-              return;
-            }
-            if (event.key !== 'Tab' || !popup.current || !trigger.current) {return;}
-            const elements = focusable(popup.current);
-            const anchor = trigger.current.querySelector<HTMLElement>('a[href]');
-            if (!anchor) {return;}
-            if (event.shiftKey && event.target === elements[0]) {
-              event.preventDefault();
-              anchor.focus({ preventScroll: true });
-            } else if (!event.shiftKey && event.target === elements.at(-1)) {
-              const outside = focusable(document.body).filter((element) => !popup.current?.contains(element));
-              const next = outside[outside.indexOf(anchor) + 1];
-              if (next) {
-                event.preventDefault();
-                next.focus({ preventScroll: true });
-                close();
-              }
-            }
-          }}
+      {parentElement ? visible && createPortal(
+        <div ref={popupRef} className="gds resource-preview" style={{ ...position, position: 'fixed' }}>
+          {card}
+        </div>,
+        parentElement,
+      ) : (
+        <Popover
+          ref={popupRef}
+          triggerRef={trigger}
+          isOpen={visible}
+          onOpenChange={(next) => { if (!next) {close();} }}
+          isNonModal
+          className="gds resource-preview"
+          style={{ ...position, position: 'fixed' }}
         >
-          {data && <EntityPreviewCard data={data} />}
-        </div>
-      </Popover>
+          {card}
+        </Popover>
+      )}
     </span>
   );
 }
