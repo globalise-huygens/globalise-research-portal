@@ -149,8 +149,14 @@
         opacity 150ms ease;
     }
 
-    .icon-action:hover {
+    .icon-action:hover,
+    .icon-action:focus-visible {
       color: var(--color-brand-mint);
+    }
+
+    .icon-action:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
     }
 
     .icon-action-icon {
@@ -167,7 +173,7 @@
     .property {
       display: grid;
       min-width: 0;
-      grid-template-columns: minmax(96px, max-content) minmax(0, 1fr);
+      grid-template-columns: minmax(80px, max-content) minmax(0, 1fr);
       align-items: baseline;
       gap: var(--s8);
     }
@@ -198,6 +204,13 @@
       font-weight: 400;
       line-height: 1rem;
       overflow-wrap: anywhere;
+
+      .gds-entity-tag,
+      .external-link {
+        max-width: 100%;
+        align-items: baseline;
+        font: inherit;
+      }
     }
   }
 }
@@ -207,7 +220,7 @@
     width: calc(100vw - var(--s16));
 
     .property {
-      grid-template-columns: minmax(84px, 35%) minmax(0, 1fr);
+      grid-template-columns: minmax(72px, 30%) minmax(0, 1fr);
     }
   }
 }
