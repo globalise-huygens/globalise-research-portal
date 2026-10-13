@@ -135,6 +135,7 @@
       .source-list,
       .source-citation {
         overflow-wrap: anywhere;
+        white-space: normal;
       }
 
       .external-link[data-hovered],
