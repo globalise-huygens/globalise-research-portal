@@ -4,7 +4,7 @@ export type { ButtonLinkProps, ButtonProps } from './Button';
 export { CardArticle } from './CardArticle';
 export type { CardArticleProps } from './CardArticle';
 
-export { placeEntityPreview } from './EntityPreviewPosition';
+export { placeEntityPreview, placeEntityPreviewBeside } from './EntityPreviewPosition';
 
 export {
   CardBase,
