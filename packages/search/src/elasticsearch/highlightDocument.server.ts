@@ -29,7 +29,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
     // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans } = getHighlight(taggedText, PRE_TAG, POST_TAG);
     // TODO: convert to htr using text-coordinate-mapping:
-    // const hits = fetchHtrOffsets(spans, data.documentId)
+    // const hits = calculateHtrOffsets(spans, data.documentId)
     return { hits: spans, snippet: getSnippetOffsets(text, data.snippet) };
   });
 
