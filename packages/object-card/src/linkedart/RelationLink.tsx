@@ -27,12 +27,7 @@ export function RelationLink({ node }: RelationLinkProps) {
   const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
     <span key={related.id ?? index}>
       {index > 0 && ', '}
-      <RelationValue node={related} render={(label) => {
-        const uri = url(related);
-        return uri && isInternalUri(uri)
-          ? <EntityTag type="concept" href={`/object-card?${new URLSearchParams({ uri })}`}>{label}</EntityTag>
-          : uri ? <ObjectCardExternalLink href={uri}>{label}</ObjectCardExternalLink> : label;
-      }} />
+      <RelationLink node={related} />
     </span>
   ))) : undefined;
 
