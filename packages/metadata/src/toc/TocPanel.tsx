@@ -3,7 +3,7 @@ import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { useScrollToThumb } from './useScrollToThumb.ts';
+import { scrollToTocElement, useScrollToThumb } from './useScrollToThumb.ts';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -49,10 +49,7 @@ export function TocPanel() {
       }
       const offset = target === 'scan' ? (header?.offsetHeight ?? 0) : 0;
       const anchor = target === 'document' ? element.parentElement ?? element : element;
-      list.scrollTo({
-        top: list.scrollTop + anchor.getBoundingClientRect().top - list.getBoundingClientRect().top - offset,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-      });
+      scrollToTocElement(list, anchor, offset);
       element.focus({ preventScroll: true });
     });
   }

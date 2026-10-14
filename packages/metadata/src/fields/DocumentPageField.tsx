@@ -18,7 +18,7 @@ export function DocumentPageField({
   const link = object && (findByPath(object, ['digitally_carried_by', 'access_point'])[0]
     ?? findByPath(object, ['access_point'])[0] ?? object);
   const href = link && urlOf(link);
-  if (!object || !href) {
+  if (!object || !href || !/^https?:\/\//i.test(href)) {
     return <EmptyPair label={label} fallback={fallback}/>;
   }
   return (

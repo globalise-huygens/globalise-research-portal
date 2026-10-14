@@ -91,7 +91,7 @@ function toDocument(
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
     const pageMetadata = (canvas.metadata ?? [])
       .map((item) => ({ label: getValue(item.label), value: getValue(item.value) }))
-      .filter((item) => /^(filename|language|folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
+      .filter((item) => /^(language|folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
         && item.value);
     scans.push({ canvasId, scanNumber, thumbnailUrl, pageMetadata, width: canvas.width, height: canvas.height });
   }

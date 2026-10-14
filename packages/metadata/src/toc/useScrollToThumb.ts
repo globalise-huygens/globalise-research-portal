@@ -31,6 +31,14 @@ function scrollToSelectedThumb(list: HTMLDivElement) {
     '.toc-card[aria-current="true"]',
   );
   if (target && !isCentered(list, target)) {
-    target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const header = target.closest('.toc-document')?.querySelector<HTMLElement>('.header');
+    scrollToTocElement(list, target, header?.offsetHeight ?? 0);
   }
+}
+
+export function scrollToTocElement(list: HTMLElement, target: HTMLElement, offset = 0) {
+  list.scrollTo({
+    top: list.scrollTop + target.getBoundingClientRect().top - list.getBoundingClientRect().top - offset,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+  });
 }
