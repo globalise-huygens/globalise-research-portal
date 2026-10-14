@@ -41,6 +41,7 @@ export { IconModeLight } from './IconModeLight';
 export { IconModeSepia } from './IconModeSepia';
 export { IconPairedPage } from './IconPairedPage';
 export { IconPictureInPicture } from './IconPictureInPicture';
+export { IconProgressActivity } from './IconProgressActivity';
 export { default as IconRedo } from './iconRedo.svg?react';
 export { IconReset } from './IconReset';
 export { IconRight } from './IconRight';
