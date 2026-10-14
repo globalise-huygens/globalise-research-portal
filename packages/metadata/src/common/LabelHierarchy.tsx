@@ -9,18 +9,17 @@ export function LabelHierarchy(
   { labelPaths, currentLabel }: HierarchyProps,
 ) {
   return <LiHierarchy
-    nodes={mergePaths(labelPaths, (label) => label)}
-    current={currentLabel} depth={0}
+    nodes={mergePaths(labelPaths.map((path) => [...path, currentLabel]), (label) => label)}
+    depth={0}
   />;
 }
 
 type LabelLiProps = {
   nodes: TreeNode<string>[];
-  current: string;
   depth: number;
 };
 
-function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
+function LiHierarchy({ nodes, depth }: LabelLiProps) {
   return (
     <ol className="metadata-hierarchy"
       data-depth={depth}>
@@ -28,18 +27,16 @@ function LiHierarchy({ nodes, current, depth }: LabelLiProps) {
         const isLeaf = !node.children.length;
         return (
           <li key={node.item} data-current={isLeaf}>
-            {isLeaf && (
+            {isLeaf ? (
               <span
                 className="current"
               >
-                {current}
+                {node.item}
               </span>
-            )}
-            {node.item}
+            ) : node.item}
             {!isLeaf && (
               <LiHierarchy
                 nodes={node.children}
-                current={current}
                 depth={depth + 1}
               />
             )}
