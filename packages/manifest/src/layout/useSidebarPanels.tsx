@@ -19,7 +19,7 @@ export type SidebarPanel = {
   badge?: string
 };
 
-export const sidebarPanels = [
+const sidebarPanels = [
   {
     id: 'inventory',
     label: 'Inventory',

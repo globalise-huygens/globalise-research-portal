@@ -8,7 +8,7 @@ export type PlaceTagProps = {
 export function PlaceTag({ label, href }: PlaceTagProps) {
 
   const labelWithIcon = <><span className="gds-entity-tag__label">{label}</span>
-    {'\u00a0'}
+    &nbsp;
     <span className="gds-entity-tag__icon" aria-hidden="true">
       <IconEntityPlace className="gds-entity-tag__icon-svg"/>
     </span></>;

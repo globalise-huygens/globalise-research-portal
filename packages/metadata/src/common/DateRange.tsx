@@ -1,10 +1,12 @@
+import { isSameDay } from './isSameDay.ts';
+
 export type DateRangeProps = {
   begin?: string;
   end?: string;
 };
 
 export function DateRange({ begin, end }: DateRangeProps) {
-  if (begin && begin.split('T')[0] === end?.split('T')[0]) {
+  if (isSameDay(begin, end)) {
     return <time dateTime={begin}>{formatDate(begin)}</time>;
   }
   return (
