@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SidebarId, sidebarPanels } from './sidebar-panels.tsx';
+import { SidebarId, useSidebarPanels } from './useSidebarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
 import { Tooltip } from '@globalise/design';
@@ -12,6 +12,7 @@ export function ExpandedMetadataSidebar({
   expandedSections: Set<string>;
   onToggleSection: (sectionId: string) => void;
 }) {
+  const sidebarPanels = useSidebarPanels();
   return (
     <nav className="expanded-sidebar" aria-label="Document information">
       {sidebarPanels.map((item) => {
