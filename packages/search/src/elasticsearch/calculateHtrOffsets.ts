@@ -12,23 +12,43 @@ export type PageOffsets = Offsets & {
 };
 
 export function calculateHtrOffsets(
-  offsets: Offsets[],
-  mappings: TextRangeMapping[],
+  range: Offsets,
+  docMappings: TextRangeMapping[],
 ): PageOffsets[] {
-  return offsets.flatMap((span) => mappings
-    .filter((mapping) => overlaps(span, mapping))
-    .map((mapping) => toPageOffsets(span, mapping)));
+  const rangeMappings = docMappings
+    .filter((mapping) => isOverlapping(range, mapping));
+  return rangeMappings
+    .map((mapping) => toHtrPageOffsets(range, mapping));
 }
 
-function overlaps(span: Offsets, mapping: TextRangeMapping): boolean {
-  return mapping.normalizedFrom < span.end && span.start < mapping.normalizedTo;
+/**
+ * Do the (normalized) {@link range} offsets have any overlap
+ * with the normalized {@link mapping} offsets?
+ */
+function isOverlapping(
+  range: Offsets,
+  mapping: TextRangeMapping,
+): boolean {
+  return mapping.normalizedFrom < range.end
+    && range.start < mapping.normalizedTo;
 }
 
-function toPageOffsets(span: Offsets, mapping: TextRangeMapping): PageOffsets {
-  const shift = mapping.htrPageOffset - mapping.normalizedFrom;
+/**
+ * Shift that part of a range that falls within the mapping
+ */
+function toHtrPageOffsets(
+  range: Offsets,
+  mapping: TextRangeMapping,
+): PageOffsets {
+  const htrShift = mapping.htrPageOffset - mapping.normalizedFrom;
+
+  // The shift only applies within the mapping, so crop the range when overflowing:
+  const normalizedStart = Math.max(range.start, mapping.normalizedFrom);
+  const normalizedEnd = Math.min(range.end, mapping.normalizedTo);
+
   return {
     shortPageId: mapping.shortPageId,
-    start: Math.max(span.start, mapping.normalizedFrom) + shift,
-    end: Math.min(span.end, mapping.normalizedTo) + shift,
+    start: normalizedStart + htrShift,
+    end: normalizedEnd + htrShift,
   };
 }
