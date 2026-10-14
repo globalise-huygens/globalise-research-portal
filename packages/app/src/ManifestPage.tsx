@@ -20,7 +20,7 @@ import { asArray } from '@globalise/common';
 import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 
 const defaultManifest =
-  'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
+  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
 
 const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +
