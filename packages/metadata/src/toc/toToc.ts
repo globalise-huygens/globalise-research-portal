@@ -8,6 +8,9 @@ export type ManifestScan = {
   canvasId: CanvasId;
   scanNumber: number;
   thumbnailUrl?: string;
+  width: number;
+  height: number;
+  pageMetadata: { label: string; value: string }[];
 };
 
 export type ManifestDocument = {
@@ -15,6 +18,7 @@ export type ManifestDocument = {
   label: string;
   metadataUrl?: string;
   tanapId?: string;
+  language?: string;
   scans: ManifestScan[];
 };
 
@@ -85,7 +89,11 @@ function toDocument(
       continue;
     }
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
-    scans.push({ canvasId: canvasId, scanNumber, thumbnailUrl });
+    const pageMetadata = (canvas.metadata ?? [])
+      .map((item) => ({ label: getValue(item.label), value: getValue(item.value) }))
+      .filter((item) => /^(language|folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
+        && item.value);
+    scans.push({ canvasId, scanNumber, thumbnailUrl, pageMetadata, width: canvas.width, height: canvas.height });
   }
   scans.sort((a, b) => a.scanNumber - b.scanNumber);
   const title = findMetadataValue(range.metadata, 'Title');
@@ -94,6 +102,7 @@ function toDocument(
     label: title ?? getValue(range.label),
     metadataUrl: range.seeAlso[0]?.id,
     tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
+    language: findMetadataValue(range.metadata, 'Language'),
     scans,
   };
 }
