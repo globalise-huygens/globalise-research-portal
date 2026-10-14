@@ -1,8 +1,8 @@
 import type { Vault } from '@iiif/helpers/vault';
 import { getValue } from '@iiif/helpers';
-import type { MetadataItem } from '@iiif/presentation-3';
 import type { CanvasId } from '@globalise/common/document';
 import { findThumbnail } from '@knaw-huc/osd-iiif-viewer';
+import { findMetadataValue } from '../findMetadataValue.ts';
 
 export type ManifestScan = {
   canvasId: CanvasId;
@@ -96,12 +96,4 @@ function toDocument(
     tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
     scans,
   };
-}
-
-function findMetadataValue(
-  metadata: MetadataItem[],
-  label: string,
-): string | undefined {
-  const item = metadata.find((item) => getValue(item.label) === label);
-  return item && getValue(item.value);
 }
