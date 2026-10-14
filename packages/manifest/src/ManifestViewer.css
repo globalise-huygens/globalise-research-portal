@@ -556,23 +556,6 @@
   overflow: hidden;
 }
 
-.manifest-viewer .sidebar-document-context {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: var(--s8);
-  border-bottom: 1px solid rgb(255 255 255 / 0.1);
-  padding: var(--s8) var(--s16);
-  color: var(--color-neutral-400);
-  font-family: var(--font-sans);
-  font-size: var(--text-xs);
-}
-
-.manifest-viewer .sidebar-document-context > svg {
-  width: 1em;
-  height: 1em;
-}
-
 .manifest-viewer .sidebar-icon,
 .manifest-viewer .sidebar-disclosure {
   width: var(--s20);

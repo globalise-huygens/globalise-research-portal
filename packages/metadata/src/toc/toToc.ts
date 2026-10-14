@@ -18,6 +18,7 @@ export type ManifestDocument = {
   label: string;
   metadataUrl?: string;
   tanapId?: string;
+  language?: string;
   scans: ManifestScan[];
 };
 
@@ -90,7 +91,7 @@ function toDocument(
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
     const pageMetadata = (canvas.metadata ?? [])
       .map((item) => ({ label: getValue(item.label), value: getValue(item.value) }))
-      .filter((item) => /^(folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
+      .filter((item) => /^(filename|language|folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
         && item.value);
     scans.push({ canvasId, scanNumber, thumbnailUrl, pageMetadata, width: canvas.width, height: canvas.height });
   }
@@ -101,6 +102,7 @@ function toDocument(
     label: title ?? getValue(range.label),
     metadataUrl: range.seeAlso[0]?.id,
     tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
+    language: findMetadataValue(range.metadata, 'Language'),
     scans,
   };
 }

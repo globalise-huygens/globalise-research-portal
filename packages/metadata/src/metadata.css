@@ -169,7 +169,7 @@
     min-height: 0;
     flex: 1 1 auto;
     overflow-y: auto;
-    padding: var(--row-gap) var(--panel-pad) var(--panel-pad);
+    padding: 0 var(--panel-pad) var(--panel-pad);
     scrollbar-color: var(--color-neutral-500) transparent;
     scrollbar-width: thin;
   }
@@ -336,6 +336,16 @@
 
   .toc-card[aria-current="true"] {
     background: rgb(255 255 255 / 0.04);
+  }
+
+  .toc-card[aria-current="true"]::before {
+    position: absolute;
+    top: var(--s12);
+    bottom: var(--s12);
+    left: calc(-1 * var(--s8));
+    width: var(--s4);
+    background: var(--color-brand-white);
+    content: "";
   }
 
   .toc-card:last-child {
