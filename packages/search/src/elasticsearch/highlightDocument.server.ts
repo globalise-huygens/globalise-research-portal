@@ -6,9 +6,12 @@ import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { POST_TAG, PRE_TAG } from './highlightTags';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets, type PageOffsets } from './calculateHtrOffsets';
+import { mergeContinuations } from './mergeContinuations';
 import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
 import type { ManifestSearchState } from '../utils/getManifestSearchState';
+
+const maxLineBreakLength = '-\n'.length;
 
 export type DocumentHighlights = {
   hits: PageOffsets[];
@@ -17,6 +20,7 @@ export type DocumentHighlights = {
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
   .extend({
+    document: z.string(),
     documentId: z.string(),
     snippet: z.string(),
   });
@@ -29,9 +33,12 @@ const highlightDocument = createServerFn({ method: 'POST' })
       return { hits: [], snippet: null };
     }
     // TODO: use parseAnnotatedText from parse-es-annotated-text
-    const { text, spans } = getHighlight(taggedText, PRE_TAG, POST_TAG);
-    const mappings = selectTextRangeMappings(data.documentId);
-    const hits = calculateHtrOffsets(spans, mappings);
+    const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
+    const mappings = selectTextRangeMappings(data.document);
+    const hits = offsets.flatMap((offset) => {
+      const htrOffsets = calculateHtrOffsets(offset, mappings);
+      return mergeContinuations(htrOffsets, maxLineBreakLength);
+    });
     return { hits, snippet: getSnippetOffsets(text, data.snippet) };
   });
 
