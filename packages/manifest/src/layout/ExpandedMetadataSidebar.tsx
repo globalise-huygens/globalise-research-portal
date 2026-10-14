@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SidebarId, useSidebarPanels } from './sidebar-panels.tsx';
+import { SidebarId, useSidebarPanels } from './useSidebarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
 import { Tooltip } from '@globalise/design';

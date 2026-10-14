@@ -1,4 +1,5 @@
 import { DateRange } from './DateRange.tsx';
+import { isSameDay } from './isSameDay.ts';
 
 export type TimespanProps = {
   beginOfTheBegin?: string;
@@ -10,8 +11,8 @@ export type TimespanProps = {
 export function Timespan(
   { beginOfTheBegin, endOfTheBegin, beginOfTheEnd, endOfTheEnd }: TimespanProps,
 ) {
-  const isFuzzy = (!!endOfTheBegin && beginOfTheBegin?.split('T')[0] !== endOfTheBegin.split('T')[0])
-    || (!!beginOfTheEnd && endOfTheEnd?.split('T')[0] !== beginOfTheEnd.split('T')[0]);
+  const isFuzzy = (!!endOfTheBegin && !isSameDay(beginOfTheBegin, endOfTheBegin))
+    || (!!beginOfTheEnd && !isSameDay(beginOfTheEnd, endOfTheEnd));
   if (!isFuzzy) {
     return <DateRange begin={beginOfTheBegin} end={endOfTheEnd}/>;
   }
