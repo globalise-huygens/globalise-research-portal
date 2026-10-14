@@ -4,7 +4,7 @@ import type { FieldProps } from './FieldProps';
 
 export function TitlesField({
   url,
-  label = 'Titles(s)',
+  label = 'Title(s)',
   fallback,
   path = ['title', 'content'],
 }: FieldProps) {
