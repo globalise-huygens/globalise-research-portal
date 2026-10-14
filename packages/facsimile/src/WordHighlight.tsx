@@ -42,7 +42,7 @@ export const WordHighlight = memo(function WordHighlight(
     }
     setHovered(hovering ? id : null);
     if (hovering && !isEntityTrigger) {
-      setTooltip({ text, x: event.clientX, y: event.clientY });
+      setTooltip({ text, trigger: event.currentTarget });
     } else {
       setTooltip(null);
     }
@@ -58,11 +58,6 @@ export const WordHighlight = memo(function WordHighlight(
       aria-label={isEntityTrigger ? `Select word: ${text}` : undefined}
       onPointerDown={handlePointerDown}
       onMouseEnter={(event) => handleHover(true, event)}
-      onMouseMove={(event) => {
-        if (!isEntityTrigger) {
-          handleHover(true, event);
-        }
-      }}
       onMouseLeave={(event) => handleHover(false, event)}
       onFocus={(event) => {
         if (isEntityTrigger) {

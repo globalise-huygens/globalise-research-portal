@@ -3,6 +3,8 @@ import {
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
+import { useCanvasDocuments } from '@globalise/metadata';
+import { DocumentDividersOverlay } from './DocumentDividersOverlay.tsx';
 import { FloatingToolbar } from '@globalise/design';
 import { FacsimileControls } from '@globalise/facsimile';
 import {
@@ -57,12 +59,14 @@ export function LazyCollectionViewer({
   const isScrollReady = size.width && size.height;
   const isScrolling = useIsViewerScrolling();
 
+  const canvasDocuments = useCanvasDocuments();
+
   const lazyCanvases = useMemo(() => {
     if (!vault || !manifestId || !isReady) {
       return [];
     }
-    return createLazyTiledImages(vault, manifestId, gap);
-  }, [vault, manifestId, isReady, gap]);
+    return createLazyTiledImages(vault, manifestId, gap, canvasDocuments);
+  }, [vault, manifestId, isReady, gap, canvasDocuments]);
 
   const lazyCanvasesRef = useRef(lazyCanvases);
   const onCanvasChangeRef = useRef(onCanvasChange);
@@ -238,6 +242,7 @@ export function LazyCollectionViewer({
           filter: scanFilter || undefined,
         }}
       />
+      <DocumentDividersOverlay canvases={lazyCanvases} canvasDocuments={canvasDocuments}/>
       {children}
     </>
   );

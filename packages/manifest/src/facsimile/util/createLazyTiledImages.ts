@@ -1,3 +1,4 @@
+import type { CanvasDocuments } from '@globalise/metadata';
 import { Vault } from '@iiif/helpers/vault';
 import { LazyTiledImage } from '../LazyCollectionViewerModel.ts';
 import { getImageServiceId } from '@knaw-huc/osd-iiif-viewer';
@@ -6,6 +7,7 @@ export function createLazyTiledImages(
   vault: Vault,
   manifestId: string,
   gap = 0.02,
+  canvasDocuments?: Map<string, CanvasDocuments>,
 ): LazyTiledImage[] {
   const manifest = vault.get({ id: manifestId, type: 'Manifest' });
   const images: LazyTiledImage[] = [];
@@ -17,8 +19,11 @@ export function createLazyTiledImages(
       continue;
     }
     const height = canvas.height / canvas.width;
+    const documentGap = (canvasDocuments?.get(canvas.id)?.starting.length ?? 0) * 0.8;
+    y += documentGap;
     images.push({
       y,
+      documentGap,
       height,
       canvasId: canvas.id,
       imageServiceUrl,
