@@ -4,13 +4,12 @@ import type { ManifestScan } from './toToc';
 export type TocScanProps = {
   scan: ManifestScan;
   isSelected: boolean;
-  showThumbnail: boolean;
 };
 
 export function TocScan(
-  { scan, isSelected, showThumbnail }: TocScanProps,
+  { scan, isSelected }: TocScanProps,
 ) {
-  const thumbnail = showThumbnail && scan.thumbnailUrl && (
+  const thumbnail = scan.thumbnailUrl && (
     <img
       src={scan.thumbnailUrl}
       alt=""

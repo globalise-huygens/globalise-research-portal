@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Checkbox } from '@globalise/design';
-import { expandTocDocument, setShowTocThumbnails, useSelectedCanvas, useSettingsStore } from '@globalise/common/document';
+import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
+import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
 import { useScrollToThumb } from './useScrollToThumb.ts';
@@ -13,18 +13,19 @@ export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
-  const showThumbnails = useSettingsStore((state) => state.showTocThumbnails);
 
   useScrollToThumb(tocListRef);
 
-  const currentDocumentId = useMemo(
+  const currentDocument = useMemo(
     () => documents.find(
       (document) => document.scans.some(
         (scan) => scan.canvasId === selectedCanvasId,
       ),
-    )?.id,
+    ),
     [documents, selectedCanvasId],
   );
+  const currentDocumentId = currentDocument?.id;
+  const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
 
   useEffect(expandCurrentDocument, [currentDocumentId]);
 
@@ -32,6 +33,28 @@ export function TocPanel() {
     if (currentDocumentId) {
       expandTocDocument(currentDocumentId);
     }
+  }
+
+  function goToCurrent(target: 'document' | 'scan') {
+    if (target === 'scan' && currentDocumentId) {
+      expandTocDocument(currentDocumentId);
+    }
+    requestAnimationFrame(() => {
+      const list = tocListRef.current;
+      const header = list?.querySelector<HTMLElement>('.toc-document[data-current="true"] > .header');
+      const element = target === 'document' ? header
+        : list?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
+      if (!list || !element) {
+        return;
+      }
+      const offset = target === 'scan' ? (header?.offsetHeight ?? 0) : 0;
+      const anchor = target === 'document' ? element.parentElement ?? element : element;
+      list.scrollTo({
+        top: list.scrollTop + anchor.getBoundingClientRect().top - list.getBoundingClientRect().top - offset,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+      element.focus({ preventScroll: true });
+    });
   }
 
   if (!documents.length) {
@@ -44,10 +67,26 @@ export function TocPanel() {
 
   return (
     <div className="toc-panel">
-      <div className="toc-options">
-        <Checkbox isSelected={showThumbnails} onChange={setShowTocThumbnails}>
-          Show thumbnails
-        </Checkbox>
+      <div className="toc-navigation" role="group" aria-label="Go to current selection">
+        <span>Go to</span>
+        <ToolButton
+          size="compact"
+          icon={<IconEntityDocument aria-hidden="true"/>}
+          aria-label="Go to current document"
+          isDisabled={!currentDocument}
+          onPress={() => goToCurrent('document')}
+        >
+          Document
+        </ToolButton>
+        <ToolButton
+          size="compact"
+          icon={<IconScan aria-hidden="true"/>}
+          aria-label={currentScan ? `Go to current scan ${currentScan.scanNumber}` : 'Go to current scan'}
+          isDisabled={!currentScan}
+          onPress={() => goToCurrent('scan')}
+        >
+          {currentScan ? `Scan ${currentScan.scanNumber}` : 'Scan'}
+        </ToolButton>
       </div>
       <div className="list" ref={tocListRef}>
         {documents.map((document) => (
@@ -56,7 +95,6 @@ export function TocPanel() {
             document={document}
             isCurrent={document.id === currentDocumentId}
             selectedCanvasId={selectedCanvasId}
-            showThumbnails={showThumbnails}
           />
         ))}
       </div>

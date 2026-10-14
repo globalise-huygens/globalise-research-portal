@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SidebarId, sidebarPanels } from './sidebar-panels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
-import { Tooltip } from '@globalise/design';
+import { IconEntityDocument, Tooltip } from '@globalise/design';
 import { Button as AriaButton } from 'react-aria-components';
 
 export function ExpandedMetadataSidebar({
@@ -20,6 +20,12 @@ export function ExpandedMetadataSidebar({
 
         return (
           <React.Fragment key={item.id}>
+            {panelId === 'entities' && (
+              <div className="sidebar-document-context">
+                <IconEntityDocument aria-hidden="true"/>
+                <span>Current document</span>
+              </div>
+            )}
             <Tooltip label={item.description} placement="right">
               <AriaButton
                 aria-controls={panelId}

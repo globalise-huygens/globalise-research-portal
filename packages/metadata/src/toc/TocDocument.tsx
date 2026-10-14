@@ -1,5 +1,6 @@
+import { useId } from 'react';
+import { Button } from 'react-aria-components';
 import {
-  setSelectedCanvas,
   toggleTocDocument,
   useIsTocDocumentExpanded,
   type CanvasId,
@@ -15,62 +16,49 @@ export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
   selectedCanvasId: CanvasId | null;
-  showThumbnails: boolean;
 };
 
 export function TocDocument(
-  { document, isCurrent, selectedCanvasId, showThumbnails }: TocDocumentProps,
+  { document, isCurrent, selectedCanvasId }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
-  const [firstScan] = document.scans;
+  const contentId = useId();
 
   return (
     <article
       className="toc-document"
       data-current={isCurrent}
     >
-      <div className="header">
-        <button
-          type="button"
-          className="select"
-          aria-current={isCurrent || undefined}
-          onClick={() => setSelectedCanvas(firstScan.canvasId, 'external')}
-        >
-          <IconEntityDocument className="document-icon"/>
-          <span>{document.label}</span>
-          <small>
-            {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:
-            {' '}
-            {formatDocumentPageSections(
-              toDocumentPageSections(document.scans),
-            )}
-          </small>
-        </button>
-        <button
-          type="button"
-          className="toggle"
-          aria-label={isExpanded ? 'Collapse document' : 'Expand document'}
-          aria-expanded={isExpanded}
-          onClick={() => toggleTocDocument(document.id)}
-        >
-          <IconExpandSection
-            className="disclosure-icon"
-          />
-        </button>
-      </div>
-
-      {isExpanded && <TocDocumentMetadata document={document}/>}
+      <Button
+        className="header"
+        aria-current={isCurrent || undefined}
+        aria-expanded={isExpanded}
+        aria-controls={isExpanded ? contentId : undefined}
+        onPress={() => toggleTocDocument(document.id)}
+      >
+        <IconEntityDocument className="document-icon" aria-hidden="true"/>
+        <span className="document-title">{document.label}</span>
+        <IconExpandSection className="disclosure-icon" aria-hidden="true"/>
+        <small>
+          {isCurrent && 'Current document · '}
+          {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:
+          {' '}
+          {formatDocumentPageSections(toDocumentPageSections(document.scans))}
+        </small>
+      </Button>
 
       {isExpanded && (
-        <div className="scans">
-          {document.scans.map((scan) => (
-            <TocScan
-              key={scan.canvasId}
-              scan={scan}
-              isSelected={scan.canvasId === selectedCanvasId}
-              showThumbnail={showThumbnails}
-            />
-          ))}
+        <div id={contentId}>
+          <TocDocumentMetadata document={document}/>
+          <div className="scans">
+            {document.scans.map((scan) => (
+              <TocScan
+                key={scan.canvasId}
+                scan={scan}
+                isSelected={scan.canvasId === selectedCanvasId}
+              />
+            ))}
+          </div>
         </div>
       )}
     </article>

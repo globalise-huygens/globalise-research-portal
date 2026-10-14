@@ -70,7 +70,7 @@ export function ManifestViewer({
   const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
     React.useState(false);
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
-    () => new Set(['inventory']),
+    () => new Set(['inventory', 'toc']),
   );
 
   React.useEffect(() => {
