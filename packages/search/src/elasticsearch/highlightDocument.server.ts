@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { createServerFn } from '@tanstack/react-start';
+import { getHighlight, type Offsets } from '@knaw-huc/faceted-search-react';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { POST_TAG, PRE_TAG } from './highlightTags';
-import { getHighlight, type Offsets } from './getHighlight';
 import { getSnippetOffsets } from './getSnippetOffsets';
 
 import type { ManifestSearchState } from '../utils/getManifestSearchState';

@@ -1,4 +1,4 @@
-import { getHighlight, type Offsets } from './getHighlight';
+import { getHighlight, type Offsets } from '@knaw-huc/faceted-search-react';
 import { POST_TAG, PRE_TAG } from './highlightTags';
 
 export function getSnippetOffsets(text: string, snippet: string): Offsets | null {
