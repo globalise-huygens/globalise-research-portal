@@ -35,10 +35,6 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
       }
     };
     const measure = () => {
-      const width = `${Math.max(1, layer.clientWidth - 32)}px`;
-      for (const element of elements) {
-        element.style.width = width;
-      }
       rows = elements.map((element) => ({
         element,
         y: Number(element.dataset.y),
@@ -50,7 +46,6 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
     measure();
     viewer.addHandler('viewport-change', update);
     const observer = new ResizeObserver(measure);
-    observer.observe(layer);
     elements.forEach((element) => observer.observe(element));
     return () => {
       viewer.removeHandler('viewport-change', update);

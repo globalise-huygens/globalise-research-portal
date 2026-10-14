@@ -19,6 +19,7 @@ export function createLazyTiledImages(
       continue;
     }
     const height = canvas.height / canvas.width;
+    // Coordinates use a scan width of 1; reserve space for each document heading.
     const documentGap = (canvasDocuments?.get(canvas.id)?.starting.length ?? 0) * 0.8;
     y += documentGap;
     images.push({

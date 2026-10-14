@@ -43,6 +43,6 @@
   display: flex;
   flex-direction: column;
   top: 0;
-  left: 1rem;
+  inset-inline: 1rem;
   transform-origin: center;
 }
