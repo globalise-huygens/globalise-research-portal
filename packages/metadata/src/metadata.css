@@ -24,13 +24,13 @@
 
   .metadata-panel dl > div {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: var(--s12);
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--s8);
   }
 
   .metadata-panel dt {
     color: var(--color-neutral-500);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     line-height: var(--s20);
   }
 
@@ -40,6 +40,22 @@
     color: var(--color-neutral-100);
     font-size: var(--text-sm);
     line-height: var(--s20);
+    overflow-wrap: anywhere;
+  }
+
+  .metadata-panel :is(.metadata-link, .gds-entity-tag) {
+    display: inline;
+  }
+
+  .metadata-panel .gds-entity-tag__icon {
+    vertical-align: -0.1em;
+  }
+
+  .metadata-panel .metadata-link > .icon {
+    display: inline-block;
+    width: var(--s20);
+    height: var(--s20);
+    vertical-align: -0.2em;
   }
 
   .metadata-panel p {

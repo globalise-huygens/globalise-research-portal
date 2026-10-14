@@ -33,7 +33,8 @@ export function HandleField({
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="icon"/>
+        {'\u00a0'}
+        <IconExternalLink className="icon" aria-hidden="true"/>
       </a>
     </Pair>
   );

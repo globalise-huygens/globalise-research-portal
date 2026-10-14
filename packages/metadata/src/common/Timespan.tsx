@@ -10,15 +10,15 @@ export type TimespanProps = {
 export function Timespan(
   { beginOfTheBegin, endOfTheBegin, beginOfTheEnd, endOfTheEnd }: TimespanProps,
 ) {
-  const isFuzzy = !!endOfTheBegin || !!beginOfTheEnd;
+  const isFuzzy = (!!endOfTheBegin && beginOfTheBegin?.split('T')[0] !== endOfTheBegin.split('T')[0])
+    || (!!beginOfTheEnd && endOfTheEnd?.split('T')[0] !== beginOfTheEnd.split('T')[0]);
   if (!isFuzzy) {
     return <DateRange begin={beginOfTheBegin} end={endOfTheEnd}/>;
   }
   return (
     <>
-      <DateRange begin={beginOfTheBegin} end={endOfTheBegin}/>
-      {' to '}
-      <DateRange begin={beginOfTheEnd} end={endOfTheEnd}/>
+      <div>Start: <DateRange begin={beginOfTheBegin} end={endOfTheBegin}/></div>
+      <div>End: <DateRange begin={beginOfTheEnd} end={endOfTheEnd}/></div>
     </>
   );
 }
