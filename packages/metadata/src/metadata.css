@@ -45,6 +45,7 @@
 
   .metadata-panel :is(.metadata-link, .gds-entity-tag) {
     display: inline;
+    font: inherit;
   }
 
   .metadata-panel .gds-entity-tag__icon {
@@ -53,9 +54,9 @@
 
   .metadata-panel .metadata-link > .icon {
     display: inline-block;
-    width: var(--s20);
-    height: var(--s20);
-    vertical-align: -0.2em;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.1em;
   }
 
   .metadata-panel p {

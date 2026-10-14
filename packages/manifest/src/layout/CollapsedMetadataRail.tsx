@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Tooltip } from '@globalise/design';
 import { Button as AriaButton } from 'react-aria-components';
-import { sidebarPanels } from './sidebar-panels.tsx';
+import { useSidebarPanels } from './sidebar-panels.tsx';
 
 export function CollapsedMetadataRail({
   onExpandSection,
 }: {
   onExpandSection: (sectionId: string) => void;
 }) {
+  const sidebarPanels = useSidebarPanels();
   return (
     <nav className="collapsed-rail" aria-label="Document information">
       {sidebarPanels.map((item) => (
