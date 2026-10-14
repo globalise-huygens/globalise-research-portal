@@ -15,10 +15,11 @@ export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
   selectedCanvasId: CanvasId | null;
+  showThumbnails: boolean;
 };
 
 export function TocDocument(
-  { document, isCurrent, selectedCanvasId }: TocDocumentProps,
+  { document, isCurrent, selectedCanvasId, showThumbnails }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
   const [firstScan] = document.scans;
@@ -67,6 +68,7 @@ export function TocDocument(
               key={scan.canvasId}
               scan={scan}
               isSelected={scan.canvasId === selectedCanvasId}
+              showThumbnail={showThumbnails}
             />
           ))}
         </div>

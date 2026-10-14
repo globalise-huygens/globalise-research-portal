@@ -13,6 +13,7 @@ export type SettingsState = {
   paneRatio: number;
   transcriptionMode: TranscriptionMode;
   diplomaticViewScale: number;
+  showTocThumbnails: boolean;
 };
 
 const defaultSettings: SettingsState = {
@@ -20,6 +21,7 @@ const defaultSettings: SettingsState = {
   paneRatio: 0.5,
   transcriptionMode: 'diplomatic',
   diplomaticViewScale: 100,
+  showTocThumbnails: true,
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -48,6 +50,10 @@ export function useDiplomaticViewScale() {
 
 export function setDocumentMode(documentMode: DocumentMode) {
   useSettingsStore.setState({ documentMode });
+}
+
+export function setShowTocThumbnails(showTocThumbnails: boolean) {
+  useSettingsStore.setState({ showTocThumbnails });
 }
 export function setPaneRatio(paneRatio: number) {
   useSettingsStore.setState({ paneRatio });

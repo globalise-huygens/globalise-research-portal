@@ -1,5 +1,7 @@
 import {
   label as labelOf,
+  findByPath,
+  url as urlOf,
   useMetadataNodes,
 } from '@globalise/common';
 import { IconExternalLink } from '@globalise/design';
@@ -8,25 +10,27 @@ import type { FieldProps } from './FieldProps';
 
 export function DocumentPageField({
   url,
-  label = 'Document',
+  label = 'Handle',
   fallback,
   path = ['subject_of'],
 }: FieldProps) {
   const [object] = useMetadataNodes(url, path);
-  // TODO: const href = object && urlOf(object)
-  if (!url || !object) {
+  const link = object && (findByPath(object, ['digitally_carried_by', 'access_point'])[0]
+    ?? findByPath(object, ['access_point'])[0] ?? object);
+  const href = link && urlOf(link);
+  if (!object || !href) {
     return <EmptyPair label={label} fallback={fallback}/>;
   }
   return (
     <Pair label={label}>
       <a
         className="metadata-link"
-        href={url}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
       >
         {labelOf(object)}
-        <IconExternalLink className="icon"/>
+        <IconExternalLink className="icon" aria-hidden="true"/>
       </a>
     </Pair>
   );

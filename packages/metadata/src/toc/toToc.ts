@@ -8,6 +8,9 @@ export type ManifestScan = {
   canvasId: CanvasId;
   scanNumber: number;
   thumbnailUrl?: string;
+  width: number;
+  height: number;
+  pageMetadata: { label: string; value: string }[];
 };
 
 export type ManifestDocument = {
@@ -85,7 +88,11 @@ function toDocument(
       continue;
     }
     const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
-    scans.push({ canvasId: canvasId, scanNumber, thumbnailUrl });
+    const pageMetadata = (canvas.metadata ?? [])
+      .map((item) => ({ label: getValue(item.label), value: getValue(item.value) }))
+      .filter((item) => /^(folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
+        && item.value);
+    scans.push({ canvasId, scanNumber, thumbnailUrl, pageMetadata, width: canvas.width, height: canvas.height });
   }
   scans.sort((a, b) => a.scanNumber - b.scanNumber);
   const title = findMetadataValue(range.metadata, 'Title');

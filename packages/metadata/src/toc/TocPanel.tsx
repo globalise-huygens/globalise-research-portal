@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
+import { Checkbox } from '@globalise/design';
+import { expandTocDocument, setShowTocThumbnails, useSelectedCanvas, useSettingsStore } from '@globalise/common/document';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
 import { useScrollToThumb } from './useScrollToThumb.ts';
@@ -12,6 +13,7 @@ export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
+  const showThumbnails = useSettingsStore((state) => state.showTocThumbnails);
 
   useScrollToThumb(tocListRef);
 
@@ -42,6 +44,11 @@ export function TocPanel() {
 
   return (
     <div className="toc-panel">
+      <div className="toc-options">
+        <Checkbox isSelected={showThumbnails} onChange={setShowTocThumbnails}>
+          Show thumbnails
+        </Checkbox>
+      </div>
       <div className="list" ref={tocListRef}>
         {documents.map((document) => (
           <TocDocument
@@ -49,6 +56,7 @@ export function TocPanel() {
             document={document}
             isCurrent={document.id === currentDocumentId}
             selectedCanvasId={selectedCanvasId}
+            showThumbnails={showThumbnails}
           />
         ))}
       </div>

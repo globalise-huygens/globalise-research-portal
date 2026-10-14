@@ -175,6 +175,13 @@
     scrollbar-width: thin;
   }
 
+  .toc-options {
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+    padding: var(--s8) var(--panel-pad);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+  }
+
   .toc-document {
     border-bottom: 1px solid rgb(255 255 255 / 0.1);
     color: var(--color-brand-white);
@@ -187,9 +194,13 @@
   }
 
   .toc-document > .header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--s32);
     align-items: stretch;
+    background: var(--color-neutral-800);
   }
 
   .toc-document .select {
@@ -300,9 +311,17 @@
     color: var(--color-neutral-200);
   }
 
-  .toc-document-metadata dd span {
-    margin-left: var(--s6);
-    color: var(--color-neutral-500);
+  .toc-document-metadata :is(.metadata-link, .gds-entity-tag) {
+    display: inline;
+    font: inherit;
+  }
+
+  .toc-document-metadata :is(.metadata-link > .icon, .gds-entity-tag__icon) {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: var(--s4);
+    vertical-align: -0.1em;
   }
 
   .toc-document > .scans {
@@ -359,18 +378,35 @@
     gap: var(--s16);
   }
 
+  .toc-card > .layout[data-thumbnail="false"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .toc-card .thumbnail {
     display: flex;
     width: var(--s72);
-    height: var(--s72);
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: var(--color-neutral-900);
   }
 
-  .toc-card[aria-current="true"] .thumbnail {
-    box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.5);
+  .toc-card .thumbnail img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .toc-card .scan-details {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--s4);
+  }
+
+  .toc-card .scan-property {
+    color: var(--color-neutral-400);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    overflow-wrap: anywhere;
   }
 
   .toc-card .toc-heading {
@@ -387,18 +423,5 @@
   .toc-card[aria-current="true"] .toc-heading {
     color: var(--color-brand-white);
     font-weight: 600;
-  }
-
-  @media (max-width: 767px) {
-    .toc-card > .layout {
-      grid-template-columns: 1fr;
-      align-items: start;
-      gap: var(--s12);
-    }
-
-    .toc-card .thumbnail {
-      width: 100%;
-      height: var(--s96);
-    }
   }
 }
