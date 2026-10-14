@@ -14,10 +14,11 @@ export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
   selectedCanvasId: CanvasId | null;
+  onSelect: () => void;
 };
 
 export function TocDocument(
-  { document, isCurrent, selectedCanvasId }: TocDocumentProps,
+  { document, isCurrent, selectedCanvasId, onSelect }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
   const contentId = useId();
@@ -52,6 +53,7 @@ export function TocDocument(
                 key={scan.canvasId}
                 scan={scan}
                 isSelected={scan.canvasId === selectedCanvasId}
+                onSelect={onSelect}
               />
             ))}
           </div>

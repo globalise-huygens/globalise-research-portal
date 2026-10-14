@@ -4,10 +4,11 @@ import type { ManifestScan } from './toToc';
 export type TocScanProps = {
   scan: ManifestScan;
   isSelected: boolean;
+  onSelect: () => void;
 };
 
 export function TocScan(
-  { scan, isSelected }: TocScanProps,
+  { scan, isSelected, onSelect }: TocScanProps,
 ) {
   const thumbnail = scan.thumbnailUrl && (
     <img
@@ -25,7 +26,10 @@ export function TocScan(
       type="button"
       className="toc-card"
       aria-current={isSelected ? 'true' : undefined}
-      onClick={() => setSelectedCanvas(scan.canvasId, 'external')}
+      onClick={() => {
+        onSelect();
+        setSelectedCanvas(scan.canvasId, 'external');
+      }}
     >
       <span className="layout" data-thumbnail={!!thumbnail}>
         {thumbnail && <span className="thumbnail">{thumbnail}</span>}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
@@ -13,16 +13,18 @@ export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
+  const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
 
   useScrollToThumb(tocListRef);
 
   const currentDocument = useMemo(
-    () => documents.find(
+    () => documents.find((document) => document.id === preferredDocumentId
+      && document.scans.some((scan) => scan.canvasId === selectedCanvasId)) ?? documents.find(
       (document) => document.scans.some(
         (scan) => scan.canvasId === selectedCanvasId,
       ),
     ),
-    [documents, selectedCanvasId],
+    [documents, selectedCanvasId, preferredDocumentId],
   );
   const currentDocumentId = currentDocument?.id;
   const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
@@ -43,7 +45,7 @@ export function TocPanel() {
       const list = tocListRef.current;
       const header = list?.querySelector<HTMLElement>('.toc-document[data-current="true"] > .header');
       const element = target === 'document' ? header
-        : list?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
+        : header?.parentElement?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
       if (!list || !element) {
         return;
       }
@@ -92,6 +94,7 @@ export function TocPanel() {
             document={document}
             isCurrent={document.id === currentDocumentId}
             selectedCanvasId={selectedCanvasId}
+            onSelect={() => setPreferredDocumentId(document.id)}
           />
         ))}
       </div>

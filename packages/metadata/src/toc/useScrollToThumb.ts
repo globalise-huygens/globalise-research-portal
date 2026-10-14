@@ -1,5 +1,4 @@
 import { RefObject, useEffect, useRef } from 'react';
-import { isCentered } from '@globalise/common';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { debounce } from 'lodash';
 
@@ -8,10 +7,14 @@ const scrollDebounce = 100; // ms
 export function useScrollToThumb(listRef: RefObject<HTMLDivElement | null>) {
   const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
   const scroll = useRef(debounce(scrollToSelectedThumb, scrollDebounce));
+  const previousCanvasId = useRef<string | null>(null);
 
   useEffect(() => {
+    scroll.current.cancel();
+    const changed = previousCanvasId.current !== selectedCanvasId;
+    previousCanvasId.current = selectedCanvasId;
     const list = listRef.current;
-    if (!list || !selectedCanvasId) {
+    if (!changed || !list || !selectedCanvasId) {
       return;
     }
     if (selectedCanvasSource === 'external') {
@@ -28,11 +31,16 @@ export function useScrollToThumb(listRef: RefObject<HTMLDivElement | null>) {
 
 function scrollToSelectedThumb(list: HTMLDivElement) {
   const target = list.querySelector<HTMLElement>(
-    '.toc-card[aria-current="true"]',
+    '.toc-document[data-current="true"] .toc-card[aria-current="true"]',
   );
-  if (target && !isCentered(list, target)) {
+  if (target) {
     const header = target.closest('.toc-document')?.querySelector<HTMLElement>('.header');
-    scrollToTocElement(list, target, header?.offsetHeight ?? 0);
+    const offset = header?.offsetHeight ?? 0;
+    const bounds = list.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
+    if (rect.top < bounds.top + offset || rect.bottom > bounds.bottom) {
+      scrollToTocElement(list, target, offset);
+    }
   }
 }
 
