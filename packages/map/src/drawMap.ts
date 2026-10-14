@@ -1,10 +1,11 @@
-import { zoom } from 'd3-zoom';
-import { transition } from 'd3-transition';
+import { zoom, type D3ZoomEvent } from 'd3-zoom';
+import 'd3-transition';
 import { interpolate } from 'd3-interpolate';
 import { pointer, select } from 'd3-selection';
-import { geoPath, geoOrthographic, GeoSphere } from 'd3-geo';
+import { geoPath, geoOrthographic, geoDistance, geoCentroid, GeoSphere } from 'd3-geo';
 import { feature } from 'topojson-client';
 import handleDrag from './handleDrag';
+import { svgEntityPlaceFilled } from '@globalise/design';
 
 import type { GeoJsonProperties, Feature, FeatureCollection, Point, LineString } from 'geojson';
 
@@ -15,6 +16,12 @@ export type MapInteraction<P extends GeoJsonProperties = GeoJsonProperties> = {
   rotateTo: ([lon, lat]: [number, number]) => void;
   overPlace: (e: MouseEvent) => Feature<Point, P> | null;
   overVoyage: (e: MouseEvent) => Feature<LineString, P> | null;
+  resize: () => void;
+  reset: (coordinates?: [number, number]) => void;
+  rotateBy: (longitude: number, latitude: number) => void;
+  zoomBy: (factor: number) => void;
+  zoomTo: (factor: number) => void;
+  destroy: () => void;
 };
 
 // @ts-expect-error Typing is correct
@@ -26,6 +33,7 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
   canvas: HTMLCanvasElement,
   places?: FeatureCollection<Point, P>,
   voyages?: FeatureCollection<LineString, P>,
+  onZoomChange?: (percent: number) => void,
 ): MapInteraction<P> {
   const renderLowScale = () => render(false);
   const renderAutoScale = () => render(true);
@@ -34,6 +42,7 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     const land = useAutoScale ? determineLandScale() : ftLand110m;
 
     context.reset();
+    context.scale(pixelRatio, pixelRatio);
 
     context.beginPath();
     path(sphere);
@@ -51,10 +60,17 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     context.stroke();
 
     if (places) {
-      context.beginPath();
-      path(places);
-      context.fillStyle = 'grey';
-      context.fill();
+      context.fillStyle = getComputedStyle(canvas).color;
+      for (const place of places.features) {
+        const point = projectPlace(place);
+        if (!point) {continue;}
+        context.save();
+        // Anchor the existing icon's tip (480, -80) at the place coordinate.
+        context.translate(point[0] - 480 * pinScale, point[1] + 80 * pinScale);
+        context.scale(pinScale, pinScale);
+        context.fill(pin, 'evenodd');
+        context.restore();
+      }
     }
 
     if (voyages) {
@@ -73,15 +89,23 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
   }
 
   function rotateTo([lon, lat]: [number, number]) {
-    transition()
-      .duration(1000 * (projection.scale() / scale))
+    select(canvas).interrupt().transition()
+      .duration(window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1000 * (projection.scale() / scale))
       .tween('rotate', () => {
         const r = interpolate(projection.rotate(), [-lon, -lat]);
         return (t) => {
           projection.rotate(r(t) as [number, number] | [number, number, number]);
           renderLowScale();
         };
-      });
+      })
+      .on('end', renderAutoScale);
+  }
+
+  function projectPlace(place: Feature<Point, P>) {
+    const rotation = projection.rotate();
+    const point = place.geometry.coordinates as [number, number];
+    if (geoDistance(point, [-rotation[0], -rotation[1]]) > Math.PI / 2) {return null;}
+    return projection(point);
   }
 
   function overPlace(e: MouseEvent) {
@@ -89,14 +113,14 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
     if (places) {
       for (const place of places.features) {
-        const coordinates = projection(place.geometry.coordinates as [number, number]);
+        const coordinates = projectPlace(place);
         if (!coordinates) {
           continue;
         }
 
         const dx = mx - coordinates[0];
-        const dy = my - coordinates[1];
-        if (dx * dx + dy * dy < 25) {
+        const dy = my - coordinates[1] + 12;
+        if (Math.abs(dx) <= 22 && Math.abs(dy) <= 22) {
           return place;
         }
       }
@@ -137,33 +161,72 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const context = canvas.getContext('2d')!;
+  const pin = new Path2D(new DOMParser().parseFromString(svgEntityPlaceFilled, 'image/svg+xml').querySelector('path')?.getAttribute('d') ?? '');
+  const pinScale = 28 / 960;
 
-  const width = canvas.offsetWidth;
-  const height = width;
-  canvas.width = width;
-  canvas.height = height;
+  const width = canvas.offsetWidth || 320;
+  let pixelRatio = window.devicePixelRatio || 1;
+  canvas.width = width * pixelRatio;
+  const height = canvas.offsetHeight || width;
+  canvas.height = height * pixelRatio;
 
   const sphere = { type: 'Sphere' } satisfies GeoSphere;
   const projection = geoOrthographic()
     .fitExtent([[1, 1], [width - 1, height - 1]], sphere)
     .rotate([-110, 0]);
-  const scale = projection.scale();
+  let scale = projection.scale();
   const path = geoPath(projection, context).pointRadius(5);
+  const zoomBehavior = zoom<HTMLCanvasElement, unknown>()
+    .scaleExtent([1, 8])
+    .on('zoom', (e: D3ZoomEvent<HTMLCanvasElement, unknown>) => {
+      projection.scale(scale * e.transform.k);
+      onZoomChange?.(Math.round(e.transform.k * 100));
+    })
+    .on('zoom.render', renderLowScale)
+    .on('end.render', renderAutoScale);
 
   select(canvas)
     .call(handleDrag(projection)
+      .on('start.interrupt', () => select(canvas).interrupt())
       .on('drag.render', renderLowScale)
       .on('end.render', renderAutoScale))
-    .call(zoom<HTMLCanvasElement, unknown>()
-      .scaleExtent([1, 8])
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      .on('zoom', (e) => projection.scale(scale * e.transform.k))
-      .on('zoom.render', renderLowScale)
-      .on('end.render', renderAutoScale))
+    .call(zoomBehavior)
     .call(renderAutoScale)
     .node();
 
-  return { rotateTo, overPlace, overVoyage };
+  function resize() {
+    const width = canvas.offsetWidth;
+    if (!width) {return;}
+    const zoomFactor = projection.scale() / scale;
+    pixelRatio = window.devicePixelRatio || 1;
+    const height = canvas.offsetHeight || width;
+    canvas.width = width * pixelRatio;
+    canvas.height = height * pixelRatio;
+    projection.fitExtent([[1, 1], [width - 1, height - 1]], sphere);
+    scale = projection.scale();
+    projection.scale(scale * zoomFactor);
+    renderAutoScale();
+  }
+
+  return {
+    rotateTo, overPlace, overVoyage, resize,
+    reset: (coordinates) => {
+      select(canvas).interrupt();
+      const center = coordinates ?? (places?.features.length ? geoCentroid(places) : [110, 0]);
+      const [lon, lat] = center.every(Number.isFinite) ? center : places?.features[0]?.geometry.coordinates ?? [110, 0];
+      projection.rotate([-lon, -lat, 0]);
+      zoomBehavior.scaleTo(select(canvas), 1);
+      renderAutoScale();
+    },
+    rotateBy: (longitude, latitude) => {
+      select(canvas).interrupt();
+      const rotation = projection.rotate();
+      projection.rotate([rotation[0] + longitude, Math.max(-90, Math.min(90, rotation[1] + latitude)), rotation[2]]);
+      renderAutoScale();
+    },
+    zoomBy: (factor) => zoomBehavior.scaleBy(select(canvas), factor),
+    zoomTo: (factor) => zoomBehavior.scaleTo(select(canvas), Math.max(1, Math.min(8, factor))),
+    destroy: () => { select(canvas).interrupt().on('.drag', null).on('.zoom', null); },
+  };
 }
