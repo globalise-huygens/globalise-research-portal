@@ -21,10 +21,9 @@ export function selectTextRangeMappings(
   return statement.all(documentId) as TextRangeMapping[];
 }
 
-const dbPathEnvKey = 'DOCUMENT_TEXT_MAPPINGS_DB';
-const dbPath = process.env[dbPathEnvKey];
-
 function openDatabase(): DatabaseSync {
+  const dbPathEnvKey = 'DOCUMENT_TEXT_MAPPINGS_DB';
+  const dbPath = process.env[dbPathEnvKey];
   if (!dbPath) {
     throw new Error(`${dbPathEnvKey} is not set`);
   }

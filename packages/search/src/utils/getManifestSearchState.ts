@@ -3,15 +3,16 @@ import { type ManifestUrlParams, validateSearchUrlParams } from '@globalise/rout
 import { toSearchState } from '../url';
 
 export type ManifestSearchState = GlobaliseSearchState & {
+  document: string;
   documentId: string;
   snippet: string;
 };
 
 export default function getManifestSearchState(urlParams: ManifestUrlParams): ManifestSearchState | undefined {
-  const { documentId, snippet } = urlParams;
-  if (!documentId || !snippet) {
+  const { document, documentId, snippet } = urlParams;
+  if (!document || !documentId || !snippet) {
     return;
   }
   const searchUrlParams = validateSearchUrlParams(urlParams);
-  return { ...getSearchState(toSearchState(searchUrlParams)), documentId, snippet };
+  return { ...getSearchState(toSearchState(searchUrlParams)), document, documentId, snippet };
 }
