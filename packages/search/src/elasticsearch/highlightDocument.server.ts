@@ -14,8 +14,12 @@ import type { ManifestSearchState } from '../utils/getManifestSearchState';
 const maxLineBreakLength = '-\n'.length;
 
 export type DocumentHighlights = {
-  hits: PageOffsets[];
+  hits: HtrHit[];
   snippet: Offsets | null;
+};
+
+export type HtrHit = PageOffsets & {
+  esHitIndex: number;
 };
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
@@ -35,9 +39,10 @@ const highlightDocument = createServerFn({ method: 'POST' })
     // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
     const mappings = selectTextRangeMappings(data.document);
-    const hits = offsets.flatMap((offset) => {
-      const htrOffsets = calculateHtrOffsets(offset, mappings);
-      return mergeContinuations(htrOffsets, maxLineBreakLength);
+    const hits = offsets.flatMap((offset, esHitIndex) => {
+      const htr = calculateHtrOffsets(offset, mappings);
+      const merged = mergeContinuations(htr, maxLineBreakLength);
+      return merged.map((h) => ({ ...h, esHitIndex }));
     });
     return { hits, snippet: getSnippetOffsets(text, data.snippet) };
   });
