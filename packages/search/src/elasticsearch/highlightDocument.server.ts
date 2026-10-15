@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { HtrHit } from '@globalise/common/document';
 import { createServerFn } from '@tanstack/react-start';
-import { getHighlight, type Offsets } from '@knaw-huc/faceted-search-react';
+import { getHighlight } from '@knaw-huc/faceted-search-react';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { POST_TAG, PRE_TAG } from './highlightTags';
@@ -18,7 +18,6 @@ const maxLineBreakLength = '-\n'.length;
 export type DocumentHighlights = {
   hits: HtrHit[];
   activeEsHitIndex: number | null;
-  snippet: Offsets | null;
 };
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
@@ -36,7 +35,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
     const esMs = Math.round(performance.now() - esStart);
     if (!taggedText) {
       console.info('highlightDocument: no tagged text', { docEsId: data.docEsId, esMs });
-      return { hits: [], activeEsHitIndex: null, snippet: null };
+      return { hits: [], activeEsHitIndex: null };
     }
     // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
@@ -64,7 +63,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
       dbMs,
       calculationMs,
     });
-    return { hits, activeEsHitIndex, snippet };
+    return { hits, activeEsHitIndex };
   });
 
 export default highlightDocument;

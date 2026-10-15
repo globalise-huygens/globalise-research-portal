@@ -1,8 +1,8 @@
 import {
   type DocumentState,
   findActiveSearchHits,
+  logCanvasTiming,
   setSearchHits,
-  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
 import {
@@ -38,6 +38,7 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const manifestUrl = search.manifest ?? defaultManifest;
+  const urlCanvasId = search.canvas;
   const {
     data: highlights,
     isLoading: isHighlighting,
@@ -45,14 +46,14 @@ export function ManifestPage() {
   } = useQuery(
     highlightDocumentQueryOptions(getManifestSearchState(search)),
   );
-  const documentHit = search.document
-    ? toDocumentHit(search.document, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHitCanvasId = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex)?.canvasId;
+  const initialCanvasId = urlCanvasId ?? activeHitCanvasId;
 
   let error: ErrorMessage | undefined = undefined;
   if (isHighlightError) {
     error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && !highlights.snippet) {
+  } else if (highlights && highlights.activeEsHitIndex === null) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
@@ -71,6 +72,13 @@ export function ManifestPage() {
         replace: true,
       });
     });
+  }
+
+  useEffect(logInitialCanvas, [initialCanvasId, urlCanvasId, activeHitCanvasId]);
+
+  function logInitialCanvas() {
+    const source = urlCanvasId ? 'url' : activeHitCanvasId ? 'active hit' : 'none';
+    logCanvasTiming('initial canvas', { initialCanvasId, source });
   }
 
   useEffect(logSearchHits, []);
@@ -141,8 +149,7 @@ export function ManifestPage() {
       <ManifestLoader url={manifestUrl}>
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
-            initialCanvasId={search.canvas}
-            documentHit={documentHit}
+            initialCanvasId={initialCanvasId}
             error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
