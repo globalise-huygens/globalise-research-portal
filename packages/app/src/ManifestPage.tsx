@@ -137,7 +137,7 @@ export function ManifestPage() {
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
-        {isHighlighting ? <Spinner/> : (
+        {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             canvasId={initialCanvasId}
             documentHit={documentHit}
