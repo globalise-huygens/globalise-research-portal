@@ -15,15 +15,11 @@ export function ManifestReadingToolbar({ children }: { children: ReactNode }) {
         tools.onClose();
       }
     }}>
-    <div className="mobile-tools-heading">
-      <span>Reading tools</span>
-      <ToolButton aria-label="Close reading tools" icon={<IconClose />} onPress={tools.onClose} size="touch" />
-    </div>
     <div className="mobile-reading-controls" role="group" aria-label="View controls">{children}</div>
     <div className="mobile-highlight-controls" role="group" aria-label="Highlight controls">
-      <span>Highlights</span>
       <ManifestEntityHighlightMenu />
       <ManifestLayoutElementsToggle />
+      <ToolButton className="mobile-tools-close" aria-label="Close reading tools" icon={<IconClose />} onPress={tools.onClose} size="touch" />
     </div>
   </FloatingToolbar>;
 }

@@ -342,6 +342,7 @@ export function FacsimileControls(
       <Tooltip label="Reset scan position, zoom, and rotation">
         <ToolButton
           aria-label="Reset scan view"
+          className="zoom-action"
           icon={<IconReset/>}
           onPress={handleResetView}
           size="compact"
@@ -350,6 +351,7 @@ export function FacsimileControls(
       <Tooltip label="Fit scan to available width">
         <ToolButton
           aria-label="Fit scan to width"
+          className="zoom-action"
           icon={<IconFitWidth/>}
           onPress={handleFitWidth}
           size="compact"

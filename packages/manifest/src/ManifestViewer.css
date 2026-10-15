@@ -834,17 +834,14 @@
     box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
   }
 
-  .manifest-viewer .mobile-tools-heading,
   .manifest-viewer .mobile-highlight-controls {
     display: flex;
     align-items: center;
     gap: var(--s8);
-    font-size: var(--text-sm);
   }
 
-  .manifest-viewer .mobile-tools-heading > span,
-  .manifest-viewer .mobile-highlight-controls > span {
-    margin-right: auto;
+  .manifest-viewer .mobile-tools-close {
+    margin-left: auto;
   }
 
   .manifest-viewer .mobile-reading-controls {
@@ -872,6 +869,14 @@
   .manifest-viewer .transcription-mode-group {
     height: 44px;
     flex-shrink: 0;
+  }
+}
+
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  .manifest-viewer .floating-toolbar .zoom-controls,
+  .manifest-viewer .floating-toolbar .zoom-action,
+  .manifest-viewer .floating-toolbar .toolbar-divider {
+    display: none;
   }
 }
 
