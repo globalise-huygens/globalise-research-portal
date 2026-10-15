@@ -8,7 +8,7 @@ import { getResourcePreview } from './ResourcePreviewModel.ts';
 import { RelationLink } from './RelationLink.tsx';
 
 type MapPlace = { node: LinkedArtNode };
-const WorldMap = lazy(() => import('@globalise/map').then((module) => ({ default: module.WorldMap<MapPlace> })));
+const WorldMap = lazy(() => import('@globalise/map/WorldMap').then((module) => ({ default: module.default<MapPlace> })));
 
 export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
   const references = useMemo(() => getPersonPlaces(entity), [entity]);
@@ -19,7 +19,7 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
     let active = true;
     void Promise.all(references.map(async (node) => {
       const uri = url(node);
-      return uri ? [uri, await resolveRelationResource(uri)] as const : undefined;
+      return uri ? [uri, getPlaceCoordinates(node) ? node : await resolveRelationResource(uri)] as const : undefined;
     })).then((results) => {
       if (active) {setResolved({ entity, places: new Map(results.flatMap((result) => result?.[1] ? [[result[0], result[1]]] : [])) });}
     });
