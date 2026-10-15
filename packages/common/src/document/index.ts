@@ -10,5 +10,6 @@ export * from './Selection';
 export * from './useSelectedViewerAnnotations';
 export { getAnnotationPages } from './getAnnotationPages';
 export { logTextSelector } from './logTextSelector.ts';
+export { logCanvasTiming, startCanvasTiming } from './logCanvasTiming';
 export * from './SettingsStore';
 export * from './manifestPageUrl';

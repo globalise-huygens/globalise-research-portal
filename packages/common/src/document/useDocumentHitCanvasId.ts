@@ -6,6 +6,7 @@ import { getAnnotationPages } from './getAnnotationPages';
 import { findCanvasAtCharOffset } from './findCanvasAtCharOffset.ts';
 import type { DocumentHit } from './manifestPageUrl';
 import type { CanvasId } from './ManifestViewerSlice';
+import { startCanvasTiming } from './logCanvasTiming';
 
 /**
  * Find the canvas belonging to a search hit in a document:
@@ -31,6 +32,7 @@ export function useDocumentHitCanvasId(hit?: DocumentHit): CanvasId | undefined 
     if (start === -1 || end < start) {
       return;
     }
+    const endTiming = startCanvasTiming('start canvas heuristic', { canvases: end - start + 1 });
     const lengths = canvases.slice(start, end + 1).map((canvas) => ({
       canvasId: canvas.id,
       length: findNormalizedTextLength(
@@ -39,6 +41,8 @@ export function useDocumentHitCanvasId(hit?: DocumentHit): CanvasId | undefined 
           .flatMap((page) => page.items),
       ),
     }));
-    return findCanvasAtCharOffset(lengths, startCharOffset) ?? startCanvasId;
+    const canvasId = findCanvasAtCharOffset(lengths, startCharOffset) ?? startCanvasId;
+    endTiming({ canvasId });
+    return canvasId;
   }, [vault, manifestId, startCanvasId, endCanvasId, startCharOffset]);
 }

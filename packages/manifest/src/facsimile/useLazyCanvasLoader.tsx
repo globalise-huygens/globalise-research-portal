@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Viewer } from 'openseadragon';
+import { logCanvasTiming } from '@globalise/common/document';
 import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { LazyCanvasTileLoader } from './LazyCanvasTileLoader.ts';
 
@@ -24,6 +25,7 @@ export function useLazyCanvasLoader(
     if (!viewer || !lazyCanvases.length) {
       return;
     }
+    logCanvasTiming('facsimile initial scroll', { initialCanvas, canvases: lazyCanvases.length });
     const loader = new LazyCanvasTileLoader(
       viewer,
       lazyCanvases,
