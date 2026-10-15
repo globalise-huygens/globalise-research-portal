@@ -1,14 +1,15 @@
+import type { CanvasId } from '@globalise/common/document';
 import type { Offsets } from './getHighlight';
 
 export type TextRangeMapping = {
   normalizedFrom: number;
   normalizedTo: number;
-  shortPageId: string;
+  canvasId: CanvasId;
   htrPageOffset: number;
 };
 
 export type PageOffsets = Offsets & {
-  shortPageId: string;
+  canvasId: CanvasId;
 };
 
 export function calculateHtrOffsets(
@@ -47,7 +48,7 @@ function toHtrPageOffsets(
   const normalizedEnd = Math.min(range.end, mapping.normalizedTo);
 
   return {
-    shortPageId: mapping.shortPageId,
+    canvasId: mapping.canvasId,
     start: normalizedStart + htrShift,
     end: normalizedEnd + htrShift,
   };

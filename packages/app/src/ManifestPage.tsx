@@ -3,7 +3,9 @@ import {
   DOCUMENT,
   DOCUMENT_ID,
   type DocumentState,
+  findActiveSearchHits,
   MANIFEST,
+  setSearchHits,
   SNIPPET,
   toDocumentHit,
   useDocumentStore,
@@ -63,12 +65,21 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logHighlights, [highlights]);
+  useEffect(logSearchHits, []);
 
-  function logHighlights() {
-    if (highlights) {
-      console.info('highlights', highlights);
-    }
+  function logSearchHits() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
+        return;
+      }
+      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
+    });
+  }
+
+  useEffect(storeSearchHits, [highlights]);
+
+  function storeSearchHits() {
+    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
   }
 
   useEffect(logTextRanges, []);
