@@ -1,6 +1,7 @@
 import {
   CanvasId,
   initCanvases,
+  useDocumentStore,
   useSelectedCanvas,
 } from '@globalise/common/document';
 import { FloatingToolbar } from '@globalise/design';
@@ -50,6 +51,7 @@ export function LazyCollectionViewer({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
+  const [startingCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? initialCanvasId);
   const viewer = useViewer();
   const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
@@ -81,9 +83,9 @@ export function LazyCollectionViewer({
     setLazyCanvases(lazyCanvases);
   }
 
-  const initialIndex = initialCanvasId
-    ? lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId)
-    : 0;
+  const currentIndex = lazyCanvases.findIndex((c) => c.canvasId === startingCanvasId);
+  const initialIndex = currentIndex >= 0 ? currentIndex
+    : lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId);
 
   useLazyCanvasLoader({
     viewer,

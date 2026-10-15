@@ -58,6 +58,7 @@ export function FacsimileControls(
     useState<CSSProperties | null>(null);
   const initialViewRef = useRef<InitialView | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const settingsPanelRef = useRef<HTMLDivElement | null>(null);
   const settingsPanelId = useId();
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
@@ -155,9 +156,18 @@ export function FacsimileControls(
     }
 
     updateSettingsPanelPosition();
+    function dismissSettings(event: PointerEvent) {
+      if (event.target instanceof Node && !settingsPanelRef.current?.contains(event.target)
+        && !settingsButtonRef.current?.contains(event.target)) {
+        setIsSettingsOpen(false);
+        setSettingsPanelStyle(null);
+      }
+    }
+    document.addEventListener('pointerdown', dismissSettings, true);
     window.addEventListener('resize', updateSettingsPanelPosition);
     window.addEventListener('scroll', updateSettingsPanelPosition, true);
     return () => {
+      document.removeEventListener('pointerdown', dismissSettings, true);
       window.removeEventListener('resize', updateSettingsPanelPosition);
       window.removeEventListener('scroll', updateSettingsPanelPosition, true);
     };
@@ -377,6 +387,7 @@ export function FacsimileControls(
         settingsPanelStyle &&
         createPortal(
           <div
+            ref={settingsPanelRef}
             id={settingsPanelId}
             className="scan-settings"
             role="dialog"

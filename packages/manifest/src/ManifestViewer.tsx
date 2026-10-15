@@ -14,6 +14,9 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
+import { Button as AriaButton } from 'react-aria-components';
+import { MetadataPanel, TocPanel } from '@globalise/metadata';
+import { sidebarPanels, type SidebarId } from './layout/sidebar-panels';
 import { TOP_BAR_BUTTON } from './layout/buttonClasses';
 import { CollapsedMetadataRail } from './layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
@@ -40,6 +43,16 @@ type ViewerPaneProps = {
 };
 
 const mobileLayoutQuery = '(max-width: 767px)';
+type MobileView = 'scan' | 'text' | SidebarId;
+const mobileItems: { id: MobileView; label: string; description: string; icon: React.ReactNode }[] = [
+  { id: 'scan', label: 'Scan', description: 'Scan viewer', icon: <IconScan /> },
+  { id: 'text', label: 'Text', description: 'Transcription viewer', icon: <IconTranscription /> },
+  ...(['toc', 'inventory', 'entities', 'events'] as const).map((id) => {
+    const panel = sidebarPanels.find((panel) => panel.id === id)!;
+    const label = { toc: 'Contents', inventory: 'Inventory', entities: 'Entities', events: 'Events' }[id];
+    return { ...panel, description: panel.label, label };
+  }),
+];
 
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   const paneClassName = cn('pane', isBordered && 'bordered');
@@ -60,11 +73,10 @@ export function ManifestViewer({
   bottom,
   onClose,
 }: ManifestViewerProps) {
-  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
-    () =>
-      typeof window === 'undefined' ||
-      !window.matchMedia(mobileLayoutQuery).matches,
-  );
+  const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
+  const [mobileView, setMobileView] = React.useState<MobileView>('scan');
+  const [mobileReader, setMobileReader] = React.useState<'scan' | 'text'>('scan');
+  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
   const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
@@ -75,15 +87,16 @@ export function ManifestViewer({
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia(mobileLayoutQuery);
-    const collapseSidebarOnMobile = ({ matches }: MediaQueryListEvent) => {
+    const updateLayout = ({ matches }: { matches: boolean }) => {
+      setIsMobile(matches);
       if (matches) {
         setIsSidebarExpanded(false);
       }
     };
-
-    mediaQuery.addEventListener('change', collapseSidebarOnMobile);
+    updateLayout(mediaQuery);
+    mediaQuery.addEventListener('change', updateLayout);
     return () => {
-      mediaQuery.removeEventListener('change', collapseSidebarOnMobile);
+      mediaQuery.removeEventListener('change', updateLayout);
     };
   }, []);
 
@@ -133,6 +146,10 @@ export function ManifestViewer({
         {transcription}
       </ViewerPane>,
     ];
+  const mobilePanel = sidebarPanels.find((panel) => panel.id === mobileView);
+
+  // Resolve the layout before mounting viewers, so phones do not briefly load both.
+  if (isMobile === null) {return <div className="gds manifest-viewer" aria-busy="true" />;}
 
   return (
     <div className="gds manifest-viewer">
@@ -140,7 +157,7 @@ export function ManifestViewer({
         className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
       >
-        <div
+        {!isMobile && <div
           id="document-detail-sidebar"
           className="sidebar"
           data-expanded={isSidebarExpanded ? 'true' : 'false'}
@@ -153,12 +170,12 @@ export function ManifestViewer({
           ) : (
             <CollapsedMetadataRail onExpandSection={expandSidebarSection} />
           )}
-        </div>
+        </div>}
 
         <div className="main">
           <header className="top-bar">
             <div className="top-bar-group left">
-              <TooltipIconButton
+              {!isMobile && <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
                 aria-label={
@@ -171,15 +188,15 @@ export function ManifestViewer({
                   ? <IconLeftPanelClose aria-hidden="true" className="toolbar-icon" />
                   : <IconLeftPanelOpen aria-hidden="true" className="toolbar-icon" />}
                 onPress={() => setIsSidebarExpanded((v) => !v)}
-              />
+              />}
 
-              <span className="top-bar-divider">
+              {!isMobile && <span className="top-bar-divider">
                 |
-              </span>
+              </span>}
 
               {topLeft}
 
-              <ToggleGroup
+              {!isMobile && <ToggleGroup
                 aria-label="Primary viewer mode controls"
                 selectionMode="multiple"
                 selectedKeys={selectedKeys}
@@ -226,16 +243,16 @@ export function ManifestViewer({
                     Text
                   </Toggle>
                 </Tooltip>
-              </ToggleGroup>
+              </ToggleGroup>}
             </div>
 
             <div className="top-bar-center">
-              <ManifestContentWarning />
+              <ManifestContentWarning iconOnly={isMobile} />
               {topCenter}
             </div>
 
             <div className="top-bar-group right">
-              <TooltipIconButton
+              {!isMobile && <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
                 isActive={isViewerOrderSwapped}
@@ -245,7 +262,7 @@ export function ManifestViewer({
                   <IconSwap className="toolbar-icon" />
                 }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
-              />
+              />}
               <ManifestEntityHighlightMenu />
               <ManifestLayoutElementsToggle />
               {topRight}
@@ -269,8 +286,22 @@ export function ManifestViewer({
             </div>
           </header>
 
-          <main className="body">
-            {isScanVisible && isTextVisible ? (
+          <main className="body" id="manifest-reading-area">
+            {isMobile ? (
+              <>
+                <div className="mobile-reader" data-covered={!!mobilePanel || undefined}
+                  aria-hidden={!!mobilePanel} inert={!!mobilePanel}>
+                  <ViewerPane key={mobileReader} type={mobileReader === 'text' ? 'transcription' : 'scan'}>
+                    {mobileReader === 'text' ? transcription : scan}
+                  </ViewerPane>
+                </div>
+                {mobilePanel && <section className="mobile-information" aria-label={mobilePanel.label}>
+                  <h2>{mobilePanel.label}</h2>
+                  {mobileView === 'toc' ? <TocPanel /> : mobileView === 'inventory' ? <MetadataPanel />
+                    : <p>{mobilePanel.label} are not available yet.</p>}
+                </section>}
+              </>
+            ) : isScanVisible && isTextVisible ? (
               <div className="split-viewer">
                 <SplitPaneLayout>
                   {splitPanes}
@@ -282,7 +313,20 @@ export function ManifestViewer({
           </main>
 
           <footer className="bottom-bar">
-            {bottom}
+            <div className="scan-navigation">{bottom}</div>
+            {isMobile && <nav className="mobile-information-menu" aria-label="Viewer information">
+              {mobileItems.map((item) => <AriaButton key={item.id}
+                aria-label={item.description}
+                aria-pressed={mobileView === item.id}
+                aria-controls="manifest-reading-area"
+                onPress={() => {
+                  setMobileView(item.id);
+                  if (item.id === 'scan' || item.id === 'text') {setMobileReader(item.id);}
+                }}>
+                <span aria-hidden="true">{item.icon}</span>
+                <span>{item.label}</span>
+              </AriaButton>)}
+            </nav>}
           </footer>
         </div>
       </div>
