@@ -824,9 +824,10 @@
     width: calc(100% - var(--s16));
     max-height: calc(100% - var(--s16));
     height: auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--s8);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s4);
     overflow-y: auto;
     padding: var(--s8) var(--s12);
     border: 0;
@@ -837,10 +838,8 @@
   .manifest-viewer .mobile-highlight-controls {
     display: flex;
     align-items: center;
-    gap: var(--s8);
-  }
-
-  .manifest-viewer .mobile-tools-close {
+    flex-wrap: wrap;
+    gap: var(--s4);
     margin-left: auto;
   }
 
