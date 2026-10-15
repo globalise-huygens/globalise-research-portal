@@ -2,6 +2,7 @@ export { useDocumentStore, type DocumentState } from './DocumentStore';
 export * from './EntityHighlightSlice';
 export * from './LayoutElementsSlice';
 export * from './ManifestViewerSlice';
+export * from './SearchHitSlice';
 export * from './SelectionAttribute';
 export * from './SelectionSlice';
 export * from './TocSlice';

@@ -28,7 +28,7 @@ function isContinuation(
   maxLineBreakLength: number,
 ): boolean {
   const gap = next.start - prev.end;
-  return prev.shortPageId === next.shortPageId
+  return prev.canvasId === next.canvasId
     && gap >= 0
     && gap <= maxLineBreakLength;
 }

@@ -1,5 +1,12 @@
 import { DatabaseSync, type StatementSync } from 'node:sqlite';
+import { toCanvasId } from '@globalise/common/document';
 import type { TextRangeMapping } from './calculateHtrOffsets';
+
+type TextRangeMappingRow = Omit<TextRangeMapping, 'canvasId'> & {
+  shortPageId: string;
+};
+
+const canvasNamePrefix = 'NL-HaNA_1.04.02_';
 
 const selectMappingsWhereDocumentIdQuery = `
   select
@@ -15,10 +22,14 @@ const selectMappingsWhereDocumentIdQuery = `
 let statement: StatementSync | undefined;
 
 export function selectTextRangeMappings(
-  documentId: string,
+  docDbId: string,
 ): TextRangeMapping[] {
   statement ??= openDatabase().prepare(selectMappingsWhereDocumentIdQuery);
-  return statement.all(documentId) as TextRangeMapping[];
+  const rows = statement.all(docDbId) as TextRangeMappingRow[];
+  return rows.map(({ shortPageId, ...mapping }) => ({
+    ...mapping,
+    canvasId: toCanvasId(canvasNamePrefix + shortPageId),
+  }));
 }
 
 function openDatabase(): DatabaseSync {
