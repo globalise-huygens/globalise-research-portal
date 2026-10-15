@@ -4,10 +4,10 @@ import {
   DOCUMENT_ID,
   type DocumentState,
   findActiveSearchHits,
+  logCanvasTiming,
   MANIFEST,
   setSearchHits,
   SNIPPET,
-  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
 import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
@@ -38,19 +38,18 @@ const collectionUrl =
 export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
-  const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const documentName = params.get(DOCUMENT);
+  const urlCanvasId = params.get(CANVAS) ?? undefined;
   const { data: highlights, isLoading: isHighlighting, isError: isHighlightError } = useQuery(
     highlightDocumentQueryOptions(getManifestSearchState()),
   );
-  const documentHit = documentName
-    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHitCanvasId = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex)?.canvasId;
+  const initialCanvasId = urlCanvasId ?? activeHitCanvasId;
 
   let error: ErrorMessage | undefined = undefined;
   if (isHighlightError) {
     error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && !highlights.snippet) {
+  } else if (highlights && highlights.activeEsHitIndex === null) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
@@ -72,6 +71,13 @@ export function ManifestPage() {
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
     });
+  }
+
+  useEffect(logInitialCanvas, [initialCanvasId, urlCanvasId, activeHitCanvasId]);
+
+  function logInitialCanvas() {
+    const source = urlCanvasId ? 'url' : activeHitCanvasId ? 'active hit' : 'none';
+    logCanvasTiming('initial canvas', { initialCanvasId, source });
   }
 
   useEffect(logSearchHits, []);
@@ -151,7 +157,6 @@ export function ManifestPage() {
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             canvasId={initialCanvasId}
-            documentHit={documentHit}
             error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
