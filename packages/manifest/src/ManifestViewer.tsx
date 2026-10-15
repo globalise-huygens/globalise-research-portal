@@ -80,6 +80,7 @@ export function ManifestViewer({
   const [mobileReader, setMobileReader] = React.useState<'scan' | 'text'>('scan');
   const [isToolsOpen, setIsToolsOpen] = React.useState(false);
   const [isNavigationOpen, setIsNavigationOpen] = React.useState(false);
+  const navigationGesture = React.useRef<{ pointerId: number; x: number; y: number; swiped: boolean } | null>(null);
   const toolsId = React.useId();
   const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
@@ -183,18 +184,11 @@ export function ManifestViewer({
         <div className="main">
           <header className="top-bar">
             <div className="top-bar-group left">
-              {isMobile && <>
-                <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
-                  aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
-                  isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
-                  <IconSetting aria-hidden="true" />Tools
-                </AriaButton>
-                <AriaButton className="mobile-tools-button"
-                  aria-label="Scan navigation" aria-expanded={isNavigationOpen} aria-controls="manifest-scan-navigation"
-                  onPress={() => setIsNavigationOpen((open) => !open)}>
-                  <IconScan aria-hidden="true" />Pages
-                </AriaButton>
-              </>}
+              {isMobile && <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
+                aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
+                isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
+                <IconSetting aria-hidden="true" />Tools
+              </AriaButton>}
               {!isMobile && <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
@@ -340,6 +334,33 @@ export function ManifestViewer({
           </main>
 
           <footer className="bottom-bar">
+            {isMobile && <button type="button" className="scan-navigation-handle"
+              aria-label="Scan navigation" aria-expanded={isNavigationOpen} aria-controls="manifest-scan-navigation"
+              onPointerDown={(event) => {
+                if (!event.isPrimary || event.button !== 0) {return;}
+                navigationGesture.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, swiped: false };
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }}
+              onPointerUp={(event) => {
+                const gesture = navigationGesture.current;
+                if (gesture?.pointerId !== event.pointerId) {return;}
+                const dx = event.clientX - gesture.x;
+                const dy = event.clientY - gesture.y;
+                gesture.swiped = Math.hypot(dx, dy) >= 24;
+                if (gesture.swiped && Math.abs(dy) > Math.abs(dx)) {setIsNavigationOpen(dy < 0);}
+              }}
+              onPointerCancel={() => { navigationGesture.current = null; }}
+              onClick={(event) => {
+                if (event.detail === 0 || !navigationGesture.current?.swiped) {setIsNavigationOpen((open) => !open);}
+                navigationGesture.current = null;
+              }}
+              onKeyDown={(event) => {
+                if (!['ArrowUp', 'ArrowDown', 'Escape'].includes(event.key)) {return;}
+                event.preventDefault();
+                setIsNavigationOpen(event.key === 'ArrowUp');
+              }}>
+              <span aria-hidden="true" />
+            </button>}
             <div className="scan-navigation" id="manifest-scan-navigation" hidden={isMobile && !isNavigationOpen}>{bottom}</div>
             {isMobile && <nav className="mobile-information-menu" aria-label="Viewer information">
               {mobileItems.map((item) => <AriaButton key={item.id}
