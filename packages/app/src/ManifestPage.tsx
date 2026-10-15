@@ -1,7 +1,6 @@
 import {
   type DocumentState,
   findActiveSearchHits,
-  logCanvasTiming,
   setSearchHits,
   useDocumentStore,
 } from '@globalise/common/document';
@@ -72,13 +71,6 @@ export function ManifestPage() {
         replace: true,
       });
     });
-  }
-
-  useEffect(logInitialCanvas, [initialCanvasId, urlCanvasId, activeHitCanvasId]);
-
-  function logInitialCanvas() {
-    const source = urlCanvasId ? 'url' : activeHitCanvasId ? 'active hit' : 'none';
-    logCanvasTiming('initial canvas', { initialCanvasId, source });
   }
 
   useEffect(logSearchHits, []);
