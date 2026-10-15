@@ -9,7 +9,6 @@ import { svgEntityPlaceFilled } from '@globalise/design';
 
 import type { GeoJsonProperties, Feature, FeatureCollection, Point, LineString } from 'geojson';
 
-import land50m from './land-50m.json' with { type: 'json' };
 import land110m from './land-110m.json' with { type: 'json' };
 
 export type MapInteraction<P extends GeoJsonProperties = GeoJsonProperties> = {
@@ -26,8 +25,16 @@ export type MapInteraction<P extends GeoJsonProperties = GeoJsonProperties> = {
 
 // @ts-expect-error Typing is correct
 const ftLand110m = feature(land110m, land110m.objects.land);
-// @ts-expect-error Typing is correct
-const ftLand50m = feature(land50m, land50m.objects.land);
+let detailedLand: typeof ftLand110m | undefined;
+let detailRequest: Promise<typeof ftLand110m | undefined> | undefined;
+
+function loadDetailedLand() {
+  return detailRequest ??= import('./land-50m.json').then(({ default: land }) => {
+    // @ts-expect-error Typing is correct
+    detailedLand = feature(land, land.objects.land);
+    return detailedLand;
+  }).catch(() => undefined); // Keep the lightweight coastline if the download fails.
+}
 
 export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>(
   canvas: HTMLCanvasElement,
@@ -35,6 +42,8 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
   voyages?: FeatureCollection<LineString, P>,
   onZoomChange?: (percent: number) => void,
 ): MapInteraction<P> {
+  let destroyed = false;
+  let detailRequested = false;
   const renderLowScale = () => render(false);
   const renderAutoScale = () => render(true);
 
@@ -85,7 +94,12 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
   function determineLandScale() {
     const scaleFactor = projection.scale() / scale;
-    return scaleFactor < 2 ? ftLand110m : ftLand50m;
+    if (scaleFactor < 2) {return ftLand110m;}
+    if (!detailedLand && !detailRequested) {
+      detailRequested = true;
+      void loadDetailedLand().then((land) => { if (land && !destroyed) {renderAutoScale();} });
+    }
+    return detailedLand ?? ftLand110m;
   }
 
   function rotateTo([lon, lat]: [number, number]) {
@@ -232,6 +246,6 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     },
     zoomBy: (factor) => zoomBehavior.scaleBy(select(canvas), factor),
     zoomTo: (factor) => zoomBehavior.scaleTo(select(canvas), Math.max(1, Math.min(8, factor))),
-    destroy: () => { select(canvas).interrupt().on('.drag', null).on('.zoom', null); },
+    destroy: () => { destroyed = true; select(canvas).interrupt().on('.drag', null).on('.zoom', null); },
   };
 }

@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./WorldMap": "./src/WorldMap.tsx"
   },
   "dependencies": {
     "@globalise/design": "workspace:*",
