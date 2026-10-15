@@ -6,7 +6,6 @@ import { getPersonPlaces, getPlaceCoordinates } from './PersonPlacesModel.ts';
 import { resolveRelationResource } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
 import { RelationLink } from './RelationLink.tsx';
-import './PersonPlaces.css';
 
 type MapPlace = { node: LinkedArtNode };
 const WorldMap = lazy(() => import('@globalise/map').then((module) => ({ default: module.WorldMap<MapPlace> })));
@@ -16,6 +15,7 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
   const [resolved, setResolved] = useState<{ entity: LinkedArtNode; places: Map<string, LinkedArtNode> }>();
 
   useEffect(() => {
+    if (!references.length) {return;}
     let active = true;
     void Promise.all(references.map(async (node) => {
       const uri = url(node);
@@ -31,8 +31,9 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
     type: 'FeatureCollection',
     features: references.flatMap((node) => {
       const uri = url(node);
-      const resource = uri && places?.get(uri);
-      const coordinates = resource && getPlaceCoordinates(resource);
+      if (!uri) {return [];}
+      const resource = places?.get(uri) ?? node;
+      const coordinates = getPlaceCoordinates(resource);
       return coordinates ? [{ type: 'Feature', id: uri, geometry: { type: 'Point', coordinates }, properties: { node: resource } }] : [];
     }),
   }), [references, places]);
@@ -40,7 +41,7 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
   if (!features.features.length) {return null;}
   return <Suspense fallback={null}>
     <ObjectCardSection title="Map" collapsible>
-      <WorldMap className="person-places" places={features} showControls
+      <WorldMap places={features} showControls
         popoverClassName="gds entity-preview"
         renderPopoverPlace={(place, { keepOpen }) => (
           <EntityPreviewBody data={getResourcePreview(place.properties.node, String(place.id), (nodes) => nodes.map((node, index) => (
