@@ -99,6 +99,6 @@
         display: block;
         font-family: monospace;
         padding: 1em;
-        overflow-x: scroll;
+        overflow-x: auto;
     }
 }
