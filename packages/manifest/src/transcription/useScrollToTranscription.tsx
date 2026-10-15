@@ -1,4 +1,4 @@
-import { useSelectedCanvas } from '@globalise/common/document';
+import { logCanvasTiming, useSelectedCanvas } from '@globalise/common/document';
 import { isCentered } from '@globalise/common';
 import { RefObject, useEffect } from 'react';
 
@@ -23,6 +23,7 @@ export function useScrollToTranscription(
 
     const child = canvasList.children[selectedIndex];
     if (child instanceof HTMLElement && !isCentered(scrollContainer, child)) {
+      logCanvasTiming('transcription scroll', { selectedIndex });
       child.scrollIntoView({ block: 'center', behavior: 'auto' });
     }
   }, [selectedIndex, containerWidth, scrollRef, canvasListRef]);

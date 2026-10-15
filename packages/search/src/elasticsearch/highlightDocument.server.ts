@@ -31,14 +31,19 @@ const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
 const highlightDocument = createServerFn({ method: 'POST' })
   .validator(HighlightDocumentRequestSchema)
   .handler(async ({ data }): Promise<DocumentHighlights> => {
+    const esStart = performance.now();
     const taggedText = await fetchTaggedText(data);
+    const esMs = Math.round(performance.now() - esStart);
     if (!taggedText) {
-      console.info('highlightDocument: no tagged text', { docEsId: data.docEsId });
+      console.info('highlightDocument: no tagged text', { docEsId: data.docEsId, esMs });
       return { hits: [], activeEsHitIndex: null, snippet: null };
     }
     // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
+    const dbStart = performance.now();
     const mappings = selectTextRangeMappings(data.docDbId);
+    const dbMs = Math.round(performance.now() - dbStart);
+    const calculationStart = performance.now();
     const hits = offsets.flatMap((offset, esHitIndex) => {
       const htr = calculateHtrOffsets(offset, mappings);
       const merged = mergeContinuations(htr, maxLineBreakLength);
@@ -46,6 +51,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
     });
     const snippet = getSnippetOffsets(text, data.snippet);
     const activeEsHitIndex = findActiveEsHitIndex(offsets, snippet);
+    const calculationMs = Math.round(performance.now() - calculationStart);
     console.info('highlightDocument', {
       docEsId: data.docEsId,
       docDbId: data.docDbId,
@@ -54,6 +60,9 @@ const highlightDocument = createServerFn({ method: 'POST' })
       htrHits: hits.length,
       snippet,
       activeEsHitIndex,
+      esMs,
+      dbMs,
+      calculationMs,
     });
     return { hits, activeEsHitIndex, snippet };
   });

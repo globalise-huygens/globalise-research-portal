@@ -1,7 +1,12 @@
 'use client';
 
-import { type ReactNode, useState } from 'react';
-import { type CanvasId, type DocumentHit, setSelectedCanvas } from '@globalise/common/document';
+import { type ReactNode, useEffect, useState } from 'react';
+import {
+  type CanvasId,
+  type DocumentHit,
+  logCanvasTiming,
+  setSelectedCanvas,
+} from '@globalise/common/document';
 import { useDocumentHitCanvasId } from '@globalise/common/document/browser';
 import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
@@ -18,6 +23,13 @@ export type ManifestViewerProps = {
 export function ManifestViewer({ initialCanvasId, documentHit, topLeft, error, onClose }: ManifestViewerProps) {
   const documentHitCanvasId = useDocumentHitCanvasId(documentHit);
   const [startCanvasId] = useState(initialCanvasId ?? documentHitCanvasId);
+
+  useEffect(logInitialCanvas, [startCanvasId, initialCanvasId, documentHitCanvasId]);
+
+  function logInitialCanvas() {
+    const source = initialCanvasId ? 'url' : documentHitCanvasId ? 'heuristic' : 'none';
+    logCanvasTiming('initial canvas', { initialCanvasId: startCanvasId, source });
+  }
 
   return (
     <ManifestLayout
