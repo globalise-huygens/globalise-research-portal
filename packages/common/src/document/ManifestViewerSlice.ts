@@ -18,6 +18,7 @@ import {
   indexAnnotations,
 } from '../annotation';
 import debounce from 'lodash/debounce';
+import { startCanvasTiming } from './logCanvasTiming';
 
 export type CanvasId = string;
 
@@ -152,6 +153,8 @@ export async function loadCanvasAnnotationPages(
       [canvasId]: { ...emptyCanvasState, isLoading: true },
     },
   }));
+  const isSelected = state.selectedCanvasId === canvasId;
+  const endTiming = startCanvasTiming('annotations fetch', { canvasId, isSelected, pages: pages.length });
 
   try {
     const results = await Promise.allSettled(pages.map(resolvePage));
@@ -184,8 +187,10 @@ export async function loadCanvasAnnotationPages(
         [canvasId]: createReadyCanvas(success),
       },
     }));
+    endTiming({ isReady: true });
   } catch (e) {
     const error = e instanceof Error ? e.message : 'Unknown error';
+    endTiming({ error });
     setState((s) => ({
       canvases: {
         ...s.canvases,
