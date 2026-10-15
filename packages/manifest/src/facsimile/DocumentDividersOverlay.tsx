@@ -24,32 +24,47 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
     const elements = Array.from(layer.children).filter(
       (element): element is HTMLElement => element instanceof HTMLElement,
     );
-    let rows: { element: HTMLElement; y: number; gap: number; height: number }[] = [];
+    let rows: { element: HTMLElement; content: HTMLElement; y: number; gap: number; height: number }[] = [];
     const update = () => {
-      for (const { element, y, gap, height } of rows) {
+      for (const { element, content, y, gap, height } of rows) {
         const top = viewer.viewport.pixelFromPoint(new Point(0, y - gap), true).y;
         const bottom = viewer.viewport.pixelFromPoint(new Point(0, y), true).y;
-        // Scale down with the gap when zoomed out, keeping titles off the scans.
+        // Fit titles into the gap while keeping the outer rules at pane width.
         const scale = Math.min(1, Math.max(0, bottom - top) / Math.max(1, height));
-        element.style.transform = `translateY(${(top + bottom - height) / 2}px) scale(${scale})`;
+        element.style.height = `${height * scale}px`;
+        element.style.transform = `translateY(${(top + bottom - height * scale) / 2}px)`;
+        content.style.width = scale > 0 ? `${100 / scale}%` : '100%';
+        content.style.transform = `scale(${scale})`;
       }
     };
     const measure = () => {
-      rows = elements.map((element) => ({
-        element,
-        y: Number(element.dataset.y),
-        gap: Number(element.dataset.gap),
-        height: element.offsetHeight,
-      }));
+      // Measure at the pane width before applying the zoom fit.
+      for (const element of elements) {
+        if (element.firstElementChild instanceof HTMLElement) {
+          element.firstElementChild.style.width = '100%';
+        }
+      }
+      rows = elements.flatMap((element) => {
+        const content = element.firstElementChild;
+        return content instanceof HTMLElement ? [{
+          element,
+          content,
+          y: Number(element.dataset.y),
+          gap: Number(element.dataset.gap),
+          height: content.offsetHeight,
+        }] : [];
+      });
       update();
     };
     measure();
     viewer.addHandler('viewport-change', update);
     const observer = new ResizeObserver(measure);
-    elements.forEach((element) => observer.observe(element));
+    observer.observe(layer);
+    document.fonts.addEventListener('loadingdone', measure);
     return () => {
       viewer.removeHandler('viewport-change', update);
       observer.disconnect();
+      document.fonts.removeEventListener('loadingdone', measure);
     };
   }, [viewer, canvases, canvasDocuments]);
 
