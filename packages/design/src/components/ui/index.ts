@@ -1,3 +1,4 @@
+export { EntityPreview, EntityPreviewBody } from './EntityPreview';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 

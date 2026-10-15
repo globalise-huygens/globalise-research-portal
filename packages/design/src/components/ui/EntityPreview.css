@@ -1,5 +1,5 @@
 @layer components {
-  .resource-preview {
+  .entity-preview {
     z-index: 100;
     width: max-content;
     outline: none;
@@ -17,6 +17,7 @@
 
     .entity-preview-card.popover {
       max-height: calc(100vh - var(--s16));
+      max-height: calc(100dvh - var(--s16));
       overflow-y: auto;
     }
   }

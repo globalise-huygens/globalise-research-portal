@@ -1,4 +1,5 @@
 import {
+  EntityPreview,
   EntityTag,
   type EntityTagType,
   ObjectCardExternalLink,
@@ -15,7 +16,6 @@ import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
-import { ResourcePreview } from './ResourcePreview.tsx';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -23,7 +23,7 @@ type RelationLinkProps = {
 
 export function RelationLink({ node }: RelationLinkProps) {
   const href = url(node);
-  const { text, resource } = useRelationValue(node, href);
+  const { text, resource, isPending } = useRelationValue(node, href);
   const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
     <span key={related.id ?? index}>
       {index > 0 && ', '}
@@ -34,7 +34,7 @@ export function RelationLink({ node }: RelationLinkProps) {
   if (!href) {
     return <span className="relation">{text}</span>;
   }
-  return <ResourcePreview data={preview}>{(attributes) => isInternalUri(href) ? (
+  return <EntityPreview data={preview} isPending={isPending}>{(attributes) => isInternalUri(href) ? (
     <EntityTag
       {...attributes}
       type={getEntityTagType(getLinkedArtEntityType(href))}
@@ -44,7 +44,7 @@ export function RelationLink({ node }: RelationLinkProps) {
     </EntityTag>
   ) : (
     <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
-  )}</ResourcePreview>;
+  )}</EntityPreview>;
 }
 
 export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
@@ -58,6 +58,7 @@ function useRelationValue(node: LinkedArtNode, href?: string) {
   const { data: resource, isPending } = useQuery(entityResourceQueryOptions(href ?? ''));
   return {
     resource: resource ?? undefined,
+    isPending: !!href && isPending,
     text: isPending ? pendingValue : getResolvedRelationValue(resource ?? undefined) ?? safeFallback,
   };
 }

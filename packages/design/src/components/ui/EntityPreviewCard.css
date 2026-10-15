@@ -216,7 +216,7 @@
 }
 
 @media (max-width: 480px) {
-  .entity-preview-card {
+  .entity-preview-card.popover {
     width: calc(100vw - var(--s16));
 
     .property {
