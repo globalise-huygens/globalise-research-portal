@@ -18,6 +18,7 @@ import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
+import { PersonPlaces } from './PersonPlaces.tsx';
 import {
   formatRecordedDate,
   getPersonTimespan,
@@ -259,6 +260,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             </div>
           </ObjectCardSection>
         )}
+        <PersonPlaces entity={entity} />
       </ObjectCardPanel>
       <PersonReferencePanel entity={entity} />
     </ObjectCardBody>

@@ -9,5 +9,6 @@
   "references": [
     { "path": "../common" },
     { "path": "../design" },
+    { "path": "../map" },
   ]
 }

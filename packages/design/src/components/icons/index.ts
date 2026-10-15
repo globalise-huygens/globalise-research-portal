@@ -23,6 +23,7 @@ export { default as IconEntityPerson } from './iconEntityPerson.svg?react';
 export { default as svgEntityPerson } from './iconEntityPerson.svg?raw';
 export { default as IconEntityPlace } from './iconEntityPlace.svg?react';
 export { default as svgEntityPlace } from './iconEntityPlace.svg?raw';
+export { default as svgEntityPlaceFilled } from './iconEntityPlaceFilled.svg?raw';
 export { IconEntityShip } from './IconEntityShip';
 export { IconEvents } from './IconEvents';
 export { IconExpandSection } from './IconExpandSection';

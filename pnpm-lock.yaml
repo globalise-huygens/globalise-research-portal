@@ -586,6 +586,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@globalise/map':
+        specifier: workspace:*
+        version: link:../map
       '@tanstack/react-router':
         specifier: ^1.170.41
         version: 1.170.41(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
