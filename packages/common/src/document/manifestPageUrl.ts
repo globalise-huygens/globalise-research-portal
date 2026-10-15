@@ -14,24 +14,10 @@ export type DocumentHit = {
   startCharOffset: number;
 };
 
-export type ManifestHrefParams = {
-  inventoryNumber: string;
-  document: string;
-  documentId: string;
-  snippet: string;
-  search: string;
-};
-
-export function toManifestHref({ inventoryNumber, document, documentId, snippet, search }: ManifestHrefParams): string {
-  const params = new URLSearchParams(search);
-  params.set(MANIFEST, toManifestId(inventoryNumber));
-  params.set(DOCUMENT, document);
-  params.set(DOCUMENT_ID, documentId);
-  params.set(SNIPPET, snippet);
-  return `/manifest?${params}`;
-}
-
-export function toDocumentHit(document: string, startCharOffset: number): DocumentHit {
+export function toDocumentHit(
+  document: string,
+  startCharOffset: number,
+): DocumentHit {
   const startCanvasName = document.replace(/-\d+$/u, '');
   const endPage = /-(\d+)$/u.exec(document)?.[1];
   const endCanvasName = endPage ? startCanvasName.replace(/\d+$/u, endPage) : startCanvasName;
