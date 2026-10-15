@@ -17,7 +17,7 @@ import {
   AnnotationIndexes,
   indexAnnotations,
 } from '../annotation';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 export type CanvasId = string;
 
