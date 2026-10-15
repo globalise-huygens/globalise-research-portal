@@ -4,10 +4,10 @@ import {
   DOCUMENT_ID,
   type DocumentState,
   findActiveSearchHits,
+  logCanvasTiming,
   MANIFEST,
   setSearchHits,
   SNIPPET,
-  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
 import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
@@ -37,14 +37,13 @@ const collectionUrl =
 export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
-  const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const documentName = params.get(DOCUMENT);
+  const urlCanvasId = params.get(CANVAS) ?? undefined;
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(getManifestSearchState()),
   );
-  const documentHit = documentName
-    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHitCanvasId = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex)?.canvasId;
+  const initialCanvasId = urlCanvasId ?? activeHitCanvasId;
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
@@ -63,6 +62,13 @@ export function ManifestPage() {
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
     });
+  }
+
+  useEffect(logInitialCanvas, [initialCanvasId, urlCanvasId, activeHitCanvasId]);
+
+  function logInitialCanvas() {
+    const source = urlCanvasId ? 'url' : activeHitCanvasId ? 'active hit' : 'none';
+    logCanvasTiming('initial canvas', { initialCanvasId, source });
   }
 
   useEffect(logSearchHits, []);
@@ -142,7 +148,6 @@ export function ManifestPage() {
         {isHighlighting ? <Spinner/> : (
           <ManifestViewer
             canvasId={initialCanvasId}
-            documentHit={documentHit}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
               <ManifestDropdown
