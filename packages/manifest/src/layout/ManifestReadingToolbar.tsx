@@ -1,4 +1,4 @@
-import { FloatingToolbar } from '@globalise/design';
+import { FloatingToolbar, IconClose, ToolButton } from '@globalise/design';
 import { useContext, type ReactNode } from 'react';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
@@ -15,9 +15,15 @@ export function ManifestReadingToolbar({ children }: { children: ReactNode }) {
         tools.onClose();
       }
     }}>
-    {children}
-    <span className="toolbar-divider" aria-hidden="true" />
-    <ManifestEntityHighlightMenu />
-    <ManifestLayoutElementsToggle />
+    <div className="mobile-tools-heading">
+      <span>Reading tools</span>
+      <ToolButton aria-label="Close reading tools" icon={<IconClose />} onPress={tools.onClose} size="touch" />
+    </div>
+    <div className="mobile-reading-controls" role="group" aria-label="View controls">{children}</div>
+    <div className="mobile-highlight-controls" role="group" aria-label="Highlight controls">
+      <span>Highlights</span>
+      <ManifestEntityHighlightMenu />
+      <ManifestLayoutElementsToggle />
+    </div>
   </FloatingToolbar>;
 }

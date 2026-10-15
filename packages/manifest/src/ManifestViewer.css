@@ -579,10 +579,6 @@
     padding-inline: 0;
   }
 
-  .manifest-viewer[data-navigation-open] {
-    --manifest-bottom-bar-height: calc(104px + env(safe-area-inset-bottom));
-  }
-
   .manifest-viewer .frame {
     position: relative;
     grid-template-columns: minmax(0, 1fr);
@@ -670,8 +666,19 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .manifest-viewer[data-navigation-open] .bottom-bar {
-    grid-template-rows: 48px 56px;
+  .manifest-viewer .scan-navigation {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 48px;
+    align-items: center;
+    background: var(--color-neutral-900);
+    border-top: 1px solid var(--color-neutral-700);
+  }
+
+  .manifest-viewer[data-navigation-open] .scan-navigation-handle {
+    top: -92px;
   }
 
   .manifest-viewer .scan-navigation-handle {
@@ -810,34 +817,45 @@
   }
 
   .manifest-viewer .floating-toolbar {
-    position: static;
+    position: absolute;
+    top: var(--s8);
+    left: var(--s8);
     box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
+    width: calc(100% - var(--s16));
+    max-height: calc(100% - var(--s16));
     height: auto;
-    min-height: 48px;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    gap: var(--s4);
-    padding: var(--s4) var(--s8);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--s8);
+    overflow-y: auto;
+    padding: var(--s8) var(--s12);
     border: 0;
-    border-bottom: 1px solid var(--color-neutral-700);
-    box-shadow: none;
+    background: var(--color-neutral-900);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
   }
 
-  .manifest-viewer .transcription-viewer {
+  .manifest-viewer .mobile-tools-heading,
+  .manifest-viewer .mobile-highlight-controls {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: var(--s8);
+    font-size: var(--text-sm);
+  }
+
+  .manifest-viewer .mobile-tools-heading > span,
+  .manifest-viewer .mobile-highlight-controls > span {
+    margin-right: auto;
+  }
+
+  .manifest-viewer .mobile-reading-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s4);
   }
 
   .manifest-viewer .transcription-toolbar {
     flex-wrap: wrap;
-  }
-
-  .manifest-viewer .lazy-collection-viewer,
-  .manifest-viewer .transcription-scroll {
-    flex: 1;
-    min-height: 0;
   }
 
   .manifest-viewer .floating-toolbar[hidden] {

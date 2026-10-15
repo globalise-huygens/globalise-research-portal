@@ -161,7 +161,7 @@ export function ManifestViewer({
   if (isMobile === null) {return <div className="gds manifest-viewer" aria-busy="true" />;}
 
   return (
-    <div className="gds manifest-viewer" data-navigation-open={isMobile && isNavigationOpen || undefined}>
+    <div className="gds manifest-viewer" data-navigation-open={isMobile && !mobilePanel && isNavigationOpen || undefined}>
       <div
         className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
@@ -334,7 +334,7 @@ export function ManifestViewer({
           </main>
 
           <footer className="bottom-bar">
-            {isMobile && <button type="button" className="scan-navigation-handle"
+            {isMobile && !mobilePanel && <button type="button" className="scan-navigation-handle"
               aria-label="Scan navigation" aria-expanded={isNavigationOpen} aria-controls="manifest-scan-navigation"
               onPointerDown={(event) => {
                 if (!event.isPrimary || event.button !== 0) {return;}
@@ -361,7 +361,7 @@ export function ManifestViewer({
               }}>
               <span aria-hidden="true" />
             </button>}
-            <div className="scan-navigation" id="manifest-scan-navigation" hidden={isMobile && !isNavigationOpen}>{bottom}</div>
+            <div className="scan-navigation" id="manifest-scan-navigation" hidden={isMobile && (!isNavigationOpen || !!mobilePanel)}>{bottom}</div>
             {isMobile && <nav className="mobile-information-menu" aria-label="Viewer information">
               {mobileItems.map((item) => <AriaButton key={item.id}
                 aria-label={item.description}
@@ -369,6 +369,7 @@ export function ManifestViewer({
                 aria-controls="manifest-reading-area"
                 onPress={() => {
                   setIsToolsOpen(false);
+                  if (item.id !== 'scan' && item.id !== 'text') {setIsNavigationOpen(false);}
                   setMobileView(item.id);
                   if (item.id === 'scan' || item.id === 'text') {setMobileReader(item.id);}
                 }}>
