@@ -2,16 +2,13 @@ import { useEffect, useState } from 'react';
 import { Collection, Manifest } from '@iiif/presentation-3';
 import { ManifestEntry } from './ManifestEntry.tsx';
 import { fetchJson } from '@globalise/common';
-import { startCanvasTiming } from '@globalise/common/document';
 
 export function useCollectionManifests(url: string): ManifestEntry[] {
   const [manifests, setManifests] = useState<ManifestEntry[]>([]);
 
   useEffect(() => {
-    const endTiming = startCanvasTiming('collection fetch', { url });
     fetchJson<Collection>(url)
       .then((collection) => {
-        endTiming({ items: collection.items?.length });
         const items = (collection.items ?? [])
           .filter((item): item is Manifest => item.type === 'Manifest')
           .map((item) => ({
