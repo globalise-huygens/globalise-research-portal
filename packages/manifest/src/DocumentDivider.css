@@ -51,28 +51,9 @@
   flex-direction: column;
   top: 0;
   inset-inline: 1rem;
-  color: var(--color-parchment-800);
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    border-top: 1px solid currentColor;
-  }
-
-  &::before {
-    top: 0;
-  }
-
-  &::after {
-    bottom: 0;
-  }
+  visibility: hidden;
 
   > .document-divider {
-    box-sizing: border-box;
     margin: 0;
-    border: 0;
-    transform-origin: top left;
   }
 }

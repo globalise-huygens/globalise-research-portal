@@ -1,6 +1,7 @@
 import { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Rect } from 'openseadragon';
-import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasOverlay } from './CanvasOverlay.tsx';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
@@ -79,7 +80,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
 
   return (
     <>
-      <Overlay location={location}>
+      <CanvasOverlay location={location}>
         <svg
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
@@ -95,7 +96,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>
-      </Overlay>
+      </CanvasOverlay>
       {tooltip && <FacsimileTooltip {...tooltip} onDismiss={() => setTooltip(null)}/>}
     </>
   );

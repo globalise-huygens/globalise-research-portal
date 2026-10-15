@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Rect } from 'openseadragon';
-import { Overlay } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasOverlay } from './CanvasOverlay.tsx';
 import { useSelectedCanvas } from '@globalise/common/document';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 import './CurrentCanvasOverlay.css';
@@ -24,8 +24,8 @@ export function CurrentCanvasBorderOverlay() {
   }
 
   return (
-    <Overlay location={location}>
+    <CanvasOverlay location={location}>
       <div className="current-canvas-overlay"/>
-    </Overlay>
+    </CanvasOverlay>
   );
 }

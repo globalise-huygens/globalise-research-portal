@@ -9,55 +9,66 @@ import type { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 type Props = {
   canvases: LazyTiledImage[];
   canvasDocuments: Map<string, CanvasDocuments>;
+  onHeightsChange: (heights: Map<string, number>) => void;
 };
 
-/** Document headings use the pane width, independently of the scan image width. */
-export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
+/** Document headings use the pane width and retain their normal text size. */
+export function DocumentDividersOverlay({ canvases, canvasDocuments, onHeightsChange }: Props) {
   const viewer = useViewer();
   const layerRef = useRef<HTMLDivElement>(null);
+  const rowsRef = useRef<{ element: HTMLElement; index: number; height: number }[]>([]);
 
   useLayoutEffect(() => {
     if (!viewer || !layerRef.current) {
       return;
     }
     const layer = layerRef.current;
-    const elements = Array.from(layer.children).filter(
-      (element): element is HTMLElement => element instanceof HTMLElement,
-    );
-    let rows: {
-      element: HTMLElement;
-      content: HTMLElement;
-      y: number;
-      gap: number;
-      height: number;
-      scale: number | null;
-    }[] = [];
+    const measure = () => {
+      const rows = Array.from(layer.children).flatMap((element) => (
+        element instanceof HTMLElement ? [{
+          element,
+          index: Number(element.dataset.index),
+          height: element.offsetHeight,
+        }] : []
+      ));
+      rowsRef.current = rows;
+      onHeightsChange(new Map(rows.map(({ element, height }) => [element.dataset.canvasId!, height])));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(layer);
+    document.fonts.addEventListener('loadingdone', measure);
+    return () => {
+      observer.disconnect();
+      document.fonts.removeEventListener('loadingdone', measure);
+    };
+  }, [viewer, canvasDocuments, onHeightsChange]);
+
+  useLayoutEffect(() => {
+    if (!viewer) {
+      return;
+    }
     const update = () => {
       const bounds = viewer.viewport.getBounds(true);
       const buffer = bounds.height / 2;
       const pixelsPerUnit = viewer.viewport.deltaPixelsFromPoints(new Point(0, 1), true).y;
-      for (const row of rows) {
-        const { element, content, y, gap, height } = row;
-        const visible = y >= bounds.y - buffer
-          && y - gap <= bounds.y + bounds.height + buffer;
+      for (const { element, index, height } of rowsRef.current) {
+        const canvas = canvases[index];
+        if (!canvas) {
+          element.style.visibility = 'hidden';
+          continue;
+        }
+        const visible = canvas.documentGap > 0 && canvas.y >= bounds.y - buffer
+          && canvas.y - canvas.documentGap <= bounds.y + bounds.height + buffer;
         const visibility = visible ? 'visible' : 'hidden';
         if (element.style.visibility !== visibility) {
           element.style.visibility = visibility;
         }
-        if (!visible) {
-          continue;
+        if (visible) {
+          const bottom = viewer.viewport.pixelFromPoint(new Point(0, canvas.y), true).y;
+          const gapHeight = canvas.documentGap * pixelsPerUnit;
+          element.style.transform = `translateY(${bottom - (gapHeight + height) / 2}px)`;
         }
-        const gapHeight = gap * pixelsPerUnit;
-        const bottom = viewer.viewport.pixelFromPoint(new Point(0, y), true).y;
-        // Fit titles into the gap while keeping the outer rules at pane width.
-        const scale = Math.min(1, Math.max(0, gapHeight) / Math.max(1, height));
-        if (row.scale !== scale) {
-          element.style.height = `${height * scale}px`;
-          content.style.width = scale > 0 ? `${100 / scale}%` : '100%';
-          content.style.transform = `scale(${scale})`;
-          row.scale = scale;
-        }
-        element.style.transform = `translateY(${bottom - (gapHeight + height * scale) / 2}px)`;
       }
     };
     let frame: number | null = null;
@@ -67,40 +78,17 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
         update();
       });
     };
-    const measure = () => {
-      // Measure at the pane width before applying the zoom fit.
-      for (const element of elements) {
-        if (element.firstElementChild instanceof HTMLElement) {
-          element.firstElementChild.style.width = '100%';
-        }
-      }
-      rows = elements.flatMap((element) => {
-        const content = element.firstElementChild;
-        return content instanceof HTMLElement ? [{
-          element,
-          content,
-          y: Number(element.dataset.y),
-          gap: Number(element.dataset.gap),
-          height: content.offsetHeight,
-          scale: null,
-        }] : [];
-      });
-      update();
-    };
-    measure();
+    update();
     viewer.addHandler('viewport-change', scheduleUpdate);
-    const observer = new ResizeObserver(measure);
-    observer.observe(layer);
-    document.fonts.addEventListener('loadingdone', measure);
+    viewer.addHandler('resize', scheduleUpdate);
     return () => {
       viewer.removeHandler('viewport-change', scheduleUpdate);
+      viewer.removeHandler('resize', scheduleUpdate);
       if (frame !== null) {
         cancelAnimationFrame(frame);
       }
-      observer.disconnect();
-      document.fonts.removeEventListener('loadingdone', measure);
     };
-  }, [viewer, canvases, canvasDocuments]);
+  }, [viewer, canvases]);
 
   if (!viewer) {
     return null;
@@ -108,12 +96,12 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
 
   return createPortal(
     <div ref={layerRef} className="document-dividers-overlay">
-      {canvases.filter((canvas) => canvas.documentGap > 0).map((canvas) => (
+      {canvases.map((canvas, index) => canvasDocuments.get(canvas.canvasId)?.starting.length ? (
         <div className="document-divider-position" key={canvas.canvasId}
-          data-y={canvas.y} data-gap={canvas.documentGap}>
+          data-index={index} data-canvas-id={canvas.canvasId}>
           <DocumentDivider documents={canvasDocuments.get(canvas.canvasId)?.starting}/>
         </div>
-      ))}
+      ) : null)}
     </div>,
     viewer.container,
   );

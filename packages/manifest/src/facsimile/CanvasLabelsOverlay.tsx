@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { Rect } from 'openseadragon';
-import { Overlay } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasOverlay } from './CanvasOverlay.tsx';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
@@ -24,13 +24,13 @@ export const CanvasLabelsOverlay = memo(function CanvasLabelsOverlay(
   }
 
   return (
-    <Overlay location={location}>
+    <CanvasOverlay location={location}>
       <div className="canvas-labels-overlay">
         <CanvasHeaderLabel
           canvasId={lazyCanvas.canvasId}
           isCurrent={isCurrent}
         />
       </div>
-    </Overlay>
+    </CanvasOverlay>
   );
 });
