@@ -17,7 +17,7 @@ export type MapInteraction<P extends GeoJsonProperties = GeoJsonProperties> = {
   overPlace: (e: MouseEvent) => Feature<Point, P> | null;
   overVoyage: (e: MouseEvent) => Feature<LineString, P> | null;
   resize: () => void;
-  reset: (coordinates?: [number, number]) => void;
+  reset: () => void;
   rotateBy: (longitude: number, latitude: number) => void;
   zoomBy: (factor: number) => void;
   zoomTo: (factor: number) => void;
@@ -90,7 +90,7 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
   function rotateTo([lon, lat]: [number, number]) {
     select(canvas).interrupt().transition()
-      .duration(window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1000 * (projection.scale() / scale))
+      .duration(window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1000)
       .tween('rotate', () => {
         const r = interpolate(projection.rotate(), [-lon, -lat]);
         return (t) => {
@@ -110,6 +110,8 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
   function overPlace(e: MouseEvent) {
     const [mx, my] = pointer(e, canvas);
+    let nearest: Feature<Point, P> | null = null;
+    let distance = Infinity;
 
     if (places) {
       for (const place of places.features) {
@@ -120,13 +122,15 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
         const dx = mx - coordinates[0];
         const dy = my - coordinates[1] + 12;
-        if (Math.abs(dx) <= 22 && Math.abs(dy) <= 22) {
-          return place;
+        const squaredDistance = dx * dx + dy * dy;
+        if (Math.abs(dx) <= 22 && Math.abs(dy) <= 22 && squaredDistance < distance) {
+          nearest = place;
+          distance = squaredDistance;
         }
       }
     }
 
-    return null;
+    return nearest;
   }
 
   function overVoyage(e: MouseEvent) {
@@ -176,9 +180,10 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     .fitExtent([[1, 1], [width - 1, height - 1]], sphere)
     .rotate([-110, 0]);
   let scale = projection.scale();
-  const path = geoPath(projection, context).pointRadius(5);
+  const path = geoPath(projection, context);
   const zoomBehavior = zoom<HTMLCanvasElement, unknown>()
     .scaleExtent([1, 8])
+    .on('start.interrupt', () => select(canvas).interrupt())
     .on('zoom', (e: D3ZoomEvent<HTMLCanvasElement, unknown>) => {
       projection.scale(scale * e.transform.k);
       onZoomChange?.(Math.round(e.transform.k * 100));
@@ -211,9 +216,9 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
 
   return {
     rotateTo, overPlace, overVoyage, resize,
-    reset: (coordinates) => {
+    reset: () => {
       select(canvas).interrupt();
-      const center = coordinates ?? (places?.features.length ? geoCentroid(places) : [110, 0]);
+      const center = places?.features.length ? geoCentroid(places) : [110, 0];
       const [lon, lat] = center.every(Number.isFinite) ? center : places?.features[0]?.geometry.coordinates ?? [110, 0];
       projection.rotate([-lon, -lat, 0]);
       zoomBehavior.scaleTo(select(canvas), 1);

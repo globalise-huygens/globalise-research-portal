@@ -10,7 +10,6 @@ export type WorldMapProps<P extends GeoJsonProperties = GeoJsonProperties> = {
   className?: string;
   popoverClassName?: string;
   showControls?: boolean;
-  initialCoordinates?: [number, number];
   style?: CSSProperties;
   places?: FeatureCollection<Point, P>;
   voyages?: FeatureCollection<LineString, P>;
@@ -30,7 +29,6 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
   style,
   popoverClassName,
   showControls = false,
-  initialCoordinates,
   places,
   voyages,
   renderPopoverPlace,
@@ -56,8 +54,12 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
 
   const showPlacePopover = !!(renderPopoverPlace && hoveredPlace);
   const showVoyagePopover = !!(renderPopoverVoyage && hoveredVoyage);
+  const isPreviewOpen = showPlacePopover || showVoyagePopover;
 
-  const keepOpen = () => clearTimeout(closeTimer.current);
+  const keepOpen = () => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = undefined;
+  };
   function close() {
     keepOpen();
     setHoveredPlace(null);
@@ -72,8 +74,9 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     setZoomInput(null);
   }
   function handleLeave() {
-    keepOpen();
+    if (closeTimer.current !== undefined) {return;}
     closeTimer.current = setTimeout(() => {
+      closeTimer.current = undefined;
       if (!popupRef.current?.contains(document.activeElement)) {close();}
     }, 200);
   }
@@ -139,8 +142,7 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     const interaction = drawMap<P>(canvas, places, voyages, setZoomPercent);
     selectedPlace.current = 0;
     mapInteractionRef.current = interaction;
-    if (showControls) {interaction.reset(initialCoordinates);}
-    else if (initialCoordinates) {interaction.rotateTo(initialCoordinates);}
+    if (showControls) {interaction.reset();}
     const observer = new ResizeObserver(interaction.resize);
     observer.observe(canvas);
     return () => {
@@ -148,12 +150,11 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
       interaction.destroy();
       mapInteractionRef.current = null;
     };
-  }, [places, voyages, initialCoordinates, showControls]);
+  }, [places, voyages, showControls]);
   useEffect(() => () => {
     clearTimeout(closeTimer.current);
     if (previewFrame.current !== undefined) {cancelAnimationFrame(previewFrame.current);}
   }, []);
-  const isPreviewOpen = showPlacePopover || showVoyagePopover;
   useEffect(() => {
     if (!isPreviewOpen) {return;}
     const dismiss = (event: KeyboardEvent) => {
@@ -183,6 +184,7 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
       <canvas ref={canvasRef} aria-label={showControls ? 'World globe. Arrow keys rotate; plus and minus zoom; Enter previews a place; square brackets preview previous and next places.' : 'World map'}
         tabIndex={showControls ? 0 : undefined}
         onKeyDown={(event) => {
+          if (event.ctrlKey || event.metaKey || event.altKey) {return;}
           const interaction = mapInteractionRef.current;
           if (!showControls || !interaction) {return;}
           if (['Enter', '[', ']'].includes(event.key) && renderPopoverPlace) {
@@ -198,7 +200,8 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
           if (rotation) {interaction.rotateBy(...rotation);}
           else {interaction.zoomBy(event.key === '-' ? 1 / 1.4 : 1.4);}
         }}
-        onMouseDown={close} onMouseMove={handleHover} onMouseLeave={handleLeave} onClick={handleClick}/>
+        onPointerDownCapture={close} onWheelCapture={close}
+        onMouseMove={handleHover} onMouseLeave={handleLeave} onClick={handleClick}/>
       {showControls && <FloatingToolbar className={classes.controls} role="group" aria-label="Globe controls">
         <div className="zoom-controls">
           <Tooltip label="Zoom out"><ToolButton size="touch" aria-label="Zoom out" icon={<IconZoomOut />} onPress={() => { close(); mapInteractionRef.current?.zoomBy(1 / 1.4); }} /></Tooltip>
@@ -215,13 +218,13 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
           <Tooltip label="Zoom in"><ToolButton size="touch" aria-label="Zoom in" icon={<IconZoomIn />} onPress={() => { close(); mapInteractionRef.current?.zoomBy(1.4); }} /></Tooltip>
         </div>
         <span className="toolbar-divider" aria-hidden="true" />
-        <Tooltip label="Return to location overview"><ToolButton size="touch" aria-label="Reset globe to location overview" icon={<IconReset />} onPress={() => { close(); setZoomInput(null); selectedPlace.current = 0; mapInteractionRef.current?.reset(initialCoordinates); }} /></Tooltip>
+        <Tooltip label="Return to location overview"><ToolButton size="touch" aria-label="Reset globe to location overview" icon={<IconReset />} onPress={() => { close(); setZoomInput(null); selectedPlace.current = 0; mapInteractionRef.current?.reset(); }} /></Tooltip>
       </FloatingToolbar>}
 
       <span ref={popoverAnchorRef} className={classes.anchor} aria-hidden="true"
         style={{ left: coordinates[0], top: coordinates[1] }}/>
 
-      {(renderPopoverPlace ?? renderPopoverVoyage) && (
+      {isPreviewOpen && (
         <Popover ref={popupRef} triggerRef={popoverAnchorRef} isOpen={isPreviewOpen}
           onOpenChange={(open) => { if (!open) {close();} }} className={popoverClassName}
           isNonModal placement="top" offset={10} shouldFlip>
