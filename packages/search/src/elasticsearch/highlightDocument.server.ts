@@ -47,12 +47,7 @@ async function fetchTaggedText(request: ManifestSearchState): Promise<string | u
         text: { number_of_fragments: 0 },
       },
     },
-    query: {
-      bool: {
-        must: getSearchQuery(request.query, request.facets) ?? undefined,
-        filter: { ids: { values: [request.documentId] } },
-      },
-    },
+    query: getSearchQuery(request.query, request.facets, request.documentId) ?? undefined,
   });
   return result.hits.hits[0]?.highlight?.text[0];
 }
