@@ -14,6 +14,7 @@ import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestDropdown,
   ManifestViewer,
+  type ErrorMessage,
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
@@ -37,12 +38,20 @@ export function ManifestPage() {
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
   const documentName = params.get(DOCUMENT);
-  const { data: highlights, isLoading: isHighlighting } = useQuery(
+  const { data: highlights, isLoading: isHighlighting, isError: isHighlightError } = useQuery(
     highlightDocumentQueryOptions(getManifestSearchState()),
   );
   const documentHit = documentName
     ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
     : undefined;
+
+  let error: ErrorMessage | undefined = undefined;
+  if (isHighlightError) {
+    error = { message: 'Search result could not be loaded.' };
+  } else if (highlights && !highlights.snippet) {
+    error = { message: 'Search result could not be located: showing first page in document.' };
+  }
+
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
@@ -132,6 +141,7 @@ export function ManifestPage() {
           <ManifestViewer
             canvasId={initialCanvasId}
             documentHit={documentHit}
+            error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
               <ManifestDropdown

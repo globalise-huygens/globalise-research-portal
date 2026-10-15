@@ -20,6 +20,7 @@ import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
 import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
+import { ManifestError, type ErrorMessage } from './ManifestError';
 import { SplitPaneLayout } from './splitpane';
 import { TooltipIconButton } from './TooltipIconButton';
 
@@ -30,6 +31,7 @@ export type ManifestLayoutProps = {
   scan?: React.ReactNode;
   transcription?: React.ReactNode;
   bottom?: React.ReactNode;
+  error?: ErrorMessage;
   onClose?: () => void;
 };
 
@@ -42,6 +44,7 @@ export function ManifestLayout({
   scan,
   transcription,
   bottom,
+  error,
   onClose,
 }: ManifestLayoutProps) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
@@ -254,6 +257,7 @@ export function ManifestLayout({
           </header>
 
           <main className="body">
+            {error && <ManifestError error={error}/>}
             {isScanVisible && isTextVisible ? (
               <div className="split-viewer">
                 <SplitPaneLayout>

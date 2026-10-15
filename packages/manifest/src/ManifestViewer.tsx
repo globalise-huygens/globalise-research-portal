@@ -3,8 +3,7 @@
 import type { ReactNode } from 'react';
 import { type CanvasId, type DocumentHit, setSelectedCanvas } from '@globalise/common/document';
 import { useDocumentHitCanvasId } from '@globalise/common/document/browser';
-import { ManifestLayout } from './layout';
-import { ManifestCanvasNavigation } from './layout';
+import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
 import { ManifestTranscriptionViewer } from './transcription/ManifestTranscriptionViewer';
 
@@ -12,10 +11,11 @@ export type ManifestViewerProps = {
   canvasId?: CanvasId;
   documentHit?: DocumentHit;
   topLeft?: ReactNode;
+  error?: ErrorMessage;
   onClose?: () => void;
 };
 
-export function ManifestViewer({ canvasId, documentHit, topLeft, onClose }: ManifestViewerProps) {
+export function ManifestViewer({ canvasId, documentHit, topLeft, error, onClose }: ManifestViewerProps) {
   const documentHitCanvasId = useDocumentHitCanvasId(documentHit);
   const initialCanvasId = canvasId ?? documentHitCanvasId;
 
@@ -23,6 +23,7 @@ export function ManifestViewer({ canvasId, documentHit, topLeft, onClose }: Mani
     <ManifestLayout
       onClose={onClose}
       topLeft={topLeft}
+      error={error}
       scan={
         <ManifestFacsimileViewer
           initialCanvasId={initialCanvasId}
