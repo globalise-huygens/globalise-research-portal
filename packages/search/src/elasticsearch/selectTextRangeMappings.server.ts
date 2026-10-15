@@ -9,27 +9,37 @@ type TextRangeMappingRow = Omit<TextRangeMapping, 'canvasId'> & {
 const canvasNamePrefix = 'NL-HaNA_1.04.02_';
 
 const selectMappingsWhereDocumentIdQuery = `
-  select
-    normalized_from as normalizedFrom,
-    normalized_to as normalizedTo,
-    short_page_id as shortPageId,
-    htr_page_offset as htrPageOffset
-  from document_text_range_mappings
-  where document_id = ?
-  order by normalized_from
+    select normalized_from as normalizedFrom,
+           normalized_to   as normalizedTo,
+           short_page_id   as shortPageId,
+           htr_page_offset as htrPageOffset
+    from document_text_range_mappings
+    where document_id = ?
+    order by normalized_from
 `;
 
-let statement: StatementSync | undefined;
+let mappingsDb: MappingsDb | undefined;
 
 export function selectTextRangeMappings(
   docDbId: string,
 ): TextRangeMapping[] {
-  statement ??= openDatabase().prepare(selectMappingsWhereDocumentIdQuery);
-  const rows = statement.all(docDbId) as TextRangeMappingRow[];
+  mappingsDb ??= initMappingsDb();
+  const rows = mappingsDb.selectMappings.all(docDbId) as TextRangeMappingRow[];
   return rows.map(({ shortPageId, ...mapping }) => ({
     ...mapping,
     canvasId: toCanvasId(canvasNamePrefix + shortPageId),
   }));
+}
+
+type MappingsDb = {
+  database: DatabaseSync;
+  selectMappings: StatementSync;
+};
+
+function initMappingsDb(): MappingsDb {
+  const database = openDatabase();
+  const selectMappings = database.prepare(selectMappingsWhereDocumentIdQuery);
+  return { database, selectMappings };
 }
 
 function openDatabase(): DatabaseSync {
