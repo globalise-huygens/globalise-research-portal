@@ -4,7 +4,6 @@ import {
   DOCUMENT_ID,
   type DocumentState,
   findActiveSearchHits,
-  logCanvasTiming,
   MANIFEST,
   setSearchHits,
   SNIPPET,
@@ -71,13 +70,6 @@ export function ManifestPage() {
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
     });
-  }
-
-  useEffect(logInitialCanvas, [initialCanvasId, urlCanvasId, activeHitCanvasId]);
-
-  function logInitialCanvas() {
-    const source = urlCanvasId ? 'url' : activeHitCanvasId ? 'active hit' : 'none';
-    logCanvasTiming('initial canvas', { initialCanvasId, source });
   }
 
   useEffect(logSearchHits, []);
