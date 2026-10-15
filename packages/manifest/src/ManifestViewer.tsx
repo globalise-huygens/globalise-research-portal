@@ -7,6 +7,7 @@ import {
   IconLeftPanelClose,
   IconLeftPanelOpen,
   IconScan,
+  IconSetting,
   IconSwap,
   IconTranscription,
   Toggle,
@@ -25,6 +26,7 @@ import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMen
 import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
 import { SplitPaneLayout } from './layout';
 import { TooltipIconButton } from './layout/TooltipIconButton';
+import { ReadingToolsContext } from './layout/ReadingToolsContext';
 
 export type ManifestViewerProps = {
   topLeft?: React.ReactNode;
@@ -76,6 +78,9 @@ export function ManifestViewer({
   const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
   const [mobileView, setMobileView] = React.useState<MobileView>('scan');
   const [mobileReader, setMobileReader] = React.useState<'scan' | 'text'>('scan');
+  const [isToolsOpen, setIsToolsOpen] = React.useState(false);
+  const toolsId = React.useId();
+  const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
@@ -91,6 +96,7 @@ export function ManifestViewer({
       setIsMobile(matches);
       if (matches) {
         setIsSidebarExpanded(false);
+        setIsToolsOpen(false);
       }
     };
     updateLayout(mediaQuery);
@@ -263,8 +269,14 @@ export function ManifestViewer({
                 }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />}
-              <ManifestEntityHighlightMenu />
-              <ManifestLayoutElementsToggle />
+              {isMobile ? <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
+                aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
+                isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
+                <IconSetting aria-hidden="true" />Tools
+              </AriaButton> : <>
+                <ManifestEntityHighlightMenu />
+                <ManifestLayoutElementsToggle />
+              </>}
               {topRight}
               {onClose && (
                 <>
@@ -289,12 +301,17 @@ export function ManifestViewer({
           <main className="body" id="manifest-reading-area">
             {isMobile ? (
               <>
-                <div className="mobile-reader" data-covered={!!mobilePanel || undefined}
-                  aria-hidden={!!mobilePanel} inert={!!mobilePanel}>
-                  <ViewerPane key={mobileReader} type={mobileReader === 'text' ? 'transcription' : 'scan'}>
-                    {mobileReader === 'text' ? transcription : scan}
-                  </ViewerPane>
-                </div>
+                <ReadingToolsContext.Provider value={{ isOpen: isToolsOpen, id: toolsId, onClose: () => {
+                  setIsToolsOpen(false);
+                  toolsButtonRef.current?.focus();
+                } }}>
+                  <div className="mobile-reader" data-covered={!!mobilePanel || undefined}
+                    aria-hidden={!!mobilePanel} inert={!!mobilePanel}>
+                    <ViewerPane key={mobileReader} type={mobileReader === 'text' ? 'transcription' : 'scan'}>
+                      {mobileReader === 'text' ? transcription : scan}
+                    </ViewerPane>
+                  </div>
+                </ReadingToolsContext.Provider>
                 {mobilePanel && <section className="mobile-information" aria-label={mobilePanel.label}>
                   <h2>{mobilePanel.label}</h2>
                   {mobileView === 'toc' ? <TocPanel /> : mobileView === 'inventory' ? <MetadataPanel />
@@ -320,6 +337,7 @@ export function ManifestViewer({
                 aria-pressed={mobileView === item.id}
                 aria-controls="manifest-reading-area"
                 onPress={() => {
+                  setIsToolsOpen(false);
                   setMobileView(item.id);
                   if (item.id === 'scan' || item.id === 'text') {setMobileReader(item.id);}
                 }}>

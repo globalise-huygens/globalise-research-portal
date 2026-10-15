@@ -612,6 +612,37 @@
     display: none;
   }
 
+  .manifest-viewer .mobile-tools-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: var(--s4);
+    border: 0;
+    padding-inline: var(--s8);
+    background: transparent;
+    color: var(--color-brand-white);
+    font: inherit;
+    font-size: var(--text-sm);
+  }
+
+  .manifest-viewer .mobile-tools-button[aria-expanded="true"] {
+    background: var(--color-neutral-700);
+  }
+
+  .manifest-viewer .mobile-tools-button[data-disabled] {
+    opacity: 0.4;
+  }
+
+  .manifest-viewer .mobile-tools-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .manifest-viewer .mobile-tools-button svg {
+    width: var(--s20);
+    height: var(--s20);
+  }
+
   .manifest-viewer .manifest-dropdown input {
     min-width: 0;
   }
@@ -732,6 +763,10 @@
     height: auto;
     min-height: 48px;
     overflow-x: auto;
+  }
+
+  .manifest-viewer .floating-toolbar[hidden] {
+    display: none;
   }
 
   .manifest-viewer .floating-toolbar .tool-button,

@@ -4,7 +4,7 @@ import {
   useDocumentStore,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { FloatingToolbar } from '@globalise/design';
+import { ManifestReadingToolbar } from '../layout/ManifestReadingToolbar';
 import { FacsimileControls } from '@globalise/facsimile';
 import {
   useManifest,
@@ -224,12 +224,12 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <FloatingToolbar>
+      <ManifestReadingToolbar>
         <FacsimileControls
           fullscreenRef={containerRef}
           onScanFilterChange={setScanFilter}
         />
-      </FloatingToolbar>
+      </ManifestReadingToolbar>
       <div
         ref={containerRef}
         className="lazy-collection-viewer"
