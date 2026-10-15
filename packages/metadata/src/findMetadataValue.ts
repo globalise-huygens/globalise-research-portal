@@ -3,10 +3,10 @@ import type { MetadataItem } from '@iiif/presentation-3';
 
 export function findMetadataValue(
   metadata: MetadataItem[],
-  englishLabel: string,
+  ...labels: string[]
 ): string | undefined {
-  const item = metadata.find(
-    (item) => getValue(item.label, { language: 'en' }) === englishLabel,
+  const item = metadata.find((item) =>
+    labels.some((label) => Object.values(item.label).flat().includes(label)),
   );
   return item && getValue(item.value);
 }
