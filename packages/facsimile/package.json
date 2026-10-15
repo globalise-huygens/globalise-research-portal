@@ -15,6 +15,7 @@
     "@globalise/design": "workspace:*",
     "@iiif/helpers": "^1.5.9",
     "@knaw-huc/osd-iiif-viewer": "^0.6.0",
+    "@tanstack/react-query": "^5.101.4",
     "openseadragon": "^6.1.1"
   },
   "peerDependencies": {

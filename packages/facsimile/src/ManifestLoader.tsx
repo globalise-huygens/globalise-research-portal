@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   useLoadManifest,
   useManifest,
@@ -19,11 +20,18 @@ export function ManifestLoader(
 
   const manifest = useManifest();
 
+  const { data: patched } = useQuery({
+    queryKey: ['manifest', url],
+    queryFn: ({ signal }) => fetchPatchManifest(url, signal),
+    staleTime: Infinity,
+  });
+
   useEffect(() => {
-    void fetchPatchManifest(url)
-      .then((patched) => loadManifest(url, { manifest: patched, canvasId }));
+    if (patched && manifest.url !== url) {
+      void loadManifest(url, { manifest: patched, canvasId });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadManifest, url]);
+  }, [loadManifest, patched, url]);
 
   if (manifest.isLoading) {
     return <>Loading manifest...</>;
