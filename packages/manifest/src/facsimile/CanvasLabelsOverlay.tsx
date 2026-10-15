@@ -1,9 +1,8 @@
 import { memo, useMemo } from 'react';
 import { Rect } from 'openseadragon';
-import { Overlay } from '@knaw-huc/osd-iiif-viewer';
+import { CanvasOverlay } from './CanvasOverlay.tsx';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
-import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
 import '../CanvasLabel.css';
 
@@ -20,27 +19,18 @@ export const CanvasLabelsOverlay = memo(function CanvasLabelsOverlay(
     () => new Rect(0, lazyCanvas.y, 1, lazyCanvas.height),
     [lazyCanvas.y, lazyCanvas.height],
   );
-  const hasLabel = isCurrent || !!canvasDocuments?.starting.length;
-
-  if (!hasLabel && !canvasDocuments?.ending.length) {
+  if (!isCurrent && !canvasDocuments?.starting.length) {
     return null;
   }
 
   return (
-    <Overlay location={location}>
+    <CanvasOverlay location={location}>
       <div className="canvas-labels-overlay">
-        {hasLabel && (
-          <CanvasHeaderLabel
-            canvasId={lazyCanvas.canvasId}
-            canvasDocuments={canvasDocuments}
-            isCurrent={isCurrent}
-          />
-        )}
-        <CanvasFooterLabel
-          canvasDocuments={canvasDocuments}
+        <CanvasHeaderLabel
+          canvasId={lazyCanvas.canvasId}
           isCurrent={isCurrent}
         />
       </div>
-    </Overlay>
+    </CanvasOverlay>
   );
 });

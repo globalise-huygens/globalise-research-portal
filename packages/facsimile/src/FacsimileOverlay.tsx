@@ -46,7 +46,7 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
           <WordHighlights words={words} setTooltip={setTooltip}/>
         </svg>
       </Overlay>
-      {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
+      {tooltip && <FacsimileTooltip {...tooltip} onDismiss={() => setTooltip(null)}/>}
     </>
   );
 }

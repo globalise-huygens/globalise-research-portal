@@ -1,4 +1,4 @@
-import { TiledImage, Viewer } from 'openseadragon';
+import { Point, TiledImage, Viewer } from 'openseadragon';
 import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { fitLayout } from './util/fitLayout.ts';
 import { fetchJson } from '@globalise/common';
@@ -80,6 +80,36 @@ export class LazyCanvasTileLoader {
 
     this.viewer.addHandler('viewport-change', this.onChangeViewport);
     this.viewer.addHandler('animation', this.onChangeViewport);
+  }
+
+  /** Reposition loaded scans without fetching tiles again or changing the zoom. */
+  public setCanvases(canvases: LazyTiledImage[]): void {
+    if (canvases === this.canvases) {
+      return;
+    }
+    const center = this.viewer.viewport.getCenter(true);
+    const anchor = this.canvases.find((canvas) => canvas.y + canvas.height >= center.y)
+      ?? this.canvases.at(-1);
+    const nextAnchor = canvases.find((canvas) => canvas.canvasId === anchor?.canvasId);
+    let centerY = center.y;
+    if (anchor && nextAnchor) {
+      if (anchor.documentGap > 0 && center.y < anchor.y && center.y >= anchor.y - anchor.documentGap) {
+        const fraction = (center.y - anchor.y + anchor.documentGap) / anchor.documentGap;
+        centerY = nextAnchor.y - nextAnchor.documentGap * (1 - fraction);
+      } else {
+        centerY += nextAnchor.y - anchor.y;
+      }
+    }
+    this.canvases = canvases;
+    for (const canvas of canvases) {
+      const item = this.loaded.get(canvas.canvasId);
+      if (item && item.getBounds(true).y !== canvas.y) {
+        item.setPosition(new Point(0, canvas.y), true);
+      }
+    }
+    if (centerY !== center.y) {
+      this.viewer.viewport.panTo(new Point(center.x, centerY), true);
+    }
   }
 
   /**
@@ -168,17 +198,22 @@ export class LazyCanvasTileLoader {
       if (!this.pending.has(canvas.canvasId) || !this.isReady()) {
         return;
       }
+      const current = this.canvases.find((item) => item.canvasId === canvas.canvasId) ?? canvas;
       this.viewer.addTiledImage({
         preload: true,
         tileSource,
         x: 0,
-        y: canvas.y,
+        y: current.y,
         width: 1,
         // @ts-expect-error type mismatch
         success: (event: { item: TiledImage }) => {
           this.pending.delete(canvas.canvasId);
           if (this.isClosed) {
             return;
+          }
+          const position = this.canvases.find((item) => item.canvasId === canvas.canvasId);
+          if (position) {
+            event.item.setPosition(new Point(0, position.y), true);
           }
           this.loaded.set(canvas.canvasId, event.item);
           this.onLoadedChangeBatched();

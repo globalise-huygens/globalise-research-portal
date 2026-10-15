@@ -8,7 +8,7 @@ import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
-import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
+import { DocumentDivider } from '../DocumentDivider.tsx';
 
 type Props = {
   canvasId: string;
@@ -51,29 +51,32 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
       position: 'relative',
       margin: '0.5rem auto',
       maxWidth: '50rem',
-      padding: '1rem',
-      borderTop: '1px solid #eee',
-      background: 'var(--color-parchment-50)',
-      boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
     }}>
-      <CanvasHeaderLabel
-        canvasId={canvasId}
-        canvasDocuments={canvasDocuments}
-        isCurrent={isCurrentCanvas}
-      />
-      <CanvasFooterLabel canvasDocuments={canvasDocuments} isCurrent={isCurrentCanvas}/>
-      {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
-      {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
-      {isLoading && <Placeholder>Loading...</Placeholder>}
-      {isContentReady && (
-        <div style={{ fontSize: `${scale}%` }}>
-          <LineByLineView
-            canvasId={canvasId}
-            annotations={annotations}
-            showLayoutElements={showLayoutElements}
-          />
-        </div>
-      )}
+      <DocumentDivider documents={canvasDocuments?.starting}/>
+      <div className="line-by-line-canvas" style={{
+        position: 'relative',
+        padding: '1rem',
+        borderTop: '1px solid #eee',
+        background: 'var(--color-parchment-50)',
+        boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
+      }}>
+        <CanvasHeaderLabel
+          canvasId={canvasId}
+          isCurrent={isCurrentCanvas}
+        />
+        {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
+        {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
+        {isLoading && <Placeholder>Loading...</Placeholder>}
+        {isContentReady && (
+          <div style={{ fontSize: `${scale}%` }}>
+            <LineByLineView
+              canvasId={canvasId}
+              annotations={annotations}
+              showLayoutElements={showLayoutElements}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 });

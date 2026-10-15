@@ -22,10 +22,17 @@ export function Tooltip({
   closeDelay = 80,
   placement = 'bottom',
   offset = 8,
+  isOpen,
+  onOpenChange,
   ...props
 }: TooltipProps) {
   return (
-    <AriaTooltipTrigger delay={delay} closeDelay={closeDelay}>
+    <AriaTooltipTrigger
+      delay={delay}
+      closeDelay={closeDelay}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+    >
       {children}
       <AriaTooltip
         placement={placement}
