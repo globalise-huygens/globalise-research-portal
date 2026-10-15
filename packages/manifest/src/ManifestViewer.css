@@ -574,9 +574,13 @@
 @media (max-width: 767px) {
   .manifest-viewer {
     --manifest-top-bar-height: var(--s56);
-    --manifest-bottom-bar-height: calc(104px + env(safe-area-inset-bottom));
+    --manifest-bottom-bar-height: calc(56px + env(safe-area-inset-bottom));
 
     padding-inline: 0;
+  }
+
+  .manifest-viewer[data-navigation-open] {
+    --manifest-bottom-bar-height: calc(104px + env(safe-area-inset-bottom));
   }
 
   .manifest-viewer .frame {
@@ -615,6 +619,7 @@
   .manifest-viewer .mobile-tools-button {
     display: inline-flex;
     min-height: 44px;
+    flex-shrink: 0;
     align-items: center;
     gap: var(--s4);
     border: 0;
@@ -643,6 +648,7 @@
     height: var(--s20);
   }
 
+  .manifest-viewer .manifest-dropdown,
   .manifest-viewer .manifest-dropdown input {
     min-width: 0;
   }
@@ -658,10 +664,18 @@
     display: grid;
     height: auto;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 48px 56px;
+    grid-template-rows: 56px;
     justify-content: stretch;
     gap: 0;
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .manifest-viewer[data-navigation-open] .bottom-bar {
+    grid-template-rows: 48px 56px;
+  }
+
+  .manifest-viewer .scan-navigation[hidden] {
+    display: none;
   }
 
   .manifest-viewer .scan-navigation .bar-group {
@@ -757,12 +771,34 @@
   }
 
   .manifest-viewer .floating-toolbar {
-    top: var(--s8);
-    left: var(--s8);
-    max-width: calc(100% - var(--s16));
+    position: static;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
     height: auto;
     min-height: 48px;
-    overflow-x: auto;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: var(--s4);
+    padding: var(--s4) var(--s8);
+    border: 0;
+    border-bottom: 1px solid var(--color-neutral-700);
+    box-shadow: none;
+  }
+
+  .manifest-viewer .transcription-viewer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .manifest-viewer .transcription-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .manifest-viewer .lazy-collection-viewer,
+  .manifest-viewer .transcription-scroll {
+    flex: 1;
+    min-height: 0;
   }
 
   .manifest-viewer .floating-toolbar[hidden] {

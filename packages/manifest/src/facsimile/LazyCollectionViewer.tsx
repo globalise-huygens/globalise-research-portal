@@ -56,7 +56,7 @@ export function LazyCollectionViewer({
   const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
-  const isScrollReady = size.width && size.height;
+  const isScrollReady = size.width > 0 && size.height > 0;
   const isScrolling = useIsViewerScrolling();
 
   const lazyCanvases = useMemo(() => {

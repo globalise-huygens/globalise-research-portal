@@ -79,6 +79,7 @@ export function ManifestViewer({
   const [mobileView, setMobileView] = React.useState<MobileView>('scan');
   const [mobileReader, setMobileReader] = React.useState<'scan' | 'text'>('scan');
   const [isToolsOpen, setIsToolsOpen] = React.useState(false);
+  const [isNavigationOpen, setIsNavigationOpen] = React.useState(false);
   const toolsId = React.useId();
   const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
@@ -97,6 +98,7 @@ export function ManifestViewer({
       if (matches) {
         setIsSidebarExpanded(false);
         setIsToolsOpen(false);
+        setIsNavigationOpen(false);
       }
     };
     updateLayout(mediaQuery);
@@ -158,7 +160,7 @@ export function ManifestViewer({
   if (isMobile === null) {return <div className="gds manifest-viewer" aria-busy="true" />;}
 
   return (
-    <div className="gds manifest-viewer">
+    <div className="gds manifest-viewer" data-navigation-open={isMobile && isNavigationOpen || undefined}>
       <div
         className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
@@ -181,6 +183,18 @@ export function ManifestViewer({
         <div className="main">
           <header className="top-bar">
             <div className="top-bar-group left">
+              {isMobile && <>
+                <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
+                  aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
+                  isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
+                  <IconSetting aria-hidden="true" />Tools
+                </AriaButton>
+                <AriaButton className="mobile-tools-button"
+                  aria-label="Scan navigation" aria-expanded={isNavigationOpen} aria-controls="manifest-scan-navigation"
+                  onPress={() => setIsNavigationOpen((open) => !open)}>
+                  <IconScan aria-hidden="true" />Pages
+                </AriaButton>
+              </>}
               {!isMobile && <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
@@ -269,11 +283,7 @@ export function ManifestViewer({
                 }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />}
-              {isMobile ? <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
-                aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
-                isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
-                <IconSetting aria-hidden="true" />Tools
-              </AriaButton> : <>
+              {!isMobile && <>
                 <ManifestEntityHighlightMenu />
                 <ManifestLayoutElementsToggle />
               </>}
@@ -330,7 +340,7 @@ export function ManifestViewer({
           </main>
 
           <footer className="bottom-bar">
-            <div className="scan-navigation">{bottom}</div>
+            <div className="scan-navigation" id="manifest-scan-navigation" hidden={isMobile && !isNavigationOpen}>{bottom}</div>
             {isMobile && <nav className="mobile-information-menu" aria-label="Viewer information">
               {mobileItems.map((item) => <AriaButton key={item.id}
                 aria-label={item.description}
