@@ -24,18 +24,48 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
     const elements = Array.from(layer.children).filter(
       (element): element is HTMLElement => element instanceof HTMLElement,
     );
-    let rows: { element: HTMLElement; content: HTMLElement; y: number; gap: number; height: number }[] = [];
+    let rows: {
+      element: HTMLElement;
+      content: HTMLElement;
+      y: number;
+      gap: number;
+      height: number;
+      scale: number | null;
+    }[] = [];
     const update = () => {
-      for (const { element, content, y, gap, height } of rows) {
-        const top = viewer.viewport.pixelFromPoint(new Point(0, y - gap), true).y;
+      const bounds = viewer.viewport.getBounds(true);
+      const buffer = bounds.height / 2;
+      const pixelsPerUnit = viewer.viewport.deltaPixelsFromPoints(new Point(0, 1), true).y;
+      for (const row of rows) {
+        const { element, content, y, gap, height } = row;
+        const visible = y >= bounds.y - buffer
+          && y - gap <= bounds.y + bounds.height + buffer;
+        const visibility = visible ? 'visible' : 'hidden';
+        if (element.style.visibility !== visibility) {
+          element.style.visibility = visibility;
+        }
+        if (!visible) {
+          continue;
+        }
+        const gapHeight = gap * pixelsPerUnit;
         const bottom = viewer.viewport.pixelFromPoint(new Point(0, y), true).y;
         // Fit titles into the gap while keeping the outer rules at pane width.
-        const scale = Math.min(1, Math.max(0, bottom - top) / Math.max(1, height));
-        element.style.height = `${height * scale}px`;
-        element.style.transform = `translateY(${(top + bottom - height * scale) / 2}px)`;
-        content.style.width = scale > 0 ? `${100 / scale}%` : '100%';
-        content.style.transform = `scale(${scale})`;
+        const scale = Math.min(1, Math.max(0, gapHeight) / Math.max(1, height));
+        if (row.scale !== scale) {
+          element.style.height = `${height * scale}px`;
+          content.style.width = scale > 0 ? `${100 / scale}%` : '100%';
+          content.style.transform = `scale(${scale})`;
+          row.scale = scale;
+        }
+        element.style.transform = `translateY(${bottom - (gapHeight + height * scale) / 2}px)`;
       }
+    };
+    let frame: number | null = null;
+    const scheduleUpdate = () => {
+      frame ??= requestAnimationFrame(() => {
+        frame = null;
+        update();
+      });
     };
     const measure = () => {
       // Measure at the pane width before applying the zoom fit.
@@ -52,17 +82,21 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments }: Props) {
           y: Number(element.dataset.y),
           gap: Number(element.dataset.gap),
           height: content.offsetHeight,
+          scale: null,
         }] : [];
       });
       update();
     };
     measure();
-    viewer.addHandler('viewport-change', update);
+    viewer.addHandler('viewport-change', scheduleUpdate);
     const observer = new ResizeObserver(measure);
     observer.observe(layer);
     document.fonts.addEventListener('loadingdone', measure);
     return () => {
-      viewer.removeHandler('viewport-change', update);
+      viewer.removeHandler('viewport-change', scheduleUpdate);
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
       observer.disconnect();
       document.fonts.removeEventListener('loadingdone', measure);
     };

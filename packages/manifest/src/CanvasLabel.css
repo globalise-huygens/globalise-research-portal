@@ -62,9 +62,19 @@
 }
 
 .canvas-labels-overlay .canvas-header {
-  right: 100%;
-  margin-right: 0.25rem;
-  width: max-content;
+  inset: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  box-sizing: border-box;
+  padding: 0.625rem;
+  container-type: inline-size;
+}
+
+@container (width < 8rem) {
+  .canvas-label .prefix {
+    display: none;
+  }
 }
 
 .line-by-line-canvas .canvas-header {
