@@ -48,7 +48,7 @@ export function useCanvasLayout(viewer: Viewer | null, baseCanvases: LazyTiledIm
     const positioned: LazyTiledImage[] = [];
     for (const canvas of baseCanvases) {
       const height = heights.get(canvas.canvasId);
-      const documentGap = height && pixelsPerUnit > 0 ? (height + 16) / pixelsPerUnit : 0;
+      const documentGap = height ? (height + 16) / pixelsPerUnit : 0;
       offset += documentGap;
       positioned.push({ ...canvas, y: canvas.y + offset, documentGap });
     }

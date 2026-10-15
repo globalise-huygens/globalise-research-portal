@@ -47,8 +47,6 @@
 
 .document-divider-position {
   position: absolute;
-  display: flex;
-  flex-direction: column;
   top: 0;
   inset-inline: 1rem;
   visibility: hidden;

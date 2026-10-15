@@ -243,6 +243,7 @@ export function LazyCollectionViewer({
       />
       <DocumentDividersOverlay
         canvases={lazyCanvases}
+        baseCanvases={baseCanvases}
         canvasDocuments={canvasDocuments}
         onHeightsChange={onDividerHeightsChange}
       />

@@ -25,12 +25,12 @@ export function useLazyCanvasLoader(
   const loaderRef = useRef<LazyCanvasTileLoader | null>(null);
 
   useLayoutEffect(() => {
-    if (!viewer || !lazyCanvases.length) {
+    if (!viewer || !baseCanvases.length) {
       return;
     }
     const loader = new LazyCanvasTileLoader(
       viewer,
-      lazyCanvases,
+      baseCanvases,
       {
         initialCanvas,
         canvasHeight,
@@ -42,16 +42,9 @@ export function useLazyCanvasLoader(
       loaderRef.current = null;
       loader.close();
     };
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [
-    viewer,
-    baseCanvases,
-    initialCanvas,
-    canvasHeight,
-  ]);
+  }, [viewer, baseCanvases, initialCanvas, canvasHeight, onLoadedChange]);
 
   useLayoutEffect(() => {
     loaderRef.current?.setCanvases(lazyCanvases);
-  }, [lazyCanvases]);
+  }, [viewer, baseCanvases, initialCanvas, canvasHeight, onLoadedChange, lazyCanvases]);
 }

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Point } from 'openseadragon';
 import { useViewer } from '@knaw-huc/osd-iiif-viewer';
@@ -8,15 +8,24 @@ import type { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 
 type Props = {
   canvases: LazyTiledImage[];
+  baseCanvases: LazyTiledImage[];
   canvasDocuments: Map<string, CanvasDocuments>;
   onHeightsChange: (heights: Map<string, number>) => void;
 };
 
 /** Document headings use the pane width and retain their normal text size. */
-export function DocumentDividersOverlay({ canvases, canvasDocuments, onHeightsChange }: Props) {
+export function DocumentDividersOverlay({ canvases, baseCanvases, canvasDocuments, onHeightsChange }: Props) {
   const viewer = useViewer();
   const layerRef = useRef<HTMLDivElement>(null);
   const rowsRef = useRef<{ element: HTMLElement; index: number; height: number }[]>([]);
+  const headings = useMemo(() => baseCanvases.map((canvas, index) => (
+    canvasDocuments.get(canvas.canvasId)?.starting.length ? (
+      <div className="document-divider-position" key={canvas.canvasId}
+        data-index={index} data-canvas-id={canvas.canvasId}>
+        <DocumentDivider documents={canvasDocuments.get(canvas.canvasId)?.starting}/>
+      </div>
+    ) : null
+  )), [baseCanvases, canvasDocuments]);
 
   useLayoutEffect(() => {
     if (!viewer || !layerRef.current) {
@@ -42,7 +51,7 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments, onHeightsCh
       observer.disconnect();
       document.fonts.removeEventListener('loadingdone', measure);
     };
-  }, [viewer, canvasDocuments, onHeightsChange]);
+  }, [viewer, baseCanvases, canvasDocuments, onHeightsChange]);
 
   useLayoutEffect(() => {
     if (!viewer) {
@@ -96,12 +105,7 @@ export function DocumentDividersOverlay({ canvases, canvasDocuments, onHeightsCh
 
   return createPortal(
     <div ref={layerRef} className="document-dividers-overlay">
-      {canvases.map((canvas, index) => canvasDocuments.get(canvas.canvasId)?.starting.length ? (
-        <div className="document-divider-position" key={canvas.canvasId}
-          data-index={index} data-canvas-id={canvas.canvasId}>
-          <DocumentDivider documents={canvasDocuments.get(canvas.canvasId)?.starting}/>
-        </div>
-      ) : null)}
+      {headings}
     </div>,
     viewer.container,
   );

@@ -84,6 +84,9 @@ export class LazyCanvasTileLoader {
 
   /** Reposition loaded scans without fetching tiles again or changing the zoom. */
   public setCanvases(canvases: LazyTiledImage[]): void {
+    if (canvases === this.canvases) {
+      return;
+    }
     const center = this.viewer.viewport.getCenter(true);
     const anchor = this.canvases.find((canvas) => canvas.y + canvas.height >= center.y)
       ?? this.canvases.at(-1);
