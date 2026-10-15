@@ -61,5 +61,5 @@ export function useSidebarPanels(): SidebarPanel[] {
 function useInventoryNumber(): string | undefined {
   const { vault, id, isReady } = useManifest();
   const manifest = isReady ? vault.get({ id, type: 'Manifest' }) : undefined;
-  return manifest && findMetadataValue(manifest.metadata, 'Inventory number');
+  return manifest && findMetadataValue(manifest.metadata, 'Inventory number', 'Inventarisnummer');
 }
