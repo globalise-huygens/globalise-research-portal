@@ -119,34 +119,6 @@
     .action-with-tooltip {
       position: relative;
       display: inline-flex;
-
-      &:hover .action-tooltip,
-      &:focus-within .action-tooltip,
-      .action[data-hovered] + .action-tooltip,
-      .action[data-focus-visible] + .action-tooltip,
-      .close[data-hovered] + .action-tooltip,
-      .close[data-focus-visible] + .action-tooltip {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .action-tooltip {
-      position: absolute;
-      top: calc(100% + var(--s8));
-      right: 0;
-      z-index: 70;
-      width: max-content;
-      max-width: 240px;
-      transform: translateY(-4px);
-      overflow-wrap: anywhere;
-      opacity: 0;
-      pointer-events: none;
-      text-align: left;
-      transition:
-        opacity 75ms ease-out,
-        transform 75ms ease-out;
-      white-space: normal;
     }
 
     .close {
@@ -240,6 +212,120 @@
       line-height: 20px;
     }
 
+    .section-toggle {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s16);
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      line-height: inherit;
+      padding: 0;
+      text-align: left;
+    }
+
+    .section-toggle[data-focus-visible] {
+      outline: 2px solid var(--ring);
+      outline-offset: 4px;
+    }
+
+    .section-toggle-icon {
+      width: var(--s20);
+      height: var(--s20);
+      flex-shrink: 0;
+      rotate: 0deg;
+      transition: rotate 120ms ease-out;
+    }
+
+    .section-toggle[aria-expanded="true"] .section-toggle-icon {
+      rotate: 180deg;
+    }
+
+    .disclosure {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      border-left: 2px solid var(--color-neutral-600);
+      background: rgb(255 255 255 / 0.02);
+      transition: background-color 75ms ease-out, border-color 75ms ease-out;
+    }
+
+    .disclosure:hover,
+    .disclosure:focus-within {
+      border-color: var(--color-neutral-400);
+      background: rgb(255 255 255 / 0.06);
+    }
+
+    .disclosure-header {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
+    }
+
+    .disclosure-summary {
+      display: flex;
+      min-width: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+      padding: var(--s12);
+    }
+
+    /* Keep links independent of the button covering the rest of the header. */
+    .disclosure-header .disclosure-summary {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+      padding-right: var(--s56);
+    }
+
+    .disclosure-header .disclosure-summary :is(a, button, input, select, textarea, label, [role="link"], [role="button"]) {
+      pointer-events: auto;
+    }
+
+    .disclosure-toggle {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      min-width: var(--s44);
+      min-height: var(--s44);
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: var(--s12);
+    }
+
+    .disclosure-content {
+      padding: 0 var(--s12) var(--s12);
+    }
+
+    .disclosure-action-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .section-content {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: var(--row-gap);
+    }
+
+    .section-content[hidden] {
+      display: none;
+    }
+
     .section-scroll {
       min-height: 0;
     }
@@ -284,7 +370,7 @@
       display: inline-flex;
       min-width: 0;
       max-width: 100%;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
       gap: var(--s4);
       color: var(--color-brand-turquoise);
@@ -314,10 +400,12 @@
 
     .external-link-label {
       min-width: 0;
+      overflow-wrap: anywhere;
       text-decoration-line: underline;
       text-decoration-color: currentColor;
       text-decoration-thickness: 1px;
       text-underline-offset: 0.18em;
+      white-space: normal;
     }
 
     .list-item {
@@ -427,6 +515,13 @@
       --overlay-object-card-inset-x: var(--s40);
       --overlay-object-card-inset-top: var(--s40);
       --overlay-object-card-inset-bottom: var(--s40);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .object-card .disclosure,
+    .object-card .section-toggle-icon {
+      transition: none;
     }
   }
 

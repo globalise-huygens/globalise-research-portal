@@ -136,38 +136,6 @@
     display: inline-flex;
   }
 
-  .gds-reference-panel-item__action-tooltip {
-    position: absolute;
-    right: 0;
-    top: calc(100% + var(--s8));
-    z-index: 70;
-    width: max-content;
-    max-width: 240px;
-    transform: translateY(-4px);
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      opacity 75ms ease-out,
-      transform 75ms ease-out;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    text-align: left;
-  }
-
-  .gds-reference-panel-item__action-with-tooltip:hover
-    .gds-reference-panel-item__action-tooltip,
-  .gds-reference-panel-item__action-with-tooltip:focus-within
-    .gds-reference-panel-item__action-tooltip,
-  .gds-reference-panel-item__action-with-tooltip
-    .gds-reference-panel-item__action[data-hovered]
-    + .gds-reference-panel-item__action-tooltip,
-  .gds-reference-panel-item__action-with-tooltip
-    .gds-reference-panel-item__action[data-focus-visible]
-    + .gds-reference-panel-item__action-tooltip {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
   .gds-reference-panel-item__action[data-hovered],
   .gds-reference-panel-item__action:hover {
     color: var(--color-brand-white);
