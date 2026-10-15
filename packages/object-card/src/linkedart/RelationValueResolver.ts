@@ -1,6 +1,5 @@
 import { fetchJson, getJsonUrl, isLinkedArtNode, type LinkedArtNode } from '@globalise/common';
 import { isInternalUri } from '../isInternalUri.ts';
-import { getResolvedRelationValue } from './RelationValueModel.ts';
 import { createResourceCache } from './ResourceCache.ts';
 
 const cachedResource = createResourceCache<LinkedArtNode | undefined>(256);
@@ -14,8 +13,4 @@ export function resolveRelationResource(uri: string): Promise<LinkedArtNode | un
   })
     .then((value) => isLinkedArtNode(value) ? value : undefined))
     .catch(() => undefined);
-}
-
-export function resolveRelationValue(uri: string): Promise<string | undefined> {
-  return resolveRelationResource(uri).then(getResolvedRelationValue);
 }
