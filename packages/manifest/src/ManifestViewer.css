@@ -254,6 +254,12 @@
   gap: var(--s8);
 }
 
+.manifest-viewer .scan-navigation {
+  display: flex;
+  min-width: 0;
+  justify-content: center;
+}
+
 .manifest-viewer .bottom-button {
   min-width: var(--s24);
   height: var(--s24);
@@ -567,10 +573,8 @@
 
 @media (max-width: 767px) {
   .manifest-viewer {
-    --manifest-sidebar-expanded-width: 100vw;
-    --manifest-sidebar-collapsed-width: 0px;
     --manifest-top-bar-height: var(--s56);
-    --manifest-bottom-bar-height: var(--s48);
+    --manifest-bottom-bar-height: calc(56px + env(safe-area-inset-bottom));
 
     padding-inline: 0;
   }
@@ -578,16 +582,6 @@
   .manifest-viewer .frame {
     position: relative;
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .manifest-viewer .sidebar {
-    position: absolute;
-    top: var(--manifest-top-bar-height);
-    bottom: var(--manifest-bottom-bar-height);
-    left: 0;
-    width: var(--manifest-sidebar-width);
-    /* Keep floating viewer controls behind the expanded mobile sidebar. */
-    z-index: 30;
   }
 
   .manifest-viewer .main {
@@ -598,6 +592,290 @@
   .manifest-viewer .bottom-bar {
     position: relative;
     z-index: 20;
+  }
+
+  .manifest-viewer .top-bar {
+    gap: var(--s4);
+    padding-inline: var(--s8);
+  }
+
+  .manifest-viewer .top-bar-group {
+    gap: 0;
+  }
+
+  .manifest-viewer .top-bar-group.right,
+  .manifest-viewer .top-bar-center {
+    flex: 0 0 auto;
+  }
+
+  .manifest-viewer .top-bar-divider {
+    display: none;
+  }
+
+  .manifest-viewer .mobile-tools-button {
+    display: inline-flex;
+    min-height: 44px;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--s4);
+    border: 0;
+    padding-inline: var(--s8);
+    background: transparent;
+    color: var(--color-brand-white);
+    font: inherit;
+    font-size: var(--text-sm);
+  }
+
+  .manifest-viewer .mobile-tools-button[aria-expanded="true"] {
+    background: var(--color-neutral-700);
+  }
+
+  .manifest-viewer .mobile-tools-button[data-disabled] {
+    opacity: 0.4;
+  }
+
+  .manifest-viewer .mobile-tools-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .manifest-viewer .mobile-tools-button svg {
+    width: var(--s20);
+    height: var(--s20);
+  }
+
+  .manifest-viewer .manifest-dropdown,
+  .manifest-viewer .manifest-dropdown input {
+    min-width: 0;
+  }
+
+  .manifest-viewer .top-bar .tool-button,
+  .manifest-viewer .bottom-button {
+    min-width: 44px;
+    min-height: 44px;
+    padding-inline: var(--s4);
+  }
+
+  .manifest-viewer .bottom-bar {
+    display: grid;
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 56px;
+    justify-content: stretch;
+    gap: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .manifest-viewer .scan-navigation {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 48px;
+    align-items: center;
+    background: var(--color-neutral-900);
+    border-top: 1px solid var(--color-neutral-700);
+  }
+
+  .manifest-viewer[data-navigation-open] .scan-navigation-handle {
+    top: -92px;
+  }
+
+  .manifest-viewer .scan-navigation-handle {
+    position: absolute;
+    top: -44px;
+    left: calc(50% - 36px);
+    width: 72px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .manifest-viewer .scan-navigation-handle::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 20px;
+    border: 1px solid var(--color-neutral-600);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+    background: var(--color-neutral-900);
+  }
+
+  .manifest-viewer .scan-navigation-handle span {
+    position: absolute;
+    bottom: 8px;
+    left: 22px;
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-neutral-300);
+  }
+
+  .manifest-viewer .scan-navigation-handle:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .manifest-viewer .scan-navigation[hidden] {
+    display: none;
+  }
+
+  .manifest-viewer .scan-navigation .bar-group {
+    width: 100%;
+    justify-content: space-between;
+    padding-inline: var(--s8);
+  }
+
+  .manifest-viewer .scan-position-input {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .manifest-viewer .bar-group,
+  .manifest-viewer .scan-position {
+    gap: var(--s4);
+    align-items: center;
+  }
+
+  .manifest-viewer .mobile-information-menu {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-self: stretch;
+    border-top: 1px solid var(--color-neutral-700);
+  }
+
+  .manifest-viewer .mobile-information-menu button {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: var(--s4);
+    border: 0;
+    border-top: 3px solid transparent;
+    background: transparent;
+    color: var(--color-neutral-300);
+    padding: var(--s4) 0;
+    font: inherit;
+    font-size: 11px;
+  }
+
+  .manifest-viewer .mobile-information-menu button[aria-pressed="true"] {
+    border-top-color: var(--color-brand-mint);
+    background: var(--color-neutral-800);
+    color: var(--color-brand-white);
+  }
+
+  .manifest-viewer .mobile-information-menu button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  .manifest-viewer .mobile-information-menu svg {
+    display: block;
+    width: var(--s20);
+    height: var(--s20);
+  }
+
+  .manifest-viewer .mobile-reader,
+  .manifest-viewer .mobile-information {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .manifest-viewer .body {
+    position: relative;
+  }
+
+  .manifest-viewer .mobile-reader {
+    position: absolute;
+    inset: 0;
+  }
+
+  .manifest-viewer .mobile-reader[data-covered] {
+    visibility: hidden;
+  }
+
+  .manifest-viewer .mobile-information {
+    flex-direction: column;
+    overflow: auto;
+    background: var(--color-neutral-800);
+  }
+
+  .manifest-viewer .mobile-information > h2,
+  .manifest-viewer .mobile-information > p {
+    margin: 0;
+    padding: var(--s16);
+    color: var(--color-brand-white);
+    font-size: var(--text-base);
+  }
+
+  .manifest-viewer .floating-toolbar {
+    position: absolute;
+    top: var(--s8);
+    left: var(--s8);
+    box-sizing: border-box;
+    width: calc(100% - var(--s16));
+    max-height: calc(100% - var(--s16));
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s4);
+    overflow-y: auto;
+    padding: var(--s8) var(--s12);
+    border: 0;
+    background: var(--color-neutral-900);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
+  }
+
+  .manifest-viewer .mobile-highlight-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s4);
+    margin-left: auto;
+  }
+
+  .manifest-viewer .mobile-reading-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s4);
+  }
+
+  .manifest-viewer .transcription-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .manifest-viewer .floating-toolbar[hidden] {
+    display: none;
+  }
+
+  .manifest-viewer .floating-toolbar .tool-button,
+  .manifest-viewer .floating-toolbar .transcription-mode-item {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .manifest-viewer .floating-toolbar .zoom-controls,
+  .manifest-viewer .transcription-mode-group {
+    height: 44px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  .manifest-viewer .floating-toolbar .zoom-controls,
+  .manifest-viewer .floating-toolbar .zoom-action,
+  .manifest-viewer .floating-toolbar .toolbar-divider {
+    display: none;
   }
 }
 

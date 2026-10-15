@@ -7,6 +7,7 @@ import {
   IconLeftPanelClose,
   IconLeftPanelOpen,
   IconScan,
+  IconSetting,
   IconSwap,
   IconTranscription,
   Toggle,
@@ -14,6 +15,9 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
+import { Button as AriaButton } from 'react-aria-components';
+import { MetadataPanel, TocPanel } from '@globalise/metadata';
+import { sidebarPanels, type SidebarId } from './layout/sidebar-panels';
 import { TOP_BAR_BUTTON } from './layout/buttonClasses';
 import { CollapsedMetadataRail } from './layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
@@ -22,6 +26,7 @@ import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMen
 import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
 import { SplitPaneLayout } from './layout';
 import { TooltipIconButton } from './layout/TooltipIconButton';
+import { ReadingToolsContext } from './layout/ReadingToolsContext';
 
 export type ManifestViewerProps = {
   topLeft?: React.ReactNode;
@@ -40,6 +45,16 @@ type ViewerPaneProps = {
 };
 
 const mobileLayoutQuery = '(max-width: 767px)';
+type MobileView = 'scan' | 'text' | SidebarId;
+const mobileItems: { id: MobileView; label: string; description: string; icon: React.ReactNode }[] = [
+  { id: 'scan', label: 'Scan', description: 'Scan viewer', icon: <IconScan /> },
+  { id: 'text', label: 'Text', description: 'Transcription viewer', icon: <IconTranscription /> },
+  ...(['toc', 'inventory', 'entities', 'events'] as const).map((id) => {
+    const panel = sidebarPanels.find((panel) => panel.id === id)!;
+    const label = { toc: 'Contents', inventory: 'Inventory', entities: 'Entities', events: 'Events' }[id];
+    return { ...panel, description: panel.label, label };
+  }),
+];
 
 function ViewerPane({ children, isBordered = false, type }: ViewerPaneProps) {
   const paneClassName = cn('pane', isBordered && 'bordered');
@@ -60,11 +75,15 @@ export function ManifestViewer({
   bottom,
   onClose,
 }: ManifestViewerProps) {
-  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(
-    () =>
-      typeof window === 'undefined' ||
-      !window.matchMedia(mobileLayoutQuery).matches,
-  );
+  const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
+  const [mobileView, setMobileView] = React.useState<MobileView>('scan');
+  const [mobileReader, setMobileReader] = React.useState<'scan' | 'text'>('scan');
+  const [isToolsOpen, setIsToolsOpen] = React.useState(false);
+  const [isNavigationOpen, setIsNavigationOpen] = React.useState(false);
+  const navigationGesture = React.useRef<{ pointerId: number; x: number; y: number; swiped: boolean } | null>(null);
+  const toolsId = React.useId();
+  const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
+  const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
   const [isScanVisible, setIsScanVisible] = React.useState(true);
   const [isTextVisible, setIsTextVisible] = React.useState(true);
   const [isViewerOrderSwapped, setIsViewerOrderSwapped] =
@@ -75,15 +94,18 @@ export function ManifestViewer({
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia(mobileLayoutQuery);
-    const collapseSidebarOnMobile = ({ matches }: MediaQueryListEvent) => {
+    const updateLayout = ({ matches }: { matches: boolean }) => {
+      setIsMobile(matches);
       if (matches) {
         setIsSidebarExpanded(false);
+        setIsToolsOpen(false);
+        setIsNavigationOpen(false);
       }
     };
-
-    mediaQuery.addEventListener('change', collapseSidebarOnMobile);
+    updateLayout(mediaQuery);
+    mediaQuery.addEventListener('change', updateLayout);
     return () => {
-      mediaQuery.removeEventListener('change', collapseSidebarOnMobile);
+      mediaQuery.removeEventListener('change', updateLayout);
     };
   }, []);
 
@@ -133,14 +155,18 @@ export function ManifestViewer({
         {transcription}
       </ViewerPane>,
     ];
+  const mobilePanel = sidebarPanels.find((panel) => panel.id === mobileView);
+
+  // Resolve the layout before mounting viewers, so phones do not briefly load both.
+  if (isMobile === null) {return <div className="gds manifest-viewer" aria-busy="true" />;}
 
   return (
-    <div className="gds manifest-viewer">
+    <div className="gds manifest-viewer" data-navigation-open={isMobile && !mobilePanel && isNavigationOpen || undefined}>
       <div
         className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
       >
-        <div
+        {!isMobile && <div
           id="document-detail-sidebar"
           className="sidebar"
           data-expanded={isSidebarExpanded ? 'true' : 'false'}
@@ -153,12 +179,17 @@ export function ManifestViewer({
           ) : (
             <CollapsedMetadataRail onExpandSection={expandSidebarSection} />
           )}
-        </div>
+        </div>}
 
         <div className="main">
           <header className="top-bar">
             <div className="top-bar-group left">
-              <TooltipIconButton
+              {isMobile && <AriaButton ref={toolsButtonRef} className="mobile-tools-button"
+                aria-label="Reading tools" aria-expanded={isToolsOpen} aria-controls={toolsId}
+                isDisabled={!!mobilePanel} onPress={() => setIsToolsOpen((open) => !open)}>
+                <IconSetting aria-hidden="true" />Tools
+              </AriaButton>}
+              {!isMobile && <TooltipIconButton
                 aria-controls="document-detail-sidebar"
                 aria-expanded={isSidebarExpanded}
                 aria-label={
@@ -171,15 +202,15 @@ export function ManifestViewer({
                   ? <IconLeftPanelClose aria-hidden="true" className="toolbar-icon" />
                   : <IconLeftPanelOpen aria-hidden="true" className="toolbar-icon" />}
                 onPress={() => setIsSidebarExpanded((v) => !v)}
-              />
+              />}
 
-              <span className="top-bar-divider">
+              {!isMobile && <span className="top-bar-divider">
                 |
-              </span>
+              </span>}
 
               {topLeft}
 
-              <ToggleGroup
+              {!isMobile && <ToggleGroup
                 aria-label="Primary viewer mode controls"
                 selectionMode="multiple"
                 selectedKeys={selectedKeys}
@@ -226,16 +257,16 @@ export function ManifestViewer({
                     Text
                   </Toggle>
                 </Tooltip>
-              </ToggleGroup>
+              </ToggleGroup>}
             </div>
 
             <div className="top-bar-center">
-              <ManifestContentWarning />
+              <ManifestContentWarning iconOnly={isMobile} />
               {topCenter}
             </div>
 
             <div className="top-bar-group right">
-              <TooltipIconButton
+              {!isMobile && <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
                 isActive={isViewerOrderSwapped}
@@ -245,9 +276,11 @@ export function ManifestViewer({
                   <IconSwap className="toolbar-icon" />
                 }
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
-              />
-              <ManifestEntityHighlightMenu />
-              <ManifestLayoutElementsToggle />
+              />}
+              {!isMobile && <>
+                <ManifestEntityHighlightMenu />
+                <ManifestLayoutElementsToggle />
+              </>}
               {topRight}
               {onClose && (
                 <>
@@ -269,8 +302,27 @@ export function ManifestViewer({
             </div>
           </header>
 
-          <main className="body">
-            {isScanVisible && isTextVisible ? (
+          <main className="body" id="manifest-reading-area">
+            {isMobile ? (
+              <>
+                <ReadingToolsContext.Provider value={{ isOpen: isToolsOpen, id: toolsId, onClose: () => {
+                  setIsToolsOpen(false);
+                  toolsButtonRef.current?.focus();
+                } }}>
+                  <div className="mobile-reader" data-covered={!!mobilePanel || undefined}
+                    aria-hidden={!!mobilePanel} inert={!!mobilePanel}>
+                    <ViewerPane key={mobileReader} type={mobileReader === 'text' ? 'transcription' : 'scan'}>
+                      {mobileReader === 'text' ? transcription : scan}
+                    </ViewerPane>
+                  </div>
+                </ReadingToolsContext.Provider>
+                {mobilePanel && <section className="mobile-information" aria-label={mobilePanel.label}>
+                  <h2>{mobilePanel.label}</h2>
+                  {mobileView === 'toc' ? <TocPanel /> : mobileView === 'inventory' ? <MetadataPanel />
+                    : <p>{mobilePanel.label} are not available yet.</p>}
+                </section>}
+              </>
+            ) : isScanVisible && isTextVisible ? (
               <div className="split-viewer">
                 <SplitPaneLayout>
                   {splitPanes}
@@ -282,7 +334,49 @@ export function ManifestViewer({
           </main>
 
           <footer className="bottom-bar">
-            {bottom}
+            {isMobile && !mobilePanel && <button type="button" className="scan-navigation-handle"
+              aria-label="Scan navigation" aria-expanded={isNavigationOpen} aria-controls="manifest-scan-navigation"
+              onPointerDown={(event) => {
+                if (!event.isPrimary || event.button !== 0) {return;}
+                navigationGesture.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, swiped: false };
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }}
+              onPointerUp={(event) => {
+                const gesture = navigationGesture.current;
+                if (gesture?.pointerId !== event.pointerId) {return;}
+                const dx = event.clientX - gesture.x;
+                const dy = event.clientY - gesture.y;
+                gesture.swiped = Math.hypot(dx, dy) >= 24;
+                if (gesture.swiped && Math.abs(dy) > Math.abs(dx)) {setIsNavigationOpen(dy < 0);}
+              }}
+              onPointerCancel={() => { navigationGesture.current = null; }}
+              onClick={(event) => {
+                if (event.detail === 0 || !navigationGesture.current?.swiped) {setIsNavigationOpen((open) => !open);}
+                navigationGesture.current = null;
+              }}
+              onKeyDown={(event) => {
+                if (!['ArrowUp', 'ArrowDown', 'Escape'].includes(event.key)) {return;}
+                event.preventDefault();
+                setIsNavigationOpen(event.key === 'ArrowUp');
+              }}>
+              <span aria-hidden="true" />
+            </button>}
+            <div className="scan-navigation" id="manifest-scan-navigation" hidden={isMobile && (!isNavigationOpen || !!mobilePanel)}>{bottom}</div>
+            {isMobile && <nav className="mobile-information-menu" aria-label="Viewer information">
+              {mobileItems.map((item) => <AriaButton key={item.id}
+                aria-label={item.description}
+                aria-pressed={mobileView === item.id}
+                aria-controls="manifest-reading-area"
+                onPress={() => {
+                  setIsToolsOpen(false);
+                  if (item.id !== 'scan' && item.id !== 'text') {setIsNavigationOpen(false);}
+                  setMobileView(item.id);
+                  if (item.id === 'scan' || item.id === 'text') {setMobileReader(item.id);}
+                }}>
+                <span aria-hidden="true">{item.icon}</span>
+                <span>{item.label}</span>
+              </AriaButton>)}
+            </nav>}
           </footer>
         </div>
       </div>
