@@ -130,7 +130,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               <dt className="property-label">
                 {property.label}
               </dt>
-              <dd className="property-value">
+              <dd className={cn('property-value', typeof property.value === 'string' && 'is-text')}>
                 {property.value}
               </dd>
             </div>

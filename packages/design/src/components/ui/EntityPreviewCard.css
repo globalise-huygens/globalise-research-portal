@@ -178,7 +178,7 @@
       gap: var(--s8);
     }
 
-    .property:first-child .property-value {
+    .property:first-child .property-value.is-text {
       display: -webkit-box;
       overflow: hidden;
       -webkit-box-orient: vertical;

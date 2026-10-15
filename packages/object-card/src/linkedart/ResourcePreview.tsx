@@ -6,6 +6,7 @@ import './ResourcePreview.css';
 
 const PreviewContext = createContext<{
   element: HTMLElement | null;
+  position: CSSProperties;
   activeChild?: string;
   openChild: (id: string) => void;
   keepOpen: () => void;
@@ -22,6 +23,7 @@ export function ResourcePreview({ data, children }: {
   const id = useId();
   const parent = useContext(PreviewContext);
   const parentElement = parent?.element;
+  const parentPosition = parent?.position;
   const [activeChild, setActiveChild] = useState<string>();
   const trigger = useRef<HTMLSpanElement>(null);
   const popup = useRef<HTMLElement>(null);
@@ -79,22 +81,34 @@ export function ResourcePreview({ data, children }: {
     if (!visible || !trigger.current || !popupElement) {return;}
     const anchor = trigger.current;
     const card = popupElement;
+    let frame: number | undefined;
     const update = () => {
       const rect = card.getBoundingClientRect();
-      setPosition(parentElement
+      const next = parentElement
         ? placeEntityPreviewBeside(parentElement.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight)
-        : placeEntityPreview(anchor.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight));
+        : placeEntityPreview(anchor.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight);
+      setPosition((current) => current.left === next.left && current.top === next.top && current.visibility === next.visibility
+        ? current : next);
+    };
+    const scheduleUpdate = () => {
+      frame ??= requestAnimationFrame(() => {
+        frame = undefined;
+        update();
+      });
     };
     update();
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(scheduleUpdate);
     observer.observe(card);
     observer.observe(anchor);
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('scroll', scheduleUpdate, true);
     return () => {
       observer.disconnect();
-      window.removeEventListener('resize', update);
+      window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener('scroll', scheduleUpdate, true);
+      if (frame !== undefined) {cancelAnimationFrame(frame);}
     };
-  }, [visible, popupElement, parentElement]);
+  }, [visible, popupElement, parentElement, parentPosition]);
 
   const card = (
     <div
@@ -125,7 +139,7 @@ export function ResourcePreview({ data, children }: {
         }
       }}
     >
-      <PreviewContext.Provider value={{ element: popupElement, activeChild, openChild: setActiveChild, keepOpen }}>
+      <PreviewContext.Provider value={{ element: popupElement, position, activeChild, openChild: setActiveChild, keepOpen }}>
         {data && <EntityPreviewCard data={data} />}
       </PreviewContext.Provider>
     </div>
