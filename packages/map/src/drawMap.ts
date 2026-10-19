@@ -137,7 +137,7 @@ export default function drawMap<P extends GeoJsonProperties = GeoJsonProperties>
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+   
   const context = canvas.getContext('2d')!;
 
   const width = canvas.offsetWidth;
