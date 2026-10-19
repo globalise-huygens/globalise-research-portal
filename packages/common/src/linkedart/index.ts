@@ -24,4 +24,5 @@ export {
   getEntityTitle,
   getLinkedArtEntityType,
 } from './LinkedArtEntityModel.ts';
-export { type Status, findStatuses, getStatusLabel } from './findStatuses.ts';
+export { type StatusValue, getStatusValues } from './getStatusValues.ts';
+export { getStatusLabel } from './getStatusLabel.ts';
