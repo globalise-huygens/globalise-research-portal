@@ -1,6 +1,6 @@
 import { LinkedArtNode } from './LinkedArtNode.ts';
 import { findByPath } from './findByPath.ts';
-import { findStatuses, getStatusLabel } from './findStatuses.ts';
+import { getStatusLabel } from './getStatusLabel.ts';
 import { label } from './label.ts';
 import { getContent } from './getContent.ts';
 
@@ -45,7 +45,7 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
 }
 
 export function getEntityTitle(entity: LinkedArtNode): string {
-  const [name] = findStatuses(entity, 'is_appellative_subject_of')
+  const [name] = findByPath(entity, ['is_appellative_subject_of'])
     .map(getStatusLabel)
     .filter((found) => !!found);
   return name ?? label(entity);

@@ -4,33 +4,19 @@ import {
   findTimespan,
   getContent,
   getValue,
+  getStatusValues,
   getValues,
   isLinkedArtNode,
   label,
   type LinkedArtNode,
+  type StatusValue,
 } from '@globalise/common';
-
-export type PersonClaimValue = LinkedArtNode | string;
 
 export function isPreferredPersonName(status: LinkedArtNode): boolean {
   return getStatusValues(status, ['classified_as']).some((value) =>
     isLinkedArtNode(value)
       && value.id === 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:31baab68-ad9e-4eb4-baba-0c4b163fc00c',
   );
-}
-
-export function getStatusValues(node: LinkedArtNode, keys: string[]): PersonClaimValue[] {
-  for (const key of keys) {
-    const values = asArray(node[key]).flatMap<PersonClaimValue>((value) =>
-      isLinkedArtNode(value) && !('@value' in value)
-        ? [value]
-        : getValues(value),
-    );
-    if (values.length) {
-      return values;
-    }
-  }
-  return [];
 }
 
 export function getPersonNameRecords(entity: LinkedArtNode) {
@@ -64,7 +50,7 @@ function valueKey(value: unknown): string {
   return JSON.stringify(getValues(value));
 }
 
-export function uniqueClaimValues(values: PersonClaimValue[]): PersonClaimValue[] {
+export function uniqueClaimValues(values: StatusValue[]): StatusValue[] {
   return [...new Map(values.map((value) => [valueKey(value), value])).values()];
 }
 
