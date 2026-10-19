@@ -1,9 +1,11 @@
 import {
   findByPath,
   getContent,
+  getStatusValues,
   getValues,
   isLinkedArtNode,
   LinkedArtNode,
+  type StatusValue,
 } from '@globalise/common';
 import {
   ObjectCardBody,
@@ -23,7 +25,6 @@ import {
   getPersonTimespan,
   getRecordedDates,
   getResidenceLabel,
-  getStatusValues,
   groupPersonClaims,
   groupRecords,
   getPersonNameRecords,
@@ -52,8 +53,6 @@ type StatusDefinition = {
 type StatusGroup = StatusDefinition & {
   title: string;
 };
-
-type StatusValue = LinkedArtNode | string;
 
 const personStatusGroups: StatusGroup[] = [
   {
