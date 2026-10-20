@@ -22,6 +22,8 @@ export function TocDocument(
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
   const contentId = useId();
+  const firstScanNumber = document.scans[0].scanNumber;
+  const lastScanNumber = document.scans.at(-1)!.scanNumber;
 
   return (
     <article
@@ -40,7 +42,9 @@ export function TocDocument(
         <IconExpandSection className="disclosure-icon" aria-hidden="true"/>
         <small>
           {isCurrent && 'Current document · '}
-          {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
+          {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:
+          {' '}{firstScanNumber}
+          {firstScanNumber !== lastScanNumber && `–${lastScanNumber}`}
         </small>
       </Button>
 
