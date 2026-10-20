@@ -20,7 +20,7 @@ function ReferencePanelActionTooltip({
   children,
 }: ReferencePanelActionTooltipProps) {
   return (
-    <span className="gds-reference-panel-item__action-with-tooltip">
+    <span className="reference-action-with-tooltip">
       <Tooltip label={label}>{children}</Tooltip>
     </span>
   );
@@ -84,31 +84,31 @@ function ReferencePanelItem({
   return (
     <div
       aria-current={isActive ? 'true' : undefined}
-      className={cn('gds-reference-panel-item', className)}
+      className={cn('reference-panel-item', className)}
       {...props}
     >
-      <span role="status" className="gds-reference-panel__live-region">{copyMessage}</span>
+      <span role="status" className="live-region">{copyMessage}</span>
       <div
-        className="gds-reference-panel-item__layout"
+        className="reference-layout"
         data-has-thumbnail={thumbnail ? 'true' : 'false'}
       >
         {thumbnail && (
-          <div className="gds-reference-panel-item__thumbnail">{thumbnail}</div>
+          <div className="reference-thumbnail">{thumbnail}</div>
         )}
 
-        <div className="gds-reference-panel-item__body">
-          <div className="gds-reference-panel-item__header">
-            <div className="gds-reference-panel-item__title">{title}</div>
-            <div className="gds-reference-panel-item__actions">
+        <div className="reference-body">
+          <div className="reference-header">
+            <div className="reference-title">{title}</div>
+            <div className="reference-actions">
               {actions}
               {uri && (
                 <ReferencePanelActionTooltip label={copyLabel}>
                   <AriaButton
                     aria-label={copyLabel}
                     onPress={handleCopyUri}
-                    className="gds-reference-panel-item__action"
+                    className="reference-action"
                   >
-                    <IconCopy aria-hidden="true" className="gds-reference-panel-item__action-icon" />
+                    <IconCopy aria-hidden="true" className="reference-action-icon" />
                   </AriaButton>
                 </ReferencePanelActionTooltip>
               )}
@@ -119,9 +119,9 @@ function ReferencePanelItem({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={hrefLabel}
-                    className="gds-reference-panel-item__action"
+                    className="reference-action"
                   >
-                    <IconExternalLink aria-hidden="true" className="gds-reference-panel-item__action-icon" />
+                    <IconExternalLink aria-hidden="true" className="reference-action-icon" />
                   </AriaLink>
                 </ReferencePanelActionTooltip>
               )}
@@ -130,9 +130,9 @@ function ReferencePanelItem({
                   <AriaLink
                     href={href}
                     aria-label={hrefLabel}
-                    className="gds-reference-panel-item__action"
+                    className="reference-action"
                   >
-                    <IconArrowTopRight aria-hidden="true" className="gds-reference-panel-item__action-icon" />
+                    <IconArrowTopRight aria-hidden="true" className="reference-action-icon" />
                   </AriaLink>
                 </ReferencePanelActionTooltip>
               )}
@@ -140,15 +140,15 @@ function ReferencePanelItem({
           </div>
 
           {snippet && (
-            <div className="gds-reference-panel-item__snippet">
-              <div className="gds-reference-panel-item__snippet-text">
+            <div className="reference-snippet">
+              <div className="reference-snippet-text">
                 {snippet}
               </div>
             </div>
           )}
 
           {metadata && (
-            <div className="gds-reference-panel-item__metadata">{metadata}</div>
+            <div className="reference-metadata">{metadata}</div>
           )}
         </div>
       </div>
@@ -174,12 +174,12 @@ function ReferencePanelHeader({
   ...props
 }: ReferencePanelHeaderProps) {
   return (
-    <div className={cn('gds-reference-panel-header', className)} {...props}>
+    <div className={cn('reference-panel-header', className)} {...props}>
       {title && (
         <AriaHeading
           id={headingId}
           level={level}
-          className="gds-reference-panel-header__heading"
+          className="heading"
         >
           {title}
         </AriaHeading>
@@ -197,7 +197,7 @@ const ReferencePanelList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('gds-reference-panel-list', className)}
+    className={cn('reference-panel-list', className)}
     {...props}
   />
 ));
@@ -340,7 +340,7 @@ function ReferencePanel({
 
   return (
     <ObjectCardPanel side="right" className={className} {...props}>
-      <section aria-labelledby={headingId} className="gds-reference-panel">
+      <section aria-labelledby={headingId} className="reference-panel">
         <ReferencePanelHeader title={title} headingId={headingId} />
         {children}
         {hasItems ? (
@@ -349,7 +349,7 @@ function ReferencePanel({
               id={liveRegionId}
               aria-live="polite"
               aria-atomic="true"
-              className="gds-reference-panel__live-region"
+              className="live-region"
             >
               {liveMessage}
             </div>
@@ -367,22 +367,22 @@ function ReferencePanel({
                 <div
                   ref={loadMoreSentinelRef}
                   aria-hidden="true"
-                  className="gds-reference-panel__infinite-sentinel"
+                  className="infinite-sentinel"
                 />
               )}
             </ReferencePanelList>
 
             {!autoLoadMore && canLoadMore && items && (
               <ReferencePanelItem
-                className="gds-reference-panel__load-more-item"
+                className="load-more-item"
                 title={
                   <AriaButton
                     onPress={handleLoadMorePress}
                     aria-controls={liveRegionId}
-                    className="gds-reference-panel__load-more"
+                    className="load-more"
                   >
                     {loadMoreLabel}
-                    <span className="gds-reference-panel__load-more-count">
+                    <span className="load-more-count">
                       ({visibleItems.length}/{items.length})
                     </span>
                   </AriaButton>
