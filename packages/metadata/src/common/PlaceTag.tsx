@@ -8,6 +8,7 @@ export type PlaceTagProps = {
 export function PlaceTag({ label, href }: PlaceTagProps) {
 
   const labelWithIcon = <><span className="label">{label}</span>
+    &nbsp;
     <span className="icon" aria-hidden="true">
       <IconEntityPlace className="icon-svg"/>
     </span></>;

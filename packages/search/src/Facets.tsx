@@ -8,7 +8,7 @@ export type Facet = {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const facets: Facet[] = [
+export const facets = [
   {
     key: 'date',
     label: 'Date',
@@ -26,7 +26,9 @@ export const facets: Facet[] = [
     label: 'Document Type',
     type: 'hierarchy',
   },
-];
+] as const satisfies readonly Facet[];
+
+export type FacetKey = typeof facets[number]['key'];
 
 export default function Facets() {
   return (

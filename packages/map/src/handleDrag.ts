@@ -28,7 +28,7 @@ export default function handleDrag(projection: GeoProjection) {
   function dragStarted(this: HTMLCanvasElement, event: DragEvent) {
     const p = position(event, this);
     r0 = projection.rotate();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     v0 = versor.cartesian(projection.invert!([p[0], p[1]])!);
     q0 = versor(r0);
 
@@ -39,7 +39,7 @@ export default function handleDrag(projection: GeoProjection) {
 
   function dragged(this: HTMLCanvasElement, event: DragEvent) {
     const p = position(event, this);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     const v1 = versor.cartesian(projection.rotate(r0).invert!([p[0], p[1]])!);
     const delta = versor.delta(v0, v1);
 

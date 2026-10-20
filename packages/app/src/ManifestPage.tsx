@@ -1,19 +1,25 @@
 import {
+  CANVAS,
+  DOCUMENT,
+  DOCUMENT_ID,
   type DocumentState,
-  setSelectedCanvas,
+  MANIFEST,
+  SNIPPET,
+  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
+import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
+import { Spinner } from '@globalise/design';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
-  ManifestCanvasNavigation,
-  ManifestViewer,
   ManifestDropdown,
-  ManifestFacsimileViewer,
-  ManifestTranscriptionViewer,
+  ManifestViewer,
+  type ErrorMessage,
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { useNavigate } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
@@ -26,13 +32,26 @@ const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +
   'hdl:20.500.14722/inventory:collection';
 
-const MANIFEST = 'manifest';
-const CANVAS = 'canvas';
 
 export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
   const initialCanvasId = params.get(CANVAS) ?? undefined;
+  const documentName = params.get(DOCUMENT);
+  const { data: highlights, isLoading: isHighlighting, isError: isHighlightError } = useQuery(
+    highlightDocumentQueryOptions(getManifestSearchState()),
+  );
+  const documentHit = documentName
+    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
+    : undefined;
+
+  let error: ErrorMessage | undefined = undefined;
+  if (isHighlightError) {
+    error = { message: 'Search result could not be loaded.' };
+  } else if (highlights && !highlights.snippet) {
+    error = { message: 'Search result could not be located: showing first page in document.' };
+  }
+
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest,
   );
@@ -51,6 +70,14 @@ export function ManifestPage() {
       newUrl.searchParams.set(CANVAS, selectedCanvasId);
       history.replaceState({}, '', newUrl);
     });
+  }
+
+  useEffect(logHighlights, [highlights]);
+
+  function logHighlights() {
+    if (highlights) {
+      console.info('highlights', highlights);
+    }
   }
 
   useEffect(logTextRanges, []);
@@ -101,36 +128,31 @@ export function ManifestPage() {
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set(MANIFEST, url);
     newUrl.searchParams.delete(CANVAS);
+    newUrl.searchParams.delete(DOCUMENT);
+    newUrl.searchParams.delete(DOCUMENT_ID);
+    newUrl.searchParams.delete(SNIPPET);
     history.pushState({}, '', newUrl);
   }
 
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl}>
-        <ManifestViewer
-          onClose={() => void navigate({ to: '/' })}
-          topLeft={
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
-          }
-          scan={
-            <ManifestFacsimileViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
-            />
-          }
-          transcription={
-            <ManifestTranscriptionViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
-            />
-          }
-          bottom={<ManifestCanvasNavigation/>}
-        />
-        <ManifestEntityPreview />
+        {isHighlighting ? <Spinner label="Loading search result"/> : (
+          <ManifestViewer
+            canvasId={initialCanvasId}
+            documentHit={documentHit}
+            error={error}
+            onClose={() => void navigate({ to: '/' })}
+            topLeft={
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+            }
+          />
+        )}
+        <ManifestEntityPreview/>
       </ManifestLoader>
     </ViewerProvider>
   );

@@ -24,13 +24,13 @@
 
   .metadata-panel dl > div {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: var(--s12);
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--s8);
   }
 
   .metadata-panel dt {
     color: var(--color-neutral-500);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     line-height: var(--s20);
   }
 
@@ -40,6 +40,23 @@
     color: var(--color-neutral-100);
     font-size: var(--text-sm);
     line-height: var(--s20);
+    overflow-wrap: anywhere;
+  }
+
+  .metadata-panel :is(.metadata-link, .entity-tag) {
+    display: inline;
+    font: inherit;
+  }
+
+  .metadata-panel .entity-tag .icon {
+    vertical-align: -0.1em;
+  }
+
+  .metadata-panel .metadata-link > .icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.1em;
   }
 
   .metadata-panel p {
