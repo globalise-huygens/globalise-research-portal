@@ -1,5 +1,9 @@
 import {
   findByPath,
+  findTimespan,
+  formatRecordedDate,
+  getRecordedDates,
+  type RecordedDates,
   getContent,
   getStatusValues,
   getValues,
@@ -22,16 +26,12 @@ import { TimespanValue } from './TimespanValue.tsx';
 import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
 import {
-  formatRecordedDate,
-  getPersonTimespan,
-  getRecordedDates,
   getResidenceLabel,
   groupPersonClaims,
   groupRecords,
   getPersonNameRecords,
   sortPersonNames,
   uniqueClaimValues,
-  type RecordedDates,
 } from './PersonClaimModel.ts';
 
 type PersonCardBodyProps = {
@@ -219,7 +219,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
   events: LinkedArtNode[];
 }) {
   const values = events.map((event) => ({
-    timespan: getPersonTimespan(event),
+    timespan: findTimespan(event),
     dates: getRecordedDates(event),
     places: uniqueClaimValues(getStatusValues(event, ['took_place_at'])),
   })).filter(({ timespan, dates, places }) => !!timespan || !!dates || places.length > 0);
@@ -289,7 +289,7 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
 
 function hasNameDetails(status: LinkedArtNode): boolean {
   return hasClaimEvidence(status)
-    || !!getPersonTimespan(status)
+    || !!findTimespan(status)
     || !!getRecordedDates(status);
 }
 
@@ -302,7 +302,7 @@ function ClaimRecordLabel({ index }: { index: number }) {
 }
 
 function ClaimDateProperty({ node, showMissing = false }: { node: LinkedArtNode; showMissing?: boolean }) {
-  const timespan = getPersonTimespan(node);
+  const timespan = findTimespan(node);
   const dates = timespan ? null : getRecordedDates(node);
   return !!timespan || !!dates || showMissing ? (
     <ObjectCardProperty
@@ -378,7 +378,7 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
       dates: getRecordedDates(event),
       notes: getNotes(event),
       sources: getVisibleSources(event),
-      timespan: getPersonTimespan(event),
+      timespan: findTimespan(event),
     }))
     .filter(({ locations, classifications, dates, notes, sources, timespan }) =>
       locations.length > 0 || classifications.length > 0 || !!dates || notes.length > 0 || sources.length > 0 || !!timespan,
@@ -407,11 +407,11 @@ function PersonStatusGroup({
   const content = groupPersonClaims(statuses).map(({ key, records }, index) => {
     const status = records[0];
     const dateKey = (node: LinkedArtNode) => JSON.stringify([
-      getPersonTimespan(node), getRecordedDates(node),
+      findTimespan(node), getRecordedDates(node),
     ]);
     const statusDates = dateKey(status);
     const sharedDates = records.every((record) => dateKey(record) === statusDates);
-    const timespan = sharedDates ? getPersonTimespan(status) : null;
+    const timespan = sharedDates ? findTimespan(status) : null;
     const recordedDates = sharedDates && !timespan ? getRecordedDates(status) : null;
     const summaryProperties = getStatusProperties(status);
     const details = records.some((record) => hasStatusDetails(record, group)) ? records : [];
@@ -430,7 +430,7 @@ function PersonStatusGroup({
               timespan={timespan}
             />
             {!sharedDates && records.map((record, recordIndex) => {
-              const recordTimespan = getPersonTimespan(record);
+              const recordTimespan = findTimespan(record);
               const recordDates = recordTimespan ? null : getRecordedDates(record);
               return (
                 <div key={recordIndex} className="person-status-summary-date">
@@ -498,7 +498,7 @@ type PersonStatusSummaryProps = {
   group: StatusGroup;
   properties: (StatusProperty & { values: StatusValue[] })[];
   recordedDates: RecordedDates | null;
-  timespan: ReturnType<typeof getPersonTimespan>;
+  timespan: ReturnType<typeof findTimespan>;
 };
 
 function PersonStatusSummary({
@@ -588,7 +588,7 @@ function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
 
 function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
   return getStatusProperties(status).length > 0 || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
-    || !!getPersonTimespan(status)
+    || !!findTimespan(status)
     || !!getRecordedDates(status);
 }
 

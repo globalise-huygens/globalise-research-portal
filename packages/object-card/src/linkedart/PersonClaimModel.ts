@@ -1,7 +1,6 @@
 import {
   asArray,
   findByPath,
-  findTimespan,
   getContent,
   getValue,
   getStatusValues,
@@ -83,69 +82,6 @@ export function groupRecords<T>(records: T[], keyFor: (record: T, index: number)
     }
   }
   return [...groups.values()];
-}
-
-const dateProperties = [
-  'begin_of_the_begin',
-  'end_of_the_begin',
-  'begin_of_the_end',
-  'end_of_the_end',
-] as const;
-
-function getDateValues(timespan: LinkedArtNode, key: typeof dateProperties[number]) {
-  return getValues(timespan[key] ?? (key === 'end_of_the_end'
-    ? timespan['crm:P82b_end_of_the_end']
-    : undefined));
-}
-
-export function getPersonTimespan(node: LinkedArtNode) {
-  if (isLinkedArtNode(node.timespan)) {
-    const timespan = node.timespan;
-    const dates = dateProperties.map((key) => getDateValues(timespan, key));
-    if (dates.some((values) => new Set(values.map(formatRecordedDate)).size > 1)) {
-      return null;
-    }
-    return findTimespan({
-      ...node,
-      timespan: {
-        ...node.timespan,
-        ...Object.fromEntries(dateProperties.map((key, index) => [key, dates[index][0]])),
-      },
-    });
-  }
-  const dates = getValues(node['crm:P4_has_time-span']);
-  if (new Set(dates.map(formatRecordedDate)).size > 1) {
-    return null;
-  }
-  return findTimespan(node);
-}
-
-export type RecordedDates = {
-  starts: string[];
-  ends: string[];
-  dates: string[];
-};
-
-export function getRecordedDates(node: LinkedArtNode): RecordedDates | null {
-  const timespan = isLinkedArtNode(node.timespan) ? node.timespan : undefined;
-  const starts = timespan ? uniqueDates([
-    ...getDateValues(timespan, 'begin_of_the_begin'),
-    ...getDateValues(timespan, 'end_of_the_begin'),
-  ]) : [];
-  const ends = timespan ? uniqueDates([
-    ...getDateValues(timespan, 'begin_of_the_end'),
-    ...getDateValues(timespan, 'end_of_the_end'),
-  ]) : [];
-  const dates = uniqueDates(getValues(node['crm:P4_has_time-span']));
-  return starts.length || ends.length || dates.length ? { starts, ends, dates } : null;
-}
-
-export function formatRecordedDate(date: string): string {
-  return date.replace(/T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?/g, '');
-}
-
-function uniqueDates(dates: string[]): string[] {
-  return [...new Set(dates.map(formatRecordedDate))];
 }
 
 export function getResidenceLabel(values: string[]): string | undefined {

@@ -16,7 +16,7 @@ export {
   getValues,
   getPreferredLanguageValue,
 } from './LinkedArtValue.ts';
-export { type Timespan, getTimespan, findTimespan } from './Timespan.ts';
+export { type Timespan, getTimespan, findTimespan, type RecordedDates, getRecordedDates, formatRecordedDate } from './Timespan.ts';
 export {
   type LinkedArtEntityType,
   linkedArtEntityTypes,
