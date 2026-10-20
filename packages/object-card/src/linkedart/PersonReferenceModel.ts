@@ -3,6 +3,7 @@ import type { ReferencePanelItemData } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
 import { type QueryClient } from '@tanstack/react-query';
 
+/** Show subject_of links immediately, before annotation collections have loaded. */
 export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelItemData[] {
   return findByPath(entity, ['subject_of']).flatMap((reference) => {
     const uri = resourceUri(reference);
@@ -21,6 +22,12 @@ export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelIt
   });
 }
 
+/**
+ * Expand subject_of annotation collections into scan links, following first/next
+ * pages and deduplicating annotations by URI. Use the supplied QueryClient to
+ * share collections. Empty, failed or cyclic collections retain the original
+ * reference link, so a failed lookup does not hide the source.
+ */
 export async function loadPersonReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
   const links = getPersonReferenceLinks(entity);
   const collections = findByPath(entity, ['subject_of'])

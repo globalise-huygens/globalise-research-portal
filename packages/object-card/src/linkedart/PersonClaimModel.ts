@@ -11,6 +11,7 @@ import {
   type StatusValue,
 } from '@globalise/common';
 
+/** Read appellative claims as names while retaining each original status and its evidence. */
 export function getPersonNameRecords(entity: LinkedArtNode) {
   return findByPath(entity, ['is_appellative_subject_of'])
     .filter((status) => status.type === 'AppellativeStatus')
@@ -32,7 +33,11 @@ export function sortPersonNames<T extends { name: string; status: LinkedArtNode 
   );
 }
 
-// Dates and evidence remain on each record; only equivalent claims share a row.
+/**
+ * Group equivalent ascribed values for display, retaining all original records.
+ * Two claims about the same occupation may share a row but keep separate dates
+ * and sources. A missing occupation never establishes equivalence.
+ */
 export function groupPersonClaims(records: LinkedArtNode[]) {
   return groupRecords(records, (record, index) => JSON.stringify([
     // Missing occupations do not establish equivalent claims, even if the
