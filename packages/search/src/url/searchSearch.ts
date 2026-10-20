@@ -1,6 +1,6 @@
 import { asArray } from '@globalise/common';
 import type { SearchState } from '@knaw-huc/faceted-search-react';
-import { facets, type FacetKey } from '../Facets';
+import { facets, type FacetKey } from '../facetDefinitions';
 
 export type SearchSearch = {
   q?: string;
