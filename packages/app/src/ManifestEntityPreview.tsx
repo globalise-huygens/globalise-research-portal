@@ -1,6 +1,7 @@
 import {
   fetchJson,
   getJsonUrl,
+  getObjectCardHref,
   getValue,
   getValues,
 } from '@globalise/common';
@@ -51,7 +52,6 @@ import { createPortal } from 'react-dom';
 import {
   getInternalConceptUri,
   getLinkedObjectCardHref,
-  getObjectCardHref,
 } from './ManifestEntityPreviewModel';
 import './ManifestEntityPreview.css';
 
@@ -970,7 +970,7 @@ function getPreviewDefinition(
 
   const definition = getEntityClassificationDefinition(classificationId);
   return {
-    type: definition.presentationType,
+    type: definition.tagType,
     typeLabel: definition.typeLabel,
     ...previewBehaviorByStrategy[definition.previewStrategy],
   };

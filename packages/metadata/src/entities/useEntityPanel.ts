@@ -1,20 +1,20 @@
 import { useEffect, useMemo } from 'react';
 import { loadMetadata, useMetadataRoot } from '@globalise/common';
-import { useDocumentStore } from '@globalise/common/document';
 import { useCurrentDocument } from '../toc';
 import type { EntityPanelModel } from './EntityPanelModel.ts';
 import { toLinkedEntities } from './toLinkedEntities.ts';
 import { toNerCategoryGroups } from './toNerCategoryGroups.ts';
+import { useNerCategoryTotals } from './useNerCategoryTotals.ts';
 
 /**
  * Entities of the current document: linked entities from its record,
- * NER categories from the entity annotations of its loaded canvases.
+ * NER category totals from the annotations set its record refers to.
  */
 export function useEntityPanel(): EntityPanelModel {
   const document = useCurrentDocument();
   const metadataUrl = document?.metadataUrl;
   const record = useMetadataRoot(metadataUrl);
-  const canvases = useDocumentStore((s) => s.canvases);
+  const nerCategoryTotals = useNerCategoryTotals(record);
 
   useEffect(loadDocumentRecord, [metadataUrl]);
 
@@ -31,11 +31,8 @@ export function useEntityPanel(): EntityPanelModel {
   );
 
   const nerCategoryGroups = useMemo(
-    () => toNerCategoryGroups((document?.scans ?? []).map(({ canvasId }) => ({
-      canvasId,
-      annotations: Object.values(canvases[canvasId]?.annotations ?? {}),
-    }))),
-    [document, canvases],
+    () => toNerCategoryGroups(nerCategoryTotals),
+    [nerCategoryTotals],
   );
 
   return { document, linkedEntities, nerCategoryGroups };

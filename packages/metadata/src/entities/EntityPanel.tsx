@@ -1,6 +1,8 @@
+import { getEntityTagType, getObjectCardHref } from '@globalise/common';
+import { EntityIcon, EntityTag } from '@globalise/design';
 import { Pair } from '../common';
 import { useEntityPanel } from './useEntityPanel.ts';
-import { countMentions, hasSubcategories } from './toNerCategoryGroups.ts';
+import { countTotal, hasSubcategories } from './toNerCategoryGroups.ts';
 
 export function EntityPanel() {
   const { document, linkedEntities, nerCategoryGroups } = useEntityPanel();
@@ -18,29 +20,37 @@ export function EntityPanel() {
       <ul>
         {linkedEntities.map((entity) => (
           <li key={entity.id} title={`The current document refers to ${entity.label} ${entity.mentions.length} times`}>
-            {entity.label}, {entity.type.toLowerCase()} ({entity.mentions.length})
+            <EntityTag type={getEntityTagType(entity.type)} href={getObjectCardHref(entity.id)}>{entity.label}</EntityTag> ({entity.mentions.length})
           </li>
         ))}
       </ul>
       <h3>Entity tags</h3>
       <ul>
-        {nerCategoryGroups.map((group) => (
-          <li key={group.id}>
-            <span title={`The current document refers to ${countMentions(group)} ${group.label.toLowerCase()}`}>
-              {group.label} ({countMentions(group)})
-            </span>
-            {hasSubcategories(group) && (
-              <ul>
-                {group.nerCategories.map((nerCategory) => (
-                  <li key={nerCategory.id} title={`${nerCategory.mentions.length} ${group.label.toLowerCase()} referred to ${nerCategory.label.toLowerCase()}`}>
-                    {nerCategory.label} ({nerCategory.mentions.length})
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
+        {nerCategoryGroups.map((group) => {
+          const groupTotal = countTotal(group);
+          return (
+            <li key={group.id}>
+              <span title={groupTotal === undefined ? undefined : `The current document refers to ${groupTotal} ${group.label.toLowerCase()}`}>
+                <EntityIcon type={group.tagType} className="icon"/>{' '}
+                {group.label} ({toCountLabel(groupTotal)})
+              </span>
+              {hasSubcategories(group) && (
+                <ul>
+                  {group.nerCategories.map(({ id, label, total }) => (
+                    <li key={id} title={total === undefined ? undefined : `${total} ${group.label.toLowerCase()} referred to ${label.toLowerCase()}`}>
+                      {label} ({toCountLabel(total)})
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
+}
+
+function toCountLabel(total?: number): string {
+  return total === undefined ? 'count unavailable' : `${total}`;
 }

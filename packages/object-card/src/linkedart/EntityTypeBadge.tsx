@@ -1,28 +1,12 @@
-import { EntityBadge, EntityBadgeType } from '@globalise/design';
-import { LinkedArtEntityType } from '@globalise/common';
-
-const badgeByEntityType: Record<LinkedArtEntityType, EntityBadgeType | null> = {
-  person: 'person',
-  place: 'place',
-  organization: 'organisation',
-  polity: 'polity',
-  rulership: 'rulership',
-  ship: 'ship',
-  voyage: 'voyage',
-  conversion: 'conversion',
-  occurrence: 'occurrence',
-  concept: 'concept',
-  conceptscheme: 'concept',
-  collection: 'concept',
-  unknown: null,
-};
+import { EntityBadge } from '@globalise/design';
+import { getEntityBadgeType, LinkedArtEntityType } from '@globalise/common';
 
 type EntityTypeBadgeProps = {
   type: LinkedArtEntityType;
 };
 
 export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
-  const badgeType = badgeByEntityType[type];
+  const badgeType = getEntityBadgeType(type);
   if (!badgeType) {
     return null;
   }

@@ -52,7 +52,8 @@
     vertical-align: -0.1em;
   }
 
-  .metadata-panel .metadata-link > .icon {
+  .metadata-panel .metadata-link > .icon,
+  .entity-panel .icon {
     display: inline-block;
     width: 1em;
     height: 1em;
