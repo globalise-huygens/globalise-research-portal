@@ -11,13 +11,6 @@ import {
   type StatusValue,
 } from '@globalise/common';
 
-export function isPreferredPersonName(status: LinkedArtNode): boolean {
-  return getStatusValues(status, ['classified_as']).some((value) =>
-    isLinkedArtNode(value)
-      && value.id === 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:31baab68-ad9e-4eb4-baba-0c4b163fc00c',
-  );
-}
-
 export function getPersonNameRecords(entity: LinkedArtNode) {
   return findByPath(entity, ['is_appellative_subject_of'])
     .filter((status) => status.type === 'AppellativeStatus')
@@ -37,20 +30,6 @@ export function sortPersonNames<T extends { name: string; status: LinkedArtNode 
   return [...records].sort((left, right) =>
     Number(isPreferredPersonName(right.status)) - Number(isPreferredPersonName(left.status)),
   );
-}
-
-function valueKey(value: unknown): string {
-  if (isLinkedArtNode(value)) {
-    return value.id ?? JSON.stringify([
-      value.type,
-      getContent(value) || getValue(value.value) || getValue(value._label),
-    ]);
-  }
-  return JSON.stringify(getValues(value));
-}
-
-export function uniqueClaimValues(values: StatusValue[]): StatusValue[] {
-  return [...new Map(values.map((value) => [valueKey(value), value])).values()];
 }
 
 // Dates and evidence remain on each record; only equivalent claims share a row.
@@ -84,6 +63,17 @@ export function groupRecords<T>(records: T[], keyFor: (record: T, index: number)
   return [...groups.values()];
 }
 
+export function uniqueClaimValues(values: StatusValue[]): StatusValue[] {
+  return [...new Map(values.map((value) => [valueKey(value), value])).values()];
+}
+
+export function isPreferredPersonName(status: LinkedArtNode): boolean {
+  return getStatusValues(status, ['classified_as']).some((value) =>
+    isLinkedArtNode(value)
+      && value.id === 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:31baab68-ad9e-4eb4-baba-0c4b163fc00c',
+  );
+}
+
 export function getResidenceLabel(values: string[]): string | undefined {
   if (values.length !== 1) {
     return undefined;
@@ -97,4 +87,14 @@ export function getResidenceLabel(values: string[]): string | undefined {
     return 'Residence';
   }
   return undefined;
+}
+
+function valueKey(value: unknown): string {
+  if (isLinkedArtNode(value)) {
+    return value.id ?? JSON.stringify([
+      value.type,
+      getContent(value) || getValue(value.value) || getValue(value._label),
+    ]);
+  }
+  return JSON.stringify(getValues(value));
 }
