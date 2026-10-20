@@ -1,4 +1,4 @@
-import { findByPath, orThrow, type LinkedArtNode } from '@globalise/common';
+import { findByPath, getLinkedArtEntityType, orThrow, type LinkedArtNode } from '@globalise/common';
 import type { LinkedEntity, Mention } from './EntityPanelModel.ts';
 
 /**
@@ -8,7 +8,7 @@ import type { LinkedEntity, Mention } from './EntityPanelModel.ts';
 export function toLinkedEntities(record: LinkedArtNode): LinkedEntity[] {
   return findByPath(record, ['carries', 'refers_to', 'member']).map((entity) => ({
     id: entity.id ?? orThrow('No entity id'),
-    type: entity.type,
+    type: getLinkedArtEntityType(entity.id),
     label: entity._label ?? '',
     mentions: findByPath(entity, ['subject_of', 'items']).map(toMention),
   }));
