@@ -8,6 +8,12 @@ import {
 import { isInternalUri } from '../isInternalUri.ts';
 import { getPersonNameRecords, sortPersonNames } from './PersonClaimModel.ts';
 
+/**
+ * Choose readable text from an embedded Linked Art or SKOS resource without fetching it.
+ * Prefer explicit labels and preferred English/Dutch names, then person appellations.
+ * Hide opaque internal identifiers and vocabulary variant lists; when no usable text
+ * is recorded, return a resource-type placeholder such as "Person" or "Vocabulary term".
+ */
 export function getRelationValue(node: LinkedArtNode): string {
   const names = findByPath(node, ['identified_by']).filter((name) => name.type === 'Name');
   const preferredNames = names.filter((name) => findByPath(name, ['classified_as'])
