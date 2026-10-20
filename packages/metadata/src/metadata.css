@@ -162,6 +162,26 @@
     flex-shrink: 0;
   }
 
+  .entity-panel > .document {
+    border: 1px solid var(--color-neutral-500);
+    background: var(--color-neutral-700);
+    padding: var(--s4) var(--s8);
+  }
+
+  .entity-panel ul {
+    margin: 0;
+    padding: 0;
+    color: var(--color-brand-white);
+    font-size: var(--text-sm);
+    line-height: var(--s20);
+    list-style: none;
+  }
+
+  .entity-panel ul ul {
+    padding-left: var(--panel-pad);
+    color: var(--color-neutral-400);
+  }
+
   .toc-empty {
     border-top: 1px solid rgb(255 255 255 / 0.08);
     background: var(--color-neutral-800);
