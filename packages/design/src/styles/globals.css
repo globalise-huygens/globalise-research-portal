@@ -53,6 +53,10 @@
     --parchment-800: #5d4736; /* text: white */
     --parchment-900: #4e4135; /* text: white */
 
+    /* Yellow */
+    --yellow-100: #fffcc1; /* text: black */
+    --yellow-300: #fff751; /* text: black */
+
     /* Vermilion */
     --vermilion-50: #ffeeec; /* text: black */
     --vermilion-100: #ffddd8; /* text: black */
@@ -157,6 +161,8 @@
     --color-parchment-700: var(--parchment-700);
     --color-parchment-800: var(--parchment-800);
     --color-parchment-900: var(--parchment-900);
+    --color-yellow-100: var(--yellow-100);
+    --color-yellow-300: var(--yellow-300);
     --color-vermilion-50: var(--vermilion-50);
     --color-vermilion-100: var(--vermilion-100);
     --color-vermilion-200: var(--vermilion-200);

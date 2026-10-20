@@ -8,12 +8,10 @@ import { POST_TAG, PRE_TAG } from './highlightTags';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets } from './calculateHtrOffsets';
 import { findActiveEsHitIndex } from './findActiveEsHitIndex';
-import { mergeContinuations } from './mergeContinuations';
+import { mergeContinuousOffsets } from './mergeContinuousOffsets.ts';
 import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
 import type { ManifestSearchState } from '../utils/getManifestSearchState';
-
-const maxLineBreakLength = '-\n'.length;
 
 export type DocumentHighlights = {
   hits: HtrHit[];
@@ -38,9 +36,13 @@ const highlightDocument = createServerFn({ method: 'POST' })
     const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
     const mappings = selectTextRangeMappings(data.docDbId);
     const hits = offsets.flatMap((offset, esHitIndex) => {
-      const htr = calculateHtrOffsets(offset, mappings);
-      const merged = mergeContinuations(htr, maxLineBreakLength);
-      return merged.map((h) => ({ ...h, esHitIndex }));
+      const htrOffsets = calculateHtrOffsets(offset, mappings);
+      const mergedOffsets = mergeContinuousOffsets(htrOffsets, '-\n'.length);
+      return mergedOffsets.map((offsets, pageOffsetsIndex) => ({
+        id: `search-hit-${esHitIndex}-${pageOffsetsIndex}`,
+        ...offsets,
+        esHitIndex,
+      }));
     });
     const snippet = getSnippetOffsets(text, data.snippet);
     const activeEsHitIndex = findActiveEsHitIndex(offsets, snippet);

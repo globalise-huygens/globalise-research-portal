@@ -30,3 +30,5 @@ export { isSvgSelector } from './isSvgSelector';
 export { getPageText } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';
+export * from './SearchHitModel';
+export { findWordsByOffsets, type Offsets, type WordOffsets } from './findWordsByOffsets.ts';

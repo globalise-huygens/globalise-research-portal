@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
+    "@globalise/design": "workspace:*",
     "@knaw-huc/original-layout": "^0.2.1",
     "@knaw-huc/text-annotation-segmenter": "^0.8.0",
     "d3-selection": "^3.0.0"

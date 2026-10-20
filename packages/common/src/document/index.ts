@@ -8,6 +8,8 @@ export * from './SelectionSlice';
 export * from './TocSlice';
 export * from './Selection';
 export * from './useSelectedViewerAnnotations';
+export * from './useSearchHitViewerAnnotations';
+export { useAnnotationsWithSearchHits } from './useAnnotationsWithSearchHits';
 export { getAnnotationPages } from './getAnnotationPages';
 export { logTextSelector } from './logTextSelector.ts';
 export * from './SettingsStore';

@@ -1,13 +1,13 @@
 import type { PageOffsets } from './calculateHtrOffsets';
 
-export function mergeContinuations(
+export function mergeContinuousOffsets(
   range: PageOffsets[],
-  maxLineBreakLength: number,
+  maxDistance: number,
 ): PageOffsets[] {
   const merged: PageOffsets[] = [];
   for (const offset of range) {
     const previous = merged.at(-1);
-    if (previous && isContinuation(previous, offset, maxLineBreakLength)) {
+    if (previous && isContinuation(previous, offset, maxDistance)) {
       previous.end = offset.end;
       // do not push current
     } else {
@@ -20,15 +20,15 @@ export function mergeContinuations(
 /**
  * Consider two ranges as one when
  * - next is after prev
- * - their gap is smaller than {@link maxLineBreakLength}
+ * - their gap is smaller than {@link maxDistance}
  */
 function isContinuation(
   prev: PageOffsets,
   next: PageOffsets,
-  maxLineBreakLength: number,
+  maxDistance: number,
 ): boolean {
   const gap = next.start - prev.end;
   return prev.canvasId === next.canvasId
     && gap >= 0
-    && gap <= maxLineBreakLength;
+    && gap <= maxDistance;
 }
