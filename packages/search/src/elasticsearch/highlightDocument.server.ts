@@ -39,7 +39,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
       const htrOffsets = calculateHtrOffsets(offset, mappings);
       const mergedOffsets = mergeContinuousOffsets(htrOffsets, '-\n'.length);
       return mergedOffsets.map((offsets, pageOffsetsIndex) => ({
-        id: `search-hit-${esHitIndex}-${pageOffsetsIndex}`,
+        id: `urn:globalise:search-hit:${esHitIndex}-${pageOffsetsIndex}`,
         ...offsets,
         esHitIndex,
       }));
