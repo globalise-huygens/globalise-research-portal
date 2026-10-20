@@ -17,7 +17,8 @@ for css:
 - keep child selectors nested inside their component root where possible. this keeps the css that belongs together in one place instead of repeating the root all through the file (see example below)
 - if the html already explains the part, just use that: `.entity-menu h3`
 - use aria, pseudo-classes, or `data-*` for real state. not only as another styling hook
-- do not mix the old BEM / `gds-` naming and the new naming inside the same component. older files can be cleaned up when we actually work on them
+- do not add `gds-` prefixes or BEM names such as `entity-badge__icon`. use `.entity-badge` with a nested `.icon`
+- when updating a component, rename its JSX, styles, and necessary usages together. leave unrelated components alone
 
 ```css
 .manifest-viewer {
