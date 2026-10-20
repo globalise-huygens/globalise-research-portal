@@ -586,6 +586,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
       '@tanstack/react-router':
         specifier: ^1.170.41
         version: 1.170.41(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

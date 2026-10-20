@@ -1,9 +1,7 @@
 import { asArray, fetchJson, findByPath, getJsonUrl, isUrl, type LinkedArtNode } from '@globalise/common';
 import type { ReferencePanelItemData } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
-import { createResourceCache } from './ResourceCache.ts';
-
-const cachedCollection = createResourceCache<ReferencePanelItemData[]>(32);
+import { type QueryClient } from '@tanstack/react-query';
 
 function resource(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -68,8 +66,8 @@ function annotationReference(value: unknown): ReferencePanelItemData | undefined
   };
 }
 
-async function loadCollection(uri: string): Promise<ReferencePanelItemData[]> {
-  const collection = resource(await fetchJson<unknown>(jsonUri(uri)));
+async function loadCollection(uri: string, signal?: AbortSignal): Promise<ReferencePanelItemData[]> {
+  const collection = resource(await fetchJson<unknown>(jsonUri(uri), { signal }));
   if (!collection) {
     throw new Error('Invalid annotation collection');
   }
@@ -91,7 +89,7 @@ async function loadCollection(uri: string): Promise<ReferencePanelItemData[]> {
       throw new Error('Repeated annotation page');
     }
     visited.add(pageUri);
-    const page = resource(await fetchJson<unknown>(pageUri));
+    const page = resource(await fetchJson<unknown>(pageUri, { signal }));
     if (!page) {
       throw new Error('Invalid annotation page');
     }
@@ -101,7 +99,7 @@ async function loadCollection(uri: string): Promise<ReferencePanelItemData[]> {
   return [...items.values()];
 }
 
-export async function loadPersonReferences(entity: LinkedArtNode): Promise<ReferencePanelItemData[]> {
+export async function loadPersonReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
   const links = getPersonReferenceLinks(entity);
   const collections = findByPath(entity, ['subject_of'])
     .filter((reference) => hasType(reference, 'AnnotationCollection'));
@@ -111,7 +109,12 @@ export async function loadPersonReferences(entity: LinkedArtNode): Promise<Refer
       return [link];
     }
     try {
-      const items = await cachedCollection(uri, () => loadCollection(uri));
+      const items = await queryClient.fetchQuery({
+        queryKey: ['person-reference-collection', uri],
+        queryFn: ({ signal }) => loadCollection(uri, signal),
+        staleTime: Infinity,
+        retry: false,
+      });
       return items.length ? items : [link];
     } catch {
       return [link];
