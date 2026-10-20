@@ -10,6 +10,7 @@ const transcriptionsUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.147
 type EsResponse = { hits: { hits: { _source: { text: string } }[] } };
 type AnnotationPage = { items: { id: string; body: { value: string }[] }[] };
 
+// TODO: Fix and cleanup, or delete?
 describe(`${calculateHtrOffsets.name} using ${document}`, () => {
   it('maps a hit on the first line of the first page onto its htr text', async () => {
     vi.stubEnv('DOCUMENT_TEXT_MAPPINGS_DB', dbUrl.pathname);

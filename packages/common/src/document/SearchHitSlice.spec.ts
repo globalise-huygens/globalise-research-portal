@@ -1,27 +1,46 @@
 import { describe, expect, it } from 'vitest';
-import { findActiveSearchHits, groupByCanvas } from './SearchHitSlice';
+import {
+  findActiveCanvasSearchHits,
+  findActiveSearchHits,
+  groupByCanvas,
+} from './SearchHitSlice';
 
-const firstHit = { canvasId: 'canvas-1', start: 0, end: 4, esHitIndex: 0 };
-const splitHitStart = { canvasId: 'canvas-1', start: 90, end: 96, esHitIndex: 1 };
-const splitHitEnd = { canvasId: 'canvas-2', start: 0, end: 3, esHitIndex: 1 };
+const singleHit =
+  { id: '0-0', canvasId: 'a', start: 0, end: 1, esHitIndex: 0 };
+const splitHitOnCanvas1 =
+  { id: '1-0', canvasId: 'a', start: 2, end: 3, esHitIndex: 1 };
+const splitHitOnCanvas2 =
+  { id: '1-1', canvasId: 'b', start: 0, end: 1, esHitIndex: 1 };
 
 describe(groupByCanvas.name, () => {
   it('groups hits by canvas', () => {
-    expect(groupByCanvas([firstHit, splitHitStart, splitHitEnd])).toEqual({
-      'canvas-1': [firstHit, splitHitStart],
-      'canvas-2': [splitHitEnd],
+    const hits = [singleHit, splitHitOnCanvas1, splitHitOnCanvas2];
+    expect(groupByCanvas(hits)).toEqual({
+      'a': [singleHit, splitHitOnCanvas1],
+      'b': [splitHitOnCanvas2],
     });
   });
 });
 
 describe(findActiveSearchHits.name, () => {
   it('finds all parts of the active es hit across canvases', () => {
-    const searchHits = groupByCanvas([firstHit, splitHitStart, splitHitEnd]);
-    expect(findActiveSearchHits({ searchHits, activeEsHitIndex: 1 })).toEqual([splitHitStart, splitHitEnd]);
+    const searchHits = groupByCanvas([singleHit, splitHitOnCanvas1, splitHitOnCanvas2]);
+    const slice = { searchHits, activeEsHitIndex: 1 };
+    expect(findActiveSearchHits(slice)).toEqual([splitHitOnCanvas1, splitHitOnCanvas2]);
   });
 
   it('finds no hits without an active es hit', () => {
-    const searchHits = groupByCanvas([firstHit]);
-    expect(findActiveSearchHits({ searchHits, activeEsHitIndex: null })).toEqual([]);
+    const searchHits = groupByCanvas([singleHit]);
+    const slice = { searchHits, activeEsHitIndex: null };
+    expect(findActiveSearchHits(slice)).toEqual([]);
+  });
+});
+
+describe(findActiveCanvasSearchHits.name, () => {
+  it('finds only the part of the active es hit on the canvas', () => {
+    const searchHits = groupByCanvas([singleHit, splitHitOnCanvas1, splitHitOnCanvas2]);
+    const activeEsHitIndex = 1;
+    const slice = { searchHits, activeEsHitIndex };
+    expect(findActiveCanvasSearchHits(slice, 'b')).toEqual([splitHitOnCanvas2]);
   });
 });

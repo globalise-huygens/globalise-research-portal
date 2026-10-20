@@ -8,7 +8,8 @@ import {
   getCidocEntityClassificationId,
 } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
-import { type CanvasId, useAnnotations, useCanvasIndexes } from './ManifestViewerSlice';
+import { type CanvasId, useCanvasIndexes } from './ManifestViewerSlice';
+import { useAnnotationsWithSearchHits } from './useAnnotationsWithSearchHits';
 
 export type EntityHighlightSlice = {
   entityHighlightCategories: Set<CidocEntityClassificationId>;
@@ -25,7 +26,7 @@ export function useEntityHighlightCategories() {
 }
 
 export function useWordEntityClassifications(canvasId: CanvasId) {
-  const annotations = useAnnotations(canvasId);
+  const annotations = useAnnotationsWithSearchHits(canvasId);
   const { entityToWords } = useCanvasIndexes(canvasId);
   const categories = useEntityHighlightCategories();
   return useMemo(() => {
@@ -47,7 +48,7 @@ export function useWordEntityClassifications(canvasId: CanvasId) {
 export function useHighlightedAnnotations(
   canvasId: CanvasId,
 ): Record<Id, Annotation> {
-  const annotations = useAnnotations(canvasId);
+  const annotations = useAnnotationsWithSearchHits(canvasId);
   const categories = useEntityHighlightCategories();
   return useMemo(() => {
     const highlighted: Record<Id, Annotation> = {};

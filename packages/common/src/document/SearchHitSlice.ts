@@ -1,4 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
+import type { Id } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
 import type { CanvasId } from './ManifestViewerSlice';
 
@@ -8,6 +9,7 @@ export type SearchHitSlice = {
 };
 
 export type HtrHit = {
+  id: Id;
   canvasId: CanvasId;
   start: number;
   end: number;
@@ -32,12 +34,19 @@ export function useCanvasSearchHits(canvasId: CanvasId): HtrHit[] {
   return useDocumentStore((s) => s.searchHits[canvasId] ?? noHits);
 }
 
-export function useActiveSearchHits(): HtrHit[] {
-  return useDocumentStore(useShallow(findActiveSearchHits));
+export function useActiveCanvasSearchHits(canvasId: CanvasId): HtrHit[] {
+  return useDocumentStore(useShallow((s) => findActiveCanvasSearchHits(s, canvasId)));
 }
 
 export function findActiveSearchHits(s: SearchHitSlice): HtrHit[] {
-  return Object.values(s.searchHits)
-    .flat()
-    .filter((hit) => hit.esHitIndex === s.activeEsHitIndex);
+  return Object.keys(s.searchHits)
+    .flatMap((canvasId) => findActiveCanvasSearchHits(s, canvasId));
+}
+
+export function findActiveCanvasSearchHits(
+  slice: SearchHitSlice,
+  canvasId: CanvasId,
+): HtrHit[] {
+  return (slice.searchHits[canvasId] ?? noHits)
+    .filter((hit) => hit.esHitIndex === slice.activeEsHitIndex);
 }

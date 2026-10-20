@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { mergeContinuations } from './mergeContinuations';
+import { mergeContinuousOffsets } from './mergeContinuousOffsets.ts';
 
 const maxLineBreakLength = '-\n'.length;
 
-describe(mergeContinuations.name, () => {
+describe(mergeContinuousOffsets.name, () => {
   it('merges ranges separated by a line break', () => {
     const htr = 'foo bar-\nbaz bas';
     const ranges = [
@@ -11,7 +11,7 @@ describe(mergeContinuations.name, () => {
       { canvasId: '1', start: 9, end: 12 },
     ];
 
-    const merged = mergeContinuations(ranges, maxLineBreakLength);
+    const merged = mergeContinuousOffsets(ranges, maxLineBreakLength);
 
     expect(merged.map(({ start, end }) => htr.slice(start, end))).toEqual(['bar-\nbaz']);
   });
@@ -22,7 +22,7 @@ describe(mergeContinuations.name, () => {
       { canvasId: '2', start: 0, end: 3 },
     ];
 
-    expect(mergeContinuations(ranges, maxLineBreakLength)).toEqual(ranges);
+    expect(mergeContinuousOffsets(ranges, maxLineBreakLength)).toEqual(ranges);
   });
 
   it('keeps ranges apart when the next one starts earlier', () => {
@@ -31,7 +31,7 @@ describe(mergeContinuations.name, () => {
       { canvasId: '1', start: 0, end: 3 },
     ];
 
-    expect(mergeContinuations(ranges, maxLineBreakLength)).toEqual(ranges);
+    expect(mergeContinuousOffsets(ranges, maxLineBreakLength)).toEqual(ranges);
   });
 
   it('keeps ranges apart when they skip text longer than a line break', () => {
@@ -40,6 +40,6 @@ describe(mergeContinuations.name, () => {
       { canvasId: '1', start: 11, end: 14 },
     ];
 
-    expect(mergeContinuations(ranges, maxLineBreakLength)).toEqual(ranges);
+    expect(mergeContinuousOffsets(ranges, maxLineBreakLength)).toEqual(ranges);
   });
 });

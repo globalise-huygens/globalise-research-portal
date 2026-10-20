@@ -5,14 +5,17 @@ import {
   getCidocEntityClassifiedAsLabel,
   getCidocClassName,
   isEntity,
+  isSearchHit,
   toClassName,
   isWord,
 } from '@globalise/common/annotation';
 import {
   useIsClickedInLineByLine,
   useIsHighlightedEntity,
+  useIsActiveHitInLineByLine,
   useIsSelectedInLineByLine,
 } from '@globalise/common/document';
+import { cn } from '@globalise/design';
 
 type AnnotationProps = {
   canvasId: string;
@@ -27,6 +30,12 @@ export function AnnotationSegment(
     return <EntitySegment canvasId={canvasId} annotation={annotation}>
       {children}
     </EntitySegment>;
+  }
+
+  if (isSearchHit(annotation)) {
+    return <SearchHitSegment canvasId={canvasId} annotation={annotation}>
+      {children}
+    </SearchHitSegment>;
   }
 
   if (isWord(annotation)) {
@@ -55,6 +64,16 @@ function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
       ref={ref}
       className={`word${isSelected ? ' selected' : ''}`}
     >
+      {children}
+    </span>
+  );
+}
+
+function SearchHitSegment({ canvasId, annotation, children }: AnnotationProps) {
+  const isActiveHit = useIsActiveHitInLineByLine(canvasId, annotation.id);
+
+  return (
+    <span className={cn(['search-hit', isActiveHit && 'active-hit'])}>
       {children}
     </span>
   );
