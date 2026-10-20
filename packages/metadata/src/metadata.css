@@ -320,13 +320,14 @@
 
   .toc-card {
     position: relative;
+    z-index: 0;
     width: 100%;
     border-top: 1px solid rgb(255 255 255 / 0.12);
     border-right: 0;
     border-bottom: 0;
     border-left: 0;
     background: none;
-    padding: var(--s12) 0;
+    padding: var(--s12) var(--s8);
     color: inherit;
     font: inherit;
     text-align: left;
@@ -338,14 +339,24 @@
     background: rgb(255 255 255 / 0.04);
   }
 
-  .toc-card[aria-current="true"]::before {
+  .toc-card[aria-current="true"]:has(> .layout[data-thumbnail="false"])::before,
+  .toc-card[aria-current="true"] .thumbnail::before {
     position: absolute;
-    top: var(--s12);
-    bottom: var(--s12);
-    left: calc(-1 * var(--s8));
-    width: var(--s4);
+    top: 50%;
+    left: 0;
+    width: 2px;
+    height: var(--s24);
+    transform: translateY(-50%);
     background: var(--color-brand-white);
     content: "";
+  }
+
+  .toc-card[aria-current="true"] .thumbnail::before {
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--s8));
+    height: auto;
+    transform: none;
   }
 
   .toc-card:last-child {
@@ -364,6 +375,7 @@
   }
 
   .toc-card .thumbnail {
+    position: relative;
     display: flex;
     width: var(--s48);
     align-items: center;
