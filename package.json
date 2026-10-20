@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "pnpm --filter @globalise/app dev",
+    "start": "GLOBALISE_DB=$PWD/data/globalise.db pnpm --filter @globalise/app dev",
     "build:app": "pnpm --filter @globalise/app build",
     "build": "pnpm test && pnpm typecheck && pnpm lint && pnpm build:app",
     "serve": "pnpm --filter @globalise/app serve",

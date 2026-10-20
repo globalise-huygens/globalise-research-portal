@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import {
   loadCanvasAnnotationPages,
-  useAnnotations,
+  useAnnotationsWithSearchHits,
   usePages,
 } from '@globalise/common/document';
 import type { CanvasAnnotationPage } from '@globalise/common/annotation';
@@ -29,7 +29,7 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
     isCurrentCanvas,
   }: Props,
 ) {
-  const annotations = useAnnotations(canvasId);
+  const annotations = useAnnotationsWithSearchHits(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(

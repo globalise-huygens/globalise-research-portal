@@ -53,6 +53,7 @@ export const emptyAnnotationIndex: AnnotationIndexes = {
   wordToBlock: {},
   entityToWords: {},
   entityToBlock: {},
+  wordOffsets: [],
 };
 
 const emptyCanvasState: CanvasState = {
@@ -269,7 +270,7 @@ export function useLoadCanvas() {
 
 const emptyAnnotations = {};
 
-export function useAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
+export function useCanvasAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
   return useDocumentStore((s) => {
     const canvas = s.canvases[canvasId];
     const annotations = canvas?.annotations;

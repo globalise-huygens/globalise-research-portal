@@ -4,6 +4,7 @@ import { isEntity } from './EntityModel';
 import { findResourceTarget } from './findResourceTarget.ts';
 import { findTextPositionSelector } from './findTextPositionSelector';
 import { orThrow } from '../util/orThrow.ts';
+import { findWordsByOffsets, WordOffsets } from './findWordsByOffsets';
 
 export type AnnotationIndexes = {
   wordToLine: Record<Id, Id>;
@@ -12,6 +13,7 @@ export type AnnotationIndexes = {
   wordToBlock: Record<Id, Id>;
   entityToWords: Record<Id, Id[]>;
   entityToBlock: Record<Id, Id>;
+  wordOffsets: WordOffsets[];
 };
 
 export function indexAnnotations(
@@ -52,35 +54,32 @@ export function indexAnnotations(
   const entityToWords: Record<Id, Id[]> = {};
   const entityToBlock: Record<Id, Id> = {};
 
-  const wordSelectors: { id: Id; start: number; end: number }[] = [];
+  const wordOffsets: WordOffsets[] = [];
   for (const annotation of Object.values(annotations)) {
     if (annotation.textGranularity === 'word') {
       const { start, end } =
         findTextPositionSelector(annotation, pageAnnoId) ??
       orThrow('No selector');
-      wordSelectors.push({ id: annotation.id, start, end });
+      wordOffsets.push({ id: annotation.id, start, end });
     }
   }
 
-  if (wordSelectors.length) {
+  if (wordOffsets.length) {
     for (const entity of Object.values(annotations)) {
       if (!isEntity(entity)) {
         continue;
       }
 
-      const { start, end } =
-        findTextPositionSelector(entity, pageAnnoId)
-      ?? orThrow('No selector');
-      const overlapping = wordSelectors
-        .filter((word) => word.start < end && word.end > start)
-        .map((w) => w.id);
+      const selector = findTextPositionSelector(entity, pageAnnoId)
+        ?? orThrow('No selector');
+      const wordIds = findWordsByOffsets(wordOffsets, selector);
 
-      if (!overlapping.length) {
+      if (!wordIds.length) {
         continue;
       }
-      entityToWords[entity.id] = overlapping;
+      entityToWords[entity.id] = wordIds;
 
-      const blockId = wordToBlock[overlapping[0]];
+      const blockId = wordToBlock[wordIds[0]];
       if (blockId) {
         entityToBlock[entity.id] = blockId;
       }
@@ -94,5 +93,6 @@ export function indexAnnotations(
     wordToBlock,
     entityToWords,
     entityToBlock,
+    wordOffsets,
   };
 }

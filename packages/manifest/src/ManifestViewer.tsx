@@ -1,24 +1,19 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { type CanvasId, type DocumentHit, setSelectedCanvas } from '@globalise/common/document';
-import { useDocumentHitCanvasId } from '@globalise/common/document/browser';
+import { type CanvasId, setSelectedCanvas } from '@globalise/common/document';
 import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
 import { ManifestTranscriptionViewer } from './transcription/ManifestTranscriptionViewer';
 
 export type ManifestViewerProps = {
   canvasId?: CanvasId;
-  documentHit?: DocumentHit;
   topLeft?: ReactNode;
   error?: ErrorMessage;
   onClose?: () => void;
 };
 
-export function ManifestViewer({ canvasId, documentHit, topLeft, error, onClose }: ManifestViewerProps) {
-  const documentHitCanvasId = useDocumentHitCanvasId(documentHit);
-  const initialCanvasId = canvasId ?? documentHitCanvasId;
-
+export function ManifestViewer({ canvasId, topLeft, error, onClose }: ManifestViewerProps) {
   return (
     <ManifestLayout
       onClose={onClose}
@@ -26,13 +21,13 @@ export function ManifestViewer({ canvasId, documentHit, topLeft, error, onClose 
       error={error}
       scan={
         <ManifestFacsimileViewer
-          initialCanvasId={initialCanvasId}
+          initialCanvasId={canvasId}
           onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
         />
       }
       transcription={
         <ManifestTranscriptionViewer
-          initialCanvasId={initialCanvasId}
+          initialCanvasId={canvasId}
           onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
         />
       }

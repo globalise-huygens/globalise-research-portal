@@ -9,6 +9,8 @@
     --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
+    --search-hit-fill: var(--color-yellow-100, #fffcc1);
+    --search-hit-active-fill: var(--color-yellow-300, #fff751);
 
     color: var(--diplomatic-text);
 
@@ -22,9 +24,26 @@
         color: var(--diplomatic-text);
     }
 
+    .search-hit {
+        background: var(--search-hit-fill);
+        box-decoration-break: clone;
+    }
+
+    .search-hit.active-hit {
+        background: var(--search-hit-active-fill);
+    }
+
+    .search-hit.entity {
+        box-shadow: inset 0 -2px 0 var(--entity-highlight-color);
+    }
+
     .entity.selected,
     .selected {
         background: var(--diplomatic-selected);
+    }
+
+    .selected > .search-hit {
+        background: transparent;
     }
 
     .entity:hover {
