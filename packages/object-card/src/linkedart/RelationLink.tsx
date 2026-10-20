@@ -1,4 +1,5 @@
 import {
+  EntityPreview,
   EntityTag,
   type EntityTagType,
   ObjectCardExternalLink,
@@ -11,8 +12,9 @@ import {
 } from '@globalise/common';
 import { type ReactNode, useEffect, useState } from 'react';
 import { isInternalUri } from '../isInternalUri.ts';
-import { getRelationValue } from './RelationValueModel.ts';
-import { resolveRelationValue } from './RelationValueResolver.ts';
+import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
+import { resolveRelationResource } from './RelationValueResolver.ts';
+import { getResourcePreview } from './ResourcePreviewModel.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -20,37 +22,41 @@ type RelationLinkProps = {
 
 export function RelationLink({ node }: RelationLinkProps) {
   const href = url(node);
-  const text = useRelationValue(node, href);
+  const { text, resource, isPending } = useRelationValue(node, href);
+  const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
+    <span key={related.id ?? index}>
+      {index > 0 && ', '}
+      <RelationLink node={related} />
+    </span>
+  ))) : undefined;
 
-  if (href && isInternalUri(href)) {
-    return (
-      <EntityTag
-        type={getEntityTagType(getLinkedArtEntityType(href))}
-        href={`/object-card?${new URLSearchParams({ uri: href })}`}
-      >
-        {text}
-      </EntityTag>
-    );
+  if (!href) {
+    return <span className="relation">{text}</span>;
   }
-  if (href) {
-    return (
-      <ObjectCardExternalLink href={href}>{text}</ObjectCardExternalLink>
-    );
-  }
-  return <span className="relation">{text}</span>;
+  return <EntityPreview data={preview} isPending={isPending}>{(attributes) => isInternalUri(href) ? (
+    <EntityTag
+      {...attributes}
+      type={getEntityTagType(getLinkedArtEntityType(href))}
+      href={`/object-card?${new URLSearchParams({ uri: href })}`}
+    >
+      {text}
+    </EntityTag>
+  ) : (
+    <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
+  )}</EntityPreview>;
 }
 
 export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
-  const text = useRelationValue(node, url(node));
+  const { text } = useRelationValue(node, url(node));
   return <>{render ? render(text) : text}</>;
 }
 
-function useRelationValue(node: LinkedArtNode, href?: string): string {
+function useRelationValue(node: LinkedArtNode, href?: string) {
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
   const [resolved, setResolved] = useState<{
     uri: string;
-    value?: string;
+    resource?: LinkedArtNode;
   }>();
 
   useEffect(() => {
@@ -58,9 +64,9 @@ function useRelationValue(node: LinkedArtNode, href?: string): string {
       return;
     }
     let active = true;
-    void resolveRelationValue(href).then((value) => {
+    void resolveRelationResource(href).then((resource) => {
       if (active) {
-        setResolved({ uri: href, value });
+        setResolved({ uri: href, resource });
       }
     });
     return () => {
@@ -68,9 +74,13 @@ function useRelationValue(node: LinkedArtNode, href?: string): string {
     };
   }, [href]);
 
-  return resolved && resolved.uri === href
-    ? resolved.value ?? safeFallback
-    : pendingValue;
+  const isResolved = resolved && resolved.uri === href;
+  const resource = isResolved ? resolved.resource : undefined;
+  return {
+    resource,
+    isPending: !!href && !isResolved,
+    text: isResolved ? getResolvedRelationValue(resource) ?? safeFallback : pendingValue,
+  };
 }
 
 function getEntityTagType(type: LinkedArtEntityType): EntityTagType {
