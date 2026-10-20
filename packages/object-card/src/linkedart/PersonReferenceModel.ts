@@ -3,24 +3,6 @@ import type { ReferencePanelItemData } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
 import { type QueryClient } from '@tanstack/react-query';
 
-function resource(value: unknown): Record<string, unknown> | undefined {
-  return value && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown> : undefined;
-}
-
-function resourceUri(value: unknown): string | undefined {
-  const uri = typeof value === 'string' ? value : resource(value)?.id;
-  return typeof uri === 'string' && isUrl(uri) ? uri : undefined;
-}
-
-function jsonUri(uri: string): string {
-  return isInternalUri(uri) ? getJsonUrl(uri) : uri;
-}
-
-function hasType(value: Record<string, unknown>, type: string): boolean {
-  return asArray(value.type).includes(type);
-}
-
 export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelItemData[] {
   return findByPath(entity, ['subject_of']).flatMap((reference) => {
     const uri = resourceUri(reference);
@@ -37,6 +19,48 @@ export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelIt
       uri,
     }];
   });
+}
+
+export async function loadPersonReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
+  const links = getPersonReferenceLinks(entity);
+  const collections = findByPath(entity, ['subject_of'])
+    .filter((reference) => hasType(reference, 'AnnotationCollection'));
+  const groups = await Promise.all(links.map(async (link) => {
+    const uri = link.id;
+    if (!uri || !collections.some((reference) => reference.id === uri)) {
+      return [link];
+    }
+    try {
+      const items = await queryClient.fetchQuery({
+        queryKey: ['person-reference-collection', uri],
+        queryFn: ({ signal }) => loadCollection(uri, signal),
+        staleTime: Infinity,
+        retry: false,
+      });
+      return items.length ? items : [link];
+    } catch {
+      return [link];
+    }
+  }));
+  return [...new Map(groups.flat().map((item) => [item.id, item])).values()];
+}
+
+function resource(value: unknown): Record<string, unknown> | undefined {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown> : undefined;
+}
+
+function resourceUri(value: unknown): string | undefined {
+  const uri = typeof value === 'string' ? value : resource(value)?.id;
+  return typeof uri === 'string' && isUrl(uri) ? uri : undefined;
+}
+
+function jsonUri(uri: string): string {
+  return isInternalUri(uri) ? getJsonUrl(uri) : uri;
+}
+
+function hasType(value: Record<string, unknown>, type: string): boolean {
+  return asArray(value.type).includes(type);
 }
 
 function annotationReference(value: unknown): ReferencePanelItemData | undefined {
@@ -97,28 +121,4 @@ async function loadCollection(uri: string, signal?: AbortSignal): Promise<Refere
     next = resourceUri(page.next);
   }
   return [...items.values()];
-}
-
-export async function loadPersonReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
-  const links = getPersonReferenceLinks(entity);
-  const collections = findByPath(entity, ['subject_of'])
-    .filter((reference) => hasType(reference, 'AnnotationCollection'));
-  const groups = await Promise.all(links.map(async (link) => {
-    const uri = link.id;
-    if (!uri || !collections.some((reference) => reference.id === uri)) {
-      return [link];
-    }
-    try {
-      const items = await queryClient.fetchQuery({
-        queryKey: ['person-reference-collection', uri],
-        queryFn: ({ signal }) => loadCollection(uri, signal),
-        staleTime: Infinity,
-        retry: false,
-      });
-      return items.length ? items : [link];
-    } catch {
-      return [link];
-    }
-  }));
-  return [...new Map(groups.flat().map((item) => [item.id, item])).values()];
 }
