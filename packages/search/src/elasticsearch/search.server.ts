@@ -2,12 +2,10 @@ import { z } from 'zod';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
+import type { GlobaliseSearchState } from '../utils/getSearchState';
+import { POST_TAG, PRE_TAG } from './highlightTags';
 
 import type { EntityTagType } from '@globalise/design';
-import type { GlobaliseSearchState } from '../utils/getSearchState';
-
-const PRE_TAG = '\uE000';
-const POST_TAG = '\uE001';
 
 export type SearchRequest = GlobaliseSearchState & {
   offset?: number;
@@ -23,15 +21,17 @@ export type SearchResult = {
 export type DocumentSearchResult = SearchResult & {
   type: 'document';
   archive: string[];
+  name: string;
   inventoryNumber: string;
   settlement: string;
   startDate: string;
   endDate: string;
-  text?: string;
+  mentions: string[];
 };
 
 type ElasticDocument = {
   identifier: string;
+  name: string;
   inventoryNumber: string;
   title: string;
   settlement: string;
@@ -55,8 +55,6 @@ const search = createServerFn({ method: 'POST' })
       from: data.offset ?? 0,
       size: data.limit ?? 10,
       highlight: {
-        type: 'unified',
-        number_of_fragments: 0,
         pre_tags: [PRE_TAG],
         post_tags: [POST_TAG],
         fields: {
@@ -65,6 +63,7 @@ const search = createServerFn({ method: 'POST' })
       },
       _source: [
         'identifier',
+        'name',
         'inventoryNumber',
         'title',
         'settlement',
@@ -79,19 +78,20 @@ const search = createServerFn({ method: 'POST' })
       type: 'document',
       title: hit._source!.title,
       archive: [
-        'NL-HaNA 1.04.02',
-        'Deel I Heren Zeventien en kamer Amsterdam',
-        'Deel I/E INGEKOMEN STUKKEN UIT INDIË',
-        'Deel I/E.5 Overgekomen brieven en papieren',
-        'Deel I/E.5.a Overgekomen brieven en papieren uit Indië aan de Heren XVII en de kamer Amsterdam',
-        '1053-1055 Overgekomen brieven en papieren uit Indië aan de Heren XVII en de kamer Amsterdam. Met inhoudsopgaven',
-        '1053 Stukken betreffende de Molukken, Banda, Ambon, Bantam, Makassar en Gresik',
+        'TODO',
+        'TODO',
+        'TODO',
+        'TODO',
+        'TODO',
+        'TODO',
+        'TODO',
       ],
+      name: hit._source!.name,
       inventoryNumber: hit._source!.inventoryNumber,
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,
       endDate: hit._source!.endDate,
-      text: hit.highlight?.text ? hit.highlight?.text[0] : undefined,
+      mentions: hit.highlight?.text ?? [],
     }));
   });
 

@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef } from 'react';
 import { useSelectedCanvas } from '@globalise/common/document';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 const scrollDebounce = 100; // ms
 

@@ -13,7 +13,7 @@ import '@knaw-huc/original-layout/style.css';
 import './DiplomaticView.css';
 import { Annotation } from '@globalise/common/annotation';
 import { setHovered, toggleClicked } from '@globalise/common/document';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 export type DiplomaticViewProps = {
   id?: string

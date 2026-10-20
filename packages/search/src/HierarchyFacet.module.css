@@ -1,10 +1,18 @@
+.tree {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden auto;
+    scrollbar-color: var(--color-neutral-600, #666) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+}
+
 .item {
     display: flex;
     position: relative;
     width: 100%;
     min-height: var(--s24, 24px);
     align-items: flex-start;
-    margin-bottom: var(--s8, 8px);
 
     .toggle {
         display: inline-flex;

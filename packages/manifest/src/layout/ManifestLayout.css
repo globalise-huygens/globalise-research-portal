@@ -1,5 +1,5 @@
 @import "@globalise/design/styles.css";
-@import "./transcription/LayoutElements.css";
+@import "../transcription/LayoutElements.css";
 
 .manifest-viewer {
   --manifest-sidebar-expanded-width: clamp(17rem, var(--sidebar-width), 22rem);
@@ -341,6 +341,7 @@
 }
 
 .manifest-viewer .body {
+  position: relative;
   display: flex;
   flex: 1 1 0%;
   overflow: hidden;
@@ -613,4 +614,21 @@
   .manifest-viewer .sidebar-disclosure {
     transition: none;
   }
+}
+
+.manifest-viewer .manifest-error {
+  position: absolute;
+  z-index: 1100;
+  top: var(--s20);
+  right: var(--s20);
+  width: auto;
+  max-width: min(480px, calc(100% - var(--s12)));
+  padding: var(--s6);
+  padding-left: var(--s12);
+}
+
+.manifest-viewer .manifest-error > .body {
+  display: flex;
+  align-items: center;
+  gap: var(--s12);
 }
