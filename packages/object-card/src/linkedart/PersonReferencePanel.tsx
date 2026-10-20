@@ -1,29 +1,23 @@
 import type { LinkedArtNode } from '@globalise/common';
-import { ReferencePanel, type ReferencePanelItemData } from '@globalise/design';
-import { useEffect, useState } from 'react';
+import { ReferencePanel } from '@globalise/design';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPersonReferenceLinks, loadPersonReferences } from './PersonReferenceModel.ts';
 
 export function PersonReferencePanel({ entity }: { entity: LinkedArtNode }) {
-  const [resolved, setResolved] = useState<{
-    entity: LinkedArtNode;
-    items: ReferencePanelItemData[];
-  }>();
-
-  useEffect(() => {
-    let active = true;
-    void loadPersonReferences(entity).then((items) => {
-      if (active) {
-        setResolved({ entity, items });
-      }
-    });
-    return () => { active = false; };
-  }, [entity]);
+  const queryClient = useQueryClient();
+  const links = getPersonReferenceLinks(entity);
+  const { data } = useQuery({
+    queryKey: ['person-references', entity.id, entity.subject_of],
+    queryFn: () => loadPersonReferences(entity, queryClient),
+    enabled: links.length > 0,
+    retry: false,
+  });
 
   return (
     <ReferencePanel
       title="References"
       className="person-reference-panel"
-      items={resolved?.entity === entity ? resolved.items : getPersonReferenceLinks(entity)}
+      items={data ?? links}
       progressiveLoading
     />
   );
