@@ -1,3 +1,4 @@
+import type { EntityTagType, LinkedArtEntityType } from '@globalise/common';
 import type { CidocEntityClassificationId } from '@globalise/common/annotation';
 import type { CanvasId } from '@globalise/common/document';
 import type { ManifestDocument } from '../toc';
@@ -10,7 +11,7 @@ export type EntityPanelModel = {
 
 export type LinkedEntity = {
   id: string;
-  type: string;
+  type: LinkedArtEntityType;
   label: string;
   mentions: Mention[];
 };
@@ -18,13 +19,14 @@ export type LinkedEntity = {
 export type NerCategoryGroup = {
   id: string;
   label: string;
+  tagType: EntityTagType;
   nerCategories: NerCategory[];
 };
 
 export type NerCategory = {
   id: CidocEntityClassificationId;
   label: string;
-  mentions: Mention[];
+  total?: number;
 };
 
 export type Mention = {

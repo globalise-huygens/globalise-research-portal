@@ -1,51 +1,54 @@
 import {
-  getCidocEntityClassificationId,
+  entityClassificationGroups,
   getEntityClassificationDefinition,
-  isEntity,
-  type Annotation,
+  isCidocEntityClassificationId,
+  type CidocEntityClassificationId,
 } from '@globalise/common/annotation';
-import type { CanvasId } from '@globalise/common/document';
-import type { NerCategory, NerCategoryGroup } from './EntityPanelModel.ts';
+import type { LinkedArtNode } from '@globalise/common';
+import type { NerCategoryGroup } from './EntityPanelModel.ts';
 
-export type CanvasAnnotations = {
-  canvasId: CanvasId;
-  annotations: Annotation[];
-};
+export type NerCategoryTotals = Map<CidocEntityClassificationId, number>;
 
 /**
- * NER category groups bundle the entity mentions of the given canvases
- * by their NER category, grouped like the entity highlight menu.
+ * NER categories grouped like the entity highlight menu
  */
-export function toNerCategoryGroups(canvases: CanvasAnnotations[]): NerCategoryGroup[] {
-  const groups = new Map<string, NerCategoryGroup>();
-  const nerCategories = new Map<string, NerCategory>();
-
-  for (const { canvasId, annotations } of canvases) {
-    for (const annotation of annotations.filter(isEntity)) {
-      const id = getCidocEntityClassificationId(annotation);
-      if (!id) {
-        continue;
-      }
-      let nerCategory = nerCategories.get(id);
-      if (!nerCategory) {
-        const definition = getEntityClassificationDefinition(id);
-        const groupInfo = definition.highlightGroup ?? { id, label: definition.highlightLabel };
-        nerCategory = { id, label: definition.highlightLabel, mentions: [] };
-        nerCategories.set(id, nerCategory);
-        const group = groups.get(groupInfo.id) ?? { ...groupInfo, nerCategories: [] };
-        group.nerCategories.push(nerCategory);
-        groups.set(group.id, group);
-      }
-      nerCategory.mentions.push({ annotationId: annotation.id, canvasId });
-    }
-  }
-  return [...groups.values()];
+export function toNerCategoryGroups(totals?: NerCategoryTotals): NerCategoryGroup[] {
+  return entityClassificationGroups
+    .map(({ classificationIds, ...group }) => ({
+      ...group,
+      nerCategories: classificationIds
+        .map((id) => ({
+          id,
+          label: getEntityClassificationDefinition(id).highlightLabel,
+          total: totals?.get(id),
+        }))
+        .filter((nerCategory) => !totals || nerCategory.total),
+    }))
+    .filter((group) => group.nerCategories.length);
 }
 
-export function countMentions(group: NerCategoryGroup): number {
-  return group.nerCategories.reduce((sum, nerCategory) => sum + nerCategory.mentions.length, 0);
+/**
+ * The annotations set of a document has an annotation collection per NER category,
+ * identified by a `.annotations.<tag>` suffix and counted by its `total`.
+ */
+export function toNerCategoryTotals(collections: LinkedArtNode[]): NerCategoryTotals {
+  const totals: NerCategoryTotals = new Map();
+  for (const collection of collections) {
+    const id = `ner:${collection.id?.split('.annotations.')[1]}`;
+    if (isCidocEntityClassificationId(id) && typeof collection.total === 'number') {
+      totals.set(id, collection.total);
+    }
+  }
+  return totals;
+}
+
+export function countTotal(group: NerCategoryGroup): number | undefined {
+  const totals = group.nerCategories.map((nerCategory) => nerCategory.total);
+  return totals.every((total) => total !== undefined)
+    ? totals.reduce((sum, total) => sum + total, 0)
+    : undefined;
 }
 
 export function hasSubcategories(group: NerCategoryGroup): boolean {
-  return group.nerCategories.some((nerCategory) => nerCategory.id !== group.id);
+  return !isCidocEntityClassificationId(group.id);
 }

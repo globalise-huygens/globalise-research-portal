@@ -189,7 +189,7 @@ function getPreviewDefinition(
 
   const definition = getEntityClassificationDefinition(classificationId);
   return {
-    type: definition.presentationType,
+    type: definition.tagType,
     typeLabel: definition.typeLabel,
     ...previewBehaviorByStrategy[definition.previewStrategy],
   };
