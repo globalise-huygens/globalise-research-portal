@@ -8,6 +8,7 @@ import {
 } from 'react-aria-components';
 import { ObjectCardPanel, type ObjectCardPanelProps } from './ObjectCard';
 import { IconArrowTopRight, IconCopy, IconExternalLink } from '../icons';
+import { Tooltip } from './Tooltip';
 
 type ReferencePanelActionTooltipProps = {
   label: React.ReactNode;
@@ -20,13 +21,7 @@ function ReferencePanelActionTooltip({
 }: ReferencePanelActionTooltipProps) {
   return (
     <span className="gds-reference-panel-item__action-with-tooltip">
-      {children}
-      <span
-        aria-hidden="true"
-        className="gds-reference-panel-item__action-tooltip tooltip"
-      >
-        {label}
-      </span>
+      <Tooltip label={label}>{children}</Tooltip>
     </span>
   );
 }
@@ -65,6 +60,7 @@ function ReferencePanelItem({
   actions,
   ...props
 }: ReferencePanelItemProps) {
+  const [copyMessage, setCopyMessage] = React.useState('');
   const handleCopyUri: AriaButtonProps['onPress'] = () => {
     if (!uri) {
       return;
@@ -75,7 +71,14 @@ function ReferencePanelItem({
       return;
     }
 
-    void navigator.clipboard?.writeText(uri);
+    setCopyMessage('');
+    if (!navigator.clipboard) {
+      setCopyMessage('Copy is unavailable in this browser.');
+      return;
+    }
+    void navigator.clipboard.writeText(uri)
+      .then(() => setCopyMessage('Reference URI copied.'))
+      .catch(() => setCopyMessage('Could not copy the reference URI.'));
   };
 
   return (
@@ -84,6 +87,7 @@ function ReferencePanelItem({
       className={cn('gds-reference-panel-item', className)}
       {...props}
     >
+      <span role="status" className="gds-reference-panel__live-region">{copyMessage}</span>
       <div
         className="gds-reference-panel-item__layout"
         data-has-thumbnail={thumbnail ? 'true' : 'false'}
@@ -104,7 +108,7 @@ function ReferencePanelItem({
                     onPress={handleCopyUri}
                     className="gds-reference-panel-item__action"
                   >
-                    <IconCopy className="gds-reference-panel-item__action-icon" />
+                    <IconCopy aria-hidden="true" className="gds-reference-panel-item__action-icon" />
                   </AriaButton>
                 </ReferencePanelActionTooltip>
               )}
@@ -117,7 +121,7 @@ function ReferencePanelItem({
                     aria-label={hrefLabel}
                     className="gds-reference-panel-item__action"
                   >
-                    <IconExternalLink className="gds-reference-panel-item__action-icon" />
+                    <IconExternalLink aria-hidden="true" className="gds-reference-panel-item__action-icon" />
                   </AriaLink>
                 </ReferencePanelActionTooltip>
               )}
@@ -128,7 +132,7 @@ function ReferencePanelItem({
                     aria-label={hrefLabel}
                     className="gds-reference-panel-item__action"
                   >
-                    <IconArrowTopRight className="gds-reference-panel-item__action-icon" />
+                    <IconArrowTopRight aria-hidden="true" className="gds-reference-panel-item__action-icon" />
                   </AriaLink>
                 </ReferencePanelActionTooltip>
               )}
