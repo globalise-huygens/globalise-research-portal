@@ -19,7 +19,7 @@ import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
-import { personStatusGroups, getPropertyLabel, type StatusProperty, type StatusDefinition, type StatusGroup } from './LabeledKey.ts';
+import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
 import {
   formatRecordedDate,
@@ -97,7 +97,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             />
             {profileGroups.map((group) => (
               <PersonStatusGroup
-                key={group.title}
+                key={group.label}
                 entity={entity}
                 group={group}
                 section={false}
@@ -136,7 +136,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           <ObjectCardSection title="Relationships" collapsible>
             <div className="person-status-list">
               {relationshipGroups.map((group) => (
-                <PersonStatusGroup key={group.title} entity={entity} group={group} section={false} />
+                <PersonStatusGroup key={group.label} entity={entity} group={group} section={false} />
               ))}
             </div>
           </ObjectCardSection>
@@ -413,9 +413,7 @@ function PersonStatusGroup({
     const sharedDates = records.every((record) => dateKey(record) === statusDates);
     const timespan = sharedDates ? getPersonTimespan(status) : null;
     const recordedDates = sharedDates && !timespan ? getRecordedDates(status) : null;
-    const summaryProperties = group.properties
-      .map((property) => ({ ...property, values: getStatusValues(status, property.keys) }))
-      .filter((property) => property.values.length);
+    const summaryProperties = getStatusProperties(status);
     const details = records.some((record) => hasStatusDetails(record, group)) ? records : [];
 
     return (
@@ -453,9 +451,6 @@ function PersonStatusGroup({
           <div key={recordIndex} className="person-claim-record">
             {records.length > 1 && <ClaimRecordLabel index={recordIndex} />}
             <ObjectCardPropertyList className="person-status-details">
-              {getAdditionalStatusProperties(record, group).map((property) => (
-                <StatusValuesProperty key={property.key} label={property.label} values={property.values} />
-              ))}
               <StatusValuesProperty label="Geographic scope" values={getStatusValues(record, ['has_geographic_scope'])} />
               <StatusValuesProperty label="Classification" values={getStatusValues(record, ['classified_as'])} />
               <NotesProperty node={record} />
@@ -467,7 +462,7 @@ function PersonStatusGroup({
     );
   });
   return section ? (
-    <ObjectCardSection title={group.title} collapsible>
+    <ObjectCardSection title={group.label} collapsible>
       <div className="person-status-list">
         {content}
         <UnassignedStatusInformation nodes={additionalNodes} />
@@ -527,7 +522,7 @@ function PersonStatusSummary({
     ))
     : isOccupation && (timespan || recordedDates)
       ? null
-      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.title}</span>;
+      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.label}</span>;
   const renderConnection = (text: string) => {
     const residenceLabel = getResidenceLabel([text]);
     return residenceLabel && place
@@ -576,9 +571,8 @@ function hasClaimEvidence(status: LinkedArtNode, includeSources = true): boolean
     || getNotes(status).length > 0;
 }
 
-function hasStatusDetails(status: LinkedArtNode, group: StatusGroup, includeSources = true): boolean {
-  return getAdditionalStatusProperties(status, group).length > 0
-    || getStatusValues(status, ['has_geographic_scope']).length > 0
+function hasStatusDetails(status: LinkedArtNode, _group: StatusGroup, includeSources = true): boolean {
+  return getStatusValues(status, ['has_geographic_scope']).length > 0
     || hasClaimEvidence(status, includeSources);
 }
 
@@ -593,16 +587,14 @@ function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
 }
 
 function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
-  return group.properties.some((property) =>
-    getStatusValues(status, property.keys).length > 0,
-  ) || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
+  return getStatusProperties(status).length > 0 || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
     || !!getPersonTimespan(status)
     || !!getRecordedDates(status);
 }
 
 function getStatusNodes(
   entity: LinkedArtNode,
-  definition: Pick<StatusDefinition, 'key' | 'type'>,
+  definition: Pick<StatusGroup, 'key' | 'type'>,
 ): LinkedArtNode[] {
   return findByPath(entity, [definition.key]).filter(
     (status) => status.type === definition.type,
@@ -713,26 +705,4 @@ function RecordedDatesValue({ dates }: { dates: RecordedDates }) {
       {!!dates.dates.length && <span>Recorded dates: {dates.dates.join(', ')}</span>}
     </span>
   );
-}
-
-function getAdditionalStatusProperties(
-  status: LinkedArtNode,
-  group: StatusGroup,
-) {
-  const configuredKeys = new Set(
-    group.properties.flatMap((property) => property.keys),
-  );
-  return Object.keys(status)
-    .filter(
-      (key) =>
-        key.includes('ascribes_') &&
-        !key.includes('_relation') &&
-        !configuredKeys.has(key),
-    )
-    .map((key) => ({
-      key,
-      label: getPropertyLabel(key),
-      values: getStatusValues(status, [key]),
-    }))
-    .filter((property) => property.values.length);
 }
