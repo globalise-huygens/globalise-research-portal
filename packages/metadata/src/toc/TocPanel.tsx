@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
-import { useToc } from './useToc';
+import { useManifestScans, useToc } from './useToc';
+import { TocScan } from './TocScan.tsx';
 import { TocDocument } from './TocDocument.tsx';
 import { scrollToTocElement, useScrollToThumb } from './useScrollToThumb.ts';
 
@@ -11,6 +12,13 @@ import { scrollToTocElement, useScrollToThumb } from './useScrollToThumb.ts';
  */
 export function TocPanel() {
   const documents = useToc();
+  const scans = useManifestScans();
+  const entries = useMemo(() => {
+    const documentCanvasIds = new Set(documents.flatMap((document) => document.scans.map((scan) => scan.canvasId)));
+    return [...documents, ...scans.filter((scan) => !documentCanvasIds.has(scan.canvasId))]
+      .sort((a, b) => ('scans' in a ? a.scans[0].scanNumber : a.scanNumber)
+        - ('scans' in b ? b.scans[0].scanNumber : b.scanNumber));
+  }, [documents, scans]);
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
@@ -27,7 +35,7 @@ export function TocPanel() {
     [documents, selectedCanvasId, preferredDocumentId],
   );
   const currentDocumentId = currentDocument?.id;
-  const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
+  const currentScan = scans.find((scan) => scan.canvasId === selectedCanvasId);
 
   useEffect(expandCurrentDocument, [currentDocumentId]);
 
@@ -45,7 +53,7 @@ export function TocPanel() {
       const list = tocListRef.current;
       const header = list?.querySelector<HTMLElement>('.toc-document[data-current="true"] > .header');
       const element = target === 'document' ? header
-        : header?.parentElement?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
+        : (header?.parentElement ?? list)?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
       if (!list || !element) {
         return;
       }
@@ -56,7 +64,7 @@ export function TocPanel() {
     });
   }
 
-  if (!documents.length) {
+  if (!entries.length) {
     return (
       <div className="toc-empty">
         No table of contents for manifest.
@@ -88,13 +96,20 @@ export function TocPanel() {
         </ToolButton>
       </div>
       <div className="list" ref={tocListRef}>
-        {documents.map((document) => (
+        {entries.map((entry) => 'scans' in entry ? (
           <TocDocument
-            key={document.id}
-            document={document}
-            isCurrent={document.id === currentDocumentId}
+            key={entry.id}
+            document={entry}
+            isCurrent={entry.id === currentDocumentId}
             selectedCanvasId={selectedCanvasId}
-            onSelect={() => setPreferredDocumentId(document.id)}
+            onSelect={() => setPreferredDocumentId(entry.id)}
+          />
+        ) : (
+          <TocScan
+            key={entry.canvasId}
+            scan={entry}
+            isSelected={entry.canvasId === selectedCanvasId}
+            onSelect={() => setPreferredDocumentId(undefined)}
           />
         ))}
       </div>

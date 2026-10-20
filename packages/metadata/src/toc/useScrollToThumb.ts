@@ -32,6 +32,8 @@ export function useScrollToThumb(listRef: RefObject<HTMLDivElement | null>) {
 function scrollToSelectedThumb(list: HTMLDivElement) {
   const target = list.querySelector<HTMLElement>(
     '.toc-document[data-current="true"] .toc-card[aria-current="true"]',
+  ) ?? list.querySelector<HTMLElement>(
+    ':scope > .toc-card[aria-current="true"]',
   );
   if (target) {
     const header = target.closest('.toc-document')?.querySelector<HTMLElement>('.header');
