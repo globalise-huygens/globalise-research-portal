@@ -6,6 +6,7 @@ import {
   IconEvents,
 } from '@globalise/design';
 import { ReactNode } from 'react';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 
 export type SidebarId = 'inventory' | 'toc' | 'entities' | 'events';
 
@@ -18,14 +19,12 @@ export type SidebarPanel = {
   badge?: string
 };
 
-export const sidebarPanels = [
+const sidebarPanels = [
   {
     id: 'inventory',
     label: 'Inventory',
     description:
       'View this inventory’s metadata and its place in the archive hierarchy',
-    badge: '1664',
-    railLabel: '1664',
     icon: <IconInventory className="sidebar-icon" />,
   },
   {
@@ -50,3 +49,17 @@ export const sidebarPanels = [
     icon: <IconEvents className="sidebar-icon" />,
   },
 ] satisfies SidebarPanel[];
+
+export function useSidebarPanels(): SidebarPanel[] {
+  const { vault, id, isReady } = useManifest();
+  const manifest = isReady ? vault.get({ id, type: 'Manifest' }) : undefined;
+  const inventory = manifest?.metadata?.find((entry) =>
+    Object.values(entry.label).flat().some((label) =>
+      label === 'Inventory number' || label === 'Inventarisnummer',
+    ),
+  );
+  const number = inventory && Object.values(inventory.value).flat()[0];
+  return sidebarPanels.map((panel) => panel.id === 'inventory'
+    ? { ...panel, badge: number, railLabel: number }
+    : panel);
+}
