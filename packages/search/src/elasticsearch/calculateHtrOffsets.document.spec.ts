@@ -4,7 +4,7 @@ import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
 const document = 'NL-HaNA_1.04.02_1053_0003-0071';
 const esUrl = 'https://search.globalise.huygens.knaw.nl/documents/_search';
-const dbUrl = new URL('../../../../data/document-text-mappings.db', import.meta.url);
+const dbUrl = new URL('../../../../data/globalise.db', import.meta.url);
 const transcriptionsUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_';
 
 type EsResponse = { hits: { hits: { _source: { text: string } }[] } };
@@ -13,7 +13,7 @@ type AnnotationPage = { items: { id: string; body: { value: string }[] }[] };
 // TODO: Fix and cleanup, or delete?
 describe(`${calculateHtrOffsets.name} using ${document}`, () => {
   it('maps a hit on the first line of the first page onto its htr text', async () => {
-    vi.stubEnv('DOCUMENT_TEXT_MAPPINGS_DB', dbUrl.pathname);
+    vi.stubEnv('GLOBALISE_DB', dbUrl.pathname);
     const page = '1053_0003';
     const normalized = (await fetchNormalizedTextFromEs(document)).slice(0, 100);
     const htr = (await fetchHtrTextFromTranscriptionPage(page)).slice(0, 100);

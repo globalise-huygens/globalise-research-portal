@@ -9,10 +9,10 @@ type TextRangeMappingRow = Omit<TextRangeMapping, 'canvasId'> & {
 const canvasNamePrefix = 'NL-HaNA_1.04.02_';
 
 const selectMappingsWhereDocumentIdQuery = `
-    select normalized_from as normalizedFrom,
-           normalized_to   as normalizedTo,
-           short_page_id   as shortPageId,
-           htr_page_offset as htrPageOffset
+    select normalized_from         as normalizedFrom,
+           normalized_to_exclusive as normalizedTo,
+           short_page_id           as shortPageId,
+           htr_page_offset         as htrPageOffset
     from document_text_range_mappings
     where document_id = ?
     order by normalized_from
@@ -43,7 +43,7 @@ function initMappingsDb(): MappingsDb {
 }
 
 function openDatabase(): DatabaseSync {
-  const dbPathEnvKey = 'DOCUMENT_TEXT_MAPPINGS_DB';
+  const dbPathEnvKey = 'GLOBALISE_DB';
   const dbPath = process.env[dbPathEnvKey];
   if (!dbPath) {
     throw new Error(`${dbPathEnvKey} is not set`);
