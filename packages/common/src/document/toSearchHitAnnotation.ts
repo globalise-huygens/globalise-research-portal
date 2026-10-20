@@ -1,16 +1,16 @@
-import type { Annotation, Id, SearchHitBody } from '../annotation';
+import { type Annotation, type Id, type SearchHitBody, searchHitBody } from '../annotation';
 import type { HtrHit } from './SearchHitSlice';
 
 export function toSearchHitAnnotation(
   hit: HtrHit,
   pageAnnoId: Id,
 ): Annotation<SearchHitBody> {
-  const { id, start, end, esHitIndex } = hit;
+  const { id, start, end } = hit;
   return {
     id,
     type: 'Annotation',
     motivation: 'highlighting',
-    body: { type: 'SearchHit', esHitIndex },
+    body: searchHitBody,
     target: [{
       type: 'SpecificResource',
       source: { id: pageAnnoId, type: 'Annotation' },
