@@ -1,5 +1,4 @@
-import type { Timespan } from '@globalise/common';
-import { formatRecordedDate } from './PersonClaimModel.ts';
+import { formatRecordedDate, type Timespan } from '@globalise/common';
 
 export function formatTimespanBoundaries(timespan: Timespan): string[] {
   return [
