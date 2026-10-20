@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
 import { useScrollToThumb } from './useScrollToThumb.ts';
+import { useCurrentDocument } from './useCurrentDocument.ts';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -15,14 +16,7 @@ export function TocPanel() {
 
   useScrollToThumb(tocListRef);
 
-  const currentDocumentId = useMemo(
-    () => documents.find(
-      (document) => document.scans.some(
-        (scan) => scan.canvasId === selectedCanvasId,
-      ),
-    )?.id,
-    [documents, selectedCanvasId],
-  );
+  const currentDocumentId = useCurrentDocument()?.id;
 
   useEffect(expandCurrentDocument, [currentDocumentId]);
 
