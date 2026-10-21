@@ -15,11 +15,11 @@ export const lazyCollectionViewerStore = create<LazyCollectionViewerState>(
   }),
 );
 
-export function setLazyCanvases(lazyCanvases: LazyTiledImage[], resetLoaded = true) {
+export function setLazyCanvases(lazyCanvases: LazyTiledImage[]) {
   lazyCollectionViewerStore.setState({
     lazyCanvases,
-    // Repositioning existing scans keeps their loaded tiles.
-    loaded: resetLoaded ? new Set() : lazyCollectionViewerStore.getState().loaded,
+    // Reset loaded when initializing lazy canvases:
+    loaded: new Set(),
   });
 }
 

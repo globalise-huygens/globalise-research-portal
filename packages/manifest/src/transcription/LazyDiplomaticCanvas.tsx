@@ -10,7 +10,6 @@ import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
-import { DocumentDivider } from '../DocumentDivider.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { CanvasAnnotationPage } from '@globalise/common/annotation';
 
@@ -75,20 +74,18 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
       {...{ [canvasIndexAttribute]: index }}
       style={{
         position: 'relative',
-        width: Math.max(containerWidth, width),
+        width,
+        height,
+        background: 'var(--color-parchment-50)',
+        boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
+        contentVisibility: 'auto',
+        containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,
       }}
     >
-      <DocumentDivider documents={canvasDocuments?.starting}/>
       <div
         style={{
-          position: 'relative',
-          width,
-          height,
-          marginInline: 'auto',
-          background: 'var(--color-parchment-50)',
-          boxShadow: 'inset 0 0 0 1px var(--color-brand-white)',
-          contentVisibility: 'auto',
-          containIntrinsicSize: `${Math.max(Math.ceil(height), 1)}px`,
+          position: 'absolute',
+          inset: 0,
           /**
            * Prevent browser painting all the words when a page is not in view,
            * but do show the page to prevent background flickering.
@@ -128,10 +125,13 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           </div>
         )}
         {isInRenderRange && (
-          <CanvasHeaderLabel
-            canvasId={canvasId}
-            isCurrent={isCurrent}
-          />
+          <>
+            <CanvasHeaderLabel
+              canvasId={canvasId}
+              canvasDocuments={canvasDocuments}
+              isCurrent={isCurrent}
+            />
+          </>
         )}
       </div>
     </div>

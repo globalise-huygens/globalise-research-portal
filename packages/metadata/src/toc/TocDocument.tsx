@@ -27,6 +27,7 @@ export function TocDocument(
     <article
       className="toc-document"
       data-current={isCurrent}
+      data-document-id={document.id}
     >
       <div className="header">
         <button

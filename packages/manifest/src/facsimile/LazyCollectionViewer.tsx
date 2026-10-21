@@ -3,9 +3,6 @@ import {
   initCanvases,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import type { CanvasDocuments } from '@globalise/metadata';
-import { useCanvasLayout } from './useCanvasLayout.ts';
-import { DocumentDividersOverlay } from './DocumentDividersOverlay.tsx';
 import { FloatingToolbar } from '@globalise/design';
 import { FacsimileControls } from '@globalise/facsimile';
 import {
@@ -14,7 +11,7 @@ import {
   useViewerStore,
 } from '@knaw-huc/osd-iiif-viewer';
 import { Point, Viewer as OsdViewer } from 'openseadragon';
-import { PropsWithChildren, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
 import { findCenterScan } from './findCenterScan.ts';
 import {
   setLazyCanvases,
@@ -31,7 +28,6 @@ import './LazyCollectionViewer.css';
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
-  canvasDocuments: Map<string, CanvasDocuments>;
   initialCanvasId?: CanvasId;
   onCanvasChange: (canvasId: CanvasId) => void;
   preloadScreens?: number;
@@ -48,7 +44,6 @@ type Props = PropsWithChildren<{
 export function LazyCollectionViewer({
   children,
   scanHeight,
-  canvasDocuments,
   gap = 0.02,
   initialCanvasId,
   onCanvasChange,
@@ -59,51 +54,53 @@ export function LazyCollectionViewer({
   const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
-  const isScrollReady = size.width && size.height;
+  const isScrollReady = size.width > 0 && size.height > 0;
   const isScrolling = useIsViewerScrolling();
 
-  const baseCanvases = useMemo(() => {
+  const lazyCanvases = useMemo(() => {
     if (!vault || !manifestId || !isReady) {
       return [];
     }
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
 
-  const initialIndex = initialCanvasId
-    ? Math.max(0, baseCanvases.findIndex((c) => c.canvasId === initialCanvasId))
-    : 0;
-  const { canvases: lazyCanvases, onDividerHeightsChange } = useCanvasLayout(viewer, baseCanvases, initialIndex);
   const lazyCanvasesRef = useRef(lazyCanvases);
-  const previousBase = useRef<typeof baseCanvases | null>(null);
   const onCanvasChangeRef = useRef(onCanvasChange);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     lazyCanvasesRef.current = lazyCanvases;
-    setLazyCanvases(lazyCanvases, previousBase.current !== baseCanvases);
-    previousBase.current = baseCanvases;
-  }, [lazyCanvases, baseCanvases]);
+  }, [lazyCanvases]);
 
   useEffect(() => {
     onCanvasChangeRef.current = onCanvasChange;
   }, [onCanvasChange]);
 
+  useEffect(syncLazyCanvases, [lazyCanvases]);
+
+  function syncLazyCanvases() {
+    setLazyCanvases(lazyCanvases);
+  }
+
+  const initialIndex = initialCanvasId
+    ? lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId)
+    : 0;
+
   useLazyCanvasLoader({
     viewer,
     lazyCanvases,
-    baseCanvases,
-    initialCanvas: initialIndex,
+    initialCanvas: initialIndex >= 0 ? initialIndex : 0,
     canvasHeight: scanHeight,
     onLoadedChange: setLoaded,
   });
 
-  useEffect(initCanvasesLazily, [baseCanvases, initialCanvasId]);
+  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvasId]);
 
   function initCanvasesLazily() {
-    if (!baseCanvases.length) {
+    if (!lazyCanvases.length) {
       return;
     }
     initCanvases(
-      baseCanvases.map((c) => c.canvasId),
+      lazyCanvases.map((c) => c.canvasId),
       initialCanvasId,
     );
   }
@@ -112,19 +109,19 @@ export function LazyCollectionViewer({
 
   useEffect(subscribeToExternalCanvasChange, [
     viewer,
-    baseCanvases,
+    lazyCanvases,
     selectedCanvasId,
     selectedCanvasSource,
   ]);
 
   function subscribeToExternalCanvasChange() {
-    if (!viewer || !lazyCanvasesRef.current.length) {
+    if (!viewer || !lazyCanvases.length) {
       return;
     }
     if (selectedCanvasSource === 'facsimile') {
       return;
     }
-    const canvas = lazyCanvasesRef.current.find((c) => c.canvasId === selectedCanvasId);
+    const canvas = lazyCanvases.find((c) => c.canvasId === selectedCanvasId);
     if (!canvas) {
       return;
     }
@@ -240,12 +237,6 @@ export function LazyCollectionViewer({
           height: '100%',
           filter: scanFilter || undefined,
         }}
-      />
-      <DocumentDividersOverlay
-        canvases={lazyCanvases}
-        baseCanvases={baseCanvases}
-        canvasDocuments={canvasDocuments}
-        onHeightsChange={onDividerHeightsChange}
       />
       {children}
     </>

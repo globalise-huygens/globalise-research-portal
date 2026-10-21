@@ -2,6 +2,7 @@ import { setState, useDocumentStore } from './DocumentStore';
 
 export type TocState = {
   expandedDocIds: string[];
+  revealRequest: { documentIds: string[] } | null;
 };
 
 export type TocSlice = {
@@ -36,4 +37,22 @@ export function expandTocDocument(id: string) {
 
 export function useIsTocDocumentExpanded(id: string): boolean {
   return useDocumentStore((s) => s.toc.expandedDocIds.includes(id));
+}
+
+/** Reveal document details without changing the selected scan or viewer position. */
+export function revealTocDocuments(documentIds: string[]) {
+  if (!documentIds.length) {
+    return;
+  }
+  setState((s) => ({
+    toc: {
+      ...s.toc,
+      expandedDocIds: [...new Set([...s.toc.expandedDocIds, ...documentIds])],
+      revealRequest: { documentIds },
+    },
+  }));
+}
+
+export function clearTocRevealRequest() {
+  setState((s) => ({ toc: { ...s.toc, revealRequest: null } }));
 }

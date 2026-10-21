@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
+import { useDocumentStore } from '@globalise/common/document';
 import { TOP_BAR_BUTTON } from './layout/buttonClasses';
 import { CollapsedMetadataRail } from './layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
@@ -103,6 +104,12 @@ export function ManifestViewer({
     setExpandedSections((prev) => new Set(prev).add(sectionId));
     setIsSidebarExpanded(true);
   }, []);
+
+  React.useEffect(() => useDocumentStore.subscribe((state, previous) => {
+    if (state.toc.revealRequest && state.toc.revealRequest !== previous.toc.revealRequest) {
+      expandSidebarSection('toc');
+    }
+  }), [expandSidebarSection]);
 
   const scanPane = isScanVisible ? (
     <ViewerPane type="scan" isBordered={isTextVisible}>

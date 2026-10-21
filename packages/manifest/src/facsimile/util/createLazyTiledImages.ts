@@ -19,7 +19,6 @@ export function createLazyTiledImages(
     const height = canvas.height / canvas.width;
     images.push({
       y,
-      documentGap: 0,
       height,
       canvasId: canvas.id,
       imageServiceUrl,

@@ -1,13 +1,14 @@
 import { useSelectedCanvas } from '@globalise/common/document';
-import type { CanvasDocuments } from '@globalise/metadata';
+import { useCanvasDocuments } from '@globalise/metadata';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 import { HighlightsOverlay } from './HighlightsOverlay.tsx';
 import { CurrentCanvasBorderOverlay } from './CurrentCanvasBorderOverlay.tsx';
 import { CanvasLabelsOverlay } from './CanvasLabelsOverlay.tsx';
 
-export function CanvasOverlays({ canvasDocuments }: { canvasDocuments: Map<string, CanvasDocuments> }) {
+export function CanvasOverlays() {
   const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
   const loaded = lazyCollectionViewerStore((s) => s.loaded);
+  const canvasDocuments = useCanvasDocuments();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const loadedCanvases = lazyCanvases.filter((c) => loaded.has(c.canvasId));
 
