@@ -2,7 +2,7 @@ import { Overlay, useImageInfo } from '@knaw-huc/osd-iiif-viewer';
 import { useMemo, useState } from 'react';
 import {
   CanvasId,
-  useAnnotations,
+  useAnnotationsWithSearchHits,
   useWordEntityClassifications,
 } from '@globalise/common/document';
 import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
@@ -13,7 +13,7 @@ import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightConf
 
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
-  const annotations = useAnnotations(canvasId);
+  const annotations = useAnnotationsWithSearchHits(canvasId);
   const entityClassificationByWord = useWordEntityClassifications(canvasId);
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
 

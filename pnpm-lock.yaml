@@ -429,6 +429,9 @@ importers:
       '@knaw-huc/osd-iiif-viewer':
         specifier: ^0.6.0
         version: 0.6.0(@iiif/helpers@1.5.9(@iiif/parser@2.2.10))(@iiif/presentation-3@2.2.3)(openseadragon@6.1.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(zustand@5.0.15(@types/react@19.2.14)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8)))
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
@@ -460,6 +463,9 @@ importers:
       '@globalise/common':
         specifier: workspace:*
         version: link:../common
+      '@globalise/design':
+        specifier: workspace:*
+        version: link:../design
       '@knaw-huc/original-layout':
         specifier: ^0.2.1
         version: 0.2.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -515,6 +521,9 @@ importers:
       '@globalise/metadata':
         specifier: workspace:*
         version: link:../metadata
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1

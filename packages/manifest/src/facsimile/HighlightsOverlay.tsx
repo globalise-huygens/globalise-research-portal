@@ -4,7 +4,7 @@ import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
-  useAnnotations,
+  useAnnotationsWithSearchHits,
   useWordEntityClassifications,
   useIsLayoutElementsVisible,
   useIsSelectedCanvas,
@@ -14,6 +14,7 @@ import {
   BlockHighlight,
   FacsimileTooltip,
   FacsimileTooltipProps,
+  SearchHitWordHighlights,
   SelectedWordHighlights,
   toBlockHighlightConfigs,
   toWordHighlightConfigs,
@@ -34,7 +35,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
-  const annotations = useAnnotations(lazyCanvas.canvasId);
+  const annotations = useAnnotationsWithSearchHits(lazyCanvas.canvasId);
   const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
@@ -92,6 +93,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
+          <SearchHitWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>

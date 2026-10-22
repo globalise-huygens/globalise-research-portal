@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Id } from '@globalise/common/annotation';
 import {
   setCanvasPages,
-  useAnnotations,
+  useCanvasAnnotations,
   useCanvasIndexes,
   usePartOf,
   useSelectedAnnotationsInDiplomatic,
@@ -28,7 +28,7 @@ const words: Id[] = [
 export function ScanOverlayDemo() {
   const [error, setError] = useState<string | null>(null);
 
-  const annotations = useAnnotations(canvasId);
+  const annotations = useCanvasAnnotations(canvasId);
   const indexes = useCanvasIndexes(canvasId);
   const page = usePartOf(canvasId);
   const selectedIds = useSelectedAnnotationsInDiplomatic(canvasId);

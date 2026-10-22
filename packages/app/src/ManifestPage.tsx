@@ -3,9 +3,10 @@ import {
   DOCUMENT,
   DOCUMENT_ID,
   type DocumentState,
+  findActiveSearchHits,
   MANIFEST,
+  setSearchHits,
   SNIPPET,
-  toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
 import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
@@ -36,19 +37,18 @@ const collectionUrl =
 export function ManifestPage() {
   const navigate = useNavigate();
   const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
-  const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const documentName = params.get(DOCUMENT);
+  const urlCanvasId = params.get(CANVAS) ?? undefined;
   const { data: highlights, isLoading: isHighlighting, isError: isHighlightError } = useQuery(
     highlightDocumentQueryOptions(getManifestSearchState()),
   );
-  const documentHit = documentName
-    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHitCanvasId = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex)?.canvasId;
+  const initialCanvasId = urlCanvasId ?? activeHitCanvasId;
 
   let error: ErrorMessage | undefined = undefined;
   if (isHighlightError) {
     error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && !highlights.snippet) {
+  } else if (highlights && highlights.activeEsHitIndex === null) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
@@ -72,12 +72,21 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logHighlights, [highlights]);
+  useEffect(logSearchHits, []);
 
-  function logHighlights() {
-    if (highlights) {
-      console.info('highlights', highlights);
-    }
+  function logSearchHits() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
+        return;
+      }
+      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
+    });
+  }
+
+  useEffect(storeSearchHits, [highlights]);
+
+  function storeSearchHits() {
+    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
   }
 
   useEffect(logTextRanges, []);
@@ -140,7 +149,6 @@ export function ManifestPage() {
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             canvasId={initialCanvasId}
-            documentHit={documentHit}
             error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
