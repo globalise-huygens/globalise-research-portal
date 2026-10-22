@@ -1,15 +1,32 @@
 import { Link } from '@tanstack/react-router';
+import { Container, IconArrowRight, IconSearch, Typography } from '@globalise/design';
+import { SiteFooter } from './SiteFooter';
+import './Home.css';
 
 export function Home() {
-  return (<>
-    <h1>Globalise</h1>
-    <ul>
-      <li><Link to="/search">Search</Link></li>
-      <li><Link to="/manifest">Manifest viewer</Link></li>
-      <li><Link to="/catalog">Catalog</Link></li>
-      <li><Link to="/object-card">Object card</Link></li>
-      <li><Link to="/map">World map</Link></li>
-    </ul>
-  </>
+  return (
+    <div className="home-page">
+      <main id="main-content" className="home-main">
+        <Container className="home-hero">
+          <Typography variant="display" className="home-title">
+            Discover the<br />VOC archives
+          </Typography>
+          <Typography variant="lead" className="home-introduction">
+            Built for researchers, educators and curious audiences worldwide.
+          </Typography>
+          <Link
+            to="/search"
+            hash="archive-search"
+            preload={false}
+            className="home-search"
+          >
+            <IconSearch aria-hidden="true" />
+            <span>Search the archive</span>
+            <IconArrowRight aria-hidden="true" />
+          </Link>
+        </Container>
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
