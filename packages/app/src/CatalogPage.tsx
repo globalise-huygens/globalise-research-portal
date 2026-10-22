@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi } from '@globalise/router';
 import {
   CatalogView,
   loadCatalog,

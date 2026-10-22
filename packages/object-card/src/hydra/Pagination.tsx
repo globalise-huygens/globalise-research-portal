@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { ButtonLink, IconLeft, IconLeftFirst, IconRight, IconRightLast } from '@globalise/design';
 import { getPageNumber, PartialCollectionView } from './HydraModel.ts';
-import { getCollectionHref } from './getHydraHref.ts';
+import { toHref } from '@globalise/router';
 
 type PaginationProps = {
   view?: PartialCollectionView;
@@ -49,7 +49,7 @@ function PageLink({ uri, label, children }: PageLinkProps) {
   }
   return (
     <ButtonLink
-      href={getCollectionHref(uri)}
+      href={toHref({ to: '/catalog', search: { uri } })}
       aria-label={label}
       size="sm"
       variant="outline"

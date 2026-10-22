@@ -1,7 +1,6 @@
 import HierarchyFacet from './HierarchyFacet';
 import RangeFacet from './RangeFacet';
-
-import { facets, type Facet } from './facetDefinitions';
+import { type Facet, facets } from '@globalise/router';
 
 export default function Facets() {
   return (

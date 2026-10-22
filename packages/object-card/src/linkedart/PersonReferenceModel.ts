@@ -1,5 +1,6 @@
 import { asArray, fetchJson, findByPath, getJsonUrl, isUrl, type LinkedArtNode } from '@globalise/common';
 import type { ReferencePanelItemData } from '@globalise/design';
+import { toHref } from '@globalise/router';
 import { isInternalUri } from '../isInternalUri.ts';
 import { type QueryClient } from '@tanstack/react-query';
 
@@ -85,7 +86,7 @@ function annotationReference(value: unknown): ReferencePanelItemData | undefined
     title: scanIdentifier ?? 'Corpus mention',
     metadata: 'Corpus mention',
     href: manifestUri && canvasUri
-      ? `/manifest?${new URLSearchParams({ manifest: jsonUri(manifestUri), canvas: canvasUri })}`
+      ? toHref({ to: '/manifest', search: { manifest: jsonUri(manifestUri), canvas: canvasUri } })
       : uri,
     hrefType: manifestUri && canvasUri ? 'internal' : 'external',
     hrefLabel: manifestUri && canvasUri ? `Open source scan: ${scanIdentifier ?? canvasUri}` : `Open corpus mention: ${uri}`,

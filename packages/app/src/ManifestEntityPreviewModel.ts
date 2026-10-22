@@ -1,3 +1,4 @@
+import { toHref } from '@globalise/router';
 import {
   getEntitySubject,
   type EntityBody,
@@ -46,5 +47,5 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
 }
 
 export function getObjectCardHref(uri: string): string {
-  return `/object-card?uri=${encodeURIComponent(uri)}`;
+  return toHref({ to: '/object-card', search: { uri } });
 }

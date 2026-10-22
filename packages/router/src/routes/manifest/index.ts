@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { ManifestPage } from '../../ManifestPage.tsx';
+import { resetUrlParamsOnManifestChange, validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
 
 /**
  * TODO Enable ssr for manifest viewer: only osd needs the browser
@@ -9,6 +9,9 @@ import { ManifestPage } from '../../ManifestPage.tsx';
  * - use type only imports for osd types
  */
 export const Route = createFileRoute('/manifest/')({
-  component: ManifestPage,
+  validateSearch: validateManifestUrlParams,
+  search: {
+    middlewares: [resetUrlParamsOnManifestChange],
+  },
   ssr: false,
 });
