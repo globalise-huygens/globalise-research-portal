@@ -1,6 +1,4 @@
-const parser = new DOMParser();
-
 export function getSVGElement(svg: string) {
-  const svgDoc = parser.parseFromString(svg, 'image/svg+xml');
+  const svgDoc = new DOMParser().parseFromString(svg, 'image/svg+xml');
   return svgDoc.documentElement as unknown as SVGElement;
 }
