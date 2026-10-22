@@ -245,7 +245,6 @@ export function ManifestViewer({
               <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
-                isActive={isViewerOrderSwapped}
                 isDisabled={!isScanVisible || !isTextVisible}
                 className={TOP_BAR_BUTTON}
                 icon={
