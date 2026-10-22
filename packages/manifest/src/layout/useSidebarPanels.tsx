@@ -38,14 +38,14 @@ const sidebarPanels = [
     id: 'entities',
     label: 'Entity tags',
     description:
-      'Explore words and phrases recognised in the transcription and linked, where possible, to people, places, dates, objects, and other concepts',
+      'Explore words and phrases recognised in the current document and linked, where possible, to people, places, dates, objects, and other concepts',
     icon: <IconEntities className="sidebar-icon" />,
   },
   {
     id: 'events',
     label: 'Event tags',
     description:
-      'Explore actions and events recognised in the transcription. Use these tags to find related passages',
+      'Explore actions and events recognised in the current document. Use these tags to find related passages',
     icon: <IconEvents className="sidebar-icon" />,
   },
 ] satisfies SidebarPanel[];

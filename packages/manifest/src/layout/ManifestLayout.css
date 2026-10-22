@@ -551,6 +551,12 @@
   scrollbar-width: thin;
 }
 
+.manifest-viewer .sidebar-panel#toc {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .manifest-viewer .sidebar-icon,
 .manifest-viewer .sidebar-disclosure {
   width: var(--s20);
