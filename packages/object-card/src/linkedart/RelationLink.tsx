@@ -3,21 +3,21 @@ import {
   ObjectCardExternalLink,
 } from '@globalise/design';
 import { getContent, label, LinkedArtNode, url } from '@globalise/common';
+import { useNavigate } from '@globalise/router';
 import { isInternalUri } from '../isInternalUri.ts';
-import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
 };
 
 export function RelationLink({ node }: RelationLinkProps) {
-  const navigateToObjectCard = useNavigateToObjectCard();
+  const navigate = useNavigate();
   const href = url(node);
   const text = getFirstValue(label(node), getContent(node), node.id, node.type);
 
   if (href && isInternalUri(href)) {
     return (
-      <ObjectCardAction onClick={() => navigateToObjectCard(href)}>
+      <ObjectCardAction onClick={() => void navigate({ to: '/object-card', search: { uri: href } })}>
         {text}
       </ObjectCardAction>
     );

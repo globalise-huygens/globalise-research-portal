@@ -1,14 +1,12 @@
 import {
-  CANVAS,
-  DOCUMENT,
-  DOCUMENT_ID,
   type DocumentState,
-  MANIFEST,
-  SNIPPET,
   toDocumentHit,
   useDocumentStore,
 } from '@globalise/common/document';
-import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
+import {
+  getManifestSearchState,
+  highlightDocumentQueryOptions,
+} from '@globalise/search';
 import { Spinner } from '@globalise/design';
 import { ManifestLoader } from '@globalise/facsimile';
 import {
@@ -18,9 +16,9 @@ import {
   useCollectionManifests,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { useNavigate } from '@tanstack/react-router';
+import { getRouteApi } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
@@ -28,21 +26,25 @@ import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 const defaultManifest =
   'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
 
+const route = getRouteApi('/manifest/');
+
 const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +
   'hdl:20.500.14722/inventory:collection';
 
-
 export function ManifestPage() {
-  const navigate = useNavigate();
-  const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
-  const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const documentName = params.get(DOCUMENT);
-  const { data: highlights, isLoading: isHighlighting, isError: isHighlightError } = useQuery(
-    highlightDocumentQueryOptions(getManifestSearchState()),
+  const navigate = route.useNavigate();
+  const search = route.useSearch();
+  const manifestUrl = search.manifest ?? defaultManifest;
+  const {
+    data: highlights,
+    isLoading: isHighlighting,
+    isError: isHighlightError,
+  } = useQuery(
+    highlightDocumentQueryOptions(getManifestSearchState(search)),
   );
-  const documentHit = documentName
-    ? toDocumentHit(documentName, highlights?.snippet?.start ?? 0)
+  const documentHit = search.document
+    ? toDocumentHit(search.document, highlights?.snippet?.start ?? 0)
     : undefined;
 
   let error: ErrorMessage | undefined = undefined;
@@ -52,13 +54,9 @@ export function ManifestPage() {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
-  const [manifestUrl, setManifestUrl] = useState(
-    params.get(MANIFEST) ?? defaultManifest,
-  );
-
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(syncCanvasParam, []);
+  useEffect(syncCanvasParam, [navigate, search]);
 
   function syncCanvasParam() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -66,9 +64,10 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set(CANVAS, selectedCanvasId);
-      history.replaceState({}, '', newUrl);
+      void navigate({
+        search: { ...search, canvas: selectedCanvasId },
+        replace: true,
+      });
     });
   }
 
@@ -92,7 +91,7 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(navigateToObjectCard, []);
+  useEffect(navigateToObjectCard, [navigate]);
 
   function navigateToObjectCard() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -117,21 +116,13 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        navigate({ to: '/object-card', search: { uri } })
-          .catch(console.error);
+        void navigate({ to: '/object-card', search: { uri } });
       }
     });
   }
 
-  function handleManifestChange(url: string) {
-    setManifestUrl(url);
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(MANIFEST, url);
-    newUrl.searchParams.delete(CANVAS);
-    newUrl.searchParams.delete(DOCUMENT);
-    newUrl.searchParams.delete(DOCUMENT_ID);
-    newUrl.searchParams.delete(SNIPPET);
-    history.pushState({}, '', newUrl);
+  function handleManifestChange(manifest: string) {
+    void navigate({ search: { ...search, manifest } });
   }
 
   return (
@@ -139,7 +130,7 @@ export function ManifestPage() {
       <ManifestLoader url={manifestUrl}>
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
-            canvasId={initialCanvasId}
+            initialCanvasId={search.canvas}
             documentHit={documentHit}
             error={error}
             onClose={() => void navigate({ to: '/' })}

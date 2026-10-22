@@ -16,6 +16,7 @@ import {
   getPreferredLanguageValue,
   type LanguageValue,
 } from '@globalise/common';
+import { useNavigate } from '@globalise/router';
 import {
   ConceptHierarchy,
   ConceptList,
@@ -27,10 +28,9 @@ import {
 import { CardCopyAction } from '../CardCopyAction.tsx';
 import { CardOpenAction } from '../CardOpenAction.tsx';
 import { HtmlValue } from './HtmlValue.tsx';
-import { useNavigateToObjectCard } from '../useNavigateToObjectCard.ts';
 
 export function ConceptCard() {
-  const navigateToObjectCard = useNavigateToObjectCard();
+  const navigate = useNavigate();
   const { uri, concept } = useConcept();
 
   if (!uri || !concept) {
@@ -38,7 +38,7 @@ export function ConceptCard() {
   }
 
   function handleSelect(selected: SkosConcept) {
-    navigateToObjectCard(selected.id);
+    void navigate({ to: '/object-card', search: { uri: selected.id } });
   }
 
   const url = getJsonUrl(uri);

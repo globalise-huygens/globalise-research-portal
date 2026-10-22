@@ -1,17 +1,17 @@
-import { DOCUMENT_ID, SNIPPET } from '@globalise/common/document';
 import getSearchState, { type GlobaliseSearchState } from './getSearchState';
+import { type ManifestUrlParams, validateSearchUrlParams } from '@globalise/router';
+import { toSearchState } from '../url';
 
 export type ManifestSearchState = GlobaliseSearchState & {
   documentId: string;
   snippet: string;
 };
 
-export default function getManifestSearchState(): ManifestSearchState | undefined {
-  const params = new URLSearchParams(window.location.search);
-  const documentId = params.get(DOCUMENT_ID);
-  const snippet = params.get(SNIPPET);
+export default function getManifestSearchState(urlParams: ManifestUrlParams): ManifestSearchState | undefined {
+  const { documentId, snippet } = urlParams;
   if (!documentId || !snippet) {
     return;
   }
-  return { ...getSearchState(), documentId, snippet };
+  const searchUrlParams = validateSearchUrlParams(urlParams);
+  return { ...getSearchState(toSearchState(searchUrlParams)), documentId, snippet };
 }

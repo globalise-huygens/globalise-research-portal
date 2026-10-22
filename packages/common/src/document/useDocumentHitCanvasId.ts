@@ -4,7 +4,7 @@ import type { CanvasNormalized } from '@iiif/presentation-3-normalized';
 import { findNormalizedTextLength, isEmbeddedAnnotationPage } from '../annotation';
 import { getAnnotationPages } from './getAnnotationPages';
 import { findCanvasAtCharOffset } from './findCanvasAtCharOffset.ts';
-import type { DocumentHit } from './manifestPageUrl';
+import type { DocumentHit } from './documentIds';
 import type { CanvasId } from './ManifestViewerSlice';
 
 /**

@@ -1,8 +1,9 @@
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-aria-components';
+import { toHref } from '@globalise/router';
 import { Highlight, useSearchState } from '@knaw-huc/faceted-search-react';
-import { DOCUMENT, DOCUMENT_ID, MANIFEST, SNIPPET, toManifestId } from '@globalise/common/document';
+import { toManifestId } from '@globalise/common/document';
 import { POST_TAG, PRE_TAG } from './elasticsearch/highlightTags';
-import { toSearchSearch } from './url/searchSearch';
+import { toSearchUrlParams } from './url';
 import classes from './Mention.module.css';
 
 import type { DocumentSearchResult } from './elasticsearch/search.server';
@@ -14,18 +15,21 @@ type MentionProps = {
 
 export default function Mention({ document, snippet }: MentionProps) {
   const state = useSearchState();
-
-  const search = {
-    ...toSearchSearch(state),
-    [MANIFEST]: toManifestId(document.inventoryNumber),
-    [DOCUMENT]: document.name,
-    [DOCUMENT_ID]: document.id,
-    [SNIPPET]: snippet,
-  };
-
   return (
     <li className={classes.mention}>
-      <Link to="/manifest" search={search} className={classes.link}>
+      <Link
+        href={toHref({
+          to: '/manifest',
+          search: {
+            ...toSearchUrlParams(state),
+            manifest: toManifestId(document.inventoryNumber),
+            document: document.name,
+            documentId: document.id,
+            snippet,
+          },
+        })}
+        className={classes.link}
+      >
         <Highlight
           text={snippet}
           startMarker={PRE_TAG}

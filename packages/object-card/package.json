@@ -14,8 +14,9 @@
   "dependencies": {
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
-    "@tanstack/react-router": "^1.170.41",
+    "@globalise/router": "workspace:*",
     "markdown-it": "^15.0.0",
+    "react-aria-components": "^1.19.0",
     "react-virtuoso": "^4.18.7"
   }
 }

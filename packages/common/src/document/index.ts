@@ -10,4 +10,4 @@ export * from './useSelectedViewerAnnotations';
 export { getAnnotationPages } from './getAnnotationPages';
 export { logTextSelector } from './logTextSelector.ts';
 export * from './SettingsStore';
-export * from './manifestPageUrl';
+export * from './documentIds';
