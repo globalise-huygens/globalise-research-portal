@@ -31,6 +31,7 @@ export { IconFitWidth } from './IconFitWidth';
 export { IconInventory } from './IconInventory';
 export { IconInvert } from './IconInvert';
 export { IconLayoutElements } from './IconLayoutElements';
+export { IconLayers } from './IconLayers';
 export { IconLeft } from './IconLeft';
 export { IconLeftFirst } from './IconLeftFirst';
 export { IconLeftPanelClose } from './IconLeftPanelClose';

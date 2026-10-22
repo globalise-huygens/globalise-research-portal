@@ -20,7 +20,7 @@ import { CollapsedMetadataRail } from './layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './layout/ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './layout/ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './layout/ManifestEntityHighlightMenu';
-import { ManifestLayoutElementsToggle } from './layout/ManifestLayoutElementsToggle';
+import { ManifestOverlaysMenu, ManifestDisplaySettings } from './layout/ManifestOverlaysMenu';
 import { SplitPaneLayout } from './layout';
 import { TooltipIconButton } from './layout/TooltipIconButton';
 
@@ -142,7 +142,7 @@ export function ManifestViewer({
     ];
 
   return (
-    <div className="gds manifest-viewer">
+    <ManifestDisplaySettings>
       <div
         className="frame"
         data-sidebar-expanded={isSidebarExpanded ? 'true' : 'false'}
@@ -254,7 +254,7 @@ export function ManifestViewer({
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />
               <ManifestEntityHighlightMenu />
-              <ManifestLayoutElementsToggle />
+              <ManifestOverlaysMenu />
               {topRight}
               {onClose && (
                 <>
@@ -293,6 +293,6 @@ export function ManifestViewer({
           </footer>
         </div>
       </div>
-    </div>
+    </ManifestDisplaySettings>
   );
 }

@@ -1,9 +1,22 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useId, useRef, useState } from 'react';
 import { Popover as OverlayPopover } from 'react-aria-components';
 import { IconEntityDocument, Popover } from '@globalise/design';
 import { revealTocDocuments } from '@globalise/common/document';
 import type { ManifestDocument } from '@globalise/metadata';
 import './DocumentStartPreview.css';
+import { ViewerDisplayContext } from './layout/ViewerDisplayContext';
+
+// Only an open preview subscribes to visibility settings. Closed markers and
+// scan/transcription content do not need to render when a display option changes.
+function CloseHiddenPreview({ onHide }: { onHide: () => void }) {
+  const { showDocumentBoundaries } = useContext(ViewerDisplayContext);
+  useEffect(() => {
+    if (!showDocumentBoundaries) {
+      onHide();
+    }
+  }, [showDocumentBoundaries, onHide]);
+  return null;
+}
 
 type Props = {
   documents: ManifestDocument[];
@@ -157,6 +170,7 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
           onPointerEnter={keepOpen}
           onPointerLeave={scheduleClose}
         >
+          <CloseHiddenPreview onHide={close} />
           <Popover
             id={id}
             role="dialog"

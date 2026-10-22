@@ -1,0 +1,28 @@
+.manifest-viewer[data-scan-numbers="false"] .canvas-header {
+  display: none;
+}
+
+.manifest-viewer[data-document-boundaries="false"] .document-start-line {
+  display: none;
+}
+
+.viewer-overlays-menu-overlay {
+  z-index: 100;
+  max-width: calc(100vw - 1rem);
+}
+
+.viewer-overlays-menu-dialog {
+  outline: none;
+}
+
+.viewer-overlays-menu.popover {
+  width: min(18rem, calc(100vw - 1rem));
+  box-sizing: border-box;
+  border-radius: 0;
+
+  > .body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

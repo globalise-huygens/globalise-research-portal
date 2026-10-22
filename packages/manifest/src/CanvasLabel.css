@@ -12,6 +12,27 @@
   pointer-events: none;
 }
 
+.document-start-line {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.document-start-rule {
+  flex: 1 1 0;
+  min-width: 0;
+  border-block-start: 1px solid var(--color-parchment-800);
+}
+
+.document-scan-count {
+  flex-shrink: 0;
+}
+
 .canvas-label {
   display: inline-flex;
   align-items: center;
