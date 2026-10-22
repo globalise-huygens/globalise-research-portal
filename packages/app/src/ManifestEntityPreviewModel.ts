@@ -1,3 +1,4 @@
+import { getObjectCardHref } from '@globalise/common';
 import {
   getEntitySubject,
   type EntityBody,
@@ -43,8 +44,4 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
     return undefined;
   }
   return getObjectCardHref(uri);
-}
-
-export function getObjectCardHref(uri: string): string {
-  return `/object-card?uri=${encodeURIComponent(uri)}`;
 }

@@ -1,5 +1,5 @@
 import {
-  cidocEntityClassificationIds,
+  entityClassificationGroups,
   getCidocClassNameByClassificationId,
   getEntityClassificationDefinition,
   isCidocEntityClassificationId,
@@ -22,71 +22,20 @@ import { TOP_BAR_BUTTON } from './buttonClasses';
 
 const iconClassName = 'toolbar-icon';
 
-type EntityHighlightCategoryConfig = {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  subcategories?: {
-    id: CidocEntityClassificationId;
-    label: string;
-  }[];
-};
-
-const entityCategoryConfigs = createEntityCategoryConfigs();
-
-function createEntityCategoryConfigs(): EntityHighlightCategoryConfig[] {
-  const categories = new Map<string, EntityHighlightCategoryConfig>();
-
-  for (const id of cidocEntityClassificationIds) {
-    const definition = getEntityClassificationDefinition(id);
-    const group = definition.highlightGroup;
-    if (!group) {
-      categories.set(id, {
-        id,
-        label: definition.highlightLabel,
-        icon: (
-          <EntityIcon
-            type={definition.presentationType}
-            className={iconClassName}
-          />
-        ),
-      });
-      continue;
-    }
-
-    const category: EntityHighlightCategoryConfig = categories.get(group.id) ?? {
-      id: group.id,
-      label: group.label,
-      icon: (
-        <EntityIcon
-          type={definition.presentationType}
-          className={iconClassName}
-        />
-      ),
-      subcategories: [],
-    };
-    category.subcategories?.push({ id, label: definition.highlightLabel });
-    categories.set(group.id, category);
-  }
-
-  return Array.from(categories.values());
-}
-
 const entityCategories: EntityHighlightCategory[] =
-  entityCategoryConfigs.map((category) => {
-    const subcategories = category.subcategories?.map((subcategory) => ({
-      ...subcategory,
-      tone: getCidocClassNameByClassificationId(subcategory.id),
-    }));
-
-    return {
-      ...category,
-      tone: isCidocEntityClassificationId(category.id)
-        ? getCidocClassNameByClassificationId(category.id)
-        : subcategories?.[0]?.tone,
-      subcategories,
-    };
-  });
+  entityClassificationGroups.map((group) => ({
+    id: group.id,
+    label: group.label,
+    icon: <EntityIcon type={group.tagType} className={iconClassName} />,
+    tone: getCidocClassNameByClassificationId(group.classificationIds[0]),
+    subcategories: isCidocEntityClassificationId(group.id)
+      ? undefined
+      : group.classificationIds.map((id) => ({
+        id,
+        label: getEntityClassificationDefinition(id).highlightLabel,
+        tone: getCidocClassNameByClassificationId(id),
+      })),
+  }));
 
 export function ManifestEntityHighlightMenu() {
   const selectedCategories = useEntityHighlightCategories();

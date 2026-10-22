@@ -1,6 +1,7 @@
 import './metadata.css';
 
 export { MetadataPanel } from './MetadataPanel.tsx';
+export { EntityPanel } from './entities';
 export {
   TocPanel,
   useCanvasDocuments,

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { getObjectCardHref } from '@globalise/common';
 import type { EntityBody } from '@globalise/common/annotation';
 import {
   getInternalConceptUri,
   getLinkedObjectCardHref,
-  getObjectCardHref,
 } from './ManifestEntityPreviewModel';
 
 const conceptId = '8fa3d88a-021c-4976-ab8e-1773b93889fe';
