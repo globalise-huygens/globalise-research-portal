@@ -9,4 +9,5 @@ export {
   Outlet,
   useNavigate,
   useRouter,
+  useSearch,
 } from '@tanstack/react-router';

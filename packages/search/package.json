@@ -11,7 +11,7 @@
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
     "@globalise/router": "workspace:*",
-    "@knaw-huc/faceted-search-react": "^0.0.25",
+    "@knaw-huc/faceted-search-react": "link:../../../huc-faceted-search/lib",
     "@knaw-huc/searchfield": "^0.0.7",
     "d3": "^7.9.0",
     "react-aria-components": "^1.19.0",
