@@ -1,34 +1,7 @@
 import HierarchyFacet from './HierarchyFacet';
 import RangeFacet from './RangeFacet';
 
-export type Facet = {
-  key: string,
-  label: string,
-  type: 'hierarchy' | 'range',
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const facets = [
-  {
-    key: 'date',
-    label: 'Date',
-    type: 'range',
-  }, {
-    key: 'ead',
-    label: 'Archive',
-    type: 'hierarchy',
-  }, {
-    key: 'profession',
-    label: 'Profession',
-    type: 'hierarchy',
-  }, {
-    key: 'document_type',
-    label: 'Document Type',
-    type: 'hierarchy',
-  },
-] as const satisfies readonly Facet[];
-
-export type FacetKey = typeof facets[number]['key'];
+import { facets, type Facet } from './facetDefinitions';
 
 export default function Facets() {
   return (
