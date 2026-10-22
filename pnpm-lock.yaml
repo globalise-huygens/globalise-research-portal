@@ -586,6 +586,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@tanstack/react-query':
+        specifier: ^5.101.4
+        version: 5.101.4(react@19.2.8)
       '@tanstack/react-router':
         specifier: ^1.170.41
         version: 1.170.41(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -608,8 +611,8 @@ importers:
         specifier: workspace:*
         version: link:../design
       '@knaw-huc/faceted-search-react':
-        specifier: ^0.0.23
-        version: 0.0.23(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.2.8))
+        specifier: ^0.0.25
+        version: 0.0.25(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.2.8))
       '@knaw-huc/searchfield':
         specifier: ^0.0.7
         version: 0.0.7(react@19.2.8)
@@ -1064,8 +1067,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@knaw-huc/faceted-search-react@0.0.23':
-    resolution: {integrity: sha512-DKIpmWPML4gHD4vM311XVbks7i+wti5Lx0DLezxHP1viCm/fk/ECf75GjW21ip1TmEcm8ey1PlK01adgL2c5Ug==}
+  '@knaw-huc/faceted-search-react@0.0.25':
+    resolution: {integrity: sha512-WKdrtktcNnv7cxhf38f2jjxezMgq2mp8aJXPNQlCesngtnGZuiZ2McvkHTJNg/54XzhhU0939s4XCvAus16xFA==}
     peerDependencies:
       react: '19'
       react-dom: '19'
@@ -3880,7 +3883,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@knaw-huc/faceted-search-react@0.0.23(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.2.8))':
+  '@knaw-huc/faceted-search-react@0.0.25(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.2.8))':
     dependencies:
       '@base-ui/react': 1.7.0(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@heroicons/react': 2.2.0(react@19.2.8)

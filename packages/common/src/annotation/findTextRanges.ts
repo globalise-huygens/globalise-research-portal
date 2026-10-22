@@ -32,3 +32,16 @@ export function findTextRangeSelector(
     .find(isSpecificResourceTarget) as SpecificResourceTarget | undefined;
   return asArray(target?.selector).find(isTextPositionSelector);
 }
+
+export function findNormalizedTextLength(annotations: Annotation[]): number {
+  const range = annotations.find(isNormalizedTextRange);
+  const selector = range && findTextRangeSelector(range);
+  return selector ? selector.end - selector.start : 0;
+}
+
+function isNormalizedTextRange(annotation: Annotation): boolean {
+  const body = getBody(annotation);
+  return isTextualBody(body)
+    && body.purpose === 'transcription-normalized'
+    && !!findTextRangeSelector(annotation);
+}

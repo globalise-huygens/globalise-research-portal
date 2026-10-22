@@ -127,8 +127,8 @@
 
       .source-list,
       .property-label,
-      .gds-reference-panel-item__metadata,
-      .gds-reference-panel__load-more-count {
+      .reference-panel-item .reference-metadata,
+      .reference-panel .load-more-count {
         color: var(--color-neutral-300);
       }
 
@@ -139,21 +139,21 @@
       }
 
       .external-link[data-hovered],
-      .gds-reference-panel__load-more[data-hovered] {
+      .reference-panel .load-more[data-hovered] {
         opacity: 1;
       }
 
-      .gds-reference-panel__load-more {
+      .reference-panel .load-more {
         min-height: var(--s44);
       }
 
-      .gds-reference-panel-item__action {
+      .reference-panel-item .reference-action {
         min-width: var(--s32);
         min-height: var(--s32);
       }
 
-      .gds-reference-panel__load-more[data-focus-visible],
-      .gds-reference-panel-item__action[data-focus-visible] {
+      .reference-panel .load-more[data-focus-visible],
+      .reference-panel-item .reference-action[data-focus-visible] {
         outline: 2px solid var(--ring);
         outline-offset: 2px;
       }
@@ -249,16 +249,16 @@
         font-style: italic;
       }
 
-      .gds-entity-tag {
+      .entity-tag {
         max-width: 100%;
       }
 
-      .gds-entity-tag__icon {
+      .entity-tag .icon {
         width: 1em;
         height: 1em;
       }
 
-      .gds-entity-tag__label {
+      .entity-tag .label {
         overflow-wrap: anywhere;
       }
     }
@@ -292,8 +292,8 @@
   @media (prefers-reduced-motion: reduce) {
     .entity-card.person-card .section-toggle-icon,
     .entity-card.person-card .external-link,
-    .entity-card.person-card .gds-reference-panel__load-more,
-    .entity-card.person-card .gds-reference-panel-item__action {
+    .entity-card.person-card .reference-panel .load-more,
+    .entity-card.person-card .reference-panel-item .reference-action {
       transition: none;
     }
   }

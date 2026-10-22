@@ -1,5 +1,9 @@
 import {
   findByPath,
+  findTimespan,
+  formatRecordedDate,
+  getRecordedDates,
+  type RecordedDates,
   getContent,
   getStatusValues,
   getValues,
@@ -19,142 +23,20 @@ import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
+import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
 import {
-  formatRecordedDate,
-  getPersonTimespan,
-  getRecordedDates,
   getResidenceLabel,
   groupPersonClaims,
   groupRecords,
   getPersonNameRecords,
   sortPersonNames,
   uniqueClaimValues,
-  type RecordedDates,
 } from './PersonClaimModel.ts';
 
 type PersonCardBodyProps = {
   entity: LinkedArtNode;
 };
-
-type StatusProperty = {
-  label: string;
-  keys: string[];
-  linked?: boolean;
-  stacked?: boolean;
-};
-
-type StatusDefinition = {
-  key: string;
-  type: string;
-  properties: StatusProperty[];
-};
-
-type StatusGroup = StatusDefinition & {
-  title: string;
-};
-
-const personStatusGroups: StatusGroup[] = [
-  {
-    title: 'Classifications',
-    key: 'is_classificatory_subject_of',
-    type: 'ClassificatoryStatus',
-    properties: [
-      { label: 'Classification', keys: ['ascribes_classification'] },
-    ],
-  },
-  {
-    title: 'Occupations and statuses',
-    key: 'is_social_status_subject_of',
-    type: 'SocialStatus',
-    properties: [
-      { label: 'Status or occupation', keys: ['ascribes_social_status'] },
-      {
-        label: 'In relation to',
-        keys: ['ascribes_social_status_in_relation_to'],
-      },
-    ],
-  },
-  {
-    title: 'Places',
-    key: 'is_residence_subject_of',
-    type: 'ResidentialStatus',
-    properties: [
-      {
-        label: 'Connection',
-        keys: ['ascribes_residence_relation'],
-      },
-      { label: 'Place', keys: ['ascribes_residence_place'] },
-    ],
-  },
-  {
-    title: 'Family relationships',
-    key: 'is_familial_subject_of',
-    type: 'FamilyStatus',
-    properties: [
-      {
-        label: 'Relationship',
-        keys: ['ascribes_familial_relation'],
-        linked: false,
-      },
-      { label: 'Person', keys: ['ascribes_relative'], stacked: true },
-    ],
-  },
-  {
-    title: 'Social relations',
-    key: 'is_social_relation_subject_of',
-    type: 'SocialRelationStatus',
-    properties: [
-      { label: 'Relationship', keys: ['ascribes_social_relation'] },
-      { label: 'Group', keys: ['ascribes_social_relation_target'] },
-    ],
-  },
-  {
-    title: 'Similarity',
-    key: 'is_similarity_subject_of',
-    type: 'SimilarityStatus',
-    properties: [
-      { label: 'Entity', keys: ['ascribes_similarity_target'] },
-      { label: 'Mode', keys: ['ascribes_similarity_mode'] },
-    ],
-  },
-  {
-    title: 'Memberships',
-    key: 'is_membership_subject_of',
-    type: 'MembershipStatus',
-    properties: [
-      { label: 'Membership type', keys: ['ascribes_membership_relation'] },
-      { label: 'Group', keys: ['ascribes_group'] },
-    ],
-  },
-  {
-    title: 'Succession',
-    key: 'is_successor_status_subject_of',
-    type: 'SuccessorStatus',
-    properties: [
-      {
-        label: 'Succession type',
-        keys: ['ascribes_succession_relation'],
-      },
-      {
-        label: 'Sovereignty',
-        keys: ['ascribes_succeeded_sovereignty'],
-      },
-    ],
-  },
-  {
-    title: 'Ownership',
-    key: 'is_ownership_subject_of',
-    type: 'OwnershipStatus',
-    properties: [],
-  },
-  {
-    title: 'Custody',
-    key: 'is_custodial_subject_of',
-    type: 'CustodialStatus',
-    properties: [],
-  },
-];
 
 export function PersonCardBody({ entity }: PersonCardBodyProps) {
   const notes = getNotes(entity);
@@ -215,7 +97,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             />
             {profileGroups.map((group) => (
               <PersonStatusGroup
-                key={group.title}
+                key={group.label}
                 entity={entity}
                 group={group}
                 section={false}
@@ -254,7 +136,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           <ObjectCardSection title="Relationships" collapsible>
             <div className="person-status-list">
               {relationshipGroups.map((group) => (
-                <PersonStatusGroup key={group.title} entity={entity} group={group} section={false} />
+                <PersonStatusGroup key={group.label} entity={entity} group={group} section={false} />
               ))}
             </div>
           </ObjectCardSection>
@@ -337,7 +219,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
   events: LinkedArtNode[];
 }) {
   const values = events.map((event) => ({
-    timespan: getPersonTimespan(event),
+    timespan: findTimespan(event),
     dates: getRecordedDates(event),
     places: uniqueClaimValues(getStatusValues(event, ['took_place_at'])),
   })).filter(({ timespan, dates, places }) => !!timespan || !!dates || places.length > 0);
@@ -407,7 +289,7 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
 
 function hasNameDetails(status: LinkedArtNode): boolean {
   return hasClaimEvidence(status)
-    || !!getPersonTimespan(status)
+    || !!findTimespan(status)
     || !!getRecordedDates(status);
 }
 
@@ -420,7 +302,7 @@ function ClaimRecordLabel({ index }: { index: number }) {
 }
 
 function ClaimDateProperty({ node, showMissing = false }: { node: LinkedArtNode; showMissing?: boolean }) {
-  const timespan = getPersonTimespan(node);
+  const timespan = findTimespan(node);
   const dates = timespan ? null : getRecordedDates(node);
   return !!timespan || !!dates || showMissing ? (
     <ObjectCardProperty
@@ -496,7 +378,7 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
       dates: getRecordedDates(event),
       notes: getNotes(event),
       sources: getVisibleSources(event),
-      timespan: getPersonTimespan(event),
+      timespan: findTimespan(event),
     }))
     .filter(({ locations, classifications, dates, notes, sources, timespan }) =>
       locations.length > 0 || classifications.length > 0 || !!dates || notes.length > 0 || sources.length > 0 || !!timespan,
@@ -525,15 +407,13 @@ function PersonStatusGroup({
   const content = groupPersonClaims(statuses).map(({ key, records }, index) => {
     const status = records[0];
     const dateKey = (node: LinkedArtNode) => JSON.stringify([
-      getPersonTimespan(node), getRecordedDates(node),
+      findTimespan(node), getRecordedDates(node),
     ]);
     const statusDates = dateKey(status);
     const sharedDates = records.every((record) => dateKey(record) === statusDates);
-    const timespan = sharedDates ? getPersonTimespan(status) : null;
+    const timespan = sharedDates ? findTimespan(status) : null;
     const recordedDates = sharedDates && !timespan ? getRecordedDates(status) : null;
-    const summaryProperties = group.properties
-      .map((property) => ({ ...property, values: getStatusValues(status, property.keys) }))
-      .filter((property) => property.values.length);
+    const summaryProperties = getStatusProperties(status);
     const details = records.some((record) => hasStatusDetails(record, group)) ? records : [];
 
     return (
@@ -550,7 +430,7 @@ function PersonStatusGroup({
               timespan={timespan}
             />
             {!sharedDates && records.map((record, recordIndex) => {
-              const recordTimespan = getPersonTimespan(record);
+              const recordTimespan = findTimespan(record);
               const recordDates = recordTimespan ? null : getRecordedDates(record);
               return (
                 <div key={recordIndex} className="person-status-summary-date">
@@ -571,9 +451,6 @@ function PersonStatusGroup({
           <div key={recordIndex} className="person-claim-record">
             {records.length > 1 && <ClaimRecordLabel index={recordIndex} />}
             <ObjectCardPropertyList className="person-status-details">
-              {getAdditionalStatusProperties(record, group).map((property) => (
-                <StatusValuesProperty key={property.key} label={property.label} values={property.values} />
-              ))}
               <StatusValuesProperty label="Geographic scope" values={getStatusValues(record, ['has_geographic_scope'])} />
               <StatusValuesProperty label="Classification" values={getStatusValues(record, ['classified_as'])} />
               <NotesProperty node={record} />
@@ -585,7 +462,7 @@ function PersonStatusGroup({
     );
   });
   return section ? (
-    <ObjectCardSection title={group.title} collapsible>
+    <ObjectCardSection title={group.label} collapsible>
       <div className="person-status-list">
         {content}
         <UnassignedStatusInformation nodes={additionalNodes} />
@@ -621,7 +498,7 @@ type PersonStatusSummaryProps = {
   group: StatusGroup;
   properties: (StatusProperty & { values: StatusValue[] })[];
   recordedDates: RecordedDates | null;
-  timespan: ReturnType<typeof getPersonTimespan>;
+  timespan: ReturnType<typeof findTimespan>;
 };
 
 function PersonStatusSummary({
@@ -645,7 +522,7 @@ function PersonStatusSummary({
     ))
     : isOccupation && (timespan || recordedDates)
       ? null
-      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.title}</span>;
+      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.label}</span>;
   const renderConnection = (text: string) => {
     const residenceLabel = getResidenceLabel([text]);
     return residenceLabel && place
@@ -694,9 +571,8 @@ function hasClaimEvidence(status: LinkedArtNode, includeSources = true): boolean
     || getNotes(status).length > 0;
 }
 
-function hasStatusDetails(status: LinkedArtNode, group: StatusGroup, includeSources = true): boolean {
-  return getAdditionalStatusProperties(status, group).length > 0
-    || getStatusValues(status, ['has_geographic_scope']).length > 0
+function hasStatusDetails(status: LinkedArtNode, _group: StatusGroup, includeSources = true): boolean {
+  return getStatusValues(status, ['has_geographic_scope']).length > 0
     || hasClaimEvidence(status, includeSources);
 }
 
@@ -711,16 +587,14 @@ function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
 }
 
 function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
-  return group.properties.some((property) =>
-    getStatusValues(status, property.keys).length > 0,
-  ) || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
-    || !!getPersonTimespan(status)
+  return getStatusProperties(status).length > 0 || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
+    || !!findTimespan(status)
     || !!getRecordedDates(status);
 }
 
 function getStatusNodes(
   entity: LinkedArtNode,
-  definition: Pick<StatusDefinition, 'key' | 'type'>,
+  definition: Pick<StatusGroup, 'key' | 'type'>,
 ): LinkedArtNode[] {
   return findByPath(entity, [definition.key]).filter(
     (status) => status.type === definition.type,
@@ -831,34 +705,4 @@ function RecordedDatesValue({ dates }: { dates: RecordedDates }) {
       {!!dates.dates.length && <span>Recorded dates: {dates.dates.join(', ')}</span>}
     </span>
   );
-}
-
-function getAdditionalStatusProperties(
-  status: LinkedArtNode,
-  group: StatusGroup,
-) {
-  const configuredKeys = new Set(
-    group.properties.flatMap((property) => property.keys),
-  );
-  return Object.keys(status)
-    .filter(
-      (key) =>
-        key.includes('ascribes_') &&
-        !key.includes('_relation') &&
-        !configuredKeys.has(key),
-    )
-    .map((key) => ({
-      key,
-      label: getPropertyLabel(key),
-      values: getStatusValues(status, [key]),
-    }))
-    .filter((property) => property.values.length);
-}
-
-function getPropertyLabel(key: string): string {
-  const prefix = 'ascribes_';
-  const words = key
-    .slice(key.indexOf(prefix) + prefix.length)
-    .replaceAll('_', ' ');
-  return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
 }

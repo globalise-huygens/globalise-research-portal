@@ -43,11 +43,11 @@ function EntityBadge({
   const badgeType = type ?? 'ship';
   return (
     <span
-      className={cn('gds-entity-badge', className)}
+      className={cn('entity-badge', className)}
       data-type={colorByType[badgeType] ?? badgeType}
       {...props}
     >
-      {icon && <span className="gds-entity-badge__icon">{icon}</span>}
+      {icon && <span className="icon">{icon}</span>}
       <span>{children}</span>
     </span>
   );

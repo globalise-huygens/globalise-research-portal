@@ -9,10 +9,11 @@ import {
   type LinkedArtNode,
   url,
 } from '@globalise/common';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue } from './RelationValueModel.ts';
-import { resolveRelationValue } from './RelationValueResolver.ts';
+import { relationValueQueryOptions } from './RelationValueResolver.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -48,29 +49,8 @@ export function RelationValue({ node, render }: RelationLinkProps & { render?: (
 function useRelationValue(node: LinkedArtNode, href?: string): string {
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
-  const [resolved, setResolved] = useState<{
-    uri: string;
-    value?: string;
-  }>();
-
-  useEffect(() => {
-    if (!href) {
-      return;
-    }
-    let active = true;
-    void resolveRelationValue(href).then((value) => {
-      if (active) {
-        setResolved({ uri: href, value });
-      }
-    });
-    return () => {
-      active = false;
-    };
-  }, [href]);
-
-  return resolved && resolved.uri === href
-    ? resolved.value ?? safeFallback
-    : pendingValue;
+  const { data, isPending } = useQuery(relationValueQueryOptions(href ?? ''));
+  return isPending ? pendingValue : data ?? safeFallback;
 }
 
 function getEntityTagType(type: LinkedArtEntityType): EntityTagType {

@@ -9,3 +9,4 @@ export { getSVGElement } from './util/getSVGElement';
 
 export * from './linkedart';
 export * from './document/ManifestMetadataSlice.ts';
+export { parseSearch, stringifySearch, type SearchParams } from './url/searchParams.ts';

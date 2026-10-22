@@ -1,4 +1,6 @@
-# naming notes
+# Design 
+
+## naming notes
 
 the main idea: keep this simple. names should tell us what something actually is, and files should live with the feature that owns them.
 
@@ -17,7 +19,8 @@ for css:
 - keep child selectors nested inside their component root where possible. this keeps the css that belongs together in one place instead of repeating the root all through the file (see example below)
 - if the html already explains the part, just use that: `.entity-menu h3`
 - use aria, pseudo-classes, or `data-*` for real state. not only as another styling hook
-- do not mix the old BEM / `gds-` naming and the new naming inside the same component. older files can be cleaned up when we actually work on them
+- do not add `gds-` prefixes or BEM names such as `entity-badge__icon`. use `.entity-badge` with a nested `.icon`
+- when updating a component, rename its JSX, styles, and necessary usages together. leave unrelated components alone
 
 ```css
 .manifest-viewer {
@@ -31,3 +34,28 @@ for css:
 ```
 
 `src/styles.css` stays the public css entry. shared tokens are in `src/styles/globals.css`, general component css is collected by `src/components/ui/ui.css`, and a component can have its own matching css file when needed
+
+## icons
+
+These icons are [Material Symbols](https://fonts.google.com/icons) by Google, licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0):
+
+- `IconArrowTopRight`
+- `IconClose`
+- `IconConcept`
+- `IconCopy`
+- `IconDownload`
+- `IconEntityCommodity`
+- `IconEntityDate`
+- `IconEntityDimensions`
+- `IconEntityDocument`
+- `IconEntityOrganisation`
+- `IconEntityShip`
+- `IconExpandSection`
+- `IconExternalLink`
+- `IconFitWidth`
+- `IconLeftPanelClose`
+- `IconLeftPanelOpen`
+- `IconMenu`
+- `IconProgressActivity`
+- `IconSearch`
+- `IconShowMore`

@@ -24,11 +24,11 @@ export type EntityTagType =
   | 'document';
 
 export function entityTagVariants({ className }: { className?: string } = {}) {
-  return cn('gds-entity-tag', className);
+  return cn('entity-tag', className);
 }
 
 function getEntityTagIcon(type: EntityTagType) {
-  const className = 'gds-entity-tag__icon-svg';
+  const className = 'icon-svg';
 
   switch (type) {
     case 'occurrence':
@@ -64,8 +64,8 @@ function EntityTag({
 }: EntityTagProps) {
   const content = (
     <>
-      <span className="gds-entity-tag__label">{children}</span>
-      <span className="gds-entity-tag__icon" aria-hidden="true">
+      <span className="label">{children}</span>
+      <span className="icon" aria-hidden="true">
         {icon ?? getEntityTagIcon(type)}
       </span>
     </>

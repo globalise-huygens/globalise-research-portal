@@ -1,5 +1,33 @@
-import type { Timespan } from '@globalise/common';
-import { formatRecordedDate } from './PersonClaimModel.ts';
+import { formatRecordedDate, type Timespan } from '@globalise/common';
+
+export function formatTimespan(timespan: Timespan, event = false): string[] {
+  if (event) {
+    const date = formatDateRange(
+      timespan.beginOfTheBegin ?? timespan.beginOfTheEnd,
+      timespan.endOfTheEnd ?? timespan.endOfTheBegin,
+    );
+    return date ? [date] : [];
+  }
+  if (timespan.endOfTheBegin || timespan.beginOfTheEnd) {
+    return [
+      `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin) ?? 'not recorded'}`,
+      `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd) ?? 'not recorded'}`,
+    ];
+  }
+  if (timespan.label) {
+    return [formatRecordedDate(timespan.label)];
+  }
+  const dates = [...new Set([timespan.beginOfTheBegin, timespan.endOfTheEnd]
+    .filter((date): date is string => !!date).map(formatRecordedDate))];
+  return [dates.join(' – ')];
+}
+
+export function formatTimespanSummary(timespan: Timespan): string[] {
+  return [
+    `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin, false) ?? 'not recorded'}`,
+    `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd, false) ?? 'not recorded'}`,
+  ];
+}
 
 export function formatTimespanBoundaries(timespan: Timespan): string[] {
   return [
@@ -30,33 +58,4 @@ export function formatDateRange(earliest?: string, latest?: string, abbreviateYe
     return year;
   }
   return `between ${start} and ${end}`;
-}
-
-export function formatTimespanSummary(timespan: Timespan): string[] {
-  return [
-    `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin, false) ?? 'not recorded'}`,
-    `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd, false) ?? 'not recorded'}`,
-  ];
-}
-
-export function formatTimespan(timespan: Timespan, event = false): string[] {
-  if (event) {
-    const date = formatDateRange(
-      timespan.beginOfTheBegin ?? timespan.beginOfTheEnd,
-      timespan.endOfTheEnd ?? timespan.endOfTheBegin,
-    );
-    return date ? [date] : [];
-  }
-  if (timespan.endOfTheBegin || timespan.beginOfTheEnd) {
-    return [
-      `Start: ${formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin) ?? 'not recorded'}`,
-      `End: ${formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd) ?? 'not recorded'}`,
-    ];
-  }
-  if (timespan.label) {
-    return [formatRecordedDate(timespan.label)];
-  }
-  const dates = [...new Set([timespan.beginOfTheBegin, timespan.endOfTheEnd]
-    .filter((date): date is string => !!date).map(formatRecordedDate))];
-  return [dates.join(' – ')];
 }
