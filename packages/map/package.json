@@ -20,7 +20,7 @@
     "@types/node": "^25.2.3",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
-    "typescript": "^5.9.2",
+    "typescript": "^6.0.3",
     "@types/d3": "^7.4.3",
     "@types/topojson-client": "^3.1.5"
   }
