@@ -1,3 +1,4 @@
+@import "./CardHero.css";
 @import "./Controls.css";
 @import "./FloatingToolbar.css";
 @import "./Popover.css";
@@ -433,29 +434,25 @@
   }
 
   .gds-card-base[data-variant="turquoise"],
-  .gds-card-glance[data-color="turquoise"],
-  .gds-card-hero__hover[data-color="turquoise"] {
+  .gds-card-glance[data-color="turquoise"] {
     background: var(--color-brand-turquoise);
     color: var(--color-brand-black);
   }
 
   .gds-card-base[data-variant="vermilion"],
-  .gds-card-glance[data-color="vermilion"],
-  .gds-card-hero__hover[data-color="vermilion"] {
+  .gds-card-glance[data-color="vermilion"] {
     background: var(--color-brand-vermilion);
     color: var(--color-brand-black);
   }
 
   .gds-card-base[data-variant="mint"],
-  .gds-card-glance[data-color="mint"],
-  .gds-card-hero__hover[data-color="mint"] {
+  .gds-card-glance[data-color="mint"] {
     background: var(--color-brand-mint);
     color: var(--color-brand-black);
   }
 
   .gds-card-base[data-variant="parchment"],
-  .gds-card-glance[data-color="parchment"],
-  .gds-card-hero__hover[data-color="parchment"] {
+  .gds-card-glance[data-color="parchment"] {
     background: var(--color-brand-parchment);
     color: var(--color-brand-black);
   }
@@ -547,78 +544,6 @@
   .gds-card-article__icon {
     width: var(--s16);
     height: var(--s16);
-  }
-
-  .gds-card-hero {
-    position: relative;
-    overflow: hidden;
-    transition: opacity 300ms ease;
-  }
-
-  .gds-card-hero:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-  }
-
-  .gds-card-hero[data-clickable="true"] {
-    cursor: pointer;
-    text-align: left;
-  }
-
-  .gds-card-hero__media,
-  .gds-card-hero__hover {
-    position: absolute;
-    inset: 0;
-    transition: opacity 300ms ease;
-  }
-
-  .gds-card-hero__media[data-hidden="true"],
-  .gds-card-hero:hover .gds-card-hero__media,
-  .gds-card-hero:focus-visible .gds-card-hero__media {
-    opacity: 0;
-  }
-
-  .gds-card-hero__hover {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: var(--s12);
-    opacity: 0;
-  }
-
-  .gds-card-hero__hover[data-visible="true"],
-  .gds-card-hero:hover .gds-card-hero__hover,
-  .gds-card-hero:focus-visible .gds-card-hero__hover {
-    opacity: 1;
-  }
-
-  .gds-card-hero__copy {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s8);
-  }
-
-  .gds-card-hero__label {
-    color: rgb(12 10 9 / 0.6);
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
-    line-height: 1.25;
-  }
-
-  .gds-card-hero__title {
-    color: var(--color-brand-black);
-    font-family: var(--font-serif);
-    font-size: var(--text-lg);
-    font-weight: 500;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-    white-space: pre-line;
-  }
-
-  .gds-card-hero__icon {
-    width: var(--s20);
-    height: var(--s20);
-    color: var(--color-brand-black);
   }
 
   .gds-card-glance {
