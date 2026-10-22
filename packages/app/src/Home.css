@@ -11,6 +11,7 @@
   flex: 1;
   align-items: center;
   padding-block: clamp(5rem, 12vw, 10rem);
+  gap: clamp(3rem, 6vw, 5rem);
 }
 
 .home-hero {

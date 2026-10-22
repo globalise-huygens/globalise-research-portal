@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Container, IconArrowRight, IconSearch, Typography } from '@globalise/design';
 import { SiteFooter } from './SiteFooter';
+import { HomeHeroCards } from './HomeHeroCards';
 import './Home.css';
 
 export function Home() {
@@ -25,6 +26,7 @@ export function Home() {
             <IconArrowRight aria-hidden="true" />
           </Link>
         </Container>
+        <HomeHeroCards />
       </main>
       <SiteFooter />
     </div>
