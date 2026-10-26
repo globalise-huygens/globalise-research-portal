@@ -1,5 +1,5 @@
 import { getValue } from '@iiif/helpers';
-import type { MetadataItem } from '@iiif/presentation-3';
+import type { MetadataItem } from '@iiif/parser/presentation-3/types';
 
 export function findMetadataValue(
   metadata: MetadataItem[],

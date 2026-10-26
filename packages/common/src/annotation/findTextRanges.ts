@@ -1,4 +1,4 @@
-import { TextPositionSelector } from '@iiif/presentation-3';
+import { TextPositionSelector } from '@iiif/parser/presentation-3/types';
 import { Annotation, SpecificResourceTarget, TextualBody } from './AnnoModel';
 import { Id } from './Id';
 import { getBody } from './getBody';

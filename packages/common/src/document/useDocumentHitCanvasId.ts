@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
-import type { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import type { CanvasNormalized } from '@iiif/parser/presentation-3-normalized/types';
 import { findNormalizedTextLength, isEmbeddedAnnotationPage } from '../annotation';
 import { getAnnotationPages } from './getAnnotationPages';
 import { findCanvasAtCharOffset } from './findCanvasAtCharOffset.ts';
