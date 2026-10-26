@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
-    "@iiif/presentation-3": "^2.2.4",
     "@knaw-huc/original-layout": "^0.2.3",
     "d3-polygon": "^3.0.1",
     "d3-selection": "^3.0.0",

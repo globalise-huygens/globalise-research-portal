@@ -15,7 +15,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@iiif/presentation-3": "^2.2.4"
+    "@iiif/helpers": "^4.0.0",
+    "@iiif/parser": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

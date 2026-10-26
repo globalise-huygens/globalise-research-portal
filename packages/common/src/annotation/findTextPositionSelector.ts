@@ -1,6 +1,6 @@
 import { Annotation, SpecificResourceTarget } from './AnnoModel';
 import { isSpecificResourceTarget } from './isSpecificResourceTarget';
-import { TextPositionSelector } from '@iiif/presentation-3';
+import { TextPositionSelector } from '@iiif/parser/presentation-3/types';
 import { Id } from './Id.ts';
 import { asArray } from './asArray.ts';
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Collection, Manifest } from '@iiif/presentation-3';
+import { Collection, Manifest } from '@iiif/parser/presentation-3/types';
 import { ManifestEntry } from './ManifestEntry.tsx';
 import { fetchJson } from '@globalise/common';
 
