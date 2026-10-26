@@ -41,7 +41,7 @@ export default function SearchField() {
   };
 
   const autocomplete: AutocompleteConfig<AutocompleteSuggestion> = {
-    source: async (query) => queryClient.fetchQuery(autocompleteQueryOptions({ query })),
+    source: async (query) => queryClient.query(autocompleteQueryOptions({ query })),
     minimumChars: 2,
     debounceMs: 300,
     id: 'id',
