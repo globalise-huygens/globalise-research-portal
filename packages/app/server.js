@@ -1,8 +1,10 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serve } from 'srvx/node';
-import { serveStatic } from 'srvx/static';
+import { FastResponse, serve } from 'srvx/node';
+import { staticMiddleware } from 'srvx/static';
 import handler from './dist/server/server.js';
+
+globalThis.Response = FastResponse;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -14,7 +16,7 @@ const server = serve({
   hostname: host,
   fetch: handler.fetch,
   middleware: [
-    serveStatic({ dir: path.resolve(__dirname, './dist/client') }),
+    staticMiddleware({ dir: path.resolve(__dirname, './dist/client') }),
   ],
 });
 
