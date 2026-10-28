@@ -1,0 +1,31 @@
+.home-hero-cards {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--s8) var(--shell-margin);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-600) transparent;
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--s24);
+    width: min(100%, 120rem);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    min-width: 0;
+  }
+
+  @media (max-width: 1599px) {
+    ul {
+      width: max-content;
+      grid-template-columns: repeat(7, clamp(12rem, 24vw, 14rem));
+      gap: var(--s16);
+    }
+  }
+}
