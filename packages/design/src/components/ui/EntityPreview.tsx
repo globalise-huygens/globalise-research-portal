@@ -133,7 +133,8 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
     close();
   });
   useEffect(() => {
-    if (!visible) {return;}
+    // Escape must also cancel an external annotation's pending hover delay.
+    if (!visible && !anchor) {return;}
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
