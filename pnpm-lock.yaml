@@ -607,6 +607,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@globalise/map':
+        specifier: workspace:*
+        version: link:../map
       '@tanstack/react-query':
         specifier: ^5.104.4
         version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
