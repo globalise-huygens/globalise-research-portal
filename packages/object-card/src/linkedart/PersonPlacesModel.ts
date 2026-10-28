@@ -12,9 +12,9 @@ export function getPersonPlaces(person: LinkedArtNode): LinkedArtNode[] {
     }
   }
   for (const key of Object.keys(person).filter((key) => key.endsWith('_subject_of'))) {
-    for (const claim of findByPath(person, [key])) {
-      for (const place of findByPath(claim, ['ascribes_residence_place'])) {add(place);}
-      for (const place of findByPath(claim, ['has_geographic_scope'])) {add(place);}
+    for (const status of findByPath(person, [key])) {
+      for (const place of findByPath(status, ['ascribes_residence_place'])) {add(place);}
+      for (const place of findByPath(status, ['has_geographic_scope'])) {add(place);}
     }
   }
   return [...places.values()];
