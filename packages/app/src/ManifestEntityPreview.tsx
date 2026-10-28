@@ -26,7 +26,7 @@ import {
   type EntityPreviewCardType,
   type EntityPreviewCardProperty,
 } from '@globalise/design';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
 import './ManifestEntityPreview.css';
 
@@ -41,19 +41,22 @@ type LinkedClassificationReference = {
 };
 
 export function ManifestEntityPreview() {
+  const isOpen = useRef(false);
   const [preview, setPreview] = useState<{
     annotation: EntityAnnotation;
     anchor: Element;
     isHovered: boolean;
+    openImmediately: boolean;
   } | null>(null);
 
   useEffect(() => {
     const update = (state: DocumentState) => {
       const anchor = state.hovered ? getHoverElement() : null;
       const annotation = getHoveredAnnotation(state, state.hovered);
+      const openImmediately = isOpen.current || !!anchor && getHoverDelay(anchor) === 'immediate';
       setPreview((current) => annotation && anchor
         ? current?.annotation === annotation && current.anchor === anchor && current.isHovered
-          ? current : { annotation, anchor, isHovered: true }
+          ? current : { annotation, anchor, isHovered: true, openImmediately }
         : current?.isHovered ? { ...current, isHovered: false } : current);
     };
     update(useDocumentStore.getState());
@@ -71,8 +74,9 @@ export function ManifestEntityPreview() {
     data={getPreviewData(preview.annotation)}
     anchor={preview.anchor}
     isHovered={preview.isHovered}
-    openImmediately={getHoverDelay(preview.anchor) === 'immediate'}
+    openImmediately={preview.openImmediately}
     onOpenChange={(open) => {
+      isOpen.current = open;
       if (open) {
         if (useDocumentStore.getState().hovered?.id !== preview.annotation.id) {
           setHovered(preview.annotation.id);
