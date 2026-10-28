@@ -35,7 +35,7 @@ export async function loadPersonReferences(entity: LinkedArtNode, queryClient: Q
       return [link];
     }
     try {
-      const items = await queryClient.fetchQuery({
+      const items = await queryClient.query({
         queryKey: ['person-reference-collection', uri],
         queryFn: ({ signal }) => loadCollection(uri, signal),
         staleTime: Infinity,
