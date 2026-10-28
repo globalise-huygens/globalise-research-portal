@@ -1,6 +1,6 @@
 import { EntityPreviewCard, type EntityPreviewCardData } from './EntityPreviewCard';
-import { placeEntityPreview, placeEntityPreviewBeside } from './EntityPreviewPosition';
-import { createContext, useContext, useCallback, useEffect, useEffectEvent, useMemo, useId, useLayoutEffect, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
+import { useEntityPreviewPosition } from './useEntityPreviewPosition';
+import { createContext, useContext, useCallback, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
 import './EntityPreview.css';
@@ -12,10 +12,6 @@ const PreviewContext = createContext<{
   openChild: (id: string) => void;
   keepOpen: () => void;
 } | undefined>(undefined);
-
-const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-const focusable = (container: Element) => Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
-  .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
 
 export function EntityPreview({ data, isPending = false, children, anchor, isHovered, openImmediately = false, onOpenChange }: {
   data?: EntityPreviewCardData;
@@ -42,7 +38,6 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
   }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
   const visible = open && (!!data || isPending) && (!parent || parent.activeChild === id);
   const isRoot = !parent;
   const cancelTimer = () => {
@@ -108,14 +103,15 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
   }, [anchor]);
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
     if (event.key === 'Tab' && anchor && !event.shiftKey && document.activeElement === anchor) {
-      const first = popup.current && focusable(popup.current)[0];
+      const first = popup.current && getFocusableElements(popup.current)[0];
       if (first) {
         event.preventDefault();
         first.focus({ preventScroll: true });
       }
       return;
     }
-    if (event.key !== 'Escape') {return;}
+    // Let the nearest preview handle Escape from inside the popup.
+    if (event.key !== 'Escape' || popup.current?.contains(event.target as Node)) {return;}
     event.preventDefault();
     event.stopPropagation();
     if (popup.current?.contains(document.activeElement)) {
@@ -128,39 +124,10 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
     document.addEventListener('keydown', handleKeyDown, true);
     return () => document.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
-  useLayoutEffect(() => {
-    const target = anchor ?? trigger.current;
-    if (!visible || !target || !popupElement) {return;}
-    const card = popupElement;
-    let frame: number | undefined;
-    const update = () => {
-      if (!target.isConnected) {dismiss(); return;}
-      const rect = card.getBoundingClientRect();
-      const next = parentElement
-        ? placeEntityPreviewBeside(parentElement.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight)
-        : placeEntityPreview(target.getBoundingClientRect(), rect.width, rect.height, window.innerWidth, window.innerHeight);
-      setPosition((current) => current.left === next.left && current.top === next.top && current.visibility === next.visibility
-        ? current : next);
-    };
-    const scheduleUpdate = () => {
-      frame ??= requestAnimationFrame(() => {
-        frame = undefined;
-        update();
-      });
-    };
-    update();
-    const observer = new ResizeObserver(scheduleUpdate);
-    observer.observe(card);
-    observer.observe(target);
-    window.addEventListener('resize', scheduleUpdate);
-    window.addEventListener('scroll', scheduleUpdate, true);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', scheduleUpdate);
-      window.removeEventListener('scroll', scheduleUpdate, true);
-      if (frame !== undefined) {cancelAnimationFrame(frame);}
-    };
-  }, [visible, popupElement, parentElement, parentPosition, anchor]);
+  const position = useEntityPreviewPosition({
+    visible, anchor, trigger, popupElement, parentElement, parentPosition,
+    onAnchorRemoved: close,
+  });
 
   const card = (
     <div
@@ -177,21 +144,16 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
         if (event.defaultPrevented) {return;}
-        if (event.key !== 'Tab' || !popup.current) {return;}
-        const elements = focusable(popup.current);
-        const anchor = getTrigger();
-        if (!anchor) {return;}
-        if (event.shiftKey && event.target === elements[0]) {
+        if (event.key === 'Escape') {
           event.preventDefault();
-          anchor.focus({ preventScroll: true });
-        } else if (!event.shiftKey && event.target === elements.at(-1)) {
-          const outside = focusable(document.body).filter((element) => !popup.current?.contains(element));
-          const next = outside[outside.indexOf(anchor) + 1];
-          if (next) {
-            event.preventDefault();
-            next.focus({ preventScroll: true });
-            close();
-          }
+          event.stopPropagation();
+          getTrigger()?.focus({ preventScroll: true });
+          close();
+          return;
+        }
+        const anchor = getTrigger();
+        if (popup.current && anchor) {
+          moveFocusFromPreview(event, popup.current, anchor, close);
         }
       }}
     >
@@ -252,7 +214,7 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
           close();
         }
         if (event.key === 'Tab' && !event.shiftKey && visible && !popup.current?.contains(event.target as Node)) {
-          const first = popup.current && focusable(popup.current)[0];
+          const first = popup.current && getFocusableElements(popup.current)[0];
           if (first) {
             event.preventDefault();
             first.focus({ preventScroll: true });
@@ -266,7 +228,6 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
   );
 }
 
-// Map popovers can reuse the same card and nested-preview context.
 export function EntityPreviewBody({ data, position, onKeepOpen }: {
   data: EntityPreviewCardData;
   position?: CSSProperties;
@@ -279,4 +240,32 @@ export function EntityPreviewBody({ data, position, onKeepOpen }: {
       <EntityPreviewCard data={data} />
     </PreviewContext.Provider>
   </div>;
+}
+
+const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+function getFocusableElements(container: Element) {
+  return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
+    .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
+}
+
+function moveFocusFromPreview(
+  event: ReactKeyboardEvent<HTMLElement>,
+  popup: HTMLElement,
+  anchor: HTMLElement | SVGElement,
+  close: () => void,
+) {
+  if (event.key !== 'Tab') {return;}
+  const elements = getFocusableElements(popup);
+  if (event.shiftKey && event.target === elements[0]) {
+    event.preventDefault();
+    anchor.focus({ preventScroll: true });
+  } else if (!event.shiftKey && event.target === elements.at(-1)) {
+    const outside = getFocusableElements(document.body).filter((element) => !popup.contains(element));
+    const next = outside[outside.indexOf(anchor) + 1];
+    if (next) {
+      event.preventDefault();
+      next.focus({ preventScroll: true });
+      close();
+    }
+  }
 }
