@@ -27,6 +27,7 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
   const parentElement = parent?.element;
   const parentPosition = parent?.position;
   const trigger = useRef<HTMLSpanElement>(null);
+  const touch = useRef(false);
   const previewHovered = useRef(false);
   const externalTrigger = useMemo(() => ({ current: anchor ?? null }), [anchor]);
   const popup = useRef<HTMLElement>(null);
@@ -193,6 +194,18 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
   return (
     <span
       ref={trigger}
+      onPointerDownCapture={(event) => {
+        if (trigger.current?.contains(event.target as Node)) {
+          touch.current = event.pointerType === 'touch';
+        }
+      }}
+      onClickCapture={(event) => {
+        if (!touch.current || event.detail === 0 || (!data && !isPending)
+          || !trigger.current?.contains(event.target as Node)
+          || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {return;}
+        event.preventDefault();
+        keepOpen();
+      }}
       onPointerEnter={(event) => {
         if (event.pointerType === 'touch') {return;}
         cancelTimer();
