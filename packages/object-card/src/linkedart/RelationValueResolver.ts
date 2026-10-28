@@ -14,11 +14,9 @@ export function relationValueQueryOptions(uri: string) {
 }
 
 /**
- * Fetch a resource's readable label. Internal GLOBALISE and Getty vocabulary URIs
- * use their JSON endpoints; other URIs are requested with a JSON Accept header.
- * Return undefined when the response has no usable label, and "Name not recorded"
- * for an unnamed person. Network errors propagate so Query can retry a later request.
- * Caching and cancellation belong to relationValueQueryOptions and its QueryClient.
+ * Fetch a readable name or label for the referenced entity.
+ * Return "Name not recorded" for a person without a name, or undefined when
+ * no usable label is found.
  */
 export async function resolveRelationValue(uri: string, signal?: AbortSignal): Promise<string | undefined> {
   const gettyUri = /^https?:\/\/vocab\.getty\.edu\/(aat|ulan|tgn)\/\d+$/.test(uri);
