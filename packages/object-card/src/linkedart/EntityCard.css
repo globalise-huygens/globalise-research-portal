@@ -24,5 +24,277 @@
       font-size: var(--text-sm);
       line-height: 1.5rem;
     }
+
+    .person-status-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s8);
+    }
+
+    .person-status-values.stacked {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+    }
+
+    .timespan-boundaries {
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    .person-status-count,
+    .person-status-label,
+    .person-status-note {
+      color: var(--color-neutral-300);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      line-height: var(--s20);
+    }
+
+    .person-status-label {
+      margin-bottom: var(--s8);
+      font-weight: 500;
+    }
+
+    .person-status-note {
+      margin: 0;
+    }
+
+    .person-status-record + .person-status-record {
+      margin-top: var(--s12);
+      border-top: 1px solid var(--color-neutral-600);
+      padding-top: var(--s12);
+    }
+
+    .person-status-summary-content {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s4);
+    }
+
+    .person-status-summary-property {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--s4);
+    }
+
+    .person-status-summary-label,
+    .person-status-summary-date {
+      color: var(--color-neutral-300);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-style: italic;
+      font-weight: 400;
+      line-height: var(--s20);
+    }
+
+    .person-status-summary-value {
+      min-width: 0;
+      color: var(--color-brand-white);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: var(--s20);
+      overflow-wrap: anywhere;
+    }
+
+    .person-status-details {
+      gap: var(--s8);
+    }
+
+    .person-occupation-status {
+      background: var(--color-neutral-800);
+    }
+
+    .person-occupation-status .person-status-sources .source-list > li {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    &.person-card {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: 100%;
+      overflow: hidden;
+
+      .source-list,
+      .property-label,
+      .reference-panel-item .reference-metadata,
+      .reference-panel .load-more-count {
+        color: var(--color-neutral-300);
+      }
+
+      .source-list,
+      .source-citation {
+        overflow-wrap: anywhere;
+        white-space: normal;
+      }
+
+      .external-link[data-hovered],
+      .reference-panel .load-more[data-hovered] {
+        opacity: 1;
+      }
+
+      .reference-panel .load-more {
+        min-height: var(--s44);
+      }
+
+      .reference-panel-item .reference-action {
+        min-width: var(--s32);
+        min-height: var(--s32);
+      }
+
+      .reference-panel .load-more[data-focus-visible],
+      .reference-panel-item .reference-action[data-focus-visible] {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+
+      > .body {
+        box-sizing: border-box;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .panel {
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--s16);
+      }
+
+      .panel[data-side="left"] {
+        border-right: 1px solid var(--color-neutral-600);
+        border-bottom: 0;
+        background: var(--color-neutral-900);
+      }
+
+      .panel[data-side="right"] {
+        background: var(--color-neutral-800);
+      }
+
+      .panel.person-reference-panel {
+        padding: 0;
+      }
+
+      .panel > .section + .section {
+        margin-top: var(--section-gap);
+      }
+
+      .person-overview {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s4) var(--s24);
+        color: var(--color-neutral-300);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-style: italic;
+        line-height: var(--s20);
+      }
+
+      .person-overview-fact {
+        display: inline-flex;
+        min-width: 0;
+        gap: var(--s4);
+      }
+
+      .person-overview-label {
+        flex-shrink: 0;
+      }
+
+      .person-overview-value {
+        min-width: 0;
+        color: var(--color-neutral-300);
+        overflow-wrap: anywhere;
+      }
+
+      .person-name-value {
+        font-style: italic;
+      }
+
+      .source-list {
+        display: flex;
+        margin: 0;
+        flex-direction: column;
+        gap: var(--s4);
+        list-style: none;
+        padding: 0;
+      }
+
+      .source-identifier {
+        margin-right: var(--s8);
+      }
+
+      .source-citation {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+      }
+
+      .source-note {
+        display: block;
+        margin-top: var(--s4);
+        font-style: italic;
+      }
+
+      .entity-tag {
+        max-width: 100%;
+      }
+
+      .entity-tag .icon {
+        width: 1em;
+        height: 1em;
+      }
+
+      .entity-tag .label {
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .entity-card.person-card {
+      height: auto;
+      max-height: none;
+      overflow: visible;
+
+      > .body,
+      .panel {
+        overflow: visible;
+      }
+
+      .panel[data-side="left"] {
+        border-right: 0;
+        border-bottom: 1px solid var(--color-neutral-600);
+      }
+    }
+  }
+
+  @media (max-width: 479px) {
+    .entity-card.person-card .property {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--s4);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entity-card.person-card .section-toggle-icon,
+    .entity-card.person-card .external-link,
+    .entity-card.person-card .reference-panel .load-more,
+    .entity-card.person-card .reference-panel-item .reference-action {
+      transition: none;
+    }
   }
 }
