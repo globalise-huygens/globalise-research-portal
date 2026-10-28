@@ -205,7 +205,7 @@
       line-height: 1rem;
       overflow-wrap: anywhere;
 
-      .gds-entity-tag,
+      .entity-tag,
       .external-link {
         max-width: 100%;
         align-items: baseline;
