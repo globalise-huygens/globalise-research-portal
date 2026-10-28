@@ -9,6 +9,7 @@
     --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
+    --event-test-highlight: rgb(255 140 0 / 45%);
 
     color: var(--diplomatic-text);
 
@@ -43,6 +44,11 @@
           var(--entity-highlight-fill)
         );
         color: var(--entity-highlight-text);
+    }
+
+    .event {
+        box-shadow: inset 0 0 0 100vmax var(--event-test-highlight);
+        box-decoration-break: clone;
     }
 
     .line-numbers .line-number {

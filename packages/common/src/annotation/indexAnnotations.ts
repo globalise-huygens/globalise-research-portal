@@ -1,6 +1,6 @@
 import { Id } from './Id';
 import { Annotation } from './AnnoModel';
-import { isEntity } from './EntityModel';
+import { isClassified } from './ClassifiedModel';
 import { findResourceTarget } from './findResourceTarget.ts';
 import { findTextPositionSelector } from './findTextPositionSelector';
 import { orThrow } from '../util/orThrow.ts';
@@ -10,8 +10,8 @@ export type AnnotationIndexes = {
   lineToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
   wordToBlock: Record<Id, Id>;
-  entityToWords: Record<Id, Id[]>;
-  entityToBlock: Record<Id, Id>;
+  classifiedToWords: Record<Id, Id[]>;
+  classifiedToBlock: Record<Id, Id>;
 };
 
 export function indexAnnotations(
@@ -49,10 +49,7 @@ export function indexAnnotations(
     }
   }
 
-  const entityToWords: Record<Id, Id[]> = {};
-  const entityToBlock: Record<Id, Id> = {};
-
-  const wordSelectors: { id: Id; start: number; end: number }[] = [];
+  const wordSelectors: WordSelector[] = [];
   for (const annotation of Object.values(annotations)) {
     if (annotation.textGranularity === 'word') {
       const { start, end } =
@@ -62,28 +59,13 @@ export function indexAnnotations(
     }
   }
 
-  if (wordSelectors.length) {
-    for (const entity of Object.values(annotations)) {
-      if (!isEntity(entity)) {
-        continue;
-      }
-
-      const { start, end } =
-        findTextPositionSelector(entity, pageAnnoId)
-      ?? orThrow('No selector');
-      const overlapping = wordSelectors
-        .filter((word) => word.start < end && word.end > start)
-        .map((w) => w.id);
-
-      if (!overlapping.length) {
-        continue;
-      }
-      entityToWords[entity.id] = overlapping;
-
-      const blockId = wordToBlock[overlapping[0]];
-      if (blockId) {
-        entityToBlock[entity.id] = blockId;
-      }
+  const classified = Object.values(annotations).filter(isClassified);
+  const classifiedToWords = mapToWords(classified, wordSelectors, pageAnnoId);
+  const classifiedToBlock: Record<Id, Id> = {};
+  for (const [classifiedId, wordIds] of Object.entries(classifiedToWords)) {
+    const blockId = wordToBlock[wordIds[0]];
+    if (blockId) {
+      classifiedToBlock[classifiedId] = blockId;
     }
   }
 
@@ -92,7 +74,29 @@ export function indexAnnotations(
     lineToBlock,
     blockToLines,
     wordToBlock,
-    entityToWords,
-    entityToBlock,
+    classifiedToWords,
+    classifiedToBlock,
   };
+}
+
+type WordSelector = { id: Id; start: number; end: number };
+
+function mapToWords(
+  annotations: Annotation[],
+  wordSelectors: WordSelector[],
+  pageAnnoId: Id,
+): Record<Id, Id[]> {
+  const annotationToWords: Record<Id, Id[]> = {};
+  for (const annotation of annotations) {
+    const { start, end } =
+      findTextPositionSelector(annotation, pageAnnoId)
+      ?? orThrow('No selector');
+    const overlapping = wordSelectors
+      .filter((word) => word.start < end && word.end > start)
+      .map((word) => word.id);
+    if (overlapping.length) {
+      annotationToWords[annotation.id] = overlapping;
+    }
+  }
+  return annotationToWords;
 }

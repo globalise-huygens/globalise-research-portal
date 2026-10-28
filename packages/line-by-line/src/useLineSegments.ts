@@ -5,7 +5,7 @@ import {
   findTextPositionSelector,
   getPageText,
   Id,
-  isEntity,
+  isClassified,
 } from '@globalise/common/annotation';
 import {
   filterByTextSelectorOrLog,
@@ -33,8 +33,11 @@ export function useLineSegments(
     const wordAnnos = Object.values(annotations).filter(
       (a) => a.textGranularity === 'word',
     );
-    const entityAnnos = Object.values(annotations).filter(isEntity);
-    const annos = filterByTextSelectorOrLog([...wordAnnos, ...entityAnnos], pageAnnoId);
+    const classifiedAnnos = Object.values(annotations).filter(isClassified);
+    const annos = filterByTextSelectorOrLog(
+      [...wordAnnos, ...classifiedAnnos],
+      pageAnnoId,
+    );
     const segments = segment(pageText, annos, (a) => {
       const selector = findTextPositionSelector(a, pageAnnoId)
         ?? orThrow('No selector');

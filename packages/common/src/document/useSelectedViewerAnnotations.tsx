@@ -84,7 +84,7 @@ function getIdsFromSelection(
   if (selection.type === 'block') {
     return ids;
   }
-  if (selection.type === 'entity') {
+  if (selection.type === 'classified') {
     ids.push(...selection.words);
   }
   if (selection.block) {

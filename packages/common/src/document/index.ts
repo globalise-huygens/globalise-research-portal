@@ -1,5 +1,5 @@
 export { useDocumentStore, type DocumentState } from './DocumentStore';
-export * from './EntityHighlightSlice';
+export * from './ClassifiedHighlightSlice';
 export * from './LayoutElementsSlice';
 export * from './ManifestViewerSlice';
 export * from './SelectionAttribute';

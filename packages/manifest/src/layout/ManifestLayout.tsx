@@ -19,6 +19,7 @@ import { CollapsedMetadataRail } from './CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from './ExpandedMetadataSidebar';
 import { ManifestContentWarning } from './ManifestContentWarning';
 import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
+import { ManifestEventsToggle } from './ManifestEventsToggle';
 import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
 import { ManifestError, type ErrorMessage } from './ManifestError';
 import { SplitPaneLayout } from './splitpane';
@@ -234,6 +235,7 @@ export function ManifestLayout({
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />
               <ManifestEntityHighlightMenu />
+              <ManifestEventsToggle />
               <ManifestLayoutElementsToggle />
               {topRight}
               {onClose && (

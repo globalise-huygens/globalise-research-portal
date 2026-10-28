@@ -1,9 +1,5 @@
 import { Annotation, Body } from './AnnoModel.ts';
 import { asArray } from './asArray.ts';
-import {
-  CidocEntityClassificationId,
-  getCidocEntityClassificationId,
-} from './CidocEntityModel.ts';
 
 export type EntityBody = {
   type: EntityAnnotationBodyType;
@@ -104,15 +100,4 @@ export function getEntityAnnotationBodyClassName(annotation: Annotation) {
     case 'Dimension':
       return 'dimension';
   }
-}
-
-export function isHighlightedEntity(
-  annotation: Annotation,
-  categories: Set<CidocEntityClassificationId>,
-): boolean {
-  if (!isEntity(annotation)) {
-    return false;
-  }
-  const classificationId = getCidocEntityClassificationId(annotation);
-  return !!classificationId && categories.has(classificationId);
 }

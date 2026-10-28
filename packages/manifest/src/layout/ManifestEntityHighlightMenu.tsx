@@ -4,10 +4,11 @@ import {
   getEntityClassificationDefinition,
   isCidocEntityClassificationId,
   type CidocEntityClassificationId,
+  type ClassifiedCategory,
 } from '@globalise/common/annotation';
 import {
-  setEntityHighlightCategories,
-  useEntityHighlightCategories,
+  setHighlightCategories,
+  useHighlightCategories,
 } from '@globalise/common/document';
 import {
   EntityIcon,
@@ -89,7 +90,7 @@ const entityCategories: EntityHighlightCategory[] =
   });
 
 export function ManifestEntityHighlightMenu() {
-  const selectedCategories = useEntityHighlightCategories();
+  const selectedCategories = useHighlightCategories();
   const selectedKeys = React.useMemo(
     () => new Set<string>(selectedCategories),
     [selectedCategories],
@@ -99,7 +100,9 @@ export function ManifestEntityHighlightMenu() {
     (update: React.SetStateAction<Set<string>>) => {
       const current = new Set<string>(selectedCategories);
       const updated = typeof update === 'function' ? update(current) : update;
-      const next = new Set<CidocEntityClassificationId>();
+      const next = new Set<ClassifiedCategory>(
+        [...selectedCategories].filter((category) => !isCidocEntityClassificationId(category)),
+      );
 
       for (const key of updated) {
         if (isCidocEntityClassificationId(key)) {
@@ -107,7 +110,7 @@ export function ManifestEntityHighlightMenu() {
         }
       }
 
-      setEntityHighlightCategories(next);
+      setHighlightCategories(next);
     },
     [selectedCategories],
   );
