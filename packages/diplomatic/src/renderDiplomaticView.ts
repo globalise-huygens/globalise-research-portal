@@ -1,14 +1,11 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
-  getEntityAnnotationBodyClassName,
   findTextPositionSelector,
-  getCidocEntityClassifiedAsLabel,
-  getCidocClassName,
+  getClassifiedClassNames,
   getPageText,
   indexAnnotations,
-  isEntity,
-  toClassName,
+  isClassified,
 } from '@globalise/common/annotation';
 import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
@@ -82,9 +79,9 @@ export function renderDiplomaticView(
 
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
-  const entityAnnos = Object.values(annotations).filter(isEntity);
+  const classifiedAnnos = Object.values(annotations).filter(isClassified);
   const markedAnnos = filterByTextSelectorOrLog(
-    [...wordAnnos, ...entityAnnos],
+    [...wordAnnos, ...classifiedAnnos],
     pageAnnoId,
   );
 
@@ -100,36 +97,36 @@ export function renderDiplomaticView(
   );
 
   const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
-  const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const $classifiedToSegments: Record<Id, HTMLSpanElement[]> = {};
 
-  function getEntitySegment(event: FocusEvent) {
+  function getClassifiedSegment(event: FocusEvent) {
     if (!(event.target instanceof HTMLSpanElement)) {
       return null;
     }
 
-    return event.target.dataset.entityId
+    return event.target.dataset.classifiedId
       ? event.target
       : null;
   }
 
-  function handleEntityFocus(event: FocusEvent) {
-    const $segment = getEntitySegment(event);
+  function handleClassifiedFocus(event: FocusEvent) {
+    const $segment = getClassifiedSegment(event);
     if ($segment) {
       setHoverAttribute($segment);
-      onHover($segment.dataset.entityId ?? null);
+      onHover($segment.dataset.classifiedId ?? null);
     }
   }
 
-  function handleEntityBlur(event: FocusEvent) {
-    const $segment = getEntitySegment(event);
+  function handleClassifiedBlur(event: FocusEvent) {
+    const $segment = getClassifiedSegment(event);
     if ($segment) {
       removeHoverAttribute($segment);
       onHover(null);
     }
   }
 
-  $layoutView.addEventListener('focusin', handleEntityFocus);
-  $layoutView.addEventListener('focusout', handleEntityBlur);
+  $layoutView.addEventListener('focusin', handleClassifiedFocus);
+  $layoutView.addEventListener('focusout', handleClassifiedBlur);
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -146,38 +143,30 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
-      const entity = segment.annotations.find((a) => isEntity(a));
+      for (const annotation of segment.annotations.filter(isClassified)) {
+        $segment.classList.add(...getClassifiedClassNames(annotation));
+      }
+      const classified = segment.annotations.find(isClassified);
 
-      if (entity) {
-        const visualCategory = getCidocClassName(entity);
-        const entityLabel = toClassName(getCidocEntityClassifiedAsLabel(entity));
-        const entityType = getEntityAnnotationBodyClassName(entity);
-        $segment.classList.add(
-          ...[
-            'entity',
-            entityType,
-            visualCategory,
-            entityLabel,
-          ],
-        );
+      if (classified) {
         $segment.tabIndex = 0;
-        $segment.dataset.entityId = entity.id;
+        $segment.dataset.classifiedId = classified.id;
         $segment.setAttribute('role', 'button');
         $segment.setAttribute('aria-haspopup', 'dialog');
         $segment.setAttribute(
           'aria-label',
-          `Select entity: ${$segment.textContent}`,
+          `Select: ${$segment.textContent}`,
         );
 
-        if (!$entityToSegments[entity.id]) {
-          $entityToSegments[entity.id] = [];
+        if (!$classifiedToSegments[classified.id]) {
+          $classifiedToSegments[classified.id] = [];
         }
-        $entityToSegments[entity.id].push($segment);
+        $classifiedToSegments[classified.id].push($segment);
 
-        $segment.addEventListener('click', () => onClick(entity.id));
+        $segment.addEventListener('click', () => onClick(classified.id));
         $segment.addEventListener('mouseenter', () => {
           setHoverAttribute($segment, 'delayed');
-          onHover(entity.id);
+          onHover(classified.id);
         });
         $segment.addEventListener('mouseleave', () => {
           if (document.activeElement !== $segment) {
@@ -188,7 +177,7 @@ export function renderDiplomaticView(
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            onClick(entity.id);
+            onClick(classified.id);
           }
         });
       } else {
@@ -275,8 +264,8 @@ export function renderDiplomaticView(
       $word.classList.add('selected');
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
-    } else if (isEntity(annotation)) {
-      const $segments = $entityToSegments[id];
+    } else if (isClassified(annotation)) {
+      const $segments = $classifiedToSegments[id];
       $segments?.forEach(($r) => { $r.classList.add('selected'); });
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
@@ -290,8 +279,8 @@ export function renderDiplomaticView(
       $word.classList.remove('selected');
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
-    } else if (isEntity(annotation)) {
-      const $segments = $entityToSegments[id];
+    } else if (isClassified(annotation)) {
+      const $segments = $classifiedToSegments[id];
       $segments?.forEach(($r) => $r.classList.remove('selected'));
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);

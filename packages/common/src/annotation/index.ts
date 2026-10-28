@@ -3,6 +3,8 @@ export { filterByTextSelectorOrLog } from './filterByTextSelectorOrLog.ts';
 
 export * from './AnnoModel';
 export * from './EntityModel';
+export * from './EventModel';
+export * from './ClassifiedModel';
 export * from './CidocEntityModel';
 export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';

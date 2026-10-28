@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import {
   CanvasId,
   useAnnotations,
-  useWordEntityClassifications,
+  useWordClassifications,
 } from '@globalise/common/document';
 import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
@@ -14,12 +14,12 @@ import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightConf
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations(canvasId);
-  const entityClassificationByWord = useWordEntityClassifications(canvasId);
+  const classificationsByWord = useWordClassifications(canvasId);
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
 
   const words = useMemo(
-    () => toWordHighlightConfigs(annotations, entityClassificationByWord),
-    [annotations, entityClassificationByWord],
+    () => toWordHighlightConfigs(annotations, classificationsByWord),
+    [annotations, classificationsByWord],
   );
   const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 

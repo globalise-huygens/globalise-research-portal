@@ -11,6 +11,7 @@
     --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
+    --event-test-highlight: rgb(255 140 0 / 45%);
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -106,6 +107,11 @@
           var(--entity-highlight-fill)
         );
         color: var(--entity-highlight-text);
+    }
+
+    .event {
+        background: var(--event-test-highlight);
+        box-decoration-break: clone;
     }
 
     .word {

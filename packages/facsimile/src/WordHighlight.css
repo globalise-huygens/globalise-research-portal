@@ -8,3 +8,7 @@
     mix-blend-mode: multiply;
     pointer-events: none;
 }
+
+.word-highlight.event {
+    fill: rgb(255 140 0 / 45%);
+}

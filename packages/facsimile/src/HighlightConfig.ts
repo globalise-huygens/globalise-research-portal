@@ -1,6 +1,5 @@
 import {
   type Annotation,
-  type CidocEntityClassificationId,
   findSvgPath,
   findTextualBodyValue,
   type Id,
@@ -9,12 +8,12 @@ import {
   parseSvgPath,
 } from '@globalise/common/annotation';
 import { orThrow } from '@globalise/common';
+import type { WordClassifications } from '@globalise/common/document';
 
-export type WordHighlightConfig = {
+export type WordHighlightConfig = WordClassifications & {
   id: Id;
   path: string;
   text: string;
-  entityClassificationId?: CidocEntityClassificationId;
 };
 
 export type BlockHighlightConfig = {
@@ -24,7 +23,7 @@ export type BlockHighlightConfig = {
 
 export function toWordHighlightConfigs(
   annotations: Record<Id, Annotation>,
-  entityClassificationByWord: Partial<Record<Id, CidocEntityClassificationId>>,
+  classificationsByWord: Partial<Record<Id, WordClassifications>>,
 ): WordHighlightConfig[] {
   return Object.values(annotations)
     .filter(isWord)
@@ -32,7 +31,7 @@ export function toWordHighlightConfigs(
       id: a.id,
       path: toPath(a),
       text: findTextualBodyValue(a) ?? orThrow('No body value'),
-      entityClassificationId: entityClassificationByWord[a.id],
+      ...classificationsByWord[a.id],
     }));
 }
 

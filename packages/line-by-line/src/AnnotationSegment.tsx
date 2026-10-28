@@ -1,16 +1,14 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import {
   Annotation,
-  getEntityAnnotationBodyClassName,
-  getCidocEntityClassifiedAsLabel,
-  getCidocClassName,
-  isEntity,
-  toClassName,
+  ClassifiedBody,
+  getClassifiedClassNames,
+  isClassified,
   isWord,
 } from '@globalise/common/annotation';
 import {
   useIsClickedInLineByLine,
-  useIsHighlightedEntity,
+  useIsHighlighted,
   useIsSelectedInLineByLine,
 } from '@globalise/common/document';
 
@@ -23,10 +21,10 @@ type AnnotationProps = {
 export function AnnotationSegment(
   { canvasId, annotation, children }: AnnotationProps,
 ) {
-  if (isEntity(annotation)) {
-    return <EntitySegment canvasId={canvasId} annotation={annotation}>
+  if (isClassified(annotation)) {
+    return <ClassifiedSegment canvasId={canvasId} annotation={annotation}>
       {children}
-    </EntitySegment>;
+    </ClassifiedSegment>;
   }
 
   if (isWord(annotation)) {
@@ -60,20 +58,21 @@ function WordSegment({ canvasId, annotation, children }: AnnotationProps) {
   );
 }
 
-function EntitySegment({ canvasId, annotation, children }: AnnotationProps) {
-  const label = getCidocEntityClassifiedAsLabel(annotation);
-  const classifiedAs = getCidocClassName(annotation);
-  const category = getEntityAnnotationBodyClassName(annotation);
-  const isHighlightedEntity = useIsHighlightedEntity(annotation);
+type ClassifiedProps = AnnotationProps & {
+  annotation: Annotation<ClassifiedBody>;
+};
+
+function ClassifiedSegment({ canvasId, annotation, children }: ClassifiedProps) {
+  const isHighlighted = useIsHighlighted(annotation);
   const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
 
-  if (!isHighlightedEntity) {
+  if (!isHighlighted) {
     return <>{children}</>;
   }
 
   return (
     <span
-      className={`entity ${category} ${classifiedAs} ${toClassName(label)}${isSelected ? ' selected' : ''}`}
+      className={`${getClassifiedClassNames(annotation).join(' ')}${isSelected ? ' selected' : ''}`}
     >
       {children}
     </span>
