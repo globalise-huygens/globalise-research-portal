@@ -9,16 +9,15 @@ export function relationValueQueryOptions(uri: string) {
     enabled: !!uri,
     staleTime: Infinity,
     retry: false,
-    queryFn: async ({ signal }) => await resolveRelationValue(uri, signal) ?? null,
+    queryFn: async ({ signal }) => await fetchEntityLabel(uri, signal) ?? null,
   });
 }
 
 /**
- * Fetch a readable name or label for the referenced entity.
  * Return "Name not recorded" for a person without a name, or undefined when
  * no usable label is found.
  */
-export async function resolveRelationValue(uri: string, signal?: AbortSignal): Promise<string | undefined> {
+export async function fetchEntityLabel(uri: string, signal?: AbortSignal): Promise<string | undefined> {
   const gettyUri = /^https?:\/\/vocab\.getty\.edu\/(aat|ulan|tgn)\/\d+$/.test(uri);
   const endpoint = isInternalUri(uri) ? getJsonUrl(uri)
     : gettyUri ? getJsonUrl(uri.replace(/^http:/, 'https:')) : uri;
