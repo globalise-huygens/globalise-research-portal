@@ -7,8 +7,9 @@ import type {
 import {
   Annotation,
   Id,
-  isEntity,
-  isHighlightedEntity,
+  isClassified,
+  isEvent,
+  isHighlighted,
   isWord,
 } from '@globalise/common/annotation';
 import {
@@ -16,7 +17,7 @@ import {
   setHoverAttribute,
   setHovered,
   toggleClicked,
-  useEntityHighlightCategories,
+  useHighlightCategories,
 } from '@globalise/common/document';
 import { AnnotationSegment } from './AnnotationSegment';
 import { NestedSegment } from './NestedSegment';
@@ -30,21 +31,19 @@ type TextProps = {
 export function SegmentedText(
   { canvasId, blockId, segments }: TextProps,
 ) {
-  const highlightedEntityCategories = useEntityHighlightCategories();
+  const highlightCategories = useHighlightCategories();
 
   return <>
     {segments.map((segment) => {
       const body = segment.value;
       const hoveredAnnotation = segment.annotations.find(
-        (annotation) => isHighlightedEntity(
-          annotation, highlightedEntityCategories,
-        ),
+        (annotation) => isHighlighted(annotation, highlightCategories),
       ) ?? segment.annotations.find(isWord);
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
-      const isEntityTrigger = hoveredAnnotation
-        ? isEntity(hoveredAnnotation)
+      const isClassifiedTrigger = hoveredAnnotation
+        ? isClassified(hoveredAnnotation)
         : false;
 
       function showPreview(element: Element, openImmediately = false) {
@@ -70,7 +69,7 @@ export function SegmentedText(
       }
 
       function handleFocus(event: FocusEvent<HTMLSpanElement>) {
-        if (isEntityTrigger) {
+        if (isClassifiedTrigger) {
           showPreview(event.currentTarget, true);
         }
       }
@@ -81,7 +80,7 @@ export function SegmentedText(
 
       function handleKeyDown(event: KeyboardEvent<HTMLSpanElement>) {
         if (
-          isEntityTrigger &&
+          isClassifiedTrigger &&
           hoverId &&
           (event.key === 'Enter' || event.key === ' ')
         ) {
@@ -100,10 +99,10 @@ export function SegmentedText(
       return (
         <span
           key={segment.index}
-          tabIndex={isEntityTrigger ? 0 : undefined}
-          role={isEntityTrigger ? 'button' : undefined}
-          aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
-          aria-label={isEntityTrigger ? `Select entity: ${body}` : undefined}
+          tabIndex={isClassifiedTrigger ? 0 : undefined}
+          role={isClassifiedTrigger ? 'button' : undefined}
+          aria-haspopup={isClassifiedTrigger ? 'dialog' : undefined}
+          aria-label={isClassifiedTrigger ? `Select: ${body}` : undefined}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onFocus={handleFocus}
@@ -112,7 +111,7 @@ export function SegmentedText(
           onClick={handleClick}
         >
           <NestedSegment
-            annotations={segment.annotations}
+            annotations={withEventsInnermost(segment.annotations)}
             annotation={(annotation, children) => (
               <AnnotationSegment
                 canvasId={canvasId}
@@ -128,4 +127,11 @@ export function SegmentedText(
       );
     })}
   </>;
+}
+
+function withEventsInnermost(annotations: Annotation[]): Annotation[] {
+  return [
+    ...annotations.filter(isEvent),
+    ...annotations.filter((annotation) => !isEvent(annotation)),
+  ];
 }

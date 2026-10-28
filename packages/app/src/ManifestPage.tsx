@@ -21,7 +21,7 @@ import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { getRouteApi } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { findTextRanges, isEntity } from '@globalise/common/annotation';
+import { findTextRanges, getEventId, isEntity, isEvent } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 
@@ -125,6 +125,21 @@ export function ManifestPage() {
       const uri = ascribes_classification?.id;
       if (uri) {
         void navigate({ to: '/object-card', search: { uri } });
+      }
+    });
+  }
+
+  // TODO: remove when clicking an event opens its preview
+  useEffect(alertClickedEvent, []);
+
+  function alertClickedEvent() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (!state.clicked || state.clicked === prev.clicked) {
+        return;
+      }
+      const annotation = findSelectedAnnotations(state)?.[state.clicked.id];
+      if (annotation && isEvent(annotation)) {
+        alert(getEventId(annotation));
       }
     });
   }

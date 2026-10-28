@@ -8,7 +8,7 @@ import {
   getPageText,
   Id,
   isEmbeddedAnnotationPage,
-  isEntity,
+  isClassified,
   PartOf,
 } from '../annotation';
 import { FetchError, fetchJson } from '../util/fetchJson';
@@ -52,8 +52,8 @@ export const emptyAnnotationIndex: AnnotationIndexes = {
   lineToBlock: {},
   blockToLines: {},
   wordToBlock: {},
-  entityToWords: {},
-  entityToBlock: {},
+  classifiedToWords: {},
+  classifiedToBlock: {},
   wordOffsets: [],
 };
 
@@ -77,7 +77,7 @@ function createReadyCanvas(pages: EmbeddedCanvasAnnotationPage[]) {
   const { id: pageId } = getPageText(mapped);
   for (const id in mapped) {
     const item = mapped[id];
-    if (!isEntity(item)) {
+    if (!isClassified(item)) {
       continue;
     }
     const foundSelector = findTextPositionSelector(item, pageId);

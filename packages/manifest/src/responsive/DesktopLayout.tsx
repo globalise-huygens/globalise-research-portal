@@ -17,6 +17,7 @@ import { ManifestCloseButton } from '../layout/ManifestCloseButton';
 import { ManifestContentWarning } from '../layout/ManifestContentWarning';
 import { ManifestError } from '../layout/ManifestError';
 import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
+import { ManifestEventsToggle } from '../layout/ManifestEventsToggle';
 import { ManifestLayoutElementsToggle } from '../layout/ManifestLayoutElementsToggle';
 import { SplitPaneLayout } from '../layout/splitpane';
 import { TooltipIconButton } from '../layout/TooltipIconButton';
@@ -201,6 +202,7 @@ export function DesktopLayout({
                 onPress={() => setIsViewerOrderSwapped((v) => !v)}
               />
               <ManifestEntityHighlightMenu />
+              <ManifestEventsToggle />
               <ManifestLayoutElementsToggle />
               {topRight}
               {onClose && <ManifestCloseButton onClose={onClose} />}

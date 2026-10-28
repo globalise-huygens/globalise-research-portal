@@ -5,7 +5,7 @@ import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
   useAnnotationsWithSearchHits,
-  useWordEntityClassifications,
+  useWordClassifications,
   useIsLayoutElementsVisible,
   useIsSelectedCanvas,
   usePages,
@@ -36,7 +36,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
   const annotations = useAnnotationsWithSearchHits(lazyCanvas.canvasId);
-  const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
+  const classificationsByWord = useWordClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
@@ -69,8 +69,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
 
   const words = useMemo(
-    () => toWordHighlightConfigs(annotations, entityClassificationByWord),
-    [annotations, entityClassificationByWord],
+    () => toWordHighlightConfigs(annotations, classificationsByWord),
+    [annotations, classificationsByWord],
   );
   const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
