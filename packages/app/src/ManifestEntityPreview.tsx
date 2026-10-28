@@ -148,7 +148,7 @@ function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
         label: 'Classified by',
         value: classification ? (
           <EntityPreview data={getClassificationPreviewData(classification)}>
-            {(attributes) => <button {...attributes} type="button" className="manifest-entity-preview__linked-value">
+            {(attributes) => <button {...attributes} type="button" className="manifest-preview-link">
               <span>{classification.label}</span>
               <EntityIcon type="classification" />
             </button>}
