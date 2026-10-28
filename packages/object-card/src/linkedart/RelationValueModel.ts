@@ -6,7 +6,7 @@ import {
   type LinkedArtNode,
 } from '@globalise/common';
 import { isInternalUri } from '../isInternalUri.ts';
-import { getPersonNameRecords, sortPersonNames } from './PersonClaimModel.ts';
+import { getPersonNameRecords, sortPersonNames } from './PersonStatusModel.ts';
 
 /**
  * Choose a readable name or label from the entity data already available.

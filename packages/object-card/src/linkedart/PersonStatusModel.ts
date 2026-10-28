@@ -41,7 +41,7 @@ export function sortPersonNames<T extends { name: string; status: LinkedArtNode 
  * own dates and sources. Keep occupation records separate when no occupation
  * is recorded.
  */
-export function groupPersonClaims(records: LinkedArtNode[]) {
+export function groupPersonStatuses(records: LinkedArtNode[]) {
   return groupRecords(records, (record, index) => JSON.stringify([
     record.type === 'SocialStatus' && !getStatusValues(record, ['ascribes_social_status']).length
       ? index
@@ -69,7 +69,7 @@ export function groupRecords<T>(records: T[], keyFor: (record: T, index: number)
   return [...groups.values()];
 }
 
-export function uniqueClaimValues(values: StatusValue[]): StatusValue[] {
+export function uniqueStatusValues(values: StatusValue[]): StatusValue[] {
   return [...new Map(values.map((value) => [valueKey(value), value])).values()];
 }
 

@@ -27,12 +27,12 @@ import { personStatusGroups, getStatusProperties, type StatusProperty, type Stat
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
 import {
   getResidenceLabel,
-  groupPersonClaims,
+  groupPersonStatuses,
   groupRecords,
   getPersonNameRecords,
   sortPersonNames,
-  uniqueClaimValues,
-} from './PersonClaimModel.ts';
+  uniqueStatusValues,
+} from './PersonStatusModel.ts';
 
 type PersonCardBodyProps = {
   entity: LinkedArtNode;
@@ -107,7 +107,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               <ObjectCardDisclosure
                 summary={<PersonSummaryProperty label="Recorded status dates" value={unassignedDates.join(', ')} />}
               >
-                <p className="person-claim-note">These dates are not linked to a specific occupation or status in this record.</p>
+                <p className="person-status-note">These dates are not linked to a specific occupation or status in this record.</p>
               </ObjectCardDisclosure>
             )}
             {!!notes.length && (
@@ -163,9 +163,9 @@ export function PersonOverview({ entity }: PersonCardBodyProps) {
     ...new Set(sortPersonNames(getPersonNameRecords(entity)).map((record) => record.name)),
   ];
   const alternativeNames = names.slice(1);
-  const classifications = uniqueClaimValues(getStatusNodes(entity, personStatusGroups[0])
+  const classifications = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[0])
     .flatMap((status) => getStatusValues(status, ['ascribes_classification'])));
-  const occupations = uniqueClaimValues(getStatusNodes(entity, personStatusGroups[1])
+  const occupations = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[1])
     .flatMap((status) => getStatusValues(status, ['ascribes_social_status'])));
   const born = findByPath(entity, ['born']);
   const died = findByPath(entity, ['died']);
@@ -221,7 +221,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
   const values = events.map((event) => ({
     timespan: findTimespan(event),
     dates: getRecordedDates(event),
-    places: uniqueClaimValues(getStatusValues(event, ['took_place_at'])),
+    places: uniqueStatusValues(getStatusValues(event, ['took_place_at'])),
   })).filter(({ timespan, dates, places }) => !!timespan || !!dates || places.length > 0);
   if (!values.length) {
     return null;
@@ -267,16 +267,16 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
               label="Name"
               value={<span className="person-name-value">{records[0].name}</span>}
             />
-            <ClaimRecordCount count={records.length} />
+            <StatusRecordCount count={records.length} />
           </>
         )}
       >
         {details.length > 0 ? details.map(({ key: recordKey, status }, index) => (
-          <div key={recordKey} className="person-claim-record">
-            {records.length > 1 && <ClaimRecordLabel index={index} />}
+          <div key={recordKey} className="person-status-record">
+            {records.length > 1 && <StatusRecordLabel index={index} />}
             <ObjectCardPropertyList className="person-status-details">
               <StatusValuesProperty label="Classification" values={getStatusValues(status, ['classified_as'])} />
-              <ClaimDateProperty node={status} showMissing={records.length > 1} />
+              <StatusDateProperty node={status} showMissing={records.length > 1} />
               <NotesProperty node={status} />
               <SourcesProperty node={status} />
             </ObjectCardPropertyList>
@@ -288,20 +288,20 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
 }
 
 function hasNameDetails(status: LinkedArtNode): boolean {
-  return hasClaimEvidence(status)
+  return hasStatusEvidence(status)
     || !!findTimespan(status)
     || !!getRecordedDates(status);
 }
 
-function ClaimRecordCount({ count }: { count: number }) {
-  return count > 1 ? <span className="person-claim-count">{count} records</span> : null;
+function StatusRecordCount({ count }: { count: number }) {
+  return count > 1 ? <span className="person-status-count">{count} records</span> : null;
 }
 
-function ClaimRecordLabel({ index }: { index: number }) {
-  return <div className="person-claim-label">Record {index + 1}</div>;
+function StatusRecordLabel({ index }: { index: number }) {
+  return <div className="person-status-label">Record {index + 1}</div>;
 }
 
-function ClaimDateProperty({ node, showMissing = false }: { node: LinkedArtNode; showMissing?: boolean }) {
+function StatusDateProperty({ node, showMissing = false }: { node: LinkedArtNode; showMissing?: boolean }) {
   const timespan = findTimespan(node);
   const dates = timespan ? null : getRecordedDates(node);
   return !!timespan || !!dates || showMissing ? (
@@ -404,7 +404,7 @@ function PersonStatusGroup({
     return null;
   }
 
-  const content = groupPersonClaims(statuses).map(({ key, records }, index) => {
+  const content = groupPersonStatuses(statuses).map(({ key, records }, index) => {
     const status = records[0];
     const dateKey = (node: LinkedArtNode) => JSON.stringify([
       findTimespan(node), getRecordedDates(node),
@@ -434,7 +434,7 @@ function PersonStatusGroup({
               const recordDates = recordTimespan ? null : getRecordedDates(record);
               return (
                 <div key={recordIndex} className="person-status-summary-date">
-                  <ClaimRecordLabel index={recordIndex} />
+                  <StatusRecordLabel index={recordIndex} />
                   {recordTimespan
                     ? <TimespanValue timespan={recordTimespan} mode="summary" />
                     : recordDates
@@ -443,13 +443,13 @@ function PersonStatusGroup({
                 </div>
               );
             })}
-            <ClaimRecordCount count={records.length} />
+            <StatusRecordCount count={records.length} />
           </>
         )}
       >
         {details.length > 0 ? details.map((record, recordIndex) => (
-          <div key={recordIndex} className="person-claim-record">
-            {records.length > 1 && <ClaimRecordLabel index={recordIndex} />}
+          <div key={recordIndex} className="person-status-record">
+            {records.length > 1 && <StatusRecordLabel index={recordIndex} />}
             <ObjectCardPropertyList className="person-status-details">
               <StatusValuesProperty label="Geographic scope" values={getStatusValues(record, ['has_geographic_scope'])} />
               <StatusValuesProperty label="Classification" values={getStatusValues(record, ['classified_as'])} />
@@ -481,7 +481,7 @@ function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
   }
   return (
     <ObjectCardDisclosure summary={<span className="person-status-summary-label">Other recorded information</span>}>
-      <p className="person-claim-note">This information is recorded separately from individual claims.</p>
+      <p className="person-status-note">This information is recorded separately from individual status records.</p>
       <ObjectCardPropertyList className="person-status-details">
         <StatusValuesProperty label="Places mentioned" values={places} />
         <StatusValuesProperty label="Recorded terms" values={terms} />
@@ -565,7 +565,7 @@ function PersonSummaryProperty({ label: propertyLabel, value }: PersonSummaryPro
   );
 }
 
-function hasClaimEvidence(status: LinkedArtNode, includeSources = true): boolean {
+function hasStatusEvidence(status: LinkedArtNode, includeSources = true): boolean {
   return getStatusValues(status, ['classified_as']).length > 0
     || includeSources && getVisibleSources(status).length > 0
     || getNotes(status).length > 0;
@@ -573,7 +573,7 @@ function hasClaimEvidence(status: LinkedArtNode, includeSources = true): boolean
 
 function hasStatusDetails(status: LinkedArtNode, _group: StatusGroup, includeSources = true): boolean {
   return getStatusValues(status, ['has_geographic_scope']).length > 0
-    || hasClaimEvidence(status, includeSources);
+    || hasStatusEvidence(status, includeSources);
 }
 
 function getAdditionalStatusNodes(entity: LinkedArtNode, group: StatusGroup) {

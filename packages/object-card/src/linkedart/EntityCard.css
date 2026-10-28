@@ -43,25 +43,25 @@
       flex-direction: column;
     }
 
-    .person-claim-count,
-    .person-claim-label,
-    .person-claim-note {
+    .person-status-count,
+    .person-status-label,
+    .person-status-note {
       color: var(--color-neutral-300);
       font-family: var(--font-sans);
       font-size: var(--text-sm);
       line-height: var(--s20);
     }
 
-    .person-claim-label {
+    .person-status-label {
       margin-bottom: var(--s8);
       font-weight: 500;
     }
 
-    .person-claim-note {
+    .person-status-note {
       margin: 0;
     }
 
-    .person-claim-record + .person-claim-record {
+    .person-status-record + .person-status-record {
       margin-top: var(--s12);
       border-top: 1px solid var(--color-neutral-600);
       padding-top: var(--s12);

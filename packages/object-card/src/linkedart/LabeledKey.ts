@@ -93,7 +93,7 @@ export function getStatusProperties(status: LinkedArtNode): (StatusProperty & { 
     const name = key.slice(key.indexOf('ascribes_'));
     const presentation = statusPropertyLabels[name];
     const values = getStatusValues(status, [key]);
-    // Predicate descriptors explain the data model, rather than adding another claim value.
+    // Predicate descriptors explain the data model, rather than adding another status value.
     const predicate = name.endsWith('_relation') && !presentation && values.every((value) =>
       isLinkedArtNode(value) && /^(crm:|rdf:|rdfs:|https?:\/\/www\.cidoc-crm\.org\/)/.test(value.id ?? ''),
     );
