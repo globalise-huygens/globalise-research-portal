@@ -114,7 +114,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               aria-label={openFullCardLabel}
               className="icon-action"
             >
-              <IconArrowTopRight className="icon-action-icon" />
+              <IconArrowTopRight aria-hidden="true" className="icon-action-icon" />
             </a>
           )}
         </div>

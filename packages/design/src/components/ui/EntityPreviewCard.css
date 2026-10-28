@@ -1,5 +1,6 @@
 @layer components {
   .entity-preview-card.popover {
+    box-sizing: border-box;
     width: fit-content;
     min-width: min(200px, calc(100vw - var(--s16)));
     max-width: min(260px, calc(100vw - var(--s16)));

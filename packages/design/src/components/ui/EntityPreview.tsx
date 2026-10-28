@@ -1,6 +1,6 @@
 import { EntityPreviewCard, type EntityPreviewCardData } from './EntityPreviewCard';
 import { useEntityPreviewPosition } from './useEntityPreviewPosition';
-import { createContext, useContext, useCallback, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { createContext, useContext, useCallback, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
 import './EntityPreview.css';
@@ -102,6 +102,19 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
     };
   }, [anchor]);
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (event.defaultPrevented || event.isComposing
+      || event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey)) {return;}
+    if (event.key === 'Tab' && event.target instanceof Element
+      && event.target.closest('[role="dialog"]')?.id === id) {
+      const anchor = getTrigger();
+      if (popup.current && anchor) {
+        moveFocusFromPreview(event, popup.current, anchor, close);
+        // Handle portal boundaries before the popover's document-level focus restoration.
+        if (event.defaultPrevented) {event.stopPropagation();}
+      }
+      return;
+    }
+    if (!isRoot) {return;}
     if (event.key === 'Tab' && anchor && !event.shiftKey && document.activeElement === anchor) {
       const first = popup.current && getFocusableElements(popup.current)[0];
       if (first) {
@@ -120,9 +133,9 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
     close();
   });
   useEffect(() => {
-    if (!visible || !isRoot) {return;}
-    document.addEventListener('keydown', handleKeyDown, true);
-    return () => document.removeEventListener('keydown', handleKeyDown, true);
+    if (!visible) {return;}
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
   const position = useEntityPreviewPosition({
     visible, anchor, trigger, popupElement, parentElement, parentPosition,
@@ -133,7 +146,7 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
     <div
       role="dialog"
       id={id}
-      aria-label="Linked resource preview"
+      aria-label={typeof data?.title === 'string' ? `Preview: ${data.title}` : 'Linked resource preview'}
       aria-busy={isPending || undefined}
       onPointerEnter={() => {previewHovered.current = true; keepOpen();}}
       onPointerLeave={(event) => {
@@ -150,10 +163,6 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
           getTrigger()?.focus({ preventScroll: true });
           close();
           return;
-        }
-        const anchor = getTrigger();
-        if (popup.current && anchor) {
-          moveFocusFromPreview(event, popup.current, anchor, close);
         }
       }}
     >
@@ -213,7 +222,7 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
           event.stopPropagation();
           close();
         }
-        if (event.key === 'Tab' && !event.shiftKey && visible && !popup.current?.contains(event.target as Node)) {
+        if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && visible && !popup.current?.contains(event.target as Node)) {
           const first = popup.current && getFocusableElements(popup.current)[0];
           if (first) {
             event.preventDefault();
@@ -249,7 +258,7 @@ function getFocusableElements(container: Element) {
 }
 
 function moveFocusFromPreview(
-  event: ReactKeyboardEvent<HTMLElement>,
+  event: KeyboardEvent,
   popup: HTMLElement,
   anchor: HTMLElement | SVGElement,
   close: () => void,
@@ -261,7 +270,8 @@ function moveFocusFromPreview(
     anchor.focus({ preventScroll: true });
   } else if (!event.shiftKey && event.target === elements.at(-1)) {
     const outside = getFocusableElements(document.body).filter((element) => !popup.contains(element));
-    const next = outside[outside.indexOf(anchor) + 1];
+    const anchorIndex = outside.indexOf(anchor);
+    const next = anchorIndex >= 0 ? outside[anchorIndex + 1] : undefined;
     if (next) {
       event.preventDefault();
       next.focus({ preventScroll: true });
