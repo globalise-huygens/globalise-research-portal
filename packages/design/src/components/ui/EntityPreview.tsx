@@ -123,7 +123,7 @@ export function EntityPreview({ data, isPending = false, children, anchor, isHov
       return;
     }
     // Let the nearest preview handle Escape from inside the popup.
-    if (event.key !== 'Escape' || popup.current?.contains(event.target as Node)) {return;}
+    if (event.key !== 'Escape' || event.target instanceof Element && event.target.closest('.entity-preview')) {return;}
     event.preventDefault();
     event.stopPropagation();
     if (popup.current?.contains(document.activeElement)) {
