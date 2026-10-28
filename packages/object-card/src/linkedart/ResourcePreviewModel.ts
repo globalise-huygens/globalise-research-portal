@@ -58,6 +58,12 @@ function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardTyp
     case 'conceptscheme':
     case 'concept':
     case 'collection': return 'concept';
-    default: return resource.prefLabel ? 'concept' : 'entity';
+    default: return previewTypeByResource[resource.type] ?? (resource.prefLabel ? 'concept' : 'entity');
   }
 }
+
+const previewTypeByResource: Record<string, EntityPreviewCardType> = {
+  Person: 'person',
+  Place: 'place',
+  Group: 'organisation',
+};
