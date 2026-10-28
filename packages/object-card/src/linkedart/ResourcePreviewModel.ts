@@ -1,6 +1,6 @@
-import { findByPath, getContent, getLinkedArtEntityType, getValue, getValues, type LinkedArtNode } from '@globalise/common';
+import { findTimespan, findByPath, getContent, getLinkedArtEntityType, getValue, getValues, type LinkedArtNode } from '@globalise/common';
 import type { EntityPreviewCardData, EntityPreviewCardProperty, EntityPreviewCardType } from '@globalise/design';
-import { getPersonNameRecords, getPersonTimespan } from './PersonClaimModel.ts';
+import { getPersonNameRecords } from './PersonStatusModel.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
@@ -31,7 +31,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
   }
   for (const [key, label] of [['born', 'Born'], ['died', 'Died']] as const) {
     const dates = findByPath(resource, [key]).flatMap((event) => {
-      const timespan = getPersonTimespan(event);
+      const timespan = findTimespan(event);
       return timespan ? formatTimespan(timespan, true) : [];
     });
     if (dates.length) {
