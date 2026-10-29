@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toDocumentHit } from './manifestPageUrl';
+import { toDocumentHit } from './documentIds';
 
 const canvasUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/canvas:';
 
