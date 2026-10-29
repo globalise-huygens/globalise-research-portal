@@ -21,7 +21,7 @@ export type SidebarPanel = {
   badge?: string
 };
 
-const sidebarPanels = [
+const sidebarPanels: SidebarPanel[] = [
   {
     id: 'inventory',
     label: 'Inventory',
@@ -54,7 +54,7 @@ const sidebarPanels = [
       'Explore actions and events recognised in the transcription. Use these tags to find related passages',
     icon: <IconEvents className="sidebar-icon" />,
   },
-] satisfies SidebarPanel[];
+];
 
 export function useSidebarPanels(): SidebarPanel[] {
   const inventoryNumber = useInventoryNumber();
