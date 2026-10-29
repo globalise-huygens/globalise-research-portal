@@ -3,7 +3,8 @@ import { persist } from 'zustand/middleware';
 
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 export type MobileManifestView = 'scan' | 'text';
-export type MobileView = MobileManifestView | 'toc' | 'inventory' | 'entities' | 'events';
+export type MobilePanelView = 'toc' | 'inventory';
+export type MobileView = MobileManifestView | MobilePanelView;
 export type DesktopSettings = {
   paneRatio: number;
 };
