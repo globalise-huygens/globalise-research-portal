@@ -532,7 +532,7 @@ importers:
         version: 6.1.1
       react-aria:
         specifier: ^3.50.0
-        version: 3.50.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 3.53.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-split-pane:
         specifier: ^3.2.0
         version: 3.2.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
