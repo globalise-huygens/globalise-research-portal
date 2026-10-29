@@ -1,9 +1,10 @@
 import {
   CanvasId,
-  initCanvases,
+  useInitialCanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { FloatingToolbar } from '@globalise/design';
+import { ManifestReadingToolbar } from '../responsive/ManifestReadingToolbar';
+import { useReadingLayout } from '../responsive/ReadingLayout';
 import { FacsimileControls } from '@globalise/facsimile';
 import {
   useManifest,
@@ -29,7 +30,6 @@ import './LazyCollectionViewer.css';
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
-  initialCanvasId?: CanvasId;
   onCanvasChange: (canvasId: CanvasId) => void;
   preloadScreens?: number;
 }>;
@@ -46,16 +46,17 @@ export function LazyCollectionViewer({
   children,
   scanHeight,
   gap = 0.02,
-  initialCanvasId,
   onCanvasChange,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
+  const initialCanvasId = useInitialCanvasId();
+  const { scanFit } = useReadingLayout();
   const viewer = useViewer();
   const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
   const size = useContainerSize(containerRef);
-  const isScrollReady = size.width && size.height;
+  const isScrollReady = size.width > 0 && size.height > 0;
   const isScrolling = useIsViewerScrolling();
 
   const lazyCanvases = useMemo(() => {
@@ -84,29 +85,16 @@ export function LazyCollectionViewer({
     setLazyCanvases(lazyCanvases);
   }
 
-  const initialIndex = initialCanvasId
-    ? lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId)
-    : 0;
+  const initialIndex = lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId);
 
   useLazyCanvasLoader({
     viewer,
     lazyCanvases,
     initialCanvas: initialIndex >= 0 ? initialIndex : 0,
     canvasHeight: scanHeight,
+    scanFit,
     onLoadedChange: setLoaded,
   });
-
-  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvasId]);
-
-  function initCanvasesLazily() {
-    if (!lazyCanvases.length) {
-      return;
-    }
-    initCanvases(
-      lazyCanvases.map((c) => c.canvasId),
-      initialCanvasId,
-    );
-  }
 
   const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
 
@@ -225,12 +213,12 @@ export function LazyCollectionViewer({
 
   return (
     <>
-      <FloatingToolbar>
+      <ManifestReadingToolbar>
         <FacsimileControls
           fullscreenRef={containerRef}
           onScanFilterChange={setScanFilter}
         />
-      </FloatingToolbar>
+      </ManifestReadingToolbar>
       <div
         ref={containerRef}
         className="lazy-collection-viewer"

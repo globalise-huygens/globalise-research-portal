@@ -123,12 +123,12 @@
   accent-color: var(--color-brand-white);
 }
 
-@media (max-width: 767px) {
-  .scan-settings > .row {
+.scan-settings[data-layout="mobile"] {
+  > .row {
     grid-template-columns: 1fr;
   }
 
-  .scan-settings .value {
+  .value {
     text-align: left;
   }
 }

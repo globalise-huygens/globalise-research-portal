@@ -295,9 +295,6 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
-      '@globalise/facsimile':
-        specifier: workspace:*
-        version: link:../facsimile
       '@globalise/manifest':
         specifier: workspace:*
         version: link:../manifest
@@ -533,6 +530,9 @@ importers:
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
+      react-aria:
+        specifier: ^3.50.0
+        version: 3.50.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-split-pane:
         specifier: ^3.2.0
         version: 3.2.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

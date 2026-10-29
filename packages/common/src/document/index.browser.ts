@@ -1,2 +1,2 @@
-export { useCanvasPages } from './useCanvasPages';
 export { useDocumentHitCanvasId } from './useDocumentHitCanvasId';
+export { useInitCanvases } from './useInitCanvases';

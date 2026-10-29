@@ -9,7 +9,6 @@
   "references": [
     { "path": "../common" },
     { "path": "../design" },
-    { "path": "../facsimile" },
     { "path": "../manifest" },
     { "path": "../metadata" },
     { "path": "../object-card" },

@@ -566,42 +566,6 @@
   transform: rotate(180deg);
 }
 
-@media (max-width: 767px) {
-  .manifest-viewer {
-    --manifest-sidebar-expanded-width: 100vw;
-    --manifest-sidebar-collapsed-width: 0px;
-    --manifest-top-bar-height: var(--s56);
-    --manifest-bottom-bar-height: var(--s48);
-
-    padding-inline: 0;
-  }
-
-  .manifest-viewer .frame {
-    position: relative;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .manifest-viewer .sidebar {
-    position: absolute;
-    top: var(--manifest-top-bar-height);
-    bottom: var(--manifest-bottom-bar-height);
-    left: 0;
-    width: var(--manifest-sidebar-width);
-    /* Keep floating viewer controls behind the expanded mobile sidebar. */
-    z-index: 30;
-  }
-
-  .manifest-viewer .main {
-    grid-column: 1;
-  }
-
-  .manifest-viewer .top-bar,
-  .manifest-viewer .bottom-bar {
-    position: relative;
-    z-index: 20;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .manifest-viewer .sidebar,
   .manifest-viewer .frame,

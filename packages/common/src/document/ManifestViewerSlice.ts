@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
@@ -313,6 +314,11 @@ export function useSelectedCanvas(): CanvasStatus {
     }
     return { isInit: true, id: selectedCanvasId, ...canvas, selectedCanvasSource };
   }));
+}
+
+export function useInitialCanvasId(): CanvasId | undefined {
+  const [initialCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? undefined);
+  return initialCanvasId;
 }
 
 export function useIsSelectedCanvas(canvasId: CanvasId): boolean {
