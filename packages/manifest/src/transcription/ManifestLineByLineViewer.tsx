@@ -2,6 +2,7 @@ import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
+  useInitialCanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
@@ -23,7 +24,6 @@ type CanvasInfo = {
 };
 
 type Props = {
-  initialCanvasId?: string;
   showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
@@ -33,11 +33,11 @@ const DEFAULT_ITEM_HEIGHT = 600;
 const INCREASE_VIEWPORT_BY = 0;
 
 export function ManifestLineByLineViewer({
-  initialCanvasId,
   showLayoutElements,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const initialCanvasId = useInitialCanvasId();
   const transcriptionScale = useDiplomaticViewScale();
   const canvasDocuments = useCanvasDocuments();
 

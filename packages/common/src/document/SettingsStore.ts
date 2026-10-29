@@ -1,25 +1,38 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type DocumentMode =
-  | 'split'
-  | 'facsimile'
-  | 'transcription'
-  | 'minimap';
-
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
-export type SettingsState = {
-  documentMode: DocumentMode;
+export type MobileManifestView = 'scan' | 'text';
+export type MobileView = MobileManifestView | 'toc' | 'inventory' | 'entities' | 'events';
+export type DesktopSettings = {
   paneRatio: number;
+};
+export type MobileSettings = {
+  selectedView: MobileView;
+  selectedManifestView: MobileManifestView;
+};
+export type ResponsiveSettings = {
+  desktop: DesktopSettings;
+  mobile: MobileSettings;
+};
+export type SettingsState = {
   transcriptionMode: TranscriptionMode;
   diplomaticViewScale: number;
+  responsive: ResponsiveSettings;
 };
 
 const defaultSettings: SettingsState = {
-  documentMode: 'split',
-  paneRatio: 0.5,
   transcriptionMode: 'diplomatic',
   diplomaticViewScale: 100,
+  responsive: {
+    desktop: {
+      paneRatio: 0.5,
+    },
+    mobile: {
+      selectedView: 'scan',
+      selectedManifestView: 'scan',
+    },
+  },
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -30,12 +43,8 @@ export const useSettingsStore = create<SettingsState>()(
   persist(() => ({ ...defaultSettings }), { name: 'settings', version: 0 }),
 );
 
-export function useSettings() {
-  return useSettingsStore();
-}
-
 export function usePaneRatio() {
-  return useSettingsStore((state) => state.paneRatio);
+  return useSettingsStore((state) => state.responsive.desktop.paneRatio);
 }
 
 export function useTranscriptionMode() {
@@ -46,11 +55,12 @@ export function useDiplomaticViewScale() {
   return useSettingsStore((state) => state.diplomaticViewScale);
 }
 
-export function setDocumentMode(documentMode: DocumentMode) {
-  useSettingsStore.setState({ documentMode });
+export function useMobileSettings() {
+  return useSettingsStore((state) => state.responsive.mobile);
 }
+
 export function setPaneRatio(paneRatio: number) {
-  useSettingsStore.setState({ paneRatio });
+  setResponsiveSettings({ desktop: { paneRatio } });
 }
 
 export function setDiplomaticViewScale(diplomaticScale: number) {
@@ -61,7 +71,22 @@ export function setTranscriptionMode(transcriptionMode: TranscriptionMode) {
   useSettingsStore.setState({ transcriptionMode });
 }
 
+export function selectMobileView(selectedView: MobileView) {
+  const mobile = useSettingsStore.getState().responsive.mobile;
+  const selectedManifestView = isMobileManifestView(selectedView) ? selectedView : mobile.selectedManifestView;
+  setResponsiveSettings({ mobile: { selectedView, selectedManifestView } });
+}
+
+export function isMobileManifestView(view: MobileView): view is MobileManifestView {
+  return view === 'scan' || view === 'text';
+}
+
 export function resetScaling() {
-  const { diplomaticViewScale, paneRatio } = defaultSettings;
-  useSettingsStore.setState({ diplomaticViewScale, paneRatio });
+  const { diplomaticViewScale, responsive } = defaultSettings;
+  useSettingsStore.setState({ diplomaticViewScale });
+  setResponsiveSettings({ desktop: responsive.desktop });
+}
+
+function setResponsiveSettings(settings: Partial<ResponsiveSettings>) {
+  useSettingsStore.setState(({ responsive }) => ({ responsive: { ...responsive, ...settings } }));
 }

@@ -10,12 +10,12 @@ import {
 } from '@globalise/common/document';
 import { getManifestSearchState, highlightDocumentQueryOptions } from '@globalise/search';
 import { Spinner } from '@globalise/design';
-import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestDropdown,
   ManifestViewer,
   type ErrorMessage,
   useCollectionManifests,
+  ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { useNavigate } from '@tanstack/react-router';
@@ -136,7 +136,7 @@ export function ManifestPage() {
 
   return (
     <ViewerProvider>
-      <ManifestLoader url={manifestUrl}>
+      <ManifestLoader url={manifestUrl} canvasId={initialCanvasId}>
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             canvasId={initialCanvasId}

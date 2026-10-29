@@ -11,6 +11,7 @@ import {
   IconZoomOut,
   ToolButton,
   Tooltip,
+  useIsMobile,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, Rect } from 'openseadragon';
@@ -60,6 +61,7 @@ export function FacsimileControls(
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
   const settingsPanelRef = useRef<HTMLDivElement | null>(null);
   const settingsPanelId = useId();
+  const isMobile = useIsMobile();
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
   const scanFilter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) invert(${isInverted ? 1 : 0})`;
@@ -392,6 +394,7 @@ export function FacsimileControls(
             ref={settingsPanelRef}
             id={settingsPanelId}
             className="scan-settings"
+            data-layout={isMobile ? 'mobile' : 'desktop'}
             role="dialog"
             aria-label="Scan image settings"
             style={settingsPanelStyle}

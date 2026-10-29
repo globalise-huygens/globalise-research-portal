@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
@@ -97,14 +98,11 @@ function createReadyCanvas(pages: EmbeddedCanvasAnnotationPage[]) {
 }
 
 /**
- * Initialize canvases using manifest order; reuse state for the same canvas list.
+ * Initialize canvases record using manifest canvas order.
  * If selectedCanvasId exists, select it.
  * Otherwise, pick first canvas.
  */
 export function initCanvases(canvasIds: Id[], selectedCanvasId?: CanvasId) {
-  // Switching viewers must retain the current page and already loaded annotations.
-  const currentIds = Object.keys(useDocumentStore.getState().canvases);
-  if (currentIds.length === canvasIds.length && currentIds.every((id, index) => id === canvasIds[index])) {return;}
   const canvases: Record<Id, CanvasState> = {};
   for (const id of canvasIds) {
     canvases[id] = { ...emptyCanvasState };
@@ -316,6 +314,11 @@ export function useSelectedCanvas(): CanvasStatus {
     }
     return { isInit: true, id: selectedCanvasId, ...canvas, selectedCanvasSource };
   }));
+}
+
+export function useInitialCanvasId(): CanvasId | undefined {
+  const [initialCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? undefined);
+  return initialCanvasId;
 }
 
 export function useIsSelectedCanvas(canvasId: CanvasId): boolean {

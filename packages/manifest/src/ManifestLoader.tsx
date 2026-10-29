@@ -1,22 +1,39 @@
-import { useLoadManifest, useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
+import {
+  useLoadManifest,
+  useManifest,
+} from '@knaw-huc/osd-iiif-viewer';
+import { fetchPatchManifest } from '@globalise/facsimile';
 
-export function ManifestLoader(props: {
-  url: string;
-  children: ReactNode;
-}) {
+
+type ManifestLoaderProps = {
+  children: React.ReactNode,
+  url: string,
+  canvasId?: string,
+};
+
+export function ManifestLoader(
+  { children, url, canvasId }: ManifestLoaderProps,
+) {
   const loadManifest = useLoadManifest();
-  const { isReady, isLoading, error } = useManifest();
+
+  const manifest = useManifest();
 
   useEffect(() => {
-    void loadManifest(props.url);
-  }, [props.url, loadManifest]);
+    void fetchPatchManifest(url)
+      .then((patched) => loadManifest(url, { manifest: patched, canvasId }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadManifest, url]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (manifest.isLoading) {
+    return <>Loading manifest...</>;
   }
-  if (isLoading || !isReady) {
-    return <div>Loading manifest...</div>;
+  if (manifest.error) {
+    return <>Error: {manifest.error}</>;
   }
-  return <>{props.children}</>;
+  if (!manifest.isReady) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

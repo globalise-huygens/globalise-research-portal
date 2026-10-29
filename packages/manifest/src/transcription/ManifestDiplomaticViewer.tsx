@@ -1,5 +1,5 @@
 import type { CanvasAnnotationPage } from '@globalise/common/annotation';
-import { getAnnotationPages, useSelectedCanvas } from '@globalise/common/document';
+import { getAnnotationPages, useInitialCanvasId, useSelectedCanvas } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
 import { CanvasNormalized } from '@iiif/parser/presentation-3-normalized/types';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
@@ -24,7 +24,6 @@ type CanvasInfo = {
 };
 
 type Props = {
-  initialCanvasId?: string;
   showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
@@ -33,11 +32,11 @@ const MIN_CANVASES_TO_RENDER = 4;
 const MAX_VIEWPORTS_TO_RENDER = 2;
 
 export function ManifestDiplomaticViewer({
-  initialCanvasId,
   showLayoutElements,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const initialCanvasId = useInitialCanvasId();
   const diplomaticViewScale = useDiplomaticViewScale();
   const canvasDocuments = useCanvasDocuments();
   const scaleFactor = diplomaticViewScale / 100;

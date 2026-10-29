@@ -1,10 +1,10 @@
 import {
   CanvasId,
-  initCanvases,
-  useDocumentStore,
+  useInitialCanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { ManifestReadingToolbar } from '../layout/ManifestReadingToolbar';
+import { ManifestReadingToolbar } from '../responsive/ManifestReadingToolbar';
+import { useReadingLayout } from '../responsive/ReadingLayout';
 import { FacsimileControls } from '@globalise/facsimile';
 import {
   useManifest,
@@ -30,7 +30,6 @@ import './LazyCollectionViewer.css';
 type Props = PropsWithChildren<{
   gap?: number;
   scanHeight: number;
-  initialCanvasId?: CanvasId;
   onCanvasChange: (canvasId: CanvasId) => void;
   preloadScreens?: number;
 }>;
@@ -47,12 +46,12 @@ export function LazyCollectionViewer({
   children,
   scanHeight,
   gap = 0.02,
-  initialCanvasId,
   onCanvasChange,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useViewerStore();
-  const [startingCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? initialCanvasId);
+  const initialCanvasId = useInitialCanvasId();
+  const { scanFit } = useReadingLayout();
   const viewer = useViewer();
   const [scanFilter, setScanFilter] = useState('');
   const { vault, id: manifestId, isReady } = useManifest();
@@ -86,29 +85,16 @@ export function LazyCollectionViewer({
     setLazyCanvases(lazyCanvases);
   }
 
-  const currentIndex = lazyCanvases.findIndex((c) => c.canvasId === startingCanvasId);
-  const initialIndex = currentIndex >= 0 ? currentIndex
-    : lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId);
+  const initialIndex = lazyCanvases.findIndex((c) => c.canvasId === initialCanvasId);
 
   useLazyCanvasLoader({
     viewer,
     lazyCanvases,
     initialCanvas: initialIndex >= 0 ? initialIndex : 0,
     canvasHeight: scanHeight,
+    scanFit,
     onLoadedChange: setLoaded,
   });
-
-  useEffect(initCanvasesLazily, [lazyCanvases, initialCanvasId]);
-
-  function initCanvasesLazily() {
-    if (!lazyCanvases.length) {
-      return;
-    }
-    initCanvases(
-      lazyCanvases.map((c) => c.canvasId),
-      initialCanvasId,
-    );
-  }
 
   const { id: selectedCanvasId, selectedCanvasSource } = useSelectedCanvas();
 
