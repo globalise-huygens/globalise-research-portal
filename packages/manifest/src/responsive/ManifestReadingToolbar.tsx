@@ -1,12 +1,14 @@
 import { FloatingToolbar, IconClose, ToolButton } from '@globalise/design';
-import { useContext, type ReactNode } from 'react';
-import { ManifestEntityHighlightMenu } from './ManifestEntityHighlightMenu';
-import { ManifestLayoutElementsToggle } from './ManifestLayoutElementsToggle';
-import { ReadingToolsContext } from './ReadingToolsContext';
+import type { ReactNode } from 'react';
+import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
+import { ManifestLayoutElementsToggle } from '../layout/ManifestLayoutElementsToggle';
+import { useReadingLayout } from './ReadingLayout';
 
 export function ManifestReadingToolbar({ children }: { children: ReactNode }) {
-  const tools = useContext(ReadingToolsContext);
-  if (!tools) {return <FloatingToolbar>{children}</FloatingToolbar>;}
+  const { tools } = useReadingLayout();
+  if (!tools) {
+    return <FloatingToolbar>{children}</FloatingToolbar>;
+  }
   return <FloatingToolbar id={tools.id}
     hidden={!tools.isOpen} role="group" aria-label="Reading tools"
     onKeyDown={(event) => {
