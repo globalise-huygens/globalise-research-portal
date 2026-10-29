@@ -24,12 +24,17 @@ export function useLazyCanvasLoader(
     if (!viewer || !lazyCanvases.length) {
       return;
     }
+    const canvas = lazyCanvases[initialCanvas] ?? lazyCanvases[0];
+    // Fill the phone's reading area while keeping the entire scan width visible.
+    const initialHeight = window.matchMedia('(max-width: 767px)').matches
+      ? Math.min(0.8, canvas.height * viewer.viewport.getAspectRatio() / 1.1)
+      : canvasHeight;
     const loader = new LazyCanvasTileLoader(
       viewer,
       lazyCanvases,
       {
         initialCanvas,
-        canvasHeight,
+        canvasHeight: initialHeight,
         onLoadedChange,
       },
     );
