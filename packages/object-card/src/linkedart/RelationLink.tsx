@@ -9,6 +9,7 @@ import {
   type LinkedArtNode,
   url,
 } from '@globalise/common';
+import { toHref } from '@globalise/router';
 import { type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { isInternalUri } from '../isInternalUri.ts';
@@ -27,7 +28,7 @@ export function RelationLink({ node }: RelationLinkProps) {
     return (
       <EntityTag
         type={getEntityTagType(getLinkedArtEntityType(href))}
-        href={`/object-card?${new URLSearchParams({ uri: href })}`}
+        href={toHref({ to: '/object-card', search: { uri: href } })}
       >
         {text}
       </EntityTag>

@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { useNavigateToObjectCard } from './useNavigateToObjectCard.ts';
+import { useNavigate } from '@globalise/router';
 import './OpenResource.css';
 
 export function OpenResource() {
-  const navigateToObjectCard = useNavigateToObjectCard();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
 
   function handleSubmit() {
     const cleaned = input.replace('.json', '');
-    navigateToObjectCard(cleaned);
+    void navigate({ to: '/object-card', search: { uri: cleaned } });
     setIsOpen(false);
     setInput('');
   }
