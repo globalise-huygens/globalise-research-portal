@@ -1,6 +1,6 @@
 import { LinkedArtNode } from './LinkedArtNode.ts';
 import { findByPath } from './findByPath.ts';
-import { findStatuses, getStatusLabel } from './findStatuses.ts';
+import { getStatusLabel } from './getStatusLabel.ts';
 import { label } from './label.ts';
 import { getContent } from './getContent.ts';
 
@@ -31,17 +31,21 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
   const parts = uri?.split('/') ?? [];
   const pageType = pagePattern.exec(parts[parts.length - 1] ?? '')?.[1];
   const named = parts.filter((part) => part.includes(':'));
-  const segment = named[named.length - 1]?.split(':')[0];
+  const [segment, identifier] = named[named.length - 1]?.split(':') ?? [];
 
   return (
     toEntityType(pageType)
     ?? toEntityType(segment)
-    ?? (segment === thesaurusSegment ? 'concept' : 'unknown')
+    ?? (segment === thesaurusSegment ? 'concept' : undefined)
+    ?? linkedArtEntityTypes.find((type) =>
+      new RegExp(`(?:^|[_-])${type}(?:[_-]|\\d)`, 'i').test(identifier ?? ''),
+    )
+    ?? 'unknown'
   );
 }
 
 export function getEntityTitle(entity: LinkedArtNode): string {
-  const [name] = findStatuses(entity, 'is_appellative_subject_of')
+  const [name] = findByPath(entity, ['is_appellative_subject_of'])
     .map(getStatusLabel)
     .filter((found) => !!found);
   return name ?? label(entity);

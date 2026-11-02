@@ -5,7 +5,7 @@ import {
   useTranscriptionMode,
 } from '@globalise/common/document';
 import { FloatingToolbar } from '@globalise/design';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { CanvasNormalized } from '@iiif/parser/presentation-3-normalized/types';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useEffect, useMemo, useState } from 'react';
 import { ManifestDiplomaticViewer } from './ManifestDiplomaticViewer.tsx';
