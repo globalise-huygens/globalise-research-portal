@@ -102,12 +102,6 @@ function toDocument(
   };
 }
 
-/** All manifest scans, including those outside document ranges. */
-export function toScans(vault: Vault, manifestId: string): ManifestScan[] {
-  const manifest = vault.get({ id: manifestId, type: 'Manifest' });
-  return (manifest?.items ?? []).map((canvas, index) => toScan(vault, canvas.id, index + 1));
-}
-
 function toScan(vault: Vault, canvasId: CanvasId, scanNumber: number): ManifestScan {
   const canvas = vault.get({ id: canvasId, type: 'Canvas' });
   const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;

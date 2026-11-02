@@ -186,6 +186,7 @@
     min-height: 0;
     flex: 1 1 auto;
     overflow-y: auto;
+    scroll-behavior: smooth;
     padding: 0 var(--panel-pad) var(--panel-pad);
     scrollbar-color: var(--color-neutral-500) transparent;
     scrollbar-width: thin;
@@ -280,11 +281,12 @@
   .toc-document .disclosure-icon {
     width: var(--s20);
     height: var(--s20);
+    transform: rotate(-90deg);
     transition: transform 120ms ease-out;
   }
 
   .toc-document > .header[aria-expanded="true"] .disclosure-icon {
-    transform: rotate(180deg);
+    transform: rotate(0deg);
   }
 
   .toc-document-metadata {
@@ -433,5 +435,11 @@
   .toc-card[aria-current="true"] .toc-heading {
     color: var(--color-brand-white);
     font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc-panel > .list {
+    scroll-behavior: auto;
   }
 }

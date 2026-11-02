@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
-import { useManifestScans, useToc } from './useToc';
-import { TocScan } from './TocScan.tsx';
+import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { scrollToTocElement, useScrollToThumb } from './useScrollToThumb.ts';
+import { useScrollToThumb } from './useScrollToThumb.ts';
+import { findCurrentDocument } from './tocEntries';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -12,30 +12,19 @@ import { scrollToTocElement, useScrollToThumb } from './useScrollToThumb.ts';
  */
 export function TocPanel() {
   const documents = useToc();
-  const scans = useManifestScans();
-  const entries = useMemo(() => {
-    const documentCanvasIds = new Set(documents.flatMap((document) => document.scans.map((scan) => scan.canvasId)));
-    return [...documents, ...scans.filter((scan) => !documentCanvasIds.has(scan.canvasId))]
-      .sort((a, b) => ('scans' in a ? a.scans[0].scanNumber : a.scanNumber)
-        - ('scans' in b ? b.scans[0].scanNumber : b.scanNumber));
-  }, [documents, scans]);
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
+  const [navigation, setNavigation] = useState<{ target: 'document' | 'scan'; canvasId: string | null; documentId?: string }>();
 
   useScrollToThumb(tocListRef);
 
   const currentDocument = useMemo(
-    () => documents.find((document) => document.id === preferredDocumentId
-      && document.scans.some((scan) => scan.canvasId === selectedCanvasId)) ?? documents.find(
-      (document) => document.scans.some(
-        (scan) => scan.canvasId === selectedCanvasId,
-      ),
-    ),
+    () => findCurrentDocument(documents, selectedCanvasId, preferredDocumentId),
     [documents, selectedCanvasId, preferredDocumentId],
   );
   const currentDocumentId = currentDocument?.id;
-  const currentScan = scans.find((scan) => scan.canvasId === selectedCanvasId);
+  const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
 
   useEffect(expandCurrentDocument, [currentDocumentId]);
 
@@ -49,22 +38,10 @@ export function TocPanel() {
     if (target === 'scan' && currentDocumentId) {
       expandTocDocument(currentDocumentId);
     }
-    requestAnimationFrame(() => {
-      const list = tocListRef.current;
-      const header = list?.querySelector<HTMLElement>('.toc-document[data-current="true"] > .header');
-      const element = target === 'document' ? header
-        : (header?.parentElement ?? list)?.querySelector<HTMLElement>('.toc-card[aria-current="true"]');
-      if (!list || !element) {
-        return;
-      }
-      const offset = target === 'scan' ? (header?.offsetHeight ?? 0) : 0;
-      const anchor = target === 'document' ? element.parentElement ?? element : element;
-      scrollToTocElement(list, anchor, offset);
-      element.focus({ preventScroll: true });
-    });
+    setNavigation({ target, canvasId: selectedCanvasId, documentId: currentDocumentId });
   }
 
-  if (!entries.length) {
+  if (!documents.length) {
     return (
       <div className="toc-empty">
         No table of contents for manifest.
@@ -96,20 +73,17 @@ export function TocPanel() {
         </ToolButton>
       </div>
       <div className="list" ref={tocListRef}>
-        {entries.map((entry) => 'scans' in entry ? (
+        {documents.map((entry) => (
           <TocDocument
             key={entry.id}
             document={entry}
             isCurrent={entry.id === currentDocumentId}
             selectedCanvasId={selectedCanvasId}
             onSelect={() => setPreferredDocumentId(entry.id)}
-          />
-        ) : (
-          <TocScan
-            key={entry.canvasId}
-            scan={entry}
-            isSelected={entry.canvasId === selectedCanvasId}
-            onSelect={() => setPreferredDocumentId(undefined)}
+            listRef={tocListRef}
+            onNavigated={() => setNavigation(undefined)}
+            navigation={entry.id === currentDocumentId && navigation?.documentId === currentDocumentId
+              && navigation.canvasId === selectedCanvasId ? navigation : undefined}
           />
         ))}
       </div>

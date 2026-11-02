@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { setSelectedCanvas } from '@globalise/common/document';
 import type { ManifestScan } from './toToc';
 
@@ -5,10 +6,11 @@ export type TocScanProps = {
   scan: ManifestScan;
   isSelected: boolean;
   onSelect: () => void;
+  scanRef?: RefObject<HTMLButtonElement | null>;
 };
 
 export function TocScan(
-  { scan, isSelected, onSelect }: TocScanProps,
+  { scan, isSelected, onSelect, scanRef }: TocScanProps,
 ) {
   const thumbnail = scan.thumbnailUrl && (
     <img
@@ -23,6 +25,7 @@ export function TocScan(
 
   return (
     <button
+      ref={scanRef}
       type="button"
       className="toc-card"
       aria-current={isSelected ? 'true' : undefined}
