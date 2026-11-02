@@ -6,9 +6,14 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "GLOBALISE_DB=$PWD/data/globalise.db pnpm --filter @globalise/app dev",
+    "start": "GLOBALISE_DB=$PWD/data/globalise.db GLOBALISE_CONTENT=$PWD/packages/app/dist/content pnpm --filter @globalise/app dev",
     "build:app": "pnpm --filter @globalise/app build",
     "build": "pnpm test && pnpm typecheck && pnpm lint && pnpm build:app",
+    "content:init": "git submodule update --init content",
+    "content:fetch": "git -C content fetch",
+    "content:checkout": "sh -c 'git -C content checkout \"${1:-origin/main}\" && git add content && pnpm content:build' content:checkout",
+    "content:update": "git submodule update content",
+    "content:build": "node packages/content/src/cli.ts content packages/app/dist/content",
     "serve": "pnpm --filter @globalise/app serve",
     "diplomatic:screenshot": "pnpm --filter @globalise/diplomatic screenshot",
     "preview": "pnpm --filter @globalise/app build && pnpm --filter @globalise/app preview",
