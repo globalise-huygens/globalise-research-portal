@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { Container, IconArrowRight, IconSearch, Typography } from '@globalise/design';
 import { SiteFooter } from './SiteFooter';
 import { HomeHeroCards } from './HomeHeroCards';
+import { landingPageContent } from './landingPageContent';
 import './Home.css';
 
 export function Home() {
@@ -10,10 +11,10 @@ export function Home() {
       <main id="main-content" className="home-main">
         <Container className="home-hero">
           <Typography variant="display" className="home-title">
-            Discover the<br />VOC archives
+            {landingPageContent.hero.titleLines[0]}<br />{landingPageContent.hero.titleLines[1]}
           </Typography>
           <Typography variant="lead" className="home-introduction">
-            Built for researchers, educators and curious audiences worldwide.
+            {landingPageContent.hero.introduction}
           </Typography>
           <Link
             to="/search"
@@ -22,7 +23,7 @@ export function Home() {
             className="home-search"
           >
             <IconSearch aria-hidden="true" />
-            <span>Search the archive</span>
+            <span>{landingPageContent.hero.searchLabel}</span>
             <IconArrowRight aria-hidden="true" />
           </Link>
         </Container>
