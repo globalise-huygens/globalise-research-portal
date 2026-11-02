@@ -77,7 +77,7 @@ export function TocDocument(
               <TocScan
                 key={scan.canvasId}
                 scan={scan}
-                isSelected={scan.canvasId === selectedCanvasId}
+                isSelected={isCurrent && scan.canvasId === selectedCanvasId}
                 onSelect={onSelect}
                 scanRef={scan.canvasId === selectedCanvasId && isCurrent ? scanRef : undefined}
               />
