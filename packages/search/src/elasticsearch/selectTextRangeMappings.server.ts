@@ -18,28 +18,41 @@ const selectMappingsWhereDocumentIdQuery = `
     order by normalized_from
 `;
 
-let mappingsDb: MappingsDb | undefined;
+let isInitDatabase = false;
+let database: GlobaliseDatabase | undefined;
 
 export function selectTextRangeMappings(
   docDbId: string,
 ): TextRangeMapping[] {
-  mappingsDb ??= initMappingsDb();
-  const rows = mappingsDb.selectMappings.all(docDbId) as TextRangeMappingRow[];
+  if (!isInitDatabase) {
+    isInitDatabase = true;
+    database = initDatabase();
+  }
+  if (!database) {
+    console.warn('Globalise db unavailable: returning empty mappings list');
+    return [];
+  }
+  const rows = database.selectMappings.all(docDbId) as TextRangeMappingRow[];
   return rows.map(({ shortPageId, ...mapping }) => ({
     ...mapping,
     canvasId: toCanvasId(canvasNamePrefix + shortPageId),
   }));
 }
 
-type MappingsDb = {
+type GlobaliseDatabase = {
   database: DatabaseSync;
   selectMappings: StatementSync;
 };
 
-function initMappingsDb(): MappingsDb {
-  const database = openDatabase();
-  const selectMappings = database.prepare(selectMappingsWhereDocumentIdQuery);
-  return { database, selectMappings };
+function initDatabase(): GlobaliseDatabase | undefined {
+  try {
+    const database = openDatabase();
+    const selectMappings = database.prepare(selectMappingsWhereDocumentIdQuery);
+    return { database, selectMappings };
+  } catch (error) {
+    console.error('Globalise db unavailable:', error);
+    return undefined;
+  }
 }
 
 function openDatabase(): DatabaseSync {
