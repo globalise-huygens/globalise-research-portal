@@ -16,7 +16,7 @@
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
     "@iiif/helpers": "^4.0.0",
-    "@iiif/parser": "^4.0.3",
+    "@iiif/parser": "^4.0.5",
     "lodash.debounce": "^4.0.8"
   }
 }
