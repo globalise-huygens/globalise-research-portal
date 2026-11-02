@@ -1,4 +1,5 @@
 import { IconEntityPlace } from '@globalise/design';
+import { toHref } from '@globalise/router';
 
 export type PlaceTagProps = {
   label: string;
@@ -17,13 +18,14 @@ export function PlaceTag({ label, href }: PlaceTagProps) {
     return <span className="entity-tag" data-type="place">{labelWithIcon}</span>;
   }
 
+  const isInternalPlace = href.startsWith('https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/place:');
   return (
     <a
       data-type="place"
       className="entity-tag"
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={isInternalPlace ? toHref({ to: '/object-card', search: { uri: href } }) : href}
+      target={isInternalPlace ? undefined : '_blank'}
+      rel={isInternalPlace ? undefined : 'noopener noreferrer'}
     >
       {labelWithIcon}
     </a>

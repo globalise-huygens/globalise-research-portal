@@ -15,6 +15,7 @@
   "dependencies": {
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
+    "@globalise/router": "workspace:*",
     "@iiif/helpers": "^4.0.0",
     "@iiif/parser": "^4.0.3",
     "lodash.debounce": "^4.0.8"
