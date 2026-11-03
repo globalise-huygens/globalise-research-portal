@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { getSVGElement } from '@globalise/common';
@@ -24,11 +24,20 @@ const types: Record<string, { color: string, svg: string }> = {
   'Person': { color: 'var(--entity-actor)', svg: svgEntityPerson },
 };
 
-export default function SearchField() {
+export default function SearchField({ autoFocus = false }: { autoFocus?: boolean }) {
   const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
+
+  useEffect(() => {
+    if (autoFocus) {
+      // The editor mounts in its own effect. Focus after mounting and route
+      // scroll restoration, without adding a second search implementation.
+      const frame = requestAnimationFrame(() => searchFieldRef.current?.focus());
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [autoFocus]);
 
   const darkTheme: ThemeConfig = {
     fontFamily: 'var(--font-sans)',
@@ -59,7 +68,7 @@ export default function SearchField() {
   };
 
   return (
-    <div className={classes.searchField}>
+    <div id="archive-search" className={classes.searchField}>
       <div className={classes.input}>
         <SF className={classes.inputContainer} ref={searchFieldRef}
           query={query} onSearch={(query) => onSearch(query.source)}

@@ -17,18 +17,30 @@ export type RouteComponents = Record<RouteId, RouteComponent>;
 export function getRouter(): AppRouter {
   const router = createAppRouter();
   const components = routeComponents ?? orThrow('Provide the route components before creating the router');
+  const metadata = homeMetadata;
   for (const id of Object.keys(components) as RouteId[]) {
     const route: AnyRoute = router.routesById[id];
-    route.update({ component: components[id] });
+    route.update({
+      component: components[id],
+      ...(id === '/' && metadata ? { head: () => ({ meta: [
+        { title: metadata.title },
+        { name: 'description', content: metadata.description },
+      ] }) } : {}),
+    });
   }
   return router;
 }
 
-export function provideRouteComponents(components: RouteComponents) {
+export function provideRouteComponents(
+  components: RouteComponents,
+  metadata?: { title: string; description: string },
+) {
   routeComponents = components;
+  homeMetadata = metadata;
 }
 
 let routeComponents: RouteComponents | undefined;
+let homeMetadata: { title: string; description: string } | undefined;
 
 function createAppRouter() {
   return createRouter({
