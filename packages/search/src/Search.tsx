@@ -13,11 +13,11 @@ const facetsObj = facets.reduce<Facets>((acc, f) => {
   return acc;
 }, {});
 
-export default function Search() {
+export default function Search({ autoFocus = false }: { autoFocus?: boolean }) {
   return (
     <div className={classes.search}>
       <FacetedSearch facets={facetsObj} pageSize={10} syncPageToUrl={false}>
-        <Layout/>
+        <Layout autoFocus={autoFocus} />
       </FacetedSearch>
     </div>
   );
