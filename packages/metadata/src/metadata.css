@@ -320,12 +320,12 @@
     color: var(--color-neutral-200);
   }
 
-  .toc-document-metadata :is(.metadata-link, .gds-entity-tag) {
+  .toc-document-metadata :is(.metadata-link, .entity-tag) {
     display: inline;
     font: inherit;
   }
 
-  .toc-document-metadata :is(.metadata-link > .icon, .gds-entity-tag__icon) {
+  .toc-document-metadata :is(.metadata-link > .icon, .entity-tag .icon) {
     display: inline-block;
     width: 1em;
     height: 1em;
