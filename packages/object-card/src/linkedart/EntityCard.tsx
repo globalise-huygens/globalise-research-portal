@@ -29,6 +29,7 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
+import { PlaceCardBody } from './PlaceCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -44,7 +45,7 @@ export function EntityCard() {
 
   return (
     <ObjectCard
-      className={entityType === 'person' ? 'entity-card person-card' : 'entity-card'}
+      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'place' ? 'entity-card place-card' : 'entity-card'}
     >
       <ObjectCardHeader
         actions={
@@ -67,6 +68,8 @@ export function EntityCard() {
       </ObjectCardHeader>
       {entityType === 'person' ? (
         <PersonCardBody entity={entity}/>
+      ) : entityType === 'place' ? (
+        <PlaceCardBody entity={entity}/>
       ) : (
         <ObjectCardBody>
           <ObjectCardPanel side="left">

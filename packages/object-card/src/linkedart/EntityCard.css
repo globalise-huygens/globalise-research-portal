@@ -118,7 +118,7 @@
       align-items: baseline;
     }
 
-    &.person-card {
+    &:is(.person-card, .place-card) {
       width: 100%;
       max-width: none;
       height: 100%;
