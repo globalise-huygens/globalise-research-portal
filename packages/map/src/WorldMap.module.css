@@ -5,6 +5,105 @@
     > canvas {
         display: block;
         width: 100%;
+        aspect-ratio: 1;
+        color: color-mix(in srgb, var(--color-entity-place, #36c6a7) 80%, black);
+    }
+
+    &[data-controls] {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+        aspect-ratio: 16 / 9;
+        min-height: 160px;
+        align-items: center;
+        gap: var(--s8);
+
+        > canvas {
+            grid-column: 2;
+            grid-row: 1;
+            height: 100%;
+            min-height: 0;
+            aspect-ratio: auto;
+        }
+    }
+
+    > canvas:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+
+    .controls {
+        position: static;
+        display: flex;
+        grid-column: 1;
+        grid-row: 1;
+        flex-direction: column;
+        margin: 0;
+        height: auto;
+        max-width: 100%;
+        padding-block: var(--s4);
+        border: 0;
+        background: var(--color-neutral-800);
+        box-shadow: none;
+        backdrop-filter: none;
+
+        :global(.zoom-controls) {
+            flex-direction: column;
+            height: auto;
+        }
+
+        :global(.zoom-field) {
+            min-width: var(--s36);
+            padding-inline: 0;
+        }
+
+        :global(.zoom-controls) :global(.tool-button):first-child {
+            border-right: 0;
+            border-bottom: 1px solid rgb(255 255 255 / 0.14);
+        }
+
+        :global(.zoom-controls) :global(.tool-button):last-child {
+            border-left: 0;
+            border-top: 1px solid rgb(255 255 255 / 0.14);
+        }
+
+        :global(.toolbar-divider) {
+            width: var(--s20);
+            height: 1px;
+            margin: var(--s4) 0;
+        }
+
+        :global(.tool-button) {
+            width: var(--s36);
+            min-width: var(--s36);
+            height: var(--s32);
+            min-height: var(--s32);
+        }
+
+        :global(.zoom-field):focus-within {
+            outline: 2px solid var(--color-ring);
+            outline-offset: -2px;
+        }
+
+        @media (pointer: coarse) {
+            :global(.tool-button) {
+                width: var(--s44);
+                min-width: var(--s44);
+                height: var(--s44);
+                min-height: var(--s44);
+            }
+
+            :global(.zoom-field) {
+                min-width: var(--s44);
+                height: var(--s44);
+            }
+        }
+    }
+
+    @media (pointer: coarse) {
+        &[data-controls] {
+            min-height: 200px;
+        }
     }
 
     .anchor {

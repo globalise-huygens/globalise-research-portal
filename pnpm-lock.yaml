@@ -613,6 +613,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@globalise/map':
+        specifier: workspace:*
+        version: link:../map
       '@globalise/router':
         specifier: workspace:*
         version: link:../router
