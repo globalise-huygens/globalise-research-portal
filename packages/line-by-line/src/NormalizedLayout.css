@@ -13,7 +13,7 @@
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
     --search-hit-fill: var(--color-yellow-100);
     --search-hit-active-fill: var(--color-yellow-300);
-    --event-test-highlight: rgb(255 140 0 / 45%);
+    --event-test-highlight: rgb(255 140 0 / 20%);
 
     margin-left: 0.5em;
     white-space: pre-wrap;
