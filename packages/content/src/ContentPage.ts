@@ -1,17 +1,14 @@
 import type { Root } from 'hast';
+import type { z } from 'zod';
+import type { pageMetaSchema } from './page/pageMetaSchema.ts';
 
 export type ContentPage = {
   meta: PageMeta;
-  htmlTree: Root;
+  tree: Root;
 };
 
-export type PageMeta = {
+export type PageMeta = z.infer<typeof pageMetaSchema> & {
   path: string;
-  title: string;
-  slug: string;
-  summary?: string;
-  type?: string;
-  status?: string;
 };
 
 export type ContentIndex = PageMeta[];

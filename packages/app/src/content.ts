@@ -2,6 +2,7 @@ import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {notFound} from '@tanstack/react-router';
 import {createServerFn} from '@tanstack/react-start';
+import { slugPattern } from '@globalise/content';
 import type {ContentIndex, ContentPage} from '@globalise/content';
 
 export const getContentIndex = createServerFn().handler(async (): Promise<ContentIndex> => {
@@ -18,7 +19,7 @@ export const getContentIndex = createServerFn().handler(async (): Promise<Conten
 export const getContentPage = createServerFn()
   .validator((slug: string) => slug)
   .handler(async ({ data: slug }): Promise<ContentPage> => {
-    if (!/^[a-z0-9-]+$/.test(slug)) {
+    if (!slugPattern.test(slug)) {
       throw notFound();
     }
     try {

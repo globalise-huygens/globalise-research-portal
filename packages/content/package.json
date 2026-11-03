@@ -22,7 +22,8 @@
     "vfile": "^6.0.3",
     "vfile-reporter": "^8.1.1",
     "vfile-statistics": "^3.0.0",
-    "yaml": "^2.8.0"
+    "yaml": "^2.8.0",
+    "zod": "^4.6.2"
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",

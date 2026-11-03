@@ -7,10 +7,9 @@ type ContentPageViewProps = {
 };
 
 export function ContentPageView({ page }: ContentPageViewProps) {
-  const htmlTree = page.htmlTree;
   return (
     <article className="content-page">
-      {renderHtmlTree(htmlTree)}
+      {renderHtmlTree(page.tree)}
     </article>
   );
 }

@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { reporter } from 'vfile-reporter';
 import { statistics } from 'vfile-statistics';
-import { buildContent, writeContent } from './buildContent.ts';
+import { buildContent } from './buildContent.ts';
+import { writeContent } from './writeContent.ts';
 import { writeReport } from './writeReport.ts';
 
 const { positionals: [contentDir, outputDir], values: { force } } = parseArgs({
@@ -18,18 +19,18 @@ if (!existsSync(join(contentDir, 'pages'))) {
 }
 
 const build = await buildContent(contentDir);
-console.log(reporter(build.files, { quiet: true }));
+console.log(reporter(build.sources, { quiet: true }));
 
-const { fatal } = statistics(build.files);
+const { fatal } = statistics(build.sources);
 const failed = fatal > 0 && !force;
 const reportDir = join(outputDir, 'report');
 await rm(outputDir, { recursive: true, force: true });
 if (!failed) {
   await writeContent(build, outputDir);
 }
-await writeReport(build.files, reportDir);
+await writeReport(build.sources, reportDir);
 
-console.log(`Built ${build.pages.length} of ${build.files.length} pages into ${outputDir}, report in ${reportDir}`);
+console.log(`Built ${build.pages.length} of ${build.sources.length} pages into ${outputDir}, report in ${reportDir}`);
 if (failed) {
   console.error('Content has errors, nothing written; use `--force` to write the valid pages anyway');
   process.exitCode = 1;
