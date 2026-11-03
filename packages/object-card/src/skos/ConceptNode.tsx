@@ -1,5 +1,6 @@
-import { IconArrowTopRight, ObjectCardAction } from '@globalise/design';
+import { EntityPreview, IconArrowTopRight, ObjectCardAction } from '@globalise/design';
 import { getConceptLabel, type SkosConcept } from './SkosModel.ts';
+import { getResourcePreview } from '../linkedart/ResourcePreviewModel.ts';
 
 export type RelationKey =
   | 'broader'
@@ -77,11 +78,14 @@ export function ConceptNodeRow({
   }
 
   return (
-    <ObjectCardAction
-      className="concept-link"
-      onPress={() => onSelect(concept)}
-    >
-      {content}
-    </ObjectCardAction>
+    <EntityPreview data={getResourcePreview({ ...concept, type: 'Concept' }, concept.id)}>
+      {(attributes) => <ObjectCardAction
+        {...attributes}
+        className="concept-link"
+        onPress={() => onSelect(concept)}
+      >
+        {content}
+      </ObjectCardAction>}
+    </EntityPreview>
   );
 }
