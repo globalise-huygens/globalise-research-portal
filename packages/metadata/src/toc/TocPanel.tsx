@@ -3,7 +3,6 @@ import { expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation }
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { useScrollToThumb } from './useScrollToThumb.ts';
 import { findCurrentDocument } from './tocEntries';
 
 /**
@@ -15,8 +14,6 @@ export function TocPanel() {
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
-
-  useScrollToThumb(tocListRef);
 
   const currentDocument = useMemo(
     () => findCurrentDocument(documents, selectedCanvasId, preferredDocumentId),
