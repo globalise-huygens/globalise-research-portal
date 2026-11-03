@@ -1,15 +1,12 @@
-import {readFile} from 'node:fs/promises';
-import {join} from 'node:path';
-import {notFound} from '@tanstack/react-router';
-import {createServerFn} from '@tanstack/react-start';
+import { notFound } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
 import { slugPattern } from '@globalise/content';
-import type {ContentIndex, ContentPage} from '@globalise/content';
+import { readContentFile } from './content.server.ts';
+import type { ContentIndex, ContentPage } from '@globalise/content';
 
 export const getContentIndex = createServerFn().handler(async (): Promise<ContentIndex> => {
   try {
-    const indexPath = join(getContentDir(), 'index.json');
-    const contentIndexContent = await readFile(indexPath, 'utf8');
-    return JSON.parse(contentIndexContent) as ContentIndex;
+    return JSON.parse(await readContentFile('index.json')) as ContentIndex;
   } catch (error) {
     console.error('Globalise content unavailable:', error);
     return [];
@@ -23,19 +20,9 @@ export const getContentPage = createServerFn()
       throw notFound();
     }
     try {
-      const pagePath = join(getContentDir(), 'pages', `${slug}.json`);
-      return JSON.parse(await readFile(pagePath, 'utf8')) as ContentPage;
+      return JSON.parse(await readContentFile(`pages/${slug}.json`)) as ContentPage;
     } catch (error) {
       console.error(`Globalise content page ${slug} unavailable:`, error);
       throw notFound();
     }
   });
-
-function getContentDir(): string {
-  const contentDirEnvKey = 'GLOBALISE_CONTENT';
-  const contentDir = process.env[contentDirEnvKey];
-  if (!contentDir) {
-    throw new Error(`${contentDirEnvKey} is not set`);
-  }
-  return contentDir;
-}

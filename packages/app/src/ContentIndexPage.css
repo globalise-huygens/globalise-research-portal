@@ -12,4 +12,8 @@
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
+
+    mark {
+        background: color-mix(in srgb, var(--color-yellow-300, #fff751) 30%, transparent);
+    }
 }

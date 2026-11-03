@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { VFile } from 'vfile';
 import { validateSlugs } from './validateSlugs.ts';
 import type { PageBuild } from './page/buildPage.ts';
-import {PageMeta} from "./ContentPage.ts";
+import { PageMeta } from './ContentPage.ts';
 
 describe(validateSlugs.name, () => {
   it('invalidates page with duplicate slug, with an error', () => {
