@@ -1,5 +1,5 @@
 import { Virtuoso } from 'react-virtuoso';
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-aria-components';
 import {
   CardArticle,
   ReferencePanelItem,
@@ -17,7 +17,7 @@ import {
   isCollectionMember,
 } from './HydraModel.ts';
 import { useCollection } from './HydraSlice.ts';
-import { getHydraHref, getHydraTarget } from './getHydraHref.ts';
+import { toHydraHref } from './toHydraHref.ts';
 import { Pagination } from './Pagination.tsx';
 import './CollectionPage.css';
 
@@ -88,17 +88,17 @@ type PageItemProps = {
 
 function PageItem({ member, type }: PageItemProps) {
   const uri = member['@id'];
-  const target = getHydraTarget(member);
+  const href = toHydraHref(member);
 
   return (
     <ReferencePanelItem
       title={
-        <Link {...target} className='collection-item-link'>
+        <Link href={href} className='collection-item-link'>
           {member.title ?? uri}
         </Link>
       }
       metadata={<EntityTypeBadge type={type}/>}
-      href={getHydraHref(member)}
+      href={href}
       hrefLabel='Open'
       uri={uri}
     />
@@ -180,7 +180,7 @@ function SchemaGroup({
           return (
             <CardArticle
               key={member['@id']}
-              href={getHydraHref(member)}
+              href={toHydraHref(member)}
               label={title === 'Entities' ? 'Entity' : 'Concept'}
               title={schemaTitle}
               className={`catalog-schema-tile catalog-schema-tile--${type}`}

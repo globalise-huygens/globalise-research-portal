@@ -1,4 +1,10 @@
 @layer components {
+  .popover-card .entity-preview-card.popover {
+    max-height: calc(100vh - var(--s16));
+    max-height: calc(100dvh - var(--s16));
+    overflow-y: auto;
+  }
+
   .entity-preview-card.popover {
     box-sizing: border-box;
     width: fit-content;

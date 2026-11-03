@@ -1,11 +1,12 @@
-export { EntityPreview, EntityPreviewBody } from './EntityPreview';
+export { EntityPreview } from './EntityPreview';
+export { PopoverCard } from './PopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 
 export { CardArticle } from './CardArticle';
 export type { CardArticleProps } from './CardArticle';
 
-export { placeEntityPreview, placeEntityPreviewBeside } from './EntityPreviewPosition';
+export { placePopoverCard, placePopoverCardBeside } from './PopoverCardPosition';
 
 export {
   CardBase,

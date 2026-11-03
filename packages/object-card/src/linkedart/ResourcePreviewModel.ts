@@ -6,6 +6,7 @@ import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
 import { EntityIcon } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
+import { toHref } from '@globalise/router';
 
 export function getResourcePreview(resource: LinkedArtNode, uri: string, renderRelations?: (nodes: LinkedArtNode[]) => ReactNode): EntityPreviewCardData {
   const title = getResolvedRelationValue(resource) ?? getRelationValue(resource);
@@ -40,7 +41,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
   }
   return {
     type, title, properties, icon: createElement(EntityIcon, { type }),
-    openFullCardHref: isInternalUri(uri) ? `/object-card?${new URLSearchParams({ uri })}` : uri,
+    openFullCardHref: isInternalUri(uri) ? toHref({ to: '/object-card', search: { uri } }) : uri,
     openFullCardLabel: isInternalUri(uri) ? `Open ${title} in a full object card` : `Open ${title}`,
   };
 }

@@ -1,0 +1,19 @@
+@layer components {
+  .popover-card {
+    z-index: 100;
+    width: max-content;
+    outline: none;
+
+    &::before {
+      position: absolute;
+      inset: -12px;
+      content: '';
+    }
+
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+  }
+}
