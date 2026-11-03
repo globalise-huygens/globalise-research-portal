@@ -7,20 +7,20 @@ export type PlaceTagProps = {
 
 export function PlaceTag({ label, href }: PlaceTagProps) {
 
-  const labelWithIcon = <><span className="gds-entity-tag__label">{label}</span>
+  const labelWithIcon = <><span className="label">{label}</span>
     &nbsp;
-    <span className="gds-entity-tag__icon" aria-hidden="true">
-      <IconEntityPlace className="gds-entity-tag__icon-svg"/>
+    <span className="icon" aria-hidden="true">
+      <IconEntityPlace className="icon-svg"/>
     </span></>;
 
   if(!href) {
-    return labelWithIcon;
+    return <span className="entity-tag" data-type="place">{labelWithIcon}</span>;
   }
 
   return (
     <a
       data-type="place"
-      className="gds-entity-tag"
+      className="entity-tag"
       href={href}
       target="_blank"
       rel="noopener noreferrer"

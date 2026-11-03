@@ -10,6 +10,8 @@ minimumReleaseAgeExclude:
   - '@knaw-huc/*'
   # TODO: remove
   - openseadragon@6.1.1
+  - react-aria-components@1.22.1
+  - react-aria@3.53.1
 
 allowBuilds:
   msw: true

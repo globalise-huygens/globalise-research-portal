@@ -5,7 +5,7 @@ import {
   useSelectedCanvas,
 } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { CanvasNormalized } from '@iiif/parser/presentation-3-normalized/types';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useCanvasDocuments } from '@globalise/metadata';
 import { useEffect, useMemo, useRef } from 'react';

@@ -4,7 +4,7 @@ import type {
   AnnotationTarget as IiifAnnotationTarget,
   Body as IiifBody,
   TextPositionSelector,
-} from '@iiif/presentation-3';
+} from '@iiif/parser/presentation-3/types';
 import { EntityBody } from './EntityModel.ts';
 import { Id } from './Id.ts';
 

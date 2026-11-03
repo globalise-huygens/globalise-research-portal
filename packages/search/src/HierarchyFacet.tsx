@@ -1,4 +1,4 @@
-import { CSSProperties, Suspense, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { useIsFetching, useSuspenseQuery } from '@tanstack/react-query';
 import { Checkbox, IconExpandSection } from '@globalise/design';
 import {
@@ -21,7 +21,7 @@ import {
   type Key,
 } from 'react-aria-components';
 import hierarchyFacetItemsQueryOptions, { hierarchyFacetItemsQueryKey } from './queries/hierarchyFacetItemsQueryOptions';
-import getSearchState from './utils/getSearchState';
+import getSearchState, { type GlobaliseSearchState } from './utils/getSearchState';
 import Facet from './Facet';
 import classes from './HierarchyFacet.module.css';
 
@@ -45,9 +45,7 @@ export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
 
   return (
     <Facet label={label} isPending={isFetching}>
-      <Suspense>
-        <HierarchyFacetItems facetKey={facetKey}/>
-      </Suspense>
+      <HierarchyFacetItems facetKey={facetKey}/>
     </Facet>
   );
 }
@@ -56,8 +54,8 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
-  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, getSearchState(state)));
-
+  const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state), [state]);
+  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));
   const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(new Set());
 
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);

@@ -1,5 +1,5 @@
 import { ObjectCardSection } from '@globalise/design';
-import { findStatuses, LinkedArtNode, Status, getStatusLabel } from '@globalise/common';
+import { findByPath, findTimespan, getStatusLabel, LinkedArtNode } from '@globalise/common';
 import { LabeledKey } from './LabeledKey.ts';
 import { RelationLink } from './RelationLink.tsx';
 import { SourceList } from './SourceList.tsx';
@@ -11,7 +11,7 @@ type StatusSectionProps = {
 };
 
 export function StatusSection({ entity, labeledKey }: StatusSectionProps) {
-  const statuses = findStatuses(entity, labeledKey.key);
+  const statuses = findByPath(entity, [labeledKey.key]);
   if (!statuses.length) {
     return null;
   }
@@ -25,24 +25,26 @@ export function StatusSection({ entity, labeledKey }: StatusSectionProps) {
 }
 
 type StatusItemProps = {
-  status: Status;
+  status: LinkedArtNode;
 };
 
 function StatusItem({ status }: StatusItemProps) {
+  const scope = findByPath(status, ['has_geographic_scope']);
+  const timespan = findTimespan(status);
   return (
     <li>
       <span className="status-label">{getStatusLabel(status)}</span>
-      {!!status.scope.length && (
+      {!!scope.length && (
         <span className="status-scope">
-          {status.scope.map((node, i) => <RelationLink key={i} node={node}/>)}
+          {scope.map((node, i) => <RelationLink key={i} node={node}/>)}
         </span>
       )}
-      {status.timespan && (
+      {timespan && (
         <span className="status-timespan">
-          <TimespanValue timespan={status.timespan}/>
+          <TimespanValue timespan={timespan}/>
         </span>
       )}
-      <SourceList sources={status.sources}/>
+      <SourceList sources={findByPath(status, ['referred_to_by'])}/>
     </li>
   );
 }

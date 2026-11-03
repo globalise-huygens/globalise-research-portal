@@ -12,16 +12,18 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@globalise/design": "workspace:*",
     "@globalise/common": "workspace:*",
+    "@globalise/design": "workspace:*",
     "@globalise/diplomatic": "workspace:*",
     "@globalise/facsimile": "workspace:*",
     "@globalise/line-by-line": "workspace:*",
     "@globalise/metadata": "workspace:*",
+    "@iiif/helpers": "^4.0.0",
+    "@iiif/parser": "^4.0.3",
     "openseadragon": "^6.1.1",
     "react-split-pane": "^3.2.0"
   },
   "devDependencies": {
-    "@tanstack/router-plugin": "^1.168.6"
+    "@tanstack/router-plugin": "^1.168.47"
   }
 }

@@ -1,4 +1,4 @@
-import { type ReactNode, useContext } from 'react';
+import { type ReactNode, Suspense, useContext } from 'react';
 import { IconExpandSection, Spinner, cn } from '@globalise/design';
 import { Disclosure, DisclosurePanel, Button, DisclosureStateContext } from 'react-aria-components';
 import classes from './Facet.module.css';
@@ -19,7 +19,9 @@ export default function Facet({ label, isPending = false, children }: FacetProps
 
       <DisclosurePanel className={classes.body}>
         <div className={classes.content}>
-          {children}
+          <Suspense>
+            {children}
+          </Suspense>
         </div>
       </DisclosurePanel>
     </Disclosure>

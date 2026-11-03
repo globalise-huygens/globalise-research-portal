@@ -1,3 +1,17 @@
+/*
+TODO: To be replaced by a query call to SQLite
+
+globalise.db-> select * from facet_value_titles;
+╭──┬────────────────────────────────────┬───────────────────────────────────────────────────────────────╮
+│id│              value_id              │                             title                             │
+╞══╪════════════════════════════════════╪═══════════════════════════════════════════════════════════════╡
+│ 1│aa001d1b-3f4c-5458-8b54-efec2acfd468│Deel II/E                                                      │
+├──┼────────────────────────────────────┼───────────────────────────────────────────────────────────────┤
+│ 2│aa001d1b-3f4c-5458-8b54-efec2acfd468│INGEKOMEN STUKKEN VAN GOUVERNEUR-GENERAAL EN RADEN BIJ DE HEREN│
+│  │                                    │XVII EN DE KAMER ZEELAND                                       │
+╰──┴────────────────────────────────────┴───────────────────────────────────────────────────────────────╯
+ */
+
 const url = 'https://objectstore.surf.nl/87435b768620494e8e911c83d1997f24:globalise-data/objects/inventory/facets.json';
 // const facets: Map<string, string[]> = Record<string, Facet> = {};
 let facets = new Map<string, string[]>();

@@ -16,7 +16,7 @@ export {
   getValues,
   getPreferredLanguageValue,
 } from './LinkedArtValue.ts';
-export { type Timespan, getTimespan, findTimespan } from './Timespan.ts';
+export { type Timespan, getTimespan, findTimespan, type RecordedDates, getRecordedDates, formatRecordedDate } from './Timespan.ts';
 export {
   type LinkedArtEntityType,
   linkedArtEntityTypes,
@@ -24,4 +24,5 @@ export {
   getEntityTitle,
   getLinkedArtEntityType,
 } from './LinkedArtEntityModel.ts';
-export { type Status, findStatuses, getStatusLabel } from './findStatuses.ts';
+export { type StatusValue, getStatusValues } from './getStatusValues.ts';
+export { getStatusLabel } from './getStatusLabel.ts';
