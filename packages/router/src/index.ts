@@ -1,4 +1,4 @@
-export { provideRouteComponents, type RouteComponents, type RouteId } from './router.ts';
+export { provideRouteComponents, provideRouteLoaders, type RouteComponents, type RouteId, type RouteLoaders } from './router.ts';
 export { toHref } from './toHref.ts';
 export { validateSearchUrlParams, type SearchUrlParams } from './params/searchUrlParams.ts';
 export type { ManifestUrlParams } from './params/manifestUrlParams.ts';

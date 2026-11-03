@@ -1,4 +1,4 @@
-.content-index {
+.content-home {
     height: 100%;
     overflow: auto;
     padding: 1rem;
@@ -14,6 +14,6 @@
     }
 
     mark {
-        background: color-mix(in srgb, var(--color-yellow-300, #fff751) 30%, transparent);
+        background: color-mix(in srgb, var(--color-yellow-300, #fff751) 50%, transparent);
     }
 }

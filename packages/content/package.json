@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./serve": "./src/serve/index.ts"
   },
   "scripts": {
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@tanstack/react-router": "^1.170.45",
+    "@tanstack/react-start": "^1.169.3",
     "hast-util-to-text": "^4.0.2",
     "minisearch": "^7.2.0",
     "rehype-raw": "^7.0.0",

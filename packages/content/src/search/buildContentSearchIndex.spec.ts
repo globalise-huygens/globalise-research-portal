@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildClientSearchIndex } from './buildClientSearchIndex.ts';
+import { buildContentSearchIndex } from './buildContentSearchIndex.ts';
 import type { Element } from 'hast';
 import type { ContentPage } from '../ContentPage.ts';
 
-describe(buildClientSearchIndex.name, () => {
-  const index = buildClientSearchIndex([
+describe(buildContentSearchIndex.name, () => {
+  const index = buildContentSearchIndex([
     createPage('ethics', 'Ethics', 'Working with colonial archives'),
     createPage('about', 'About', 'The project team'),
   ]);
@@ -21,12 +21,12 @@ describe(buildClientSearchIndex.name, () => {
     expect(findSlugs('archi')).toEqual(['ethics']);
   });
 
-  it('finds a page despite a typo', () => {
-    expect(findSlugs('archves')).toEqual(['ethics']);
+  it('ignores a typo, so every hit matches the page literally', () => {
+    expect(findSlugs('archves')).toEqual([]);
   });
 
   function findSlugs(query: string): string[] {
-    return index.search(query).map((hit) => hit.id);
+    return index.search(query).map((hit) => String(hit.id));
   }
 });
 

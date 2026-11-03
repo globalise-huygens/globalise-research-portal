@@ -1,13 +1,13 @@
 import MiniSearch from 'minisearch';
 import { toText } from 'hast-util-to-text';
-import { contentSearchOptions } from './contentSearchOptions.ts';
+import { contentSearchIndexOptions } from './contentSearchIndex.ts';
 import type { ContentPage } from '../ContentPage.ts';
-import type { ContentSearchDocument } from './contentSearchOptions.ts';
+import type { ContentSearchDocument, ContentSearchIndex } from './contentSearchIndex.ts';
 
-export function buildClientSearchIndex(
+export function buildContentSearchIndex(
   pages: ContentPage[],
-): MiniSearch<ContentSearchDocument> {
-  const index = new MiniSearch(contentSearchOptions);
+): ContentSearchIndex {
+  const index = new MiniSearch(contentSearchIndexOptions);
   index.addAll(pages.map(toSearchDocument));
   return index;
 }

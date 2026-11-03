@@ -2,16 +2,26 @@ import { describe, expect, it } from 'vitest';
 import { createSnippet, splitByTerms } from './highlightTerms.ts';
 
 describe(splitByTerms.name, () => {
-  it('puts matched terms at odd positions', () => {
-    expect(splitByTerms('Colonial Archives of Batavia', ['archives'])).toEqual(['Colonial ', 'Archives', ' of Batavia']);
+  it('marks the matched terms', () => {
+    expect(splitByTerms('Colonial Archives of Batavia', ['archives'])).toEqual([
+      { text: 'Colonial ', isMatch: false },
+      { text: 'Archives', isMatch: true },
+      { text: ' of Batavia', isMatch: false },
+    ]);
   });
 
-  it('matches whole words only', () => {
-    expect(splitByTerms('archives', ['arch'])).toEqual(['archives']);
+  it('marks every match of every term', () => {
+    expect(splitByTerms('VOC and voc in Batavia', ['voc', 'batavia'])).toEqual([
+      { text: 'VOC', isMatch: true },
+      { text: ' and ', isMatch: false },
+      { text: 'voc', isMatch: true },
+      { text: ' in ', isMatch: false },
+      { text: 'Batavia', isMatch: true },
+    ]);
   });
 
   it('keeps the text whole without terms', () => {
-    expect(splitByTerms('archives', [])).toEqual(['archives']);
+    expect(splitByTerms('archives', [])).toEqual([{ text: 'archives', isMatch: false }]);
   });
 });
 
