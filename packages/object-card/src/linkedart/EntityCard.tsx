@@ -29,7 +29,7 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
-import { getShipTitle, ShipCardBody } from './ShipCardBody.tsx';
+import { getShipTitle, ShipCardBody, ShipOverview } from './ShipCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -60,7 +60,8 @@ export function EntityCard() {
           {entityType === 'person' ? getPersonTitle(entity) : entityType === 'ship' ? getShipTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
-        {entityType !== 'person' && !!identifiers.length && (
+        {entityType === 'ship' && <ShipOverview entity={entity}/>}
+        {entityType !== 'person' && entityType !== 'ship' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>

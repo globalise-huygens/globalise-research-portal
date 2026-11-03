@@ -13,8 +13,8 @@ import { toHref } from '@globalise/router';
 import { type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { isInternalUri } from '../isInternalUri.ts';
-import { getRelationValue } from './RelationValueModel.ts';
-import { relationValueQueryOptions } from './RelationValueResolver.ts';
+import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
+import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
@@ -50,8 +50,8 @@ export function RelationValue({ node, render }: RelationLinkProps & { render?: (
 function useRelationValue(node: LinkedArtNode, href?: string): string {
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
-  const { data, isPending } = useQuery(relationValueQueryOptions(href ?? ''));
-  return isPending ? pendingValue : data ?? safeFallback;
+  const { data, isPending } = useQuery(entityResourceQueryOptions(href ?? ''));
+  return isPending ? pendingValue : getResolvedRelationValue(data ?? undefined) ?? safeFallback;
 }
 
 function getEntityTagType(type: LinkedArtEntityType): EntityTagType {

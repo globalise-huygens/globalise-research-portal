@@ -17,24 +17,27 @@ import { getRelationValue } from './RelationValueModel.ts';
 type SourceListProps = {
   includeInternalLabels?: boolean;
   showNotes?: boolean;
+  excludedIdentifiers?: string[];
   sources: LinkedArtNode[];
 };
 
 export function SourceList({
   includeInternalLabels = false,
   showNotes = false,
+  excludedIdentifiers = [],
   sources,
 }: SourceListProps) {
   const items = sources
-    .filter((source) => isVisibleSource(source, includeInternalLabels, showNotes))
+    .filter((source) => isVisibleSource(source, includeInternalLabels, showNotes, excludedIdentifiers))
     .map((source, index) => {
       const sourceWorks = findByPath(source, ['part_of']);
       const visibleWorks = sourceWorks.filter(shouldShowSourceWork);
-      const identifiers = getSourceIdentifiers(source);
+      const allIdentifiers = getSourceIdentifiers(source);
+      const identifiers = allIdentifiers.filter(({ value }) => !excludedIdentifiers.includes(value));
       const sourceText = getSourceText(
         source,
         sourceWorks.length > 0,
-        identifiers.length > 0,
+        allIdentifiers.length > 0,
         includeInternalLabels,
       );
       const notes = showNotes ? getNotes(source) : [];
@@ -116,13 +119,15 @@ export function isVisibleSource(
   source: LinkedArtNode,
   includeInternalLabels = false,
   showNotes = false,
+  excludedIdentifiers: string[] = [],
 ): boolean {
   const sourceWorks = findByPath(source, ['part_of']);
-  const identifiers = getSourceIdentifiers(source);
+  const allIdentifiers = getSourceIdentifiers(source);
+  const identifiers = allIdentifiers.filter(({ value }) => !excludedIdentifiers.includes(value));
   const sourceText = getSourceText(
     source,
     sourceWorks.length > 0,
-    identifiers.length > 0,
+    allIdentifiers.length > 0,
     includeInternalLabels,
   );
   return identifiers.length > 0
