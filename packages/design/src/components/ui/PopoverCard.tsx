@@ -195,9 +195,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         }
       }}
       onClickCapture={(event) => {
-        if (!touch.current || event.detail === 0 || (!children && !isPending)
-          || !trigger.current?.contains(event.target as Node)
-          || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {return;}
+        const isKeyboardActivation = event.detail === 0;
+        const hasPopupContent = Boolean(children) || isPending;
+        const isInsideTrigger = trigger.current?.contains(event.target as Node);
+        const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
+        if (!touch.current || isKeyboardActivation || !hasPopupContent || !isInsideTrigger || !isPlainPrimaryClick) {return;}
         event.preventDefault();
         keepOpen();
       }}
@@ -218,7 +220,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
           event.stopPropagation();
           close();
         }
-        if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && visible && !popupElement?.contains(event.target as Node)) {
+        const isPlainTab = event.key === 'Tab' && !hasModifierKey(event);
+        const isFocusOutsidePopup = !popupElement?.contains(event.target as Node);
+        if (isPlainTab && visible && isFocusOutsidePopup) {
           const first = popupElement && getFocusableElements(popupElement)[0];
           if (first) {
             event.preventDefault();
@@ -248,6 +252,10 @@ function PopoverCardBody({ children, position, onKeepOpen }: {
 }
 
 const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+function hasModifierKey(event: { shiftKey: boolean; altKey: boolean; ctrlKey: boolean; metaKey: boolean }) {
+  return event.shiftKey || event.altKey || event.ctrlKey || event.metaKey;
+}
+
 function getFocusableElements(container: Element) {
   return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
     .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
