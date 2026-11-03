@@ -29,6 +29,7 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
+import { getShipTitle, ShipCardBody } from './ShipCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -44,7 +45,7 @@ export function EntityCard() {
 
   return (
     <ObjectCard
-      className={entityType === 'person' ? 'entity-card person-card' : 'entity-card'}
+      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'ship' ? 'entity-card ship-card' : 'entity-card'}
     >
       <ObjectCardHeader
         actions={
@@ -56,7 +57,7 @@ export function EntityCard() {
       >
         <EntityTypeBadge type={entityType}/>
         <ObjectCardTitle>
-          {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
+          {entityType === 'person' ? getPersonTitle(entity) : entityType === 'ship' ? getShipTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
         {entityType !== 'person' && !!identifiers.length && (
@@ -67,6 +68,8 @@ export function EntityCard() {
       </ObjectCardHeader>
       {entityType === 'person' ? (
         <PersonCardBody entity={entity}/>
+      ) : entityType === 'ship' ? (
+        <ShipCardBody entity={entity}/>
       ) : (
         <ObjectCardBody>
           <ObjectCardPanel side="left">

@@ -118,7 +118,7 @@
       align-items: baseline;
     }
 
-    &.person-card {
+    &:is(.person-card, .ship-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -265,7 +265,7 @@
   }
 
   @media (max-width: 1023px) {
-    .entity-card.person-card {
+    .entity-card:is(.person-card, .ship-card) {
       height: auto;
       max-height: none;
       overflow: visible;
@@ -283,17 +283,17 @@
   }
 
   @media (max-width: 479px) {
-    .entity-card.person-card .property {
+    .entity-card:is(.person-card, .ship-card) .property {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--s4);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .entity-card.person-card .section-toggle-icon,
-    .entity-card.person-card .external-link,
-    .entity-card.person-card .reference-panel .load-more,
-    .entity-card.person-card .reference-panel-item .reference-action {
+    .entity-card:is(.person-card, .ship-card) .section-toggle-icon,
+    .entity-card:is(.person-card, .ship-card) .external-link,
+    .entity-card:is(.person-card, .ship-card) .reference-panel .load-more,
+    .entity-card:is(.person-card, .ship-card) .reference-panel-item .reference-action {
       transition: none;
     }
   }
