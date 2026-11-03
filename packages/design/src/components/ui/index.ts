@@ -1,3 +1,5 @@
+export { EntityPreview } from './EntityPreview';
+export { PopoverCard } from './PopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 

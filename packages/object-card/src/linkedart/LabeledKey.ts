@@ -75,7 +75,7 @@ const statusPropertyLabels: Record<string, Omit<StatusProperty, 'keys'>> = {
   ascribes_social_status_in_relation_to: { label: 'In relation to' },
   ascribes_residence_relation: { label: 'Connection' },
   ascribes_residence_place: { label: 'Place' },
-  ascribes_familial_relation: { label: 'Relationship', linked: false },
+  ascribes_familial_relation: { label: 'Relationship' },
   ascribes_relative: { label: 'Person', stacked: true },
   ascribes_social_relation: { label: 'Relationship' },
   ascribes_social_relation_target: { label: 'Group' },
