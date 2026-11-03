@@ -6,15 +6,14 @@ export function HomeHeroCards() {
   return (
     <div className="home-hero-cards">
       <ul>
-        {landingPageContent.cards.map(({ background, hoverColor, label, title }) => (
+        {landingPageContent.cards.map(({ label, title }) => (
           <li key={title}>
             <CardHero
               label={label}
               title={title}
-              hoverColor={hoverColor}
               tabIndex={0}
             >
-              <div style={{ background }} aria-hidden="true" />
+              <div className="home-hero-card-placeholder" aria-hidden="true" />
             </CardHero>
           </li>
         ))}
