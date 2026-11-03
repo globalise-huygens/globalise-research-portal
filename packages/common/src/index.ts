@@ -4,6 +4,7 @@ export { fetchJson } from './util/fetchJson';
 export { isUrl } from './util/isUrl';
 export { asArray } from './util/asArray.ts';
 export { isCentered } from './util/isCentered.ts';
+export { isVisible } from './util/isVisible.ts';
 export { mergePaths, type TreeNode } from './util/mergePaths.ts';
 export { getSVGElement } from './util/getSVGElement';
 
