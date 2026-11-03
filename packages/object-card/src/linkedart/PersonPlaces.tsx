@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { EntityPreviewBody, ObjectCardSection } from '@globalise/design';
+import { EntityPreviewCard, ObjectCardSection } from '@globalise/design';
 import { url, type LinkedArtNode } from '@globalise/common';
 import type { FeatureCollection, Point } from 'geojson';
 import { getPersonPlaces, getPlaceCoordinates } from './PersonPlacesModel.ts';
@@ -37,11 +37,10 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
   return <Suspense fallback={null}>
     <ObjectCardSection title="Map" collapsible>
       <WorldMap places={features} showControls
-        popoverClassName="gds entity-preview"
-        renderPopoverPlace={(place, { keepOpen }) => (
-          <EntityPreviewBody data={getResourcePreview(place.properties.node, String(place.id), (nodes) => nodes.map((node, index) => (
+        renderPopoverPlace={(place) => (
+          <EntityPreviewCard data={getResourcePreview(place.properties.node, String(place.id), (nodes) => nodes.map((node, index) => (
             <span key={node.id ?? index}>{index > 0 && ', '}<RelationLink node={node} /></span>
-          )))} onKeepOpen={keepOpen} />
+          )))} />
         )}
       />
     </ObjectCardSection>

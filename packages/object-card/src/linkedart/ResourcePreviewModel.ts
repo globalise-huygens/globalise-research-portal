@@ -6,7 +6,16 @@ import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
 import { EntityIcon } from '@globalise/design';
 import { isInternalUri } from '../isInternalUri.ts';
+import { toHref } from '@globalise/router';
 
+/**
+ * Builds a preview from a Linked Art resource. It chooses a title and type,
+ * then adds available definitions, names, concept relations and dates as
+ * properties. `renderRelations` turns concept relations into preview content.
+ * Internal links open an object card; external links open the original resource.
+ * See https://github.com/globalise-huygens/glob-portal-infomodel/issues/108
+ * for the small object card designs, including annotation-based previews.
+ */
 export function getResourcePreview(resource: LinkedArtNode, uri: string, renderRelations?: (nodes: LinkedArtNode[]) => ReactNode): EntityPreviewCardData {
   const title = getResolvedRelationValue(resource) ?? getRelationValue(resource);
   const type = previewType(resource, uri);
@@ -40,7 +49,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
   }
   return {
     type, title, properties, icon: createElement(EntityIcon, { type }),
-    openFullCardHref: isInternalUri(uri) ? `/object-card?${new URLSearchParams({ uri })}` : uri,
+    openFullCardHref: isInternalUri(uri) ? toHref({ to: '/object-card', search: { uri } }) : uri,
     openFullCardLabel: isInternalUri(uri) ? `Open ${title} in a full object card` : `Open ${title}`,
   };
 }

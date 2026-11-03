@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useRef, useState, useImperativeHandle, MouseEvent, Ref, type CSSProperties } from 'react';
-import { Popover } from 'react-aria-components';
-import { FloatingToolbar, ToolButton, Tooltip, IconZoomIn, IconZoomOut, IconReset, cn } from '@globalise/design';
+import { PopoverCard, FloatingToolbar, ToolButton, Tooltip, IconZoomIn, IconZoomOut, IconReset, cn } from '@globalise/design';
 import drawMap, { type MapInteraction } from './drawMap';
 import classes from './WorldMap.module.css';
 
@@ -8,12 +7,11 @@ import type { GeoJsonProperties, Feature, FeatureCollection, Point, LineString }
 
 export type WorldMapProps<P extends GeoJsonProperties = GeoJsonProperties> = {
   className?: string;
-  popoverClassName?: string;
   showControls?: boolean;
   style?: CSSProperties;
   places?: FeatureCollection<Point, P>;
   voyages?: FeatureCollection<LineString, P>;
-  renderPopoverPlace?: (place: Feature<Point, P>, actions: { keepOpen: () => void }) => ReactNode;
+  renderPopoverPlace?: (place: Feature<Point, P>) => ReactNode;
   renderPopoverVoyage?: (voyage: Feature<LineString, P>) => ReactNode;
   onClickPlace?: (place: Feature<Point, P>) => void;
   onClickVoyage?: (voyage: Feature<LineString, P>) => void;
@@ -27,7 +25,6 @@ export type WorldMapHandler = {
 export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties>({
   className,
   style,
-  popoverClassName,
   showControls = false,
   places,
   voyages,
@@ -38,10 +35,9 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
   ref,
 }: WorldMapProps<P>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const popoverAnchorRef = useRef<HTMLSpanElement>(null);
-  const popupRef = useRef<HTMLElement>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const previewFrame = useRef<number | undefined>(undefined);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLSpanElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [keyboardPreview, setKeyboardPreview] = useState(false);
   const previewTrigger = useRef<HTMLElement | null>(null);
   const selectedPlace = useRef(0);
   const mapInteractionRef = useRef<MapInteraction<P>>(null);
@@ -56,12 +52,9 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
   const showVoyagePopover = !!(renderPopoverVoyage && hoveredVoyage);
   const isPreviewOpen = showPlacePopover || showVoyagePopover;
 
-  const keepOpen = () => {
-    clearTimeout(closeTimer.current);
-    closeTimer.current = undefined;
-  };
   function close() {
-    keepOpen();
+    setIsHovered(false);
+    setKeyboardPreview(false);
     setHoveredPlace(null);
     setHoveredVoyage(null);
   }
@@ -74,11 +67,7 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     setZoomInput(null);
   }
   function handleLeave() {
-    if (closeTimer.current !== undefined) {return;}
-    closeTimer.current = setTimeout(() => {
-      closeTimer.current = undefined;
-      if (!popupRef.current?.contains(document.activeElement)) {close();}
-    }, 200);
+    setIsHovered(false);
   }
   function handleHover(e: MouseEvent<HTMLCanvasElement>) {
     const interaction = mapInteractionRef.current;
@@ -87,7 +76,8 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     const place = interaction.overPlace(e.nativeEvent);
     const voyage = place ? null : interaction.overVoyage(e.nativeEvent);
     if (!place && !voyage) { handleLeave(); return; }
-    keepOpen();
+    setIsHovered(true);
+    setKeyboardPreview(false);
     if (place !== hoveredPlace || voyage !== hoveredVoyage) {
       previewTrigger.current = canvas;
       if (place && places) {selectedPlace.current = places.features.indexOf(place);}
@@ -127,13 +117,12 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     const place = features[selectedPlace.current];
     previewTrigger.current = document.activeElement instanceof HTMLElement && canvas.parentElement?.contains(document.activeElement)
       ? document.activeElement : canvas;
-    keepOpen();
+    setIsHovered(true);
+    setKeyboardPreview(true);
     mapInteractionRef.current?.rotateTo(place.geometry.coordinates as [number, number]);
     setCoordinates([canvas.offsetLeft + canvas.clientWidth / 2, canvas.offsetTop + canvas.clientHeight / 2]);
     setHoveredPlace(place);
     setHoveredVoyage(null);
-    if (previewFrame.current !== undefined) {cancelAnimationFrame(previewFrame.current);}
-    previewFrame.current = requestAnimationFrame(() => popupRef.current?.querySelector<HTMLElement>('a[href], button')?.focus({ preventScroll: true }));
   }
 
   useEffect(() => {
@@ -151,25 +140,6 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
       mapInteractionRef.current = null;
     };
   }, [places, voyages, showControls]);
-  useEffect(() => () => {
-    clearTimeout(closeTimer.current);
-    if (previewFrame.current !== undefined) {cancelAnimationFrame(previewFrame.current);}
-  }, []);
-  useEffect(() => {
-    if (!isPreviewOpen) {return;}
-    const dismiss = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {return;}
-      event.preventDefault();
-      event.stopPropagation();
-      if (popupRef.current?.contains(document.activeElement)) {(previewTrigger.current ?? canvasRef.current)?.focus({ preventScroll: true });}
-      clearTimeout(closeTimer.current);
-      setHoveredPlace(null);
-      setHoveredVoyage(null);
-    };
-    document.addEventListener('keydown', dismiss, true);
-    return () => document.removeEventListener('keydown', dismiss, true);
-  }, [isPreviewOpen]);
-
   useImperativeHandle(ref, () => ({
     rotateTo: (coordinates: [number, number]) => {
       close();
@@ -221,27 +191,16 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
         <Tooltip label="Return to location overview"><ToolButton size="touch" aria-label="Reset globe to location overview" icon={<IconReset />} onPress={() => { close(); setZoomInput(null); selectedPlace.current = 0; mapInteractionRef.current?.reset(); }} /></Tooltip>
       </FloatingToolbar>}
 
-      <span ref={popoverAnchorRef} className={classes.anchor} aria-hidden="true"
+      <span ref={setPopoverAnchor} className={classes.anchor} aria-hidden="true"
         style={{ left: coordinates[0], top: coordinates[1] }}/>
-
-      {isPreviewOpen && (
-        <Popover ref={popupRef} triggerRef={popoverAnchorRef} isOpen={isPreviewOpen}
-          onOpenChange={(open) => { if (!open) {close();} }} className={popoverClassName}
-          isNonModal placement="top" offset={10} shouldFlip>
-          <div role="dialog" aria-label="Map place preview" onMouseEnter={keepOpen} onMouseLeave={handleLeave}
-            onFocusCapture={keepOpen} onBlurCapture={handleLeave}
-            onKeyDown={(event) => {
-              if (!event.defaultPrevented && event.key === 'Tab' && event.shiftKey && event.target === popupRef.current?.querySelector('a[href], button')) {
-                event.preventDefault();
-                (previewTrigger.current ?? canvasRef.current)?.focus({ preventScroll: true });
-                close();
-              }
-            }}>
-            {showPlacePopover
-              ? renderPopoverPlace(hoveredPlace, { keepOpen })
-              : showVoyagePopover ? renderPopoverVoyage(hoveredVoyage) : null}
-          </div>
-        </Popover>
+      {isPreviewOpen && popoverAnchor && (
+        <PopoverCard key={`${coordinates[0]}-${coordinates[1]}`} anchor={popoverAnchor}
+          focusTarget={previewTrigger.current} autoFocus={keyboardPreview}
+          isHovered={isHovered} openImmediately label="Map place preview"
+          onOpenChange={(open) => { if (!open) {close();} }}>
+          {showPlacePopover ? renderPopoverPlace(hoveredPlace)
+            : showVoyagePopover ? renderPopoverVoyage(hoveredVoyage) : null}
+        </PopoverCard>
       )}
     </div>
   );
