@@ -39,11 +39,11 @@ export function usePopoverCardPosition({
     observer.observe(popupElement);
     observer.observe(target);
     window.addEventListener('resize', scheduleUpdate);
-    window.addEventListener('scroll', scheduleUpdate, true);
+    if (!anchor) {window.addEventListener('scroll', scheduleUpdate, true);}
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', scheduleUpdate);
-      window.removeEventListener('scroll', scheduleUpdate, true);
+      if (!anchor) {window.removeEventListener('scroll', scheduleUpdate, true);}
       if (frame !== undefined) {cancelAnimationFrame(frame);}
     };
   }, [visible, popupElement, parentElement, parentPosition, anchor, trigger]);

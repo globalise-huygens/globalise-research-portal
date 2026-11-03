@@ -1,5 +1,5 @@
 import { usePopoverCardPosition } from './usePopoverCardPosition';
-import { createContext, useContext, useCallback, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
 import './PopoverCard.css';
@@ -30,12 +30,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   const touch = useRef(false);
   const previewHovered = useRef(false);
   const externalTrigger = useMemo(() => ({ current: anchor ?? null }), [anchor]);
-  const popup = useRef<HTMLElement>(null);
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
-  const popupRef = useCallback((element: HTMLElement | null) => {
-    popup.current = element;
-    setPopupElement(element);
-  }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const visible = open && (!!children || isPending) && (!parent || parent.activeChild === id);
@@ -62,7 +57,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     timer.current = setTimeout(() => {
       timer.current = undefined;
       if (!previewHovered.current && document.activeElement !== anchor
-        && !trigger.current?.contains(document.activeElement) && !popup.current?.contains(document.activeElement)) {
+        && !trigger.current?.contains(document.activeElement) && !popupElement?.contains(document.activeElement)) {
         close();
       }
     }, 200);
@@ -89,7 +84,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     if (!anchor) {return;}
     const dismissOnMovement = (event: Event) => {
       if (event.target instanceof Node && (anchor.contains(event.target) && event.type === 'pointerdown'
-        || popup.current?.contains(event.target))) {return;}
+        || popupElement?.contains(event.target))) {return;}
       dismiss();
     };
     window.addEventListener('wheel', dismissOnMovement, { capture: true, passive: true });
@@ -100,15 +95,15 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       window.removeEventListener('scroll', dismissOnMovement, true);
       window.removeEventListener('pointerdown', dismissOnMovement, true);
     };
-  }, [anchor]);
+  }, [anchor, popupElement]);
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
     if (event.defaultPrevented || event.isComposing
       || event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey)) {return;}
     if (event.key === 'Tab' && event.target instanceof Element
       && event.target.closest('[role="dialog"]')?.id === id) {
       const anchor = getTrigger();
-      if (popup.current && anchor) {
-        moveFocusFromPreview(event, popup.current, anchor, close);
+      if (popupElement && anchor) {
+        moveFocusFromPreview(event, popupElement, anchor, close);
         // Handle portal boundaries before the popover's document-level focus restoration.
         if (event.defaultPrevented) {event.stopPropagation();}
       }
@@ -116,7 +111,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     }
     if (!isRoot) {return;}
     if (event.key === 'Tab' && anchor && !event.shiftKey && document.activeElement === anchor) {
-      const first = popup.current && getFocusableElements(popup.current)[0];
+      const first = popupElement && getFocusableElements(popupElement)[0];
       if (first) {
         event.preventDefault();
         first.focus({ preventScroll: true });
@@ -127,7 +122,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     if (event.key !== 'Escape' || event.target instanceof Element && event.target.closest('.popover-card')) {return;}
     event.preventDefault();
     event.stopPropagation();
-    if (popup.current?.contains(document.activeElement)) {
+    if (popupElement?.contains(document.activeElement)) {
       getTrigger()?.focus({ preventScroll: true });
     }
     close();
@@ -172,13 +167,13 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   );
 
   const overlay = parentElement ? visible && createPortal(
-    <div ref={popupRef} className="gds popover-card" style={{ ...position, position: 'fixed' }}>
+    <div ref={setPopupElement} className="gds popover-card" style={{ ...position, position: 'fixed' }}>
       {card}
     </div>,
     parentElement,
   ) : visible && (
     <Popover
-      ref={popupRef}
+      ref={setPopupElement}
       triggerRef={anchor ? externalTrigger : trigger}
       isOpen={visible}
       onOpenChange={(next) => { if (!next) {close();} }}
@@ -223,8 +218,8 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
           event.stopPropagation();
           close();
         }
-        if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && visible && !popup.current?.contains(event.target as Node)) {
-          const first = popup.current && getFocusableElements(popup.current)[0];
+        if (event.key === 'Tab' && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && visible && !popupElement?.contains(event.target as Node)) {
+          const first = popupElement && getFocusableElements(popupElement)[0];
           if (first) {
             event.preventDefault();
             first.focus({ preventScroll: true });
