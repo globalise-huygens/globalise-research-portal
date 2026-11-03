@@ -1,5 +1,5 @@
 # Build
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 RUN apk add --no-cache git
 
@@ -18,7 +18,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
 # Run
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
 
 WORKDIR /app
 

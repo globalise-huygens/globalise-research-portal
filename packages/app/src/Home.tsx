@@ -1,4 +1,5 @@
-import { Link } from '@tanstack/react-router';
+import { Link } from 'react-aria-components';
+import { toHref } from '@globalise/router';
 import { Container, IconArrowRight, IconSearch, Typography } from '@globalise/design';
 import { SiteFooter } from './SiteFooter';
 import { HomeHeroCards } from './HomeHeroCards';
@@ -17,9 +18,7 @@ export function Home() {
             {landingPageContent.hero.introduction}
           </Typography>
           <Link
-            to="/search"
-            hash="archive-search"
-            preload={false}
+            href={`${toHref({ to: '/search' })}#archive-search`}
             className="home-search"
           >
             <IconSearch aria-hidden="true" />

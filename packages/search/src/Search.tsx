@@ -1,5 +1,5 @@
 import { FacetedSearch, getReadableRange, type Facets } from '@knaw-huc/faceted-search-react';
-import { facets } from './facetDefinitions';
+import { facets } from '@globalise/router';
 import Layout from './Layout';
 
 import '@globalise/design/styles.css';

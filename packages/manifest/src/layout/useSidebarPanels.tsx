@@ -7,6 +7,7 @@ import {
 } from '@globalise/design';
 import { ReactNode } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { findMetadataValue } from '@globalise/metadata';
 
 export type SidebarId = 'inventory' | 'toc' | 'entities' | 'events';
 
@@ -51,15 +52,14 @@ const sidebarPanels = [
 ] satisfies SidebarPanel[];
 
 export function useSidebarPanels(): SidebarPanel[] {
+  const inventoryNumber = useInventoryNumber();
+  return sidebarPanels.map((panel) => panel.id === 'inventory'
+    ? { ...panel, badge: inventoryNumber, railLabel: inventoryNumber }
+    : panel);
+}
+
+function useInventoryNumber(): string | undefined {
   const { vault, id, isReady } = useManifest();
   const manifest = isReady ? vault.get({ id, type: 'Manifest' }) : undefined;
-  const inventory = manifest?.metadata?.find((entry) =>
-    Object.values(entry.label).flat().some((label) =>
-      label === 'Inventory number' || label === 'Inventarisnummer',
-    ),
-  );
-  const number = inventory && Object.values(inventory.value).flat()[0];
-  return sidebarPanels.map((panel) => panel.id === 'inventory'
-    ? { ...panel, badge: number, railLabel: number }
-    : panel);
+  return manifest && findMetadataValue(manifest.metadata, 'Inventory number', 'Inventarisnummer');
 }

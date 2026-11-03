@@ -1,7 +1,7 @@
 import '@globalise/design/styles.css';
 import './ObjectCardPage.css';
 import { useEffect } from 'react';
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi } from '@globalise/router';
 import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
 
 const route = getRouteApi('/object-card/');

@@ -43,12 +43,12 @@
     overflow-wrap: anywhere;
   }
 
-  .metadata-panel :is(.metadata-link, .gds-entity-tag) {
+  .metadata-panel :is(.metadata-link, .entity-tag) {
     display: inline;
     font: inherit;
   }
 
-  .metadata-panel .gds-entity-tag__icon {
+  .metadata-panel .entity-tag .icon {
     vertical-align: -0.1em;
   }
 
