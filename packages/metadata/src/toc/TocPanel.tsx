@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation } from '@globalise/common/document';
+import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { useScrollToThumb } from './useScrollToThumb.ts';
+import { findCurrentDocument } from './tocEntries';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -12,23 +13,26 @@ export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
+  const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
 
-  useScrollToThumb(tocListRef);
-
-  const currentDocumentId = useMemo(
-    () => documents.find(
-      (document) => document.scans.some(
-        (scan) => scan.canvasId === selectedCanvasId,
-      ),
-    )?.id,
-    [documents, selectedCanvasId],
+  const currentDocument = useMemo(
+    () => findCurrentDocument(documents, selectedCanvasId, preferredDocumentId),
+    [documents, selectedCanvasId, preferredDocumentId],
   );
+  const currentDocumentId = currentDocument?.id;
+  const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
 
   useEffect(expandCurrentDocument, [currentDocumentId]);
 
   function expandCurrentDocument() {
     if (currentDocumentId) {
       expandTocDocument(currentDocumentId);
+    }
+  }
+
+  function goToCurrent(navigation: TocNavigation) {
+    if (currentDocumentId) {
+      navigateToc(navigation, currentDocumentId);
     }
   }
 
@@ -42,13 +46,35 @@ export function TocPanel() {
 
   return (
     <div className="toc-panel">
+      <div className="toc-navigation" role="group" aria-label="Go to current selection">
+        <span>Go to</span>
+        <ToolButton
+          size="compact"
+          icon={<IconEntityDocument aria-hidden="true"/>}
+          aria-label="Go to current document"
+          isDisabled={!currentDocument}
+          onPress={() => goToCurrent('document')}
+        >
+          Document
+        </ToolButton>
+        <ToolButton
+          size="compact"
+          icon={<IconScan aria-hidden="true"/>}
+          aria-label={currentScan ? `Go to current scan ${currentScan.scanNumber}` : 'Go to current scan'}
+          isDisabled={!currentScan}
+          onPress={() => goToCurrent('scan')}
+        >
+          {currentScan ? `Scan ${currentScan.scanNumber}` : 'Scan'}
+        </ToolButton>
+      </div>
       <div className="list" ref={tocListRef}>
-        {documents.map((document) => (
+        {documents.map((entry) => (
           <TocDocument
-            key={document.id}
-            document={document}
-            isCurrent={document.id === currentDocumentId}
-            selectedCanvasId={selectedCanvasId}
+            key={entry.id}
+            document={entry}
+            isCurrent={entry.id === currentDocumentId}
+            onSelect={() => setPreferredDocumentId(entry.id)}
+            listRef={tocListRef}
           />
         ))}
       </div>

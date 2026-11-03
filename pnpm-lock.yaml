@@ -595,6 +595,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@globalise/router':
+        specifier: workspace:*
+        version: link:../router
       '@iiif/helpers':
         specifier: ^4.0.0
         version: 4.0.0(@iiif/parser@4.0.3)
