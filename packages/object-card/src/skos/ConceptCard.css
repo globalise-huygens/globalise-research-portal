@@ -303,6 +303,10 @@
       background: #313236;
     }
 
+    .concept-node > span {
+      display: block;
+    }
+
     .concept-link {
       width: 100%;
       min-height: var(--s32);
