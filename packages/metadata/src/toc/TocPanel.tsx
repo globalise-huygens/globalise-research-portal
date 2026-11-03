@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { expandTocDocument, useSelectedCanvas } from '@globalise/common/document';
+import { expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
@@ -15,7 +15,6 @@ export function TocPanel() {
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
-  const [navigation, setNavigation] = useState<{ target: 'document' | 'scan'; canvasId: string | null; documentId?: string }>();
 
   useScrollToThumb(tocListRef);
 
@@ -34,11 +33,10 @@ export function TocPanel() {
     }
   }
 
-  function goToCurrent(target: 'document' | 'scan') {
-    if (target === 'scan' && currentDocumentId) {
-      expandTocDocument(currentDocumentId);
+  function goToCurrent(navigation: TocNavigation) {
+    if (currentDocumentId) {
+      navigateToc(navigation, currentDocumentId);
     }
-    setNavigation({ target, canvasId: selectedCanvasId, documentId: currentDocumentId });
   }
 
   if (!documents.length) {
@@ -78,12 +76,8 @@ export function TocPanel() {
             key={entry.id}
             document={entry}
             isCurrent={entry.id === currentDocumentId}
-            selectedCanvasId={selectedCanvasId}
             onSelect={() => setPreferredDocumentId(entry.id)}
             listRef={tocListRef}
-            onNavigated={() => setNavigation(undefined)}
-            navigation={entry.id === currentDocumentId && navigation?.documentId === currentDocumentId
-              && navigation.canvasId === selectedCanvasId ? navigation : undefined}
           />
         ))}
       </div>

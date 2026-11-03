@@ -1,9 +1,11 @@
 import { useId, useLayoutEffect, useRef, type RefObject } from 'react';
 import { Button } from 'react-aria-components';
 import {
+  clearTocNavigation,
   toggleTocDocument,
   useIsTocDocumentExpanded,
-  type CanvasId,
+  useSelectedCanvas,
+  useTocNavigation,
 } from '@globalise/common/document';
 import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
@@ -14,17 +16,16 @@ import { scrollToTocElement } from './useScrollToThumb';
 export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
-  selectedCanvasId: CanvasId | null;
   onSelect: () => void;
   listRef: RefObject<HTMLDivElement | null>;
-  navigation?: { target: 'document' | 'scan' };
-  onNavigated: () => void;
 };
 
 export function TocDocument(
-  { document, isCurrent, selectedCanvasId, onSelect, listRef, navigation, onNavigated }: TocDocumentProps,
+  { document, isCurrent, onSelect, listRef }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
+  const { id: selectedCanvasId } = useSelectedCanvas();
+  const navigation = useTocNavigation();
   const contentId = useId();
   const articleRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLButtonElement>(null);
@@ -32,15 +33,15 @@ export function TocDocument(
   useLayoutEffect(() => {
     const list = listRef.current;
     const header = headerRef.current;
-    const element = navigation?.target === 'document' ? articleRef.current : scanRef.current;
-    const focusTarget = navigation?.target === 'document' ? header : scanRef.current;
-    if (!navigation || !list || !element || !focusTarget) {
+    const element = navigation === 'document' ? articleRef.current : scanRef.current;
+    const focusTarget = navigation === 'document' ? header : scanRef.current;
+    if (!isCurrent || !navigation || !list || !element || !focusTarget) {
       return;
     }
-    scrollToTocElement(list, element, navigation.target === 'scan' ? header?.offsetHeight ?? 0 : 0);
+    scrollToTocElement(list, element, navigation === 'scan' ? header?.offsetHeight ?? 0 : 0);
     focusTarget.focus({ preventScroll: true });
-    onNavigated();
-  }, [navigation, listRef, onNavigated, isExpanded]);
+    clearTocNavigation();
+  }, [isCurrent, navigation, listRef, isExpanded]);
   const firstScanNumber = document.scans[0].scanNumber;
   const lastScanNumber = document.scans.at(-1)!.scanNumber;
 
@@ -73,15 +74,18 @@ export function TocDocument(
         <div id={contentId}>
           <TocDocumentMetadata document={document}/>
           <div className="scans">
-            {document.scans.map((scan) => (
-              <TocScan
-                key={scan.canvasId}
-                scan={scan}
-                isSelected={isCurrent && scan.canvasId === selectedCanvasId}
-                onSelect={onSelect}
-                scanRef={scan.canvasId === selectedCanvasId && isCurrent ? scanRef : undefined}
-              />
-            ))}
+            {document.scans.map((scan) => {
+              const isSelected = isCurrent && scan.canvasId === selectedCanvasId;
+              return (
+                <TocScan
+                  key={scan.canvasId}
+                  scan={scan}
+                  isSelected={isSelected}
+                  onSelect={onSelect}
+                  scanRef={isSelected ? scanRef : undefined}
+                />
+              );
+            })}
           </div>
         </div>
       )}
