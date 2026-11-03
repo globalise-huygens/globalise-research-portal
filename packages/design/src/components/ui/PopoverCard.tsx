@@ -4,7 +4,7 @@ import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
 import './PopoverCard.css';
 
-const PreviewContext = createContext<{
+const PopoverCardContext = createContext<{
   element: HTMLElement | null;
   position?: CSSProperties;
   activeChild?: string;
@@ -23,7 +23,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   onOpenChange?: (open: boolean) => void;
 }) {
   const id = useId();
-  const parent = useContext(PreviewContext);
+  const parent = useContext(PopoverCardContext);
   const parentElement = parent?.element;
   const parentPosition = parent?.position;
   const trigger = useRef<HTMLSpanElement>(null);
@@ -246,9 +246,9 @@ function PopoverCardBody({ children, position, onKeepOpen }: {
   const [element, setElement] = useState<HTMLDivElement | null>(null);
   const [activeChild, setActiveChild] = useState<string>();
   return <div ref={setElement}>
-    <PreviewContext.Provider value={{ element, position, activeChild, openChild: setActiveChild, keepOpen: onKeepOpen }}>
+    <PopoverCardContext.Provider value={{ element, position, activeChild, openChild: setActiveChild, keepOpen: onKeepOpen }}>
       {children}
-    </PreviewContext.Provider>
+    </PopoverCardContext.Provider>
   </div>;
 }
 

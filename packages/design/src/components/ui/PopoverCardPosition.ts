@@ -24,7 +24,6 @@ export function placePopoverCard(
   };
 }
 
-// Follow the manifest stack: right if it fits, otherwise left, then below.
 export function placePopoverCardBeside(
   parent: Pick<DOMRect, 'left' | 'right' | 'top' | 'bottom'>,
   width: number,

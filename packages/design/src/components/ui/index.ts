@@ -6,8 +6,6 @@ export type { ButtonLinkProps, ButtonProps } from './Button';
 export { CardArticle } from './CardArticle';
 export type { CardArticleProps } from './CardArticle';
 
-export { placePopoverCard, placePopoverCardBeside } from './PopoverCardPosition';
-
 export {
   CardBase,
   CardBaseContent,
