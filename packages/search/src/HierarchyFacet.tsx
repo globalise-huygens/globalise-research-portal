@@ -13,6 +13,7 @@ import {
   Tree,
   TreeItem,
   TreeItemContent,
+  TreeLoadMoreItem,
   Button,
   Collection,
   Virtualizer,
@@ -105,13 +106,14 @@ function HierarchyFacetTreeItem(
         />}
       </TreeItemContent>
 
-      {item.children && expandedKeys.has(item.id) &&
-        <Collection items={item.children} dependencies={[expandedKeys]}>
+      {item.children && item.children.length > 0 && (expandedKeys.has(item.id)
+        ? <Collection items={item.children} dependencies={[expandedKeys]}>
           {(child) => <HierarchyFacetTreeItem
             item={child}
             expandedKeys={expandedKeys}
           />}
-        </Collection>}
+        </Collection>
+        : <TreeLoadMoreItem/>)}
     </TreeItem>
   );
 }
