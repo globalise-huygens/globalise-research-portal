@@ -32,6 +32,29 @@
         outline-offset: 2px;
     }
 
+    .place-list {
+        position: absolute;
+        z-index: 2;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+
+        &:focus-within {
+            top: var(--s8);
+            right: var(--s8);
+            width: auto;
+            height: auto;
+            max-height: calc(100% - var(--s16));
+            overflow: auto;
+            clip-path: none;
+            margin: 0;
+            padding: var(--s8);
+            background: var(--color-neutral-800);
+            list-style: none;
+        }
+    }
+
     .controls {
         position: static;
         display: flex;

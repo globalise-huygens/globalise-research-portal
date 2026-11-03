@@ -7,6 +7,7 @@ import { getPersonPlaces, getPlaceCoordinates } from './PersonPlacesModel.ts';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
 import { RelationLink } from './RelationLink.tsx';
+import { getRelationValue } from './RelationValueModel.ts';
 
 type MapPlace = { node: LinkedArtNode };
 const WorldMap = lazy(() => import('@globalise/map/WorldMap').then((module) => ({ default: module.default<MapPlace> })));
@@ -37,6 +38,7 @@ export function PersonPlaces({ entity }: { entity: LinkedArtNode }) {
   return <Suspense fallback={null}>
     <ObjectCardSection title="Map" collapsible>
       <WorldMap places={features} showControls
+        getPlaceLabel={(place) => getRelationValue(place.properties.node)}
         renderPopoverPlace={(place) => (
           <EntityPreviewCard data={getResourcePreview(place.properties.node, String(place.id), (nodes) => nodes.map((node, index) => (
             <span key={node.id ?? index}>{index > 0 && ', '}<RelationLink node={node} /></span>

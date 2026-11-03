@@ -12,6 +12,7 @@ export type WorldMapProps<P extends GeoJsonProperties = GeoJsonProperties> = {
   places?: FeatureCollection<Point, P>;
   voyages?: FeatureCollection<LineString, P>;
   renderPopoverPlace?: (place: Feature<Point, P>) => ReactNode;
+  getPlaceLabel?: (place: Feature<Point, P>) => string;
   renderPopoverVoyage?: (voyage: Feature<LineString, P>) => ReactNode;
   onClickPlace?: (place: Feature<Point, P>) => void;
   onClickVoyage?: (voyage: Feature<LineString, P>) => void;
@@ -29,6 +30,7 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
   places,
   voyages,
   renderPopoverPlace,
+  getPlaceLabel,
   renderPopoverVoyage,
   onClickPlace,
   onClickVoyage,
@@ -109,11 +111,11 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
     }
   }
 
-  function previewPlace(offset = 0) {
+  function previewPlace(offset = 0, index?: number) {
     const features = places?.features;
     const canvas = canvasRef.current;
     if (!features?.length || !canvas || !renderPopoverPlace) {return;}
-    selectedPlace.current = (selectedPlace.current + offset + features.length) % features.length;
+    selectedPlace.current = index ?? (selectedPlace.current + offset + features.length) % features.length;
     const place = features[selectedPlace.current];
     previewTrigger.current = document.activeElement instanceof HTMLElement && canvas.parentElement?.contains(document.activeElement)
       ? document.activeElement : canvas;
@@ -172,6 +174,17 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
         }}
         onPointerDownCapture={close} onWheelCapture={close}
         onMouseMove={handleHover} onMouseLeave={handleLeave} onClick={handleClick}/>
+      {showControls && renderPopoverPlace && !!places?.features.length && (
+        <ul className={classes.placeList} aria-label="Places on the globe">
+          {places.features.map((place, index) => (
+            <li key={place.id ?? index}>
+              <button type="button" onClick={() => previewPlace(0, index)}>
+                {getPlaceLabel?.(place) ?? `Place ${index + 1}`}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       {showControls && <FloatingToolbar className={classes.controls} role="group" aria-label="Globe controls">
         <div className="zoom-controls">
           <Tooltip label="Zoom out"><ToolButton size="touch" aria-label="Zoom out" icon={<IconZoomOut />} onPress={() => { close(); mapInteractionRef.current?.zoomBy(1 / 1.4); }} /></Tooltip>
@@ -198,8 +211,18 @@ export default function WorldMap<P extends GeoJsonProperties = GeoJsonProperties
           focusTarget={previewTrigger.current} autoFocus={keyboardPreview}
           isHovered={isHovered} openImmediately label="Map place preview"
           onOpenChange={(open) => { if (!open) {close();} }}>
-          {showPlacePopover ? renderPopoverPlace(hoveredPlace)
-            : showVoyagePopover ? renderPopoverVoyage(hoveredVoyage) : null}
+          <div onKeyDown={(event) => {
+            const target = event.target;
+            if (event.ctrlKey || event.metaKey || event.altKey
+              || target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) {return;}
+            if (event.key === '[' || event.key === ']') {
+              event.preventDefault();
+              previewPlace(event.key === '[' ? -1 : 1);
+            }
+          }}>
+            {showPlacePopover ? renderPopoverPlace(hoveredPlace)
+              : showVoyagePopover ? renderPopoverVoyage(hoveredVoyage) : null}
+          </div>
         </PopoverCard>
       )}
     </div>
