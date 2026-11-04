@@ -56,8 +56,13 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     cancelTimer();
     timer.current = setTimeout(() => {
       timer.current = undefined;
-      if (!previewHovered.current && document.activeElement !== anchor
-        && !trigger.current?.contains(document.activeElement) && !popupElement?.contains(document.activeElement)) {
+      const focusedElement = document.activeElement;
+      const anchorHasFocus = focusedElement === anchor;
+      const focusIsInsideTrigger = trigger.current?.contains(focusedElement) ?? false;
+      const focusIsInsidePreview = popupElement?.contains(focusedElement) ?? false;
+      const shouldKeepOpen = previewHovered.current || anchorHasFocus || focusIsInsideTrigger || focusIsInsidePreview;
+
+      if (!shouldKeepOpen) {
         close();
       }
     }, 200);
