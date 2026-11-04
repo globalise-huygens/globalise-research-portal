@@ -1,4 +1,5 @@
 import { usePopoverCardPosition } from './usePopoverCardPosition';
+import { getFocusableTreeWalker } from '@react-aria/focus';
 import { createContext, useContext, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { Popover } from 'react-aria-components';
 import { createPortal } from 'react-dom';
@@ -73,7 +74,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     if (externalAnchor) {
       return externalAnchor;
     }
-    return trigger.current?.querySelector<HTMLElement>(focusableSelector);
+    return trigger.current ? getFocusableElements(trigger.current)[0] : undefined;
   };
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -325,29 +326,17 @@ function PopoverCardBody({ children, position, onKeepOpen }: {
   </div>;
 }
 
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(', ');
-
 function hasModifierKey(event: { shiftKey: boolean; altKey: boolean; ctrlKey: boolean; metaKey: boolean }) {
   return event.shiftKey || event.altKey || event.ctrlKey || event.metaKey;
 }
 
 function getFocusableElements(container: Element) {
-  return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
-    .filter((element) => {
-      const isTabReachable = element.tabIndex >= 0;
-      if (!isTabReachable) {
-        return false;
-      }
-      const isRendered = element.getClientRects().length > 0;
-      return isRendered;
-    });
+  const walker = getFocusableTreeWalker(container, { tabbable: true });
+  const elements: (HTMLElement | SVGElement)[] = [];
+  while (walker.nextNode()) {
+    elements.push(walker.currentNode as HTMLElement | SVGElement);
+  }
+  return elements;
 }
 
 function moveFocusFromPreview(
