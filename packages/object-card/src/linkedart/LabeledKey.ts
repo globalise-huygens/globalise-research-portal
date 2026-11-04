@@ -114,3 +114,15 @@ export const placeDetailGroups: LabeledKey[] = [
   { key: 'is_appellative_subject_of', label: 'Name' },
   { key: 'is_classificatory_subject_of', label: 'Classifications' },
 ];
+
+export const shipHistoryGroups: LabeledKey[] = [
+  { key: 'produced_by', label: 'Built' },
+  { key: 'transformed_by', label: 'Change' },
+  { key: 'taken_out_of_existence_by', label: 'End of service' },
+];
+
+export const shipNameLabels: Record<string, string> = {
+  'http://vocab.getty.edu/aat/300404670': 'Preferred name',
+  'http://vocab.getty.edu/aat/300264273': 'Alternative name',
+  'http://vocab.getty.edu/aat/300417226': 'Alternative name',
+};
