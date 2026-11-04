@@ -225,7 +225,12 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         const hasPopupContent = Boolean(children) || isPending;
         const isInsideTrigger = trigger.current?.contains(event.target as Node);
         const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
-        if (!touch.current || isKeyboardActivation || !hasPopupContent || !isInsideTrigger || !isPlainPrimaryClick) {return;}
+        const shouldOpenOnTouch = touch.current && !isKeyboardActivation
+          && hasPopupContent && isInsideTrigger && isPlainPrimaryClick;
+
+        if (!shouldOpenOnTouch) {
+          return;
+        }
         event.preventDefault();
         keepOpen();
       }}
