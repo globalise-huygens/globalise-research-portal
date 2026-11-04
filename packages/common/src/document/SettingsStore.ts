@@ -23,7 +23,7 @@ export type SettingsState = {
 };
 
 const defaultSettings: SettingsState = {
-  transcriptionMode: 'diplomatic',
+  transcriptionMode: 'line-by-line',
   diplomaticViewScale: 100,
   responsive: {
     desktop: {
