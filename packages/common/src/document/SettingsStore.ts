@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 export type MobileManifestView = 'scan' | 'text';
 export type MobilePanelView = 'toc' | 'inventory';
-export type MobileView = MobileManifestView | MobilePanelView;
+export type MobileView = 'viewer' | MobilePanelView;
 export type DesktopSettings = {
   paneRatio: number;
 };
@@ -30,8 +30,8 @@ const defaultSettings: SettingsState = {
       paneRatio: 0.5,
     },
     mobile: {
-      selectedView: 'scan',
-      selectedManifestView: 'scan',
+      selectedView: 'viewer',
+      selectedManifestView: 'text',
     },
   },
 };
@@ -72,14 +72,9 @@ export function setTranscriptionMode(transcriptionMode: TranscriptionMode) {
   useSettingsStore.setState({ transcriptionMode });
 }
 
-export function selectMobileView(selectedView: MobileView) {
-  const mobile = useSettingsStore.getState().responsive.mobile;
-  const selectedManifestView = isMobileManifestView(selectedView) ? selectedView : mobile.selectedManifestView;
-  setResponsiveSettings({ mobile: { selectedView, selectedManifestView } });
-}
-
-export function isMobileManifestView(view: MobileView): view is MobileManifestView {
-  return view === 'scan' || view === 'text';
+export function setMobileSettings(settings: Partial<MobileSettings>) {
+  const { mobile } = useSettingsStore.getState().responsive;
+  setResponsiveSettings({ mobile: { ...mobile, ...settings } });
 }
 
 export function resetScaling() {

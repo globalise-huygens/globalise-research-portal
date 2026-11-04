@@ -1,8 +1,7 @@
 import {
-  isMobileManifestView,
   type MobilePanelView,
-  type MobileView,
-  selectMobileView,
+  type MobileSettings,
+  setMobileSettings,
   setTranscriptionMode,
   type TranscriptionMode,
   useMobileSettings,
@@ -29,7 +28,7 @@ import { ViewerPane } from './ViewerPane';
 type MobilePanel = SidebarPanel & { id: MobilePanelView };
 
 type MenuItem = {
-  id: MobileView;
+  mobile: Partial<MobileSettings>;
   transcriptionMode?: TranscriptionMode;
   label: string;
   description: string;
@@ -40,10 +39,27 @@ const readingAreaId = 'manifest-reading-area';
 const scanNavigationId = 'manifest-scan-navigation';
 const mobilePanelViews: MobilePanelView[] = ['toc', 'inventory'];
 
-const readerItems: MenuItem[] = [
-  { id: 'scan', label: 'Scan', description: 'Scan viewer', icon: <IconScan /> },
-  { id: 'text', transcriptionMode: 'diplomatic', label: 'Diplomatic', description: 'Diplomatic transcription', icon: <IconTranscriptionDiplomatic /> },
-  { id: 'text', transcriptionMode: 'line-by-line', label: 'Normalized', description: 'Normalized transcription', icon: <IconTranscriptionNormalised /> },
+const mobileViewerMenuItems: MenuItem[] = [
+  {
+    description: 'Scan viewer',
+    label: 'Scan',
+    mobile: { selectedView: 'viewer', selectedManifestView: 'scan' },
+    icon: <IconScan/>,
+  },
+  {
+    description: 'Diplomatic transcription',
+    label: 'Diplomatic',
+    mobile: { selectedView: 'viewer', selectedManifestView: 'text' },
+    transcriptionMode: 'diplomatic',
+    icon: <IconTranscriptionDiplomatic/>,
+  },
+  {
+    description: 'Normalized transcription',
+    label: 'Normalized',
+    mobile: { selectedView: 'viewer', selectedManifestView: 'text' },
+    transcriptionMode: 'line-by-line',
+    icon: <IconTranscriptionNormalised/>,
+  },
 ];
 
 export function MobileLayout({
@@ -57,29 +73,41 @@ export function MobileLayout({
   onClose,
 }: ManifestLayoutProps) {
   const mobilePanels = useMobilePanels();
-  const menuItems = [...readerItems, ...mobilePanels.map(toMenuItem)];
+  const menuItems = [...mobileViewerMenuItems, ...mobilePanels.map(toMenuItem)];
   const { selectedView, selectedManifestView } = useMobileSettings();
   const transcriptionMode = useTranscriptionMode();
   const [isToolsOpen, setIsToolsOpen] = React.useState(false);
-  const [isNavigationOpen, setIsNavigationOpen] = React.useState(false);
+  const [isScanNavigationOpen, setIsScanNavigationOpen] = React.useState(false);
   const toolsId = React.useId();
   const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
   const panel = mobilePanels.find((panel) => panel.id === selectedView);
 
-  function selectView(next: MobileView) {
-    setIsToolsOpen(false);
-    if (!isMobileManifestView(next)) {
-      setIsNavigationOpen(false);
-    }
-    selectMobileView(next);
-  }
-
   function isSelected(item: MenuItem) {
-    return item.id === selectedView && (!item.transcriptionMode || item.transcriptionMode === transcriptionMode);
+    const {
+      selectedView: itemView,
+      selectedManifestView: itemManifestView,
+    } = item.mobile;
+    const {
+      transcriptionMode: itemMode,
+    } = item;
+
+    if (itemView !== selectedView) {
+      return false;
+    }
+    if (itemManifestView && itemManifestView !== selectedManifestView) {
+      return false;
+    }
+    if (itemMode && itemMode !== transcriptionMode) {
+      return false;
+    }
+    return true;
   }
 
   function select(item: MenuItem) {
-    selectView(item.id);
+    setIsToolsOpen(false);
+    const isViewer = item.mobile.selectedView === 'viewer';
+    setIsScanNavigationOpen((isOpen) => isOpen && isViewer);
+    setMobileSettings(item.mobile);
     if (item.transcriptionMode) {
       setTranscriptionMode(item.transcriptionMode);
     }
@@ -91,7 +119,11 @@ export function MobileLayout({
   }
 
   return (
-    <div className="gds manifest-viewer" data-layout="mobile" data-navigation-open={isNavigationOpen || undefined}>
+    <div
+      data-navigation-open={isScanNavigationOpen || undefined}
+      className="gds manifest-viewer"
+      data-layout="mobile"
+    >
       <div className="frame">
         <div className="main">
           <header className="top-bar">
@@ -128,8 +160,18 @@ export function MobileLayout({
           </main>
 
           <footer className="bottom-bar">
-            {!panel && <ScanNavigationHandle controls={scanNavigationId} isOpen={isNavigationOpen} onOpenChange={setIsNavigationOpen} />}
-            <div className="scan-navigation" id={scanNavigationId} hidden={!isNavigationOpen}>{bottom}</div>
+            {!panel && <ScanNavigationHandle
+              controls={scanNavigationId}
+              isOpen={isScanNavigationOpen}
+              onOpenChange={setIsScanNavigationOpen} />
+            }
+            <div
+              className="scan-navigation"
+              id={scanNavigationId}
+              hidden={!isScanNavigationOpen}
+            >
+              {bottom}
+            </div>
             <nav className="mobile-information-menu" aria-label="Viewer information">
               {menuItems.map((item) => <AriaButton key={item.label}
                 aria-label={item.description}
@@ -160,5 +202,5 @@ function InformationPanel({ panel }: { panel: MobilePanel }) {
 }
 
 function toMenuItem({ id, shortLabel, label, icon }: MobilePanel): MenuItem {
-  return { id, label: shortLabel, description: label, icon };
+  return { mobile: { selectedView: id }, label: shortLabel, description: label, icon };
 }
