@@ -42,3 +42,15 @@ export function getRelationValue(node: LinkedArtNode): string {
     node.type === 'Type' ? 'Vocabulary term' : typeof node.type === 'string' ? node.type : 'Resource',
   ].find((value) => !!value)?.trim() ?? '';
 }
+
+export function getResolvedRelationValue(value?: LinkedArtNode): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+  const label = getRelationValue(value);
+  if (value.type === 'Person' && label === 'Person') {
+    return 'Name not recorded';
+  }
+  return label && label !== value.id && label !== value.type && label !== 'Vocabulary term' && label !== 'Resource'
+    ? label : undefined;
+}

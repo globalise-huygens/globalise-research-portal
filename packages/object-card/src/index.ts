@@ -24,3 +24,4 @@ export {
   loadCatalog,
   useCollection,
 } from './hydra';
+export { RelationLink } from './linkedart/RelationLink.tsx';

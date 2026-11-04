@@ -1,3 +1,4 @@
+import { clamp } from '@globalise/common';
 import {
   setSelectedCanvas,
   type CanvasId,
@@ -56,7 +57,7 @@ export function ManifestCanvasNavigation() {
   }
 
   function navigateToScanNumber(scanNumber: number) {
-    const nextScanNumber = Math.min(Math.max(scanNumber, 1), totalScans);
+    const nextScanNumber = clamp(scanNumber, 1, totalScans);
     const nextCanvasId = lazyCanvases[nextScanNumber - 1]?.canvasId;
     setScanInput(null);
     scrollTo(nextCanvasId);
