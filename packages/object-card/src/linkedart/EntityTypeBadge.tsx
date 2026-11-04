@@ -3,6 +3,7 @@ import {
   EntityBadgeType,
   IconEntityPerson,
   IconEntityShip,
+  IconEntityPlace,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
@@ -37,7 +38,7 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
       icon={type === 'person'
         ? <IconEntityPerson aria-hidden="true" />
         : type === 'ship' ? <IconEntityShip aria-hidden="true" />
-          : undefined}
+          : type === 'place' ? <IconEntityPlace aria-hidden="true" /> : undefined}
     >
       {type}
     </EntityBadge>

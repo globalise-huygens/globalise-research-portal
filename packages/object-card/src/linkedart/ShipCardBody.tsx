@@ -2,7 +2,7 @@ import { findByPath, findTimespan, getContent, getEntityIdentifiers, getEntityTi
 import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
 import { NodeList } from './NodeList.tsx';
 import { getPersonNameRecords, groupRecords, sortPersonNames } from './PersonStatusModel.ts';
-import { PersonReferencePanel } from './PersonReferencePanel.tsx';
+import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
@@ -132,7 +132,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
         <NodeList key={item.key} title={item.label} nodes={findByPath(entity, [item.key])} />
       ))}
     </ObjectCardPanel>
-    <PersonReferencePanel entity={entity} />
+    <EntityReferencePanel entity={entity} />
   </ObjectCardBody>;
 }
 

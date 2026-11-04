@@ -1,3 +1,4 @@
+import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import {
   findByPath,
   findTimespan,
@@ -23,9 +24,8 @@ import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
-import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
-import { PersonReferencePanel } from './PersonReferencePanel.tsx';
+import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import {
   getResidenceLabel,
   groupPersonStatuses,
@@ -143,7 +143,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           </ObjectCardSection>
         )}
       </ObjectCardPanel>
-      <PersonReferencePanel entity={entity} />
+      <EntityReferencePanel entity={entity} />
     </ObjectCardBody>
   );
 }
