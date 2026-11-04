@@ -295,9 +295,6 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
-      '@globalise/facsimile':
-        specifier: workspace:*
-        version: link:../facsimile
       '@globalise/manifest':
         specifier: workspace:*
         version: link:../manifest
@@ -444,9 +441,6 @@ importers:
       '@knaw-huc/osd-iiif-viewer':
         specifier: ^0.7.0
         version: 0.7.0(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
-      '@tanstack/react-query':
-        specifier: ^5.104.4
-        version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
@@ -548,6 +542,9 @@ importers:
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
+      react-aria:
+        specifier: ^3.50.0
+        version: 3.53.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-split-pane:
         specifier: ^3.2.0
         version: 3.2.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

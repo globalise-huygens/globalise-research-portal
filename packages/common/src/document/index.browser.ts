@@ -1,1 +1,1 @@
-export { useCanvasPages } from './useCanvasPages';
+export { useInitCanvases } from './useInitCanvases';

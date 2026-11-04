@@ -8,3 +8,4 @@ export { ManifestViewer } from './ManifestViewer';
 export type { ManifestViewerProps } from './ManifestViewer';
 
 export * from './layout';
+export { ManifestLoader } from './ManifestLoader';
