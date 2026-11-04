@@ -1,6 +1,6 @@
 import { usePopoverCardPosition } from './usePopoverCardPosition';
-import { createContext, useContext, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
-import { Popover } from 'react-aria-components';
+import { getFocusableTreeWalker } from '@react-aria/focus';
+import { createContext, useContext, useEffect, useEffectEvent, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import './PopoverCard.css';
 
@@ -29,7 +29,6 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   const trigger = useRef<HTMLSpanElement>(null);
   const touch = useRef(false);
   const previewHovered = useRef(false);
-  const externalTrigger = useMemo(() => ({ current: anchor ?? null }), [anchor]);
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
@@ -73,7 +72,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     if (externalAnchor) {
       return externalAnchor;
     }
-    return trigger.current?.querySelector<HTMLElement>(focusableSelector);
+    return trigger.current ? getFocusableElements(trigger.current)[0] : undefined;
   };
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -134,10 +133,6 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       const anchor = getTrigger();
       if (popupElement && anchor) {
         moveFocusFromPreview(event, popupElement, anchor, close);
-        // Handle portal boundaries before the popover's document-level focus restoration.
-        if (event.defaultPrevented) {
-          event.stopPropagation();
-        }
       }
       return;
     }
@@ -217,27 +212,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     </div>
   );
 
-  const overlay = parentElement ? visible && createPortal(
+  const overlay = visible && createPortal(
     <div ref={setPopupElement} className="gds popover-card" style={{ ...position, position: 'fixed' }}>
       {card}
     </div>,
-    parentElement,
-  ) : visible && (
-    <Popover
-      ref={setPopupElement}
-      triggerRef={anchor ? externalTrigger : trigger}
-      isOpen={visible}
-      onOpenChange={(next) => {
-        if (!next) {
-          close();
-        }
-      }}
-      isNonModal
-      className="gds popover-card"
-      style={{ ...position, position: 'fixed' }}
-    >
-      {card}
-    </Popover>
+    parentElement ?? document.body,
   );
 
   if (!renderTrigger) {
@@ -325,29 +304,17 @@ function PopoverCardBody({ children, position, onKeepOpen }: {
   </div>;
 }
 
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(', ');
-
 function hasModifierKey(event: { shiftKey: boolean; altKey: boolean; ctrlKey: boolean; metaKey: boolean }) {
   return event.shiftKey || event.altKey || event.ctrlKey || event.metaKey;
 }
 
 function getFocusableElements(container: Element) {
-  return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
-    .filter((element) => {
-      const isTabReachable = element.tabIndex >= 0;
-      if (!isTabReachable) {
-        return false;
-      }
-      const isRendered = element.getClientRects().length > 0;
-      return isRendered;
-    });
+  const walker = getFocusableTreeWalker(container, { tabbable: true });
+  const elements: (HTMLElement | SVGElement)[] = [];
+  while (walker.nextNode()) {
+    elements.push(walker.currentNode as HTMLElement | SVGElement);
+  }
+  return elements;
 }
 
 function moveFocusFromPreview(
