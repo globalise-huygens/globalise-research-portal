@@ -118,7 +118,7 @@
       align-items: baseline;
     }
 
-    &.person-card {
+    &:is(.person-card, .place-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -182,7 +182,7 @@
         background: var(--color-neutral-800);
       }
 
-      .panel.person-reference-panel {
+      .panel.entity-reference-panel {
         padding: 0;
       }
 
@@ -295,6 +295,14 @@
     .entity-card.person-card .reference-panel .load-more,
     .entity-card.person-card .reference-panel-item .reference-action {
       transition: none;
+    }
+  }
+}
+
+@layer components {
+  .place-card {
+    .person-status-summary-property {
+      column-gap: var(--s4);
     }
   }
 }

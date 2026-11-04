@@ -18,11 +18,12 @@ import { relationValueQueryOptions } from './RelationValueResolver.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
+  resolveExternal?: boolean;
 };
 
-export function RelationLink({ node }: RelationLinkProps) {
+export function RelationLink({ node, resolveExternal = true }: RelationLinkProps) {
   const href = url(node);
-  const text = useRelationValue(node, href);
+  const text = useRelationValue(node, href && (resolveExternal || isInternalUri(href)) ? href : undefined);
 
   if (href && isInternalUri(href)) {
     return (
@@ -42,8 +43,9 @@ export function RelationLink({ node }: RelationLinkProps) {
   return <span className="relation">{text}</span>;
 }
 
-export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
-  const text = useRelationValue(node, url(node));
+export function RelationValue({ node, render, resolveExternal = true }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
+  const href = url(node);
+  const text = useRelationValue(node, href && (resolveExternal || isInternalUri(href)) ? href : undefined);
   return <>{render ? render(text) : text}</>;
 }
 
