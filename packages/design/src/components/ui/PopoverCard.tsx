@@ -139,8 +139,13 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }
       return;
     }
-    // Let the nearest preview handle Escape from inside the popup.
-    if (event.key !== 'Escape' || event.target instanceof Element && event.target.closest('.popover-card')) {return;}
+    const isInsidePreview = target instanceof Element && target.closest('.popover-card') !== null;
+    const shouldDismissRoot = event.key === 'Escape' && !isInsidePreview;
+
+    // Escape inside a preview is handled by that preview's own key handler.
+    if (!shouldDismissRoot) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     if (popupElement?.contains(document.activeElement)) {
