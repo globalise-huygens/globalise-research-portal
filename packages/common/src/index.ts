@@ -1,3 +1,4 @@
+export { clamp } from './util/clamp.ts';
 export { noop } from './util/noop.ts';
 export { orThrow } from './util/orThrow';
 export { fetchJson } from './util/fetchJson';
