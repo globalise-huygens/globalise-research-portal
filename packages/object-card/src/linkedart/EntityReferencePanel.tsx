@@ -1,14 +1,14 @@
 import type { LinkedArtNode } from '@globalise/common';
 import { ReferencePanel } from '@globalise/design';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getPersonReferenceLinks, loadPersonReferences } from './PersonReferenceModel.ts';
+import { getEntityReferenceLinks, loadEntityReferences } from './EntityReferenceModel.ts';
 
-export function PersonReferencePanel({ entity }: { entity: LinkedArtNode }) {
+export function EntityReferencePanel({ entity }: { entity: LinkedArtNode }) {
   const queryClient = useQueryClient();
-  const links = getPersonReferenceLinks(entity);
+  const links = getEntityReferenceLinks(entity);
   const { data } = useQuery({
-    queryKey: ['person-references', entity.id, entity.subject_of],
-    queryFn: () => loadPersonReferences(entity, queryClient),
+    queryKey: ['entity-references', entity.id, entity.subject_of],
+    queryFn: () => loadEntityReferences(entity, queryClient),
     enabled: links.length > 0,
     retry: false,
   });
@@ -16,7 +16,7 @@ export function PersonReferencePanel({ entity }: { entity: LinkedArtNode }) {
   return (
     <ReferencePanel
       title="References"
-      className="person-reference-panel"
+      className="entity-reference-panel"
       items={data ?? links}
       progressiveLoading
     />
