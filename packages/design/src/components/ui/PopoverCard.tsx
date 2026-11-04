@@ -1,7 +1,6 @@
 import { usePopoverCardPosition } from './usePopoverCardPosition';
 import { getFocusableTreeWalker } from '@react-aria/focus';
-import { createContext, useContext, useEffect, useEffectEvent, useMemo, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
-import { Popover } from 'react-aria-components';
+import { createContext, useContext, useEffect, useEffectEvent, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import './PopoverCard.css';
 
@@ -25,12 +24,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
 }) {
   const id = useId();
   const parent = useContext(PopoverCardContext);
-  const parentElement = parent?.element;
+  const parentElement = parent?.element ?? document.body;
   const parentPosition = parent?.position;
   const trigger = useRef<HTMLSpanElement>(null);
   const touch = useRef(false);
   const previewHovered = useRef(false);
-  const externalTrigger = useMemo(() => ({ current: anchor ?? null }), [anchor]);
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
@@ -135,10 +133,6 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       const anchor = getTrigger();
       if (popupElement && anchor) {
         moveFocusFromPreview(event, popupElement, anchor, close);
-        // Handle portal boundaries before the popover's document-level focus restoration.
-        if (event.defaultPrevented) {
-          event.stopPropagation();
-        }
       }
       return;
     }
@@ -218,27 +212,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     </div>
   );
 
-  const overlay = parentElement ? visible && createPortal(
+  const overlay = visible && createPortal(
     <div ref={setPopupElement} className="gds popover-card" style={{ ...position, position: 'fixed' }}>
       {card}
     </div>,
     parentElement,
-  ) : visible && (
-    <Popover
-      ref={setPopupElement}
-      triggerRef={anchor ? externalTrigger : trigger}
-      isOpen={visible}
-      onOpenChange={(next) => {
-        if (!next) {
-          close();
-        }
-      }}
-      isNonModal
-      className="gds popover-card"
-      style={{ ...position, position: 'fixed' }}
-    >
-      {card}
-    </Popover>
   );
 
   if (!renderTrigger) {
