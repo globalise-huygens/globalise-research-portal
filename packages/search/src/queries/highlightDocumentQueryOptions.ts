@@ -6,6 +6,7 @@ export default function highlightDocumentQueryOptions(state?: ManifestSearchStat
   return queryOptions({
     queryKey: ['highlightDocument', state],
     staleTime: Infinity,
+    retry: false,
     queryFn: state ? () => highlightDocument({ data: state }) : skipToken,
   });
 }

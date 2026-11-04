@@ -1,6 +1,7 @@
 import {
   type DocumentState,
   findActiveSearchHits,
+  findInitialCanvasId,
   setSearchHits,
   useDocumentStore,
 } from '@globalise/common/document';
@@ -37,22 +38,18 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const manifestUrl = search.manifest ?? defaultManifest;
-  const urlCanvasId = search.canvas;
-  const {
-    data: highlights,
-    isLoading: isHighlighting,
-    isError: isHighlightError,
-  } = useQuery(
-    highlightDocumentQueryOptions(getManifestSearchState(search)),
+  const searchState = getManifestSearchState(search);
+  const { data: highlights, isLoading: isHighlighting } = useQuery(
+    highlightDocumentQueryOptions(searchState),
   );
-  const activeHitCanvasId = highlights?.hits
-    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex)?.canvasId;
-  const initialCanvasId = urlCanvasId ?? activeHitCanvasId;
+  const activeHit = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
+  const activeHitCanvasId = activeHit?.canvasId;
+
+  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
-  if (isHighlightError) {
-    error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && highlights.activeEsHitIndex === null) {
+  if (searchState && !activeHitCanvasId) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
