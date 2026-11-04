@@ -24,7 +24,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
 }) {
   const id = useId();
   const parent = useContext(PopoverCardContext);
-  const parentElement = parent?.element ?? document.body;
+  const parentElement = parent?.element;
   const parentPosition = parent?.position;
   const trigger = useRef<HTMLSpanElement>(null);
   const touch = useRef(false);
@@ -216,7 +216,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     <div ref={setPopupElement} className="gds popover-card" style={{ ...position, position: 'fixed' }}>
       {card}
     </div>,
-    parentElement,
+    parentElement ?? document.body,
   );
 
   if (!renderTrigger) {
