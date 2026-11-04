@@ -23,6 +23,7 @@ export type DiplomaticViewProps = {
   showBlocks?: boolean;
   showScanMargin?: boolean;
   selected?: Id[];
+  activeHits?: Id[];
   style?: React.CSSProperties;
 };
 
@@ -35,6 +36,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     showBlocks,
     showScanMargin,
     selected = [],
+    activeHits = [],
     style,
   } = props;
 
@@ -85,12 +87,17 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       onClick: toggleClicked,
     });
     view.setSelected(...selected);
+    view.setActiveHits(...activeHits);
     viewRef.current = view;
   }
 
   useEffect(() => {
     viewRef.current?.setSelected(...selected);
   }, [selected]);
+
+  useEffect(() => {
+    viewRef.current?.setActiveHits(...activeHits);
+  }, [activeHits]);
 
   return <div ref={containerRef} style={style} />;
 }

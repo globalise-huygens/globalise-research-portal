@@ -1,23 +1,20 @@
 'use client';
 
 import { type ReactNode, useState } from 'react';
-import { type CanvasId, type DocumentHit, setSelectedCanvas } from '@globalise/common/document';
-import { useDocumentHitCanvasId } from '@globalise/common/document/browser';
+import { type CanvasId, setSelectedCanvas } from '@globalise/common/document';
 import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
 import { ManifestTranscriptionViewer } from './transcription/ManifestTranscriptionViewer';
 
 export type ManifestViewerProps = {
   initialCanvasId?: CanvasId;
-  documentHit?: DocumentHit;
   topLeft?: ReactNode;
   error?: ErrorMessage;
   onClose?: () => void;
 };
 
-export function ManifestViewer({ initialCanvasId, documentHit, topLeft, error, onClose }: ManifestViewerProps) {
-  const documentHitCanvasId = useDocumentHitCanvasId(documentHit);
-  const [startCanvasId] = useState(initialCanvasId ?? documentHitCanvasId);
+export function ManifestViewer({ initialCanvasId, topLeft, error, onClose }: ManifestViewerProps) {
+  const [startCanvasId] = useState(initialCanvasId);
 
   return (
     <ManifestLayout

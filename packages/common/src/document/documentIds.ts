@@ -2,24 +2,20 @@ import type { CanvasId } from './ManifestViewerSlice';
 
 const globaliseDataUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/';
 
-export type DocumentHit = {
-  startCanvasId: CanvasId;
-  endCanvasId: CanvasId;
-  startCharOffset: number;
-};
-
-export function toDocumentHit(
-  document: string,
-  startCharOffset: number,
-): DocumentHit {
-  const startCanvasName = document.replace(/-\d+$/u, '');
-  const endPage = /-(\d+)$/u.exec(document)?.[1];
-  const endCanvasName = endPage ? startCanvasName.replace(/\d+$/u, endPage) : startCanvasName;
-  return {
-    startCanvasId: toCanvasId(startCanvasName),
-    endCanvasId: toCanvasId(endCanvasName),
-    startCharOffset,
-  };
+export function findInitialCanvasId(
+  { canvas, document }: { canvas?: CanvasId; document?: string },
+  activeHitCanvasId?: CanvasId,
+): CanvasId | undefined {
+  if (canvas) {
+    return canvas;
+  }
+  if (activeHitCanvasId) {
+    return activeHitCanvasId;
+  }
+  if (document) {
+    return toDocumentStartCanvasId(document);
+  }
+  return undefined;
 }
 
 export function toManifestId(inventoryNumber: string): string {
@@ -28,4 +24,8 @@ export function toManifestId(inventoryNumber: string): string {
 
 export function toCanvasId(name: string): string {
   return `${globaliseDataUrl}canvas:${name}`;
+}
+
+function toDocumentStartCanvasId(document: string): CanvasId {
+  return toCanvasId(document.replace(/-\d+$/u, ''));
 }

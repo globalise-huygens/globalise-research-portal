@@ -6,4 +6,4 @@ dist/
 
 *.tsbuildinfo
 *.log
-data/*.db*
+/data/

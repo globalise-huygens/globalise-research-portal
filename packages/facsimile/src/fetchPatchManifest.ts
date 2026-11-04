@@ -5,9 +5,10 @@ type ManifestJson = { structures?: { items?: RangeRef[] }[] };
 //  the vault merges ranges with the same id into one range.
 export async function fetchPatchManifest(
   url: string,
+  signal?: AbortSignal,
 ): Promise<ManifestJson | undefined> {
   try {
-    const manifest: ManifestJson = await (await fetch(url)).json();
+    const manifest: ManifestJson = await (await fetch(url, { signal })).json();
     manifest.structures?.forEach((range) => makeIdsUnique(range.items ?? []));
     return manifest;
   } catch {

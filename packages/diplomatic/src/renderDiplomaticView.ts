@@ -8,6 +8,7 @@ import {
   getPageText,
   indexAnnotations,
   isEntity,
+  isSearchHit,
   toClassName,
 } from '@globalise/common/annotation';
 import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
@@ -83,8 +84,9 @@ export function renderDiplomaticView(
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
+  const searchHitAnnos = Object.values(annotations).filter(isSearchHit);
   const markedAnnos = filterByTextSelectorOrLog(
-    [...wordAnnos, ...entityAnnos],
+    [...wordAnnos, ...entityAnnos, ...searchHitAnnos],
     pageAnnoId,
   );
 
@@ -101,6 +103,7 @@ export function renderDiplomaticView(
 
   const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const $searchHitToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   function getEntitySegment(event: FocusEvent) {
     if (!(event.target instanceof HTMLSpanElement)) {
@@ -146,6 +149,12 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
+      const searchHit = segment.annotations.find(isSearchHit);
+      if (searchHit) {
+        $segment.classList.add('search-hit');
+        ($searchHitToSegments[searchHit.id] ??= []).push($segment);
+      }
+
       const entity = segment.annotations.find((a) => isEntity(a));
 
       if (entity) {
@@ -310,6 +319,12 @@ export function renderDiplomaticView(
 
       selectedIds.length = 0;
       selectedIds.push(...ids);
+    },
+    setActiveHits: (...ids: string[]) => {
+      for (const [id, $segments] of Object.entries($searchHitToSegments)) {
+        const isActiveHit = ids.includes(id);
+        $segments.forEach(($s) => $s.classList.toggle('active-hit', isActiveHit));
+      }
     },
   };
 }

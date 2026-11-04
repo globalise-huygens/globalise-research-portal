@@ -1,6 +1,8 @@
 import {
   type DocumentState,
-  toDocumentHit,
+  findActiveSearchHits,
+  findInitialCanvasId,
+  setSearchHits,
   useDocumentStore,
 } from '@globalise/common/document';
 import {
@@ -36,21 +38,18 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const manifestUrl = search.manifest ?? defaultManifest;
-  const {
-    data: highlights,
-    isLoading: isHighlighting,
-    isError: isHighlightError,
-  } = useQuery(
-    highlightDocumentQueryOptions(getManifestSearchState(search)),
+  const searchState = getManifestSearchState(search);
+  const { data: highlights, isLoading: isHighlighting } = useQuery(
+    highlightDocumentQueryOptions(searchState),
   );
-  const documentHit = search.document
-    ? toDocumentHit(search.document, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHit = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
+  const activeHitCanvasId = activeHit?.canvasId;
+
+  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
-  if (isHighlightError) {
-    error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && !highlights.snippet) {
+  if (searchState && !activeHitCanvasId) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
@@ -71,12 +70,21 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logHighlights, [highlights]);
+  useEffect(logSearchHits, []);
 
-  function logHighlights() {
-    if (highlights) {
-      console.info('highlights', highlights);
-    }
+  function logSearchHits() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
+        return;
+      }
+      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
+    });
+  }
+
+  useEffect(storeSearchHits, [highlights]);
+
+  function storeSearchHits() {
+    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
   }
 
   useEffect(logTextRanges, []);
@@ -130,8 +138,7 @@ export function ManifestPage() {
       <ManifestLoader url={manifestUrl}>
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
-            initialCanvasId={search.canvas}
-            documentHit={documentHit}
+            initialCanvasId={initialCanvasId}
             error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={

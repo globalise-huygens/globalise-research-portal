@@ -8,3 +8,11 @@
     mix-blend-mode: multiply;
     pointer-events: none;
 }
+
+.search-hit-word-highlight {
+    fill: var(--color-yellow-100);
+
+    &.active-hit {
+        fill: var(--color-yellow-300);
+    }
+}

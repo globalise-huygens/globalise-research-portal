@@ -1,20 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { toDocumentHit } from './documentIds';
+import { findInitialCanvasId, toCanvasId } from './documentIds';
 
-const canvasUrl = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/canvas:';
+const document = 'NL-HaNA_1.04.02_1053_0003-0071';
+const documentStartCanvasId = toCanvasId('NL-HaNA_1.04.02_1053_0003');
 
-describe(toDocumentHit.name, () => {
-  it('spans first to last canvas of multi-page document, starting at hit offset', () => {
-    expect(toDocumentHit('NL-HaNA_1.04.02_1053_0013-0019', 27)).toEqual({
-      startCanvasId: `${canvasUrl}NL-HaNA_1.04.02_1053_0013`,
-      endCanvasId: `${canvasUrl}NL-HaNA_1.04.02_1053_0019`,
-      startCharOffset: 27,
-    });
+describe(findInitialCanvasId.name, () => {
+  it('prefers the canvas from the url', () => {
+    expect(findInitialCanvasId({ canvas: 'url', document }, 'hit')).toBe('url');
   });
 
-  it('starts and ends at same canvas when single-page document', () => {
-    const hit = toDocumentHit('NL-HaNA_1.04.02_1053_0013', 27);
-    expect(hit.startCanvasId).toBe(`${canvasUrl}NL-HaNA_1.04.02_1053_0013`);
-    expect(hit.endCanvasId).toBe(`${canvasUrl}NL-HaNA_1.04.02_1053_0013`);
+  it('uses the canvas of the active hit when the url has no canvas', () => {
+    expect(findInitialCanvasId({ document }, 'hit')).toBe('hit');
+  });
+
+  it('falls back to the first page of the document without an active hit', () => {
+    expect(findInitialCanvasId({ document })).toBe(documentStartCanvasId);
+  });
+
+  it('uses the page of a single page document', () => {
+    expect(findInitialCanvasId({ document: 'NL-HaNA_1.04.02_1053_0003' })).toBe(documentStartCanvasId);
+  });
+
+  it('finds no canvas without url canvas, active hit and document', () => {
+    expect(findInitialCanvasId({})).toBeUndefined();
   });
 });
