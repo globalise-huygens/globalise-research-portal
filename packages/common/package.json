@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@iiif/helpers": "^4.0.0",
-    "@iiif/parser": "^4.0.3"
+    "@iiif/parser": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
-    "@tanstack/react-query": "^5.104.4",
-    "@tanstack/react-router": "^1.170.45"
+    "@tanstack/react-query": "^5.105.0",
+    "@tanstack/react-router": "^1.170.46"
   }
 }
