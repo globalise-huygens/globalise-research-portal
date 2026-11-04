@@ -35,7 +35,8 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const visible = open && (!!children || isPending) && (!parent || parent.activeChild === id);
+  const hasPopupContent = Boolean(children) || isPending;
+  const visible = open && hasPopupContent && (!parent || parent.activeChild === id);
   const isRoot = !parent;
   const cancelTimer = () => {
     clearTimeout(timer.current);
@@ -58,35 +59,59 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     cancelTimer();
     timer.current = setTimeout(() => {
       timer.current = undefined;
-      if (!previewHovered.current && document.activeElement !== anchor
-        && !trigger.current?.contains(document.activeElement) && !popupElement?.contains(document.activeElement)) {
+      const focusedElement = document.activeElement;
+      const anchorHasFocus = focusedElement === anchor;
+      const focusIsInsideTrigger = trigger.current?.contains(focusedElement) ?? false;
+      const focusIsInsidePreview = popupElement?.contains(focusedElement) ?? false;
+      const shouldKeepOpen = previewHovered.current || anchorHasFocus || focusIsInsideTrigger || focusIsInsidePreview;
+
+      if (!shouldKeepOpen) {
         close();
       }
     }, 200);
   };
-  const getTrigger = () => focusTarget ?? (anchor as HTMLElement | SVGElement | undefined)
-    ?? trigger.current?.querySelector<HTMLElement>(focusableSelector);
+  const getTrigger = () => {
+    if (focusTarget) {
+      return focusTarget;
+    }
+    const externalAnchor = anchor as HTMLElement | SVGElement | undefined;
+    if (externalAnchor) {
+      return externalAnchor;
+    }
+    return trigger.current?.querySelector<HTMLElement>(focusableSelector);
+  };
 
   useEffect(() => () => clearTimeout(timer.current), []);
   const updateHover = useEffectEvent(() => {
     if (isHovered) {
       cancelTimer();
-      timer.current = setTimeout(keepOpen, open || openImmediately ? 0 : 350);
+      const hoverDelay = open || openImmediately ? 0 : 350;
+      timer.current = setTimeout(keepOpen, hoverDelay);
     } else {
       scheduleClose();
     }
   });
   const dismiss = useEffectEvent(close);
   useEffect(() => {
-    if (!anchor) {return;}
+    if (!anchor) {
+      return;
+    }
     updateHover();
     return () => clearTimeout(timer.current);
   }, [anchor, isHovered, openImmediately]);
   useEffect(() => {
-    if (!anchor) {return;}
+    if (!anchor) {
+      return;
+    }
     const dismissOnMovement = (event: Event) => {
-      if (event.target instanceof Node && (anchor.contains(event.target) && event.type === 'pointerdown'
-        || popupElement?.contains(event.target))) {return;}
+      const target = event.target;
+      const isPointerDownOnAnchor = target instanceof Node
+        && event.type === 'pointerdown' && anchor.contains(target);
+      const isInsidePreview = target instanceof Node && popupElement?.contains(target);
+
+      if (isPointerDownOnAnchor || isInsidePreview) {
+        return;
+      }
       dismiss();
     };
     window.addEventListener('wheel', dismissOnMovement, { capture: true, passive: true });
@@ -99,20 +124,35 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     };
   }, [anchor, popupElement]);
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
-    if (event.defaultPrevented || event.isComposing
-      || event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey)) {return;}
-    if (event.key === 'Tab' && event.target instanceof Element
-      && event.target.closest('[role="dialog"]')?.id === id) {
+    const isModifiedTab = event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey);
+    const shouldIgnoreKey = event.defaultPrevented || event.isComposing || isModifiedTab;
+
+    if (shouldIgnoreKey) {
+      return;
+    }
+    const target = event.target;
+    const targetDialog = event.key === 'Tab' && target instanceof Element
+      ? target.closest('[role="dialog"]') : null;
+    const isTabInsidePreview = event.key === 'Tab' && targetDialog?.id === id;
+
+    if (isTabInsidePreview) {
       const anchor = getTrigger();
       if (popupElement && anchor) {
         moveFocusFromPreview(event, popupElement, anchor, close);
         // Handle portal boundaries before the popover's document-level focus restoration.
-        if (event.defaultPrevented) {event.stopPropagation();}
+        if (event.defaultPrevented) {
+          event.stopPropagation();
+        }
       }
       return;
     }
-    if (!isRoot) {return;}
-    if (event.key === 'Tab' && anchor && !event.shiftKey && document.activeElement === anchor) {
+    if (!isRoot) {
+      return;
+    }
+    const isForwardTabFromAnchor = event.key === 'Tab' && anchor
+      && !event.shiftKey && document.activeElement === anchor;
+
+    if (isForwardTabFromAnchor) {
       const first = popupElement && getFocusableElements(popupElement)[0];
       if (first) {
         event.preventDefault();
@@ -120,8 +160,13 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }
       return;
     }
-    // Let the nearest preview handle Escape from inside the popup.
-    if (event.key !== 'Escape' || event.target instanceof Element && event.target.closest('.popover-card')) {return;}
+    const isInsidePreview = target instanceof Element && target.closest('.popover-card') !== null;
+    const shouldDismissRoot = event.key === 'Escape' && !isInsidePreview;
+
+    // Escape inside a preview is handled by that preview's own key handler.
+    if (!shouldDismissRoot) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     if (popupElement?.contains(document.activeElement)) {
@@ -131,7 +176,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   });
   useEffect(() => {
     // Escape must also cancel an external annotation's pending hover delay.
-    if (!visible && !anchor) {return;}
+    if (!visible && !anchor) {
+      return;
+    }
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
@@ -152,15 +199,22 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       id={id}
       aria-label={label}
       aria-busy={isPending || undefined}
-      onPointerEnter={() => {previewHovered.current = true; keepOpen();}}
+      onPointerEnter={() => {
+        previewHovered.current = true;
+        keepOpen();
+      }}
       onPointerLeave={(event) => {
         previewHovered.current = false;
-        if (event.pointerType !== 'touch') {scheduleClose();}
+        if (event.pointerType !== 'touch') {
+          scheduleClose();
+        }
       }}
       onFocusCapture={keepOpen}
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
-        if (event.defaultPrevented) {return;}
+        if (event.defaultPrevented) {
+          return;
+        }
         if (event.key === 'Escape') {
           event.preventDefault();
           event.stopPropagation();
@@ -184,7 +238,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       ref={setPopupElement}
       triggerRef={anchor ? externalTrigger : trigger}
       isOpen={visible}
-      onOpenChange={(next) => { if (!next) {close();} }}
+      onOpenChange={(next) => {
+        if (!next) {
+          close();
+        }
+      }}
       isNonModal
       className="gds popover-card"
       style={{ ...position, position: 'fixed' }}
@@ -193,7 +251,16 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     </Popover>
   );
 
-  if (!renderTrigger) {return overlay;}
+  if (!renderTrigger) {
+    return overlay;
+  }
+
+  const triggerAttributes: AriaAttributes = hasPopupContent ? {
+    'aria-haspopup': 'dialog',
+    'aria-expanded': visible,
+    'aria-controls': visible ? id : undefined,
+  } : {};
+
   return (
     <span
       ref={trigger}
@@ -204,25 +271,35 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }}
       onClickCapture={(event) => {
         const isKeyboardActivation = event.detail === 0;
-        const hasPopupContent = Boolean(children) || isPending;
         const isInsideTrigger = trigger.current?.contains(event.target as Node);
         const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
-        if (!touch.current || isKeyboardActivation || !hasPopupContent || !isInsideTrigger || !isPlainPrimaryClick) {return;}
+        const shouldOpenOnTouch = touch.current && !isKeyboardActivation
+          && hasPopupContent && isInsideTrigger && isPlainPrimaryClick;
+
+        if (!shouldOpenOnTouch) {
+          return;
+        }
         event.preventDefault();
         keepOpen();
       }}
       onPointerEnter={(event) => {
-        if (event.pointerType === 'touch') {return;}
+        if (event.pointerType === 'touch') {
+          return;
+        }
         cancelTimer();
         timer.current = setTimeout(keepOpen, parent ? 0 : 350);
       }}
       onPointerLeave={(event) => {
-        if (event.pointerType !== 'touch') {scheduleClose();}
+        if (event.pointerType !== 'touch') {
+          scheduleClose();
+        }
       }}
       onFocusCapture={keepOpen}
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
-        if (event.defaultPrevented) {return;}
+        if (event.defaultPrevented) {
+          return;
+        }
         if (event.key === 'Escape' && (open || timer.current !== undefined)) {
           event.preventDefault();
           event.stopPropagation();
@@ -239,7 +316,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         }
       }}
     >
-      {renderTrigger(children || isPending ? { 'aria-haspopup': 'dialog', 'aria-expanded': visible, 'aria-controls': visible ? id : undefined } : {})}
+      {renderTrigger(triggerAttributes)}
       {overlay}
     </span>
   );
@@ -259,14 +336,29 @@ function PopoverCardBody({ children, position, onKeepOpen }: {
   </div>;
 }
 
-const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ');
+
 function hasModifierKey(event: { shiftKey: boolean; altKey: boolean; ctrlKey: boolean; metaKey: boolean }) {
   return event.shiftKey || event.altKey || event.ctrlKey || event.metaKey;
 }
 
 function getFocusableElements(container: Element) {
   return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
-    .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
+    .filter((element) => {
+      const isTabReachable = element.tabIndex >= 0;
+      if (!isTabReachable) {
+        return false;
+      }
+      const isRendered = element.getClientRects().length > 0;
+      return isRendered;
+    });
 }
 
 function moveFocusFromPreview(
@@ -275,7 +367,9 @@ function moveFocusFromPreview(
   anchor: HTMLElement | SVGElement,
   close: () => void,
 ) {
-  if (event.key !== 'Tab') {return;}
+  if (event.key !== 'Tab') {
+    return;
+  }
   const elements = getFocusableElements(popup);
   if (event.shiftKey && event.target === elements[0]) {
     event.preventDefault();

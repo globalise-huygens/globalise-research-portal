@@ -1,3 +1,4 @@
+import { clamp } from '@globalise/common';
 import type { CSSProperties } from 'react';
 
 export function placePopoverCard(
@@ -9,17 +10,24 @@ export function placePopoverCard(
 ): CSSProperties {
   const margin = 8;
   const gap = 8;
-  const clamp = (value: number, maximum: number) => Math.min(Math.max(value, margin), Math.max(margin, maximum));
+  const maximumLeft = Math.max(margin, viewportWidth - cardWidth - margin);
+  const maximumTop = Math.max(margin, viewportHeight - cardHeight - margin);
   const belowTop = anchor.bottom + gap;
   const aboveTop = anchor.top - cardHeight - gap;
   const spaceBelow = viewportHeight - margin - belowTop;
   const spaceAbove = anchor.top - gap - margin;
-  const preferredTop = cardHeight <= spaceBelow ? belowTop
-    : cardHeight <= spaceAbove ? aboveTop
-      : spaceBelow >= spaceAbove ? belowTop : aboveTop;
+  const fitsBelow = cardHeight <= spaceBelow;
+  const fitsAbove = cardHeight <= spaceAbove;
+  const hasMoreSpaceBelow = spaceBelow >= spaceAbove;
+  let preferredTop = belowTop;
+
+  if (!fitsBelow && (fitsAbove || !hasMoreSpaceBelow)) {
+    preferredTop = aboveTop;
+  }
+
   return {
-    left: clamp(anchor.left, viewportWidth - cardWidth - margin),
-    top: clamp(preferredTop, viewportHeight - cardHeight - margin),
+    left: clamp(anchor.left, margin, maximumLeft),
+    top: clamp(preferredTop, margin, maximumTop),
     visibility: 'visible',
   };
 }
@@ -33,10 +41,18 @@ export function placePopoverCardBeside(
 ): CSSProperties {
   const margin = 8;
   const gap = 8;
-  const left = parent.right + gap + width <= viewportWidth - margin
-    ? parent.right + gap
-    : parent.left - gap - width >= margin ? parent.left - gap - width : undefined;
-  return left === undefined
-    ? placePopoverCard(parent, width, height, viewportWidth, viewportHeight)
-    : { left, top: Math.max(margin, Math.min(parent.top, viewportHeight - height - margin)), visibility: 'visible' };
+  const rightSideLeft = parent.right + gap;
+  const leftSideLeft = parent.left - gap - width;
+  const fitsOnRight = rightSideLeft + width <= viewportWidth - margin;
+  const fitsOnLeft = leftSideLeft >= margin;
+
+  if (!fitsOnRight && !fitsOnLeft) {
+    return placePopoverCard(parent, width, height, viewportWidth, viewportHeight);
+  }
+
+  const left = fitsOnRight ? rightSideLeft : leftSideLeft;
+  const maximumTop = Math.max(margin, viewportHeight - height - margin);
+  const top = clamp(parent.top, margin, maximumTop);
+
+  return { left, top, visibility: 'visible' };
 }
