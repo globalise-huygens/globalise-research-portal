@@ -68,26 +68,36 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }
     }, 200);
   };
-  const getTrigger = () => (anchor as HTMLElement | SVGElement | undefined)
-    ?? trigger.current?.querySelector<HTMLElement>(focusableSelector);
+  const getTrigger = () => {
+    const externalAnchor = anchor as HTMLElement | SVGElement | undefined;
+    if (externalAnchor) {
+      return externalAnchor;
+    }
+    return trigger.current?.querySelector<HTMLElement>(focusableSelector);
+  };
 
   useEffect(() => () => clearTimeout(timer.current), []);
   const updateHover = useEffectEvent(() => {
     if (isHovered) {
       cancelTimer();
-      timer.current = setTimeout(keepOpen, open || openImmediately ? 0 : 350);
+      const hoverDelay = open || openImmediately ? 0 : 350;
+      timer.current = setTimeout(keepOpen, hoverDelay);
     } else {
       scheduleClose();
     }
   });
   const dismiss = useEffectEvent(close);
   useEffect(() => {
-    if (!anchor) {return;}
+    if (!anchor) {
+      return;
+    }
     updateHover();
     return () => clearTimeout(timer.current);
   }, [anchor, isHovered, openImmediately]);
   useEffect(() => {
-    if (!anchor) {return;}
+    if (!anchor) {
+      return;
+    }
     const dismissOnMovement = (event: Event) => {
       const target = event.target;
       const isPointerDownOnAnchor = target instanceof Node
@@ -124,11 +134,15 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       if (popupElement && anchor) {
         moveFocusFromPreview(event, popupElement, anchor, close);
         // Handle portal boundaries before the popover's document-level focus restoration.
-        if (event.defaultPrevented) {event.stopPropagation();}
+        if (event.defaultPrevented) {
+          event.stopPropagation();
+        }
       }
       return;
     }
-    if (!isRoot) {return;}
+    if (!isRoot) {
+      return;
+    }
     const isForwardTabFromAnchor = event.key === 'Tab' && anchor
       && !event.shiftKey && document.activeElement === anchor;
 
@@ -156,7 +170,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   });
   useEffect(() => {
     // Escape must also cancel an external annotation's pending hover delay.
-    if (!visible && !anchor) {return;}
+    if (!visible && !anchor) {
+      return;
+    }
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
@@ -171,15 +187,22 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       id={id}
       aria-label={label}
       aria-busy={isPending || undefined}
-      onPointerEnter={() => {previewHovered.current = true; keepOpen();}}
+      onPointerEnter={() => {
+        previewHovered.current = true;
+        keepOpen();
+      }}
       onPointerLeave={(event) => {
         previewHovered.current = false;
-        if (event.pointerType !== 'touch') {scheduleClose();}
+        if (event.pointerType !== 'touch') {
+          scheduleClose();
+        }
       }}
       onFocusCapture={keepOpen}
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
-        if (event.defaultPrevented) {return;}
+        if (event.defaultPrevented) {
+          return;
+        }
         if (event.key === 'Escape') {
           event.preventDefault();
           event.stopPropagation();
@@ -203,7 +226,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       ref={setPopupElement}
       triggerRef={anchor ? externalTrigger : trigger}
       isOpen={visible}
-      onOpenChange={(next) => { if (!next) {close();} }}
+      onOpenChange={(next) => {
+        if (!next) {
+          close();
+        }
+      }}
       isNonModal
       className="gds popover-card"
       style={{ ...position, position: 'fixed' }}
@@ -212,7 +239,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     </Popover>
   );
 
-  if (!renderTrigger) {return overlay;}
+  if (!renderTrigger) {
+    return overlay;
+  }
 
   const triggerAttributes: AriaAttributes = hasPopupContent ? {
     'aria-haspopup': 'dialog',
@@ -242,17 +271,23 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         keepOpen();
       }}
       onPointerEnter={(event) => {
-        if (event.pointerType === 'touch') {return;}
+        if (event.pointerType === 'touch') {
+          return;
+        }
         cancelTimer();
         timer.current = setTimeout(keepOpen, parent ? 0 : 350);
       }}
       onPointerLeave={(event) => {
-        if (event.pointerType !== 'touch') {scheduleClose();}
+        if (event.pointerType !== 'touch') {
+          scheduleClose();
+        }
       }}
       onFocusCapture={keepOpen}
       onBlurCapture={scheduleClose}
       onKeyDown={(event) => {
-        if (event.defaultPrevented) {return;}
+        if (event.defaultPrevented) {
+          return;
+        }
         if (event.key === 'Escape' && (open || timer.current !== undefined)) {
           event.preventDefault();
           event.stopPropagation();
@@ -304,7 +339,11 @@ function hasModifierKey(event: { shiftKey: boolean; altKey: boolean; ctrlKey: bo
 
 function getFocusableElements(container: Element) {
   return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
-    .filter((element) => element.tabIndex >= 0 && element.getClientRects().length > 0);
+    .filter((element) => {
+      const isTabReachable = element.tabIndex >= 0;
+      const isRendered = element.getClientRects().length > 0;
+      return isTabReachable && isRendered;
+    });
 }
 
 function moveFocusFromPreview(
@@ -313,7 +352,9 @@ function moveFocusFromPreview(
   anchor: HTMLElement | SVGElement,
   close: () => void,
 ) {
-  if (event.key !== 'Tab') {return;}
+  if (event.key !== 'Tab') {
+    return;
+  }
   const elements = getFocusableElements(popup);
   if (event.shiftKey && event.target === elements[0]) {
     event.preventDefault();
