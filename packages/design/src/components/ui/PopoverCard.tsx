@@ -88,8 +88,14 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   useEffect(() => {
     if (!anchor) {return;}
     const dismissOnMovement = (event: Event) => {
-      if (event.target instanceof Node && (anchor.contains(event.target) && event.type === 'pointerdown'
-        || popupElement?.contains(event.target))) {return;}
+      const target = event.target;
+      const isPointerDownOnAnchor = target instanceof Node
+        && event.type === 'pointerdown' && anchor.contains(target);
+      const isInsidePreview = target instanceof Node && popupElement?.contains(target);
+
+      if (isPointerDownOnAnchor || isInsidePreview) {
+        return;
+      }
       dismiss();
     };
     window.addEventListener('wheel', dismissOnMovement, { capture: true, passive: true });
@@ -102,8 +108,12 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     };
   }, [anchor, popupElement]);
   const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
-    if (event.defaultPrevented || event.isComposing
-      || event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey)) {return;}
+    const isModifiedTab = event.key === 'Tab' && (event.altKey || event.ctrlKey || event.metaKey);
+    const shouldIgnoreKey = event.defaultPrevented || event.isComposing || isModifiedTab;
+
+    if (shouldIgnoreKey) {
+      return;
+    }
     if (event.key === 'Tab' && event.target instanceof Element
       && event.target.closest('[role="dialog"]')?.id === id) {
       const anchor = getTrigger();
