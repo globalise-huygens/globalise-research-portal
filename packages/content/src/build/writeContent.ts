@@ -1,9 +1,9 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { indexFile, pagesDir, searchIndexFile, toPageFile } from './contentFiles.ts';
+import { indexFile, pagesDir, searchIndexFile, toPageFile } from '../contentFiles.ts';
 import { buildContentSearchIndex } from './search/buildContentSearchIndex.ts';
 import type { ContentBuild } from './buildContent.ts';
-import type { ContentIndex } from './ContentPage.ts';
+import type { ContentIndex } from '../ContentPage.ts';
 
 export async function writeContent(build: ContentBuild, outputDir: string) {
   const index: ContentIndex = build.pages.map((page) => page.meta);

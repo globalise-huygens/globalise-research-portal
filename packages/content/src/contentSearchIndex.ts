@@ -1,6 +1,6 @@
 import type MiniSearch from 'minisearch';
 import type { Options } from 'minisearch';
-import type { PageMeta } from '../ContentPage.ts';
+import type { PageMeta } from './ContentPage.ts';
 
 export type ContentSearchIndex = MiniSearch<ContentSearchDocument>;
 

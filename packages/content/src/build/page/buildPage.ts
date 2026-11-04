@@ -5,7 +5,7 @@ import { readFrontMatter } from './readFrontMatter.ts';
 import { validateFrontMatter } from './validateFrontMatter.ts';
 import { validateLinks } from './validateLinks.ts';
 import type { VFile } from 'vfile';
-import type { ContentPage } from '../ContentPage.ts';
+import type { ContentPage } from '../../ContentPage.ts';
 import type { Issue } from '../Issue.ts';
 
 export type PageBuild = {

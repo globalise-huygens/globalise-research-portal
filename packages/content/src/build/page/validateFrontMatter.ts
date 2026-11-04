@@ -1,7 +1,7 @@
 import { createErrorIssue, createWarningIssue } from '../Issue.ts';
-import { pageMetaSchema, recommendedFieldsSchema } from './pageMetaSchema.ts';
+import { pageMetaSchema, recommendedFieldsSchema } from '../../pageMetaSchema.ts';
 import type { z } from 'zod';
-import type { PageMeta } from '../ContentPage.ts';
+import type { PageMeta } from '../../ContentPage.ts';
 import type { Issue } from '../Issue.ts';
 import type { FrontMatter } from './readFrontMatter.ts';
 

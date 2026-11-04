@@ -1,6 +1,6 @@
 import type { Root } from 'hast';
 import type { z } from 'zod';
-import type { pageMetaSchema } from './page/pageMetaSchema.ts';
+import type { pageMetaSchema } from './pageMetaSchema.ts';
 
 export type ContentPage = {
   meta: PageMeta;

@@ -3,7 +3,7 @@ import { buildPage } from './page/buildPage.ts';
 import { readSources } from './readSources.ts';
 import { validateSlugs } from './validateSlugs.ts';
 import type { VFile } from 'vfile';
-import type { ContentPage } from './ContentPage.ts';
+import type { ContentPage } from '../ContentPage.ts';
 
 export type ContentBuild = {
   sources: VFile[];

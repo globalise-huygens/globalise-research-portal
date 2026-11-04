@@ -1,8 +1,8 @@
 import MiniSearch from 'minisearch';
 import { toText } from 'hast-util-to-text';
-import { contentSearchIndexOptions } from './contentSearchIndex.ts';
-import type { ContentPage } from '../ContentPage.ts';
-import type { ContentSearchDocument, ContentSearchIndex } from './contentSearchIndex.ts';
+import { contentSearchIndexOptions } from '../../contentSearchIndex.ts';
+import type { ContentPage } from '../../ContentPage.ts';
+import type { ContentSearchDocument, ContentSearchIndex } from '../../contentSearchIndex.ts';
 
 export function buildContentSearchIndex(
   pages: ContentPage[],

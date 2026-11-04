@@ -13,7 +13,7 @@
     "content:fetch": "git -C content fetch",
     "content:checkout": "sh -c 'git -C content checkout \"${1:-origin/main}\" && git add content && pnpm content:build' content:checkout",
     "content:update": "git submodule update content",
-    "content:build": "node packages/content/src/cli.ts content packages/app/dist/content",
+    "content:build": "node packages/content/src/build/cli.ts content packages/app/dist/content",
     "serve": "pnpm --filter @globalise/app serve",
     "diplomatic:screenshot": "pnpm --filter @globalise/diplomatic screenshot",
     "preview": "pnpm --filter @globalise/app build && pnpm --filter @globalise/app preview",

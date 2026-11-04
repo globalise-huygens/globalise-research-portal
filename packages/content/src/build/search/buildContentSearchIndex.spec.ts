@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildContentSearchIndex } from './buildContentSearchIndex.ts';
 import type { Element } from 'hast';
-import type { ContentPage } from '../ContentPage.ts';
+import type { ContentPage } from '../../ContentPage.ts';
 
 describe(buildContentSearchIndex.name, () => {
   const index = buildContentSearchIndex([

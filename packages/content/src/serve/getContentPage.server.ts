@@ -1,7 +1,7 @@
 import { notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { toPageFile } from '../contentFiles.ts';
-import { slugPattern } from '../page/pageMetaSchema.ts';
+import { slugPattern } from '../pageMetaSchema.ts';
 import { readContentFile } from './readContentFile.server.ts';
 import type { ContentPage } from '../ContentPage.ts';
 
