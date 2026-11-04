@@ -233,11 +233,12 @@
       }
 
       .source-identifier {
-        margin-right: var(--s8);
+        min-width: 0;
       }
 
       .source-citation {
         display: flex;
+        column-gap: var(--s8);
         min-width: 0;
         flex-wrap: wrap;
         align-items: baseline;

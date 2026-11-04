@@ -8,7 +8,7 @@ import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { formatTimespanSummary } from './TimespanFormat.ts';
-import { relationKeys, statusKeys } from './LabeledKey.ts';
+import { relationKeys, statusKeys, shipHistoryGroups, shipNameLabels } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
@@ -24,17 +24,17 @@ export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
   const title = getShipTitle(entity);
   const names = [...new Set(getPersonNameRecords(entity).map((record) => record.name))]
     .filter((name) => name !== title);
-  const construction = findByPath(entity, ['produced_by'])
-    .filter((event) => !!findTimespan(event) || !!getRecordedDates(event) || findByPath(event, ['took_place_at']).length > 0);
-  if (!names.length && !construction.length) {return null;}
+  const history = getShipHistory(entity)
+    .filter(({ event }) => !!findTimespan(event) || !!getRecordedDates(event) || findByPath(event, ['took_place_at']).length > 0);
+  if (!names.length && !history.length) {return null;}
   return <div className="person-overview">
     {!!names.length && <span className="person-overview-fact">also: {names.join(', ')}</span>}
-    {construction.map((event, index) => {
+    {history.map(({ event, fallback }, index) => {
       const places = findByPath(event, ['took_place_at']);
       const timespan = findTimespan(event);
       const dates = timespan ? null : getRecordedDates(event);
       return <span key={event.id ?? index} className="person-overview-fact">
-        built: {timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
+        {getShipEventLabel(event, fallback)}: {timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
         {(!!timespan || !!dates) && !!places.length && ', '}
         {places.map((place, placeIndex) => <span key={place.id ?? placeIndex}>
           {placeIndex > 0 && ', '}<RelationValue node={place} />
@@ -49,11 +49,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
   const records = sortPersonNames(getPersonNameRecords(entity))
     .sort((left, right) => Number(right.name === title) - Number(left.name === title));
   const names = groupRecords(removeEmptyDuplicateNames(records), (record) => record.name);
-  const events = [
-    ...findByPath(entity, ['produced_by']).map((event) => ({ event, fallback: 'Built' })),
-    ...findByPath(entity, ['transformed_by']).map((event) => ({ event, fallback: 'Change' })),
-    ...findByPath(entity, ['taken_out_of_existence_by']).map((event) => ({ event, fallback: 'End of service' })),
-  ].filter(({ event }) => hasEventInformation(event));
+  const events = getShipHistory(entity);
   const voyages = findByPath(entity, ['moved_by']);
   const sources = findByPath(entity, ['referred_to_by']);
   const notes = getNotes(entity);
@@ -63,7 +59,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
-      {!!names.length && <ObjectCardSection title="Names and labels" collapsible>
+      {(!!names.length || !!events.length) && <ObjectCardSection title="Ship details" collapsible>
         <div className="person-status-list">
           {names.map(({ key, records }) => <ObjectCardDisclosure key={key} summary={<span className="person-status-summary-content">
             {[...new Set(records.flatMap(({ status }) => {
@@ -75,7 +71,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
               return dates && <RecordedDatesValue key={recordKey} dates={dates} />;
             })}
             <span className="person-status-summary-property">
-              <span className="person-status-summary-label">Recorded label: </span>
+              <span className="person-status-summary-label">{getShipNameLabel(records[0].name, records.map(({ status }) => status))}: </span>
               <span className="person-status-summary-value person-name-value">{records[0].name}</span>
               {records.length > 1 && <span className="person-status-count">{records.length} records</span>}
             </span>
@@ -92,7 +88,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
                 {records.length > 1 && <div className="person-status-label">Record {index + 1}</div>}
                 {timespan || dates || hasSources || classifications.length ? <ObjectCardPropertyList className="person-status-details">
                   {!!classifications.length && <ObjectCardProperty label="Classification" value={classifications.map((type, typeIndex) => <span key={type.id ?? typeIndex}>
-                    {typeIndex > 0 && ', '}<RelationValue node={type} />
+                    {typeIndex > 0 && ', '}<RelationLink node={type} />
                   </span>)} />}
                   {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
                   {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
@@ -101,11 +97,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
               </div>;
             })}
           </ObjectCardDisclosure>)}
-        </div>
-      </ObjectCardSection>}
-      {!!events.length && <ObjectCardSection title="Ship history" collapsible>
-        <div className="person-status-list">
-          {events.map(({ event, fallback }, index) => <ShipEvent key={event.id ?? index} event={event} fallback={fallback} identifiers={identifiers} />)}
+          {events.map(({ event, fallback }, index) => <ShipEvent key={event.id ?? `history-${index}`} event={event} fallback={fallback} identifiers={identifiers} />)}
         </div>
       </ObjectCardSection>}
       {!!notes.length && <ObjectCardSection title="Notes" collapsible>
@@ -194,7 +186,7 @@ function ShipOwnership({ status, identifiers }: { status: LinkedArtNode; identif
 }
 
 function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fallback: string; identifiers: string[] }) {
-  const eventLabel = findByPath(event, ['classified_as']).map(label).filter(Boolean).join(', ') || fallback;
+  const eventLabel = getShipEventLabel(event, fallback);
   const places = findByPath(event, ['took_place_at']);
   const transferredFrom = findByPath(event, ['transferred_title_from']);
   const transferredTo = findByPath(event, ['transferred_title_to']);
@@ -204,12 +196,16 @@ function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fal
   const dates = timespan ? null : getRecordedDates(event);
   const content = getContent(event);
   return <ObjectCardDisclosure summary={<div className="person-status-summary-content">
-    {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
-    {dates && <RecordedDatesValue dates={dates} />}
-    <span className="person-status-summary-label">{eventLabel}</span>
+    <span className="person-status-summary-property">
+      <span className="person-status-summary-label">{eventLabel}{(timespan ?? dates) && ': '}</span>
+      {timespan && <span className="person-status-summary-value"><TimespanValue timespan={timespan} mode="event" /></span>}
+      {dates && <RecordedDatesValue dates={dates} />}
+    </span>
   </div>}>
     <ObjectCardPropertyList className="person-status-details">
       {content && <ObjectCardProperty label="Description" value={content} />}
+      {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
+      {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
       {!!places.length && <ObjectCardProperty label="Place" value={places.map((place, index) => <span key={place.id ?? index}>
         {index > 0 && ', '}<RelationLink node={place} />
       </span>)} />}
@@ -234,9 +230,13 @@ function ShipVoyage({ voyage, identifiers }: { voyage: LinkedArtNode; identifier
   const from = findByPath(details, ['moved_from']);
   const to = findByPath(details, ['moved_to']);
   return <ObjectCardDisclosure summary={<div className="person-status-summary-content">
-    {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
+    <span className="person-status-summary-value">
+      {from.length || to.length ? <>
+        From <ShipRoutePlaces places={from} /> to <ShipRoutePlaces places={to} />
+      </> : 'Route not recorded'}
+      {timespan && <> (<TimespanValue timespan={timespan} mode="event" />)</>}
+    </span>
     {dates && <RecordedDatesValue dates={dates} />}
-    <RelationValue node={voyage} />
   </div>}>
     <ObjectCardPropertyList className="person-status-details">
       <ObjectCardProperty label="Voyage" value={<RelationLink node={voyage} />} />
@@ -253,4 +253,28 @@ function hasEventInformation(event: LinkedArtNode): boolean {
   return !!findTimespan(event) || !!getRecordedDates(event) || !!getContent(event) || getNotes(event).length > 0
     || findByPath(event, ['took_place_at']).length > 0 || findByPath(event, ['referred_to_by']).length > 0
     || findByPath(event, ['transferred_title_from']).length > 0 || findByPath(event, ['transferred_title_to']).length > 0;
+}
+
+function ShipRoutePlaces({ places }: { places: LinkedArtNode[] }) {
+  if (!places.length) {return <>place not recorded</>;}
+  return <>{places.map((place, index) => <span key={place.id ?? index}>
+    {index > 0 && ', '}<RelationValue node={place} />
+  </span>)}</>;
+}
+
+function getShipHistory(entity: LinkedArtNode) {
+  return shipHistoryGroups.flatMap(({ key, label: fallback }) =>
+    findByPath(entity, [key]).filter(hasEventInformation).map((event) => ({ event, fallback })));
+}
+
+function getShipEventLabel(event: LinkedArtNode, fallback: string): string {
+  return findByPath(event, ['classified_as']).map(label).filter(Boolean).join(', ') || fallback;
+}
+
+function getShipNameLabel(name: string, statuses: LinkedArtNode[]): string {
+  const labels = new Set(statuses.flatMap((status) => findByPath(status, ['ascribes_appellation'])
+    .filter((appellation) => getContent(appellation) === name)
+    .flatMap((appellation) => findByPath(appellation, ['classified_as']))
+    .flatMap((type) => type.id && shipNameLabels[type.id] ? [shipNameLabels[type.id]] : [])));
+  return labels.size === 1 ? [...labels][0] : 'Name';
 }
