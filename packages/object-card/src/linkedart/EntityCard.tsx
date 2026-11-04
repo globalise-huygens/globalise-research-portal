@@ -29,7 +29,7 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
-import { PlaceCardBody } from './PlaceCardBody.tsx';
+import { PlaceCardBody, PlaceOverview } from './PlaceCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -60,7 +60,8 @@ export function EntityCard() {
           {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
-        {entityType !== 'person' && !!identifiers.length && (
+        {entityType === 'place' && <PlaceOverview entity={entity}/>}
+        {entityType !== 'person' && entityType !== 'place' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>

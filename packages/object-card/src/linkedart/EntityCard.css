@@ -298,3 +298,11 @@
     }
   }
 }
+
+@layer components {
+  .place-card {
+    .person-status-summary-property {
+      column-gap: var(--s4);
+    }
+  }
+}
