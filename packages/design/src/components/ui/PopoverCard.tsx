@@ -114,8 +114,11 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     if (shouldIgnoreKey) {
       return;
     }
-    if (event.key === 'Tab' && event.target instanceof Element
-      && event.target.closest('[role="dialog"]')?.id === id) {
+    const target = event.target;
+    const targetDialog = target instanceof Element ? target.closest('[role="dialog"]') : null;
+    const isTabInsidePreview = event.key === 'Tab' && targetDialog?.id === id;
+
+    if (isTabInsidePreview) {
       const anchor = getTrigger();
       if (popupElement && anchor) {
         moveFocusFromPreview(event, popupElement, anchor, close);
@@ -125,7 +128,10 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       return;
     }
     if (!isRoot) {return;}
-    if (event.key === 'Tab' && anchor && !event.shiftKey && document.activeElement === anchor) {
+    const isForwardTabFromAnchor = event.key === 'Tab' && anchor
+      && !event.shiftKey && document.activeElement === anchor;
+
+    if (isForwardTabFromAnchor) {
       const first = popupElement && getFocusableElements(popupElement)[0];
       if (first) {
         event.preventDefault();
