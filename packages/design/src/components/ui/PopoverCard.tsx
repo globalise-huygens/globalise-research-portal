@@ -12,12 +12,14 @@ const PopoverCardContext = createContext<{
   keepOpen: () => void;
 } | undefined>(undefined);
 
-export function PopoverCard({ children, label, isPending = false, renderTrigger, anchor, isHovered, openImmediately = false, onOpenChange }: {
+export function PopoverCard({ children, label, isPending = false, renderTrigger, anchor, focusTarget, autoFocus = false, isHovered, openImmediately = false, onOpenChange }: {
   children?: ReactNode;
   label: string;
   isPending?: boolean;
   renderTrigger?: (attributes: AriaAttributes) => ReactNode;
   anchor?: Element;
+  focusTarget?: HTMLElement | null;
+  autoFocus?: boolean;
   isHovered?: boolean;
   openImmediately?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -68,6 +70,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     }, 200);
   };
   const getTrigger = () => {
+    if (focusTarget) {
+      return focusTarget;
+    }
     const externalAnchor = anchor as HTMLElement | SVGElement | undefined;
     if (externalAnchor) {
       return externalAnchor;
@@ -176,6 +181,12 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     visible, anchor, trigger, popupElement, parentElement, parentPosition,
     onAnchorRemoved: close,
   });
+
+  useEffect(() => {
+    if (visible && autoFocus && popupElement) {
+      getFocusableElements(popupElement)[0]?.focus({ preventScroll: true });
+    }
+  }, [visible, autoFocus, popupElement]);
 
   const card = (
     <div
