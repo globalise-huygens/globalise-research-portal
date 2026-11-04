@@ -11,6 +11,7 @@
     "./styles.css": "./src/styles.css"
   },
   "dependencies": {
+    "@globalise/common": "workspace:*",
     "clsx": "^2.1.1",
     "react-aria-components": "^1.22.1"
   }

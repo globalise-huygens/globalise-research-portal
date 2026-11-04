@@ -1,3 +1,4 @@
+import { clamp } from '@globalise/common';
 import type { CSSProperties } from 'react';
 
 export function placePopoverCard(
@@ -9,7 +10,8 @@ export function placePopoverCard(
 ): CSSProperties {
   const margin = 8;
   const gap = 8;
-  const clamp = (value: number, maximum: number) => Math.min(Math.max(value, margin), Math.max(margin, maximum));
+  const maximumLeft = Math.max(margin, viewportWidth - cardWidth - margin);
+  const maximumTop = Math.max(margin, viewportHeight - cardHeight - margin);
   const belowTop = anchor.bottom + gap;
   const aboveTop = anchor.top - cardHeight - gap;
   const spaceBelow = viewportHeight - margin - belowTop;
@@ -18,8 +20,8 @@ export function placePopoverCard(
     : cardHeight <= spaceAbove ? aboveTop
       : spaceBelow >= spaceAbove ? belowTop : aboveTop;
   return {
-    left: clamp(anchor.left, viewportWidth - cardWidth - margin),
-    top: clamp(preferredTop, viewportHeight - cardHeight - margin),
+    left: clamp(anchor.left, margin, maximumLeft),
+    top: clamp(preferredTop, margin, maximumTop),
     visibility: 'visible',
   };
 }
@@ -38,5 +40,5 @@ export function placePopoverCardBeside(
     : parent.left - gap - width >= margin ? parent.left - gap - width : undefined;
   return left === undefined
     ? placePopoverCard(parent, width, height, viewportWidth, viewportHeight)
-    : { left, top: Math.max(margin, Math.min(parent.top, viewportHeight - height - margin)), visibility: 'visible' };
+    : { left, top: clamp(parent.top, margin, Math.max(margin, viewportHeight - height - margin)), visibility: 'visible' };
 }

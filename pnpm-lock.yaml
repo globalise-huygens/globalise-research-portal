@@ -368,6 +368,9 @@ importers:
 
   packages/design:
     dependencies:
+      '@globalise/common':
+        specifier: workspace:*
+        version: link:../common
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
