@@ -1,6 +1,7 @@
 import { type AnyRoute, createRouter, type RouteComponent, type RouteIds } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { orThrow } from '@globalise/common';
+import { NotFoundPage } from './NotFoundPage.tsx';
 import { parseUrlParams, stringifyUrlParams } from './params/urlParams.ts';
 import { routeTree } from './routeTree.gen.ts';
 
@@ -58,6 +59,7 @@ function createAppRouter() {
     context: { queryClient: new QueryClient() } satisfies RouterContext,
     parseSearch: parseUrlParams,
     stringifySearch: stringifyUrlParams,
+    defaultNotFoundComponent: NotFoundPage,
   });
 }
 

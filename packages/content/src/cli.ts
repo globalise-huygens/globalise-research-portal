@@ -5,6 +5,7 @@ import { parseArgs } from 'node:util';
 import { reporter } from 'vfile-reporter';
 import { statistics } from 'vfile-statistics';
 import { buildContent } from './buildContent.ts';
+import { copyContentAssets } from './copyContentAssets.ts';
 import { writeContent } from './writeContent.ts';
 import { writeReport } from './writeReport.ts';
 
@@ -27,6 +28,7 @@ const reportDir = join(outputDir, 'report');
 await rm(outputDir, { recursive: true, force: true });
 if (!failed) {
   await writeContent(build, outputDir);
+  await copyContentAssets(contentDir, outputDir);
 }
 await writeReport(build.sources, reportDir);
 

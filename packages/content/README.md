@@ -24,6 +24,7 @@ Output is created in `packages/app/dist/content/`:
 
 - `index.json`: the meta of all built pages
 - `pages/<slug>.json`: meta and body of one page
+- `assets/`: the assets of the content repo, when it has them; the app serves its images at `/assets/...`
 - `report/errors.json`: every file with errors and its error messages; these pages were skipped
 - `report/warnings.json`: every file with warnings and its warning messages; these pages were built
 
