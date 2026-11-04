@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { findByPath, findTimespan, getContent, getEntityTitle, getStatusValues, isLinkedArtNode, label, url, type LinkedArtNode, type StatusValue } from '@globalise/common';
 import { ObjectCardExternalLink, ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
-import { eventKeys, getStatusProperties, relationKeys, statusKeys } from './LabeledKey.ts';
+import { eventKeys, getStatusProperties, relationKeys, statusKeys, placeDetailGroups } from './LabeledKey.ts';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
 import { getPersonNameRecords } from './PersonStatusModel.ts';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
@@ -21,10 +21,18 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
   const locations = findByPath(entity, ['is_approximated_by_declarative_place']);
   const definitions = findByPath(entity, ['place_is_defined_by']);
   const { sources, notes } = getPlaceEvidence(entity);
-  const groups = [...statusKeys, { key: 'is_topographical_subject_of', label: 'Geographical relationships' }];
+  const details = placeDetailGroups.flatMap(({ key, label: title }) =>
+    findByPath(entity, [key]).map((record) => ({ record, title })));
+  const groups = [...statusKeys.filter(({ key }) => !placeDetailGroups.some((group) => group.key === key)),
+    { key: 'is_topographical_subject_of', label: 'Geographical relationships' }];
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
+      {!!details.length && <ObjectCardSection title="Place details" collapsible>
+        <div className="person-status-list">
+          {details.map(({ record, title }, index) => <PlaceRecord key={record.id ?? index} record={record} title={title} />)}
+        </div>
+      </ObjectCardSection>}
       {groups.map(({ key, label: title }) => {
         const records = findByPath(entity, [key]);
         return !!records.length && <ObjectCardSection key={key} title={title} collapsible>
@@ -90,9 +98,12 @@ function PlaceRecord({ record, title, children }: { record: LinkedArtNode; title
   return <ObjectCardDisclosure summary={<span className="person-status-summary-content">
     {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
     <span className="person-status-summary-property">
-      {missingClassification ? <span className="person-status-summary-value">Classification value unavailable</span> : <>
+      {missingClassification ? <>
+        <span className="person-status-summary-label">{title ?? 'Classifications'}: </span>
+        <span className="person-status-summary-value">Value unavailable</span>
+      </> : <>
         <span className="person-status-summary-label">{relationshipTarget ? relationship.length ? <PlaceValues values={relationship} linked={false} /> : 'Related to' : title ?? properties[0]?.label ?? 'Recorded information'}{relationshipTarget ? ' ' : ': '}</span>
-        <span className="person-status-summary-value">{relationshipTarget ? <PlaceValues values={targets} /> : properties[0] ? <PlaceValues values={properties[0].values} /> : <PlaceValues values={classifications} />}</span>
+        <span className={`person-status-summary-value${record.type === 'AppellativeStatus' ? ' person-name-value' : ''}`}>{relationshipTarget ? <PlaceValues values={targets} /> : properties[0] ? <PlaceValues values={properties[0].values} /> : <PlaceValues values={classifications} />}</span>
       </>}
     </span>
   </span>}>
