@@ -33,7 +33,8 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   const [popupElement, setPopupElement] = useState<HTMLElement | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [open, setOpen] = useState(false);
-  const visible = open && (!!children || isPending) && (!parent || parent.activeChild === id);
+  const hasPopupContent = Boolean(children) || isPending;
+  const visible = open && hasPopupContent && (!parent || parent.activeChild === id);
   const isRoot = !parent;
   const cancelTimer = () => {
     clearTimeout(timer.current);
@@ -212,6 +213,13 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   );
 
   if (!renderTrigger) {return overlay;}
+
+  const triggerAttributes: AriaAttributes = hasPopupContent ? {
+    'aria-haspopup': 'dialog',
+    'aria-expanded': visible,
+    'aria-controls': visible ? id : undefined,
+  } : {};
+
   return (
     <span
       ref={trigger}
@@ -222,7 +230,6 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }}
       onClickCapture={(event) => {
         const isKeyboardActivation = event.detail === 0;
-        const hasPopupContent = Boolean(children) || isPending;
         const isInsideTrigger = trigger.current?.contains(event.target as Node);
         const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
         const shouldOpenOnTouch = touch.current && !isKeyboardActivation
@@ -262,7 +269,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         }
       }}
     >
-      {renderTrigger(children || isPending ? { 'aria-haspopup': 'dialog', 'aria-expanded': visible, 'aria-controls': visible ? id : undefined } : {})}
+      {renderTrigger(triggerAttributes)}
       {overlay}
     </span>
   );
