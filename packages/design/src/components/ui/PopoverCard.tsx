@@ -126,7 +126,8 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       return;
     }
     const target = event.target;
-    const targetDialog = target instanceof Element ? target.closest('[role="dialog"]') : null;
+    const targetDialog = event.key === 'Tab' && target instanceof Element
+      ? target.closest('[role="dialog"]') : null;
     const isTabInsidePreview = event.key === 'Tab' && targetDialog?.id === id;
 
     if (isTabInsidePreview) {
@@ -341,8 +342,11 @@ function getFocusableElements(container: Element) {
   return Array.from(container.querySelectorAll<HTMLElement | SVGElement>(focusableSelector))
     .filter((element) => {
       const isTabReachable = element.tabIndex >= 0;
+      if (!isTabReachable) {
+        return false;
+      }
       const isRendered = element.getClientRects().length > 0;
-      return isTabReachable && isRendered;
+      return isRendered;
     });
 }
 
