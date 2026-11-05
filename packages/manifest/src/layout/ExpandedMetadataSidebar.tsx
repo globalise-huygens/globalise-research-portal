@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SidebarId, useSidebarPanels } from './useSidebarPanels.tsx';
 import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
-import { EntityPanel, MetadataPanel, TocPanel } from '@globalise/metadata';
+import { ClassifiedPanel, IdentifiedPanel, MetadataPanel, TocPanel } from '@globalise/metadata';
 import { Tooltip } from '@globalise/design';
 import { Button as AriaButton } from 'react-aria-components';
 
@@ -46,7 +46,8 @@ export function ExpandedMetadataSidebar({
               >
                 {panelId === 'inventory' && <MetadataPanel />}
                 {panelId === 'toc' && <TocPanel />}
-                {panelId === 'entities' && <EntityPanel />}
+                {panelId === 'entities' && <ClassifiedPanel />}
+                {panelId === 'events' && <IdentifiedPanel />}
               </div>
             )}
           </React.Fragment>

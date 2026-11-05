@@ -163,12 +163,6 @@
     flex-shrink: 0;
   }
 
-  .entity-panel > .document {
-    border: 1px solid var(--color-neutral-500);
-    background: var(--color-neutral-700);
-    padding: var(--s4) var(--s8);
-  }
-
   .entity-panel ul {
     margin: 0;
     padding: 0;
