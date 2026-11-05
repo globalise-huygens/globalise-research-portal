@@ -9,4 +9,6 @@ export const routeComponents: RouteComponents = {
   '/catalog/': lazyRouteComponent(() => import('./CatalogPage.tsx'), 'CatalogPage'),
   '/manifest/': lazyRouteComponent(() => import('./ManifestPage.tsx'), 'ManifestPage'),
   '/object-card/': lazyRouteComponent(() => import('./ObjectCardPage.tsx'), 'ObjectCardPage'),
+  '/content/': lazyRouteComponent(() => import('./ContentHome.tsx'), 'ContentHome'),
+  '/content/$slug': lazyRouteComponent(() => import('./ContentPage.tsx'), 'ContentPage'),
 };
