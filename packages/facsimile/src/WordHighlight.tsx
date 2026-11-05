@@ -6,6 +6,7 @@ import {
   setHovered,
   toggleClicked,
 } from '@globalise/common/document';
+import { cn } from '@globalise/design';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import {
   type Id,
@@ -18,12 +19,13 @@ type WordHighlightProps = {
   points: string;
   text: string;
   entityClassificationId?: CidocEntityClassificationId;
+  hasEvent?: boolean;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export const WordHighlight = memo(function WordHighlight(
   {
-    id, points, text, entityClassificationId, setTooltip,
+    id, points, text, entityClassificationId, hasEvent, setTooltip,
   }: WordHighlightProps,
 ) {
   const isEntityTrigger = entityClassificationId !== undefined;
@@ -50,7 +52,7 @@ export const WordHighlight = memo(function WordHighlight(
 
   return (
     <polygon
-      className="word-highlight"
+      className={cn(['word-highlight', hasEvent && 'event'])}
       points={points}
       tabIndex={isEntityTrigger ? 0 : undefined}
       role={isEntityTrigger ? 'button' : undefined}

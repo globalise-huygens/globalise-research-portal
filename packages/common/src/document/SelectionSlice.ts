@@ -1,4 +1,4 @@
-import { Annotation, Id, isBlock, isEntity, isWord } from '../annotation';
+import { Annotation, Id, isBlock, isClassified, isWord } from '../annotation';
 import { DocumentState, setState } from './DocumentStore';
 import { Selection } from './Selection';
 import { CanvasState } from './ManifestViewerSlice';
@@ -39,12 +39,12 @@ export function createCanvasSelection(
   const { indexes } = canvas;
   const { id } = annotation;
 
-  if (isEntity(annotation)) {
+  if (isClassified(annotation)) {
     return {
-      type: 'entity',
+      type: 'classified',
       id: annotation.id,
-      words: indexes.entityToWords[id] ?? [],
-      block: indexes.entityToBlock[id],
+      words: indexes.classifiedToWords[id] ?? [],
+      block: indexes.classifiedToBlock[id],
     };
   }
   if (isWord(annotation)) {

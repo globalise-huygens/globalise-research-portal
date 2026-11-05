@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { EntityHighlightSlice } from './EntityHighlightSlice';
+import type { ClassifiedHighlightSlice } from './ClassifiedHighlightSlice';
 import type { LayoutElementsSlice } from './LayoutElementsSlice';
 import type { ManifestViewerSlice } from './ManifestViewerSlice';
 import type { SearchHitSlice } from './SearchHitSlice';
@@ -8,10 +8,10 @@ import type { SelectionSlice } from './SelectionSlice';
 import type { TocSlice } from './TocSlice';
 import type { MetadataSlice } from './ManifestMetadataSlice.ts';
 
-import { cidocEntityClassificationIds } from '../annotation';
+import { cidocEntityClassificationIds, eventCategory } from '../annotation';
 
 export type DocumentState =
-  & EntityHighlightSlice
+  & ClassifiedHighlightSlice
   & LayoutElementsSlice
   & ManifestViewerSlice
   & SearchHitSlice
@@ -40,8 +40,8 @@ const defaultLayoutElementsSlice: LayoutElementsSlice = {
   isLayoutElementsVisible: true,
 };
 
-const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightCategories: new Set(cidocEntityClassificationIds),
+const defaultClassifiedHighlightSlice: ClassifiedHighlightSlice = {
+  highlightCategories: new Set([...cidocEntityClassificationIds, eventCategory]),
 };
 
 const defaultMetadataSlice = {
@@ -53,7 +53,7 @@ const defaultTocSlice = {
 };
 
 export const useDocumentStore = create<DocumentState>(() => ({
-  ...defaultEntityHighlightSlice,
+  ...defaultClassifiedHighlightSlice,
   ...defaultLayoutElementsSlice,
   ...defaultManifestViewerSlice,
   ...defaultSearchHitSlice,

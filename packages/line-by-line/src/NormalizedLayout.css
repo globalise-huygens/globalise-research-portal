@@ -13,6 +13,7 @@
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
     --search-hit-fill: var(--color-yellow-100);
     --search-hit-active-fill: var(--color-yellow-300);
+    --event-test-highlight: rgb(255 140 0 / 20%);
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -117,6 +118,11 @@
         &.active-hit {
             background: var(--search-hit-active-fill);
         }
+    }
+
+    .event {
+        background: var(--event-test-highlight);
+        box-decoration-break: clone;
     }
 
     .word {

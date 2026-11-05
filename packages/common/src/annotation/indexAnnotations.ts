@@ -1,6 +1,6 @@
 import { Id } from './Id';
 import { Annotation } from './AnnoModel';
-import { isEntity } from './EntityModel';
+import { isClassified } from './ClassifiedModel';
 import { findResourceTarget } from './findResourceTarget.ts';
 import { findTextPositionSelector } from './findTextPositionSelector';
 import { orThrow } from '../util/orThrow.ts';
@@ -11,8 +11,8 @@ export type AnnotationIndexes = {
   lineToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
   wordToBlock: Record<Id, Id>;
-  entityToWords: Record<Id, Id[]>;
-  entityToBlock: Record<Id, Id>;
+  classifiedToWords: Record<Id, Id[]>;
+  classifiedToBlock: Record<Id, Id>;
   wordOffsets: WordOffsets[];
 };
 
@@ -51,8 +51,8 @@ export function indexAnnotations(
     }
   }
 
-  const entityToWords: Record<Id, Id[]> = {};
-  const entityToBlock: Record<Id, Id> = {};
+  const classifiedToWords: Record<Id, Id[]> = {};
+  const classifiedToBlock: Record<Id, Id> = {};
 
   const wordOffsets: WordOffsets[] = [];
   for (const annotation of Object.values(annotations)) {
@@ -65,23 +65,19 @@ export function indexAnnotations(
   }
 
   if (wordOffsets.length) {
-    for (const entity of Object.values(annotations)) {
-      if (!isEntity(entity)) {
-        continue;
-      }
-
-      const selector = findTextPositionSelector(entity, pageAnnoId)
+    for (const classified of Object.values(annotations).filter(isClassified)) {
+      const selector = findTextPositionSelector(classified, pageAnnoId)
         ?? orThrow('No selector');
       const wordIds = findWordsByOffsets(wordOffsets, selector);
 
       if (!wordIds.length) {
         continue;
       }
-      entityToWords[entity.id] = wordIds;
+      classifiedToWords[classified.id] = wordIds;
 
       const blockId = wordToBlock[wordIds[0]];
       if (blockId) {
-        entityToBlock[entity.id] = blockId;
+        classifiedToBlock[classified.id] = blockId;
       }
     }
   }
@@ -91,8 +87,8 @@ export function indexAnnotations(
     lineToBlock,
     blockToLines,
     wordToBlock,
-    entityToWords,
-    entityToBlock,
+    classifiedToWords,
+    classifiedToBlock,
     wordOffsets,
   };
 }
