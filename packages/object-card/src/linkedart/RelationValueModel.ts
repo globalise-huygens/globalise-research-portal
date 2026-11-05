@@ -2,10 +2,8 @@ import {
   findByPath,
   getContent,
   getValue,
-  getValues,
   type LinkedArtNode,
 } from '@globalise/common';
-import { isInternalUri } from '../isInternalUri.ts';
 import { getPersonNameRecords, sortPersonNames } from './PersonStatusModel.ts';
 
 /**
@@ -23,11 +21,6 @@ export function getRelationValue(node: LinkedArtNode): string {
     findByPath(name, ['language']).some((value) => value.id?.endsWith(`/${language}`)),
   )).find(Boolean) ?? candidates[0];
   const appellation = sortPersonNames(getPersonNameRecords(node))[0]?.name;
-  const labels = getValues(node._label);
-  // An embedded vocabulary label list contains variants, not a preferred term.
-  const label = node.type === 'Type' && labels.length > 1
-    ? undefined
-    : getValue(node._label);
   return [
     getValue(node.prefLabel),
     getValue(node.label),
@@ -35,10 +28,7 @@ export function getRelationValue(node: LinkedArtNode): string {
     getContent(node),
     getValue(node.value),
     appellation,
-    label && !isInternalUri(label) && !label.startsWith('_:') && !label.startsWith('vocop_obs_')
-      && !/^(?:Person Identified by )?Person_\d+$/i.test(label)
-      ? label : undefined,
-    node.id && !isInternalUri(node.id) && !node.id.startsWith('_:') ? node.id : undefined,
+    node.id && !node.id.startsWith('_:') ? node.id : undefined,
     node.type === 'Type' ? 'Vocabulary term' : typeof node.type === 'string' ? node.type : 'Resource',
   ].find((value) => !!value)?.trim() ?? '';
 }

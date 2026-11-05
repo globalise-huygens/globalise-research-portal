@@ -6,7 +6,6 @@ import {
   getStatusValues,
   getValues,
   isLinkedArtNode,
-  label,
   type LinkedArtNode,
   type StatusValue,
 } from '@globalise/common';
@@ -22,7 +21,7 @@ export function getPersonNameRecords(entity: LinkedArtNode) {
         .map((value, valueIndex) => ({
           key: `${status.id ?? statusIndex}-${valueIndex}`,
           name: typeof value === 'string' ? value
-            : getContent(value) || getValue(value.value) || (value.type === 'Type' ? label(value) : ''),
+            : getContent(value) || getValue(value.value) || (value.type === 'Type' ? value.id ?? '' : ''),
           status,
         })),
     )
@@ -99,7 +98,7 @@ function valueKey(value: unknown): string {
   if (isLinkedArtNode(value)) {
     return value.id ?? JSON.stringify([
       value.type,
-      getContent(value) || getValue(value.value) || getValue(value._label),
+      getContent(value) || getValue(value.value),
     ]);
   }
   return JSON.stringify(getValues(value));

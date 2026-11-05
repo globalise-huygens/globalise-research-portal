@@ -11,9 +11,8 @@ export type EntityBody = {
   label?: string;
   value?: string | number;
   ascribes_classification: {
-    id: string,
-    type: string,
-    _label: string
+    id: string;
+    type: string;
   };
   ascribes_appellation?: {
     type: string;
@@ -28,13 +27,11 @@ export type EntityBody = {
 export type EntityClassification = {
   id: string;
   type: string;
-  _label: string;
 };
 
 export type EntitySubject = {
   id: string;
   type: string;
-  _label?: string;
 };
 const entityAnnotationBodyTypes = [
   'AppellativeStatus',

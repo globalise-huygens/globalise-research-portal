@@ -51,9 +51,8 @@ export function RelationValue({ node, render, resolveExternal = true }: Relation
 
 function useRelationValue(node: LinkedArtNode, href?: string): string {
   const safeFallback = getRelationValue(node);
-  const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
   const { data, isPending } = useQuery(entityResourceQueryOptions(href ?? ''));
-  return isPending ? pendingValue : getResolvedRelationValue(data ?? undefined) ?? safeFallback;
+  return isPending ? href ?? safeFallback : getResolvedRelationValue(data ?? undefined) ?? safeFallback;
 }
 
 function getEntityTagType(type: LinkedArtEntityType): EntityTagType {

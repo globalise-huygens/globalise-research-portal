@@ -5,6 +5,7 @@ export { label } from './label.ts';
 export { getContent } from './getContent.ts';
 export { url } from './url.ts';
 export { getJsonUrl } from './getJsonUrl.ts';
+export { fetchLinkedArtResource } from './fetchLinkedArtResource.ts';
 export { isClassifiedAs } from './isClassifiedAs.ts';
 export {
   type LanguageValue,

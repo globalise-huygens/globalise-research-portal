@@ -1,5 +1,5 @@
-import { label as labelOf, useMetadataNodes } from '@globalise/common';
-import { EmptyPair, Joined, Pair } from '../common';
+import { useMetadataNodes } from '@globalise/common';
+import { EmptyPair, Joined, LinkedArtRelation, Pair } from '../common';
 import type { FieldProps } from './FieldProps';
 
 export function CreatorField({
@@ -15,7 +15,9 @@ export function CreatorField({
   return (
     <Pair label={label}>
       <Joined>
-        {creators.map((creator) => labelOf(creator))}
+        {creators.map((creator, i) => (
+          <LinkedArtRelation key={creator.id ?? i} node={creator} />
+        ))}
       </Joined>
     </Pair>
   );

@@ -1,8 +1,14 @@
 import {
+  fetchLinkedArtResource,
   fetchJson,
+  getLinkedArtEntityType,
   getJsonUrl,
   getValue,
   getValues,
+  isUrl,
+  label as linkedArtLabel,
+  url as linkedArtUrl,
+  type LinkedArtNode,
 } from '@globalise/common';
 import {
   getCidocEntityClassificationId,
@@ -10,6 +16,7 @@ import {
   getEntityClassificationUri,
   getPrimaryEntityBody,
   isEntity,
+  isCidocEntityClassificationId,
   type Annotation,
   type EntityBody,
   type CidocEntityClassificationId,
@@ -32,11 +39,14 @@ import {
 import {
   EntityPreviewCard,
   EntityIcon,
+  EntityTag,
   getEntityTypeLabel,
   IconArrowTopRight,
   type EntityPreviewCardData,
   type EntityPreviewCardType,
   type EntityPreviewCardProperty,
+  type EntityTagType,
+  ObjectCardExternalLink,
 } from '@globalise/design';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -647,7 +657,7 @@ function getPreviewData(
     classificationId,
   );
   const classificationReference = classificationId
-    ? getClassificationReference(body, classificationId)
+    ? getClassificationReference(classificationId)
     : undefined;
   return {
     type: definition.type,
@@ -678,7 +688,10 @@ function getPreviewData(
             onOpenPreview={onOpenPreview}
             onSchedulePreviewClose={onSchedulePreviewClose}
           />
-        ) : body.classified_as._label,
+        ) : <ResolvedAnnotationRelation node={{
+          id: body.classified_as.id,
+          type: body.classified_as.type,
+        }} />,
       },
     ],
   };
@@ -761,26 +774,25 @@ function getClassificationConceptReference(
   if (!classification?.id || classification.type !== 'Concept') {
     return undefined;
   }
-  const uri = getInternalConceptUri(classification.id);
-  if (!uri) {
+  const uri = getInternalConceptUri(classification.id) ?? classification.id;
+  if (!isUrl(uri)) {
     return undefined;
   }
   return {
     kind: 'concept',
     uri,
-    fallbackLabel: classification._label ?? body.label ?? 'Concept',
+    fallbackLabel: body.label ?? uri,
   };
 }
 
 function getClassificationReference(
-  body: EntityBody,
   classificationId: CidocEntityClassificationId,
 ): LinkedClassificationReference {
   return {
     kind: 'classification',
     uri: getEntityClassificationUri(classificationId),
     identifier: classificationId.replace(/^ner:/, ''),
-    label: body.classified_as._label,
+    label: getEntityClassificationDefinition(classificationId).label,
   };
 }
 
@@ -788,8 +800,8 @@ function getConceptRelations(
   relations: SkosConcept[] | undefined,
 ): LinkedConceptReference[] {
   return (relations ?? []).flatMap((relation) => {
-    const uri = getInternalConceptUri(relation.id);
-    return uri ? [{
+    const uri = getInternalConceptUri(relation.id) ?? relation.id;
+    return isUrl(uri) ? [{
       kind: 'concept' as const,
       uri,
       fallbackLabel: getConceptLabel(relation) || relation.id,
@@ -882,7 +894,58 @@ function getLinkedPreviewLabel(reference: LinkedPreviewReference): string {
 function getNamedPreviewTitle(body: EntityBody) {
   return body.label
     ?? body.ascribes_appellation?.content
-    ?? body.classified_as._label;
+    ?? getEntityClassificationLabel(body);
+}
+
+function getEntityClassificationLabel(body: EntityBody): string {
+  const classificationId = body.classified_as.id;
+  return isCidocEntityClassificationId(classificationId)
+    ? getEntityClassificationDefinition(classificationId).label
+    : classificationId;
+}
+
+function ResolvedAnnotationRelation({ node }: { node: LinkedArtNode }) {
+  const uri = linkedArtUrl(node);
+  const { data } = useQuery({
+    queryKey: ['manifest-entity-preview-resource', uri],
+    enabled: !!uri,
+    staleTime: Infinity,
+    retry: false,
+    queryFn: async ({ signal }) => uri ? fetchLinkedArtResource(uri, signal) : undefined,
+  });
+  const text = linkedArtLabel(data ?? node);
+  if (!uri) {
+    return <>{text}</>;
+  }
+  if (isGlobaliseUri(uri)) {
+    return (
+      <EntityTag
+        type={getPreviewEntityTagType(getLinkedArtEntityType(uri))}
+        href={getObjectCardHref(uri)}
+      >
+        {text}
+      </EntityTag>
+    );
+  }
+  return <ObjectCardExternalLink href={uri}>{text}</ObjectCardExternalLink>;
+}
+
+function isGlobaliseUri(uri: string): boolean {
+  return new URL(uri).hostname === 'data.globalise.huygens.knaw.nl';
+}
+
+function getPreviewEntityTagType(type: ReturnType<typeof getLinkedArtEntityType>): EntityTagType {
+  switch (type) {
+    case 'organization':
+      return 'organisation';
+    case 'conceptscheme':
+    case 'collection':
+      return 'concept';
+    case 'unknown':
+      return 'document';
+    default:
+      return type;
+  }
 }
 
 type EntityPreviewDefinition = {
@@ -932,7 +995,12 @@ const classificationPreview: EntityPreviewBehavior = {
         onOpenPreview={onOpenPreview}
         onSchedulePreviewClose={onSchedulePreviewClose}
       />
-    ) : body.label ?? body.ascribes_appellation?.content ?? '—',
+    ) : body.ascribes_classification?.id
+      ? <ResolvedAnnotationRelation node={{
+        id: body.ascribes_classification.id,
+        type: body.ascribes_classification.type,
+      }} />
+      : body.label ?? body.ascribes_appellation?.content ?? '—',
   }],
 };
 
@@ -940,13 +1008,16 @@ const dimensionPreview: EntityPreviewBehavior = {
   getTitle: (body) => body.label
     ?? body.ascribes_appellation?.content
     ?? (body.value === undefined
-      ? body.classified_as._label
-      : body.unit?._label
-        ? `${body.value} ${body.unit._label}`
-        : String(body.value)),
+      ? getEntityClassificationLabel(body)
+      : String(body.value)),
   getProperties: ({ body }) => [
     { label: 'Value', value: body.value ?? '-' },
-    { label: 'Unit', value: body.unit?._label ?? '-' },
+    {
+      label: 'Unit',
+      value: body.unit?.id
+        ? <ResolvedAnnotationRelation node={body.unit} />
+        : '-',
+    },
   ],
 };
 

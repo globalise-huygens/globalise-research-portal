@@ -6,7 +6,6 @@ import {
   getValues,
   isLinkedArtNode,
   isUrl,
-  label,
   type LinkedArtNode,
   url,
 } from '@globalise/common';
@@ -35,12 +34,8 @@ export function SourceList({
       const sourceNames = getSourceNames(source);
       const allIdentifiers = getSourceIdentifiers(source);
       const identifiers = allIdentifiers.filter(({ value }) => !excludedIdentifiers.includes(value));
-      const sourceText = getSourceText(
-        source,
-        sourceWorks.length > 0,
-        allIdentifiers.length > 0,
-        includeInternalLabels,
-      );
+      const sourceText = getSourceText(source);
+      const sourceUri = url(source);
       const notes = showNotes ? getNotes(source) : [];
       const content = getContent(source);
       const separateContent = isReadableSourceText(content)
@@ -87,7 +82,11 @@ export function SourceList({
                   </span>
                 );
               })
-              : !sourceNames.length && !identifiers.length && sourceText && <CitationText text={sourceText}/>}
+              : !sourceNames.length && !identifiers.length && sourceText
+                ? <CitationText text={sourceText}/>
+                : !sourceNames.length && !identifiers.length && sourceUri
+                  ? <RelationLink node={source}/>
+                  : null}
           </span>
           {separateContent && <span className="source-citation"><CitationText text={content}/></span>}
           {notes.map((note) => (
@@ -129,16 +128,13 @@ export function isVisibleSource(
   const sourceWorks = findByPath(source, ['part_of']);
   const allIdentifiers = getSourceIdentifiers(source);
   const identifiers = allIdentifiers.filter(({ value }) => !excludedIdentifiers.includes(value));
-  const sourceText = getSourceText(
-    source,
-    sourceWorks.length > 0,
-    allIdentifiers.length > 0,
-    includeInternalLabels,
-  );
+  const sourceText = getSourceText(source);
+  const sourceUri = url(source);
   return identifiers.length > 0
     || getSourceNames(source).length > 0
     || sourceWorks.some(shouldShowSourceWork)
     || !!sourceText
+    || !!sourceUri && (!isInternalUri(sourceUri) || includeInternalLabels)
     || showNotes && getNotes(source).some(isReadableSourceText);
 }
 
@@ -151,32 +147,14 @@ export function getNotes(node: LinkedArtNode): string[] {
       return [
         ...getValues(note.content),
         ...getValues(note.value),
-        ...getValues(note._label),
       ];
     }).filter(isReadableSourceText),
   )];
 }
 
-function getSourceText(
-  source: LinkedArtNode,
-  hasSourceWorks: boolean,
-  hasIdentifiers: boolean,
-  includeInternalLabels: boolean,
-): string | undefined {
+function getSourceText(source: LinkedArtNode): string | undefined {
   const content = getContent(source);
-  if (isReadableSourceText(content)) {
-    return content;
-  }
-  if (hasSourceWorks || hasIdentifiers) {
-    return undefined;
-  }
-  if (isUrl(source.id) && !isInternalUri(source.id)) {
-    return source.id;
-  }
-  const sourceLabel = label(source);
-  return (!isInternalUri(source.id) || includeInternalLabels) && isReadableSourceText(sourceLabel)
-    ? sourceLabel
-    : undefined;
+  return isReadableSourceText(content) ? content : undefined;
 }
 
 function getSourceNames(source: LinkedArtNode): string[] {
@@ -205,8 +183,7 @@ function getSourceWorkUri(work: LinkedArtNode): string | undefined {
     .filter((identifier) => identifier.type === 'Identifier')
     .map(getContent)
     .find(isUrl);
-  const legacyLabel = label(work);
-  return url(work) ?? identifierUri ?? (isUrl(legacyLabel) ? legacyLabel : undefined);
+  return url(work) ?? identifierUri;
 }
 
 function shouldShowSourceWork(work: LinkedArtNode): boolean {

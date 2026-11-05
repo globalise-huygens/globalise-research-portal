@@ -1,6 +1,5 @@
 import {
   findByPath,
-  label,
   LinkedArtNode,
   useMetadataNodes, useMetadataRoot,
 } from '@globalise/common';
@@ -9,7 +8,7 @@ import type { FieldProps } from './FieldProps';
 
 export function MemberOfField({ url, path = ['member_of'] }: FieldProps) {
   const root = useMetadataRoot(url);
-  const labelPaths = useMetadataNodes(url, path).flatMap(toParentLabels);
+  const labelPaths = useMetadataNodes(url, path).flatMap((node) => toParentNodes(node));
 
   if (!root || !labelPaths.length) {
     return null;
@@ -17,21 +16,29 @@ export function MemberOfField({ url, path = ['member_of'] }: FieldProps) {
   return (
     <LabelHierarchy
       labelPaths={labelPaths}
-      currentLabel={label(root)}
+      currentNode={root}
     />
   );
 }
 
-/**
- * A set can be a member of more than one set,
- * and so can yield more than one path of parent labels.
- */
-function toParentLabels(node: LinkedArtNode): string[][] {
+function toParentNodes(
+  node: LinkedArtNode,
+  visited = new Set<string>(),
+): LinkedArtNode[][] {
+  const key = getNodeKey(node);
+  if (visited.has(key)) {
+    return [[node]];
+  }
+  const nextVisited = new Set(visited).add(key);
   const parents = findByPath(node, ['member_of']);
   if (!parents.length) {
-    return [[label(node)]];
+    return [[node]];
   }
   return parents.flatMap(
-    (parent) => toParentLabels(parent).map((path) => [...path, label(node)]),
+    (parent) => toParentNodes(parent, nextVisited).map((path) => [...path, node]),
   );
+}
+
+function getNodeKey(node: LinkedArtNode): string {
+  return node.id ?? JSON.stringify(node);
 }

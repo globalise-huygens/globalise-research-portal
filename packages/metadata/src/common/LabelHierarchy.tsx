@@ -1,43 +1,50 @@
+import type { LinkedArtNode } from '@globalise/common';
 import { mergePaths, type TreeNode } from '@globalise/common';
+import { LinkedArtRelation } from './LinkedArtRelation.tsx';
 
 export type HierarchyProps = {
-  labelPaths: string[][];
-  currentLabel: string;
+  labelPaths: LinkedArtNode[][];
+  currentNode: LinkedArtNode;
 };
 
 export function LabelHierarchy(
-  { labelPaths, currentLabel }: HierarchyProps,
+  { labelPaths, currentNode }: HierarchyProps,
 ) {
   return <LiHierarchy
-    nodes={mergePaths(labelPaths.map((path) => [...path, currentLabel]), (label) => label)}
+    nodes={mergePaths(labelPaths.map((path) => [...path, currentNode]), getNodeKey)}
     depth={0}
+    currentId={getNodeKey(currentNode)}
   />;
 }
 
 type LabelLiProps = {
-  nodes: TreeNode<string>[];
+  nodes: TreeNode<LinkedArtNode>[];
   depth: number;
+  currentId: string;
 };
 
-function LiHierarchy({ nodes, depth }: LabelLiProps) {
+function LiHierarchy({ nodes, depth, currentId }: LabelLiProps) {
   return (
     <ol className="metadata-hierarchy"
       data-depth={depth}>
       {nodes.map((node) => {
         const isLeaf = !node.children.length;
+        const key = getNodeKey(node.item);
+        const isCurrent = key === currentId;
         return (
-          <li key={node.item} data-current={isLeaf}>
-            {isLeaf ? (
+          <li key={key} data-current={isCurrent}>
+            {isCurrent ? (
               <span
                 className="current"
               >
-                {node.item}
+                <LinkedArtRelation node={node.item} />
               </span>
-            ) : node.item}
+            ) : <LinkedArtRelation node={node.item} />}
             {!isLeaf && (
               <LiHierarchy
                 nodes={node.children}
                 depth={depth + 1}
+                currentId={currentId}
               />
             )}
           </li>
@@ -45,4 +52,8 @@ function LiHierarchy({ nodes, depth }: LabelLiProps) {
       })}
     </ol>
   );
+}
+
+function getNodeKey(node: LinkedArtNode): string {
+  return node.id ?? JSON.stringify(node);
 }

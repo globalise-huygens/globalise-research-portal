@@ -4,7 +4,7 @@ import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProper
 import { eventKeys, getStatusProperties, relationKeys, statusKeys, placeDetailGroups } from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { getPersonNameRecords } from './PersonStatusModel.ts';
-import { RelationLink, RelationValue } from './RelationLink.tsx';
+import { RelationLink } from './RelationLink.tsx';
 import { getNotes, SourceList } from './SourceList.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
@@ -15,7 +15,7 @@ export function PlaceOverview({ entity }: { entity: LinkedArtNode }) {
   const certainty = findByPath(entity, ['is_approximated_by_declarative_place', 'classified_as']);
   return names.length || certainty.length ? <div className="person-overview">
     {!!names.length && <span className="person-overview-fact">also: {names.join(', ')}</span>}
-    {!!certainty.length && <span className="person-overview-fact"><PlaceValues values={certainty} linked={false} /></span>}
+    {!!certainty.length && <span className="person-overview-fact"><PlaceValues values={certainty} /></span>}
   </div> : null;
 }
 
@@ -102,10 +102,8 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     : getStatusValues(record, [record.type === 'SimilarityStatus' ? 'ascribes_similarity_relation' : 'ascribes_topographical_relation']);
   const combinedRelationships = record.type === 'TopographicalStatus'
     && relationship.length > 1 && targets.length > 1;
-  const statements = combinedRelationships ? (Array.isArray(record._label) ? record._label : [record._label])
-    .filter((value): value is string => typeof value === 'string') : [];
   const summaryLabel = combinedRelationships ? 'Related places' : relationshipTarget
-    ? relationship.length ? <PlaceValues values={relationship} linked={false} /> : 'Related to'
+    ? relationship.length ? <PlaceValues values={relationship} /> : 'Related to'
     : title ?? properties[0]?.label ?? 'Recorded information';
   const summaryValues = relationshipTarget ? targets : properties[0]?.values ?? classifications;
   return <ObjectCardDisclosure summary={<span className="person-status-summary-content">
@@ -122,10 +120,9 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     </span>
   </span>}>
     <ObjectCardPropertyList className="person-status-details">
-      {!!statements.length && <ObjectCardProperty label="Recorded statements" value={<span className="timespan-boundaries">{statements.map((statement) => <span key={statement}>{statement}</span>)}</span>} />}
       {content && <ObjectCardProperty label="Description" value={content} />}
       {properties.map((property) => <ObjectCardProperty key={property.keys.join(',')} label={property.label} value={property.keys.some((key) => key.endsWith('_relation'))
-        ? <PlaceValues values={property.values} linked={false} />
+        ? <PlaceValues values={property.values} />
         : <PlaceValues values={property.values} />} />)}
       {!!classifications.length && <ObjectCardProperty label={classificationLabel} value={<PlaceValues values={classifications} />} />}
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
@@ -138,16 +135,15 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
   </ObjectCardDisclosure>;
 }
 
-function PlaceValues({ values, linked = true }: { values: StatusValue[]; linked?: boolean }) {
+function PlaceValues({ values }: { values: StatusValue[] }) {
   return <>{values.map((value, index) => <span key={index}>
-    {index > 0 && ', '}<PlaceValue value={value} linked={linked} />
+    {index > 0 && ', '}<PlaceValue value={value} />
   </span>)}</>;
 }
 
-function PlaceValue({ value, linked }: { value: StatusValue; linked: boolean }) {
+function PlaceValue({ value }: { value: StatusValue }) {
   if (!isLinkedArtNode(value)) {return <>{value}</>;}
-  return linked ? <RelationLink node={value} resolveExternal={false} />
-    : <RelationValue node={value} resolveExternal={false} />;
+  return <RelationLink node={value} />;
 }
 
 function PlaceGeometry({ expressions }: { expressions: LinkedArtNode[] }) {

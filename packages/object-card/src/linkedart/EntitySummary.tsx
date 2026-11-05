@@ -3,16 +3,15 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import { getContent, findByPath, label, LinkedArtNode } from '@globalise/common';
+import { getContent, findByPath, LinkedArtNode } from '@globalise/common';
+import { RelationLink } from './RelationLink.tsx';
 
 type EntitySummaryProps = {
   entity: LinkedArtNode;
 };
 
 export function EntitySummary({ entity }: EntitySummaryProps) {
-  const types = findByPath(entity, ['classified_as'])
-    .map(label)
-    .filter((found) => !!found);
+  const types = findByPath(entity, ['classified_as']);
   const identifiers = findByPath(entity, ['identified_by']);
 
   return (
@@ -20,7 +19,11 @@ export function EntitySummary({ entity }: EntitySummaryProps) {
       <ObjectCardPropertyList>
         <ObjectCardProperty
           label="Type"
-          value={types.join(', ') || entity.type}
+          value={types.length
+            ? types.map((type, index) => <span key={type.id ?? index}>
+              {index > 0 && ', '}<RelationLink node={type} />
+            </span>)
+            : entity.type}
         />
         {identifiers.map((identifier, i) => (
           <ObjectCardProperty
@@ -36,5 +39,5 @@ export function EntitySummary({ entity }: EntitySummaryProps) {
 
 function getIdentifierLabel(identifier: LinkedArtNode): string {
   const [type] = findByPath(identifier, ['classified_as']);
-  return (type && label(type)) || 'Identifier';
+  return type?.id ?? 'Identifier';
 }

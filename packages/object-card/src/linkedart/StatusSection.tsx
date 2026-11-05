@@ -1,5 +1,5 @@
 import { ObjectCardSection } from '@globalise/design';
-import { findByPath, findTimespan, getStatusLabel, LinkedArtNode } from '@globalise/common';
+import { findByPath, findTimespan, getStatusValues, isLinkedArtNode, LinkedArtNode } from '@globalise/common';
 import { LabeledKey } from './LabeledKey.ts';
 import { RelationLink } from './RelationLink.tsx';
 import { SourceList } from './SourceList.tsx';
@@ -31,9 +31,17 @@ type StatusItemProps = {
 function StatusItem({ status }: StatusItemProps) {
   const scope = findByPath(status, ['has_geographic_scope']);
   const timespan = findTimespan(status);
+  const values = Object.keys(status)
+    .filter((key) => key.startsWith('ascribes_') && !key.endsWith('_relation'))
+    .flatMap((key) => getStatusValues(status, [key]));
   return (
     <li>
-      <span className="status-label">{getStatusLabel(status)}</span>
+      <span className="status-label">
+        {values.length ? values.map((value, index) => <span key={index}>
+          {index > 0 && ', '}
+          {isLinkedArtNode(value) ? <RelationLink node={value}/> : value}
+        </span>) : status.id ?? status.type}
+      </span>
       {!!scope.length && (
         <span className="status-scope">
           {scope.map((node, i) => <RelationLink key={i} node={node}/>)}

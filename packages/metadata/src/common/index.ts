@@ -5,3 +5,4 @@ export { PlaceTag, type PlaceTagProps } from './PlaceTag.tsx';
 export { DateRange, type DateRangeProps } from './DateRange.tsx';
 export { Timespan, type TimespanProps } from './Timespan.tsx';
 export { LabelHierarchy, type HierarchyProps } from './LabelHierarchy.tsx';
+export { LinkedArtRelation } from './LinkedArtRelation.tsx';

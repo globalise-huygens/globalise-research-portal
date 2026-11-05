@@ -1,9 +1,9 @@
-import { findByPath, findTimespan, getContent, getEntityIdentifiers, getEntityTitle, getRecordedDates, getStatusValues, isLinkedArtNode, label, url, type LinkedArtNode } from '@globalise/common';
+import { findByPath, findTimespan, getContent, getEntityIdentifiers, getRecordedDates, getStatusValues, isLinkedArtNode, url, type LinkedArtNode } from '@globalise/common';
 import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
 import { NodeList } from './NodeList.tsx';
 import { getPersonNameRecords, groupRecords, sortPersonNames } from './PersonStatusModel.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
-import { RelationLink, RelationValue } from './RelationLink.tsx';
+import { RelationLink } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
@@ -18,7 +18,7 @@ import { buildVoyageHierarchy, type VoyageHierarchyNode } from './ShipVoyageMode
 export function getShipTitle(entity: LinkedArtNode): string {
   const preferred = findByPath(entity, ['is_appellative_subject_of', 'ascribes_appellation'])
     .find((name) => findByPath(name, ['classified_as']).some((type) => type.id === 'http://vocab.getty.edu/aat/300404670'));
-  return [preferred && getContent(preferred), sortPersonNames(getPersonNameRecords(entity))[0]?.name, getEntityTitle(entity)]
+  return [preferred && getContent(preferred), sortPersonNames(getPersonNameRecords(entity))[0]?.name]
     .find((value) => !!value) ?? 'Name not recorded';
 }
 
@@ -36,10 +36,10 @@ export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
       const timespan = findTimespan(event);
       const dates = timespan ? null : getRecordedDates(event);
       return <span key={event.id ?? index} className="person-overview-fact">
-        {getShipEventLabel(event, fallback)}: {timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
+        <ShipEventLabel event={event} fallback={fallback} />: {timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
         {(!!timespan || !!dates) && !!places.length && ', '}
         {places.map((place, placeIndex) => <span key={place.id ?? placeIndex}>
-          {placeIndex > 0 && ', '}<RelationValue node={place} />
+          {placeIndex > 0 && ', '}<RelationLink node={place} />
         </span>)}
       </span>;
     })}
@@ -58,12 +58,19 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
   const identifiers = getEntityIdentifiers(entity);
   const ownership = findByPath(entity, ['is_ownership_subject_of']);
   const ownershipChanges = findByPath(entity, ['changed_ownership_through']);
+  const directClassifications = getStatusValues(entity, ['classified_as']);
   const classificationGroup = statusGroups.find(({ type }) => type === 'ClassificatoryStatus');
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
-      {(!!names.length || !!events.length) && <ObjectCardSection title="Ship details" collapsible>
+      {(!!names.length || !!events.length || !!directClassifications.length) && <ObjectCardSection title="Ship details" collapsible>
         <div className="person-status-list">
+          {!!directClassifications.length && <ObjectCardPropertyList className="person-status-details">
+            <ObjectCardProperty label="Object type" value={directClassifications.map((classification, index) => <span key={index}>
+              {index > 0 && ', '}
+              {isLinkedArtNode(classification) ? <RelationLink node={classification} /> : classification}
+            </span>)} />
+          </ObjectCardPropertyList>}
           {names.map(({ key, records }) => <ObjectCardDisclosure key={key} summary={<span className="person-status-summary-content">
             {[...new Set(records.flatMap(({ status }) => {
               const timespan = findTimespan(status);
@@ -171,7 +178,7 @@ function ShipOwnership({ status, identifiers }: { status: LinkedArtNode; identif
     {dates && <RecordedDatesValue dates={dates} />}
     <span className="person-status-summary-property"><span className="person-status-summary-label">{owners.length ? 'Owner: ' : 'Ownership record'}</span>
       {!!owners.length && <span className="person-status-summary-value">{owners.map((owner, index) => <span key={index}>
-        {index > 0 && ', '}{isLinkedArtNode(owner) ? <RelationValue node={owner} /> : owner}
+        {index > 0 && ', '}{isLinkedArtNode(owner) ? <RelationLink node={owner} /> : owner}
       </span>)}</span>}
     </span>
   </div>}>
@@ -188,7 +195,7 @@ function ShipOwnership({ status, identifiers }: { status: LinkedArtNode; identif
 }
 
 function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fallback: string; identifiers: string[] }) {
-  const eventLabel = getShipEventLabel(event, fallback);
+  const classifications = findByPath(event, ['classified_as']);
   const places = findByPath(event, ['took_place_at']);
   const transferredFrom = findByPath(event, ['transferred_title_from']);
   const transferredTo = findByPath(event, ['transferred_title_to']);
@@ -199,12 +206,15 @@ function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fal
   const content = getContent(event);
   return <ObjectCardDisclosure summary={<div className="person-status-summary-content">
     <span className="person-status-summary-property">
-      <span className="person-status-summary-label">{eventLabel}{(timespan ?? dates) && ': '}</span>
+      <span className="person-status-summary-label"><ShipEventLabel event={event} fallback={fallback} />{(timespan ?? dates) && ': '}</span>
       {timespan && <span className="person-status-summary-value"><TimespanValue timespan={timespan} mode="event" /></span>}
       {dates && <RecordedDatesValue dates={dates} />}
     </span>
   </div>}>
     <ObjectCardPropertyList className="person-status-details">
+      {!!classifications.length && <ObjectCardProperty label="Event type" value={classifications.map((classification, index) => <span key={classification.id ?? index}>
+        {index > 0 && ', '}<RelationLink node={classification} />
+      </span>)} />}
       {content && <ObjectCardProperty label="Description" value={content} />}
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
@@ -271,14 +281,15 @@ function ShipVoyage({ voyage, identifiers }: { voyage: LinkedArtNode; identifier
 
 function hasEventInformation(event: LinkedArtNode): boolean {
   return !!findTimespan(event) || !!getRecordedDates(event) || !!getContent(event) || getNotes(event).length > 0
-    || findByPath(event, ['took_place_at']).length > 0 || findByPath(event, ['referred_to_by']).length > 0
+    || findByPath(event, ['classified_as']).length > 0 || findByPath(event, ['took_place_at']).length > 0
+    || findByPath(event, ['referred_to_by']).length > 0
     || findByPath(event, ['transferred_title_from']).length > 0 || findByPath(event, ['transferred_title_to']).length > 0;
 }
 
 function ShipRoutePlaces({ places }: { places: LinkedArtNode[] }) {
   if (!places.length) {return <>place not recorded</>;}
   return <>{places.map((place, index) => <span key={place.id ?? index}>
-    {index > 0 && ', '}<RelationValue node={place} />
+    {index > 0 && ', '}<RelationLink node={place} />
   </span>)}</>;
 }
 
@@ -287,8 +298,13 @@ function getShipHistory(entity: LinkedArtNode) {
     findByPath(entity, [key]).filter(hasEventInformation).map((event) => ({ event, fallback })));
 }
 
-function getShipEventLabel(event: LinkedArtNode, fallback: string): string {
-  return findByPath(event, ['classified_as']).map(label).filter(Boolean).join(', ') || fallback;
+function ShipEventLabel({ event, fallback }: { event: LinkedArtNode; fallback: string }) {
+  const classifications = findByPath(event, ['classified_as']);
+  return classifications.length
+    ? classifications.map((classification, index) => <span key={classification.id ?? index}>
+      {index > 0 && ', '}<RelationLink node={classification} />
+    </span>)
+    : fallback;
 }
 
 function getShipNameLabel(name: string, statuses: LinkedArtNode[]): string {

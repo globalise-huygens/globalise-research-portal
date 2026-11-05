@@ -207,7 +207,7 @@ function PersonOverviewFact({ label: factLabel, values }: PersonOverviewFactProp
         {values.map((value, index) => (
           <span key={index}>
             {index > 0 && ', '}
-            {isLinkedArtNode(value) ? <RelationValue node={value} /> : value}
+            {isLinkedArtNode(value) ? <RelationLink node={value} /> : value}
           </span>
         ))}
       </span>
@@ -243,7 +243,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
                 {places.map((place, placeIndex) => (
                   <span key={placeIndex}>
                     {placeIndex > 0 && ', '}
-                    {isLinkedArtNode(place) ? <RelationValue node={place} /> : place}
+                    {isLinkedArtNode(place) ? <RelationLink node={place} /> : place}
                   </span>
                 ))}
               </>
@@ -631,7 +631,6 @@ function StatusValuesProperty({
 
 function StatusValues({
   values,
-  linked = true,
   stacked,
 }: Pick<StatusValuesPropertyProps, 'values' | 'linked' | 'stacked'>) {
   return (
@@ -640,9 +639,7 @@ function StatusValues({
         <span key={index}>
           {!stacked && index > 0 && ', '}
           {isLinkedArtNode(value)
-            ? linked
-              ? <RelationLink node={value} />
-              : <RelationValue node={value} />
+            ? <RelationLink node={value} />
             : value}
         </span>
       ))}
