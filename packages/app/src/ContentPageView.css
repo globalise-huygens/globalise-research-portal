@@ -1,0 +1,11 @@
+.content-page {
+    height: 100%;
+    overflow: auto;
+    padding: 1rem;
+    max-width: 50rem;
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
