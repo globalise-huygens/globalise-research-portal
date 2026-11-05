@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { findCurrentDocument } from './tocEntries';
+import { useCurrentDocument } from './useCurrentDocument.ts';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -15,10 +15,7 @@ export function TocPanel() {
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
 
-  const currentDocument = useMemo(
-    () => findCurrentDocument(documents, selectedCanvasId, preferredDocumentId),
-    [documents, selectedCanvasId, preferredDocumentId],
-  );
+  const currentDocument = useCurrentDocument(preferredDocumentId);
   const currentDocumentId = currentDocument?.id;
   const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
 
