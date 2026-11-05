@@ -6,5 +6,6 @@ const route = getRouteApi('/content/$slug');
 
 export function ContentPage() {
   const page: ContentPageData = route.useLoaderData();
-  return <ContentPageView page={page}/>;
+  const { q } = route.useSearch();
+  return <ContentPageView page={page} query={q}/>;
 }

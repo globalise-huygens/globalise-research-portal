@@ -25,6 +25,7 @@
     "@tanstack/react-router": "^1.170.45",
     "@tanstack/react-start": "^1.169.3",
     "hast-util-to-jsx-runtime": "^2.3.6",
+    "minisearch": "^7.2.0",
     "openseadragon": "^6.1.1",
     "react": "^19.3.1",
     "react-aria-components": "^1.22.1",
