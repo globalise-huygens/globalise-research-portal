@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
+    "@globalise/content": "workspace:*",
     "@globalise/design": "workspace:*",
     "@globalise/manifest": "workspace:*",
     "@globalise/map": "workspace:*",

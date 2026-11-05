@@ -8,6 +8,7 @@
   "include": ["src", "vite.config.ts"],
   "references": [
     { "path": "../common" },
+    { "path": "../content" },
     { "path": "../design" },
     { "path": "../manifest" },
     { "path": "../metadata" },
