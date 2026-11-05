@@ -20,6 +20,7 @@
     "unist-util-remove-position": "^5.0.0",
     "unist-util-visit": "^5.2.0",
     "vfile": "^6.0.3",
+    "vfile-statistics": "^3.0.0",
     "yaml": "^2.8.0",
     "zod": "^4.6.7"
   },
