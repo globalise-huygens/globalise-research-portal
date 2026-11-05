@@ -3,7 +3,7 @@ import { convertToHtml } from './convertToHtml.ts';
 import { parseMarkdown } from './parseMarkdown.ts';
 import { readFrontMatter } from './readFrontMatter.ts';
 import { validateFrontMatter } from './validateFrontMatter.ts';
-import { validateLinks } from './validateLinks.ts';
+import { validateLocalLinks } from './validateLocalLinks.ts';
 import type { VFile } from 'vfile';
 import type { ContentPage } from '../../ContentPage.ts';
 import type { Issue } from '../Issue.ts';
@@ -22,7 +22,7 @@ export async function buildPage(source: VFile): Promise<PageBuild> {
   }
   const { meta, issues: fieldIssues } = validateFrontMatter(frontMatter, source.path);
   const tree = await convertToHtml(markdown, source);
-  const linkIssues = validateLinks(tree, source);
+  const linkIssues = validateLocalLinks(tree, source);
   removePosition(tree, { force: true });
   return {
     source,
