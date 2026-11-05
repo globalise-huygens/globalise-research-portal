@@ -1,1 +1,2 @@
-export { EntityPanel } from './EntityPanel.tsx';
+export { ClassifiedPanel } from './ClassifiedPanel.tsx';
+export { IdentifiedPanel } from './IdentifiedPanel.tsx';

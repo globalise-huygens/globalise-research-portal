@@ -1,17 +1,32 @@
-import { findByPath, getLinkedArtEntityType, orThrow, type LinkedArtNode } from '@globalise/common';
+import {
+  findByPath,
+  getLinkedArtEntityType,
+  orThrow,
+  type LinkedArtNode,
+} from '@globalise/common';
 import type { LinkedEntity, Mention } from './EntityPanelModel.ts';
 
 /**
- * Linked entities are embedded in the document record,
+ * Linked entities are embedded in the document metadata,
  * each with an annotation page of its mentions.
  */
-export function toLinkedEntities(record: LinkedArtNode): LinkedEntity[] {
-  return findByPath(record, ['carries', 'refers_to', 'member']).map((entity) => ({
+export function toLinkedEntities(
+  documentMetadata: LinkedArtNode,
+): LinkedEntity[] {
+  const path = ['carries', 'refers_to', 'member'];
+  return findByPath(documentMetadata, path)
+    .map(toLinkedEntity)
+    .sort((a, b) => b.mentions.length - a.mentions.length);
+}
+
+function toLinkedEntity(entity: LinkedArtNode): LinkedEntity {
+  const mentions = findByPath(entity, ['subject_of', 'items']);
+  return {
     id: entity.id ?? orThrow('No entity id'),
     type: getLinkedArtEntityType(entity.id),
     label: entity._label ?? '',
-    mentions: findByPath(entity, ['subject_of', 'items']).map(toMention),
-  }));
+    mentions: mentions.map(toMention),
+  };
 }
 
 function toMention(item: LinkedArtNode): Mention {

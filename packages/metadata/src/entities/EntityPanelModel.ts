@@ -1,12 +1,18 @@
 import type { EntityTagType, LinkedArtEntityType } from '@globalise/common';
-import type { CidocEntityClassificationId } from '@globalise/common/annotation';
+import type {
+  CidocEntityClassificationId,
+} from '@globalise/common/annotation';
 import type { CanvasId } from '@globalise/common/document';
 import type { ManifestDocument } from '../toc';
 
-export type EntityPanelModel = {
+export type ClassifiedPanelModel = {
+  document?: ManifestDocument;
+  nerCategoryGroups: NerCategoryGroup[];
+};
+
+export type IdentifiedPanelModel = {
   document?: ManifestDocument;
   linkedEntities: LinkedEntity[];
-  nerCategoryGroups: NerCategoryGroup[];
 };
 
 export type LinkedEntity = {

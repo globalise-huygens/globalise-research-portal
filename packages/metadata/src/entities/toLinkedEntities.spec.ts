@@ -18,20 +18,20 @@ describe(toLinkedEntities.name, () => {
     _label: 'Foo',
     subject_of: [{ type: 'AnnotationPage', items: [fooMention, barMention] }],
   };
-  const record = {
+  const toDocumentMetadata = (...member: object[]) => ({
     type: 'PhysicalHumanMadeThing',
     carries: {
       type: 'LinguisticObject',
-      refers_to: [{ type: 'Set', member: [place] }],
+      refers_to: [{ type: 'Set', member }],
     },
-  };
-  const recordWithoutEntities = {
+  });
+  const metadataWithoutEntities = {
     type: 'PhysicalHumanMadeThing',
     carries: { type: 'LinguisticObject' },
   };
 
-  it('finds linked entities with their mentions in the document record', () => {
-    expect(toLinkedEntities(record)).toEqual([{
+  it('finds linked entities with their mentions in the metadata', () => {
+    expect(toLinkedEntities(toDocumentMetadata(place))).toEqual([{
       id: 'place:foo',
       type: 'place',
       label: 'Foo',
@@ -42,7 +42,18 @@ describe(toLinkedEntities.name, () => {
     }]);
   });
 
-  it('finds no linked entities when the document record refers to none', () => {
-    expect(toLinkedEntities(recordWithoutEntities)).toEqual([]);
+  it('sorts linked entities by their number of mentions', () => {
+    const rarePlace = {
+      ...place,
+      id: 'place:bar',
+      subject_of: [{ type: 'AnnotationPage', items: [fooMention] }],
+    };
+    const entities = toLinkedEntities(toDocumentMetadata(rarePlace, place));
+    const ids = entities.map((entity) => entity.id);
+    expect(ids).toEqual(['place:foo', 'place:bar']);
+  });
+
+  it('finds no linked entities when the metadata refers to none', () => {
+    expect(toLinkedEntities(metadataWithoutEntities)).toEqual([]);
   });
 });

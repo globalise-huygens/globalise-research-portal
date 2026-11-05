@@ -12,17 +12,17 @@ import {
 } from './toNerCategoryGroups.ts';
 
 /**
- * NER category totals of a document record: its text is referred to by an annotations set,
- * which has an annotation collection per NER category.
+ * NER category totals of document metadata: its text is referred to
+ * by an annotations set, which has an annotation collection per NER category.
  * Unavailable while loading or when any of these fails to load.
  */
 export function useNerCategoryTotals(
-  record: LinkedArtNode | null,
+  documentMetadata: LinkedArtNode | null,
 ): NerCategoryTotals | undefined {
   const metadata = useDocumentStore((s) => s.metadata);
   const urls = useMemo(
-    () => findAnnotationsUrls(record, metadata),
-    [record, metadata],
+    () => findAnnotationsUrls(documentMetadata, metadata),
+    [documentMetadata, metadata],
   );
 
   useEffect(loadAnnotations, [urls]);
@@ -41,13 +41,15 @@ export function useNerCategoryTotals(
  * Annotations url and annotation collection urls
  */
 function findAnnotationsUrls(
-  record: LinkedArtNode | null,
+  documentMetadata: LinkedArtNode | null,
   metadata: Record<string, MetadataState>,
 ): string[] {
-  if (!record) {
+  if (!documentMetadata) {
     return [];
   }
-  const annotationUrl = findByPath(record, ['carries', 'referred_to_by'])[0]?.id;
+  const path = ['carries', 'referred_to_by'];
+  const [annotations] = findByPath(documentMetadata, path);
+  const annotationUrl = annotations?.id;
   if (!annotationUrl) {
     return [];
   }
