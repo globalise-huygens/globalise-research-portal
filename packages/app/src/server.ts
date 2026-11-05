@@ -1,4 +1,5 @@
-import { createStartHandler, defaultStreamHandler } from '@tanstack/react-start/server';
+import handler, { createServerEntry } from '@tanstack/react-start/server-entry';
+import { getContentAsset } from '@globalise/content/serve';
 import { provideRouteComponents, provideRouteLoaders } from '@globalise/router';
 import { routeComponents } from './routeComponents.ts';
 import { routeLoaders } from './routeLoaders.ts';
@@ -7,15 +8,18 @@ import { landingPageContent } from './landingPageContent.ts';
 provideRouteComponents(routeComponents, landingPageContent.metadata);
 provideRouteLoaders(routeLoaders);
 
-const startHandler = createStartHandler(defaultStreamHandler);
-
-export default { fetch: handleRequest };
-
-async function handleRequest(request: Request): Promise<Response> {
-  const response = await startHandler(request);
-  if (response.status === 404) {
+/**
+ * Serve content assets, or use default router
+ */
+export default createServerEntry({
+  async fetch(request, opts) {
     const { pathname } = new URL(request.url);
-    console.error(`404: could not find ${pathname}`);
-  }
-  return response;
-}
+
+    const asset = await getContentAsset(pathname);
+    if (asset) {
+      return asset;
+    }
+
+    return handler.fetch(request, opts);
+  },
+});
