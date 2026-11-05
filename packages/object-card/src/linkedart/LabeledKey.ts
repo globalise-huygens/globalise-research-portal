@@ -48,7 +48,7 @@ export const relationKeys: LabeledKey[] = [
 /** Friendly person-card section titles; record values come from annotations. */
 export type StatusGroup = LabeledKey & { type: string };
 
-export const personStatusGroups: StatusGroup[] = [
+export const statusGroups: StatusGroup[] = [
   { key: 'is_classificatory_subject_of', type: 'ClassificatoryStatus', label: 'Classifications' },
   { key: 'is_social_status_subject_of', type: 'SocialStatus', label: 'Occupations and statuses' },
   { key: 'is_residence_subject_of', type: 'ResidentialStatus', label: 'Places' },

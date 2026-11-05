@@ -8,8 +8,9 @@ import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { formatTimespanSummary } from './TimespanFormat.ts';
-import { relationKeys, statusKeys, shipHistoryGroups, shipNameLabels } from './LabeledKey.ts';
+import { relationKeys, statusGroups, statusKeys, shipHistoryGroups, shipNameLabels } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
+import { StatusGroupDisplay } from './PersonCardBody.tsx';
 import { useQueries } from '@tanstack/react-query';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { buildVoyageHierarchy, type VoyageHierarchyNode } from './ShipVoyageModel';
@@ -57,6 +58,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
   const identifiers = getEntityIdentifiers(entity);
   const ownership = findByPath(entity, ['is_ownership_subject_of']);
   const ownershipChanges = findByPath(entity, ['changed_ownership_through']);
+  const classificationGroup = statusGroups.find(({ type }) => type === 'ClassificatoryStatus');
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
@@ -116,7 +118,8 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
           {ownershipChanges.map((event, index) => <ShipEvent key={event.id ?? `change-${index}`} event={event} fallback="Ownership change" identifiers={identifiers} />)}
         </div>
       </ObjectCardSection>}
-      {statusKeys.filter(({ key }) => key !== 'is_appellative_subject_of' && key !== 'is_ownership_subject_of').map((item) => (
+      {classificationGroup && <StatusGroupDisplay entity={entity} group={classificationGroup} />}
+      {statusKeys.filter(({ key }) => key !== 'is_appellative_subject_of' && key !== 'is_ownership_subject_of' && key !== 'is_classificatory_subject_of').map((item) => (
         <StatusSection key={item.key} entity={entity} labeledKey={item} />
       ))}
       {relationKeys.filter(({ key }) => key !== 'moved_by' && key !== 'changed_ownership_through').map((item) => (

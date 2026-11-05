@@ -24,7 +24,7 @@ import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
-import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
+import { statusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import {
   getResidenceLabel,
@@ -41,10 +41,10 @@ type PersonCardBodyProps = {
 
 export function PersonCardBody({ entity }: PersonCardBodyProps) {
   const notes = getNotes(entity);
-  const occupationGroup = personStatusGroups.find(
+  const occupationGroup = statusGroups.find(
     (group) => group.type === 'SocialStatus',
   );
-  const locationGroup = personStatusGroups.find(
+  const locationGroup = statusGroups.find(
     (group) => group.type === 'ResidentialStatus',
   );
   const additionalSources = locationGroup
@@ -56,11 +56,11 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     [...getVisibleSources(entity), ...additionalSources].map((source) => [JSON.stringify(source), source]),
   ).values()];
   const relationshipTypes = ['FamilyStatus', 'SocialRelationStatus', 'MembershipStatus'];
-  const relationshipGroups = personStatusGroups.filter((group) =>
+  const relationshipGroups = statusGroups.filter((group) =>
     relationshipTypes.includes(group.type) && hasGroupInformation(entity, group),
   );
   const unassignedDates = [...new Set(getValues(entity['aaao:ZP17i_is_social_status_subject_of']).map(formatRecordedDate))];
-  const profileGroups = personStatusGroups.filter(
+  const profileGroups = statusGroups.filter(
     (group) => group !== occupationGroup && group !== locationGroup && !relationshipTypes.includes(group.type),
   );
   const hasPersonalDetails = getPersonNameRecords(entity).length > 0
@@ -75,10 +75,10 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     <ObjectCardBody>
       <ObjectCardPanel side="left">
         {occupationGroup && (
-          <PersonStatusGroup entity={entity} group={occupationGroup} />
+          <StatusGroupDisplay entity={entity} group={occupationGroup} />
         )}
         {locationGroup && (
-          <PersonStatusGroup
+          <StatusGroupDisplay
             entity={entity}
             group={locationGroup}
           />
@@ -97,7 +97,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               title="Died"
             />
             {profileGroups.map((group) => (
-              <PersonStatusGroup
+              <StatusGroupDisplay
                 key={group.label}
                 entity={entity}
                 group={group}
@@ -137,7 +137,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           <ObjectCardSection title="Relationships" collapsible>
             <div className="person-status-list">
               {relationshipGroups.map((group) => (
-                <PersonStatusGroup key={group.label} entity={entity} group={group} section={false} />
+                <StatusGroupDisplay key={group.label} entity={entity} group={group} section={false} />
               ))}
             </div>
           </ObjectCardSection>
@@ -164,9 +164,9 @@ export function PersonOverview({ entity }: PersonCardBodyProps) {
     ...new Set(sortPersonNames(getPersonNameRecords(entity)).map((record) => record.name)),
   ];
   const alternativeNames = names.slice(1);
-  const classifications = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[0])
+  const classifications = uniqueStatusValues(getStatusNodes(entity, statusGroups[0])
     .flatMap((status) => getStatusValues(status, ['ascribes_classification'])));
-  const occupations = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[1])
+  const occupations = uniqueStatusValues(getStatusNodes(entity, statusGroups[1])
     .flatMap((status) => getStatusValues(status, ['ascribes_social_status'])));
   const born = findByPath(entity, ['born']);
   const died = findByPath(entity, ['died']);
@@ -386,17 +386,17 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
     );
 }
 
-type PersonStatusGroupProps = {
+type StatusGroupDisplayProps = {
   entity: LinkedArtNode;
   group: StatusGroup;
   section?: boolean;
 };
 
-function PersonStatusGroup({
+export function StatusGroupDisplay({
   entity,
   group,
   section = true,
-}: PersonStatusGroupProps) {
+}: StatusGroupDisplayProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
   const additionalNodes = getAdditionalStatusNodes(entity, group);
