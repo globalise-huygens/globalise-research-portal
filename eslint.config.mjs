@@ -55,6 +55,9 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/consistent-type-definitions": ['warn', 'type'],
       '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/only-throw-error': ['error', {
+        allow: [{ from: 'package', package: '@tanstack/router-core', name: 'NotFoundError' }],
+      }],
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       '@stylistic/semi': ['error', 'always'],
       'curly': ['error', 'all'],
