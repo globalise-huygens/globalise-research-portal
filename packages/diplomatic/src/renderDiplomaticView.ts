@@ -3,9 +3,13 @@ import {
   filterByTextSelectorOrLog,
   findTextPositionSelector,
   getClassifiedClassNames,
+  getCidocEntityClassificationId,
+  getEntityPresentationFamilyByClassificationId,
   getPageText,
   indexAnnotations,
   isClassified,
+  isEntity,
+  isEvent,
   isSearchHit,
 } from '@globalise/common/annotation';
 import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
@@ -46,6 +50,7 @@ export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
     onHover?: (id: Id | null) => void;
     onClick?: (id: Id) => void;
+    highlightedIds?: ReadonlySet<Id>;
   };
 
 export function renderDiplomaticView(
@@ -62,6 +67,7 @@ export function renderDiplomaticView(
     showBlocks,
     onHover,
     onClick,
+    highlightedIds = new Set(Object.keys(annotations)),
   } = mergedConfig;
   $view.innerHTML = '';
 
@@ -128,8 +134,58 @@ export function renderDiplomaticView(
     }
   }
 
+  function getSegment(event: Event) {
+    if (!(event.target instanceof Element)) {
+      return null;
+    }
+    const $segment = event.target.closest<HTMLSpanElement>('.segment');
+    return $segment && $layoutView.contains($segment) ? $segment : null;
+  }
+
+  function handlePointerOver(event: PointerEvent) {
+    const $segment = getSegment(event);
+    if (!$segment || (event.relatedTarget instanceof Node && $segment.contains(event.relatedTarget))) {
+      return;
+    }
+    setHoverAttribute($segment, 'delayed');
+    onHover($segment.dataset.classifiedId ?? $segment.dataset.wordId ?? null);
+  }
+
+  function handlePointerOut(event: PointerEvent) {
+    const $segment = getSegment(event);
+    if (!$segment || (event.relatedTarget instanceof Node && $segment.contains(event.relatedTarget))) {
+      return;
+    }
+    if (document.activeElement === $segment) {
+      return;
+    }
+    removeHoverAttribute($segment);
+    onHover($segment.dataset.classifiedId ? null : $segment.dataset.blockId ?? null);
+  }
+
+  function handleSegmentClick(event: MouseEvent) {
+    const $segment = getSegment(event);
+    const id = $segment?.dataset.classifiedId ?? $segment?.dataset.wordId;
+    if (id) {
+      onClick(id);
+    }
+  }
+
+  function handleSegmentKeyDown(event: KeyboardEvent) {
+    const $segment = getSegment(event);
+    const id = $segment?.dataset.classifiedId;
+    if (id && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      onClick(id);
+    }
+  }
+
   $layoutView.addEventListener('focusin', handleClassifiedFocus);
   $layoutView.addEventListener('focusout', handleClassifiedBlur);
+  $layoutView.addEventListener('pointerover', handlePointerOver);
+  $layoutView.addEventListener('pointerout', handlePointerOut);
+  $layoutView.addEventListener('click', handleSegmentClick);
+  $layoutView.addEventListener('keydown', handleSegmentKeyDown);
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -152,10 +208,40 @@ export function renderDiplomaticView(
         ($searchHitToSegments[searchHit.id] ??= []).push($segment);
       }
 
-      for (const annotation of segment.annotations.filter(isClassified)) {
-        $segment.classList.add(...getClassifiedClassNames(annotation));
+      const classifiedAnnotations = segment.annotations.filter(isClassified);
+      const highlightedAnnotations = classifiedAnnotations.filter(
+        ({ id }) => highlightedIds.has(id),
+      );
+      const hasHighlightedEvent = highlightedAnnotations.some(isEvent);
+      for (const annotation of classifiedAnnotations) {
+        const classNames = getClassifiedClassNames(annotation).filter(
+          (className) => className !== 'entity' && className !== 'event'
+            && !className.startsWith('annotation-'),
+        );
+        $segment.classList.add(...classNames);
       }
-      const classified = segment.annotations.find(isClassified);
+      if (hasHighlightedEvent) {
+        $segment.classList.add('event');
+      } else if (classifiedAnnotations.some(isEvent)) {
+        $segment.classList.add('event-hidden');
+      }
+      const presentationEntity = highlightedAnnotations.find(isEntity)
+        ?? classifiedAnnotations.find(isEntity);
+      if (presentationEntity) {
+        const classificationId = getCidocEntityClassificationId(presentationEntity);
+        if (classificationId) {
+          $segment.classList.add(
+            `annotation-${getEntityPresentationFamilyByClassificationId(classificationId)}`,
+          );
+        }
+        $segment.classList.add(
+          highlightedIds.has(presentationEntity.id) ? 'entity' : 'entity-hidden',
+        );
+      }
+      const classified = highlightedAnnotations[0]
+        ?? classifiedAnnotations.find(isEntity);
+      $segment.dataset.wordId = wordId;
+      $segment.dataset.blockId = wordToBlock[wordId] ?? '';
 
       if (classified) {
         $segment.tabIndex = 0;
@@ -167,39 +253,9 @@ export function renderDiplomaticView(
           `Select: ${$segment.textContent}`,
         );
 
-        if (!$classifiedToSegments[classified.id]) {
-          $classifiedToSegments[classified.id] = [];
+        for (const annotation of classifiedAnnotations) {
+          ($classifiedToSegments[annotation.id] ??= []).push($segment);
         }
-        $classifiedToSegments[classified.id].push($segment);
-
-        $segment.addEventListener('click', () => onClick(classified.id));
-        $segment.addEventListener('mouseenter', () => {
-          setHoverAttribute($segment, 'delayed');
-          onHover(classified.id);
-        });
-        $segment.addEventListener('mouseleave', () => {
-          if (document.activeElement !== $segment) {
-            removeHoverAttribute($segment);
-            onHover(null);
-          }
-        });
-        $segment.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onClick(classified.id);
-          }
-        });
-      } else {
-        const blockId = wordToBlock[wordId];
-        $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => {
-          setHoverAttribute($segment, 'delayed');
-          onHover(wordId);
-        });
-        $segment.addEventListener('mouseleave', () => {
-          removeHoverAttribute($segment);
-          onHover(blockId ?? null);
-        });
       }
     }
     $word.replaceChildren(...$segments);
@@ -275,7 +331,14 @@ export function renderDiplomaticView(
       selectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => { $r.classList.add('selected'); });
+      $segments?.forEach(($r) => {
+        $r.classList.add('selected');
+        if (isEntity(annotation)) {
+          $r.classList.add('selected-entity');
+        } else if (isEvent(annotation)) {
+          $r.classList.add('selected-event');
+        }
+      });
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -290,7 +353,9 @@ export function renderDiplomaticView(
       deselectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => $r.classList.remove('selected'));
+      $segments?.forEach(($r) => {
+        $r.classList.remove('selected', 'selected-entity', 'selected-event');
+      });
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }

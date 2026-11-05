@@ -50,57 +50,27 @@
     aspect-ratio: 1;
     min-height: var(--s176);
     justify-content: space-between;
-    background: var(--catalog-schema-color, var(--color-neutral-200));
-    color: var(--color-brand-black);
+    background: color-mix(
+      in srgb,
+      var(--annotation-family-color, var(--color-neutral-600)) 24%,
+      var(--color-neutral-900)
+    );
+    color: var(--annotation-family-color, var(--color-neutral-200));
     padding: var(--s20);
     text-decoration: none;
-  }
-
-  .catalog-schema-tile--person,
-  .catalog-schema-tile--place {
-    --catalog-schema-color: var(--color-brand-mint);
-  }
-
-  .catalog-schema-tile--organization,
-  .catalog-schema-tile--rulership {
-    --catalog-schema-color: var(--color-brand-vermilion);
-  }
-
-  .catalog-schema-tile--polity {
-    --catalog-schema-color: var(--color-mint-700);
-
-    color: var(--color-brand-white);
-  }
-
-  .catalog-schema-tile--ship,
-  .catalog-schema-tile--voyage {
-    --catalog-schema-color: var(--color-brand-turquoise);
-  }
-
-  .catalog-schema-tile--conversion {
-    --catalog-schema-color: var(--color-parchment-300);
-  }
-
-  .catalog-schema-tile--occurrence {
-    --catalog-schema-color: var(--color-brand-parchment);
-  }
-
-  .catalog-schema-tile--concept,
-  .catalog-schema-tile--conceptscheme,
-  .catalog-schema-tile--collection {
-    --catalog-schema-color: var(--color-neutral-200);
   }
 
   .catalog-schema-tile:hover {
     filter: brightness(1.08);
   }
 
-  .catalog-schema-tile .gds-card-article__title {
-    font-size: var(--text-3xl);
+  .catalog-schema-tile:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
   }
 
-  .catalog-schema-tile--polity .gds-card-article__title {
-    color: inherit;
+  .catalog-schema-tile .gds-card-article__title {
+    font-size: var(--text-3xl);
   }
 
   @media (min-width: 560px) {

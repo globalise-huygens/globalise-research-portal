@@ -9,6 +9,7 @@ import { FacsimileTooltip, FacsimileTooltipProps } from './FacsimileTooltip';
 import { BlockHighlight } from './BlockHighlight.tsx';
 import { SelectedWordHighlights } from './SelectedWordHighlights.tsx';
 import { WordHighlights } from './WordHighlights.tsx';
+import { SearchHitWordHighlights } from './SearchHitWordHighlights.tsx';
 import { toBlockHighlightConfigs, toWordHighlightConfigs } from './HighlightConfig.ts';
 
 export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
@@ -42,8 +43,9 @@ export function FacsimileOverlay({ canvasId }: { canvasId: CanvasId }) {
               points={path}
             />
           ))}
-          <SelectedWordHighlights canvasId={canvasId} words={words}/>
           <WordHighlights words={words} setTooltip={setTooltip}/>
+          <SelectedWordHighlights canvasId={canvasId} words={words}/>
+          <SearchHitWordHighlights canvasId={canvasId} words={words}/>
         </svg>
       </Overlay>
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}

@@ -243,7 +243,7 @@
       width: 100%;
       align-items: flex-start;
       justify-content: space-between;
-      color: #6b9eff;
+      color: var(--brand-turquoise);
     }
 
     .match-list .external-link-label {
@@ -260,7 +260,7 @@
       width: var(--s16);
       height: var(--s16);
       flex-shrink: 0;
-      color: #6b9eff;
+      color: var(--brand-turquoise);
     }
 
     .graph {

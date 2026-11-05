@@ -23,6 +23,7 @@ export type DiplomaticViewProps = {
   showBlocks?: boolean;
   showScanMargin?: boolean;
   selected?: Id[];
+  highlightedIds?: ReadonlySet<Id>;
   activeHits?: Id[];
   style?: React.CSSProperties;
 };
@@ -36,6 +37,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     showBlocks,
     showScanMargin,
     selected = [],
+    highlightedIds = new Set(Object.keys(annotations)),
     activeHits = [],
     style,
   } = props;
@@ -70,6 +72,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     fit,
     showBlocks,
     showScanMargin,
+    highlightedIds,
     width,
   ]);
   function createDiplomaticView() {
@@ -85,6 +88,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       showScanMargin,
       onHover: setHovered,
       onClick: toggleClicked,
+      highlightedIds,
     });
     view.setSelected(...selected);
     view.setActiveHits(...activeHits);

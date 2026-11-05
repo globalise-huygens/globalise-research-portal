@@ -20,7 +20,9 @@ export type ClassifiedHighlightSlice = {
 
 export type WordClassifications = {
   entityClassificationId?: CidocEntityClassificationId;
+  entityIsHighlighted?: boolean;
   hasEvent?: boolean;
+  hasHiddenEvent?: boolean;
 };
 
 export function setHighlightCategories(categories: Set<ClassifiedCategory>) {
@@ -49,15 +51,27 @@ export function useWordClassifications(canvasId: CanvasId) {
     const classifications: Partial<Record<Id, WordClassifications>> = {};
     for (const [classifiedId, wordIds] of Object.entries(classifiedToWords)) {
       const annotation = annotations[classifiedId];
-      if (!annotation || !isHighlighted(annotation, categories)) {
+      if (!annotation) {
         continue;
       }
+      const highlighted = isHighlighted(annotation, categories);
       for (const wordId of wordIds) {
         const word = classifications[wordId] ??= {};
         if (isEvent(annotation)) {
-          word.hasEvent = true;
+          if (highlighted) {
+            word.hasEvent = true;
+          } else {
+            word.hasHiddenEvent = true;
+          }
         } else if (isEntity(annotation)) {
-          word.entityClassificationId ??= getCidocEntityClassificationId(annotation);
+          if (highlighted || !word.entityIsHighlighted) {
+            word.entityClassificationId = getCidocEntityClassificationId(annotation);
+          }
+          if (highlighted) {
+            word.entityIsHighlighted = true;
+          } else {
+            word.entityIsHighlighted ??= false;
+          }
         }
       }
     }

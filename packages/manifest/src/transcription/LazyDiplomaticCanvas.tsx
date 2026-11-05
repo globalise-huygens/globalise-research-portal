@@ -1,10 +1,11 @@
 import {
   loadCanvasAnnotationPages,
-  useHighlightedAnnotations,
+  useAnnotationsWithSearchHits,
+  useHighlightCategories,
   usePages,
   usePartOf,
   useActiveHitAnnotationsInDiplomatic,
-  useSelectedAnnotationsInDiplomatic,
+  useClickedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
 import { memo, useEffect, useMemo } from 'react';
@@ -13,7 +14,11 @@ import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
 import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
-import { CanvasAnnotationPage } from '@globalise/common/annotation';
+import {
+  isClassified,
+  isHighlighted,
+  type CanvasAnnotationPage,
+} from '@globalise/common/annotation';
 
 type Props = {
   canvasId: string;
@@ -44,9 +49,19 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   isInRenderRange,
   showBlocks,
 }: Props) {
-  const annotations = useHighlightedAnnotations(canvasId);
+  const annotations = useAnnotationsWithSearchHits(canvasId);
+  const highlightCategories = useHighlightCategories();
+  const highlightedIds = useMemo(
+    () => new Set(
+      Object.values(annotations)
+        .filter((annotation) => isClassified(annotation)
+          && isHighlighted(annotation, highlightCategories))
+        .map(({ id }) => id),
+    ),
+    [annotations, highlightCategories],
+  );
   const partOf = usePartOf(canvasId);
-  const selectedIds = useSelectedAnnotationsInDiplomatic(canvasId);
+  const selectedIds = useClickedAnnotationsInDiplomatic(canvasId);
   const selected = useMemo(
     () => selectedIds.filter((id) => annotations[id]),
     [selectedIds, annotations],
@@ -119,6 +134,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
             <DiplomaticView
               id={canvasId}
               annotations={annotations}
+              highlightedIds={highlightedIds}
               selected={selected}
               activeHits={activeHits}
               page={partOf}

@@ -8,6 +8,7 @@ import {
   Annotation,
   Id,
   isClassified,
+  isEntity,
   isEvent,
   isHighlighted,
   isWord,
@@ -38,7 +39,8 @@ export function SegmentedText(
       const body = segment.value;
       const hoveredAnnotation = segment.annotations.find(
         (annotation) => isHighlighted(annotation, highlightCategories),
-      ) ?? segment.annotations.find(isWord);
+      ) ?? segment.annotations.find(isEntity)
+        ?? segment.annotations.find(isWord);
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
@@ -99,6 +101,7 @@ export function SegmentedText(
       return (
         <span
           key={segment.index}
+          className="segment"
           tabIndex={isClassifiedTrigger ? 0 : undefined}
           role={isClassifiedTrigger ? 'button' : undefined}
           aria-haspopup={isClassifiedTrigger ? 'dialog' : undefined}

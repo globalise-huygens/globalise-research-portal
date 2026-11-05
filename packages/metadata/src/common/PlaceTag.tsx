@@ -14,12 +14,21 @@ export function PlaceTag({ label, href }: PlaceTagProps) {
     </span></>;
 
   if(!href) {
-    return <span className="entity-tag" data-type="place">{labelWithIcon}</span>;
+    return (
+      <span
+        className="entity-tag"
+        data-type="place"
+        data-presentation-family="location"
+      >
+        {labelWithIcon}
+      </span>
+    );
   }
 
   return (
     <a
       data-type="place"
+      data-presentation-family="location"
       className="entity-tag"
       href={href}
       target="_blank"

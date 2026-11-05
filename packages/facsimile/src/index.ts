@@ -11,5 +11,4 @@ export { SelectedWordHighlights } from './SelectedWordHighlights.tsx';
 export { SearchHitWordHighlights } from './SearchHitWordHighlights.tsx';
 export { toWordHighlightConfigs, toBlockHighlightConfigs } from './HighlightConfig.ts';
 export { FacsimileTooltip } from './FacsimileTooltip';
-export type { EntityHighlightTone } from './EntityHighlightTone.ts';
 export { fetchPatchManifest } from './fetchPatchManifest';

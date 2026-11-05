@@ -51,10 +51,10 @@
   .entity-menu .row {
     background: color-mix(
       in srgb,
-      var(--entity-highlight-fill, transparent) 18%,
+      var(--annotation-family-color, transparent) 18%,
       transparent
     );
-    color: var(--entity-highlight-fill, var(--color-brand-white));
+    color: var(--annotation-family-color, var(--color-brand-white));
   }
 
   .entity-menu .all-title,

@@ -1,6 +1,7 @@
 import { IconEvents } from '../icons';
 import { EntityIcon } from './EntityIcon';
 import { cn } from '../../lib';
+import { getPresentationFamily } from '@globalise/common';
 import * as React from 'react';
 import {
   Link as AriaLink,
@@ -77,6 +78,7 @@ function EntityTag({
         href={href}
         className={entityTagVariants({ className })}
         data-type={type}
+        data-presentation-family={getPresentationFamily(type)}
         data-interactive="true"
         {...props}
       >
@@ -86,7 +88,11 @@ function EntityTag({
   }
 
   return (
-    <span className={entityTagVariants({ className })} data-type={type}>
+    <span
+      className={entityTagVariants({ className })}
+      data-type={type}
+      data-presentation-family={getPresentationFamily(type)}
+    >
       {content}
     </span>
   );
