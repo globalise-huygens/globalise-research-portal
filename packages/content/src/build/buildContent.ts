@@ -1,6 +1,7 @@
 import { addIssues } from './Issue.ts';
 import { buildPage } from './page/buildPage.ts';
 import { readSources } from './readSources.ts';
+import { buildPageLinks } from './buildPageLinks.ts';
 import { validateSlugs } from './validateSlugs.ts';
 import type { VFile } from 'vfile';
 import type { ContentPage } from '../ContentPage.ts';
@@ -19,5 +20,6 @@ export async function buildContent(contentDir: string): Promise<ContentBuild> {
   const pages = builds
     .map(({ page }) => page)
     .filter((page) => !!page);
+  buildPageLinks(pages);
   return { sources, pages };
 }
