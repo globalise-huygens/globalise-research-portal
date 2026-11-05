@@ -1,10 +1,11 @@
 import { Annotation } from './AnnoModel.ts';
+import { type AnnotationPresentationFamily } from '../PresentationFamily.ts';
 import {
-  CidocClassName,
   CidocEntityClassificationId,
   getCidocClassName,
   getCidocEntityClassificationId,
   getCidocEntityClassifiedAsLabel,
+  getEntityPresentationFamilyByClassificationId,
 } from './CidocEntityModel.ts';
 import { EntityBody, getEntityAnnotationBodyClassName, isEntity } from './EntityModel.ts';
 import { EventBody, isEvent } from './EventModel.ts';
@@ -14,7 +15,7 @@ export type ClassifiedBody = EntityBody | EventBody;
 
 export type ClassifiedCategory = CidocEntityClassificationId | typeof eventCategory;
 
-export type ClassifiedTone = CidocClassName | typeof eventCategory;
+export type ClassifiedTone = AnnotationPresentationFamily | typeof eventCategory;
 
 export type ClassifiedType = 'entity' | 'event';
 
@@ -52,20 +53,31 @@ export function getClassifiedType(annotation: Annotation<ClassifiedBody>): Class
   return isEvent(annotation) ? 'event' : 'entity';
 }
 
-export function getClassifiedTone(annotation: Annotation<ClassifiedBody>): ClassifiedTone {
-  return isEvent(annotation)
-    ? eventCategory
-    : getCidocClassName(annotation);
+export function getClassifiedTone(
+  annotation: Annotation<ClassifiedBody>,
+): ClassifiedTone | undefined {
+  if (isEvent(annotation)) {
+    return eventCategory;
+  }
+  const classificationId = getCidocEntityClassificationId(annotation);
+  return classificationId
+    ? getEntityPresentationFamilyByClassificationId(classificationId)
+    : undefined;
 }
 
 export function getClassifiedClassNames(annotation: Annotation<ClassifiedBody>): string[] {
   if (isEvent(annotation)) {
     return ['event'];
   }
-  return [
+  const classNames = [
     'entity',
     getEntityAnnotationBodyClassName(annotation),
     getCidocClassName(annotation),
     toClassName(getCidocEntityClassifiedAsLabel(annotation)),
   ];
+  const tone = getClassifiedTone(annotation);
+  if (tone) {
+    classNames.push(`annotation-${tone}`);
+  }
+  return classNames;
 }

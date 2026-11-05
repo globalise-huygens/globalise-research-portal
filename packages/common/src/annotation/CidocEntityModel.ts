@@ -3,6 +3,10 @@ import {
   EntityAnnotationBodyType,
   getPrimaryEntityBody,
 } from './EntityModel.ts';
+import {
+  getPresentationFamily,
+  type AnnotationPresentationFamily,
+} from '../PresentationFamily.ts';
 
 export const cidocClassNames = [
   'cidoc-actor',
@@ -180,6 +184,17 @@ export function getCidocClassNameByClassificationId(
   classificationId: CidocEntityClassificationId,
 ) {
   return getEntityClassificationDefinition(classificationId).cidocClassName;
+}
+
+export function getEntityPresentationFamilyByClassificationId(
+  classificationId: CidocEntityClassificationId,
+): AnnotationPresentationFamily {
+  const { presentationType } = getEntityClassificationDefinition(classificationId);
+  const family = getPresentationFamily(presentationType);
+  if (!family) {
+    throw new Error(`No presentation family for ${presentationType}`);
+  }
+  return family;
 }
 
 export function getEntityClassificationDefinition(

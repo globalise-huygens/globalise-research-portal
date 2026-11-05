@@ -10,4 +10,5 @@ export { mergePaths, type TreeNode } from './util/mergePaths.ts';
 export { getSVGElement } from './util/getSVGElement';
 
 export * from './linkedart';
+export * from './PresentationFamily.ts';
 export * from './document/ManifestMetadataSlice.ts';
