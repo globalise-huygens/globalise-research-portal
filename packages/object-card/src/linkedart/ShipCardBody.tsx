@@ -10,8 +10,9 @@ import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { formatTimespanSummary } from './TimespanFormat.ts';
 import { relationKeys, statusKeys, shipHistoryGroups, shipNameLabels } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
+import { buildVoyageHierarchy, type VoyageHierarchyNode } from './ShipVoyageModel';
 
 export function getShipTitle(entity: LinkedArtNode): string {
   const preferred = findByPath(entity, ['is_appellative_subject_of', 'ascribes_appellation'])
@@ -107,9 +108,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
         <SourceList sources={sources} includeInternalLabels showNotes excludedIdentifiers={identifiers} />
       </ObjectCardSection>}
       {!!voyages.length && <ObjectCardSection title="Voyages" collapsible>
-        <div className="person-status-list">
-          {voyages.map((voyage, index) => <ShipVoyage key={voyage.id ?? index} voyage={voyage} identifiers={identifiers} />)}
-        </div>
+        <ShipVoyageList voyages={voyages} identifiers={identifiers} />
       </ObjectCardSection>}
       {!!(ownership.length || ownershipChanges.length) && <ObjectCardSection title="Ownership" collapsible>
         <div className="person-status-list">
@@ -221,9 +220,27 @@ function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fal
   </ObjectCardDisclosure>;
 }
 
+function ShipVoyageList({ voyages, identifiers }: { voyages: LinkedArtNode[]; identifiers: string[] }) {
+  const results = useQueries({
+    queries: voyages.map((voyage) => entityResourceQueryOptions(url(voyage) ?? '')),
+  });
+  const hierarchy = buildVoyageHierarchy(voyages.map((voyage, index) => results[index].data ?? voyage));
+  return <ol className="person-status-list ship-voyage-hierarchy">
+    {hierarchy.map((node) => <ShipVoyageNode key={node.key} node={node} identifiers={identifiers} />)}
+  </ol>;
+}
+
+function ShipVoyageNode({ node, identifiers }: { node: VoyageHierarchyNode; identifiers: string[] }) {
+  return <li>
+    <ShipVoyage voyage={node.voyage} identifiers={identifiers} />
+    {!!node.children.length && <ol className="ship-voyage-nested-list">
+      {node.children.map((child) => <ShipVoyageNode key={child.key} node={child} identifiers={identifiers} />)}
+    </ol>}
+  </li>;
+}
+
 function ShipVoyage({ voyage, identifiers }: { voyage: LinkedArtNode; identifiers: string[] }) {
-  const { data } = useQuery(entityResourceQueryOptions(url(voyage) ?? ''));
-  const details = data ?? voyage;
+  const details = voyage;
   const timespan = findTimespan(details);
   const dates = timespan ? null : getRecordedDates(details);
   const sources = findByPath(details, ['referred_to_by']);
