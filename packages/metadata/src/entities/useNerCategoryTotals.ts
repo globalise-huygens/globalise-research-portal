@@ -6,6 +6,7 @@ import {
   type MetadataState,
 } from '@globalise/common';
 import { useDocumentStore } from '@globalise/common/document';
+import type { PanelData } from './PanelData.ts';
 import {
   toNerCategoryTotals,
   type NerCategoryTotals,
@@ -14,14 +15,15 @@ import {
 /**
  * NER category totals of document metadata: its text is referred to
  * by an annotations set, which has an annotation collection per NER category.
- * Unavailable while loading or when any of these fails to load.
  */
 export function useNerCategoryTotals(
-  documentMetadata: LinkedArtNode | null,
-): NerCategoryTotals | undefined {
+  documentMetadata: PanelData<LinkedArtNode>,
+): PanelData<NerCategoryTotals> {
   const metadata = useDocumentStore((s) => s.metadata);
   const urls = useMemo(
-    () => findAnnotationsUrls(documentMetadata, metadata),
+    () => documentMetadata.status === 'ready'
+      ? findAnnotationsUrls(documentMetadata.data, metadata)
+      : [],
     [documentMetadata, metadata],
   );
 
@@ -34,19 +36,21 @@ export function useNerCategoryTotals(
     }
   }
 
-  return useMemo(() => findTotals(urls, metadata), [urls, metadata]);
+  return useMemo(
+    () => documentMetadata.status === 'ready'
+      ? findTotals(urls, metadata)
+      : documentMetadata,
+    [documentMetadata, urls, metadata],
+  );
 }
 
 /**
  * Annotations url and annotation collection urls
  */
 function findAnnotationsUrls(
-  documentMetadata: LinkedArtNode | null,
+  documentMetadata: LinkedArtNode,
   metadata: Record<string, MetadataState>,
 ): string[] {
-  if (!documentMetadata) {
-    return [];
-  }
   const path = ['carries', 'referred_to_by'];
   const [annotations] = findByPath(documentMetadata, path);
   const annotationUrl = annotations?.id;
@@ -62,14 +66,17 @@ function findAnnotationsUrls(
   return [annotationUrl, ...nerCategoryUrls];
 }
 
-function findTotals(
+export function findTotals(
   urls: string[],
   metadata: Record<string, MetadataState>,
-): NerCategoryTotals | undefined {
+): PanelData<NerCategoryTotals> {
+  if (!urls.length || urls.some((url) => metadata[url]?.error)) {
+    return { status: 'failed' };
+  }
   const roots = urls.flatMap((url) => metadata[url]?.root ?? []);
-  if (!urls.length || roots.length < urls.length) {
-    return undefined;
+  if (roots.length < urls.length) {
+    return { status: 'loading' };
   }
   const [, ...collections] = roots;
-  return toNerCategoryTotals(collections);
+  return { status: 'ready', data: toNerCategoryTotals(collections) };
 }

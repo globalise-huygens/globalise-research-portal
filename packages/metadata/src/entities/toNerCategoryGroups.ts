@@ -13,7 +13,7 @@ export type NerCategoryTotals = Map<CidocEntityClassificationId, number>;
  * NER categories grouped like the entity highlight menu
  */
 export function toNerCategoryGroups(
-  totals?: NerCategoryTotals,
+  totals: NerCategoryTotals,
 ): NerCategoryGroup[] {
   return entityClassificationGroups
     .map(({ classificationIds, ...group }) => ({
@@ -22,9 +22,9 @@ export function toNerCategoryGroups(
         .map((id) => ({
           id,
           label: getEntityClassificationDefinition(id).highlightLabel,
-          total: totals?.get(id),
+          total: totals.get(id) ?? 0,
         }))
-        .filter((nerCategory) => !totals || nerCategory.total),
+        .filter((nerCategory) => nerCategory.total),
     }))
     .filter((group) => group.nerCategories.length);
 }
@@ -48,11 +48,8 @@ export function toNerCategoryTotals(
   return totals;
 }
 
-export function countTotal(group: NerCategoryGroup): number | undefined {
-  const totals = group.nerCategories.map((nerCategory) => nerCategory.total);
-  return totals.every((total) => total !== undefined)
-    ? totals.reduce((sum, total) => sum + total, 0)
-    : undefined;
+export function countTotal(group: NerCategoryGroup): number {
+  return group.nerCategories.reduce((sum, { total }) => sum + total, 0);
 }
 
 export function hasSubcategories(group: NerCategoryGroup): boolean {

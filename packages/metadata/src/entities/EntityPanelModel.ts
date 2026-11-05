@@ -3,17 +3,6 @@ import type {
   CidocEntityClassificationId,
 } from '@globalise/common/annotation';
 import type { CanvasId } from '@globalise/common/document';
-import type { ManifestDocument } from '../toc';
-
-export type ClassifiedPanelModel = {
-  document?: ManifestDocument;
-  nerCategoryGroups: NerCategoryGroup[];
-};
-
-export type IdentifiedPanelModel = {
-  document?: ManifestDocument;
-  linkedEntities: LinkedEntity[];
-};
 
 export type LinkedEntity = {
   id: string;
@@ -32,7 +21,7 @@ export type NerCategoryGroup = {
 export type NerCategory = {
   id: CidocEntityClassificationId;
   label: string;
-  total?: number;
+  total: number;
 };
 
 export type Mention = {
