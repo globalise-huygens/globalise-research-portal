@@ -6,6 +6,7 @@ export { EntityPanel } from './entities';
 export {
   TocPanel,
   useCanvasDocuments,
+  useSyncSelectedDocument,
   type CanvasDocuments,
   type ManifestDocument,
 } from './toc';

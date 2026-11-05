@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation } from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
-import { useCurrentDocument } from './useCurrentDocument.ts';
+import { useSelectedDocument } from './useSelectedDocument.ts';
 
 /**
  * Table of contents renders the manifest documents and their scans.
@@ -13,23 +13,22 @@ export function TocPanel() {
   const documents = useToc();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
-  const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
 
-  const currentDocument = useCurrentDocument(preferredDocumentId);
-  const currentDocumentId = currentDocument?.id;
-  const currentScan = currentDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
+  const selectedDocument = useSelectedDocument();
+  const selectedDocumentId = selectedDocument?.id;
+  const currentScan = selectedDocument?.scans.find((scan) => scan.canvasId === selectedCanvasId);
 
-  useEffect(expandCurrentDocument, [currentDocumentId]);
+  useEffect(expandSelectedDocument, [selectedDocumentId]);
 
-  function expandCurrentDocument() {
-    if (currentDocumentId) {
-      expandTocDocument(currentDocumentId);
+  function expandSelectedDocument() {
+    if (selectedDocumentId) {
+      expandTocDocument(selectedDocumentId);
     }
   }
 
   function goToCurrent(navigation: TocNavigation) {
-    if (currentDocumentId) {
-      navigateToc(navigation, currentDocumentId);
+    if (selectedDocumentId) {
+      navigateToc(navigation, selectedDocumentId);
     }
   }
 
@@ -49,7 +48,7 @@ export function TocPanel() {
           size="compact"
           icon={<IconEntityDocument aria-hidden="true"/>}
           aria-label="Go to current document"
-          isDisabled={!currentDocument}
+          isDisabled={!selectedDocument}
           onPress={() => goToCurrent('document')}
         >
           Document
@@ -69,8 +68,7 @@ export function TocPanel() {
           <TocDocument
             key={entry.id}
             document={entry}
-            isCurrent={entry.id === currentDocumentId}
-            onSelect={() => setPreferredDocumentId(entry.id)}
+            isCurrent={entry.id === selectedDocumentId}
             listRef={tocListRef}
           />
         ))}
