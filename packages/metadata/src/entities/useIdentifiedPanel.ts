@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
-import type { IdentifiedPanelModel } from './EntityPanelModel.ts';
+import type { LinkedEntity } from './EntityPanelModel.ts';
+import { mapPanelData, type PanelData } from './PanelData.ts';
 import { toLinkedEntities } from './toLinkedEntities.ts';
 import { useDocumentMetadata } from './useDocumentMetadata.ts';
 
-export function useIdentifiedPanel(): IdentifiedPanelModel {
-  const { document, documentMetadata } = useDocumentMetadata();
+export function useIdentifiedPanel(): PanelData<LinkedEntity[]> {
+  const documentMetadata = useDocumentMetadata();
 
-  const linkedEntities = useMemo(
-    () => documentMetadata ? toLinkedEntities(documentMetadata) : [],
+  return useMemo(
+    () => mapPanelData(documentMetadata, toLinkedEntities),
     [documentMetadata],
   );
-
-  return { document, linkedEntities };
 }

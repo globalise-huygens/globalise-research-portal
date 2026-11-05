@@ -1,19 +1,20 @@
 import { EntityIcon } from '@globalise/design';
 import type { NerCategory, NerCategoryGroup } from './EntityPanelModel.ts';
+import { PanelMessage } from './PanelMessage.tsx';
 import { useClassifiedPanel } from './useClassifiedPanel.ts';
 import { countTotal, hasSubcategories } from './toNerCategoryGroups.ts';
 
 export function ClassifiedPanel() {
-  const { document, nerCategoryGroups } = useClassifiedPanel();
+  const panelData = useClassifiedPanel();
 
-  if (!document) {
-    return <div className="toc-empty">No document on this scan.</div>;
+  if (panelData.status !== 'ready') {
+    return <PanelMessage status={panelData.status}/>;
   }
 
   return (
     <div className="metadata-panel entity-panel">
       <ul>
-        {nerCategoryGroups.map((group) => (
+        {panelData.data.map((group) => (
           <NerCategoryGroupItem key={group.id} group={group}/>
         ))}
       </ul>
@@ -28,15 +29,13 @@ type NerCategoryGroupItemProps = {
 function NerCategoryGroupItem({ group }: NerCategoryGroupItemProps) {
   const total = countTotal(group);
   const groupLabel = group.label.toLowerCase();
-  const title = total === undefined
-    ? undefined
-    : `The current document refers to ${total} ${groupLabel}`;
+  const title = `The current document refers to ${total} ${groupLabel}`;
 
   return (
     <li>
       <span title={title}>
         <EntityIcon type={group.tagType} className="icon"/>{' '}
-        {group.label} ({toCountLabel(total)})
+        {group.label} ({total})
       </span>
       {hasSubcategories(group) && (
         <ul>
@@ -60,13 +59,7 @@ type NerCategoryItemProps = {
 
 function NerCategoryItem({ nerCategory, groupLabel }: NerCategoryItemProps) {
   const { label, total } = nerCategory;
-  const title = total === undefined
-    ? undefined
-    : `${total} ${groupLabel} referred to ${label.toLowerCase()}`;
+  const title = `${total} ${groupLabel} referred to ${label.toLowerCase()}`;
 
-  return <li title={title}>{label} ({toCountLabel(total)})</li>;
-}
-
-function toCountLabel(total?: number): string {
-  return total === undefined ? 'count unavailable' : `${total}`;
+  return <li title={title}>{label} ({total})</li>;
 }

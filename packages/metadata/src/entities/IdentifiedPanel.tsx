@@ -2,19 +2,28 @@ import { getEntityTagType } from '@globalise/common';
 import { EntityTag } from '@globalise/design';
 import { toHref } from '@globalise/router';
 import type { LinkedEntity } from './EntityPanelModel.ts';
+import { PanelMessage } from './PanelMessage.tsx';
 import { useIdentifiedPanel } from './useIdentifiedPanel.ts';
 
 export function IdentifiedPanel() {
-  const { document, linkedEntities } = useIdentifiedPanel();
+  const panelData = useIdentifiedPanel();
 
-  if (!document) {
-    return <div className="toc-empty">No document on this scan.</div>;
+  if (panelData.status !== 'ready') {
+    return <PanelMessage status={panelData.status}/>;
+  }
+
+  if (!panelData.data.length) {
+    return (
+      <div className="toc-empty">
+        No identified entities in this document.
+      </div>
+    );
   }
 
   return (
     <div className="metadata-panel entity-panel">
       <ul>
-        {linkedEntities.map((entity) => (
+        {panelData.data.map((entity) => (
           <LinkedEntityItem key={entity.id} entity={entity}/>
         ))}
       </ul>
