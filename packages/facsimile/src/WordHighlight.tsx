@@ -7,7 +7,6 @@ import {
   toggleClicked,
 } from '@globalise/common/document';
 import { cn } from '@globalise/design';
-import { getEntityPresentationFamilyByClassificationId } from '@globalise/common/annotation';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import {
   type Id,
@@ -21,21 +20,15 @@ type WordHighlightProps = {
   text: string;
   entityClassificationId?: CidocEntityClassificationId;
   hasEvent?: boolean;
-  hasHiddenEvent?: boolean;
-  entityIsHighlighted?: boolean;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export const WordHighlight = memo(function WordHighlight(
   {
-    id, points, text, entityClassificationId, entityIsHighlighted,
-    hasEvent, hasHiddenEvent, setTooltip,
+    id, points, text, entityClassificationId, hasEvent, setTooltip,
   }: WordHighlightProps,
 ) {
   const isEntityTrigger = entityClassificationId !== undefined;
-  const family = entityClassificationId
-    ? getEntityPresentationFamilyByClassificationId(entityClassificationId)
-    : undefined;
   const handlePointerDown = usePointerDown({
     onClick: () => toggleClicked(id),
   });
@@ -59,16 +52,7 @@ export const WordHighlight = memo(function WordHighlight(
 
   return (
     <polygon
-      className={cn([
-        'word-highlight',
-        family && `annotation-${family}`,
-        entityIsHighlighted && 'entity-highlighted',
-        entityClassificationId && !entityIsHighlighted && 'entity-hidden',
-        (hasEvent ?? hasHiddenEvent) && 'event',
-        hasEvent && 'event-highlighted',
-        hasHiddenEvent && !hasEvent && 'event-hidden',
-      ])}
-      data-presentation-family={family}
+      className={cn(['word-highlight', hasEvent && 'event'])}
       points={points}
       tabIndex={isEntityTrigger ? 0 : undefined}
       role={isEntityTrigger ? 'button' : undefined}

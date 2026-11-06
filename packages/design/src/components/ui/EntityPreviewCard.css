@@ -73,17 +73,9 @@
     }
 
     .category-trigger[data-presentation-family] {
-      --entity-preview-category-background: color-mix(
-        in srgb,
-        var(--annotation-family-color) 24%,
-        var(--color-neutral-900)
-      );
-      --entity-preview-category-border: color-mix(
-        in srgb,
-        var(--annotation-family-color) 70%,
-        var(--color-neutral-700)
-      );
-      --entity-preview-category-color: var(--annotation-family-color);
+      --entity-preview-category-background: var(--annotation-family-surface);
+      --entity-preview-category-border: var(--annotation-family-border);
+      --entity-preview-category-color: var(--color-neutral-100);
     }
 
     .category-icon,

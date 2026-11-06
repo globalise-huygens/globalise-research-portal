@@ -1,11 +1,5 @@
-import {
-  CanvasId,
-  useClickedAnnotationsInFacsimile,
-  useSelectedAnnotationsInFacsimile,
-} from '@globalise/common/document';
+import { CanvasId, useSelectedAnnotationsInFacsimile } from '@globalise/common/document';
 import { getEntityPresentationFamilyByClassificationId } from '@globalise/common/annotation';
-import { cn } from '@globalise/design';
-import { getEntityHighlightColors } from './EntityHighlightColors.ts';
 import { WordHighlightConfig } from './HighlightConfig.ts';
 import './WordHighlight.css';
 
@@ -18,23 +12,17 @@ export function SelectedWordHighlights(
   { canvasId, words }: SelectedWordHighlightsProps,
 ) {
   const selected = useSelectedAnnotationsInFacsimile(canvasId);
-  const clicked = useClickedAnnotationsInFacsimile(canvasId);
 
   return words
     .filter((word) => selected.has(word.id))
-    .map(({ id, path, entityClassificationId, hasEvent, hasHiddenEvent }) => (
+    .map(({ id, path, entityClassificationId }) => (
       <polygon
         key={id}
-        className={cn([
-          'selected-word-highlight',
-          hasEvent && 'event',
-          hasHiddenEvent && !hasEvent && 'event-hidden',
-        ])}
+        className="selected-word-highlight"
         points={path}
-        data-clicked={clicked.has(id)}
-        fill={getEntityHighlightColors(entityClassificationId
+        data-presentation-family={entityClassificationId
           ? getEntityPresentationFamilyByClassificationId(entityClassificationId)
-          : undefined)[clicked.has(id) ? 'fill' : 'hoverFill']}
+          : undefined}
       />
     ));
 }

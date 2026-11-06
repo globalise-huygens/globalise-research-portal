@@ -36,26 +36,12 @@ export function useSelectedAnnotationsInFacsimile(
   );
 }
 
-export function useClickedAnnotationsInFacsimile(
-  canvasId: CanvasId,
-): ReadonlySet<Id> {
-  const clicked = useDocumentStore((s) =>
-    getCanvasSelection(s, canvasId, s.clicked));
-  return useMemo(() => new Set(getIdsFromSelection(clicked)), [clicked]);
-}
-
 export function useSelectedAnnotationsInDiplomatic(canvasId: CanvasId): Id[] {
   const { hovered, clicked } = useCanvasSelection(canvasId);
   return useMemo(
     () => [...getIdsFromSelection(hovered), ...getIdsFromSelection(clicked)],
     [hovered, clicked],
   );
-}
-
-export function useClickedAnnotationsInDiplomatic(canvasId: CanvasId): Id[] {
-  const clicked = useDocumentStore((s) =>
-    getCanvasSelection(s, canvasId, s.clicked));
-  return useMemo(() => getIdsFromSelection(clicked), [clicked]);
 }
 
 function useCanvasSelection(canvasId: CanvasId) {

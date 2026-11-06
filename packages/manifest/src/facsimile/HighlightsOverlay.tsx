@@ -93,9 +93,9 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
-          {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
-          <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           <SearchHitWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
+          <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
+          {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>
       </Overlay>
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}

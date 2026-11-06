@@ -4,16 +4,8 @@
     cursor: pointer;
 }
 
-.word-highlight.entity-highlighted {
-    fill: color-mix(in srgb, var(--annotation-family-color) 45%, transparent);
-}
-
-.word-highlight.entity-hidden:hover,
-.word-highlight.entity-hidden:focus-visible {
-    fill: color-mix(in srgb, var(--annotation-family-color-hidden-hover) 45%, transparent);
-}
-
 .selected-word-highlight {
+    fill: var(--annotation-family-scan-fill, var(--viewer-word-fill));
     mix-blend-mode: multiply;
     pointer-events: none;
 }
@@ -26,38 +18,6 @@
     }
 }
 
-.word-highlight.event-highlighted {
-    fill: transparent;
-    stroke: var(--annotation-event);
-    stroke-width: 2px;
-}
-
-.word-highlight.event-hidden {
-    stroke: transparent;
-}
-
-.word-highlight.event-hidden:hover,
-.word-highlight.event-hidden:focus-visible {
-    stroke: var(--annotation-event-hidden-hover);
-    stroke-width: 3px;
-}
-
-.word-highlight.event-highlighted:hover,
-.word-highlight.event-highlighted:focus-visible {
-    stroke: var(--annotation-event-hover);
-    stroke-width: 3px;
-}
-
-.selected-word-highlight.event {
-    fill: transparent;
-    stroke: var(--annotation-event-hover);
-    stroke-width: 3px;
-}
-
-.selected-word-highlight.event-hidden:not([data-clicked="true"]) {
-    stroke: var(--annotation-event-hidden-hover);
-}
-
-.selected-word-highlight.event[data-clicked="true"] {
-    stroke: var(--annotation-event-selected);
+.word-highlight.event {
+    fill: var(--annotation-event-fill);
 }

@@ -25,7 +25,6 @@ export function SearchHitWordHighlights(
         key={id}
         className={cn(['search-hit-word-highlight', activeHitWords.has(id) && 'active-hit'])}
         points={path}
-        pointerEvents="none"
       />
     ));
 }

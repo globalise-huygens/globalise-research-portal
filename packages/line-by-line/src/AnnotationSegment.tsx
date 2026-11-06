@@ -3,11 +3,7 @@ import {
   Annotation,
   ClassifiedBody,
   getClassifiedClassNames,
-  getCidocEntityClassificationId,
-  getEntityPresentationFamilyByClassificationId,
   isClassified,
-  isEntity,
-  isEvent,
   isSearchHit,
   isWord,
 } from '@globalise/common/annotation';
@@ -87,28 +83,15 @@ type ClassifiedProps = AnnotationProps & {
 
 function ClassifiedSegment({ canvasId, annotation, children }: ClassifiedProps) {
   const isHighlighted = useIsHighlighted(annotation);
-  const isSelected = useIsClickedInLineByLine(canvasId, annotation.id);
+  const isSelected = useIsSelectedInLineByLine(canvasId, annotation.id);
 
-  const family = isEntity(annotation)
-    ? getCidocEntityClassificationId(annotation)
-    : undefined;
-  const familyClassName = family
-    ? `annotation-${getEntityPresentationFamilyByClassificationId(family)}`
-    : undefined;
-  const classNames = getClassifiedClassNames(annotation).filter(
-    (className) => className !== 'entity' && className !== 'event'
-      && !className.startsWith('annotation-'),
-  );
+  if (!isHighlighted) {
+    return <>{children}</>;
+  }
 
   return (
     <span
-      className={cn([
-        ...classNames,
-        isEntity(annotation) && (isHighlighted ? 'entity' : 'entity-hidden'),
-        isEvent(annotation) && (isHighlighted ? 'event' : 'event-hidden'),
-        familyClassName,
-        isSelected && 'selected',
-      ])}
+      className={cn([...getClassifiedClassNames(annotation), isSelected && 'selected'])}
     >
       {children}
     </span>

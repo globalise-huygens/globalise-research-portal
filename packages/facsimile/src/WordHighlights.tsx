@@ -13,16 +13,14 @@ export const WordHighlights = memo(function WordHighlights(
 ) {
   return (
     <g className="word-highlights">
-      {words.map((word) => (
+      {words.map(({ id, path, text, entityClassificationId, hasEvent }) => (
         <WordHighlight
-          key={word.id}
-          id={word.id}
-          points={word.path}
-          text={word.text}
-          entityClassificationId={word.entityClassificationId}
-          entityIsHighlighted={word.entityIsHighlighted}
-          hasEvent={word.hasEvent}
-          hasHiddenEvent={word.hasHiddenEvent}
+          key={id}
+          id={id}
+          points={path}
+          text={text}
+          entityClassificationId={entityClassificationId}
+          hasEvent={hasEvent}
           setTooltip={setTooltip}
         />
       ))}

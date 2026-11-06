@@ -11,33 +11,6 @@
         cursor: pointer;
     }
 
-    .entity {
-        background: var(--annotation-family-color, transparent);
-        box-decoration-break: clone;
-        color: var(--diplomatic-text);
-    }
-
-    .search-hit.entity {
-        box-shadow: inset 0 -2px 0 var(--annotation-family-color, transparent);
-    }
-
-    .entity.selected,
-    .selected:not(.event) {
-        background: var(--annotation-family-selected, var(--diplomatic-selected));
-    }
-
-    .entity:hover {
-        background: var(--annotation-family-hover, transparent);
-    }
-
-    .entity:focus-visible {
-        background: var(--annotation-family-hover, transparent);
-    }
-
-    .entity.selected {
-        background: var(--annotation-family-selected, transparent);
-    }
-
     .search-hit {
         background: var(--search-hit);
         box-decoration-break: clone;
@@ -47,55 +20,16 @@
         background: var(--search-hit-active);
     }
 
-    .entity-hidden {
+    .search-hit.entity {
+        box-shadow: inset 0 -2px 0 var(--annotation-family-color, var(--annotation-concept));
+    }
+
+    .selected:not(.event, .entity) {
+        background: var(--diplomatic-selected);
+    }
+
+    .selected > .search-hit {
         background: transparent;
-        box-decoration-break: clone;
-    }
-
-    .entity-hidden:hover,
-    .entity-hidden[data-hovered],
-    .entity-hidden:focus-visible,
-    .segment:focus-within .entity-hidden {
-        background: var(--annotation-family-hidden-hover, transparent);
-    }
-
-    .entity-hidden.selected-entity {
-        background: var(--annotation-family-selected, transparent);
-    }
-
-    .event {
-        box-decoration-break: clone;
-        text-decoration-line: underline;
-        text-decoration-color: var(--annotation-event);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-    }
-
-    .event:hover,
-    .event[data-hovered] {
-        text-decoration-color: var(--annotation-event-hover);
-        text-decoration-thickness: 3px;
-    }
-
-    .event.selected,
-    .event.selected-event,
-    .event:focus-visible {
-        text-decoration-color: var(--annotation-event-selected);
-        text-decoration-thickness: 3px;
-    }
-
-    .event-hidden:hover,
-    .event-hidden[data-hovered],
-    .event-hidden:focus-visible {
-        text-decoration-line: underline;
-        text-decoration-color: var(--annotation-event-hidden-hover);
-        text-decoration-thickness: 2px;
-        text-underline-offset: 3px;
-    }
-
-    .search-hit.entity.event {
-        box-shadow:
-          inset 0 -2px 0 var(--annotation-family-color, transparent);
     }
 
     .line-numbers .line-number {

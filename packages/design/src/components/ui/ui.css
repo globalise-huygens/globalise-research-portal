@@ -642,17 +642,9 @@
     text-transform: uppercase;
 
     &[data-presentation-family] {
-      background: color-mix(
-        in srgb,
-        var(--annotation-family-color) 24%,
-        var(--color-neutral-900)
-      );
-      color: var(--annotation-family-color);
-      outline-color: color-mix(
-        in srgb,
-        var(--annotation-family-color) 70%,
-        var(--color-neutral-700)
-      );
+      background: var(--annotation-family-surface);
+      color: var(--color-neutral-100);
+      outline-color: var(--annotation-family-border);
     }
 
     &[data-type="ner"] {
@@ -756,16 +748,24 @@
     }
 
     &[data-presentation-family] {
-      color: var(--annotation-family-color);
+      --entity-tag-accent: var(--annotation-family-color);
+
+      .icon {
+        color: var(--entity-tag-accent);
+      }
+
+      .label {
+        text-decoration-color: var(--entity-tag-accent);
+      }
     }
 
     &[data-presentation-family][href]:hover,
     &[data-presentation-family][data-hovered] {
-      color: var(--annotation-family-hover);
+      --entity-tag-accent: var(--annotation-family-hover);
     }
 
     &[data-presentation-family][data-pressed] {
-      color: var(--annotation-family-selected);
+      --entity-tag-accent: var(--annotation-family-selected);
     }
 
     .label > :where(p) {
