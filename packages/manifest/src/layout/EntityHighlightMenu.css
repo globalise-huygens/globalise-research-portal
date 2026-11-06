@@ -49,12 +49,8 @@
   }
 
   .entity-menu .row {
-    background: color-mix(
-      in srgb,
-      var(--entity-highlight-fill, transparent) 18%,
-      transparent
-    );
-    color: var(--entity-highlight-fill, var(--color-brand-white));
+    background: var(--annotation-family-menu-surface, transparent);
+    color: var(--color-brand-white);
   }
 
   .entity-menu .all-title,
@@ -121,6 +117,7 @@
   }
 
   .entity-menu .icon {
+    color: var(--annotation-family-color, currentColor);
     flex-shrink: 0;
   }
 

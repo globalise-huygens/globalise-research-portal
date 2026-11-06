@@ -1,6 +1,6 @@
 import {
   cidocEntityClassificationIds,
-  getCidocClassNameByClassificationId,
+  getEntityPresentationFamilyByClassificationId,
   getEntityClassificationDefinition,
   isCidocEntityClassificationId,
   type CidocEntityClassificationId,
@@ -77,14 +77,14 @@ const entityCategories: EntityHighlightCategory[] =
   entityCategoryConfigs.map((category) => {
     const subcategories = category.subcategories?.map((subcategory) => ({
       ...subcategory,
-      tone: getCidocClassNameByClassificationId(subcategory.id),
+      family: getEntityPresentationFamilyByClassificationId(subcategory.id),
     }));
 
     return {
       ...category,
-      tone: isCidocEntityClassificationId(category.id)
-        ? getCidocClassNameByClassificationId(category.id)
-        : subcategories?.[0]?.tone,
+      family: isCidocEntityClassificationId(category.id)
+        ? getEntityPresentationFamilyByClassificationId(category.id)
+        : subcategories?.[0]?.family,
       subcategories,
     };
   });

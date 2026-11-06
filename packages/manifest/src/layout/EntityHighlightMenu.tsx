@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { AnnotationPresentationFamily } from '@globalise/common/annotation';
 import {
   Checkbox,
   cn,
@@ -13,14 +14,14 @@ import './EntityHighlightMenu.css';
 export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
-  tone?: string;
+  family?: AnnotationPresentationFamily;
 };
 
 export type EntityHighlightCategory = {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  tone?: string;
+  family?: AnnotationPresentationFamily;
   subcategories?: EntityHighlightSubcategory[];
 };
 
@@ -201,7 +202,10 @@ function EntityHighlightMenu({
                 return (
                   <div key={category.id} className="category">
                     <div
-                      className={cn('row', category.tone)}
+                      className={cn(
+                        'row',
+                        category.family && `annotation-${category.family}`,
+                      )}
                       data-level="category"
                     >
                       <div className="label">
@@ -255,7 +259,9 @@ function EntityHighlightMenu({
                               key={leafKey}
                               className={cn(
                                 'row',
-                                subcategory.tone ?? category.tone,
+                                (subcategory.family ?? category.family)
+                                  ? `annotation-${subcategory.family ?? category.family}`
+                                  : undefined,
                               )}
                               data-level="subcategory"
                             >

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { useQueryClient } from '@tanstack/react-query';
-import { getSVGElement } from '@globalise/common';
+import { getPresentationFamily, getSVGElement } from '@globalise/common';
 import {
   svgEntityPlace,
   svgEntityPerson,
@@ -18,10 +18,10 @@ import classes from './SearchField.module.css';
 
 import { type AutocompleteSuggestion } from './elasticsearch/autocomplete.server';
 
-const types: Record<string, { color: string, svg: string }> = {
-  'Place': { color: 'var(--entity-place)', svg: svgEntityPlace },
-  'Polity': { color: 'var(--entity-actor)', svg: svgEntityPerson },
-  'Person': { color: 'var(--entity-actor)', svg: svgEntityPerson },
+const icons: Record<string, string> = {
+  Place: svgEntityPlace,
+  Polity: svgEntityPerson,
+  Person: svgEntityPerson,
 };
 
 export default function SearchField({ autoFocus = false }: { autoFocus?: boolean }) {
@@ -62,7 +62,10 @@ export default function SearchField({ autoFocus = false }: { autoFocus?: boolean
     ].filter(Boolean).join(' • '),
     icon: (sugg) => toIcon(sugg.type),
     token: {
-      color: (token) => types[token.type]?.color,
+      color: (token) => {
+        const family = getPresentationFamily(token.type);
+        return family ? `var(--annotation-${family})` : undefined;
+      },
       icon: (token) => toIcon(token.type),
     },
   };
@@ -98,6 +101,6 @@ export default function SearchField({ autoFocus = false }: { autoFocus?: boolean
 }
 
 function toIcon(type: string): SVGElement | undefined {
-  const svg = types[type]?.svg;
+  const svg = icons[type];
   return svg ? getSVGElement(svg) : undefined;
 }

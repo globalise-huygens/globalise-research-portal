@@ -5,18 +5,19 @@
 }
 
 .selected-word-highlight {
+    fill: var(--annotation-family-scan-fill, var(--viewer-word-fill));
     mix-blend-mode: multiply;
     pointer-events: none;
 }
 
 .search-hit-word-highlight {
-    fill: var(--color-yellow-100);
+    fill: var(--search-hit);
 
     &.active-hit {
-        fill: var(--color-yellow-300);
+        fill: var(--search-hit-active);
     }
 }
 
 .word-highlight.event {
-    fill: rgb(255 140 0 / 20%);
+    fill: var(--annotation-event-fill);
 }

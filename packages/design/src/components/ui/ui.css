@@ -641,37 +641,10 @@
     padding-inline: var(--s8);
     text-transform: uppercase;
 
-    &[data-type="ship"],
-    &[data-type="organisation"] {
-      background: var(--color-turquoise-900);
-      color: var(--color-turquoise-200);
-      outline-color: var(--color-turquoise-700);
-    }
-
-    &[data-type="place"] {
-      background: var(--color-mint-900);
-      color: var(--color-mint-200);
-      outline-color: var(--color-mint-700);
-    }
-
-    &[data-type="person"] {
-      background: var(--color-vermilion-900);
-      color: var(--color-vermilion-200);
-      outline-color: var(--color-vermilion-700);
-    }
-
-    &[data-type="commodity"],
-    &[data-type="date"] {
-      background: var(--color-parchment-900);
-      color: var(--color-parchment-200);
-      outline-color: var(--color-parchment-700);
-    }
-
-    &[data-type="document"],
-    &[data-type="dimensions"] {
-      background: var(--color-neutral-700);
-      color: var(--color-neutral-200);
-      outline-color: var(--color-neutral-500);
+    &[data-presentation-family] {
+      background: var(--annotation-family-surface);
+      color: var(--color-neutral-100);
+      outline-color: var(--annotation-family-border);
     }
 
     &[data-type="ner"] {
@@ -772,6 +745,27 @@
       text-decoration-color: currentColor;
       text-decoration-thickness: 1px;
       text-underline-offset: 0.18em;
+    }
+
+    &[data-presentation-family] {
+      --entity-tag-accent: var(--annotation-family-color);
+
+      .icon {
+        color: var(--entity-tag-accent);
+      }
+
+      .label {
+        text-decoration-color: var(--entity-tag-accent);
+      }
+    }
+
+    &[data-presentation-family][href]:hover,
+    &[data-presentation-family][data-hovered] {
+      --entity-tag-accent: var(--annotation-family-hover);
+    }
+
+    &[data-presentation-family][data-pressed] {
+      --entity-tag-accent: var(--annotation-family-selected);
     }
 
     .label > :where(p) {

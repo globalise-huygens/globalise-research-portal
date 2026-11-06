@@ -5,6 +5,7 @@ import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 import { getEntityTypeLabel, type EntityType } from './EntityIcon';
+import { getPresentationFamily } from '@globalise/common';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
@@ -82,6 +83,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 aria-label={`Category: ${categoryLabel}`}
                 className="category-trigger"
                 data-type={getEntityBadgeType(data.type)}
+                data-presentation-family={getPresentationFamily(data.type)}
               >
                 {data.icon ? (
                   <span className="category-icon">

@@ -4,6 +4,7 @@ import {
   getCidocClassName,
   getCidocEntityClassificationId,
   getCidocEntityClassifiedAsLabel,
+  getEntityPresentationFamilyByClassificationId,
 } from './CidocEntityModel.ts';
 import { EntityBody, getEntityAnnotationBodyClassName, isEntity } from './EntityModel.ts';
 import { EventBody, isEvent } from './EventModel.ts';
@@ -40,8 +41,12 @@ export function getClassifiedClassNames(annotation: Annotation<ClassifiedBody>):
   if (isEvent(annotation)) {
     return ['event'];
   }
+  const classificationId = getCidocEntityClassificationId(annotation);
   return [
     'entity',
+    ...(classificationId
+      ? [`annotation-${getEntityPresentationFamilyByClassificationId(classificationId)}`]
+      : []),
     getEntityAnnotationBodyClassName(annotation),
     getCidocClassName(annotation),
     toClassName(getCidocEntityClassifiedAsLabel(annotation)),

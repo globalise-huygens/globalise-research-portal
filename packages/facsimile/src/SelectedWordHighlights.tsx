@@ -1,6 +1,5 @@
 import { CanvasId, useSelectedAnnotationsInFacsimile } from '@globalise/common/document';
-import { getCidocClassNameByClassificationId } from '@globalise/common/annotation';
-import { getEntityHighlightColors } from './EntityHighlightTone.ts';
+import { getEntityPresentationFamilyByClassificationId } from '@globalise/common/annotation';
 import { WordHighlightConfig } from './HighlightConfig.ts';
 import './WordHighlight.css';
 
@@ -21,9 +20,9 @@ export function SelectedWordHighlights(
         key={id}
         className="selected-word-highlight"
         points={path}
-        fill={getEntityHighlightColors(entityClassificationId
-          ? getCidocClassNameByClassificationId(entityClassificationId)
-          : undefined).fill}
+        data-presentation-family={entityClassificationId
+          ? getEntityPresentationFamilyByClassificationId(entityClassificationId)
+          : undefined}
       />
     ));
 }
