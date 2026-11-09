@@ -317,8 +317,8 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       '@knaw-huc/osd-iiif-viewer':
-        specifier: ^0.7.0
-        version: 0.7.0(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
+        specifier: ^0.7.1
+        version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
       '@tanstack/react-query':
         specifier: ^5.104.4
         version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
@@ -355,6 +355,9 @@ importers:
       '@iiif/parser':
         specifier: ^4.0.3
         version: 4.0.3
+      '@knaw-huc/osd-iiif-viewer':
+        specifier: ^0.7.1
+        version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -445,8 +448,8 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       '@knaw-huc/osd-iiif-viewer':
-        specifier: ^0.7.0
-        version: 0.7.0(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
+        specifier: ^0.7.1
+        version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
       openseadragon:
         specifier: ^6.1.1
         version: 6.1.1
@@ -542,6 +545,9 @@ importers:
       '@iiif/parser':
         specifier: ^4.0.3
         version: 4.0.3
+      '@knaw-huc/osd-iiif-viewer':
+        specifier: ^0.7.1
+        version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
       '@tanstack/react-query':
         specifier: ^5.104.4
         version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
@@ -616,6 +622,9 @@ importers:
       '@iiif/parser':
         specifier: ^4.0.3
         version: 4.0.3
+      '@knaw-huc/osd-iiif-viewer':
+        specifier: ^0.7.1
+        version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -1096,8 +1105,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  '@knaw-huc/osd-iiif-viewer@0.7.0':
-    resolution: {integrity: sha512-BPicPz69wHk3+on8k+/hJUnatSfgY22lIooJfacZdDre/OHTdPDqz7w0Hr84E4EsJm6iqdKEPswBw9PrrAUkyQ==}
+  '@knaw-huc/osd-iiif-viewer@0.7.1':
+    resolution: {integrity: sha512-Q6MqZ3M2cNRTRNfuUoeYwJizF1Jwt8guV4XuETo5PykFCKsIXz88UtHPEmjImR09bEoqNZ1E/HXrHoq2IjY6JQ==}
     peerDependencies:
       '@iiif/helpers': ^4.0.0
       '@iiif/parser': ^4.0.0
@@ -3832,7 +3841,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  '@knaw-huc/osd-iiif-viewer@0.7.0(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))':
+  '@knaw-huc/osd-iiif-viewer@0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))':
     dependencies:
       '@iiif/helpers': 4.0.0(@iiif/parser@4.0.3)
       '@iiif/parser': 4.0.3
