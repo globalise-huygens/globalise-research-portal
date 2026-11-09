@@ -19,13 +19,13 @@
     "@globalise/line-by-line": "workspace:*",
     "@globalise/metadata": "workspace:*",
     "@iiif/helpers": "^4.0.0",
-    "@iiif/parser": "^4.0.3",
+    "@iiif/parser": "^4.0.5",
     "openseadragon": "^6.1.1",
     "react-aria": "^3.50.0",
-    "react-split-pane": "^3.2.0",
-    "@tanstack/react-query": "^5.104.4"
+    "react-split-pane": "^3.3.0",
+    "@tanstack/react-query": "^5.105.1"
   },
   "devDependencies": {
-    "@tanstack/router-plugin": "^1.168.47"
+    "@tanstack/router-plugin": "^1.168.48"
   }
 }
