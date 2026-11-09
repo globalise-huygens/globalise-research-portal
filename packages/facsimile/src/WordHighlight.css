@@ -10,10 +10,10 @@
 }
 
 .search-hit-word-highlight {
-    fill: var(--color-yellow-100);
+    fill: var(--color-search-hit);
 
     &.active-hit {
-        fill: var(--color-yellow-300);
+        fill: var(--color-search-hit-active);
     }
 }
 
