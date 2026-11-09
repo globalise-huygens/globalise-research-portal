@@ -87,14 +87,27 @@
         border-left-color: transparent;
     }
 
-    .entity {
-        background: var(--entity-highlight-fill);
+    /**
+     * Highlights the different annotations of a segment using background layers.
+     * Each class sets its color with --{class}-layer.
+     * Order: event, search-hit, word
+     */
+    .word, .entity, .event, .search-hit {
+        background:
+          linear-gradient(var(--event-layer, transparent), var(--event-layer, transparent)),
+          linear-gradient(var(--search-hit-layer, transparent), var(--search-hit-layer, transparent)),
+          linear-gradient(var(--word-layer, transparent), var(--word-layer, transparent)),
+          var(--entity-layer, transparent);
         box-decoration-break: clone;
+    }
+
+    .entity {
+        --entity-layer: var(--entity-highlight-fill);
         color: var(--normalized-text);
     }
 
     .entity:hover {
-        background: color-mix(
+        --entity-layer: color-mix(
           in srgb,
           var(--entity-highlight-color) var(--entity-highlight-hover-weight),
           var(--entity-highlight-fill)
@@ -103,7 +116,7 @@
     }
 
     .entity.selected {
-        background: color-mix(
+        --entity-layer: color-mix(
           in srgb,
           var(--entity-highlight-color) var(--entity-highlight-selected-weight),
           var(--entity-highlight-fill)
@@ -112,17 +125,15 @@
     }
 
     .search-hit {
-        background: var(--search-hit-fill);
-        box-decoration-break: clone;
+        --search-hit-layer: var(--search-hit-fill);
 
         &.active-hit {
-            background: var(--search-hit-active-fill);
+            --search-hit-layer: var(--search-hit-active-fill);
         }
     }
 
     .event {
-        background: var(--event-test-highlight);
-        box-decoration-break: clone;
+        --event-layer: var(--event-test-highlight);
     }
 
     .word {
@@ -130,11 +141,11 @@
 
         &:hover,
         &.selected {
-            background: var(--normalized-word-selected);
+            --word-layer: var(--normalized-word-selected);
         }
     }
 
-    .entity .word:hover:not(.selected) {
-        background: transparent;
+    .entity.word:hover:not(.selected) {
+        --word-layer: transparent;
     }
 }

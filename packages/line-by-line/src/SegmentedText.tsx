@@ -6,9 +6,9 @@ import type {
 } from 'react';
 import {
   Annotation,
+  ClassifiedCategory,
   Id,
   isClassified,
-  isEvent,
   isHighlighted,
   isWord,
 } from '@globalise/common/annotation';
@@ -17,22 +17,21 @@ import {
   setHoverAttribute,
   setHovered,
   toggleClicked,
-  useHighlightCategories,
 } from '@globalise/common/document';
-import { AnnotationSegment } from './AnnotationSegment';
-import { NestedSegment } from './NestedSegment';
+import { cn } from '@globalise/design';
+import { getAnnotationClassNames } from './getAnnotationClassNames';
 
 type TextProps = {
-  canvasId: string;
   blockId: Id | null;
   segments: TextSegment<Annotation>[];
+  highlightCategories: Set<ClassifiedCategory>;
+  selectedIds: Id[];
+  activeHitIds: Id[];
 };
 
 export function SegmentedText(
-  { canvasId, blockId, segments }: TextProps,
+  { blockId, segments, highlightCategories, selectedIds, activeHitIds }: TextProps,
 ) {
-  const highlightCategories = useHighlightCategories();
-
   return <>
     {segments.map((segment) => {
       const body = segment.value;
@@ -109,29 +108,19 @@ export function SegmentedText(
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
+          className={cn([
+            ...getAnnotationClassNames(segment.annotations, highlightCategories),
+            hasAnnotation(segment, selectedIds) && 'selected',
+            hasAnnotation(segment, activeHitIds) && 'active-hit',
+          ])}
         >
-          <NestedSegment
-            annotations={withEventsInnermost(segment.annotations)}
-            annotation={(annotation, children) => (
-              <AnnotationSegment
-                canvasId={canvasId}
-                annotation={annotation}
-              >
-                {children}
-              </AnnotationSegment>
-            )}
-          >
-            {body}
-          </NestedSegment>
+          {body}
         </span>
       );
     })}
   </>;
 }
 
-function withEventsInnermost(annotations: Annotation[]): Annotation[] {
-  return [
-    ...annotations.filter(isEvent),
-    ...annotations.filter((annotation) => !isEvent(annotation)),
-  ];
+function hasAnnotation(segment: TextSegment<Annotation>, ids: Id[]): boolean {
+  return segment.annotations.some((annotation) => ids.includes(annotation.id));
 }

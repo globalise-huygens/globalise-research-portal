@@ -81,7 +81,3 @@ export function useHighlightedAnnotations(
     return highlighted;
   }, [annotations, categories]);
 }
-
-export function useIsHighlighted(annotation: Annotation): boolean {
-  return useDocumentStore((s) => isHighlighted(annotation, s.highlightCategories));
-}
