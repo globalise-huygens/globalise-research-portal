@@ -10,7 +10,7 @@ const canvasNamePrefix = 'NL-HaNA_1.04.02_';
 
 const selectMappingsWhereDocumentIdQuery = `
     select normalized_from         as normalizedFrom,
-           normalized_to           as normalizedTo,
+           normalized_to_exclusive as normalizedTo,
            short_page_id           as shortPageId,
            htr_page_offset         as htrPageOffset
     from document_text_range_mappings
