@@ -2,6 +2,8 @@ packages:
   - 'packages/*'
 
 nodeLinker: hoisted
+# Copy workspace packages during pnpm deploy:
+injectWorkspacePackages: true
 
 # Dependencies must be older than one week:
 minimumReleaseAge: 10080
