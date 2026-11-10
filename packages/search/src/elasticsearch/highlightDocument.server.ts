@@ -57,13 +57,11 @@ async function fetchTaggedText(request: ManifestSearchState): Promise<string | u
     size: 1,
     _source: false,
     highlight: {
-      pre_tags: [PRE_TAG],
-      post_tags: [POST_TAG],
       fields: {
-        text: { number_of_fragments: 0 },
+        annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
     query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
   });
-  return result.hits.hits[0]?.highlight?.text[0];
+  return result.hits.hits[0]?.highlight?.annotatedText[0];
 }
