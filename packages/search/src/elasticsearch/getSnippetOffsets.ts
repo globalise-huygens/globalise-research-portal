@@ -1,9 +1,10 @@
-import { getHighlight, type Offsets } from '@knaw-huc/faceted-search-react';
-import { POST_TAG, PRE_TAG } from './highlightTags';
+import type { Offsets } from '@knaw-huc/faceted-search-react';
+import { isHit, parseAnnotatedText } from './parseAnnotatedText';
 
-export function getSnippetOffsets(text: string, snippet: string): Offsets | null {
-  const { text: untaggedSnippet, spans: [firstHit] } = getHighlight(snippet, PRE_TAG, POST_TAG);
-  const snippetStart = text.indexOf(untaggedSnippet);
+export function getSnippetOffsets(text: string, annotatedSnippet: string): Offsets | null {
+  const { plainText: snippet, segments } = parseAnnotatedText(annotatedSnippet);
+  const firstHit = segments.find(isHit);
+  const snippetStart = text.indexOf(snippet);
   if (snippetStart === -1 || !firstHit) {
     return null;
   }
