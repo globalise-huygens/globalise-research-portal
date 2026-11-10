@@ -47,6 +47,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--s8) var(--s24);
+    margin-left: auto;
   }
 }
 
