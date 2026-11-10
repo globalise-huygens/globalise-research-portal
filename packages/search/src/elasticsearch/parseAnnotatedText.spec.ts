@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAnnotatedText } from './parseAnnotatedText';
+import { isHit, parseAnnotatedText } from './parseAnnotatedText';
 import highlightedDocument from './parseAnnotatedText.bench.txt?raw';
 
 /**
@@ -48,5 +48,19 @@ describe(parseAnnotatedText.name, () => {
     expect(hits.length).toBe(10);
     const annotations = result.segments.filter((s) => s.annotations.find((a) => a !== searchHit));
     expect(annotations.length).toBe(529);
+  });
+});
+
+describe(isHit.name, () => {
+  const { segments } = parseAnnotatedText('[foo](type%3ABar&_hit_term=foo) [baz](type%3ABas)');
+
+  it('finds a hit', () => {
+    const hit = segments[0];
+    expect(isHit(hit)).toBe(true);
+  });
+
+  it('ignores annotations that are not hits', () => {
+    const annotation = segments[1];
+    expect(isHit(annotation)).toBe(false);
   });
 });
