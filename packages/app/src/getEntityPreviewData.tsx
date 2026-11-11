@@ -10,13 +10,13 @@ import {
 import { RelationLink } from '@globalise/object-card';
 import {
   EntityIcon,
-  EntityPreview,
   getEntityTypeLabel,
   type EntityPreviewCardData,
   type EntityPreviewCardProperty,
   type EntityPreviewCardType,
 } from '@globalise/design';
 import type { ReactNode } from 'react';
+import { ClassificationPreview } from './ClassificationPreview.tsx';
 import { getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
 
 export function getEntityPreviewData(annotation: Annotation<EntityBody>): EntityPreviewCardData {
@@ -50,14 +50,10 @@ function getClassifiedBy(
 
   const classification = getClassificationReference(body, classificationId);
   return (
-    <EntityPreview data={getClassificationPreviewData(classification)}>
-      {(attributes) => (
-        <button {...attributes} type="button" className="manifest-preview-link">
-          <span>{classification.label}</span>
-          <EntityIcon type="classification" />
-        </button>
-      )}
-    </EntityPreview>
+    <ClassificationPreview
+      label={classification.label}
+      data={getClassificationPreviewData(classification)}
+    />
   );
 }
 

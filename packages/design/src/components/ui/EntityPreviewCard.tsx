@@ -45,6 +45,10 @@ function getEntityBadgeType(
     return 'dimensions';
   }
 
+  if (type === 'event') {
+    return 'occurrence';
+  }
+
   return type;
 }
 
