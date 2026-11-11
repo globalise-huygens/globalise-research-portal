@@ -11,7 +11,7 @@
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
     --search-hit-fill: var(--color-yellow-100, #fffcc1);
     --search-hit-active-fill: var(--color-yellow-300, #fff751);
-    --event-test-highlight: rgb(255 140 0 / 20%);
+    --event-test-highlight: color-mix(in srgb, var(--color-entity-event) 20%, transparent);
 
     color: var(--diplomatic-text);
 

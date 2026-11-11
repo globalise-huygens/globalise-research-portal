@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import {
   type Annotation,
-  type CidocEntityClassificationId,
+  type ClassifiedBody,
   type ClassifiedCategory,
+  type ClassifiedTone,
   type Id,
   findClassifiedTarget,
-  getCidocEntityClassificationId,
+  getClassifiedTone,
+  isClassified,
   isHiddenClassified,
-  isEntity,
-  isEvent,
   isHighlighted,
 } from '../annotation';
 import { setState, useDocumentStore } from './DocumentStore';
@@ -20,8 +20,7 @@ export type ClassifiedHighlightSlice = {
 };
 
 export type WordClassifications = {
-  entityClassificationId?: CidocEntityClassificationId;
-  hasEvent?: boolean;
+  tones: Record<Id, ClassifiedTone>;
   targetId?: Id;
 };
 
@@ -49,10 +48,10 @@ export function useWordClassifications(canvasId: CanvasId) {
   const categories = useHighlightCategories();
 
   return useMemo(() => {
-    const classifiedByWord: Record<Id, Annotation[]> = {};
+    const classifiedByWord: Record<Id, Annotation<ClassifiedBody>[]> = {};
     for (const [classifiedId, wordIds] of Object.entries(classifiedToWords)) {
       const annotation = annotations[classifiedId];
-      if (!annotation || !isHighlighted(annotation, categories)) {
+      if (!annotation || !isClassified(annotation) || !isHighlighted(annotation, categories)) {
         continue;
       }
       for (const wordId of wordIds) {
@@ -61,13 +60,11 @@ export function useWordClassifications(canvasId: CanvasId) {
     }
     const classifications: Partial<Record<Id, WordClassifications>> = {};
     for (const [wordId, classified] of Object.entries(classifiedByWord)) {
-      const entity = classified.find(isEntity);
-      // TODO: replace with { tones, targetId }
-      classifications[wordId] = {
-        entityClassificationId: entity && getCidocEntityClassificationId(entity),
-        hasEvent: classified.some(isEvent),
-        targetId: findClassifiedTarget(classified, classifiedToWords)?.id,
-      };
+      const tones = Object.fromEntries(classified.map(
+        (annotation) => [annotation.id, getClassifiedTone(annotation)]),
+      );
+      const targetId = findClassifiedTarget(classified, classifiedToWords)?.id;
+      classifications[wordId] = { tones, targetId };
     }
     return classifications;
   }, [annotations, classifiedToWords, categories]);

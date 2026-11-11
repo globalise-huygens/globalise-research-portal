@@ -1,5 +1,6 @@
 import { Annotation } from './AnnoModel.ts';
 import {
+  CidocClassName,
   CidocEntityClassificationId,
   getCidocClassName,
   getCidocEntityClassificationId,
@@ -12,6 +13,8 @@ import { toClassName } from './toClassName.ts';
 export type ClassifiedBody = EntityBody | EventBody;
 
 export type ClassifiedCategory = CidocEntityClassificationId | typeof eventCategory;
+
+export type ClassifiedTone = CidocClassName | typeof eventCategory;
 
 export const eventCategory = 'event';
 
@@ -41,6 +44,12 @@ export function getClassifiedCategory(
   annotation: Annotation<ClassifiedBody>,
 ): ClassifiedCategory | undefined {
   return isEvent(annotation) ? eventCategory : getCidocEntityClassificationId(annotation);
+}
+
+export function getClassifiedTone(annotation: Annotation<ClassifiedBody>): ClassifiedTone {
+  return isEvent(annotation)
+    ? eventCategory
+    : getCidocClassName(annotation);
 }
 
 export function getClassifiedClassNames(annotation: Annotation<ClassifiedBody>): string[] {

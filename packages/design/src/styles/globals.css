@@ -118,6 +118,7 @@
     --entity-type: #5b5b5b;
     --entity-type-light: #d8d8db;
     --entity-type-strong: #2b2b2b;
+    --entity-event: rgb(255 140 0);
 
     /* ── Semantic tokens ───────────────────────────── */
     --surface-dark: var(--brand-black);
@@ -227,6 +228,7 @@
     --color-entity-type: var(--entity-type);
     --color-entity-type-light: var(--entity-type-light);
     --color-entity-type-strong: var(--entity-type-strong);
+    --color-entity-event: var(--entity-event);
 
     --font-sans: "Noto Sans", sans-serif;
     --font-serif: "Noto Serif", serif;

@@ -1,10 +1,9 @@
-import { CidocClassName } from '@globalise/common/annotation';
+import { ClassifiedTone } from '@globalise/common/annotation';
 
-export type EntityHighlightTone = CidocClassName;
+export type EntityHighlightTone = ClassifiedTone;
 
 export type EntityHighlightColors = {
   fill: string;
-  hoverFill: string;
 };
 
 export function getEntityHighlightColors(
@@ -13,7 +12,6 @@ export function getEntityHighlightColors(
   if (!tone) {
     return {
       fill: 'color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 45%, transparent)',
-      hoverFill: 'color-mix(in srgb, var(--color-brand-turquoise, #29bfcc) 35%, transparent)',
     };
   }
 
@@ -25,6 +23,5 @@ export function getEntityHighlightColors(
 
   return {
     fill: `color-mix(in srgb, ${color} 45%, transparent)`,
-    hoverFill: `color-mix(in srgb, ${color} 35%, transparent)`,
   };
 }

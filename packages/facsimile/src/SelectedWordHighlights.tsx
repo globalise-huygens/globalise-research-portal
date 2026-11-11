@@ -1,6 +1,6 @@
 import { CanvasId, useSelectedAnnotationsInFacsimile } from '@globalise/common/document';
-import { getCidocClassNameByClassificationId } from '@globalise/common/annotation';
-import { getEntityHighlightColors } from './EntityHighlightTone.ts';
+import { type Id } from '@globalise/common/annotation';
+import { type EntityHighlightTone, getEntityHighlightColors } from './EntityHighlightTone.ts';
 import { WordHighlightConfig } from './HighlightConfig.ts';
 import './WordHighlight.css';
 
@@ -16,14 +16,22 @@ export function SelectedWordHighlights(
 
   return words
     .filter((word) => selected.has(word.id))
-    .map(({ id, path, entityClassificationId }) => (
+    .flatMap(({ id, path, tones }) => getSelectedTones(tones, selected).map((tone) => (
       <polygon
-        key={id}
+        key={`${id}-${tone}`}
         className="selected-word-highlight"
         points={path}
-        fill={getEntityHighlightColors(entityClassificationId
-          ? getCidocClassNameByClassificationId(entityClassificationId)
-          : undefined).fill}
+        fill={getEntityHighlightColors(tone).fill}
       />
-    ));
+    )));
+}
+
+function getSelectedTones(
+  tones: Record<Id, EntityHighlightTone>,
+  selected: ReadonlySet<Id>,
+): (EntityHighlightTone | undefined)[] {
+  const selectedTones = Object.entries(tones)
+    .filter(([classifiedId]) => selected.has(classifiedId))
+    .map(([, tone]) => tone);
+  return selectedTones.length ? selectedTones : [undefined];
 }

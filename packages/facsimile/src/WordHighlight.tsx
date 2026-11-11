@@ -6,7 +6,6 @@ import {
   setHovered,
   toggleClicked,
 } from '@globalise/common/document';
-import { cn } from '@globalise/design';
 import { FacsimileTooltipProps } from './FacsimileTooltip.tsx';
 import { type Id } from '@globalise/common/annotation';
 import './WordHighlight.css';
@@ -15,14 +14,13 @@ type WordHighlightProps = {
   wordId: Id;
   points: string;
   text: string;
-  hasEvent?: boolean;
   targetId?: Id;
   setTooltip: (tooltip: FacsimileTooltipProps | null) => void;
 };
 
 export const WordHighlight = memo(function WordHighlight(
   {
-    wordId, points, text, hasEvent, targetId, setTooltip,
+    wordId, points, text, targetId, setTooltip,
   }: WordHighlightProps,
 ) {
   const id = targetId ?? wordId;
@@ -50,7 +48,7 @@ export const WordHighlight = memo(function WordHighlight(
 
   return (
     <polygon
-      className={cn(['word-highlight', hasEvent && 'event'])}
+      className="word-highlight"
       points={points}
       tabIndex={isClassifiedTrigger ? 0 : undefined}
       role={isClassifiedTrigger ? 'button' : undefined}

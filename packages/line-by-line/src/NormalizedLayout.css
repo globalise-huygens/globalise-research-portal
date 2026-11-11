@@ -8,12 +8,11 @@
     --normalized-muted: var(--color-neutral-600, #666666);
     --entity-highlight-color: var(--color-brand-parchment, #b99b7f);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
-    --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
     --search-hit-fill: var(--color-yellow-100);
     --search-hit-active-fill: var(--color-yellow-300);
-    --event-test-highlight: rgb(255 140 0 / 20%);
+    --event-test-highlight: color-mix(in srgb, var(--color-entity-event) 20%, transparent);
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -106,16 +105,7 @@
         color: var(--normalized-text);
     }
 
-    .entity:hover {
-        --entity-layer: color-mix(
-          in srgb,
-          var(--entity-highlight-color) var(--entity-highlight-hover-weight),
-          var(--entity-highlight-fill)
-        );
-        color: var(--entity-highlight-text);
-    }
-
-    .entity.selected {
+    .selected-entity {
         --entity-layer: color-mix(
           in srgb,
           var(--entity-highlight-color) var(--entity-highlight-selected-weight),
@@ -139,13 +129,8 @@
     .word {
         cursor: pointer;
 
-        &:hover,
-        &.selected {
+        &.selected-word {
             --word-layer: var(--normalized-word-selected);
         }
-    }
-
-    .entity.word:hover:not(.selected) {
-        --word-layer: transparent;
     }
 }
