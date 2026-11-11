@@ -1,6 +1,7 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
+  findClassifiedTarget,
   findTextPositionSelector,
   getClassifiedClassNames,
   getPageText,
@@ -98,7 +99,7 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
+  const { blockToLines, wordToBlock, classifiedToWords } = indexAnnotations(annotations, pageAnnoId);
   const $classifiedToSegments: Record<Id, HTMLSpanElement[]> = {};
   const $searchHitToSegments: Record<Id, HTMLSpanElement[]> = {};
 
@@ -154,12 +155,13 @@ export function renderDiplomaticView(
 
       for (const annotation of segment.annotations.filter(isClassified)) {
         $segment.classList.add(...getClassifiedClassNames(annotation));
+        ($classifiedToSegments[annotation.id] ??= []).push($segment);
       }
-      const classified = segment.annotations.find(isClassified);
+      const target = findClassifiedTarget(segment.annotations, classifiedToWords);
 
-      if (classified) {
+      if (target && isClassified(target)) {
         $segment.tabIndex = 0;
-        $segment.dataset.classifiedId = classified.id;
+        $segment.dataset.classifiedId = target.id;
         $segment.setAttribute('role', 'button');
         $segment.setAttribute('aria-haspopup', 'dialog');
         $segment.setAttribute(
@@ -167,15 +169,10 @@ export function renderDiplomaticView(
           `Select: ${$segment.textContent}`,
         );
 
-        if (!$classifiedToSegments[classified.id]) {
-          $classifiedToSegments[classified.id] = [];
-        }
-        $classifiedToSegments[classified.id].push($segment);
-
-        $segment.addEventListener('click', () => onClick(classified.id));
+        $segment.addEventListener('click', () => onClick(target.id));
         $segment.addEventListener('mouseenter', () => {
           setHoverAttribute($segment, 'delayed');
-          onHover(classified.id);
+          onHover(target.id);
         });
         $segment.addEventListener('mouseleave', () => {
           if (document.activeElement !== $segment) {
@@ -186,7 +183,7 @@ export function renderDiplomaticView(
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            onClick(classified.id);
+            onClick(target.id);
           }
         });
       } else {

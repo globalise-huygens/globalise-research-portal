@@ -30,6 +30,13 @@ export function isHighlighted(
   return !!category && categories.has(category);
 }
 
+export function isHiddenClassified(
+  annotation: Annotation,
+  categories: Set<ClassifiedCategory>,
+): boolean {
+  return isClassified(annotation) && !isHighlighted(annotation, categories);
+}
+
 export function getClassifiedCategory(
   annotation: Annotation<ClassifiedBody>,
 ): ClassifiedCategory | undefined {

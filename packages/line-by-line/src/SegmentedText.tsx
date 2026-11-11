@@ -7,10 +7,10 @@ import type {
 import {
   Annotation,
   ClassifiedCategory,
+  findClassifiedTarget,
   Id,
   isClassified,
-  isHighlighted,
-  isWord,
+  isHiddenClassified,
 } from '@globalise/common/annotation';
 import {
   removeHoverAttribute,
@@ -25,19 +25,25 @@ type TextProps = {
   blockId: Id | null;
   segments: TextSegment<Annotation>[];
   highlightCategories: Set<ClassifiedCategory>;
+  classifiedToWords: Record<Id, Id[]>;
   selectedIds: Id[];
   activeHitIds: Id[];
 };
 
 export function SegmentedText(
-  { blockId, segments, highlightCategories, selectedIds, activeHitIds }: TextProps,
+  {
+    blockId, segments, highlightCategories, classifiedToWords, selectedIds, activeHitIds,
+  }: TextProps,
 ) {
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoveredAnnotation = segment.annotations.find(
-        (annotation) => isHighlighted(annotation, highlightCategories),
-      ) ?? segment.annotations.find(isWord);
+      const shownClassified = segment.annotations
+        .filter((annotation) => !isHiddenClassified(annotation, highlightCategories));
+      const hoveredAnnotation = findClassifiedTarget(
+        shownClassified,
+        classifiedToWords,
+      );
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
