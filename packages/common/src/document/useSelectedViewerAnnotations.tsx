@@ -24,7 +24,7 @@ export function useSelectedAnnotationsInLineByLine(
   ids: ReadonlySet<Id>,
 ): Id[] {
   return useDocumentStore(useShallow((s) =>
-    getAllIdsFromCanvasSelection(s, canvasId).filter((id) => ids.has(id))));
+    getSelectedIdsInCanvas(s, canvasId).filter((id) => ids.has(id))));
 }
 
 export function useIsClickedInLineByLine(
@@ -67,6 +67,15 @@ function getAllIdsFromCanvasSelection(
     ...getIdsFromSelection(getCanvasSelection(state, canvasId, state.hovered)),
     ...getIdsFromSelection(getCanvasSelection(state, canvasId, state.clicked)),
   ];
+}
+
+function getSelectedIdsInCanvas(
+  state: DocumentState,
+  canvasId: CanvasId,
+): Id[] {
+  return [state.hovered, state.clicked]
+    .map((selection) => getCanvasSelection(state, canvasId, selection)?.id)
+    .filter((id) => id !== undefined);
 }
 
 function getCanvasSelection(
