@@ -2,135 +2,69 @@ import {
   getCidocEntityClassificationId,
   getEntityClassificationDefinition,
   getPrimaryEntityBody,
-  isEntity,
   type Annotation,
-  type EntityBody,
   type CidocEntityClassificationId,
+  type EntityBody,
   type EntityPreviewStrategy,
 } from '@globalise/common/annotation';
 import { RelationLink } from '@globalise/object-card';
 import {
-  getHoverDelay,
-  getHoverElement,
-  removeHoverAttribute,
-  setHovered,
-  useDocumentStore,
-  type DocumentState,
-  type Selection,
-} from '@globalise/common/document';
-import {
-  EntityPreview,
   EntityIcon,
+  EntityPreview,
   getEntityTypeLabel,
   type EntityPreviewCardData,
-  type EntityPreviewCardType,
   type EntityPreviewCardProperty,
+  type EntityPreviewCardType,
 } from '@globalise/design';
-import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
-import './ManifestEntityPreview.css';
 
-type EntityAnnotation = Annotation<EntityBody>;
-type LinkedConceptReference = {
-  uri: string;
-  fallbackLabel: string;
-};
-type LinkedClassificationReference = {
-  identifier: string;
-  label: string;
-};
-
-export function ManifestEntityPreview() {
-  const isOpen = useRef(false);
-  const [preview, setPreview] = useState<{
-    annotation: EntityAnnotation;
-    anchor: Element;
-    isHovered: boolean;
-    openImmediately: boolean;
-  } | null>(null);
-
-  useEffect(() => {
-    const update = (state: DocumentState) => {
-      const anchor = state.hovered ? getHoverElement() : null;
-      const annotation = getHoveredAnnotation(state, state.hovered);
-      const openImmediately = isOpen.current || !!anchor && getHoverDelay(anchor) === 'immediate';
-      setPreview((current) => annotation && anchor
-        ? current?.annotation === annotation && current.anchor === anchor && current.isHovered
-          ? current : { annotation, anchor, isHovered: true, openImmediately }
-        : current?.isHovered ? { ...current, isHovered: false } : current);
-    };
-    update(useDocumentStore.getState());
-    return useDocumentStore.subscribe((state, previous) => {
-      if (state.hovered !== previous.hovered || state.canvases !== previous.canvases) {
-        update(state);
-      }
-    });
-  }, []);
-
-  if (!preview) {return null;}
-  return <EntityPreview
-    key={preview.annotation.id}
-    data={getPreviewData(preview.annotation)}
-    anchor={preview.anchor}
-    isHovered={preview.isHovered}
-    openImmediately={preview.openImmediately}
-    onOpenChange={(open) => {
-      isOpen.current = open;
-      if (open) {
-        if (useDocumentStore.getState().hovered?.id !== preview.annotation.id) {
-          setHovered(preview.annotation.id);
-        }
-      } else {
-        removeHoverAttribute(preview.anchor);
-        setPreview(null);
-        setHovered(null);
-      }
-    }}
-  />;
-}
-function getHoveredAnnotation(
-  state: DocumentState,
-  hovered: Selection | null,
-): EntityAnnotation | null {
-  if (hovered?.type !== 'classified') {
-    return null;
-  }
-  for (const { annotations } of Object.values(state.canvases)) {
-    const annotation = annotations?.[hovered.id];
-    if (annotation) {
-      return isEntity(annotation) ? annotation : null;
-    }
-  }
-  return null;
-}
-
-function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
+export function getEntityPreviewData(annotation: Annotation<EntityBody>): EntityPreviewCardData {
   const body = getPrimaryEntityBody(annotation);
   const classificationId = getCidocEntityClassificationId(annotation);
   const definition = getPreviewDefinition(classificationId);
-  const classification = classificationId ? getClassificationReference(body, classificationId) : undefined;
+  const conceptReference = getClassificationConceptReference(body);
+  const typeLabel = definition.typeLabel ?? getEntityTypeLabel(definition.type);
+  const strategyProperties = definition.getProperties?.({ body, conceptReference }) ?? [];
+
   return {
     type: definition.type,
     icon: <EntityIcon type={definition.type} />,
     openFullCardHref: getLinkedObjectCardHref(body),
     title: definition.getTitle(body),
     properties: [
-      { label: 'Entity type', value: definition.typeLabel ?? getEntityTypeLabel(definition.type) },
-      ...(definition.getProperties?.({ body, conceptReference: getClassificationConceptReference(body) }) ?? []),
-      {
-        label: 'Classified by',
-        value: classification ? (
-          <EntityPreview data={getClassificationPreviewData(classification)}>
-            {(attributes) => <button {...attributes} type="button" className="manifest-preview-link">
-              <span>{classification.label}</span>
-              <EntityIcon type="classification" />
-            </button>}
-          </EntityPreview>
-        ) : body.classified_as._label,
-      },
+      { label: 'Entity type', value: typeLabel },
+      ...strategyProperties,
+      { label: 'Classified by', value: getClassifiedBy(body, classificationId) },
     ],
   };
 }
+
+function getClassifiedBy(
+  body: EntityBody,
+  classificationId: CidocEntityClassificationId | undefined,
+): ReactNode {
+  if (!classificationId) {
+    return body.classified_as._label;
+  }
+
+  const classification = getClassificationReference(body, classificationId);
+  return (
+    <EntityPreview data={getClassificationPreviewData(classification)}>
+      {(attributes) => (
+        <button {...attributes} type="button" className="manifest-preview-link">
+          <span>{classification.label}</span>
+          <EntityIcon type="classification" />
+        </button>
+      )}
+    </EntityPreview>
+  );
+}
+
+type LinkedClassificationReference = {
+  identifier: string;
+  label: string;
+};
 
 function getClassificationPreviewData(
   reference: LinkedClassificationReference,
@@ -145,6 +79,11 @@ function getClassificationPreviewData(
     ],
   };
 }
+
+type LinkedConceptReference = {
+  uri: string;
+  fallbackLabel: string;
+};
 
 function getClassificationConceptReference(
   body: EntityBody,
@@ -213,16 +152,20 @@ const classificationPreview: EntityPreviewBehavior = {
 const dimensionPreview: EntityPreviewBehavior = {
   getTitle: (body) => body.label
     ?? body.ascribes_appellation?.content
-    ?? (body.value === undefined
-      ? body.classified_as._label
-      : body.unit?._label
-        ? `${body.value} ${body.unit._label}`
-        : String(body.value)),
+    ?? getDimensionValueTitle(body),
   getProperties: ({ body }) => [
     { label: 'Value', value: body.value ?? '-' },
     { label: 'Unit', value: body.unit?._label ?? '-' },
   ],
 };
+
+function getDimensionValueTitle(body: EntityBody): string {
+  if (body.value === undefined) {
+    return body.classified_as._label;
+  }
+  const unit = body.unit?._label;
+  return unit ? `${body.value} ${unit}` : String(body.value);
+}
 
 const previewBehaviorByStrategy = {
   named: namedPreview,
