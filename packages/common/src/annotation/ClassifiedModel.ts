@@ -16,6 +16,8 @@ export type ClassifiedCategory = CidocEntityClassificationId | typeof eventCateg
 
 export type ClassifiedTone = CidocClassName | typeof eventCategory;
 
+export type ClassifiedType = 'entity' | 'event';
+
 export const eventCategory = 'event';
 
 export const isClassified = (
@@ -44,6 +46,10 @@ export function getClassifiedCategory(
   annotation: Annotation<ClassifiedBody>,
 ): ClassifiedCategory | undefined {
   return isEvent(annotation) ? eventCategory : getCidocEntityClassificationId(annotation);
+}
+
+export function getClassifiedType(annotation: Annotation<ClassifiedBody>): ClassifiedType {
+  return isEvent(annotation) ? 'event' : 'entity';
 }
 
 export function getClassifiedTone(annotation: Annotation<ClassifiedBody>): ClassifiedTone {
