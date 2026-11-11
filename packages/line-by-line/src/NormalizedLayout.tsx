@@ -38,7 +38,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 
   return (
     <div
-      className="normalized-view"
+      className="normalized-view highlight-layers"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
     >
       <div className="text">

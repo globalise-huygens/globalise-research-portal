@@ -2,10 +2,9 @@ import {
   Annotation,
   ClassifiedCategory,
   getClassifiedClassNames,
+  getClassifiedType,
   Id,
   isClassified,
-  isEntity,
-  isEvent,
   isHiddenClassified,
   isSearchHit,
   isWord,
@@ -35,11 +34,8 @@ function getLayer(
   if (isHiddenClassified(annotation, highlightCategories)) {
     return undefined;
   }
-  if (isEvent(annotation)) {
-    return 'event';
-  }
-  if (isEntity(annotation)) {
-    return 'entity';
+  if (isClassified(annotation)) {
+    return getClassifiedType(annotation);
   }
   if (isSearchHit(annotation)) {
     return 'search-hit';

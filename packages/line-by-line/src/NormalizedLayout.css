@@ -12,7 +12,9 @@
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
     --search-hit-fill: var(--color-yellow-100);
     --search-hit-active-fill: var(--color-yellow-300);
-    --event-test-highlight: color-mix(in srgb, var(--color-entity-event) 20%, transparent);
+    --event-highlight-color: var(--color-entity-event);
+    --event-highlight-fill: color-mix(in srgb, var(--event-highlight-color) 20%, transparent);
+    --event-highlight-selected-weight: 60%;
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -86,20 +88,6 @@
         border-left-color: transparent;
     }
 
-    /**
-     * Highlights the different annotations of a segment using background layers.
-     * Each class sets its color with --{class}-layer.
-     * Order: search-hit, event, word
-     */
-    .word, .entity, .event, .search-hit {
-        background:
-          linear-gradient(var(--search-hit-layer, transparent), var(--search-hit-layer, transparent)),
-          linear-gradient(var(--event-layer, transparent), var(--event-layer, transparent)),
-          linear-gradient(var(--word-layer, transparent), var(--word-layer, transparent)),
-          var(--entity-layer, transparent);
-        box-decoration-break: clone;
-    }
-
     .entity {
         --entity-layer: var(--entity-highlight-fill);
         color: var(--normalized-text);
@@ -123,7 +111,15 @@
     }
 
     .event {
-        --event-layer: var(--event-test-highlight);
+        --event-layer: var(--event-highlight-fill);
+    }
+
+    .selected-event {
+        --event-layer: color-mix(
+          in srgb,
+          var(--event-highlight-color) var(--event-highlight-selected-weight),
+          var(--event-highlight-fill)
+        );
     }
 
     .word {

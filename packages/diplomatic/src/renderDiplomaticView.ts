@@ -4,6 +4,7 @@ import {
   findClassifiedTarget,
   findTextPositionSelector,
   getClassifiedClassNames,
+  getClassifiedType,
   getPageText,
   indexAnnotations,
   isClassified,
@@ -54,7 +55,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  $view.classList.add('original-layout');
+  $view.classList.add('original-layout', 'highlight-layers');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
@@ -267,12 +268,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.add('selected');
+      $word.classList.add('selected-word');
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => { $r.classList.add('selected'); });
+      for (const $s of $segments) {
+        $s.classList.add(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -282,12 +285,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.remove('selected');
+      $word.classList.remove('selected-word');
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => $r.classList.remove('selected'));
+      for (const $s of $segments) {
+        $s.classList.remove(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
