@@ -115,8 +115,7 @@ export function SegmentedText(
           onKeyDown={handleKeyDown}
           onClick={handleClick}
           className={cn([
-            ...getAnnotationClassNames(segment.annotations, highlightCategories),
-            hasAnnotation(segment, selectedIds) && 'selected',
+            ...getAnnotationClassNames(segment.annotations, highlightCategories, selectedIds),
             hasAnnotation(segment, activeHitIds) && 'active-hit',
           ])}
         >

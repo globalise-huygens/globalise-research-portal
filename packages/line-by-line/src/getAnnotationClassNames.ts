@@ -2,31 +2,50 @@ import {
   Annotation,
   ClassifiedCategory,
   getClassifiedClassNames,
+  Id,
   isClassified,
-  isHighlighted,
+  isEntity,
+  isEvent,
+  isHiddenClassified,
   isSearchHit,
   isWord,
 } from '@globalise/common/annotation';
 
+type Layer = 'entity' | 'event' | 'search-hit' | 'word';
+
 export function getAnnotationClassNames(
   annotations: Annotation[],
   highlightCategories: Set<ClassifiedCategory>,
+  selectedIds: Id[],
 ): string[] {
-  return annotations.flatMap((annotation) => getClassNames(annotation, highlightCategories));
+  return annotations.flatMap((annotation) => {
+    const layer = getLayer(annotation, highlightCategories);
+    if (!layer) {
+      return [];
+    }
+    const classNames = isClassified(annotation) ? getClassifiedClassNames(annotation) : [layer];
+    return selectedIds.includes(annotation.id) ? [...classNames, `selected-${layer}`] : classNames;
+  });
 }
 
-function getClassNames(
+function getLayer(
   annotation: Annotation,
   highlightCategories: Set<ClassifiedCategory>,
-): string[] {
-  if (isClassified(annotation) && isHighlighted(annotation, highlightCategories)) {
-    return getClassifiedClassNames(annotation);
+): Layer | undefined {
+  if (isHiddenClassified(annotation, highlightCategories)) {
+    return undefined;
+  }
+  if (isEvent(annotation)) {
+    return 'event';
+  }
+  if (isEntity(annotation)) {
+    return 'entity';
   }
   if (isSearchHit(annotation)) {
-    return ['search-hit'];
+    return 'search-hit';
   }
   if (isWord(annotation)) {
-    return ['word'];
+    return 'word';
   }
-  return [];
+  return undefined;
 }
