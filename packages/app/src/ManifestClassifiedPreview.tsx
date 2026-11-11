@@ -1,7 +1,9 @@
 import {
   type Annotation,
   type EntityBody,
+  type EventBody,
   isEntity,
+  isEvent,
 } from '@globalise/common/annotation';
 import {
   type DocumentState,
@@ -12,14 +14,15 @@ import {
   setHovered,
   useDocumentStore,
 } from '@globalise/common/document';
-import { EntityPreview } from '@globalise/design';
+import { PreviewCard } from '@globalise/design';
 import { useEffect, useRef, useState } from 'react';
 import './ManifestClassifiedPreview.css';
 import { getEntityPreviewData } from './getEntityPreviewData';
+import { getEventPreviewData } from './getEventPreviewData';
 
 export function ManifestClassifiedPreview() {
   const isOpen = useRef(false);
-  const [preview, setPreview] = useState<Preview | null>(null);
+  const [preview, setPreview] = useState<PreviewState | null>(null);
 
   const hovered = useDocumentStore((s) => s.hovered);
   const canvases = useDocumentStore((s) => s.canvases);
@@ -38,7 +41,7 @@ export function ManifestClassifiedPreview() {
     const openImmediately = isOpen.current
       || getHoverDelay(anchor) === 'immediate';
     const isHovered = true;
-    const next: Preview = { annotation, anchor, isHovered, openImmediately };
+    const next: PreviewState = { annotation, anchor, isHovered, openImmediately };
     const isCurrentlyShown = preview?.annotation === next.annotation
       && preview.anchor === next.anchor
       && preview.isHovered;
@@ -64,9 +67,9 @@ export function ManifestClassifiedPreview() {
     }
   }
 
-  return <EntityPreview
+  return <PreviewCard
     key={annotation.id}
-    data={getEntityPreviewData(annotation)}
+    data={getPreviewData(annotation)}
     anchor={anchor}
     isHovered={preview.isHovered}
     openImmediately={preview.openImmediately}
@@ -74,24 +77,32 @@ export function ManifestClassifiedPreview() {
   />;
 }
 
-type Preview = {
-  annotation: Annotation<EntityBody>;
+type ClassifiedAnnotation = Annotation<EntityBody> | Annotation<EventBody>;
+
+type PreviewState = {
+  annotation: ClassifiedAnnotation;
   anchor: Element;
   isHovered: boolean;
   openImmediately: boolean;
 };
 
+function getPreviewData(annotation: ClassifiedAnnotation) {
+  return isEvent(annotation)
+    ? getEventPreviewData(annotation)
+    : getEntityPreviewData(annotation);
+}
+
 function getHoveredAnnotation(
   canvases: DocumentState['canvases'],
   hovered: Selection | null,
-): Annotation<EntityBody> | null {
+): ClassifiedAnnotation | null {
   if (hovered?.type !== 'classified') {
     return null;
   }
   for (const { annotations } of Object.values(canvases)) {
     const annotation = annotations?.[hovered.id];
     if (annotation) {
-      return isEntity(annotation) ? annotation : null;
+      return isEntity(annotation) || isEvent(annotation) ? annotation : null;
     }
   }
   return null;
