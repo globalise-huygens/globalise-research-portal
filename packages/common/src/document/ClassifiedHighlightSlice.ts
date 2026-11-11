@@ -4,8 +4,9 @@ import {
   type CidocEntityClassificationId,
   type ClassifiedCategory,
   type Id,
+  findClassifiedTarget,
   getCidocEntityClassificationId,
-  isClassified,
+  isHiddenClassified,
   isEntity,
   isEvent,
   isHighlighted,
@@ -21,6 +22,7 @@ export type ClassifiedHighlightSlice = {
 export type WordClassifications = {
   entityClassificationId?: CidocEntityClassificationId;
   hasEvent?: boolean;
+  targetId?: Id;
 };
 
 export function setHighlightCategories(categories: Set<ClassifiedCategory>) {
@@ -45,21 +47,27 @@ export function useWordClassifications(canvasId: CanvasId) {
   const annotations = useAnnotationsWithSearchHits(canvasId);
   const { classifiedToWords } = useCanvasIndexes(canvasId);
   const categories = useHighlightCategories();
+
   return useMemo(() => {
-    const classifications: Partial<Record<Id, WordClassifications>> = {};
+    const classifiedByWord: Record<Id, Annotation[]> = {};
     for (const [classifiedId, wordIds] of Object.entries(classifiedToWords)) {
       const annotation = annotations[classifiedId];
       if (!annotation || !isHighlighted(annotation, categories)) {
         continue;
       }
       for (const wordId of wordIds) {
-        const word = classifications[wordId] ??= {};
-        if (isEvent(annotation)) {
-          word.hasEvent = true;
-        } else if (isEntity(annotation)) {
-          word.entityClassificationId ??= getCidocEntityClassificationId(annotation);
-        }
+        (classifiedByWord[wordId] ??= []).push(annotation);
       }
+    }
+    const classifications: Partial<Record<Id, WordClassifications>> = {};
+    for (const [wordId, classified] of Object.entries(classifiedByWord)) {
+      const entity = classified.find(isEntity);
+      // TODO: replace with { tones, targetId }
+      classifications[wordId] = {
+        entityClassificationId: entity && getCidocEntityClassificationId(entity),
+        hasEvent: classified.some(isEvent),
+        targetId: findClassifiedTarget(classified, classifiedToWords)?.id,
+      };
     }
     return classifications;
   }, [annotations, classifiedToWords, categories]);
@@ -73,7 +81,7 @@ export function useHighlightedAnnotations(
   return useMemo(() => {
     const highlighted: Record<Id, Annotation> = {};
     for (const [id, annotation] of Object.entries(annotations)) {
-      if (isClassified(annotation) && !isHighlighted(annotation, categories)) {
+      if (isHiddenClassified(annotation, categories)) {
         continue;
       }
       highlighted[id] = annotation;

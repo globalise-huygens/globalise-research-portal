@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { ClassifiedCategory, Id } from '@globalise/common/annotation';
 import {
+  useCanvasIndexes,
   useHighlightCategories,
   useIsSelectedInLineByLine,
 } from '@globalise/common/document';
@@ -21,6 +22,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
   const highlightCategories = useHighlightCategories();
+  const { classifiedToWords } = useCanvasIndexes(canvasId);
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
 
@@ -49,6 +51,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
             segmentsByLine={segmentsByLine}
             lineNumberStart={blockLineNumberStarts[i] + 1}
             highlightCategories={highlightCategories}
+            classifiedToWords={classifiedToWords}
           />
         ))}
       </div>
@@ -63,10 +66,13 @@ type BlockGroupProps = {
   segmentsByLine: LineSegments['segmentsByLine'];
   lineNumberStart: number;
   highlightCategories: Set<ClassifiedCategory>;
+  classifiedToWords: Record<Id, Id[]>;
 };
 
 function BlockGroup(
-  { canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories }: BlockGroupProps,
+  {
+    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords,
+  }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInLineByLine(canvasId, blockId);
 
@@ -89,6 +95,7 @@ function BlockGroup(
             blockId={blockId}
             segments={segments}
             highlightCategories={highlightCategories}
+            classifiedToWords={classifiedToWords}
           />
         );
       })}
