@@ -23,7 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, getEventId, isEntity, isEvent } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
-import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
+import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
 
 const defaultManifest =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
@@ -165,7 +165,7 @@ export function ManifestPage() {
             }
           />
         )}
-        <ManifestEntityPreview/>
+        <ManifestClassifiedPreview/>
       </ManifestLoader>
     </ViewerProvider>
   );
