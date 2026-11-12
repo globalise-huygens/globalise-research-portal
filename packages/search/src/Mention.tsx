@@ -1,7 +1,8 @@
 import { Link } from 'react-aria-components';
-import { toHref, useSearch } from '@globalise/router';
+import { toViewerHref, useSearch } from '@globalise/router';
 import { Highlight } from '@knaw-huc/faceted-search-react';
-import { toManifestId } from '@globalise/common/document';
+import { toDocumentId, toManifestId } from '@globalise/common/document';
+import { parseDocumentId } from '@globalise/common/uri';
 import { POST_TAG, PRE_TAG } from './elasticsearch/highlightTags';
 import classes from './Mention.module.css';
 
@@ -14,18 +15,16 @@ type MentionProps = {
 
 export default function Mention({ document, snippet }: MentionProps) {
   const urlParams = useSearch({ from: '/search' });
+  const ref = parseDocumentId(toDocumentId(document.name)) ?? { inventory: document.inventoryNumber };
   return (
     <li className={classes.mention}>
       <Link
-        href={toHref({
-          to: '/manifest',
-          search: {
-            ...urlParams,
-            manifest: toManifestId(document.inventoryNumber),
-            document: document.name,
-            documentId: document.id,
-            snippet,
-          },
+        href={toViewerHref(ref, {
+          ...urlParams,
+          manifest: toManifestId(document.inventoryNumber),
+          document: document.name,
+          documentId: document.id,
+          snippet,
         })}
         className={classes.link}
       >

@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { findInitialCanvasId, toCanvasId } from './documentIds';
+import { findInitialCanvasId, toCanvasId, toDocumentId } from './documentIds';
 
 const document = 'NL-HaNA_1.04.02_1053_0003-0071';
 const documentStartCanvasId = toCanvasId('NL-HaNA_1.04.02_1053_0003');
+
+describe(toDocumentId.name, () => {
+  it('builds the document id from its name', () => {
+    const id = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/document:';
+    expect(toDocumentId(document)).toBe(`${id}${document}`);
+  });
+});
 
 describe(findInitialCanvasId.name, () => {
   it('prefers the canvas from the url', () => {

@@ -26,6 +26,10 @@ export function toCanvasId(name: string): string {
   return `${globaliseDataUrl}canvas:${name}`;
 }
 
+export function toDocumentId(name: string): string {
+  return `${globaliseDataUrl}document:${name}`;
+}
+
 function toDocumentStartCanvasId(document: string): CanvasId {
   return toCanvasId(document.replace(/-\d+$/u, ''));
 }
