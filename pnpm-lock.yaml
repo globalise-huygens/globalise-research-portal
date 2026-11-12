@@ -680,8 +680,8 @@ importers:
         specifier: workspace:*
         version: link:../router
       '@knaw-huc/faceted-search-react':
-        specifier: ^0.0.26
-        version: 0.0.26(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.3.1))
+        specifier: ^0.0.27
+        version: 0.0.27(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.3.1))
       '@knaw-huc/searchfield':
         specifier: ^0.0.7
         version: 0.0.7(react@19.3.1)
@@ -1056,9 +1056,6 @@ packages:
       '@types/node':
         optional: true
 
-  '@internationalized/date@3.12.2':
-    resolution: {integrity: sha512-FY1Y+H64NDs+HAF6omlnWxm3mEpfgaCSWtL5l551ZZfImA+kGjPFgrnJrGjH6lfmLL0g8Z/mBu1R3kufeCp6Jw==}
-
   '@internationalized/date@3.12.4':
     resolution: {integrity: sha512-M1dEn4c1U1HsSlaVR8upZtSqvXrTkHDfv18H01uCSJyjVLDxnBR38v/fMxecmlwXKR4i9HeZcmgQAPE6A+aGJQ==}
 
@@ -1093,8 +1090,8 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@knaw-huc/faceted-search-react@0.0.26':
-    resolution: {integrity: sha512-gDF6lX6ASsVyvYKeUBOoMq4lys0LSp554PgNoRrQtQEiThS7HufmsSgPsqJeMw4FJYSbp/rbfpw+aXgg5A4P0A==}
+  '@knaw-huc/faceted-search-react@0.0.27':
+    resolution: {integrity: sha512-kyq8lCnNTynpN8HzZ0xGB9JLuYqV9oYVIiP8nIYjbNmEAUzwG9P4cU+bY5fUyepk9Qb5iKMUkEQzTJsz0LR1Vg==}
     peerDependencies:
       react: '19'
       react-dom: '19'
@@ -3773,10 +3770,6 @@ snapshots:
       '@types/node': 26.6.5
     optional: true
 
-  '@internationalized/date@3.12.2':
-    dependencies:
-      '@swc/helpers': 0.5.23
-
   '@internationalized/date@3.12.4':
     dependencies:
       '@swc/helpers': 0.5.23
@@ -3816,10 +3809,10 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@knaw-huc/faceted-search-react@0.0.26(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.3.1))':
+  '@knaw-huc/faceted-search-react@0.0.27(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)(use-sync-external-store@1.6.0(react@19.3.1))':
     dependencies:
       '@heroicons/react': 2.2.0(react@19.3.1)
-      '@internationalized/date': 3.12.2
+      '@internationalized/date': 3.12.4
       d3: 7.9.0
       react: 19.3.1
       react-aria-components: 1.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
