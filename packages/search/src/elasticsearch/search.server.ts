@@ -47,7 +47,7 @@ const SearchRequestSchema = GlobaliseSearchStateSchema.extend({
 const search = createServerFn({ method: 'POST' })
   .validator(SearchRequestSchema)
   .handler(async ({ data }): Promise<SearchResult[]> => {
-    const esQuery = getSearchQuery(data.query, data.facets) ?? undefined;
+    const esQuery = getSearchQuery(data.query, data.facets, data.queryExpansions) ?? undefined;
     console.log('ElasticSearch query', JSON.stringify(esQuery, null, 2));
 
     const result = await elastic.search<ElasticDocument>({

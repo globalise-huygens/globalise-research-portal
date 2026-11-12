@@ -4,7 +4,7 @@ import type { GlobaliseSearchState } from '../utils/getSearchState';
 
 export default function searchQueryOptions(state: GlobaliseSearchState, pageSize: number) {
   return infiniteQueryOptions({
-    queryKey: ['search', pageSize, state.query, state.facets],
+    queryKey: ['search', pageSize, state.query, state.facets, state.queryExpansions],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: ({ pageParam }) => search({
       data: {
@@ -12,6 +12,7 @@ export default function searchQueryOptions(state: GlobaliseSearchState, pageSize
         facets: state.facets,
         offset: pageSize * pageParam,
         limit: pageSize,
+        queryExpansions: state.queryExpansions,
       },
     }),
     initialPageParam: 0,

@@ -55,11 +55,13 @@ export const GlobaliseSearchStateSchema = z.object({
       .every(([_key, value]) => value.length === 1 && /^\d+:\d+$/.test(value[0])),
     { error: 'Range facet must have format "start:end"!' },
   ).optional(),
+  queryExpansions: z.record(z.string(), z.array(z.string())).optional(),
 });
 
 export function getSearchQuery(
   query?: TreeQuery,
   selected?: Record<string, string[]>,
+  queryExpansions?: Record<string, string[]>,
   documentId?: string,
 ): QueryDslQueryContainer | null {
   const selectedHierarchies = getSelectedForFacet(selected, hierarchyFacets);
@@ -68,7 +70,7 @@ export function getSearchQuery(
     return null;
   }
 
-  const esQuery = query ? parseQuery(query) : undefined;
+  const esQuery = query ? parseQuery(query, queryExpansions) : undefined;
   const hierarchyFilters = selectedHierarchies ? Object.entries(selectedHierarchies).map(([key, value]) => ({
     terms: {
       [hierarchyFacets[key].tree]: value,

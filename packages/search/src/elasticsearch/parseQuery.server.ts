@@ -6,36 +6,50 @@ import { annotationTypeFields } from './annotationTypeFields';
 // not as separate fields, so `placeId:GLOB_574` is looked up as one exact token.
 const annotationTokenKeys = ['type', 'personId', 'placeId'];
 
-export default function parseQuery(query: TreeQuery, field = 'annotatedText'): QueryDslQueryContainer {
+export default function parseQuery(query: TreeQuery, queryExpansions?: Record<string, string[]>, field = 'annotatedText'): QueryDslQueryContainer {
   switch (query.type) {
     case 'and':
       return {
         bool: {
-          must: query.clauses.map((clause) => parseQuery(clause, field)),
+          must: query.clauses.map((clause) => parseQuery(clause, queryExpansions, field)),
         },
       };
     case 'or':
       return {
         bool: {
-          should: query.clauses.map((clause) => parseQuery(clause, field)),
+          should: query.clauses.map((clause) => parseQuery(clause, queryExpansions, field)),
           minimum_should_match: 1,
         },
       };
     case 'not':
       return {
         bool: {
-          must_not: [parseQuery(query.clause, field)],
+          must_not: [parseQuery(query.clause, queryExpansions, field)],
         },
       };
     case 'term':
-      return {
-        match: {
-          [field]: {
-            query: query.value,
+      if (queryExpansions?.[query.value]) {
+        return {
+          bool: {
+            should: [
+              { match: { [field]: { query: query.value } } },
+              ...queryExpansions[query.value].map((expansion) => ({ match_phrase: { [field]: { query: expansion } } })),
+            ],
+            minimum_should_match: 1,
             boost: query.boost,
           },
-        },
-      };
+        };
+      } else {
+        return {
+          match: {
+            [field]: {
+              query: query.value,
+              boost: query.boost,
+            },
+          },
+        };
+      }
+
     case 'phrase':
       return {
         match_phrase: {
@@ -105,12 +119,12 @@ export default function parseQuery(query: TreeQuery, field = 'annotatedText'): Q
         };
       }
       // This runs for all other cases, e.g., 'title:missive'. This is default ES syntax to search through keyword fields.
-      return parseQuery(query.clause, query.field);
+      return parseQuery(query.clause, undefined, query.field);
     case 'containing':
     case 'notContaining':
       // Runs when the first param is a bare word, e.g., 'containing(title,missive)'
       if (query.container.type === 'term') {
-        const inField = parseQuery(query.clause, query.container.value);
+        const inField = parseQuery(query.clause, undefined, query.container.value);
         return query.type === 'containing' ? inField : { bool: { must_not: [inField] } };
       }
       // Runs when the first param is an annotation type, e.g., 'containing(type:person,adriaan)'

@@ -1,17 +1,20 @@
 import { createContext, useCallback, useMemo, useState, useContext, type ReactNode } from 'react';
-import { QueryExpansion } from './getQueryExpansionQueryOptions';
+import getQueryExpansionQueryOptions, { QueryExpansion } from './getQueryExpansionQueryOptions';
+import { useSearchFacet } from '@knaw-huc/faceted-search-react';
+import { useQuery } from '@tanstack/react-query';
 
 type Selected = 'all' | 'some' | 'none';
 type Selection = Record<string, Record<string, Set<string>>>;
 
 type TermSelection = {
-  updateQueryExpansion: (queryExpansion: QueryExpansion) => void;
+  queryExpansion: QueryExpansion | undefined;
   isSelected: (term: string, sourceId: string, expansion: string) => boolean;
   sourceIsSelected: (term: string, sourceId: string) => Selected;
   termIsSelected: (term: string) => Selected;
   toggle: (term: string, sourceId: string, expansion: string) => void;
   toggleSource: (term: string, sourceId: string) => void;
   toggleTerm: (term: string) => void;
+  selectedExpansions: Record<string, string[]> | undefined;
 };
 
 function createSelectedTerms(queryExpansion: QueryExpansion, prevSelection?: Selection) {
@@ -30,13 +33,17 @@ const findExpansions = (queryExpansion: QueryExpansion, term: string, sourceId: 
 const SelectionContext = createContext<TermSelection | null>(null);
 
 export function TermSelectionProvider({ children }: { children: ReactNode }) {
-  const [queryExpansion, setQueryExpansion] = useState<QueryExpansion | null>(null);
+  const { query } = useSearchFacet();
+  const { data: queryExpansion } = useQuery(getQueryExpansionQueryOptions(query ?? ''));
+  const [selectedFor, setSelectedFor] = useState<QueryExpansion | undefined>(undefined);
   const [selectedTerms, setSelectedTerms] = useState<Selection>({});
 
-  const updateQueryExpansion = useCallback((queryExpansion: QueryExpansion) => {
-    setQueryExpansion(queryExpansion);
-    setSelectedTerms(createSelectedTerms(queryExpansion));
-  }, [setQueryExpansion, setSelectedTerms]);
+  // Reset the selection while rendering (not in an effect) when the expansions change,
+  // so no child ever renders with the selection of a previous query
+  if (queryExpansion !== selectedFor) {
+    setSelectedFor(queryExpansion);
+    setSelectedTerms(queryExpansion ? createSelectedTerms(queryExpansion) : {});
+  }
 
   const isSelected = useCallback((term: string, sourceId: string, expansion: string) =>
     selectedTerms[term][sourceId].has(expansion), [selectedTerms]);
@@ -72,6 +79,19 @@ export function TermSelectionProvider({ children }: { children: ReactNode }) {
 
     return 'some';
   }, [selectedTerms, queryExpansion]);
+
+  // Undefined as long as the expansions of the current query are not loaded yet
+  const selectedExpansions = useMemo(() => {
+    if (!queryExpansion || queryExpansion !== selectedFor) {
+      return undefined;
+    }
+
+    return Object.fromEntries(Object.entries(selectedTerms).map(([term, sources]) => {
+      const flatList = Object.values(sources).flatMap((source) => [...source]);
+      const newFlatList = new Set(flatList);
+      return [term, [...newFlatList].sort()];
+    }));
+  }, [queryExpansion, selectedFor, selectedTerms]);
 
   const toggle = useCallback((term: string, sourceId: string, expansion: string) =>
     setSelectedTerms((selectedTerms) => {
@@ -133,8 +153,8 @@ export function TermSelectionProvider({ children }: { children: ReactNode }) {
     }), [queryExpansion, setSelectedTerms]);
 
   const termSelection = useMemo(() => ({
-    updateQueryExpansion, isSelected, sourceIsSelected, termIsSelected, toggle, toggleSource, toggleTerm,
-  }), [updateQueryExpansion, isSelected, sourceIsSelected, termIsSelected, toggle, toggleSource, toggleTerm]);
+    queryExpansion, isSelected, sourceIsSelected, termIsSelected, toggle, toggleSource, toggleTerm, selectedExpansions,
+  }), [queryExpansion, isSelected, sourceIsSelected, termIsSelected, toggle, toggleSource, toggleTerm, selectedExpansions]);
 
   return (
     <SelectionContext.Provider value={termSelection}>
