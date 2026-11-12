@@ -5,7 +5,9 @@ import type { DocumentRef } from './documentId';
 
 export type ViewerRef = InventoryRef | PageRef | DocumentRef;
 
-export function createViewerPath(ref: ViewerRef): string {
+export function createViewerPath(
+  ref: ViewerRef,
+): string {
   const inventoryPath = `/hdl:20.500.14722/inventory:${ref.inventory}`;
   if ('endPage' in ref) {
     return `${inventoryPath}/${ref.page}-${ref.endPage}`;
@@ -16,7 +18,9 @@ export function createViewerPath(ref: ViewerRef): string {
   return inventoryPath;
 }
 
-export function parseViewerPath(path: string): ViewerRef | undefined {
+export function parseViewerPath(
+  path: string,
+): ViewerRef | undefined {
   const groups = uriPatterns.viewerPath.exec(path)?.groups;
   if (!groups) {
     return undefined;
