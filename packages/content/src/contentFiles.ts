@@ -1,4 +1,5 @@
 export const indexFile = 'index.json';
+export const searchIndexFile = 'search-index.json';
 export const pagesDir = 'pages';
 export const assetsDir = 'assets';
 export const contentRoute = '/content';
