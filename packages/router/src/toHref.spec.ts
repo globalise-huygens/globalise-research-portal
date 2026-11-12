@@ -22,13 +22,13 @@ describe(toHref.name, () => {
 
 describe(`${toHref.name} types`, () => {
   it('rejects unknown url params, even next to known ones', () => {
-    // @ts-expect-error documnetId is no manifest url param
-    toHref({ to: '/manifest', search: { manifest: 'm1', documnetId: 'd1' } });
+    // @ts-expect-error qeury is no search url param
+    toHref({ to: '/search', search: { q: 'Batavia', qeury: 'Batavia' } });
   });
 
   it('rejects url params of the wrong type', () => {
     // @ts-expect-error facets are lists
-    toHref({ to: '/manifest', search: { ead: '1.04.02' } });
+    toHref({ to: '/search', search: { ead: '1.04.02' } });
   });
 
   it('rejects unknown paths', () => {
@@ -40,6 +40,6 @@ describe(`${toHref.name} types`, () => {
     // @ts-expect-error relative paths need the current page
     toHref({ to: '..' });
     // @ts-expect-error keeping params needs the current page
-    toHref({ to: '/manifest', search: true });
+    toHref({ to: '/search', search: true });
   });
 });

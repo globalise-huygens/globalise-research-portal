@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { type ManifestUrlParams, resetUrlParamsOnManifestChange, validateManifestUrlParams } from './manifestUrlParams.ts';
+import {
+  type ManifestUrlParams,
+  resetUrlParamsOnManifestChange,
+  validateManifestUrlParams,
+} from './manifestUrlParams.ts';
 
 describe(validateManifestUrlParams.name, () => {
   it('keeps manifest params and search context, dropping unknown params', () => {

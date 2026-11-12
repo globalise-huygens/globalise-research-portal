@@ -18,7 +18,7 @@ import {
   ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { getRouteApi } from '@globalise/router';
+import { getRouteApi, toCanvasHref, toManifestHref } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, getEventId, isEntity, isEvent } from '@globalise/common/annotation';
@@ -28,7 +28,7 @@ import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 const defaultManifest =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
 
-const route = getRouteApi('/manifest/');
+const route = getRouteApi('/hdl:20.500.14722/$');
 
 const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +
@@ -63,10 +63,10 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      void navigate({
-        search: { ...search, canvas: selectedCanvasId },
-        replace: true,
-      });
+      const href = toCanvasHref(selectedCanvasId, { ...search, canvas: selectedCanvasId });
+      if (href) {
+        void navigate({ href, replace: true });
+      }
     });
   }
 
@@ -145,7 +145,10 @@ export function ManifestPage() {
   }
 
   function handleManifestChange(manifest: string) {
-    void navigate({ search: { ...search, manifest } });
+    const href = toManifestHref(manifest, { ...search, manifest });
+    if (href) {
+      void navigate({ href });
+    }
   }
 
   return (

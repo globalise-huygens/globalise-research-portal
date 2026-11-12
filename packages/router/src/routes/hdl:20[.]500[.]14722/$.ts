@@ -8,7 +8,7 @@ import { resetUrlParamsOnManifestChange, validateManifestUrlParams } from '../..
  * - import openseadragon lazily
  * - use type only imports for osd types
  */
-export const Route = createFileRoute('/manifest/')({
+export const Route = createFileRoute('/hdl:20.500.14722/$')({
   validateSearch: validateManifestUrlParams,
   search: {
     middlewares: [resetUrlParamsOnManifestChange],
