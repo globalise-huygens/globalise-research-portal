@@ -18,15 +18,20 @@ import {
   ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { getRouteApi, toCanvasHref, toManifestHref } from '@globalise/router';
+import {
+  defaultInventory,
+  getRouteApi,
+  toCanvasHref,
+  toManifestHref,
+  useLocation,
+  validateSearchUrlParams,
+} from '@globalise/router';
+import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
-import { createManifestId, handle, idBase } from '@globalise/common/uri';
-
-const defaultManifest = createManifestId({ inventory: '1053' });
 
 const route = getRouteApi(`/${handle}/$`);
 
@@ -35,7 +40,8 @@ const collectionUrl = `${idBase}/inventory:collection`;
 export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
-  const manifestUrl = search.manifest ?? defaultManifest;
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const manifestUrl = createManifestId(parseViewerPath(pathname) ?? defaultInventory);
   const searchState = getManifestSearchState(search);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
@@ -128,7 +134,7 @@ export function ManifestPage() {
   }
 
   function handleManifestChange(manifest: string) {
-    const href = toManifestHref(manifest, { ...search, manifest });
+    const href = toManifestHref(manifest, validateSearchUrlParams(search));
     if (href) {
       void navigate({ href });
     }

@@ -1,6 +1,6 @@
 import { Link } from 'react-aria-components';
 import { toViewerHref, useSearch } from '@globalise/router';
-import { createManifestId, parseDocumentName } from '@globalise/common/uri';
+import { parseDocumentName } from '@globalise/common/uri';
 import { MarkedText } from '@globalise/design';
 import { isHit, parseAnnotatedText } from './elasticsearch/parseAnnotatedText';
 import classes from './Mention.module.css';
@@ -21,7 +21,6 @@ export default function Mention({ document, snippet }: MentionProps) {
       <Link
         href={range && toViewerHref(range, {
           ...urlParams,
-          manifest: createManifestId(range),
           document: document.name,
           documentId: document.id,
           snippet: plainText,
