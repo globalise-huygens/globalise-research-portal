@@ -28,7 +28,7 @@ import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
 const defaultManifest =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
 
-const route = getRouteApi('/manifest/');
+const route = getRouteApi('/hdl:20.500.14722/$');
 
 const collectionUrl =
   'https://data.globalise.huygens.knaw.nl/' +

@@ -12,13 +12,15 @@ export type AppRouter = ReturnType<typeof createAppRouter>;
 
 export type RouteId = RouteIds<AppRouter['routeTree']>;
 
-export type RouteComponents = Record<RouteId, RouteComponent>;
+export type RouteComponents = Record<Exclude<RouteId, RedirectRouteId>, RouteComponent>;
+
+type RedirectRouteId = '/manifest/';
 
 export function getRouter(): AppRouter {
   const router = createAppRouter();
   const components = routeComponents ?? orThrow('Provide the route components before creating the router');
   const metadata = homeMetadata;
-  for (const id of Object.keys(components) as RouteId[]) {
+  for (const id of Object.keys(components) as (keyof RouteComponents)[]) {
     const route: AnyRoute = router.routesById[id];
     route.update({
       component: components[id],
@@ -46,6 +48,7 @@ function createAppRouter() {
   return createRouter({
     routeTree,
     context: { queryClient: new QueryClient() } satisfies RouterContext,
+    pathParamsAllowedCharacters: [':'],
     parseSearch: parseUrlParams,
     stringifySearch: stringifyUrlParams,
   });
