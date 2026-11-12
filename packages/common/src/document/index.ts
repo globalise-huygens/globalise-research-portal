@@ -13,4 +13,4 @@ export { useAnnotationsWithSearchHits } from './useAnnotationsWithSearchHits';
 export { getAnnotationPages } from './getAnnotationPages';
 export { logTextSelector } from './logTextSelector.ts';
 export * from './SettingsStore';
-export * from './documentIds';
+export * from './findInitialCanvasId';
