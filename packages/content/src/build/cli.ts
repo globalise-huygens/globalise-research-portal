@@ -15,7 +15,7 @@ const { positionals: [contentDir, outputDir], values: { force } } = parseArgs({
 });
 
 if (!existsSync(join(contentDir, 'pages'))) {
-  console.warn(`No content found in ${contentDir},`
+  console.warn(`No content found in ${contentDir}, `
     + "run 'pnpm content:init' first");
   process.exit(0);
 }
