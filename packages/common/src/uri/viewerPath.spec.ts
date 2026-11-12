@@ -7,7 +7,7 @@ const documentPath = `${inventoryPath}/0003-0067`;
 
 const inventoryRef = { inventory: '1053' };
 const pageRef = { inventory: '1053', page: '0004' };
-const documentRef = { inventory: '1053', startPage: '0003', endPage: '0067' };
+const documentRef = { inventory: '1053', page: '0003', endPage: '0067' };
 
 describe(createViewerPath.name, () => {
   it('builds the path of an inventory', () => {

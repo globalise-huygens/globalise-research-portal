@@ -11,7 +11,7 @@ describe(parseDocumentId.name, () => {
   const manifestRange = `${manifest}/range/${documentName}`;
 
   it('reads the inventory and page range of a document', () => {
-    const range = { inventory: '1053', startPage: '0003', endPage: '0067' };
+    const range = { inventory: '1053', page: '0003', endPage: '0067' };
     expect(parseDocumentId(document)).toEqual(range);
   });
 
