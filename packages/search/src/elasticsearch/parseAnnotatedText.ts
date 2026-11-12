@@ -40,3 +40,7 @@ export function parseAnnotatedText(annotatedText: string): AnnotatedText {
 function decodeAnnotation(annotation: string): string {
   return decodeURIComponent(annotation.replaceAll('+', ' '));
 }
+
+export function isHit(segment: AnnotatedSegment): boolean {
+  return segment.annotations[0].startsWith('_hit_term=');
+}

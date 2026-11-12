@@ -25,7 +25,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'term':
       return {
         match: {
-          text: {
+          annotatedText: {
             query: query.value,
             boost: query.boost,
           },
@@ -34,7 +34,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'phrase':
       return {
         match_phrase: {
-          text: {
+          annotatedText: {
             query: query.value,
             slop: query.proximity,
             boost: query.boost,
@@ -44,7 +44,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'regex':
       return {
         regexp: {
-          text: {
+          annotatedText: {
             value: query.value,
             boost: query.boost,
           },
@@ -53,7 +53,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'prefix-wildcard':
       return {
         prefix: {
-          text: {
+          annotatedText: {
             value: query.value,
             boost: query.boost,
           },
@@ -62,7 +62,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'fuzzy':
       return {
         fuzzy: {
-          text: {
+          annotatedText: {
             value: query.value,
             fuzziness: query.distance,
             boost: query.boost,
@@ -72,7 +72,7 @@ export default function parseQuery(query: TreeQuery): QueryDslQueryContainer {
     case 'entity':
       return {
         match: {
-          text: {
+          annotatedText: {
             query: query.label,
           },
         },

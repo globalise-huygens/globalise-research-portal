@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { parseAnnotatedText } from './parseAnnotatedText';
+import { isHit, parseAnnotatedText } from './parseAnnotatedText';
 import highlightedDocument from './parseAnnotatedText.bench.txt?raw';
 
 /**
  * Not testing overlapping annotations as that cannot happen in 'annotated-text',
- * which will favor hits over annotations:
+ * which keeps a hit when overlapping with other annotations:
  * https://www.elastic.co/docs/reference/elasticsearch/plugins/mapper-annotated-text-highlighter
  */
 describe(parseAnnotatedText.name, () => {
@@ -48,5 +48,20 @@ describe(parseAnnotatedText.name, () => {
     expect(hits.length).toBe(10);
     const annotations = result.segments.filter((s) => s.annotations.find((a) => a !== searchHit));
     expect(annotations.length).toBe(529);
+  });
+});
+
+describe(isHit.name, () => {
+  const { segments } = parseAnnotatedText('[foo](_hit_term=foo&type%3ABar) [baz](type%3ABas)');
+
+  it('is a hit when the first annotation is a hit term', () => {
+    const [hit] = segments;
+
+    expect(isHit(hit)).toBe(true);
+  });
+
+  it('is no hit when the segment is only annotated', () => {
+    const [_, annotation] = segments;
+    expect(isHit(annotation)).toBe(false);
   });
 });
