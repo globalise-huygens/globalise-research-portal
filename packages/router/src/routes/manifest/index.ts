@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { findViewerPath, validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { findViewerPath } from '../../viewer/viewerHref.ts';
 import { stringifyUrlParams } from '../../params/urlParams.ts';
 
 // TODO: remove once internal links do not use /manifest anymore
