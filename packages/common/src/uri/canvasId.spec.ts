@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCanvasId } from './parseCanvasId';
+import { parseCanvasId } from './canvasId';
 
 describe(parseCanvasId.name, () => {
   // future: https://id.globalise.nl/hdl:20.500.14722

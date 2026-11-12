@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAnnotationId } from './parseAnnotationId';
+import { parseAnnotationId } from './annotationId';
 
 describe(parseAnnotationId.name, () => {
   // future: https://id.globalise.nl/hdl:20.500.14722

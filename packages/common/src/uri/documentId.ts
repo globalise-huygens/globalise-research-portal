@@ -1,5 +1,5 @@
-import { idPatterns } from './idPatterns';
-import type { InventoryRef } from './parseManifestId';
+import { uriPatterns } from './uriPatterns.ts';
+import type { InventoryRef } from './manifestId';
 
 export type DocumentRef = InventoryRef & {
   startPage: string;
@@ -7,6 +7,6 @@ export type DocumentRef = InventoryRef & {
 };
 
 export function parseDocumentId(id: string): DocumentRef | undefined {
-  const groups = idPatterns.document.exec(id)?.groups;
+  const groups = uriPatterns.document.exec(id)?.groups;
   return groups && { inventory: groups.inventory, startPage: groups.startPage, endPage: groups.endPage };
 }

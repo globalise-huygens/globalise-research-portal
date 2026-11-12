@@ -1,11 +1,11 @@
-import { idPatterns } from './idPatterns';
-import type { PageRef } from './parseCanvasId';
+import { uriPatterns } from './uriPatterns.ts';
+import type { PageRef } from './canvasId';
 
 export type AnnotationRef = PageRef & {
   fragment: string;
 };
 
 export function parseAnnotationId(id: string): AnnotationRef | undefined {
-  const groups = idPatterns.annotation.exec(id)?.groups;
+  const groups = uriPatterns.annotation.exec(id)?.groups;
   return groups && { inventory: groups.inventory, page: groups.page, fragment: groups.fragment };
 }

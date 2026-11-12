@@ -1,10 +1,10 @@
-import { idPatterns } from './idPatterns';
+import { uriPatterns } from './uriPatterns.ts';
 
 export type InventoryRef = {
   inventory: string;
 };
 
 export function parseManifestId(id: string): InventoryRef | undefined {
-  const groups = idPatterns.manifest.exec(id)?.groups;
+  const groups = uriPatterns.manifest.exec(id)?.groups;
   return groups && { inventory: groups.inventory };
 }
