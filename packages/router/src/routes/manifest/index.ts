@@ -1,17 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { resetUrlParamsOnManifestChange, validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { findViewerPath, validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { stringifyUrlParams } from '../../params/urlParams.ts';
 
-/**
- * TODO Enable ssr for manifest viewer: only osd needs the browser
- * - split @knaw-huc/osd-iiif-viewer into iiif and osd barrel
- * - metadata, toc and stores should only use the iiif barrel
- * - import openseadragon lazily
- * - use type only imports for osd types
- */
+// TODO: remove once internal links do not use /manifest anymore
 export const Route = createFileRoute('/manifest/')({
   validateSearch: validateManifestUrlParams,
-  search: {
-    middlewares: [resetUrlParamsOnManifestChange],
+  beforeLoad: ({ search }) => {
+    redirect({ href: findViewerPath(search) + stringifyUrlParams(search), throw: true });
   },
-  ssr: false,
 });
