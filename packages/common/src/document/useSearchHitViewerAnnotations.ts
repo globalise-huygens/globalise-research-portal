@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { findWordsByOffsets, type Id } from '../annotation';
 import { useDocumentStore } from './DocumentStore';
 import { type CanvasId, useCanvasIndexes } from './ManifestViewerSlice';
@@ -22,9 +23,14 @@ export function useActiveHitAnnotationsInDiplomatic(canvasId: CanvasId): Id[] {
   return useMemo(() => hits.map((hit) => hit.id), [hits]);
 }
 
-export function useIsActiveHitInLineByLine(canvasId: CanvasId, id: Id): boolean {
-  return useDocumentStore((s) =>
-    findActiveCanvasSearchHits(s, canvasId).some((hit) => hit.id === id));
+export function useActiveHitAnnotationsInLineByLine(
+  canvasId: CanvasId,
+  ids: ReadonlySet<Id>,
+): Id[] {
+  return useDocumentStore(useShallow((s) =>
+    findActiveCanvasSearchHits(s, canvasId)
+      .map((hit) => hit.id)
+      .filter((id) => ids.has(id))));
 }
 
 function useHitWords(canvasId: CanvasId, hits: HtrHit[]): ReadonlySet<Id> {

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Id } from '../annotation';
 import { DocumentState, useDocumentStore } from './DocumentStore';
 import { CanvasId } from './ManifestViewerSlice';
@@ -18,12 +19,20 @@ export function useIsSelectedInLineByLine(
   return useDocumentStore((s) => getAllIdsFromCanvasSelection(s, canvasId).includes(id));
 }
 
+export function useSelectedAnnotationsInLineByLine(
+  canvasId: CanvasId,
+  ids: ReadonlySet<Id>,
+): Id[] {
+  return useDocumentStore(useShallow((s) =>
+    getAllIdsFromCanvasSelection(s, canvasId).filter((id) => ids.has(id))));
+}
+
 export function useIsClickedInLineByLine(
   canvasId: CanvasId,
-  id: Id,
+  ids: ReadonlySet<Id>,
 ): boolean {
   return useDocumentStore((s) =>
-    getIdsFromSelection(getCanvasSelection(s, canvasId, s.clicked)).includes(id));
+    getIdsFromSelection(getCanvasSelection(s, canvasId, s.clicked)).some((id) => ids.has(id)));
 }
 
 export function useSelectedAnnotationsInFacsimile(
