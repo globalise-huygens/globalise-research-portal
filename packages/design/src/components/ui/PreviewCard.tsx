@@ -2,7 +2,7 @@ import type { AriaAttributes, ReactNode } from 'react';
 import { EntityPreviewCard, type EntityPreviewCardData } from './EntityPreviewCard';
 import { PopoverCard } from './PopoverCard';
 
-export function EntityPreview({ data, isPending = false, children, ...props }: {
+export function PreviewCard({ data, isPending = false, children, ...props }: {
   data?: EntityPreviewCardData;
   isPending?: boolean;
   children?: (attributes: AriaAttributes) => ReactNode;

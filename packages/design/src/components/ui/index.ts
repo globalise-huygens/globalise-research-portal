@@ -1,4 +1,4 @@
-export { EntityPreview } from './EntityPreview';
+export { PreviewCard } from './PreviewCard.tsx';
 export { PopoverCard } from './PopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
