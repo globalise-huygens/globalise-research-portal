@@ -38,7 +38,7 @@ describe(buildPage.name, () => {
   it('reads the page meta from the front matter', async () => {
     const { page } = await buildPage(createSource(createMarkdown(frontMatter)));
     expect(page?.meta).toEqual({
-      path: 'page.md',
+      path: 'a.md',
       title: 'Foo',
       slug: 'foo-bar',
       summary: 'Bar',
@@ -93,7 +93,7 @@ describe(buildPage.name, () => {
   });
 
   it('keeps safe html and drops comments and scripts', async () => {
-    const body = '<sup>1</sup><!-- todo --><script>alert(1)</script>';
+    const body = '<sup>1</sup><!-- a --><script>alert(1)</script>';
     const { page } = await buildPage(createSource(createValidMarkdown(body)));
     expect(toHtml(page!.tree)).toBe('<p><sup>1</sup></p>');
   });
@@ -107,22 +107,22 @@ describe(buildPage.name, () => {
   });
 
   it('warns about local links to missing files only', async () => {
-    const body = '[gone](gone.md) [web](https://globalise.nl) [top](#top)';
+    const body = '[a](a.md) [b](https://foo.bar) [c](#c)';
     const source = createSource(createValidMarkdown(body));
     const { issues } = await buildPage(source);
     const reasons = getReasons(issues, 'warning');
-    expect(reasons).toEqual(['Unresolved link `gone.md`']);
+    expect(reasons).toEqual(['Unresolved link `a.md`']);
   });
 
   it('reports the line of a link in the page itself', async () => {
-    const source = createSource(createValidMarkdown('\n[gone](gone.md)'));
+    const source = createSource(createValidMarkdown('\n[a](a.md)'));
     const { issues } = await buildPage(source);
     expect(issues[0].place).toMatchObject({ start: { line: 9 } });
   });
 });
 
 function createSource(value: string): VFile {
-  return new VFile({ cwd: import.meta.dirname, path: 'page.md', value });
+  return new VFile({ cwd: import.meta.dirname, path: 'a.md', value });
 }
 
 function createMarkdown(yaml: string, body = ''): string {
