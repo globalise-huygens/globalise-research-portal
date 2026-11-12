@@ -18,7 +18,7 @@ import {
   ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { getRouteApi } from '@globalise/router';
+import { getRouteApi, toCanvasHref } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, getEventId, isEntity, isEvent } from '@globalise/common/annotation';
@@ -63,10 +63,10 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      void navigate({
-        search: { ...search, canvas: selectedCanvasId },
-        replace: true,
-      });
+      const href = toCanvasHref(selectedCanvasId, { ...search, canvas: selectedCanvasId });
+      if (href) {
+        void navigate({ href, replace: true });
+      }
     });
   }
 
