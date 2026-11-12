@@ -26,11 +26,3 @@ export function toManifestHref(
   const inventory = parseManifestId(manifestId);
   return inventory && toViewerHref(inventory, search);
 }
-
-export function findViewerPath(
-  { manifest, canvas }: ManifestUrlParams,
-): string {
-  const page = canvas ? parseCanvasId(canvas) : undefined;
-  const inventory = manifest ? parseManifestId(manifest) : undefined;
-  return createViewerPath(page ?? inventory ?? defaultInventory);
-}
