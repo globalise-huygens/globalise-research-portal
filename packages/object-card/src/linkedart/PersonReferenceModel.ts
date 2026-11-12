@@ -78,7 +78,7 @@ function annotationReference(value: unknown): ReferencePanelItemData | undefined
     .find((node) => node && hasType(node, 'Canvas'));
   const canvasUri = resourceUri(canvas);
   const scanIdentifier = canvasUri?.split('/canvas:')[1];
-  const scanHref = canvasUri ? toCanvasHref(canvasUri, { canvas: canvasUri }) : undefined;
+  const scanHref = canvasUri ? toCanvasHref(canvasUri, {}) : undefined;
   return {
     id: uri,
     title: scanIdentifier ?? 'Corpus mention',

@@ -41,7 +41,8 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const pathname = useLocation({ select: (location) => location.pathname });
-  const manifestUrl = createManifestId(parseViewerPath(pathname) ?? defaultInventory);
+  const viewer = parseViewerPath(pathname) ?? defaultInventory;
+  const manifestUrl = createManifestId(viewer);
   const searchState = getManifestSearchState(search);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
@@ -50,7 +51,7 @@ export function ManifestPage() {
     .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
   const activeHitCanvasId = activeHit?.canvasId;
 
-  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
+  const initialCanvasId = findInitialCanvasId(viewer, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
@@ -67,7 +68,7 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      const href = toCanvasHref(selectedCanvasId, { ...search, canvas: selectedCanvasId });
+      const href = toCanvasHref(selectedCanvasId, search);
       if (href) {
         void navigate({ href, replace: true });
       }

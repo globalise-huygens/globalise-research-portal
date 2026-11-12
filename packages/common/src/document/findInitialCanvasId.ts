@@ -1,19 +1,15 @@
 import type { CanvasId } from './ManifestViewerSlice';
-import { createCanvasId, parseDocumentName } from '../uri';
+import { type ViewerRef, createCanvasId } from '../uri';
 
 export function findInitialCanvasId(
-  { canvas, document }: { canvas?: CanvasId; document?: string },
+  ref: ViewerRef,
   activeHitCanvasId?: CanvasId,
 ): CanvasId | undefined {
-  if (canvas) {
-    return canvas;
+  if ('endPage' in ref) {
+    return activeHitCanvasId ?? createCanvasId(ref);
   }
-  if (activeHitCanvasId) {
-    return activeHitCanvasId;
+  if ('page' in ref) {
+    return createCanvasId(ref);
   }
-  if (document) {
-    const range = parseDocumentName(document);
-    return range && createCanvasId(range);
-  }
-  return undefined;
+  return activeHitCanvasId;
 }
