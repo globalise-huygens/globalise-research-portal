@@ -18,7 +18,7 @@ import {
   ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { getRouteApi, toCanvasHref } from '@globalise/router';
+import { getRouteApi, toCanvasHref, toManifestHref } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, getEventId, isEntity, isEvent } from '@globalise/common/annotation';
@@ -145,7 +145,10 @@ export function ManifestPage() {
   }
 
   function handleManifestChange(manifest: string) {
-    void navigate({ search: { ...search, manifest } });
+    const href = toManifestHref(manifest, { ...search, manifest });
+    if (href) {
+      void navigate({ href });
+    }
   }
 
   return (

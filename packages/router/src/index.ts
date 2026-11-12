@@ -1,6 +1,6 @@
 export { provideRouteComponents, type RouteComponents, type RouteId } from './router.ts';
 export { toHref } from './toHref.ts';
-export { toCanvasHref, toViewerHref } from './viewer/viewerHref.ts';
+export { defaultInventory, toCanvasHref, toManifestHref, toViewerHref } from './viewer/viewerHref.ts';
 export { validateSearchUrlParams, type SearchUrlParams } from './params/searchUrlParams.ts';
 export type { ManifestUrlParams } from './params/manifestUrlParams.ts';
 export { facets, type Facet } from './params/facetDefinitions.ts';
