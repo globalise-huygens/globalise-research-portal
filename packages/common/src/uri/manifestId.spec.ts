@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseManifestId } from './parseManifestId';
+import { parseManifestId } from './manifestId';
 
 describe(parseManifestId.name, () => {
   // future: https://id.globalise.nl/hdl:20.500.14722
