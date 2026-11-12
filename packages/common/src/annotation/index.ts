@@ -33,4 +33,5 @@ export { getPageText } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';
 export * from './SearchHitModel';
+export { findClassifiedTarget } from './findClassifiedTarget.ts';
 export { findWordsByOffsets, type Offsets, type WordOffsets } from './findWordsByOffsets.ts';

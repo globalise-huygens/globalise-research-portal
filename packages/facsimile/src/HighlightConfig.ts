@@ -31,6 +31,7 @@ export function toWordHighlightConfigs(
       id: a.id,
       path: toPath(a),
       text: findTextualBodyValue(a) ?? orThrow('No body value'),
+      tones: {},
       ...classificationsByWord[a.id],
     }));
 }

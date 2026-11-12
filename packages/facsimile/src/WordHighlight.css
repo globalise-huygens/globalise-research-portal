@@ -16,7 +16,3 @@
         fill: var(--color-yellow-300);
     }
 }
-
-.word-highlight.event {
-    fill: rgb(255 140 0 / 20%);
-}

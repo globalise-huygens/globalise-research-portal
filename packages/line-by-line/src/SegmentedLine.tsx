@@ -16,10 +16,13 @@ type LineProps = {
   blockId: Id | null;
   segments: TextSegment<Annotation>[];
   highlightCategories: Set<ClassifiedCategory>;
+  classifiedToWords: Record<Id, Id[]>;
 };
 
 export const SegmentedLine = memo(function SegmentedLine(
-  { canvasId, lineId, lineNumber, blockId, segments, highlightCategories }: LineProps,
+  {
+    canvasId, lineId, lineNumber, blockId, segments, highlightCategories, classifiedToWords,
+  }: LineProps,
 ) {
   const annotationIds = useMemo(
     () => new Set(segments.flatMap((segment) => segment.annotations.map((annotation) => annotation.id))),
@@ -57,6 +60,7 @@ export const SegmentedLine = memo(function SegmentedLine(
           blockId={blockId}
           segments={segments}
           highlightCategories={highlightCategories}
+          classifiedToWords={classifiedToWords}
           selectedIds={selectedIds}
           activeHitIds={activeHitIds}
         />

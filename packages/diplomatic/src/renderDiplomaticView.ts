@@ -1,8 +1,10 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
+  findClassifiedTarget,
   findTextPositionSelector,
   getClassifiedClassNames,
+  getClassifiedType,
   getPageText,
   indexAnnotations,
   isClassified,
@@ -53,7 +55,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  $view.classList.add('original-layout');
+  $view.classList.add('original-layout', 'highlight-layers');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
@@ -98,7 +100,7 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
+  const { blockToLines, wordToBlock, classifiedToWords } = indexAnnotations(annotations, pageAnnoId);
   const $classifiedToSegments: Record<Id, HTMLSpanElement[]> = {};
   const $searchHitToSegments: Record<Id, HTMLSpanElement[]> = {};
 
@@ -154,12 +156,13 @@ export function renderDiplomaticView(
 
       for (const annotation of segment.annotations.filter(isClassified)) {
         $segment.classList.add(...getClassifiedClassNames(annotation));
+        ($classifiedToSegments[annotation.id] ??= []).push($segment);
       }
-      const classified = segment.annotations.find(isClassified);
+      const target = findClassifiedTarget(segment.annotations, classifiedToWords);
 
-      if (classified) {
+      if (target && isClassified(target)) {
         $segment.tabIndex = 0;
-        $segment.dataset.classifiedId = classified.id;
+        $segment.dataset.classifiedId = target.id;
         $segment.setAttribute('role', 'button');
         $segment.setAttribute('aria-haspopup', 'dialog');
         $segment.setAttribute(
@@ -167,15 +170,10 @@ export function renderDiplomaticView(
           `Select: ${$segment.textContent}`,
         );
 
-        if (!$classifiedToSegments[classified.id]) {
-          $classifiedToSegments[classified.id] = [];
-        }
-        $classifiedToSegments[classified.id].push($segment);
-
-        $segment.addEventListener('click', () => onClick(classified.id));
+        $segment.addEventListener('click', () => onClick(target.id));
         $segment.addEventListener('mouseenter', () => {
           setHoverAttribute($segment, 'delayed');
-          onHover(classified.id);
+          onHover(target.id);
         });
         $segment.addEventListener('mouseleave', () => {
           if (document.activeElement !== $segment) {
@@ -186,7 +184,7 @@ export function renderDiplomaticView(
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            onClick(classified.id);
+            onClick(target.id);
           }
         });
       } else {
@@ -270,12 +268,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.add('selected');
+      $word.classList.add('selected-word');
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => { $r.classList.add('selected'); });
+      for (const $s of $segments) {
+        $s.classList.add(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -285,12 +285,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.remove('selected');
+      $word.classList.remove('selected-word');
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
     } else if (isClassified(annotation)) {
       const $segments = $classifiedToSegments[id];
-      $segments?.forEach(($r) => $r.classList.remove('selected'));
+      for (const $s of $segments) {
+        $s.classList.remove(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
