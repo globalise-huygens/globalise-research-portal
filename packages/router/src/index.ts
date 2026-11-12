@@ -9,6 +9,7 @@ export {
   lazyRouteComponent,
   Outlet,
   useNavigate,
+  useLocation,
   useRouter,
   useSearch,
 } from '@tanstack/react-router';
