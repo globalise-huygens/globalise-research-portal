@@ -2,7 +2,7 @@ import { type ViewerRef, createViewerPath, parseCanvasId, parseManifestId } from
 import { stringifyUrlParams } from '../params/urlParams.ts';
 import type { ManifestUrlParams } from '../params/manifestUrlParams.ts';
 
-const defaultInventory = { inventory: '1053' };
+export const defaultInventory = { inventory: '1053' };
 
 export function toViewerHref(
   ref: ViewerRef,
@@ -17,6 +17,14 @@ export function toCanvasHref(
 ): string | undefined {
   const page = parseCanvasId(canvasId);
   return page && toViewerHref(page, search);
+}
+
+export function toManifestHref(
+  manifestId: string,
+  search: ManifestUrlParams,
+): string | undefined {
+  const inventory = parseManifestId(manifestId);
+  return inventory && toViewerHref(inventory, search);
 }
 
 export function findViewerPath(
