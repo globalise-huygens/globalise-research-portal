@@ -9,8 +9,8 @@
     --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
-    --search-hit-fill: var(--color-yellow-100, #fffcc1);
-    --search-hit-active-fill: var(--color-yellow-300, #fff751);
+    --search-hit-fill: var(--color-search-hit);
+    --search-hit-active-fill: var(--color-search-hit-active);
     --event-test-highlight: rgb(255 140 0 / 20%);
 
     color: var(--diplomatic-text);

@@ -20,6 +20,7 @@
     "@globalise/metadata": "workspace:*",
     "@iiif/helpers": "^4.0.0",
     "@iiif/parser": "^4.0.3",
+    "@knaw-huc/osd-iiif-viewer": "^0.7.1",
     "openseadragon": "^6.1.1",
     "react-aria": "^3.50.0",
     "react-split-pane": "^3.2.0",
