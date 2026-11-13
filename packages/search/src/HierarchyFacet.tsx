@@ -55,6 +55,7 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
+  // The expansions are added here to keep the counts in sync with the expanded query
   const { selectedExpansions } = useTermSelection();
   const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state, selectedExpansions), [state, selectedExpansions]);
   const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));

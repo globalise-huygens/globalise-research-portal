@@ -23,6 +23,7 @@ export default function RangeFacet({ facetKey }: { facetKey: string }) {
 
 function RangeSlider({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
+  // The expansions are added here to keep the counts in sync with the expanded query
   const { selectedExpansions } = useTermSelection();
   const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state, selectedExpansions), [state, selectedExpansions]);
   const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));

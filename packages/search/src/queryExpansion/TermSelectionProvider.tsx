@@ -38,7 +38,7 @@ export function TermSelectionProvider({ children }: { children: ReactNode }) {
   const [selectedFor, setSelectedFor] = useState<QueryExpansion | undefined>(undefined);
   const [selectedTerms, setSelectedTerms] = useState<Selection>({});
 
-  // Reset the selection while rendering (not in an effect) when the expansions change,
+  // Reset the selection while rendering when the expansions change,
   // so no child ever renders with the selection of a previous query
   if (queryExpansion !== selectedFor) {
     setSelectedFor(queryExpansion);
@@ -86,10 +86,10 @@ export function TermSelectionProvider({ children }: { children: ReactNode }) {
       return undefined;
     }
 
-    return Object.fromEntries(Object.entries(selectedTerms).map(([term, sources]) => {
-      const flatList = Object.values(sources).flatMap((source) => [...source]);
-      const newFlatList = new Set(flatList);
-      return [term, [...newFlatList].sort()];
+    return Object.fromEntries(Object.entries(selectedTerms).map(([term, expansions]) => {
+      const flatExpansions = Object.values(expansions).flatMap((source) => [...source]);
+      const uniqueExpansions = new Set(flatExpansions);
+      return [term, [...uniqueExpansions].sort()];
     }));
   }, [queryExpansion, selectedFor, selectedTerms]);
 

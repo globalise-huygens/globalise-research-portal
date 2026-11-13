@@ -33,6 +33,9 @@ export default function parseQuery(query: TreeQuery, queryExpansions?: Record<st
           bool: {
             should: [
               { match: { [field]: { query: query.value } } },
+              // 'match_phrase' is used because the analyser may split an expansion into several tokens.
+              // For example, 'schip' is expanded into 'Na-schip', which 'match' would turn into 'na OR schip'.
+              // This causes 'na' to also be highlighted.
               ...queryExpansions[query.value].map((expansion) => ({ match_phrase: { [field]: { query: expansion } } })),
             ],
             minimum_should_match: 1,
