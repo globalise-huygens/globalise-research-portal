@@ -117,7 +117,7 @@ export default function parseQuery(query: TreeQuery, queryExpansions?: Record<st
       if (toAnnotationType(query.field)) {
         return {
           intervals: {
-            annotatedText: { ...toInterval(query), boost: query.boost },
+            annotatedText: { ...toInterval(query, queryExpansions), boost: query.boost },
           },
         };
       }
@@ -133,13 +133,13 @@ export default function parseQuery(query: TreeQuery, queryExpansions?: Record<st
       // Runs when the first param is an annotation type, e.g., 'containing(type:person,adriaan)'
       return {
         intervals: {
-          annotatedText: { ...toInterval(query), boost: query.boost },
+          annotatedText: { ...toInterval(query, queryExpansions), boost: query.boost },
         },
       };
     case 'near':
       return {
         intervals: {
-          [field]: { ...toInterval(query), boost: query.boost },
+          [field]: { ...toInterval(query, queryExpansions), boost: query.boost },
         },
       };
     default:
@@ -151,10 +151,24 @@ export default function parseQuery(query: TreeQuery, queryExpansions?: Record<st
   }
 }
 
-export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
+export function toInterval(query: TreeQuery, queryExpansions?: Record<string, string[]>): QueryDslIntervalsContainer {
   switch (query.type) {
     case 'term':
-      return { match: { query: query.value } };
+      if (queryExpansions?.[query.value]) {
+        return {
+          any_of: {
+            intervals: [
+              { match: { query: query.value } },
+              // 'match_phrase' does not exist on intervals, so by using max_gaps: 0 and ordered: true,
+              // the functionality is simulated. The 'Na-schip' example from above will be searched for like,
+              // 'na' directly followed by 'schip'.
+              ...queryExpansions[query.value].map((expansion) => ({ match: { query: expansion, max_gaps: 0, ordered: true } })),
+            ],
+          },
+        };
+      } else {
+        return { match: { query: query.value } };
+      }
     case 'phrase':
       return {
         match: {
@@ -170,13 +184,13 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
     case 'regex':
       return { regexp: { pattern: query.value } };
     case 'or':
-      return { any_of: { intervals: query.clauses.map(toInterval) } };
+      return { any_of: { intervals: query.clauses.map((clause) => toInterval(clause, queryExpansions)) } };
     case 'and':
-      return { all_of: { intervals: query.clauses.map(toInterval), ordered: false } };
+      return { all_of: { intervals: query.clauses.map((clause) => toInterval(clause, queryExpansions)), ordered: false } };
     case 'near':
       return {
         all_of: {
-          intervals: (query.clauses as readonly TreeQuery[]).map(toInterval),
+          intervals: (query.clauses as readonly TreeQuery[]).map((clause) => toInterval(clause, queryExpansions)),
           max_gaps: query.distance,
           ordered: false,
         },
@@ -188,7 +202,7 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
       const annotationType = toAnnotationType(query.field);
       if (annotationType) {
         const container = { match: { query: `type:${annotationType}`, analyzer: 'keyword' } };
-        return toContainedInterval(query.clause, container, true);
+        return toContainedInterval(query.clause, container, true, queryExpansions);
       }
       throw new Error(`Field '${query.field}' is not supported inside near()`);
     }
@@ -197,7 +211,7 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
       if (query.container.type === 'term') {
         throw new Error(`Metadata field '${query.container.value}' is not supported inside near()`);
       }
-      return toContainedInterval(query.clause, toInterval(query.container), query.type === 'containing');
+      return toContainedInterval(query.clause, toInterval(query.container), query.type === 'containing', queryExpansions);
     case 'not':
     case 'entity':
       throw new Error(`'${query.type}' is not supported inside near()`);
@@ -231,10 +245,11 @@ function toContainedInterval(
   clause: TreeQuery,
   container: QueryDslIntervalsContainer,
   contained: boolean,
+  queryExpansions: Record<string, string[]> | undefined,
 ): QueryDslIntervalsContainer {
   return {
     all_of: {
-      intervals: [toInterval(clause)],
+      intervals: [toInterval(clause, queryExpansions)],
       filter: contained ? { overlapping: container } : { not_overlapping: container },
     },
   };
