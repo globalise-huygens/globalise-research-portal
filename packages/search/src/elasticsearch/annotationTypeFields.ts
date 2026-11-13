@@ -37,3 +37,16 @@ export const annotationTypeFields: Record<string, string> = {
   transformation: 'Transformation',
   voyage: 'Voyage',
 };
+
+// The keys of annotation tokens. An annotation is indexed as `key:value` tokens inside annotatedText,
+// not as separate fields, so `placeId:GLOB_574` is looked up as one exact token.
+const annotationTokenKeys = ['type', 'personId', 'placeId'];
+
+export function isAnnotationToken(field: string): boolean {
+  return annotationTokenKeys.includes(field);
+}
+
+export function toAnnotationType(name: string): string | undefined {
+  const key = name.toLowerCase();
+  return Object.hasOwn(annotationTypeFields, key) ? annotationTypeFields[key] : undefined;
+}

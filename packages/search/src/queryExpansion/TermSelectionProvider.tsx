@@ -2,6 +2,8 @@ import { createContext, useCallback, useMemo, useState, useContext, type ReactNo
 import getQueryExpansionQueryOptions, { QueryExpansion } from './getQueryExpansionQueryOptions';
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { useQuery } from '@tanstack/react-query';
+import getExpandableTerms from './getExpandableTerms';
+import { getQuery } from '@knaw-huc/searchfield';
 
 type Selected = 'all' | 'some' | 'none';
 type Selection = Record<string, Record<string, Set<string>>>;
@@ -34,7 +36,23 @@ const SelectionContext = createContext<TermSelection | null>(null);
 
 export function TermSelectionProvider({ children }: { children: ReactNode }) {
   const { query } = useSearchFacet();
-  const { data: queryExpansion } = useQuery(getQueryExpansionQueryOptions(query ?? ''));
+
+  // Kweepeer does not know the query language, so it also returns expansions for field and function names (e.g., 'person', 'near').
+  // Keep only the actual search words.
+  const selectExpandableTerms = useCallback((queryExpansion: QueryExpansion): QueryExpansion => {
+    const expandableTerms = getExpandableTerms(getQuery(query ?? '').query);
+    return {
+      ...queryExpansion,
+      terms: Object.fromEntries(
+        Object.entries(queryExpansion.terms).filter(([term]) => expandableTerms.has(term))),
+    };
+  }, [query]);
+
+  const { data: queryExpansion } = useQuery({
+    ...getQueryExpansionQueryOptions(query ?? ''),
+    select: selectExpandableTerms,
+  });
+
   const [selectedFor, setSelectedFor] = useState<QueryExpansion | undefined>(undefined);
   const [selectedTerms, setSelectedTerms] = useState<Selection>({});
 

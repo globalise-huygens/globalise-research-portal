@@ -1,10 +1,6 @@
 import type { TreeQuery } from '@knaw-huc/searchfield';
 import type { QueryDslIntervalsContainer, QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
-import { annotationTypeFields } from './annotationTypeFields';
-
-// The keys of annotation tokens. An annotation is indexed as `key:value` tokens inside annotatedText,
-// not as separate fields, so `placeId:GLOB_574` is looked up as one exact token.
-const annotationTokenKeys = ['type', 'personId', 'placeId'];
+import { isAnnotationToken, toAnnotationType } from './annotationTypeFields';
 
 export default function parseQuery(query: TreeQuery, queryExpansions?: Record<string, string[]>, field = 'annotatedText'): QueryDslQueryContainer {
   switch (query.type) {
@@ -102,7 +98,7 @@ export default function parseQuery(query: TreeQuery, queryExpansions?: Record<st
       // A 'field' is used when the user searches from something like 'placeId:GLOB_574', 'person:adriaan' or 'title:missive'
     case 'field':
       // This runs when a user searches for something like 'placeId:GLOB_574'. It only returns documents containing that placeId.
-      if (annotationTokenKeys.includes(query.field)) {
+      if (isAnnotationToken(query.field)) {
         return {
           term: {
             annotatedText: {
@@ -196,7 +192,7 @@ export function toInterval(query: TreeQuery, queryExpansions?: Record<string, st
         },
       };
     case 'field': {
-      if (annotationTokenKeys.includes(query.field)) {
+      if (isAnnotationToken(query.field)) {
         return { match: { query: toAnnotationToken(query.field, query.clause), analyzer: 'keyword' } };
       }
       const annotationType = toAnnotationType(query.field);
@@ -234,11 +230,6 @@ function toAnnotationToken(field: string, clause: TreeQuery): string {
     throw new Error(`Unsupported annotation type '${clause.value}'`);
   }
   return `type:${annotationType}`;
-}
-
-function toAnnotationType(name: string): string | undefined {
-  const key = name.toLowerCase();
-  return Object.hasOwn(annotationTypeFields, key) ? annotationTypeFields[key] : undefined;
 }
 
 function toContainedInterval(
