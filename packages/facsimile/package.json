@@ -13,8 +13,8 @@
   "dependencies": {
     "@globalise/common": "workspace:*",
     "@globalise/design": "workspace:*",
-    "@iiif/helpers": "^4.0.0",
-    "@iiif/parser": "^4.0.3",
+    "@iiif/helpers": "^4.0.2",
+    "@iiif/parser": "^4.0.6",
     "@knaw-huc/osd-iiif-viewer": "^0.7.1",
     "openseadragon": "^6.1.1"
   },
@@ -23,10 +23,10 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.3"
+    "vitest": "^5.1.0"
   }
 }

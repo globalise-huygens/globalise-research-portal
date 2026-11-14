@@ -15,7 +15,7 @@
     "@globalise/design": "workspace:*",
     "@knaw-huc/original-layout": "^0.2.3",
     "@knaw-huc/text-annotation-segmenter": "^0.8.0",
-    "d3-selection": "^3.0.0"
+    "d3-selection": "^3.0.1"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -23,10 +23,10 @@
   },
   "devDependencies": {
     "@types/d3-selection": "^3.0.12",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.3"
+    "vitest": "^5.1.0"
   }
 }
