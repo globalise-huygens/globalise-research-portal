@@ -73,7 +73,7 @@ export type FieldQuery = {
 } & ASTBase;
 
 export type ContainmentQuery = {
-  type: 'containing' | 'notContaining';
+  type: 'containing' | 'notcontaining';
   container: TreeQuery;
   clause: TreeQuery;
 } & ASTBase;

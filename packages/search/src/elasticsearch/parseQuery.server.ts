@@ -107,7 +107,7 @@ export default function parseQuery(query: TreeQuery, field = 'annotatedText'): Q
       // This runs for all other cases, e.g., 'title:missive'. This is default ES syntax to search through keyword fields.
       return parseQuery(query.clause, query.field);
     case 'containing':
-    case 'notContaining':
+    case 'notcontaining':
       // Runs when the first param is a bare word, e.g., 'containing(title,missive)'
       if (query.container.type === 'term') {
         const inField = parseQuery(query.clause, query.container.value);
@@ -176,7 +176,7 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
       throw new Error(`Field '${query.field}' is not supported inside near()`);
     }
     case 'containing':
-    case 'notContaining':
+    case 'notcontaining':
       if (query.container.type === 'term') {
         throw new Error(`Metadata field '${query.container.value}' is not supported inside near()`);
       }
