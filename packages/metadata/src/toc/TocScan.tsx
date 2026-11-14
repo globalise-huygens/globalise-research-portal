@@ -1,16 +1,16 @@
 import type { RefObject } from 'react';
-import { setSelectedCanvas } from '@globalise/common/document';
+import { setSelectedCanvas, setSelectedDocument } from '@globalise/common/document';
 import type { ManifestScan } from './toToc';
 
 export type TocScanProps = {
   scan: ManifestScan;
+  documentId: string;
   isSelected: boolean;
-  onSelect: () => void;
   scanRef?: RefObject<HTMLButtonElement | null>;
 };
 
 export function TocScan(
-  { scan, isSelected, onSelect, scanRef }: TocScanProps,
+  { scan, documentId, isSelected, scanRef }: TocScanProps,
 ) {
   const thumbnail = scan.thumbnailUrl && (
     <img
@@ -30,7 +30,7 @@ export function TocScan(
       className="toc-card"
       aria-current={isSelected ? 'true' : undefined}
       onClick={() => {
-        onSelect();
+        setSelectedDocument(documentId);
         setSelectedCanvas(scan.canvasId, 'external');
       }}
     >

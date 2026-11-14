@@ -39,7 +39,7 @@ const annotations = Object.fromEntries([
 ].map((annotation) => [annotation.id, annotation]));
 
 describe('indexAnnotations', () => {
-  it('maps entities and events alike to the words they overlap', () => {
+  it('maps entities and events to overlapping words', () => {
     expect(indexAnnotations(annotations, pageId).classifiedToWords).toEqual({
       event: ['word:1'],
       entity: ['word:1', 'word:2'],

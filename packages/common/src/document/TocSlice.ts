@@ -3,6 +3,7 @@ import { setState, useDocumentStore } from './DocumentStore';
 export type TocNavigation = 'document' | 'scan';
 
 export type TocState = {
+  selectedDocumentId: string | null;
   expandedDocIds: string[];
   navigation: TocNavigation | null;
 };
@@ -10,6 +11,14 @@ export type TocState = {
 export type TocSlice = {
   toc: TocState;
 };
+
+export function setSelectedDocument(selectedDocumentId: string | null) {
+  setState((s) => ({ toc: { ...s.toc, selectedDocumentId } }));
+}
+
+export function useSelectedDocumentId(): string | null {
+  return useDocumentStore((s) => s.toc.selectedDocumentId);
+}
 
 export function toggleTocDocument(id: string) {
   setState((s) => {

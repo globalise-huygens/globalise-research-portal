@@ -9,5 +9,7 @@ export { isVisible } from './util/isVisible.ts';
 export { mergePaths, type TreeNode } from './util/mergePaths.ts';
 export { getSVGElement } from './util/getSVGElement';
 
+export { type EntityTagType, getEntityBadgeType, getEntityTagType } from './entity/EntityTypes.ts';
 export * from './linkedart';
 export * from './document/ManifestMetadataSlice.ts';
+export type { MetadataState } from './document/ManifestMetadataState.ts';

@@ -1,0 +1,61 @@
+import {
+  entityClassificationGroups,
+  getEntityClassificationDefinition,
+  isCidocEntityClassificationId,
+  type CidocEntityClassificationId,
+} from '@globalise/common/annotation';
+import type { LinkedArtNode } from '@globalise/common';
+import type { NerCategoryGroup } from './EntityPanelModel.ts';
+
+export type NerCategoryTotals = Map<CidocEntityClassificationId, number>;
+
+/**
+ * NER categories grouped like the entity highlight menu
+ */
+export function toNerCategoryGroups(
+  totals: NerCategoryTotals,
+): NerCategoryGroup[] {
+  return entityClassificationGroups
+    .map(({ classificationIds, ...group }) => ({
+      ...group,
+      nerCategories: classificationIds
+        .map((id) => ({
+          id,
+          label: getEntityClassificationDefinition(id).highlightLabel,
+          total: totals.get(id) ?? 0,
+        }))
+        .filter((nerCategory) => nerCategory.total),
+    }))
+    .filter((group) => group.nerCategories.length);
+}
+
+/**
+ * The annotations set of a document has an annotation collection
+ * per NER category, identified by a `.annotations.<tag>` suffix
+ * and counted by its `total`.
+ */
+export function toNerCategoryTotals(
+  collections: LinkedArtNode[],
+): NerCategoryTotals {
+  const totals: NerCategoryTotals = new Map();
+  for (const collection of collections) {
+    const { id, total } = collection;
+    const nerCategoryId = `ner:${id?.split('.annotations.')[1]}`;
+    if (isCidocEntityClassificationId(nerCategoryId) && isNumber(total)) {
+      totals.set(nerCategoryId, total);
+    }
+  }
+  return totals;
+}
+
+export function countTotal(group: NerCategoryGroup): number {
+  return group.nerCategories.reduce((sum, { total }) => sum + total, 0);
+}
+
+export function hasSubcategories(group: NerCategoryGroup): boolean {
+  return !isCidocEntityClassificationId(group.id);
+}
+
+function isNumber(value: unknown): value is number {
+  return typeof value === 'number';
+}
