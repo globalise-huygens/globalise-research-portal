@@ -1,0 +1,130 @@
+@top Query {
+  Expression*
+}
+
+@precedence {
+  not @right,
+  and @left,
+  or  @left
+}
+
+Expression {
+  Clause                         |
+  !not Not Expression            |
+  Expression !and And Expression |
+  Expression !or Or Expression
+}
+
+Clause {
+  Primitive Boost?
+}
+
+Primitive {
+  TermClause   |
+  PhraseClause |
+  Regex        |
+  EntityToken  |
+  Group        |
+  FieldClause  |
+  FunctionCall
+}
+
+TermClause {
+  FuzzyTerm          |
+  PrefixWildcardTerm
+}
+
+PhraseClause {
+  Phrase Proximity?
+}
+
+Group {
+  "(" Expression* ")"
+}
+
+FuzzyTerm {
+  Term Fuzzy?
+}
+
+PrefixWildcardTerm {
+  Term "*"
+}
+
+Proximity {
+  "~" Integer
+}
+
+Fuzzy {
+  "~" Integer?
+}
+
+And {
+  @specialize<Term, "AND">
+}
+
+Or {
+  @specialize<Term, "OR">
+}
+
+Not {
+  @specialize<Term, "NOT">
+}
+
+Boost {
+  "^" (Integer | Float)
+}
+
+FunctionCall { FunctionName "(" Expression ("," Expression)* ("," Integer)? ")" }
+
+FunctionName {
+  @specialize<Term, "containing">    |
+  @specialize<Term, "notContaining"> |
+  @specialize<Term, "near">
+}
+
+FieldClause { Term ":" (TermClause | PhraseClause | Regex | EntityToken | Group) }
+
+@tokens {
+  EntityToken {
+    "@{" ![|}]+ "|" ![|}]+ "|" ![}]+ "}"
+  }
+
+  Term {
+    (![ \t\n\r()\[\]{}"/~^*?:\\@,] | Escape)+
+  }
+
+  Phrase {
+    '"' (!["\\] | Escape)* '"'
+  }
+
+  Regex {
+    "/" (![/\\] | Escape)* "/"
+  }
+
+  Integer {
+    @digit+
+  }
+
+  Float {
+    @digit+ "." @digit+
+  }
+
+  Escape {
+    "\\" _
+  }
+
+  "(" ")" "~" "^" "*" ":" ","
+
+  @precedence {
+    Float,
+    Integer,
+    Term
+  }
+}
+
+@skip {
+  " "  |
+  "\t" |
+  "\n" |
+  "\r"
+}

@@ -17,6 +17,7 @@ const reactPackages = [
   'packages/line-by-line/**/*.{ts,tsx}',
   'packages/manifest/**/*.{ts,tsx}',
   'packages/search/**/*.{ts,tsx}',
+  'packages/searchfield/**/*.{ts,tsx}',
 ];
 
 export default tseslint.config(

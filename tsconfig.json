@@ -13,5 +13,6 @@
     { "path": "packages/object-card" },
     { "path": "packages/router" },
     { "path": "packages/search" },
+    { "path": "packages/searchfield" }
   ]
 }
