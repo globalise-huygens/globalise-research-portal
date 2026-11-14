@@ -5,6 +5,7 @@ import { getHighlight } from '@knaw-huc/faceted-search-react';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { POST_TAG, PRE_TAG } from './highlightTags';
+import { tagAnnotatedHits } from './tagAnnotatedHits';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets } from './calculateHtrOffsets';
 import { findActiveEsHitIndex } from './findActiveEsHitIndex';
@@ -32,7 +33,6 @@ const highlightDocument = createServerFn({ method: 'POST' })
     if (!taggedText) {
       return { hits: [], activeEsHitIndex: null };
     }
-    // TODO: use parseAnnotatedText from parse-es-annotated-text
     const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
     const mappings = selectTextRangeMappings(data.docDbId);
     const hits = offsets.flatMap((offset, esHitIndex) => {
@@ -57,13 +57,12 @@ async function fetchTaggedText(request: ManifestSearchState): Promise<string | u
     size: 1,
     _source: false,
     highlight: {
-      pre_tags: [PRE_TAG],
-      post_tags: [POST_TAG],
       fields: {
-        text: { number_of_fragments: 0 },
+        annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
     query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
   });
-  return result.hits.hits[0]?.highlight?.text[0];
+  const annotatedText = result.hits.hits[0]?.highlight?.annotatedText[0];
+  return annotatedText && tagAnnotatedHits(annotatedText);
 }

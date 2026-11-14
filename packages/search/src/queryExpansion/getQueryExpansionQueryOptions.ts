@@ -15,13 +15,15 @@ export type SourceExpansion = {
   source_name: string;
 };
 
+const INCLUDED_MODULES = 'embeddings,inthislex';
+
 export default function getQueryExpansionQueryOptions(query: string) {
   return queryOptions({
     queryKey: ['query_expansion', query],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
       try {
-        const result = await fetch(`${url}?q=${encodeURIComponent(query)}`);
+        const result = await fetch(`${url}?q=${encodeURIComponent(query)}&include=${INCLUDED_MODULES}`);
         if (!result.ok) {
           throw new Error(`Failed to obtain query expansions for: ${query}`);
         }

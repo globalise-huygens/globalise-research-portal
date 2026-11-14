@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import type { GlobaliseSearchState } from '../utils/getSearchState';
-import { POST_TAG, PRE_TAG } from './highlightTags';
+import { tagAnnotatedHits } from './tagAnnotatedHits';
 
 import type { EntityTagType } from '@globalise/design';
 
@@ -55,10 +55,10 @@ const search = createServerFn({ method: 'POST' })
       from: data.offset ?? 0,
       size: data.limit ?? 10,
       highlight: {
-        pre_tags: [PRE_TAG],
-        post_tags: [POST_TAG],
         fields: {
-          text: {},
+          // Probably best type of highlighter to use together with the annotated-text plugin that's installed on the index
+          // For more info on highlighter, see: https://www.elastic.co/docs/reference/elasticsearch/plugins/mapper-annotated-text-highlighter.
+          annotatedText: { type: 'annotated' },
         },
       },
       _source: [
@@ -91,7 +91,7 @@ const search = createServerFn({ method: 'POST' })
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,
       endDate: hit._source!.endDate,
-      mentions: hit.highlight?.text ?? [],
+      mentions: hit.highlight?.annotatedText.map(tagAnnotatedHits) ?? [],
     }));
   });
 
