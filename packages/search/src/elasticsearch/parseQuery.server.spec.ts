@@ -41,7 +41,7 @@ describe(parseQuery.name, () => {
   });
 
   it('finds a term outside an annotation', () => {
-    const query: TreeQuery = { type: 'notContaining', container: field('type', 'place'), clause: term('batavia'), span };
+    const query: TreeQuery = { type: 'notcontaining', container: field('type', 'place'), clause: term('batavia'), span };
     expect(parseQuery(query)).toEqual({
       intervals: {
         annotatedText: {
@@ -57,7 +57,7 @@ describe(parseQuery.name, () => {
   });
 
   it('excludes documents with a term in a metadata field', () => {
-    const query: TreeQuery = { type: 'notContaining', container: term('title'), clause: term('missive'), span };
+    const query: TreeQuery = { type: 'notcontaining', container: term('title'), clause: term('missive'), span };
     expect(parseQuery(query)).toEqual({ bool: { must_not: [{ match: { title: { query: 'missive' } } }] } });
   });
 

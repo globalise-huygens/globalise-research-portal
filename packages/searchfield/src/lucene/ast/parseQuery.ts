@@ -327,7 +327,7 @@ function functionCall(
   const functionName = source.slice(name.from, name.to);
   switch (functionName) {
     case 'containing':
-    case 'notContaining':
+    case 'notcontaining':
       if (clauses.length !== 2 || distance !== undefined) {return null;}
 
       return withBase(
