@@ -3,11 +3,9 @@ import {
   getEntityClassificationDefinition,
   getPrimaryEntityBody,
   isEntity,
-  isHighlighted,
   type Annotation,
   type EntityBody,
   type CidocEntityClassificationId,
-  type ClassifiedCategory,
   type EntityPreviewStrategy,
 } from '@globalise/common/annotation';
 import { RelationLink } from '@globalise/object-card';
@@ -63,8 +61,7 @@ export function ManifestEntityPreview() {
     };
     update(useDocumentStore.getState());
     return useDocumentStore.subscribe((state, previous) => {
-      if (state.hovered !== previous.hovered || state.canvases !== previous.canvases
-        || state.highlightCategories !== previous.highlightCategories) {
+      if (state.hovered !== previous.hovered || state.canvases !== previous.canvases) {
         update(state);
       }
     });
@@ -95,45 +92,16 @@ function getHoveredAnnotation(
   state: DocumentState,
   hovered: Selection | null,
 ): EntityAnnotation | null {
-  if (!hovered || hovered.type === 'block') {
+  if (hovered?.type !== 'classified') {
     return null;
   }
-
-  for (const { annotations, indexes } of Object.values(state.canvases)) {
+  for (const { annotations } of Object.values(state.canvases)) {
     const annotation = annotations?.[hovered.id];
-    if (!annotations || !annotation) {
-      continue;
+    if (annotation) {
+      return isEntity(annotation) ? annotation : null;
     }
-    if (isEntity(annotation)) {
-      return annotation;
-    }
-
-    return findEntityForWord(
-      hovered.id,
-      annotations,
-      indexes.classifiedToWords,
-      state.highlightCategories,
-    ) ?? null;
   }
-
   return null;
-}
-
-function findEntityForWord(
-  wordId: string,
-  annotations: Record<string, Annotation>,
-  classifiedToWords: Record<string, string[]>,
-  visibleCategories: Set<ClassifiedCategory>,
-) {
-  for (const [classifiedId, wordIds] of Object.entries(classifiedToWords)) {
-    const annotation = annotations[classifiedId];
-    if (!wordIds.includes(wordId) || !annotation || !isEntity(annotation)) {
-      continue;
-    }
-    if (isHighlighted(annotation, visibleCategories)) {
-      return annotation;
-    }
-  }
 }
 
 function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {

@@ -1,0 +1,13 @@
+/**
+ * Highlights the different annotations of a segment using background layers.
+ * Each class sets its color with --{class}-layer.
+ * Order: search-hit, event, word, entity
+ */
+.highlight-layers :where(.word, .entity, .event, .search-hit) {
+    background:
+      linear-gradient(var(--search-hit-layer, transparent), var(--search-hit-layer, transparent)),
+      linear-gradient(var(--event-layer, transparent), var(--event-layer, transparent)),
+      linear-gradient(var(--word-layer, transparent), var(--word-layer, transparent)),
+      var(--entity-layer, transparent);
+    box-decoration-break: clone;
+}
