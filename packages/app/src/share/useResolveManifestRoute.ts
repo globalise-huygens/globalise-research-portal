@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { getRouteApi, useLocation, useNavigate } from '@globalise/router';
+import { useEffect, useMemo } from 'react';
+import { useLocation, useNavigate, validateManifestUrlParams } from '@globalise/router';
 import {
   setSearchHitQuery,
   setSearchHitRequest,
@@ -8,18 +8,18 @@ import {
 import { createDocumentId } from '@globalise/common/uri';
 import { resolveManifestRoute } from './resolveManifestRoute';
 
-const route = getRouteApi('/hdl:20.500.14722/$');
-
 export function useResolveManifestRoute(): boolean {
   const navigate = useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
-  const search = route.useSearch();
-  const isResolving = resolveManifestRoute(pathname, search) !== undefined;
+  const searchParams = useLocation({ select: (location) => location.search });
+  const resolved = useMemo(
+    () => resolveManifestRoute(pathname, validateManifestUrlParams(searchParams)),
+    [pathname, searchParams],
+  );
 
-  useEffect(storeResolvedRoute, [navigate, pathname, search]);
+  useEffect(storeResolvedRoute, [navigate, resolved]);
 
   function storeResolvedRoute() {
-    const resolved = resolveManifestRoute(pathname, search);
     if (!resolved) {
       return;
     }
@@ -27,9 +27,9 @@ export function useResolveManifestRoute(): boolean {
       setSelectedDocument(createDocumentId(resolved.document));
     }
     setSearchHitRequest(resolved.searchHit ?? null);
-    setSearchHitQuery(resolved.searchContext ?? null);
+    setSearchHitQuery(resolved.searchHitQuery ?? null);
     void navigate({ href: resolved.canvasPath, replace: true });
   }
 
-  return isResolving;
+  return resolved !== undefined;
 }

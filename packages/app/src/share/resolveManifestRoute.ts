@@ -6,7 +6,7 @@ export type ResolvedManifestRoute = {
   canvasPath: string;
   document?: DocumentRef;
   searchHit?: SearchHitRequest;
-  searchContext?: SearchHitQuery;
+  searchHitQuery?: SearchHitQuery;
 };
 
 export function resolveManifestRoute(
@@ -22,7 +22,7 @@ export function resolveManifestRoute(
   }
   return {
     canvasPath: createViewerPath(ref),
-    searchContext: resolveSearchContext(search),
+    searchHitQuery: resolveSearchHitQuery(search),
   };
 }
 
@@ -30,25 +30,37 @@ function resolveManifestDocumentRoute(
   document: DocumentRef,
   search: ManifestUrlParams,
 ): ResolvedManifestRoute {
+  const { snippet, 'hit-index': esHitIndex } = search;
+  if (snippet) {
+    return resolveSearchHitRoute({ document, target: { snippet } }, search);
+  }
+  if (esHitIndex !== undefined) {
+    return resolveSearchHitRoute({ document, target: { esHitIndex } }, search);
+  }
+  return resolveDocumentRoute(document);
+}
+
+function resolveDocumentRoute(
+  document: DocumentRef,
+): ResolvedManifestRoute {
   const { inventory, page } = document;
+  return { canvasPath: createViewerPath({ inventory, page }), document };
+}
+
+function resolveSearchHitRoute(
+  searchHit: SearchHitRequest,
+  search: ManifestUrlParams,
+): ResolvedManifestRoute {
+  const document = resolveDocumentRoute(searchHit.document);
+  const searchHitQuery = resolveSearchHitQuery(search);
   return {
-    canvasPath: createViewerPath({ inventory, page }),
-    document,
-    searchHit: resolveSearchHit(document, search),
-    searchContext: resolveSearchContext(search),
+    ...document,
+    searchHit,
+    searchHitQuery,
   };
 }
 
-function resolveSearchHit(
-  document: DocumentRef,
-  { documentId, snippet }: ManifestUrlParams,
-): SearchHitRequest | undefined {
-  return documentId && snippet
-    ? { document, docEsId: documentId, snippet }
-    : undefined;
-}
-
-function resolveSearchContext(
+function resolveSearchHitQuery(
   search: ManifestUrlParams,
 ): SearchHitQuery | undefined {
   const queryFacets = Object.fromEntries(

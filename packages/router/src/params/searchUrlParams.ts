@@ -15,7 +15,9 @@ export function validateSearchUrlParams(params: Record<string, unknown>): Search
     page: asPage(params.page),
   };
   for (const { key } of facets) {
-    const values = asArray(params[key]).map(asString).filter((value) => value !== undefined);
+    const values = asArray(params[key])
+      .map(asString)
+      .filter((value): value is string => !!value);
     if (values.length) {
       validated[key] = values;
     }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import getManifestSearchState from './getManifestSearchState';
 
 const document = { inventory: '1053', page: '0003', endPage: '0071' };
-const searchHit = { document, docEsId: 'd1', snippet: 's1' };
+const searchHit = { document, target: { snippet: 's1' } };
 
 describe(getManifestSearchState.name, () => {
   it('needs a search hit', () => {
@@ -13,7 +13,8 @@ describe(getManifestSearchState.name, () => {
   it('highlights the search hit within its document', () => {
     const state = getManifestSearchState(searchHit, null);
     const docDbId = 'NL-HaNA_1.04.02_1053_0003-0071';
-    expect(state).toMatchObject({ docDbId, docEsId: 'd1', snippet: 's1' });
+    const target = { snippet: 's1' };
+    expect(state).toMatchObject({ docDbId, target });
   });
 
   it('keeps only known facets of the search context', () => {

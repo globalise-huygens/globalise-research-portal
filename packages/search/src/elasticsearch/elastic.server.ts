@@ -57,14 +57,18 @@ export const GlobaliseSearchStateSchema = z.object({
   ).optional(),
 });
 
+export type SearchQueryOptions = {
+  selected?: Record<string, string[]>;
+  documentName?: string;
+};
+
 export function getSearchQuery(
   query?: TreeQuery,
-  selected?: Record<string, string[]>,
-  documentId?: string,
+  { selected, documentName }: SearchQueryOptions = {},
 ): QueryDslQueryContainer | null {
   const selectedHierarchies = getSelectedForFacet(selected, hierarchyFacets);
   const selectedRanges = getSelectedForFacet(selected, rangeFacets);
-  if (!query && !selectedHierarchies && !selectedRanges && !documentId) {
+  if (!query && !selectedHierarchies && !selectedRanges && !documentName) {
     return null;
   }
 
@@ -89,7 +93,7 @@ export function getSearchQuery(
   //   },
   // }]) : [];
   const rangeFilters: object[] = [];
-  const documentFilters = documentId ? [{ ids: { values: [documentId] } }] : [];
+  const documentFilters = documentName ? [{ term: { name: documentName } }] : [];
   const filters = [...hierarchyFilters, ...rangeFilters, ...documentFilters];
 
   return {

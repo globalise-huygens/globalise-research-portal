@@ -31,8 +31,8 @@ import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
-import { useSharableRouteState } from './manifestRoute/useSharableRouteState';
-import { useResolveManifestRoute } from './manifestRoute/useResolveManifestRoute';
+import { useSharableRouteState } from './share/useSharableRouteState';
+import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
 
