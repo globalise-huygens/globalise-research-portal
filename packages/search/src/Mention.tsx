@@ -20,7 +20,6 @@ export default function Mention({ document, snippet }: MentionProps) {
       <Link
         href={range && toViewerHref(range, {
           ...urlParams,
-          document: document.name,
           documentId: document.id,
           snippet,
         })}
