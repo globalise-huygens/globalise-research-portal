@@ -19,7 +19,6 @@ export type DocumentHighlights = {
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
   .extend({
-    docDbId: z.string(),
     docEsId: z.string(),
     snippet: z.string(),
   });
@@ -27,13 +26,13 @@ const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
 const highlightDocument = createServerFn({ method: 'POST' })
   .validator(HighlightDocumentRequestSchema)
   .handler(async ({ data }): Promise<DocumentHighlights> => {
-    const annotatedText = await fetchAnnotatedText(data);
-    if (!annotatedText) {
+    const document = await fetchHighlightedDocument(data);
+    if (!document) {
       return { hits: [], activeEsHitIndex: null };
     }
-    const { plainText, segments } = parseAnnotatedText(annotatedText);
+    const { plainText, segments } = parseAnnotatedText(document.annotatedText);
     const esHits = segments.filter(isHit);
-    const mappings = selectTextRangeMappings(data.docDbId);
+    const mappings = selectTextRangeMappings(document.name);
     const hits = esHits.flatMap((esHit, esHitIndex) => {
       const htrOffsets = calculateHtrOffsets(esHit, mappings);
       const mergedOffsets = mergeContinuousOffsets(htrOffsets, '-\n'.length);
@@ -50,11 +49,16 @@ const highlightDocument = createServerFn({ method: 'POST' })
 
 export default highlightDocument;
 
-async function fetchAnnotatedText(request: ManifestSearchState): Promise<string | undefined> {
-  const result = await elastic.search({
+type HighlightedDocument = {
+  name: string;
+  annotatedText: string;
+};
+
+async function fetchHighlightedDocument(request: ManifestSearchState): Promise<HighlightedDocument | undefined> {
+  const result = await elastic.search<{ name: string }>({
     index: 'documents',
     size: 1,
-    _source: false,
+    _source: ['name'],
     highlight: {
       fields: {
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
@@ -62,5 +66,9 @@ async function fetchAnnotatedText(request: ManifestSearchState): Promise<string 
     },
     query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
   });
-  return result.hits.hits[0]?.highlight?.annotatedText[0];
+  const hit = result.hits.hits[0];
+  const annotatedText = hit?.highlight?.annotatedText[0];
+  return hit?._source && annotatedText
+    ? { name: hit._source.name, annotatedText }
+    : undefined;
 }
