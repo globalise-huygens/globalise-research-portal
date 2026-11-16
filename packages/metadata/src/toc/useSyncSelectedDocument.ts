@@ -3,11 +3,13 @@ import { setSelectedDocument } from '@globalise/common/document';
 import { useSelectedDocument } from './useSelectedDocument.ts';
 
 export function useSyncSelectedDocument() {
-  const selectedDocumentId = useSelectedDocument()?.id ?? null;
+  const selectedDocumentId = useSelectedDocument()?.id;
 
   useEffect(rememberSelectedDocument, [selectedDocumentId]);
 
   function rememberSelectedDocument() {
-    setSelectedDocument(selectedDocumentId);
+    if (selectedDocumentId) {
+      setSelectedDocument(selectedDocumentId);
+    }
   }
 }
