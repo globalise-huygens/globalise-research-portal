@@ -14,6 +14,7 @@ import { TOP_BAR_BUTTON } from '../layout/buttonClasses';
 import { CollapsedMetadataRail } from '../layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from '../layout/ExpandedMetadataSidebar';
 import { ManifestCloseButton } from '../layout/ManifestCloseButton';
+import { ManifestShareButton } from '../layout/ManifestShareButton';
 import { ManifestContentWarning } from '../layout/ManifestContentWarning';
 import { ManifestError } from '../layout/ManifestError';
 import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
@@ -31,6 +32,7 @@ export function DesktopLayout({
   transcription,
   bottom,
   error,
+  onShare,
   onClose,
 }: ManifestLayoutProps) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
@@ -205,6 +207,7 @@ export function DesktopLayout({
               <ManifestEventsToggle />
               <ManifestLayoutElementsToggle />
               {topRight}
+              {onShare && <ManifestShareButton onShare={onShare} />}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>
           </header>
