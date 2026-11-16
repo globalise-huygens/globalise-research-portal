@@ -1,3 +1,4 @@
+export { handle, idBase, thesaurusBase } from './uriPatterns.ts';
 export * from './manifestId';
 export * from './canvasId';
 export * from './documentId';

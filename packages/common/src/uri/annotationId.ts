@@ -1,4 +1,4 @@
-import { uriPatterns } from './uriPatterns.ts';
+import { matchUri } from './uriPatterns.ts';
 import type { PageRef } from './canvasId';
 
 export type AnnotationRef = PageRef & {
@@ -8,6 +8,6 @@ export type AnnotationRef = PageRef & {
 export function parseAnnotationId(
   id: string,
 ): AnnotationRef | undefined {
-  const groups = uriPatterns.annotation.exec(id)?.groups;
+  const groups = matchUri('annotation', id);
   return groups && { inventory: groups.inventory, page: groups.page, fragment: groups.fragment };
 }

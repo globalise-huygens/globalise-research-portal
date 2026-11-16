@@ -10,6 +10,7 @@ import {
   type LinkedArtNode,
   type StatusValue,
 } from '@globalise/common';
+import { thesaurusBase } from '@globalise/common/uri';
 
 /**
  * Keep each name's status record so its dates, notes and sources remain available.
@@ -76,7 +77,7 @@ export function uniqueStatusValues(values: StatusValue[]): StatusValue[] {
 export function isPreferredPersonName(status: LinkedArtNode): boolean {
   return getStatusValues(status, ['classified_as']).some((value) =>
     isLinkedArtNode(value)
-      && value.id === 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:31baab68-ad9e-4eb4-baba-0c4b163fc00c',
+      && value.id === `${thesaurusBase}31baab68-ad9e-4eb4-baba-0c4b163fc00c`,
   );
 }
 

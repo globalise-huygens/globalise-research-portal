@@ -1,4 +1,4 @@
-import { idBase, uriPatterns } from './uriPatterns.ts';
+import { idBase, matchUri } from './uriPatterns.ts';
 import type { PageRef } from './canvasId';
 
 export type DocumentRef = PageRef & {
@@ -8,7 +8,7 @@ export type DocumentRef = PageRef & {
 export function parseDocumentId(
   id: string,
 ): DocumentRef | undefined {
-  const groups = uriPatterns.document.exec(id)?.groups;
+  const groups = matchUri('document', id);
   return groups && { inventory: groups.inventory, page: groups.page, endPage: groups.endPage };
 }
 

@@ -1,4 +1,4 @@
-import { idBase, uriPatterns } from './uriPatterns.ts';
+import { idBase, matchUri } from './uriPatterns.ts';
 
 export type InventoryRef = {
   inventory: string;
@@ -7,7 +7,7 @@ export type InventoryRef = {
 export function parseManifestId(
   id: string,
 ): InventoryRef | undefined {
-  const groups = uriPatterns.manifest.exec(id)?.groups;
+  const groups = matchUri('manifest', id);
   return groups && { inventory: groups.inventory };
 }
 

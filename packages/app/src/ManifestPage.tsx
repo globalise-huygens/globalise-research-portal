@@ -24,15 +24,13 @@ import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
+import { createManifestId, handle, idBase } from '@globalise/common/uri';
 
-const defaultManifest =
-  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
+const defaultManifest = createManifestId({ inventory: '1053' });
 
-const route = getRouteApi('/hdl:20.500.14722/$');
+const route = getRouteApi(`/${handle}/$`);
 
-const collectionUrl =
-  'https://data.globalise.huygens.knaw.nl/' +
-  'hdl:20.500.14722/inventory:collection';
+const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
   const navigate = route.useNavigate();

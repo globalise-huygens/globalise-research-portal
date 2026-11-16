@@ -1,4 +1,4 @@
-import { idBase, uriPatterns } from './uriPatterns.ts';
+import { idBase, matchUri } from './uriPatterns.ts';
 import type { InventoryRef } from './manifestId';
 
 export type PageRef = InventoryRef & {
@@ -8,7 +8,7 @@ export type PageRef = InventoryRef & {
 export function parseCanvasId(
   id: string,
 ): PageRef | undefined {
-  const groups = uriPatterns.canvas.exec(id)?.groups;
+  const groups = matchUri('canvas', id);
   return groups && { inventory: groups.inventory, page: groups.page };
 }
 

@@ -1,4 +1,5 @@
 import { lazyRouteComponent, type RouteComponents } from '@globalise/router';
+import { handle } from '@globalise/common/uri';
 import { RootLayout } from './RootLayout.tsx';
 
 export const routeComponents: RouteComponents = {
@@ -7,7 +8,7 @@ export const routeComponents: RouteComponents = {
   '/map': lazyRouteComponent(() => import('@globalise/map'), 'MapDemo'),
   '/search': lazyRouteComponent(() => import('./SearchPage.tsx'), 'SearchPage'),
   '/catalog/': lazyRouteComponent(() => import('./CatalogPage.tsx'), 'CatalogPage'),
-  '/hdl:20.500.14722/$': lazyRouteComponent(() => import('./ManifestPage.tsx'), 'ManifestPage'),
+  [`/${handle}/$` as const]: lazyRouteComponent(() => import('./ManifestPage.tsx'), 'ManifestPage'),
   '/object-card/': lazyRouteComponent(() => import('./ObjectCardPage.tsx'), 'ObjectCardPage'),
   '/content/': lazyRouteComponent(() => import('./ContentHome.tsx'), 'ContentHome'),
   '/content/$slug': lazyRouteComponent(() => import('./ContentPage.tsx'), 'ContentPage'),
