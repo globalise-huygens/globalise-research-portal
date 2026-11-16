@@ -4,6 +4,7 @@ import {
   findInitialCanvasId,
   setSearchHits,
   useDocumentStore,
+  useSelectedDocumentId,
 } from '@globalise/common/document';
 import {
   getManifestSearchState,
@@ -26,12 +27,14 @@ import {
   useLocation,
   validateSearchUrlParams,
 } from '@globalise/router';
-import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
+import { createManifestId, handle, idBase, parseDocumentId, parseViewerPath } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
+import { findViewerDocument } from './manifestRoute/findViewerDocument';
+import { useResolveManifestRoute } from './manifestRoute/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
 
@@ -41,6 +44,9 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const pathname = useLocation({ select: (location) => location.pathname });
+  const isResolving = useResolveManifestRoute();
+  const selectedDocumentId = useSelectedDocumentId();
+  const selectedDocument = selectedDocumentId ? parseDocumentId(selectedDocumentId) : undefined;
   const viewer = parseViewerPath(pathname) ?? defaultInventory;
   const manifestUrl = createManifestId(viewer);
   const searchState = getManifestSearchState(search);
@@ -51,7 +57,8 @@ export function ManifestPage() {
     .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
   const activeHitCanvasId = activeHit?.canvasId;
 
-  const initialCanvasId = findInitialCanvasId(viewer, activeHitCanvasId);
+  const viewerDocument = findViewerDocument(viewer, selectedDocument);
+  const initialCanvasId = findInitialCanvasId(viewerDocument, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
@@ -144,7 +151,7 @@ export function ManifestPage() {
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl} canvasId={initialCanvasId}>
-        {isHighlighting ? <Spinner label="Loading search result"/> : (
+        {isResolving || isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             initialCanvasId={initialCanvasId}
             error={error}
