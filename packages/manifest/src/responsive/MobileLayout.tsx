@@ -17,8 +17,9 @@ import {
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
 import * as React from 'react';
 import { Button as AriaButton } from 'react-aria-components';
-import type { ManifestLayoutProps } from '../layout/ManifestLayout';
+import type { ManifestLayoutProps } from '../layout';
 import { ManifestCloseButton } from '../layout/ManifestCloseButton';
+import { ManifestShareButton } from '../layout/ManifestShareButton';
 import { ManifestContentWarning } from '../layout/ManifestContentWarning';
 import { ManifestError } from '../layout/ManifestError';
 import { type SidebarPanel, useSidebarPanels } from '../layout/useSidebarPanels';
@@ -71,6 +72,7 @@ export function MobileLayout({
   transcription,
   bottom,
   error,
+  onShare,
   onClose,
 }: ManifestLayoutProps) {
   const mobilePanels = useMobilePanels();
@@ -144,6 +146,7 @@ export function MobileLayout({
 
             <div className="top-bar-group right">
               {topRight}
+              {onShare && <ManifestShareButton onShare={onShare} />}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>
           </header>

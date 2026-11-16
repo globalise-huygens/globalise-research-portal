@@ -16,6 +16,7 @@ export type ManifestLayoutProps = {
   transcription?: ReactNode;
   bottom?: ReactNode;
   error?: ErrorMessage;
+  onShare?: () => void;
   onClose?: () => void;
 };
 
