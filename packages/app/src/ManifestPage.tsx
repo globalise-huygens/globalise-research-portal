@@ -4,9 +4,6 @@ import {
   findInitialCanvasId,
   setSearchHits,
   useDocumentStore,
-  useSearchHitQuery,
-  useSearchHitRequest,
-  useSelectedDocumentId,
 } from '@globalise/common/document';
 import {
   getManifestSearchState,
@@ -28,13 +25,13 @@ import {
   toManifestHref,
   useLocation,
 } from '@globalise/router';
-import { createManifestId, handle, idBase, parseDocumentId, parseViewerPath } from '@globalise/common/uri';
+import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
-import { findViewerDocument } from './manifestRoute/findViewerDocument';
+import { useSharableRouteState } from './manifestRoute/useSharableRouteState';
 import { useResolveManifestRoute } from './manifestRoute/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
@@ -45,14 +42,10 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
   const isResolving = useResolveManifestRoute();
-  const selectedDocumentId = useSelectedDocumentId();
-  const selectedDocument = selectedDocumentId ? parseDocumentId(selectedDocumentId) : undefined;
   const viewer = parseViewerPath(pathname) ?? defaultInventory;
   const manifestUrl = createManifestId(viewer);
-  const searchHit = useSearchHitRequest();
-  const searchHitQuery = useSearchHitQuery();
-  const viewerSearchHit = searchHit?.document.inventory === viewer.inventory ? searchHit : null;
-  const searchState = getManifestSearchState(viewerSearchHit, searchHitQuery);
+  const sharableRoute = useSharableRouteState(viewer);
+  const searchState = getManifestSearchState(sharableRoute.searchHit, sharableRoute.searchHitQuery);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
   );
@@ -60,8 +53,7 @@ export function ManifestPage() {
     .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
   const activeHitCanvasId = activeHit?.canvasId;
 
-  const viewerDocument = findViewerDocument(viewer, selectedDocument);
-  const initialCanvasId = findInitialCanvasId(viewerDocument, activeHitCanvasId);
+  const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
