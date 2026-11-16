@@ -23,4 +23,4 @@ export const
   Float = 28,
   Not = 29,
   And = 30,
-  Or = 31;
+  Or = 31

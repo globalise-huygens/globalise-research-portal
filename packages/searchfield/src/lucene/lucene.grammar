@@ -78,7 +78,7 @@ FunctionCall { FunctionName "(" Expression ("," Expression)* ("," Integer)? ")" 
 
 FunctionName {
   @specialize<Term, "containing">    |
-  @specialize<Term, "notContaining"> |
+  @specialize<Term, "notcontaining"> |
   @specialize<Term, "near">
 }
 
