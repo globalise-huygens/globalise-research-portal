@@ -21,6 +21,7 @@ export type DocumentHighlights = {
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
   .extend({
+    docDbId: z.string(),
     docEsId: z.string(),
     snippet: z.string(),
   });
@@ -28,12 +29,12 @@ const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
 const highlightDocument = createServerFn({ method: 'POST' })
   .validator(HighlightDocumentRequestSchema)
   .handler(async ({ data }): Promise<DocumentHighlights> => {
-    const document = await fetchHighlightedDocument(data);
-    if (!document) {
+    const taggedText = await fetchTaggedText(data);
+    if (!taggedText) {
       return { hits: [], activeEsHitIndex: null };
     }
-    const { text, spans: offsets } = getHighlight(document.taggedText, PRE_TAG, POST_TAG);
-    const mappings = selectTextRangeMappings(document.name);
+    const { text, spans: offsets } = getHighlight(taggedText, PRE_TAG, POST_TAG);
+    const mappings = selectTextRangeMappings(data.docDbId);
     const hits = offsets.flatMap((offset, esHitIndex) => {
       const htrOffsets = calculateHtrOffsets(offset, mappings);
       const mergedOffsets = mergeContinuousOffsets(htrOffsets, '-\n'.length);
@@ -50,16 +51,11 @@ const highlightDocument = createServerFn({ method: 'POST' })
 
 export default highlightDocument;
 
-type HighlightedDocument = {
-  name: string;
-  taggedText: string;
-};
-
-async function fetchHighlightedDocument(request: ManifestSearchState): Promise<HighlightedDocument | undefined> {
-  const result = await elastic.search<{ name: string }>({
+async function fetchTaggedText(request: ManifestSearchState): Promise<string | undefined> {
+  const result = await elastic.search({
     index: 'documents',
     size: 1,
-    _source: ['name'],
+    _source: false,
     highlight: {
       fields: {
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
@@ -67,9 +63,6 @@ async function fetchHighlightedDocument(request: ManifestSearchState): Promise<H
     },
     query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
   });
-  const hit = result.hits.hits[0];
-  const annotatedText = hit?.highlight?.annotatedText[0];
-  return hit?._source && annotatedText
-    ? { name: hit._source.name, taggedText: tagAnnotatedHits(annotatedText) }
-    : undefined;
+  const annotatedText = result.hits.hits[0]?.highlight?.annotatedText[0];
+  return annotatedText && tagAnnotatedHits(annotatedText);
 }
