@@ -8,24 +8,36 @@ export type SharableRouteState = {
   ref: ViewerRef;
   searchHit: SearchHitRequest | null;
   searchHitQuery: SearchHitQuery | null;
+  activeEsHitIndex: number | null;
 };
 
 export type StoredRouteState = {
   selectedDocument?: DocumentRef;
   searchHit: SearchHitRequest | null;
   searchHitQuery: SearchHitQuery | null;
+  activeEsHitIndex: number | null;
 };
 
 export function collectSharableRouteState(
   viewer: ViewerRef,
-  { selectedDocument, searchHit, searchHitQuery }: StoredRouteState,
+  { selectedDocument, searchHit, searchHitQuery, activeEsHitIndex }: StoredRouteState,
 ): SharableRouteState {
   const isSearchHitInView = searchHit?.document.inventory === viewer.inventory;
   return {
-    ref: isFirstPageOf(viewer, selectedDocument) ? selectedDocument : viewer,
+    ref: isSearchHitInView
+      ? searchHit.document
+      : findDocumentOnFirstPage(viewer, selectedDocument),
     searchHit: isSearchHitInView ? searchHit : null,
     searchHitQuery: isSearchHitInView ? searchHitQuery : null,
+    activeEsHitIndex: isSearchHitInView ? activeEsHitIndex : null,
   };
+}
+
+function findDocumentOnFirstPage(
+  viewer: ViewerRef,
+  selectedDocument: DocumentRef | undefined,
+): ViewerRef {
+  return isFirstPageOf(viewer, selectedDocument) ? selectedDocument : viewer;
 }
 
 function isFirstPageOf(

@@ -15,9 +15,14 @@ type LoadedSearchHits = Pick<SearchHitSlice, 'searchHits' | 'activeEsHitIndex'>;
 
 export type SearchHitRequest = {
   document: DocumentRef;
-  docEsId: string;
-  snippet: string;
+  target: SearchHitTarget;
 };
+
+export type SearchHitTarget = SnippetTarget | IndexTarget;
+
+export type SnippetTarget = { snippet: string };
+
+export type IndexTarget = { esHitIndex: number };
 
 /**
  * The fulltext search query and facets, as retrieved from the url, to determine the manifest viewer hits
@@ -49,6 +54,10 @@ export function useSearchHitRequest(): SearchHitRequest | null {
 
 export function useSearchHitQuery(): SearchHitQuery | null {
   return useDocumentStore((s) => s.searchHitQuery);
+}
+
+export function useActiveEsHitIndex(): number | null {
+  return useDocumentStore((s) => s.activeEsHitIndex);
 }
 
 export function setSearchHits(hits: HtrHit[], activeEsHitIndex: number | null) {
