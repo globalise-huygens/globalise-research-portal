@@ -4,6 +4,8 @@ import {
   findInitialCanvasId,
   setSearchHits,
   useDocumentStore,
+  useSearchHitQuery,
+  useSearchHitRequest,
   useSelectedDocumentId,
 } from '@globalise/common/document';
 import {
@@ -25,7 +27,6 @@ import {
   toCanvasHref,
   toManifestHref,
   useLocation,
-  validateSearchUrlParams,
 } from '@globalise/router';
 import { createManifestId, handle, idBase, parseDocumentId, parseViewerPath } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
@@ -42,14 +43,16 @@ const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
   const navigate = route.useNavigate();
-  const search = route.useSearch();
   const pathname = useLocation({ select: (location) => location.pathname });
   const isResolving = useResolveManifestRoute();
   const selectedDocumentId = useSelectedDocumentId();
   const selectedDocument = selectedDocumentId ? parseDocumentId(selectedDocumentId) : undefined;
   const viewer = parseViewerPath(pathname) ?? defaultInventory;
   const manifestUrl = createManifestId(viewer);
-  const searchState = getManifestSearchState(search);
+  const searchHit = useSearchHitRequest();
+  const searchHitQuery = useSearchHitQuery();
+  const viewerSearchHit = searchHit?.document.inventory === viewer.inventory ? searchHit : null;
+  const searchState = getManifestSearchState(viewerSearchHit, searchHitQuery);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
   );
@@ -67,7 +70,7 @@ export function ManifestPage() {
 
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(syncCanvasParam, [navigate, search]);
+  useEffect(syncCanvasParam, [navigate]);
 
   function syncCanvasParam() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -75,7 +78,7 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      const href = toCanvasHref(selectedCanvasId, search);
+      const href = toCanvasHref(selectedCanvasId, {});
       if (href) {
         void navigate({ href, replace: true });
       }
@@ -142,7 +145,7 @@ export function ManifestPage() {
   }
 
   function handleManifestChange(manifest: string) {
-    const href = toManifestHref(manifest, validateSearchUrlParams(search));
+    const href = toManifestHref(manifest, {});
     if (href) {
       void navigate({ href });
     }
