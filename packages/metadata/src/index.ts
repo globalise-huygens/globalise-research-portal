@@ -5,6 +5,7 @@ export { findMetadataValue } from './findMetadataValue.ts';
 export {
   TocPanel,
   useCanvasDocuments,
+  useSyncSelectedDocument,
   type CanvasDocuments,
   type ManifestDocument,
 } from './toc';
