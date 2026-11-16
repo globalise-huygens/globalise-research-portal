@@ -2,6 +2,7 @@ import {
   getEventBody,
   type Annotation,
   type EventBody,
+  type EventClassification,
 } from '@globalise/common/annotation';
 import {
   EntityIcon,
@@ -12,22 +13,40 @@ import { ClassificationPreview } from './ClassificationPreview.tsx';
 
 export function getEventPreviewData(annotation: Annotation<EventBody>): EntityPreviewCardData {
   const body = getEventBody(annotation);
-  const classifiedBy = (
-    <ClassificationPreview
-      label={body.classified_as._label}
-      data={getEventClassificationPreviewData(body)}
-    />
+  const classifiedAsLabels = getNestedClassifiedAsLabels(body.classified_as);
+  const eventType = (
+    <>
+      <ClassificationPreview
+        label={body.classified_as._label}
+        data={getEventClassificationPreviewData(body)}
+      />
+      {classifiedAsLabels.map((label) => ` > ${label}`)}
+    </>
   );
+
+  const properties = [
+    { label: 'Event type', value: eventType },
+  ];
 
   return {
     type: 'event',
     icon: <EntityIcon type="event" />,
-    title: body._label,
-    properties: [
-      { label: 'Event type', value: body.type },
-      { label: 'Classified by', value: classifiedBy },
-    ],
+    title: 'Event',
+    properties,
   };
+}
+
+function getNestedClassifiedAsLabels(
+  classification: EventClassification,
+): string[] {
+  const child = classification.classified_as;
+  if (!child) {
+    return [];
+  }
+  return [
+    child._label,
+    ...getNestedClassifiedAsLabels(child),
+  ];
 }
 
 function getEventClassificationPreviewData(body: EventBody): EntityPreviewCardData {

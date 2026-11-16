@@ -12,6 +12,8 @@ export type EventClassification = {
   id: string;
   type: string;
   _label: string;
+  // Can be nested:
+  classified_as?: EventClassification;
 };
 
 const eventTypology = 'https://github.com/globalise-huygens/nlp-event-detection/wiki#';
