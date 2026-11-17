@@ -235,18 +235,28 @@ function PlaceRecord({
     && record.type === 'AppellativeStatus'
     ? 'person-status-summary-value person-name-value'
     : 'person-status-summary-value';
-  return <ObjectCardDisclosure summary={<span className="person-status-summary-content">
-    {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
-    {dates && <RecordedDatesValue dates={dates} />}
-    <span className="person-status-summary-property">
-      <span className="person-status-summary-label">
-        {summaryLabel}{separator}
+  return <ObjectCardDisclosure summary={
+    <span className="person-status-summary-content">
+      {timespan && <span className="person-status-summary-date">
+        <TimespanValue timespan={timespan} mode="summary" />
+      </span>}
+      {dates && <RecordedDatesValue dates={dates} />}
+      <span className="person-status-summary-property">
+        <span className="person-status-summary-label">
+          {summaryLabel}{separator}
+        </span>
+        <span className={valueClassName}>{summaryValue}</span>
       </span>
-      <span className={valueClassName}>{summaryValue}</span>
     </span>
-  </span>}>
+  }>
     <ObjectCardPropertyList className="person-status-details">
-      {!!statements.length && <ObjectCardProperty label="Recorded statements" value={<span className="timespan-boundaries">{statements.map((statement) => <span key={statement}>{statement}</span>)}</span>} />}
+      {!!statements.length && <ObjectCardProperty
+        label="Recorded statements"
+        value={<span className="timespan-boundaries">
+          {statements.map((statement) =>
+            <span key={statement}>{statement}</span>)}
+        </span>}
+      />}
       {content && <ObjectCardProperty label="Description" value={content} />}
       {properties.map((property) => {
         const isRelationship = property.keys.some((key) =>
@@ -260,12 +270,22 @@ function PlaceRecord({
           />}
         />;
       })}
-      {!!classifications.length && <ObjectCardProperty label={classificationLabel} value={<PlaceValues values={classifications} />} />}
-      {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
+      {!!classifications.length && <ObjectCardProperty
+        label={classificationLabel}
+        value={<PlaceValues values={classifications} />}
+      />}
+      {timespan && <ObjectCardProperty
+        label="Date bounds"
+        value={<TimespanValue timespan={timespan} mode="boundaries" />}
+      />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
-      {!!places.length && <ObjectCardProperty label="Geographic scope" value={<PlaceValues values={places} />} />}
+      {!!places.length && <ObjectCardProperty
+        label="Geographic scope" value={<PlaceValues values={places} />}
+      />}
       {!!notes.length && <ObjectCardProperty label="Notes" value={notes.join('; ')} />}
-      {!!sources.length && <ObjectCardProperty label="Sources" value={<SourceList sources={sources} />} />}
+      {!!sources.length && <ObjectCardProperty
+        label="Sources" value={<SourceList sources={sources} />}
+      />}
     </ObjectCardPropertyList>
     {children}
   </ObjectCardDisclosure>;
