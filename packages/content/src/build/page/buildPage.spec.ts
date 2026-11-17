@@ -14,6 +14,9 @@ const frontMatter = [
   'summary: Bar',
   'type: foo',
   'status: bar',
+  'authors: [Baz]',
+  'featured: false',
+  'hero: { src: foo.jpg, alt: Foo, caption: Bar, credit: Baz, source: Bas, licence: Bass }',
 ].join('\n');
 
 describe(buildPage.name, () => {
@@ -44,25 +47,31 @@ describe(buildPage.name, () => {
       summary: 'Bar',
       type: 'foo',
       status: 'bar',
+      authors: ['Baz'],
+      featured: false,
+      hero: { src: 'foo.jpg', alt: 'Foo', caption: 'Bar', credit: 'Baz', source: 'Bas', licence: 'Bass' },
     });
   });
 
-  it('skips a page without required fields with an error', async () => {
-    const source = createSource(createMarkdown('title: Foo'));
-    const { page, issues } = await buildPage(source);
-    expect(page).toBeUndefined();
-    expect(getReasons(issues, 'error')).toEqual(['Missing required field `slug`']);
+  it('reads optional fields from the front matter', async () => {
+    const fields = `${frontMatter}\nsubtitle: Foo\ndatePublished: 2025-08-01`;
+    const { page } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page?.meta).toMatchObject({ subtitle: 'Foo', datePublished: '2025-08-01' });
   });
 
-  it('builds a page without recommended fields with warnings', async () => {
-    const source = createSource(createMarkdown('title: Foo\nslug: foo-bar'));
-    const { page, issues } = await buildPage(source);
-    expect(page).toBeDefined();
-    expect(getReasons(issues, 'warning')).toEqual([
-      'Missing recommended field `summary`',
-      'Missing recommended field `type`',
-      'Missing recommended field `status`',
-    ]);
+  it('drops invalid optional fields without issues', async () => {
+    const fields = `${frontMatter}\nsubtitle: ""\ndatePublished: foo`;
+    const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page?.meta.subtitle).toBeUndefined();
+    expect(page?.meta.datePublished).toBeUndefined();
+    expect(issues).toEqual([]);
+  });
+
+  it('skips a page without required fields with an error', async () => {
+    const fields = frontMatter.replace('slug: foo-bar\n', '');
+    const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page).toBeUndefined();
+    expect(getReasons(issues, 'error')).toEqual(['Missing required field `slug`']);
   });
 
   it('skips a page with a slug the app cannot route to', async () => {
@@ -78,8 +87,8 @@ describe(buildPage.name, () => {
   });
 
   it('treats an empty field as missing', async () => {
-    const source = createSource(createMarkdown('title: Foo\nslug: ""'));
-    const { issues } = await buildPage(source);
+    const fields = frontMatter.replace('slug: foo-bar', 'slug: ""');
+    const { issues } = await buildPage(createSource(createMarkdown(fields)));
     expect(getReasons(issues, 'error')).toEqual(['Missing required field `slug`']);
   });
 
@@ -117,7 +126,7 @@ describe(buildPage.name, () => {
   it('reports the line of a link in the page itself', async () => {
     const source = createSource(createValidMarkdown('\n[gone](gone.md)'));
     const { issues } = await buildPage(source);
-    expect(issues[0].place).toMatchObject({ start: { line: 9 } });
+    expect(issues[0].place).toMatchObject({ start: { line: 12 } });
   });
 });
 
