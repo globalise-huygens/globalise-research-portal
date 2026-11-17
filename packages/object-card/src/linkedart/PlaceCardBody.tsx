@@ -10,13 +10,24 @@ import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 
 export function PlaceOverview({ entity }: { entity: LinkedArtNode }) {
-  const names = [...new Set(getPersonNameRecords(entity).map(({ name }) => name))]
-    .filter((name) => name !== getEntityTitle(entity));
-  const certainty = findByPath(entity, ['is_approximated_by_declarative_place', 'classified_as']);
-  return names.length || certainty.length ? <div className="person-overview">
-    {!!names.length && <span className="person-overview-fact">also: {names.join(', ')}</span>}
-    {!!certainty.length && <span className="person-overview-fact"><PlaceValues values={certainty} linked={false} /></span>}
-  </div> : null;
+  const title = getEntityTitle(entity);
+  const recordedNames = getPersonNameRecords(entity).map(({ name }) => name);
+  const names = [...new Set(recordedNames)].filter((name) => name !== title);
+  const certainty = findByPath(entity, [
+    'is_approximated_by_declarative_place',
+    'classified_as',
+  ]);
+  if (!names.length && !certainty.length) {
+    return null;
+  }
+  return <div className="person-overview">
+    {!!names.length && <span className="person-overview-fact">
+      also: {names.join(', ')}
+    </span>}
+    {!!certainty.length && <span className="person-overview-fact">
+      <PlaceValues values={certainty} linked={false} />
+    </span>}
+  </div>;
 }
 
 export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
@@ -94,19 +105,37 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
   const { sources, notes } = getPlaceEvidence(record);
   const places = [...findByPath(record, ['has_geographic_scope']), ...findByPath(record, ['took_place_at'])];
   const content = getContent(record);
-  const relationshipTarget = record.type === 'TopographicalStatus' ? 'ascribes_place'
-    : record.type === 'SimilarityStatus' ? 'ascribes_similarity_target' : undefined;
+  const isTopographical = record.type === 'TopographicalStatus';
+  const isSimilarity = record.type === 'SimilarityStatus';
+  let relationshipTarget: string | undefined;
+  if (isTopographical) {
+    relationshipTarget = 'ascribes_place';
+  } else if (isSimilarity) {
+    relationshipTarget = 'ascribes_similarity_target';
+  }
   const targets = relationshipTarget ? getStatusValues(record, [relationshipTarget]) : [];
-  const relationship = record.type === 'TopographicalStatus' && classifications.length
-    ? classifications
-    : getStatusValues(record, [record.type === 'SimilarityStatus' ? 'ascribes_similarity_relation' : 'ascribes_topographical_relation']);
+  const relationshipKey = isSimilarity
+    ? 'ascribes_similarity_relation'
+    : 'ascribes_topographical_relation';
+  let relationship = getStatusValues(record, [relationshipKey]);
+  if (isTopographical && classifications.length) {
+    relationship = classifications;
+  }
   const combinedRelationships = record.type === 'TopographicalStatus'
     && relationship.length > 1 && targets.length > 1;
-  const statements = combinedRelationships ? (Array.isArray(record._label) ? record._label : [record._label])
-    .filter((value): value is string => typeof value === 'string') : [];
-  const summaryLabel = combinedRelationships ? 'Related places' : relationshipTarget
-    ? relationship.length ? <PlaceValues values={relationship} linked={false} /> : 'Related to'
-    : title ?? properties[0]?.label ?? 'Recorded information';
+  const recordedLabels = Array.isArray(record._label)
+    ? record._label
+    : [record._label];
+  const statements = combinedRelationships
+    ? recordedLabels.filter((value): value is string =>
+      typeof value === 'string')
+    : [];
+  const summaryLabel = getPlaceRecordSummaryLabel({
+    combinedRelationships,
+    relationshipTarget,
+    relationship,
+    fallback: title ?? properties[0]?.label ?? 'Recorded information',
+  });
   const summaryValues = relationshipTarget ? targets : properties[0]?.values ?? classifications;
   return <ObjectCardDisclosure summary={<span className="person-status-summary-content">
     {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
@@ -136,6 +165,29 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     </ObjectCardPropertyList>
     {children}
   </ObjectCardDisclosure>;
+}
+
+function getPlaceRecordSummaryLabel({
+  combinedRelationships,
+  relationshipTarget,
+  relationship,
+  fallback,
+}: {
+  combinedRelationships: boolean;
+  relationshipTarget?: string;
+  relationship: StatusValue[];
+  fallback: string;
+}): ReactNode {
+  if (combinedRelationships) {
+    return 'Related places';
+  }
+  if (!relationshipTarget) {
+    return fallback;
+  }
+  if (!relationship.length) {
+    return 'Related to';
+  }
+  return <PlaceValues values={relationship} linked={false} />;
 }
 
 function PlaceValues({ values, linked = true }: { values: StatusValue[]; linked?: boolean }) {
