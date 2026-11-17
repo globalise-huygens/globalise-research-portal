@@ -8,4 +8,9 @@
         max-width: 100%;
         height: auto;
     }
+
+    ::highlight(content-query) {
+        background-color: color-mix(in srgb, var(--color-yellow-300, #fff751) 50%, transparent);
+    }
+
 }
