@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isLocal } from './validateLinks.ts';
+import { isLocal } from './validateLocalLinks.ts';
 
 describe(isLocal.name, () => {
   it.each([

@@ -10,7 +10,7 @@ import type { Issue } from '../Issue.ts';
  * Invalidate:
  * - local links to missing files, as warnings
  */
-export function validateLinks(tree: Root, source: VFile): Issue[] {
+export function validateLocalLinks(tree: Root, source: VFile): Issue[] {
   const issues: Issue[] = [];
   visit(tree, 'element', (node) => {
     const link = readLocalLink(node);
