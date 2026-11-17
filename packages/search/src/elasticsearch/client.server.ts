@@ -1,6 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 
-const url = 'https://search.globalise.huygens.knaw.nl';
+const url = 'https://search.globalise.nl';
 
 const elastic = new Client({
   node: url,

@@ -1,0 +1,29 @@
+services:
+  globalise-research-portal:
+    image: ghcr.io/globalise-huygens/globalise-research-portal:latest
+    restart: unless-stopped
+    environment:
+      GLOBALISE_DB: /data/globalise.db
+    volumes:
+      - ./data:/data:ro
+
+  nginx:
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    depends_on:
+      - globalise-research-portal
+    ports:
+      - "3000:3000"
+    configs:
+      - source: nginx
+        target: /etc/nginx/conf.d/default.conf
+
+configs:
+  nginx:
+    content: |
+      server {
+        listen 3000;
+        location / {
+          proxy_pass http://globalise-research-portal:3000;
+        }
+      }

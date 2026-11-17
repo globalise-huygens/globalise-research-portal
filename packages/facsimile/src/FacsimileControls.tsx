@@ -1,3 +1,4 @@
+import { clamp } from '@globalise/common';
 import {
   IconBrightness,
   IconContrast,
@@ -11,6 +12,7 @@ import {
   IconZoomOut,
   ToolButton,
   Tooltip,
+  useIsMobile,
 } from '@globalise/design';
 import { useViewer, useViewerControls } from '@knaw-huc/osd-iiif-viewer';
 import { type Point, Rect } from 'openseadragon';
@@ -58,7 +60,9 @@ export function FacsimileControls(
     useState<CSSProperties | null>(null);
   const initialViewRef = useRef<InitialView | null>(null);
   const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const settingsPanelRef = useRef<HTMLDivElement | null>(null);
   const settingsPanelId = useId();
+  const isMobile = useIsMobile();
 
   const zoomInputValue = zoomInput ?? String(zoomPercent);
   const scanFilter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) invert(${isInverted ? 1 : 0})`;
@@ -155,9 +159,18 @@ export function FacsimileControls(
     }
 
     updateSettingsPanelPosition();
+    function dismissSettings(event: PointerEvent) {
+      if (event.target instanceof Node && !settingsPanelRef.current?.contains(event.target)
+        && !settingsButtonRef.current?.contains(event.target)) {
+        setIsSettingsOpen(false);
+        setSettingsPanelStyle(null);
+      }
+    }
+    document.addEventListener('pointerdown', dismissSettings, true);
     window.addEventListener('resize', updateSettingsPanelPosition);
     window.addEventListener('scroll', updateSettingsPanelPosition, true);
     return () => {
+      document.removeEventListener('pointerdown', dismissSettings, true);
       window.removeEventListener('resize', updateSettingsPanelPosition);
       window.removeEventListener('scroll', updateSettingsPanelPosition, true);
     };
@@ -332,6 +345,7 @@ export function FacsimileControls(
       <Tooltip label="Reset scan position, zoom, and rotation">
         <ToolButton
           aria-label="Reset scan view"
+          className="zoom-action"
           icon={<IconReset/>}
           onPress={handleResetView}
           size="compact"
@@ -340,6 +354,7 @@ export function FacsimileControls(
       <Tooltip label="Fit scan to available width">
         <ToolButton
           aria-label="Fit scan to width"
+          className="zoom-action"
           icon={<IconFitWidth/>}
           onPress={handleFitWidth}
           size="compact"
@@ -377,8 +392,10 @@ export function FacsimileControls(
         settingsPanelStyle &&
         createPortal(
           <div
+            ref={settingsPanelRef}
             id={settingsPanelId}
             className="scan-settings"
+            data-layout={isMobile ? 'mobile' : 'desktop'}
             role="dialog"
             aria-label="Scan image settings"
             style={settingsPanelStyle}
@@ -518,8 +535,4 @@ function getSliderFillStyle(value: number, min: number, max: number) {
   return {
     ['--slider-fill' as string]: `${percent}%`,
   };
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
 }

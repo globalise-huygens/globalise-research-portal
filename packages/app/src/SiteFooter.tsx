@@ -41,6 +41,7 @@ export function SiteFooter() {
               <li key={page.title}>{page.title}</li>
             ))}
           </ul>
+          <span>v{__APP_VERSION__}</span>
         </div>
       </Container>
     </footer>
