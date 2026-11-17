@@ -1,6 +1,14 @@
-import { type DocumentRef, type ViewerRef, createViewerPath, parseViewerPath } from '@globalise/common/uri';
-import type { SearchHitQuery, SearchHitRequest } from '@globalise/common/document';
-import { facets, type ManifestUrlParams } from '@globalise/router';
+import {
+  type DocumentRef, type ViewerRef, createViewerPath, isDocumentRef,
+} from '@globalise/common/uri';
+import type {
+  SearchHitQuery,
+  SearchHitRequest,
+} from '@globalise/common/document';
+import {
+  type ManifestUrlParams,
+  validateFacets,
+} from '@globalise/router';
 
 export type ResolvedManifestRoute = {
   canvasPath: string;
@@ -10,14 +18,10 @@ export type ResolvedManifestRoute = {
 };
 
 export function resolveManifestRoute(
-  path: string,
+  ref: ViewerRef,
   search: ManifestUrlParams,
-): ResolvedManifestRoute | undefined {
-  const ref = parseViewerPath(path);
-  if (!ref || !isResolvable(ref, search)) {
-    return undefined;
-  }
-  if ('endPage' in ref) {
+): ResolvedManifestRoute {
+  if (isDocumentRef(ref)) {
     return resolveManifestDocumentRoute(ref, search);
   }
   return {
@@ -44,7 +48,8 @@ function resolveDocumentRoute(
   document: DocumentRef,
 ): ResolvedManifestRoute {
   const { inventory, page } = document;
-  return { canvasPath: createViewerPath({ inventory, page }), document };
+  const canvasPath = createViewerPath({ inventory, page });
+  return { canvasPath, document };
 }
 
 function resolveSearchHitRoute(
@@ -63,18 +68,9 @@ function resolveSearchHitRoute(
 function resolveSearchHitQuery(
   search: ManifestUrlParams,
 ): SearchHitQuery | undefined {
-  const queryFacets = Object.fromEntries(
-    facets.flatMap(({ key }) => search[key] ? [[key, search[key]]] : []),
-  );
-  return search.q || Object.keys(queryFacets).length
-    ? { query: search.q, facets: queryFacets }
-    : undefined;
-}
-
-function isResolvable(
-  ref: ViewerRef,
-  search: ManifestUrlParams,
-): boolean {
-  return 'endPage' in ref
-    || Object.values(search).some((value) => value !== undefined);
+  const facets = validateFacets(search);
+  if (!search.q && !Object.keys(facets).length) {
+    return;
+  }
+  return { query: search.q, facets };
 }
