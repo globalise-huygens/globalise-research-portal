@@ -1,6 +1,5 @@
 import { CanvasId, useSelectedAnnotationsInFacsimile } from '@globalise/common/document';
-import { type Id } from '@globalise/common/annotation';
-import { type EntityHighlightTone, getEntityHighlightColors } from './EntityHighlightTone.ts';
+import { type ClassifiedTone, type Id } from '@globalise/common/annotation';
 import { WordHighlightConfig } from './HighlightConfig.ts';
 import './WordHighlight.css';
 
@@ -21,15 +20,15 @@ export function SelectedWordHighlights(
         key={`${id}-${tone}`}
         className="selected-word-highlight"
         points={path}
-        fill={getEntityHighlightColors(tone).fill}
+        data-presentation-family={tone}
       />
     )));
 }
 
 function getSelectedTones(
-  tones: Record<Id, EntityHighlightTone>,
+  tones: Record<Id, ClassifiedTone | undefined>,
   selected: ReadonlySet<Id>,
-): (EntityHighlightTone | undefined)[] {
+): (ClassifiedTone | undefined)[] {
   const selectedTones = Object.entries(tones)
     .filter(([classifiedId]) => selected.has(classifiedId))
     .map(([, tone]) => tone);
