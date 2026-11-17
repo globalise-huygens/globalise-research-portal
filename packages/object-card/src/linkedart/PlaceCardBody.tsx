@@ -212,13 +212,20 @@ function PlaceGeometry({ expressions }: { expressions: LinkedArtNode[] }) {
 
 function getPlaceEvidence(node: LinkedArtNode) {
   const references = findByPath(node, ['referred_to_by']);
-  const remarks = references.filter((reference) => findByPath(reference, ['classified_as'])
-    .some((type) => type.id === 'http://vocab.getty.edu/aat/300435415'));
-  return {
-    notes: [...new Set([...getNotes(node), ...remarks.map(getContent).filter(Boolean)])],
-    sources: mergeCitationEvidence([...references.filter((reference) => !remarks.includes(reference)),
-      ...remarks.flatMap((remark) => findByPath(remark, ['referred_to_by']))]),
-  };
+  const remarks = references.filter(isPlaceRemark);
+  const citations = references.filter((reference) => !remarks.includes(reference));
+  const remarkCitations = remarks.flatMap((remark) =>
+    findByPath(remark, ['referred_to_by']));
+  const remarkNotes = remarks.map(getContent).filter(Boolean);
+  const notes = [...new Set([...getNotes(node), ...remarkNotes])];
+  const sources = mergeCitationEvidence([...citations, ...remarkCitations]);
+  return { notes, sources };
+}
+
+function isPlaceRemark(reference: LinkedArtNode): boolean {
+  const classifications = findByPath(reference, ['classified_as']);
+  return classifications.some((type) =>
+    type.id === 'http://vocab.getty.edu/aat/300435415');
 }
 
 function mergeCitationEvidence(sources: LinkedArtNode[]): LinkedArtNode[] {
