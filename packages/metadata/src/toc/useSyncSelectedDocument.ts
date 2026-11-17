@@ -5,9 +5,9 @@ import { useSelectedDocument } from './useSelectedDocument.ts';
 export function useSyncSelectedDocument() {
   const selectedDocumentId = useSelectedDocument()?.id;
 
-  useEffect(rememberSelectedDocument, [selectedDocumentId]);
+  useEffect(syncSelectedDocument, [selectedDocumentId]);
 
-  function rememberSelectedDocument() {
+  function syncSelectedDocument() {
     if (selectedDocumentId) {
       setSelectedDocument(selectedDocumentId);
     }
