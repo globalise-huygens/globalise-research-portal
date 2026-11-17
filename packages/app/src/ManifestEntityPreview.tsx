@@ -21,6 +21,7 @@ import {
 import {
   EntityPreview,
   EntityIcon,
+  EntityTag,
   getEntityTypeLabel,
   type EntityPreviewCardData,
   type EntityPreviewCardType,
@@ -122,8 +123,7 @@ function getPreviewData(annotation: EntityAnnotation): EntityPreviewCardData {
         value: classification ? (
           <EntityPreview data={getClassificationPreviewData(classification)}>
             {(attributes) => <button {...attributes} type="button" className="manifest-preview-link">
-              <span>{classification.label}</span>
-              <EntityIcon type="classification" />
+              <EntityTag type="concept">{classification.label}</EntityTag>
             </button>}
           </EntityPreview>
         ) : body.classified_as._label,
