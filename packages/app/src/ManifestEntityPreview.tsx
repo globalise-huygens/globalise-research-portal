@@ -27,7 +27,7 @@ import {
   type EntityPreviewCardProperty,
 } from '@globalise/design';
 import { useEffect, useRef, useState } from 'react';
-import { getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
+import { getEquivalentTarget, getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
 import './ManifestEntityPreview.css';
 
 type EntityAnnotation = Annotation<EntityBody>;
@@ -149,7 +149,9 @@ function getClassificationPreviewData(
 function getClassificationConceptReference(
   body: EntityBody,
 ): LinkedConceptReference | undefined {
-  const classification = body.ascribes_classification;
+  const recordedClassification = body.ascribes_classification;
+  const classification = getEquivalentTarget(recordedClassification)
+    ?? recordedClassification;
   if (!classification?.id || classification.type !== 'Concept') {
     return undefined;
   }

@@ -1,3 +1,4 @@
+import { findByPath, isLinkedArtNode } from '@globalise/common';
 import { toHref } from '@globalise/router';
 import {
   getEntitySubject,
@@ -31,7 +32,7 @@ export function getInternalConceptUri(uri: string): string | undefined {
 
 export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
   const subject = getEntitySubject(body);
-  const uri = subject?.id;
+  const uri = getEquivalentTarget(subject)?.id ?? subject?.id;
   if (!uri || uri.includes('#') || uri.includes('/annotations:')) {
     return undefined;
   }
@@ -48,4 +49,19 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
 
 export function getObjectCardHref(uri: string): string {
   return toHref({ to: '/object-card', search: { uri } });
+}
+
+export function getEquivalentTarget(value: unknown) {
+  if (!isLinkedArtNode(value)) {
+    return undefined;
+  }
+  const matches = findByPath(value, ['is_similarity_subject_of'])
+    .filter((status) => status.ascribes_similarity_relation === 'la:equivalent')
+    .flatMap((status) => findByPath(status, ['ascribes_similarity_target']))
+    .filter((target) => !!target.id);
+  const targets = new Map(matches.map((target) => [target.id, target]));
+  if (targets.size !== 1) {
+    return undefined;
+  }
+  return [...targets.values()][0];
 }
