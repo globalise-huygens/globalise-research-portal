@@ -27,7 +27,7 @@ export default function getExpandableTerms(query: TreeQuery | null | undefined, 
       }
       break;
     case 'containing':
-    case 'notContaining':
+    case 'notcontaining':
       // Only 'containing(type:person, adriaan)' is expanded; not 'containing(title, missive)'
       if (query.container.type !== 'term') {
         getExpandableTerms(query.clause, terms);
