@@ -136,18 +136,30 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     relationship,
     fallback: title ?? properties[0]?.label ?? 'Recorded information',
   });
-  const summaryValues = relationshipTarget ? targets : properties[0]?.values ?? classifications;
+  const primaryProperty = properties[0];
+  const summaryValues = relationshipTarget
+    ? targets
+    : primaryProperty?.values ?? classifications;
+  let displayedLabel: ReactNode = summaryLabel;
+  let displayedValue: ReactNode = <PlaceValues values={summaryValues} />;
+  let separator = relationshipTarget ? ' ' : ': ';
+  if (missingClassification) {
+    displayedLabel = title ?? 'Classifications';
+    displayedValue = 'Value unavailable';
+    separator = ': ';
+  }
+  const valueClassName = !missingClassification
+    && record.type === 'AppellativeStatus'
+    ? 'person-status-summary-value person-name-value'
+    : 'person-status-summary-value';
   return <ObjectCardDisclosure summary={<span className="person-status-summary-content">
     {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
     {dates && <RecordedDatesValue dates={dates} />}
     <span className="person-status-summary-property">
-      {missingClassification ? <>
-        <span className="person-status-summary-label">{title ?? 'Classifications'}: </span>
-        <span className="person-status-summary-value">Value unavailable</span>
-      </> : <>
-        <span className="person-status-summary-label">{summaryLabel}{relationshipTarget ? ' ' : ': '}</span>
-        <span className={`person-status-summary-value${record.type === 'AppellativeStatus' ? ' person-name-value' : ''}`}><PlaceValues values={summaryValues} /></span>
-      </>}
+      <span className="person-status-summary-label">
+        {displayedLabel}{separator}
+      </span>
+      <span className={valueClassName}>{displayedValue}</span>
     </span>
   </span>}>
     <ObjectCardPropertyList className="person-status-details">
