@@ -1,7 +1,31 @@
 import type { ReactNode } from 'react';
-import { findByPath, findTimespan, getRecordedDates, getContent, getEntityTitle, getStatusValues, isLinkedArtNode, label, type LinkedArtNode, type StatusValue } from '@globalise/common';
-import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
-import { eventKeys, getStatusProperties, relationKeys, statusKeys, placeDetailGroups } from './LabeledKey.ts';
+import {
+  findByPath,
+  findTimespan,
+  getRecordedDates,
+  getContent,
+  getEntityTitle,
+  getStatusValues,
+  isLinkedArtNode,
+  label,
+  type LinkedArtNode,
+  type StatusValue,
+} from '@globalise/common';
+import {
+  ObjectCardBody,
+  ObjectCardDisclosure,
+  ObjectCardPanel,
+  ObjectCardProperty,
+  ObjectCardPropertyList,
+  ObjectCardSection,
+} from '@globalise/design';
+import {
+  eventKeys,
+  getStatusProperties,
+  relationKeys,
+  statusKeys,
+  placeDetailGroups,
+} from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { getPersonNameRecords } from './PersonStatusModel.ts';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
@@ -81,22 +105,38 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
       </ObjectCardSection>}
       {groups.map(({ key, label: title }) => {
         const records = findByPath(entity, [key]);
-        return !!records.length && <ObjectCardSection key={key} title={title} collapsible>
+        return !!records.length && <ObjectCardSection
+          key={key} title={title} collapsible
+        >
           <div className="person-status-list">
-            {records.map((record, index) => <PlaceRecord key={record.id ?? index} record={record} />)}
+            {records.map((record, index) => <PlaceRecord
+              key={record.id ?? index} record={record}
+            />)}
           </div>
         </ObjectCardSection>;
       })}
       {eventKeys.map(({ key, label: title }) => {
         const events = findByPath(entity, [key]);
-        return !!events.length && <ObjectCardSection key={key} title={title} collapsible>
-          <div className="person-status-list">{events.map((record, index) => <PlaceRecord key={record.id ?? index} record={record} title={title} />)}</div>
+        return !!events.length && <ObjectCardSection
+          key={key} title={title} collapsible
+        >
+          <div className="person-status-list">
+            {events.map((record, index) => <PlaceRecord
+              key={record.id ?? index} record={record} title={title}
+            />)}
+          </div>
         </ObjectCardSection>;
       })}
       {relationKeys.map(({ key, label: title }) => {
         const nodes = findByPath(entity, [key]);
-        return !!nodes.length && <ObjectCardSection key={key} title={title} collapsible>
-          <ObjectCardPropertyList><ObjectCardProperty label={title} value={<PlaceValues values={nodes} />} /></ObjectCardPropertyList>
+        return !!nodes.length && <ObjectCardSection
+          key={key} title={title} collapsible
+        >
+          <ObjectCardPropertyList>
+            <ObjectCardProperty
+              label={title} value={<PlaceValues values={nodes} />}
+            />
+          </ObjectCardPropertyList>
         </ObjectCardSection>;
       })}
       {hasEvidence && <ObjectCardSection title="Further information" collapsible>
