@@ -10,7 +10,7 @@
     }
 
     ::highlight(content-query) {
-        background-color: color-mix(in srgb, var(--color-yellow-300, #fff751) 50%, transparent);
+        background-color: color-mix(in srgb, var(--color-search-hit) 50%, transparent);
     }
 
 }
