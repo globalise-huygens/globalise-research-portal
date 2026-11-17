@@ -37,21 +37,45 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
   const details = placeDetailGroups.flatMap(({ key, label: title }) =>
     findByPath(entity, [key]).map((record) => ({ record, title })));
   const classifications = getStatusValues(entity, ['classified_as']);
-  const groups = [...statusKeys.filter(({ key }) => !placeDetailGroups.some((group) => group.key === key)),
-    { key: 'is_topographical_subject_of', label: 'Geographical relationships' }];
+  const detailKeys = new Set(placeDetailGroups.map(({ key }) => key));
+  const otherStatusGroups = statusKeys.filter(({ key }) => !detailKeys.has(key));
+  const groups = [
+    ...otherStatusGroups,
+    { key: 'is_topographical_subject_of', label: 'Geographical relationships' },
+  ];
+  const hasDetails = details.length > 0 || classifications.length > 0
+    || definitions.length > 0 || locations.length > 0;
+  const hasEvidence = notes.length > 0 || sources.length > 0;
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
-      {(!!details.length || !!classifications.length || !!definitions.length || !!locations.length) && <ObjectCardSection title="Place details" collapsible>
+      {hasDetails && <ObjectCardSection title="Place details" collapsible>
         <div className="person-status-list">
           {!!classifications.length && <ObjectCardDisclosure summary={<span className="person-status-summary-property">
             <span className="person-status-summary-label">Classifications: </span>
-            <span className="person-status-summary-value"><PlaceValues values={classifications} /></span>
+            <span className="person-status-summary-value">
+              <PlaceValues values={classifications} />
+            </span>
           </span>} />}
-          {details.map(({ record, title }, index) => <PlaceRecord key={record.id ?? index} record={record} title={title} />)}
-          {!!definitions.length && <ObjectCardDisclosure summary="Recorded coordinates"><PlaceGeometry expressions={definitions} /></ObjectCardDisclosure>}
-          {locations.map((location, index) => <PlaceRecord key={location.id ?? `location-${index}`} record={location} title="Recorded location" classificationLabel="Certainty">
-            <PlaceGeometry expressions={findByPath(location, ['place_is_defined_by'])} />
+          {details.map(({ record, title }, index) => <PlaceRecord
+            key={record.id ?? index}
+            record={record}
+            title={title}
+          />)}
+          {!!definitions.length && <ObjectCardDisclosure
+            summary="Recorded coordinates"
+          >
+            <PlaceGeometry expressions={definitions} />
+          </ObjectCardDisclosure>}
+          {locations.map((location, index) => <PlaceRecord
+            key={location.id ?? `location-${index}`}
+            record={location}
+            title="Recorded location"
+            classificationLabel="Certainty"
+          >
+            <PlaceGeometry expressions={findByPath(location, [
+              'place_is_defined_by',
+            ])} />
           </PlaceRecord>)}
         </div>
       </ObjectCardSection>}
@@ -75,7 +99,7 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
           <ObjectCardPropertyList><ObjectCardProperty label={title} value={<PlaceValues values={nodes} />} /></ObjectCardPropertyList>
         </ObjectCardSection>;
       })}
-      {(!!notes.length || !!sources.length) && <ObjectCardSection title="Further information" collapsible>
+      {hasEvidence && <ObjectCardSection title="Further information" collapsible>
         <div className="person-status-list">
           {!!notes.length && <ObjectCardDisclosure summary="Notes">
             <ObjectCardPropertyList className="person-status-details">
