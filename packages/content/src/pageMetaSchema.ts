@@ -13,14 +13,6 @@ export const requiredFrontmatterSchema = z.object({
   status: text,
   authors: z.array(text),
   featured: z.boolean(),
-  hero: z.object({
-    src: text,
-    alt: text,
-    caption: text,
-    credit: text,
-    source: text,
-    licence: text,
-  }),
 });
 
 export const optionalFrontmatterSchema = z.object({
@@ -31,6 +23,14 @@ export const optionalFrontmatterSchema = z.object({
   originalPublication: optional(z.object({
     url: z.url(),
     date: z.iso.date(),
+  })),
+  hero: optional(z.object({
+    src: text,
+    alt: text,
+    caption: text,
+    credit: text,
+    source: text,
+    licence: text,
   })),
 });
 
