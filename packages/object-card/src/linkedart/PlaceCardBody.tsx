@@ -240,13 +240,26 @@ function mergeCitationEvidence(sources: LinkedArtNode[]): LinkedArtNode[] {
     const combined = { ...existing };
     for (const [property, value] of Object.entries(source)) {
       const previous = combined[property];
-      if (previous == null) {combined[property] = value;}
-      else if (value != null && JSON.stringify(previous) !== JSON.stringify(value)) {
-        const values = [...(Array.isArray(previous) ? previous : [previous]), ...(Array.isArray(value) ? value : [value])];
-        combined[property] = [...new Map(values.map((item) => [JSON.stringify(item), item])).values()];
+      if (previous == null) {
+        combined[property] = value;
+        continue;
+      }
+      const hasDifferentValue = value != null
+        && JSON.stringify(previous) !== JSON.stringify(value);
+      if (hasDifferentValue) {
+        combined[property] = mergeCitationValues(previous, value);
       }
     }
     merged.set(key, combined);
   }
   return [...merged.values()];
+}
+
+function mergeCitationValues(previous: unknown, value: unknown): unknown[] {
+  const previousValues = Array.isArray(previous) ? previous : [previous];
+  const incomingValues = Array.isArray(value) ? value : [value];
+  const values = [...previousValues, ...incomingValues];
+  const uniqueValues = new Map(values.map((item) =>
+    [JSON.stringify(item), item]));
+  return [...uniqueValues.values()];
 }
