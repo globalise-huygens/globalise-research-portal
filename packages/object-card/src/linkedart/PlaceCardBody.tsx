@@ -118,7 +118,19 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
   </ObjectCardBody>;
 }
 
-function PlaceRecord({ record, title, children, classificationLabel = 'Classification' }: { record: LinkedArtNode; title?: string; children?: ReactNode; classificationLabel?: string }) {
+type PlaceRecordProps = {
+  record: LinkedArtNode;
+  title?: string;
+  children?: ReactNode;
+  classificationLabel?: string;
+};
+
+function PlaceRecord({
+  record,
+  title,
+  children,
+  classificationLabel = 'Classification',
+}: PlaceRecordProps) {
   const properties = getStatusProperties(record);
   const missingClassification = record.type === 'ClassificatoryStatus'
     && !getStatusValues(record, ['ascribes_classification']).length;
@@ -127,7 +139,10 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
   const classifications = [...getStatusValues(record, ['classified_as']),
     ...findByPath(record, ['ascribes_appellation', 'classified_as'])];
   const { sources, notes } = getPlaceEvidence(record);
-  const places = [...findByPath(record, ['has_geographic_scope']), ...findByPath(record, ['took_place_at'])];
+  const places = [
+    ...findByPath(record, ['has_geographic_scope']),
+    ...findByPath(record, ['took_place_at']),
+  ];
   const content = getContent(record);
   const isTopographical = record.type === 'TopographicalStatus';
   const isSimilarity = record.type === 'SimilarityStatus';
@@ -137,7 +152,9 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
   } else if (isSimilarity) {
     relationshipTarget = 'ascribes_similarity_target';
   }
-  const targets = relationshipTarget ? getStatusValues(record, [relationshipTarget]) : [];
+  const targets = relationshipTarget
+    ? getStatusValues(record, [relationshipTarget])
+    : [];
   const relationshipKey = isSimilarity
     ? 'ascribes_similarity_relation'
     : 'ascribes_topographical_relation';
@@ -145,7 +162,7 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
   if (isTopographical && classifications.length) {
     relationship = classifications;
   }
-  const combinedRelationships = record.type === 'TopographicalStatus'
+  const combinedRelationships = isTopographical
     && relationship.length > 1 && targets.length > 1;
   const recordedLabels = Array.isArray(record._label)
     ? record._label
@@ -191,9 +208,18 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     <ObjectCardPropertyList className="person-status-details">
       {!!statements.length && <ObjectCardProperty label="Recorded statements" value={<span className="timespan-boundaries">{statements.map((statement) => <span key={statement}>{statement}</span>)}</span>} />}
       {content && <ObjectCardProperty label="Description" value={content} />}
-      {properties.map((property) => <ObjectCardProperty key={property.keys.join(',')} label={property.label} value={property.keys.some((key) => key.endsWith('_relation'))
-        ? <PlaceValues values={property.values} linked={false} />
-        : <PlaceValues values={property.values} />} />)}
+      {properties.map((property) => {
+        const isRelationship = property.keys.some((key) =>
+          key.endsWith('_relation'));
+        return <ObjectCardProperty
+          key={property.keys.join(',')}
+          label={property.label}
+          value={<PlaceValues
+            values={property.values}
+            linked={!isRelationship}
+          />}
+        />;
+      })}
       {!!classifications.length && <ObjectCardProperty label={classificationLabel} value={<PlaceValues values={classifications} />} />}
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
