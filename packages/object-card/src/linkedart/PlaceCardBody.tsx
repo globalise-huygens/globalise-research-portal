@@ -130,23 +130,25 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     ? recordedLabels.filter((value): value is string =>
       typeof value === 'string')
     : [];
-  const summaryLabel = getPlaceRecordSummaryLabel({
-    combinedRelationships,
-    relationshipTarget,
-    relationship,
-    fallback: title ?? properties[0]?.label ?? 'Recorded information',
-  });
   const primaryProperty = properties[0];
   const summaryValues = relationshipTarget
     ? targets
     : primaryProperty?.values ?? classifications;
-  let displayedLabel: ReactNode = summaryLabel;
-  let displayedValue: ReactNode = <PlaceValues values={summaryValues} />;
-  let separator = relationshipTarget ? ' ' : ': ';
+  let summaryLabel: ReactNode;
+  let summaryValue: ReactNode;
+  let separator = ': ';
   if (missingClassification) {
-    displayedLabel = title ?? 'Classifications';
-    displayedValue = 'Value unavailable';
-    separator = ': ';
+    summaryLabel = title ?? 'Classifications';
+    summaryValue = 'Value unavailable';
+  } else {
+    summaryLabel = getPlaceRecordSummaryLabel({
+      combinedRelationships,
+      relationshipTarget,
+      relationship,
+      fallback: title ?? primaryProperty?.label ?? 'Recorded information',
+    });
+    summaryValue = <PlaceValues values={summaryValues} />;
+    separator = relationshipTarget ? ' ' : ': ';
   }
   const valueClassName = !missingClassification
     && record.type === 'AppellativeStatus'
@@ -157,9 +159,9 @@ function PlaceRecord({ record, title, children, classificationLabel = 'Classific
     {dates && <RecordedDatesValue dates={dates} />}
     <span className="person-status-summary-property">
       <span className="person-status-summary-label">
-        {displayedLabel}{separator}
+        {summaryLabel}{separator}
       </span>
-      <span className={valueClassName}>{displayedValue}</span>
+      <span className={valueClassName}>{summaryValue}</span>
     </span>
   </span>}>
     <ObjectCardPropertyList className="person-status-details">
