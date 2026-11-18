@@ -63,5 +63,5 @@ export function getEquivalentTarget(value: unknown) {
   if (targets.size !== 1) {
     return undefined;
   }
-  return [...targets.values()][0];
+  return targets.values().next().value;
 }
