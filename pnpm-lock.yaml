@@ -536,6 +536,9 @@ importers:
       '@globalise/common':
         specifier: workspace:*
         version: link:../common
+      '@knaw-huc/text-annotation-segmenter':
+        specifier: ^0.8.0
+        version: 0.8.0
       '@react-aria/focus':
         specifier: ^3.22.1
         version: 3.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

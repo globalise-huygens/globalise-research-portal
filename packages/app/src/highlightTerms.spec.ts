@@ -1,27 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { createSnippet, splitByTerms } from './highlightTerms.ts';
+import { createSnippet, findTerms } from './highlightTerms.ts';
 
-describe(splitByTerms.name, () => {
-  it('marks the matched terms', () => {
-    expect(splitByTerms('a Foo b', ['foo'])).toEqual([
-      { text: 'a ', isMatch: false },
-      { text: 'Foo', isMatch: true },
-      { text: ' b', isMatch: false },
+describe(findTerms.name, () => {
+  it('finds the matched terms', () => {
+    expect(findTerms('a Foo b', ['foo'])).toEqual([{ start: 2, end: 5 }]);
+  });
+
+  it('finds every match of every term', () => {
+    expect(findTerms('FOO a foo b Bar', ['foo', 'bar'])).toEqual([
+      { start: 0, end: 3 },
+      { start: 6, end: 9 },
+      { start: 12, end: 15 },
     ]);
   });
 
-  it('marks every match of every term', () => {
-    expect(splitByTerms('FOO a foo b Bar', ['foo', 'bar'])).toEqual([
-      { text: 'FOO', isMatch: true },
-      { text: ' a ', isMatch: false },
-      { text: 'foo', isMatch: true },
-      { text: ' b ', isMatch: false },
-      { text: 'Bar', isMatch: true },
-    ]);
-  });
-
-  it('keeps the text whole without terms', () => {
-    expect(splitByTerms('foo', [])).toEqual([{ text: 'foo', isMatch: false }]);
+  it('finds nothing without terms', () => {
+    expect(findTerms('foo', [])).toEqual([]);
   });
 });
 
