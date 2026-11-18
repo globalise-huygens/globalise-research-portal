@@ -20,7 +20,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm build:app
 
 # Build content, checked out as submodule by CI:
-RUN pnpm content:build
+RUN pnpm content:build --force
 
 # Ignore dev dependencies:
 RUN pnpm deploy --filter @globalise/app --prod /app
