@@ -34,11 +34,21 @@ export default function SearchField({
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
   const actions = [
-    { label: 'Search', icon: IconSearch, run: () => searchFieldRef.current?.search() },
-    { label: 'Undo search edit', icon: IconUndo, run: () => searchFieldRef.current?.undo(), disabled: !history.canUndo },
-    { label: 'Redo search edit', icon: IconRedo, run: () => searchFieldRef.current?.redo(), disabled: !history.canRedo },
-    { label: 'Clear search', icon: IconClose, run: () => searchFieldRef.current?.clear() },
-  ];
+    { id: 'search', label: 'Search', icon: IconSearch, disabled: false },
+    {
+      id: 'undo', label: 'Undo search edit', icon: IconUndo,
+      disabled: !history.canUndo,
+    },
+    {
+      id: 'redo', label: 'Redo search edit', icon: IconRedo,
+      disabled: !history.canRedo,
+    },
+    { id: 'clear', label: 'Clear search', icon: IconClose, disabled: false },
+  ] as const;
+
+  function runAction(action: (typeof actions)[number]['id']) {
+    searchFieldRef.current?.[action]();
+  }
 
   useEffect(() => {
     if (autoFocus) {
@@ -97,9 +107,9 @@ export default function SearchField({
           />
           <Popover placement="bottom end" className={classes.actionPopover}>
             <Menu className={classes.actionMenu}>
-              {actions.map(({ label, icon: Icon, run, disabled }) => (
-                <MenuItem key={label} className={classes.actionItem}
-                  isDisabled={disabled} onAction={run}>
+              {actions.map(({ id, label, icon: Icon, disabled }) => (
+                <MenuItem key={id} className={classes.actionItem}
+                  isDisabled={disabled} onAction={() => runAction(id)}>
                   <Icon aria-hidden="true" />
                   {label}
                 </MenuItem>
@@ -109,8 +119,9 @@ export default function SearchField({
         </MenuTrigger>
       ) : (
         <div className={classes.buttons}>
-          {actions.map(({ label, icon: Icon, run, disabled }) => (
-            <Button key={label} aria-label={label} onClick={run} isDisabled={disabled}>
+          {actions.map(({ id, label, icon: Icon, disabled }) => (
+            <Button key={id} aria-label={label}
+              onClick={() => runAction(id)} isDisabled={disabled}>
               <Icon aria-hidden="true" />
             </Button>
           ))}
