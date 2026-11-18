@@ -10,35 +10,35 @@ import {
   IconRight,
   IconRightLast,
 } from '@globalise/design';
-import { useViewer } from '@knaw-huc/osd-iiif-viewer';
-import { Point } from 'openseadragon';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useState } from 'react';
-import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
 
 export function ManifestCanvasNavigation() {
-  const viewer = useViewer();
-  const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
+  const { vault, id: manifestId, isReady } = useManifest();
   const { id: selectedCanvasId } = useSelectedCanvas();
   const [scanInput, setScanInput] = useState<string | null>(null);
-  const selectedIndex = lazyCanvases.findIndex(
-    (c) => c.canvasId === selectedCanvasId,
-  );
 
-  if (!lazyCanvases.length || selectedIndex === -1) {
+  if (!isReady || !manifestId) {
+    return null;
+  }
+
+  const { items } = vault.get({ id: manifestId, type: 'Manifest' });
+  const selectedIndex = items.findIndex(({ id }) => id === selectedCanvasId);
+  if (selectedIndex === -1) {
     return null;
   }
 
   const currentScanNumber = selectedIndex + 1;
-  const totalScans = lazyCanvases.length;
+  const totalScans = items.length;
   const scanInputValue = scanInput ?? String(currentScanNumber);
   const hasPrev = selectedIndex > 0;
-  const hasNext = selectedIndex < lazyCanvases.length - 1;
-  const firstId = lazyCanvases[0]?.canvasId;
-  const prevId = lazyCanvases[selectedIndex - 1]?.canvasId;
-  const nextId = lazyCanvases[selectedIndex + 1]?.canvasId;
-  const lastId = lazyCanvases[lazyCanvases.length - 1]?.canvasId;
+  const hasNext = selectedIndex < totalScans - 1;
+  const firstId = items[0]?.id;
+  const prevId = items[selectedIndex - 1]?.id;
+  const nextId = items[selectedIndex + 1]?.id;
+  const lastId = items[totalScans - 1]?.id;
 
   function scrollTo(canvasId?: CanvasId) {
     if (!canvasId) {
@@ -46,20 +46,11 @@ export function ManifestCanvasNavigation() {
     }
     setScanInput(null);
     setSelectedCanvas(canvasId, 'external');
-    if (!viewer) {
-      return;
-    }
-    const canvas = lazyCanvases.find((c) => c.canvasId === canvasId);
-    if (!canvas) {
-      return;
-    }
-    viewer.viewport.panTo(new Point(0.5, canvas.y + canvas.height / 2));
   }
 
   function navigateToScanNumber(scanNumber: number) {
     const nextScanNumber = clamp(scanNumber, 1, totalScans);
-    const nextCanvasId = lazyCanvases[nextScanNumber - 1]?.canvasId;
-    setScanInput(null);
+    const nextCanvasId = items[nextScanNumber - 1]?.id;
     scrollTo(nextCanvasId);
   }
 
