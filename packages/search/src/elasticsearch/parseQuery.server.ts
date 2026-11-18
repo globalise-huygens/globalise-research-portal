@@ -155,10 +155,7 @@ export function toInterval(query: TreeQuery, queryExpansions?: Record<string, st
           any_of: {
             intervals: [
               { match: { query: query.value } },
-              // 'match_phrase' does not exist on intervals, so by using max_gaps: 0 and ordered: true,
-              // the functionality is simulated. The 'Na-schip' example from above will be searched for like,
-              // 'na' directly followed by 'schip'.
-              ...queryExpansions[query.value].map((expansion) => ({ match: { query: expansion, max_gaps: 0, ordered: true } })),
+              ...queryExpansions[query.value].map((expansion) => phraseInterval(expansion)),
             ],
           },
         };
@@ -166,13 +163,7 @@ export function toInterval(query: TreeQuery, queryExpansions?: Record<string, st
         return { match: { query: query.value } };
       }
     case 'phrase':
-      return {
-        match: {
-          query: query.value,
-          max_gaps: query.proximity ?? 0,
-          ordered: query.proximity === undefined,
-        },
-      };
+      return phraseInterval(query.value, query.proximity);
     case 'prefix-wildcard':
       return { prefix: { prefix: query.value } };
     case 'fuzzy':
@@ -242,6 +233,19 @@ function toContainedInterval(
     all_of: {
       intervals: [toInterval(clause, queryExpansions)],
       filter: contained ? { overlapping: container } : { not_overlapping: container },
+    },
+  };
+}
+
+// Intervals have no 'match_phrase'. Using max_gaps: 0 and ordered: true gets the same result:
+// every token must appear, in order, with nothing in between.
+// If a proximity is given, it's used for `max_gaps` and `ordered` will be set to `false`.
+function phraseInterval(value: string, proximity?: number): QueryDslIntervalsContainer {
+  return {
+    match: {
+      query: value,
+      max_gaps: proximity ?? 0,
+      ordered: proximity === undefined,
     },
   };
 }
