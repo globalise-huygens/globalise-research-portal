@@ -40,7 +40,7 @@ export function ManifestCanvasNavigation() {
   const nextId = canvases[selectedIndex + 1]?.id;
   const lastId = canvases[totalScans - 1]?.id;
 
-  function scrollTo(canvasId?: CanvasId) {
+  function selectCanvas(canvasId?: CanvasId) {
     if (!canvasId) {
       return;
     }
@@ -51,7 +51,7 @@ export function ManifestCanvasNavigation() {
   function navigateToScanNumber(scanNumber: number) {
     const nextScanNumber = clamp(scanNumber, 1, totalScans);
     const nextCanvasId = canvases[nextScanNumber - 1]?.id;
-    scrollTo(nextCanvasId);
+    selectCanvas(nextCanvasId);
   }
 
   function commitScanInput() {
@@ -78,7 +78,7 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasPrev}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconLeftFirst className="h-s16 w-s16" />}
-        onPress={() => scrollTo(firstId)}
+        onPress={() => selectCanvas(firstId)}
       />
       <TooltipIconButton
         aria-label="Previous scan"
@@ -87,7 +87,7 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasPrev}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconLeft className="h-s16 w-s16" />}
-        onPress={() => scrollTo(prevId)}
+        onPress={() => selectCanvas(prevId)}
       />
 
       <span className="scan-position">
@@ -127,7 +127,7 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasNext}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconRight className="h-s16 w-s16" />}
-        onPress={() => scrollTo(nextId)}
+        onPress={() => selectCanvas(nextId)}
       />
       <TooltipIconButton
         aria-label="Last scan"
@@ -136,7 +136,7 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasNext}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconRightLast className="h-s16 w-s16" />}
-        onPress={() => scrollTo(lastId)}
+        onPress={() => selectCanvas(lastId)}
       />
     </div>
   );
