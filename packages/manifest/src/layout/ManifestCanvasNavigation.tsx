@@ -24,21 +24,21 @@ export function ManifestCanvasNavigation() {
     return null;
   }
 
-  const { items } = vault.get({ id: manifestId, type: 'Manifest' });
-  const selectedIndex = items.findIndex(({ id }) => id === selectedCanvasId);
+  const { items: canvases } = vault.get({ id: manifestId, type: 'Manifest' });
+  const selectedIndex = canvases.findIndex(({ id }) => id === selectedCanvasId);
   if (selectedIndex === -1) {
     return null;
   }
 
   const currentScanNumber = selectedIndex + 1;
-  const totalScans = items.length;
+  const totalScans = canvases.length;
   const scanInputValue = scanInput ?? String(currentScanNumber);
   const hasPrev = selectedIndex > 0;
   const hasNext = selectedIndex < totalScans - 1;
-  const firstId = items[0]?.id;
-  const prevId = items[selectedIndex - 1]?.id;
-  const nextId = items[selectedIndex + 1]?.id;
-  const lastId = items[totalScans - 1]?.id;
+  const firstId = canvases[0]?.id;
+  const prevId = canvases[selectedIndex - 1]?.id;
+  const nextId = canvases[selectedIndex + 1]?.id;
+  const lastId = canvases[totalScans - 1]?.id;
 
   function scrollTo(canvasId?: CanvasId) {
     if (!canvasId) {
@@ -50,7 +50,7 @@ export function ManifestCanvasNavigation() {
 
   function navigateToScanNumber(scanNumber: number) {
     const nextScanNumber = clamp(scanNumber, 1, totalScans);
-    const nextCanvasId = items[nextScanNumber - 1]?.id;
+    const nextCanvasId = canvases[nextScanNumber - 1]?.id;
     scrollTo(nextCanvasId);
   }
 
