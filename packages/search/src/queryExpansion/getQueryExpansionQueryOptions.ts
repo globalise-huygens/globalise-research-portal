@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 
-const url = 'https://kweepeer.dev.huc.knaw.nl';
+const url = 'https://kweepeer.globalise.nl';
 
 export type QueryExpansion = {
   original_query: string;
@@ -21,7 +21,12 @@ export default function getQueryExpansionQueryOptions(query: string) {
   return queryOptions({
     queryKey: ['query_expansion', query],
     staleTime: 1000 * 60 * 5, // 5 minutes
-    queryFn: async () => {
+    queryFn: async (): Promise<QueryExpansion> => {
+      // Nothing to expand without a query
+      if (!query.trim()) {
+        return { original_query: query, query, query_expansion_template: query, terms: {} };
+      }
+
       try {
         const result = await fetch(`${url}?q=${encodeURIComponent(query)}&include=${INCLUDED_MODULES}`);
         if (!result.ok) {

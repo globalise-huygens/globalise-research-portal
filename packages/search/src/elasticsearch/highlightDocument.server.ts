@@ -61,7 +61,7 @@ async function fetchTaggedText(request: ManifestSearchState): Promise<string | u
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
-    query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
+    query: getSearchQuery(request.query, request.facets, request.queryExpansions, request.docEsId) ?? undefined,
   });
   const annotatedText = result.hits.hits[0]?.highlight?.annotatedText[0];
   return annotatedText && tagAnnotatedHits(annotatedText);

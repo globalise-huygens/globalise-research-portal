@@ -1,41 +1,54 @@
 import type { TreeQuery } from '@knaw-huc/searchfield';
 import type { QueryDslIntervalsContainer, QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
-import { annotationTypeFields } from './annotationTypeFields';
+import { isAnnotationToken, toAnnotationType } from './annotationTypeFields';
 
-// The keys of annotation tokens. An annotation is indexed as `key:value` tokens inside annotatedText,
-// not as separate fields, so `placeId:GLOB_574` is looked up as one exact token.
-const annotationTokenKeys = ['type', 'personId', 'placeId'];
-
-export default function parseQuery(query: TreeQuery, field = 'annotatedText'): QueryDslQueryContainer {
+export default function parseQuery(query: TreeQuery, queryExpansions?: Record<string, string[]>, field = 'annotatedText'): QueryDslQueryContainer {
   switch (query.type) {
     case 'and':
       return {
         bool: {
-          must: query.clauses.map((clause) => parseQuery(clause, field)),
+          must: query.clauses.map((clause) => parseQuery(clause, queryExpansions, field)),
         },
       };
     case 'or':
       return {
         bool: {
-          should: query.clauses.map((clause) => parseQuery(clause, field)),
+          should: query.clauses.map((clause) => parseQuery(clause, queryExpansions, field)),
           minimum_should_match: 1,
         },
       };
     case 'not':
       return {
         bool: {
-          must_not: [parseQuery(query.clause, field)],
+          must_not: [parseQuery(query.clause, queryExpansions, field)],
         },
       };
     case 'term':
-      return {
-        match: {
-          [field]: {
-            query: query.value,
+      if (queryExpansions?.[query.value]) {
+        return {
+          bool: {
+            should: [
+              { match: { [field]: { query: query.value } } },
+              // 'match_phrase' is used because the analyser may split an expansion into several tokens.
+              // For example, 'schip' is expanded into 'Na-schip', which 'match' would turn into 'na OR schip'.
+              // This causes 'na' to also be highlighted.
+              ...queryExpansions[query.value].map((expansion) => ({ match_phrase: { [field]: { query: expansion } } })),
+            ],
+            minimum_should_match: 1,
             boost: query.boost,
           },
-        },
-      };
+        };
+      } else {
+        return {
+          match: {
+            [field]: {
+              query: query.value,
+              boost: query.boost,
+            },
+          },
+        };
+      }
+
     case 'phrase':
       return {
         match_phrase: {
@@ -85,7 +98,7 @@ export default function parseQuery(query: TreeQuery, field = 'annotatedText'): Q
       // A 'field' is used when the user searches from something like 'placeId:GLOB_574', 'person:adriaan' or 'title:missive'
     case 'field':
       // This runs when a user searches for something like 'placeId:GLOB_574'. It only returns documents containing that placeId.
-      if (annotationTokenKeys.includes(query.field)) {
+      if (isAnnotationToken(query.field)) {
         return {
           term: {
             annotatedText: {
@@ -100,29 +113,29 @@ export default function parseQuery(query: TreeQuery, field = 'annotatedText'): Q
       if (toAnnotationType(query.field)) {
         return {
           intervals: {
-            annotatedText: { ...toInterval(query), boost: query.boost },
+            annotatedText: { ...toInterval(query, queryExpansions), boost: query.boost },
           },
         };
       }
       // This runs for all other cases, e.g., 'title:missive'. This is default ES syntax to search through keyword fields.
-      return parseQuery(query.clause, query.field);
+      return parseQuery(query.clause, undefined, query.field);
     case 'containing':
     case 'notcontaining':
       // Runs when the first param is a bare word, e.g., 'containing(title,missive)'
       if (query.container.type === 'term') {
-        const inField = parseQuery(query.clause, query.container.value);
+        const inField = parseQuery(query.clause, undefined, query.container.value);
         return query.type === 'containing' ? inField : { bool: { must_not: [inField] } };
       }
       // Runs when the first param is an annotation type, e.g., 'containing(type:person,adriaan)'
       return {
         intervals: {
-          annotatedText: { ...toInterval(query), boost: query.boost },
+          annotatedText: { ...toInterval(query, queryExpansions), boost: query.boost },
         },
       };
     case 'near':
       return {
         intervals: {
-          [field]: { ...toInterval(query), boost: query.boost },
+          [field]: { ...toInterval(query, queryExpansions), boost: query.boost },
         },
       };
     default:
@@ -134,18 +147,23 @@ export default function parseQuery(query: TreeQuery, field = 'annotatedText'): Q
   }
 }
 
-export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
+export function toInterval(query: TreeQuery, queryExpansions?: Record<string, string[]>): QueryDslIntervalsContainer {
   switch (query.type) {
     case 'term':
-      return { match: { query: query.value } };
+      if (queryExpansions?.[query.value]) {
+        return {
+          any_of: {
+            intervals: [
+              { match: { query: query.value } },
+              ...queryExpansions[query.value].map((expansion) => phraseInterval(expansion)),
+            ],
+          },
+        };
+      } else {
+        return { match: { query: query.value } };
+      }
     case 'phrase':
-      return {
-        match: {
-          query: query.value,
-          max_gaps: query.proximity ?? 0,
-          ordered: query.proximity === undefined,
-        },
-      };
+      return phraseInterval(query.value, query.proximity);
     case 'prefix-wildcard':
       return { prefix: { prefix: query.value } };
     case 'fuzzy':
@@ -153,25 +171,25 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
     case 'regex':
       return { regexp: { pattern: query.value } };
     case 'or':
-      return { any_of: { intervals: query.clauses.map(toInterval) } };
+      return { any_of: { intervals: query.clauses.map((clause) => toInterval(clause, queryExpansions)) } };
     case 'and':
-      return { all_of: { intervals: query.clauses.map(toInterval), ordered: false } };
+      return { all_of: { intervals: query.clauses.map((clause) => toInterval(clause, queryExpansions)), ordered: false } };
     case 'near':
       return {
         all_of: {
-          intervals: (query.clauses as readonly TreeQuery[]).map(toInterval),
+          intervals: (query.clauses as readonly TreeQuery[]).map((clause) => toInterval(clause, queryExpansions)),
           max_gaps: query.distance,
           ordered: false,
         },
       };
     case 'field': {
-      if (annotationTokenKeys.includes(query.field)) {
+      if (isAnnotationToken(query.field)) {
         return { match: { query: toAnnotationToken(query.field, query.clause), analyzer: 'keyword' } };
       }
       const annotationType = toAnnotationType(query.field);
       if (annotationType) {
         const container = { match: { query: `type:${annotationType}`, analyzer: 'keyword' } };
-        return toContainedInterval(query.clause, container, true);
+        return toContainedInterval(query.clause, container, true, queryExpansions);
       }
       throw new Error(`Field '${query.field}' is not supported inside near()`);
     }
@@ -180,7 +198,7 @@ export function toInterval(query: TreeQuery): QueryDslIntervalsContainer {
       if (query.container.type === 'term') {
         throw new Error(`Metadata field '${query.container.value}' is not supported inside near()`);
       }
-      return toContainedInterval(query.clause, toInterval(query.container), query.type === 'containing');
+      return toContainedInterval(query.clause, toInterval(query.container), query.type === 'containing', queryExpansions);
     case 'not':
     case 'entity':
       throw new Error(`'${query.type}' is not supported inside near()`);
@@ -205,20 +223,29 @@ function toAnnotationToken(field: string, clause: TreeQuery): string {
   return `type:${annotationType}`;
 }
 
-function toAnnotationType(name: string): string | undefined {
-  const key = name.toLowerCase();
-  return Object.hasOwn(annotationTypeFields, key) ? annotationTypeFields[key] : undefined;
-}
-
 function toContainedInterval(
   clause: TreeQuery,
   container: QueryDslIntervalsContainer,
   contained: boolean,
+  queryExpansions: Record<string, string[]> | undefined,
 ): QueryDslIntervalsContainer {
   return {
     all_of: {
-      intervals: [toInterval(clause)],
+      intervals: [toInterval(clause, queryExpansions)],
       filter: contained ? { overlapping: container } : { not_overlapping: container },
+    },
+  };
+}
+
+// Intervals have no 'match_phrase'. Using max_gaps: 0 and ordered: true gets the same result:
+// every token must appear, in order, with nothing in between.
+// If a proximity is given, it's used for `max_gaps` and `ordered` will be set to `false`.
+function phraseInterval(value: string, proximity?: number): QueryDslIntervalsContainer {
+  return {
+    match: {
+      query: value,
+      max_gaps: proximity ?? 0,
+      ordered: proximity === undefined,
     },
   };
 }
