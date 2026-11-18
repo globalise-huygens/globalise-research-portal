@@ -1,8 +1,9 @@
-import { findByPath, findTimespan, getContent, getEntityIdentifiers, getRecordedDates, getStatusValues, isLinkedArtNode, url, type LinkedArtNode } from '@globalise/common';
+import { findByPath, findTimespan, getContent, getEntityIdentifiers, getRecordedDates, getStatusValues, url, type LinkedArtNode } from '@globalise/common';
 import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
 import { NodeList } from './NodeList.tsx';
 import { getPersonNameRecords, groupRecords, sortPersonNames } from './PersonStatusModel.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
+import { StatusValues } from './StatusValues.tsx';
 import { RelationLink } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
@@ -38,9 +39,7 @@ export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
       return <span key={event.id ?? index} className="person-overview-fact">
         <ShipEventLabel event={event} fallback={fallback} />: {timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
         {(!!timespan || !!dates) && !!places.length && ', '}
-        {places.map((place, placeIndex) => <span key={place.id ?? placeIndex}>
-          {placeIndex > 0 && ', '}<RelationLink node={place} />
-        </span>)}
+        <StatusValues values={places} />
       </span>;
     })}
   </div>;
@@ -91,9 +90,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
               return <div key={recordKey} className="person-status-record">
                 {records.length > 1 && <div className="person-status-label">Record {index + 1}</div>}
                 {timespan || dates || hasSources || classifications.length ? <ObjectCardPropertyList className="person-status-details">
-                  {!!classifications.length && <ObjectCardProperty label="Classification" value={classifications.map((type, typeIndex) => <span key={type.id ?? typeIndex}>
-                    {typeIndex > 0 && ', '}<RelationLink node={type} />
-                  </span>)} />}
+                  {!!classifications.length && <ObjectCardProperty label="Classification" value={<StatusValues values={classifications} />} />}
                   {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
                   {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
                   {hasSources && <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes excludedIdentifiers={identifiers} />} />}
@@ -127,14 +124,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
           <span className="person-status-summary-property">
             <span className="person-status-summary-label">Object type: </span>
             <span className="person-status-summary-value">
-              {directClassifications.map((classification, index) => (
-                <span key={index}>
-                  {index > 0 && ', '}
-                  {isLinkedArtNode(classification)
-                    ? <RelationLink node={classification} />
-                    : classification}
-                </span>
-              ))}
+              <StatusValues values={directClassifications} />
             </span>
           </span>
         } />}
@@ -190,15 +180,11 @@ function ShipOwnership({ status, identifiers }: { status: LinkedArtNode; identif
     {timespan && <span className="person-status-summary-date"><TimespanValue timespan={timespan} mode="summary" /></span>}
     {dates && <RecordedDatesValue dates={dates} />}
     <span className="person-status-summary-property"><span className="person-status-summary-label">{owners.length ? 'Owner: ' : 'Ownership record'}</span>
-      {!!owners.length && <span className="person-status-summary-value">{owners.map((owner, index) => <span key={index}>
-        {index > 0 && ', '}{isLinkedArtNode(owner) ? <RelationLink node={owner} /> : owner}
-      </span>)}</span>}
+      {!!owners.length && <span className="person-status-summary-value"><StatusValues values={owners} /></span>}
     </span>
   </div>}>
     <ObjectCardPropertyList className="person-status-details">
-      {!!places.length && <ObjectCardProperty label="Geographic scope" value={places.map((place, index) => <span key={place.id ?? index}>
-        {index > 0 && ', '}<RelationLink node={place} />
-      </span>)} />}
+      {!!places.length && <ObjectCardProperty label="Geographic scope" value={<StatusValues values={places} />} />}
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
       {!!notes.length && <ObjectCardProperty label="Notes" value={notes.join('; ')} />}
@@ -225,21 +211,13 @@ function ShipEvent({ event, fallback, identifiers }: { event: LinkedArtNode; fal
     </span>
   </div>}>
     <ObjectCardPropertyList className="person-status-details">
-      {!!classifications.length && <ObjectCardProperty label="Event type" value={classifications.map((classification, index) => <span key={classification.id ?? index}>
-        {index > 0 && ', '}<RelationLink node={classification} />
-      </span>)} />}
+      {!!classifications.length && <ObjectCardProperty label="Event type" value={<StatusValues values={classifications} />} />}
       {content && <ObjectCardProperty label="Description" value={content} />}
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
-      {!!places.length && <ObjectCardProperty label="Place" value={places.map((place, index) => <span key={place.id ?? index}>
-        {index > 0 && ', '}<RelationLink node={place} />
-      </span>)} />}
-      {!!transferredFrom.length && <ObjectCardProperty label="From" value={transferredFrom.map((node, index) => <span key={node.id ?? index}>
-        {index > 0 && ', '}<RelationLink node={node} />
-      </span>)} />}
-      {!!transferredTo.length && <ObjectCardProperty label="To" value={transferredTo.map((node, index) => <span key={node.id ?? index}>
-        {index > 0 && ', '}<RelationLink node={node} />
-      </span>)} />}
+      {!!places.length && <ObjectCardProperty label="Place" value={<StatusValues values={places} />} />}
+      {!!transferredFrom.length && <ObjectCardProperty label="From" value={<StatusValues values={transferredFrom} />} />}
+      {!!transferredTo.length && <ObjectCardProperty label="To" value={<StatusValues values={transferredTo} />} />}
       {!!notes.length && <ObjectCardProperty label="Notes" value={notes.join('; ')} />}
       {!!sources.length && <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes excludedIdentifiers={identifiers} />} />}
     </ObjectCardPropertyList>
@@ -285,8 +263,8 @@ function ShipVoyage({ voyage, identifiers }: { voyage: LinkedArtNode; identifier
       <ObjectCardProperty label="Voyage" value={<RelationLink node={voyage} />} />
       {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
       {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
-      {!!from.length && <ObjectCardProperty label="From" value={from.map((place, index) => <span key={place.id ?? index}>{index > 0 && ', '}<RelationLink node={place} /></span>)} />}
-      {!!to.length && <ObjectCardProperty label="To" value={to.map((place, index) => <span key={place.id ?? index}>{index > 0 && ', '}<RelationLink node={place} /></span>)} />}
+      {!!from.length && <ObjectCardProperty label="From" value={<StatusValues values={from} />} />}
+      {!!to.length && <ObjectCardProperty label="To" value={<StatusValues values={to} />} />}
       {!!sources.length && <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes excludedIdentifiers={identifiers} />} />}
     </ObjectCardPropertyList>
   </ObjectCardDisclosure>;
@@ -301,9 +279,7 @@ function hasEventInformation(event: LinkedArtNode): boolean {
 
 function ShipRoutePlaces({ places }: { places: LinkedArtNode[] }) {
   if (!places.length) {return <>place not recorded</>;}
-  return <>{places.map((place, index) => <span key={place.id ?? index}>
-    {index > 0 && ', '}<RelationLink node={place} />
-  </span>)}</>;
+  return <><StatusValues values={places} /></>;
 }
 
 function getShipHistory(entity: LinkedArtNode) {
@@ -314,9 +290,7 @@ function getShipHistory(entity: LinkedArtNode) {
 function ShipEventLabel({ event, fallback }: { event: LinkedArtNode; fallback: string }) {
   const classifications = findByPath(event, ['classified_as']);
   return classifications.length
-    ? classifications.map((classification, index) => <span key={classification.id ?? index}>
-      {index > 0 && ', '}<RelationLink node={classification} />
-    </span>)
+    ? <StatusValues values={classifications} />
     : fallback;
 }
 

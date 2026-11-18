@@ -1,3 +1,4 @@
+import { StatusValues } from './StatusValues.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import {
   findByPath,
@@ -629,27 +630,6 @@ function StatusValuesProperty({
       label={propertyLabel}
       value={<StatusValues values={values} linked={linked} stacked={stacked} />}
     />
-  );
-}
-
-function StatusValues({
-  values,
-  linked = true,
-  stacked,
-}: Pick<StatusValuesPropertyProps, 'values' | 'linked' | 'stacked'>) {
-  return (
-    <span className={`person-status-values${stacked ? ' stacked' : ''}`}>
-      {values.map((value, index) => (
-        <span key={index}>
-          {!stacked && index > 0 && ', '}
-          {isLinkedArtNode(value)
-            ? linked
-              ? <RelationLink node={value} />
-              : <RelationValue node={value} />
-            : value}
-        </span>
-      ))}
-    </span>
   );
 }
 
