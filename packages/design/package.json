@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@globalise/common": "workspace:*",
+    "@react-aria/focus": "^3.22.1",
     "clsx": "^2.1.1",
     "react-aria-components": "^1.22.1"
   }

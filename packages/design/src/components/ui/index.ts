@@ -1,4 +1,4 @@
-export { EntityPreview } from './EntityPreview';
+export { PreviewCard } from './PreviewCard.tsx';
 export { PopoverCard } from './PopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
@@ -45,7 +45,7 @@ export type {
 export { CardGlance, cardGlanceVariants } from './CardGlance';
 export type { CardGlanceProps } from './CardGlance';
 
-export { CardHero, cardHeroVariants } from './CardHero';
+export { CardHero } from './CardHero';
 export type { CardHeroProps } from './CardHero';
 
 export { Typography, typographyVariants } from './Typography';

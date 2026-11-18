@@ -1,0 +1,47 @@
+.home-hero-cards {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--s8) var(--shell-margin);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-600) transparent;
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--s24);
+    width: min(100%, 120rem);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    min-width: 0;
+  }
+
+  li:nth-child(7n + 1) { --placeholder-color: var(--color-parchment-600); --card-color: var(--color-brand-parchment); }
+  li:nth-child(7n + 2) { --placeholder-color: var(--color-brand-vermilion); --card-color: var(--color-brand-vermilion); }
+  li:nth-child(7n + 3) { --placeholder-color: var(--color-turquoise-600); --card-color: var(--color-brand-turquoise); }
+  li:nth-child(7n + 4) { --placeholder-color: var(--color-brand-mint); --card-color: var(--color-brand-mint); }
+  li:nth-child(7n + 5) { --placeholder-color: var(--color-neutral-700); --card-color: var(--color-brand-vermilion); }
+  li:nth-child(7n + 6) { --placeholder-color: var(--color-parchment-800); --card-color: var(--color-brand-parchment); }
+  li:nth-child(7n + 7) { --placeholder-color: var(--color-neutral-600); --card-color: var(--color-brand-turquoise); }
+
+  .card-hero {
+    background: var(--card-color);
+  }
+
+  .home-hero-card-placeholder {
+    background: var(--placeholder-color);
+  }
+
+  @media (max-width: 1599px) {
+    ul {
+      width: max-content;
+      grid-template-columns: repeat(7, clamp(12rem, 24vw, 14rem));
+      gap: var(--s16);
+    }
+  }
+}

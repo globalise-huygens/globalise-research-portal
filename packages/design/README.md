@@ -35,6 +35,11 @@ for css:
 
 `src/styles.css` stays the public css entry. shared tokens are in `src/styles/globals.css`, general component css is collected by `src/components/ui/ui.css`, and a component can have its own matching css file when needed
 
+Entity and annotation colours live in `src/styles/annotations.css`: the palette,
+family roles, and shared text highlight colours. Components use those variables;
+they do not maintain their own palettes. Type-to-family mapping lives in
+`packages/common/src/PresentationFamily.ts`.
+
 ## icons
 
 These icons are [Material Symbols](https://fonts.google.com/icons) by Google, licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0):

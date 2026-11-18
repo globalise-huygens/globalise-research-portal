@@ -37,6 +37,7 @@ export function TocDocumentMetadata({ document }: TocDocumentMetadataProps) {
       <CreatorField url={metadataUrl} fallback={fallback}/>
       <TimespanField url={metadataUrl} label="Date" fallback={fallback}/>
       <PlacesField url={metadataUrl} label="Location" fallback={fallback}/>
+      {document.language && <Pair label="Language">{document.language}</Pair>}
       {document.tanapId && <Pair label="TANAP">{document.tanapId}</Pair>}
       <DocumentPageField url={metadataUrl} fallback={fallback}/>
     </dl>

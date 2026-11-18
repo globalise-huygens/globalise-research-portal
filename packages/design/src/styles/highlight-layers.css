@@ -1,0 +1,44 @@
+/**
+ * Highlights the different annotations of a segment using background layers.
+ * Each class sets its color with --{class}-layer.
+ * Order: search-hit, word, entity
+ */
+.highlight-layers :where(.word, .entity, .event, .search-hit) {
+    background:
+      linear-gradient(var(--search-hit-layer, transparent), var(--search-hit-layer, transparent)),
+      linear-gradient(var(--word-layer, transparent), var(--word-layer, transparent)),
+      var(--entity-layer, transparent);
+    box-decoration-break: clone;
+}
+
+.highlight-layers {
+    .entity {
+        --entity-layer: var(--annotation-family-color, var(--annotation-concept));
+        color: var(--portal-text);
+    }
+
+    .selected-entity {
+        --entity-layer: var(--annotation-family-selected, var(--annotation-concept-selected));
+    }
+
+    .search-hit {
+        --search-hit-layer: var(--search-hit);
+
+        &.active-hit {
+            --search-hit-layer: var(--search-hit-active);
+        }
+    }
+
+    .event {
+        text-decoration-line: underline;
+        text-decoration-color: var(--annotation-event);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        text-decoration-skip-ink: none;
+    }
+
+    .selected-event {
+        text-decoration-color: var(--annotation-event-selected);
+        text-decoration-thickness: 3px;
+    }
+}

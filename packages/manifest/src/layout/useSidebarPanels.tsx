@@ -15,15 +15,17 @@ export type SidebarPanel = {
   id: SidebarId
   icon: ReactNode,
   label: string,
+  shortLabel: string,
   description: string,
   railLabel?: string,
   badge?: string
 };
 
-const sidebarPanels = [
+const sidebarPanels: SidebarPanel[] = [
   {
     id: 'inventory',
     label: 'Inventory',
+    shortLabel: 'Inventory',
     description:
       'View this inventory’s metadata and its place in the archive hierarchy',
     icon: <IconInventory className="sidebar-icon" />,
@@ -31,6 +33,7 @@ const sidebarPanels = [
   {
     id: 'toc',
     label: 'Table of Contents',
+    shortLabel: 'Contents',
     description:
       'Browse the documents in this inventory in archival order. Select a document to explore its metadata and scans',
     icon: <IconTableOfContent className="sidebar-icon" />,
@@ -38,18 +41,20 @@ const sidebarPanels = [
   {
     id: 'entities',
     label: 'Entity tags',
+    shortLabel: 'Entities',
     description:
-      'Explore words and phrases recognised in the transcription and linked, where possible, to people, places, dates, objects, and other concepts',
+      'Explore words and phrases recognised in the current document and linked, where possible, to people, places, dates, objects, and other concepts',
     icon: <IconEntities className="sidebar-icon" />,
   },
   {
     id: 'events',
     label: 'Event tags',
+    shortLabel: 'Events',
     description:
-      'Explore actions and events recognised in the transcription. Use these tags to find related passages',
+      'Explore actions and events recognised in the current document. Use these tags to find related passages',
     icon: <IconEvents className="sidebar-icon" />,
   },
-] satisfies SidebarPanel[];
+];
 
 export function useSidebarPanels(): SidebarPanel[] {
   const inventoryNumber = useInventoryNumber();

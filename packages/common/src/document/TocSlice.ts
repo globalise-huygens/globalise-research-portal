@@ -1,7 +1,10 @@
 import { setState, useDocumentStore } from './DocumentStore';
 
+export type TocNavigation = 'document' | 'scan';
+
 export type TocState = {
   expandedDocIds: string[];
+  navigation: TocNavigation | null;
 };
 
 export type TocSlice = {
@@ -32,6 +35,21 @@ export function expandTocDocument(id: string) {
       toc: { ...s.toc, expandedDocIds: [...expandedDocIds, id] },
     };
   });
+}
+
+export function navigateToc(navigation: TocNavigation, documentId: string) {
+  if (navigation === 'scan') {
+    expandTocDocument(documentId);
+  }
+  setState((s) => ({ toc: { ...s.toc, navigation } }));
+}
+
+export function clearTocNavigation() {
+  setState((s) => ({ toc: { ...s.toc, navigation: null } }));
+}
+
+export function useTocNavigation(): TocNavigation | null {
+  return useDocumentStore((s) => s.toc.navigation);
 }
 
 export function useIsTocDocumentExpanded(id: string): boolean {

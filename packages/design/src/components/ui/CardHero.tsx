@@ -1,13 +1,8 @@
 import { cn } from '../../lib';
 import * as React from 'react';
-import { Button as AriaButton, Link as AriaLink } from 'react-aria-components';
 import { IconArrowRight } from '../icons/IconArrowRight';
 
 type CardHeroColor = 'turquoise' | 'vermilion' | 'mint' | 'parchment';
-
-function cardHeroVariants({ className }: { className?: string } = {}) {
-  return cn('gds-card-hero__hover', className);
-}
 
 type CardHeroBaseProps = {
   label: string;
@@ -23,68 +18,53 @@ export type CardHeroProps =
     'color'
   >)
   | (CardHeroBaseProps & { href?: never } & Omit<
-    React.HTMLAttributes<HTMLDivElement>,
+    React.HTMLAttributes<HTMLElement>,
     'color'
   >);
 
 const CardHero = React.forwardRef<HTMLElement, CardHeroProps>((props, ref) => {
-  const { className, hoverColor, label, title, children } = props;
-  const href = 'href' in props ? props.href : undefined;
-  const [touched, setTouched] = React.useState(false);
-  const sharedClassName = cn('gds-card-hero', className);
-
-  const handleTouchStart = () => setTouched(true);
-  const handleTouchEnd = () => setTouched(false);
+  const { className, hoverColor, label, title, children, href, ...rest } = props;
+  const sharedClassName = cn('card-hero', className);
 
   const content = (
     <>
-      <div
-        className="gds-card-hero__media"
-        data-hidden={touched ? 'true' : undefined}
-      >
-        {children}
-      </div>
+      {children && <div className="media">{children}</div>}
 
-      <div
-        className={cardHeroVariants()}
-        data-color={hoverColor ?? 'turquoise'}
-        data-visible={touched ? 'true' : undefined}
-      >
-        <div className="gds-card-hero__copy">
-          <span className="gds-card-hero__label">{label}</span>
-          <span className="gds-card-hero__title">{title}</span>
+      <div className="content">
+        <div className="copy">
+          {label && <span className="label">{label}</span>}
+          {title && <span className="title">{title}</span>}
         </div>
-        <IconArrowRight className="gds-card-hero__icon" aria-hidden="true" />
+        <IconArrowRight className="arrow" aria-hidden="true" />
       </div>
     </>
   );
 
   if (href) {
     return (
-      <AriaLink
+      <a
+        {...rest}
         href={href}
         ref={ref as React.RefObject<HTMLAnchorElement>}
         className={sharedClassName}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        data-color={hoverColor ?? 'turquoise'}
       >
         {content}
-      </AriaLink>
+      </a>
     );
   }
 
   return (
-    <AriaButton
-      ref={ref as React.RefObject<HTMLButtonElement>}
+    <article
+      {...rest}
+      ref={ref}
       className={sharedClassName}
-      data-clickable="true"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      data-color={hoverColor ?? 'turquoise'}
     >
       {content}
-    </AriaButton>
+    </article>
   );
 });
 CardHero.displayName = 'CardHero';
 
-export { CardHero, cardHeroVariants };
+export { CardHero };

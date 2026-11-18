@@ -1,6 +1,8 @@
 import {
   type DocumentState,
-  toDocumentHit,
+  findActiveSearchHits,
+  findInitialCanvasId,
+  setSearchHits,
   useDocumentStore,
 } from '@globalise/common/document';
 import {
@@ -8,12 +10,12 @@ import {
   highlightDocumentQueryOptions,
 } from '@globalise/search';
 import { Spinner } from '@globalise/design';
-import { ManifestLoader } from '@globalise/facsimile';
 import {
   ManifestDropdown,
   ManifestViewer,
   type ErrorMessage,
   useCollectionManifests,
+  ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import { getRouteApi } from '@globalise/router';
@@ -21,7 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
-import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
+import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
 
 const defaultManifest =
   'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/inventory:1053.manifest';
@@ -36,21 +38,18 @@ export function ManifestPage() {
   const navigate = route.useNavigate();
   const search = route.useSearch();
   const manifestUrl = search.manifest ?? defaultManifest;
-  const {
-    data: highlights,
-    isLoading: isHighlighting,
-    isError: isHighlightError,
-  } = useQuery(
-    highlightDocumentQueryOptions(getManifestSearchState(search)),
+  const searchState = getManifestSearchState(search);
+  const { data: highlights, isLoading: isHighlighting } = useQuery(
+    highlightDocumentQueryOptions(searchState),
   );
-  const documentHit = search.document
-    ? toDocumentHit(search.document, highlights?.snippet?.start ?? 0)
-    : undefined;
+  const activeHit = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
+  const activeHitCanvasId = activeHit?.canvasId;
+
+  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
-  if (isHighlightError) {
-    error = { message: 'Search result could not be loaded.' };
-  } else if (highlights && !highlights.snippet) {
+  if (searchState && !activeHitCanvasId) {
     error = { message: 'Search result could not be located: showing first page in document.' };
   }
 
@@ -71,12 +70,21 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logHighlights, [highlights]);
+  useEffect(logSearchHits, []);
 
-  function logHighlights() {
-    if (highlights) {
-      console.info('highlights', highlights);
-    }
+  function logSearchHits() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
+        return;
+      }
+      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
+    });
+  }
+
+  useEffect(storeSearchHits, [highlights]);
+
+  function storeSearchHits() {
+    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
   }
 
   useEffect(logTextRanges, []);
@@ -127,11 +135,10 @@ export function ManifestPage() {
 
   return (
     <ViewerProvider>
-      <ManifestLoader url={manifestUrl}>
+      <ManifestLoader url={manifestUrl} canvasId={initialCanvasId}>
         {isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
-            initialCanvasId={search.canvas}
-            documentHit={documentHit}
+            initialCanvasId={initialCanvasId}
             error={error}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
@@ -143,7 +150,7 @@ export function ManifestPage() {
             }
           />
         )}
-        <ManifestEntityPreview/>
+        <ManifestClassifiedPreview/>
       </ManifestLoader>
     </ViewerProvider>
   );

@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 import { useQueryClient } from '@tanstack/react-query';
-import { getSVGElement } from '@globalise/common';
+import { getPresentationFamily, getSVGElement } from '@globalise/common';
 import {
   svgEntityPlace,
   svgEntityPerson,
@@ -18,17 +18,26 @@ import classes from './SearchField.module.css';
 
 import { type AutocompleteSuggestion } from './elasticsearch/autocomplete.server';
 
-const types: Record<string, { color: string, svg: string }> = {
-  'Place': { color: 'var(--entity-place)', svg: svgEntityPlace },
-  'Polity': { color: 'var(--entity-actor)', svg: svgEntityPerson },
-  'Person': { color: 'var(--entity-actor)', svg: svgEntityPerson },
+const icons: Record<string, string> = {
+  Place: svgEntityPlace,
+  Polity: svgEntityPerson,
+  Person: svgEntityPerson,
 };
 
-export default function SearchField() {
+export default function SearchField({ autoFocus = false }: { autoFocus?: boolean }) {
   const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
+
+  useEffect(() => {
+    if (autoFocus) {
+      // The editor mounts in its own effect. Focus after mounting and route
+      // scroll restoration, without adding a second search implementation.
+      const frame = requestAnimationFrame(() => searchFieldRef.current?.focus());
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [autoFocus]);
 
   const darkTheme: ThemeConfig = {
     fontFamily: 'var(--font-sans)',
@@ -53,13 +62,16 @@ export default function SearchField() {
     ].filter(Boolean).join(' • '),
     icon: (sugg) => toIcon(sugg.type),
     token: {
-      color: (token) => types[token.type]?.color,
+      color: (token) => {
+        const family = getPresentationFamily(token.type);
+        return family ? `var(--annotation-${family})` : undefined;
+      },
       icon: (token) => toIcon(token.type),
     },
   };
 
   return (
-    <div className={classes.searchField}>
+    <div id="archive-search" className={classes.searchField}>
       <div className={classes.input}>
         <SF className={classes.inputContainer} ref={searchFieldRef}
           query={query} onSearch={(query) => onSearch(query.source)}
@@ -89,6 +101,6 @@ export default function SearchField() {
 }
 
 function toIcon(type: string): SVGElement | undefined {
-  const svg = types[type]?.svg;
+  const svg = icons[type];
   return svg ? getSVGElement(svg) : undefined;
 }

@@ -51,9 +51,12 @@
         }
 
         /* The library's fallback Lucene theme is injected after this stylesheet. */
-        :global(.cm-content .cm-line > span:not(.cm-entity)) {
+        /* SvD: the CSS rule below overrides the syntax highlighting in the SearchField
+           Disabling it allows for the syntax highlighting to work again.
+        */
+        /* :global(.cm-content .cm-line > span:not(.cm-entity)) {
             color: var(--color-brand-white, #fff) !important;
-        }
+        } */
 
         :global(.cm-tooltip.cm-tooltip-autocomplete) {
             z-index: 10;
