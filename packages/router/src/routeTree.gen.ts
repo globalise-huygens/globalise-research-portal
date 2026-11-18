@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
+import { Route as ContentIndexRouteImport } from './routes/content/index'
+import { Route as ContentSlugRouteImport } from './routes/content/$slug'
 import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
 import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 
@@ -36,6 +38,16 @@ const CatalogIndexRoute = CatalogIndexRouteImport.update({
   path: '/catalog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContentIndexRoute = ContentIndexRouteImport.update({
+  id: '/content/',
+  path: '/content/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentSlugRoute = ContentSlugRouteImport.update({
+  id: '/content/$slug',
+  path: '/content/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ManifestIndexRoute = ManifestIndexRouteImport.update({
   id: '/manifest/',
   path: '/manifest/',
@@ -51,7 +63,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
+  '/content/$slug': typeof ContentSlugRoute
   '/catalog/': typeof CatalogIndexRoute
+  '/content/': typeof ContentIndexRoute
   '/manifest/': typeof ManifestIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
 }
@@ -59,7 +73,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
+  '/content/$slug': typeof ContentSlugRoute
   '/catalog': typeof CatalogIndexRoute
+  '/content': typeof ContentIndexRoute
   '/manifest': typeof ManifestIndexRoute
   '/object-card': typeof ObjectCardIndexRoute
 }
@@ -68,22 +84,41 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
+  '/content/$slug': typeof ContentSlugRoute
   '/catalog/': typeof CatalogIndexRoute
+  '/content/': typeof ContentIndexRoute
   '/manifest/': typeof ManifestIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/map' | '/search' | '/catalog/' | '/manifest/' | '/object-card/'
+    | '/'
+    | '/map'
+    | '/search'
+    | '/content/$slug'
+    | '/catalog/'
+    | '/content/'
+    | '/manifest/'
+    | '/object-card/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/map' | '/search' | '/catalog' | '/manifest' | '/object-card'
+  to:
+    | '/'
+    | '/map'
+    | '/search'
+    | '/content/$slug'
+    | '/catalog'
+    | '/content'
+    | '/manifest'
+    | '/object-card'
   id:
     | '__root__'
     | '/'
     | '/map'
     | '/search'
+    | '/content/$slug'
     | '/catalog/'
+    | '/content/'
     | '/manifest/'
     | '/object-card/'
   fileRoutesById: FileRoutesById
@@ -92,7 +127,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MapRoute: typeof MapRoute
   SearchRoute: typeof SearchRoute
+  ContentSlugRoute: typeof ContentSlugRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
+  ContentIndexRoute: typeof ContentIndexRoute
   ManifestIndexRoute: typeof ManifestIndexRoute
   ObjectCardIndexRoute: typeof ObjectCardIndexRoute
 }
@@ -127,6 +164,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/content/': {
+      id: '/content/'
+      path: '/content'
+      fullPath: '/content/'
+      preLoaderRoute: typeof ContentIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content/$slug': {
+      id: '/content/$slug'
+      path: '/content/$slug'
+      fullPath: '/content/$slug'
+      preLoaderRoute: typeof ContentSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/manifest/': {
       id: '/manifest/'
       path: '/manifest'
@@ -148,7 +199,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MapRoute: MapRoute,
   SearchRoute: SearchRoute,
+  ContentSlugRoute: ContentSlugRoute,
   CatalogIndexRoute: CatalogIndexRoute,
+  ContentIndexRoute: ContentIndexRoute,
   ManifestIndexRoute: ManifestIndexRoute,
   ObjectCardIndexRoute: ObjectCardIndexRoute,
 }

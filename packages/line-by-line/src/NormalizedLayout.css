@@ -8,9 +8,13 @@
     --normalized-muted: var(--color-neutral-600, #666666);
     --entity-highlight-color: var(--color-brand-parchment, #b99b7f);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
-    --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
+    --search-hit-fill: var(--color-search-hit);
+    --search-hit-active-fill: var(--color-search-hit-active);
+    --event-highlight-color: var(--color-entity-event);
+    --event-highlight-fill: color-mix(in srgb, var(--event-highlight-color) 20%, transparent);
+    --event-highlight-selected-weight: 60%;
 
     margin-left: 0.5em;
     white-space: pre-wrap;
@@ -85,22 +89,12 @@
     }
 
     .entity {
-        background: var(--entity-highlight-fill);
-        box-decoration-break: clone;
+        --entity-layer: var(--entity-highlight-fill);
         color: var(--normalized-text);
     }
 
-    .entity:hover {
-        background: color-mix(
-          in srgb,
-          var(--entity-highlight-color) var(--entity-highlight-hover-weight),
-          var(--entity-highlight-fill)
-        );
-        color: var(--entity-highlight-text);
-    }
-
-    .entity.selected {
-        background: color-mix(
+    .selected-entity {
+        --entity-layer: color-mix(
           in srgb,
           var(--entity-highlight-color) var(--entity-highlight-selected-weight),
           var(--entity-highlight-fill)
@@ -108,16 +102,31 @@
         color: var(--entity-highlight-text);
     }
 
-    .word {
-        cursor: pointer;
+    .search-hit {
+        --search-hit-layer: var(--search-hit-fill);
 
-        &:hover,
-        &.selected {
-            background: var(--normalized-word-selected);
+        &.active-hit {
+            --search-hit-layer: var(--search-hit-active-fill);
         }
     }
 
-    .entity .word:hover:not(.selected) {
-        background: transparent;
+    .event {
+        --event-layer: var(--event-highlight-fill);
+    }
+
+    .selected-event {
+        --event-layer: color-mix(
+          in srgb,
+          var(--event-highlight-color) var(--event-highlight-selected-weight),
+          var(--event-highlight-fill)
+        );
+    }
+
+    .word {
+        cursor: pointer;
+
+        &.selected-word {
+            --word-layer: var(--normalized-word-selected);
+        }
     }
 }

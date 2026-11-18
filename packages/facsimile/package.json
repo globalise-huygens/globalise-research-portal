@@ -15,7 +15,7 @@
     "@globalise/design": "workspace:*",
     "@iiif/helpers": "^4.0.0",
     "@iiif/parser": "^4.0.3",
-    "@knaw-huc/osd-iiif-viewer": "^0.7.0",
+    "@knaw-huc/osd-iiif-viewer": "^0.7.1",
     "openseadragon": "^6.1.1"
   },
   "peerDependencies": {

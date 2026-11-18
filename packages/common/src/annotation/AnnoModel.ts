@@ -6,6 +6,7 @@ import type {
   TextPositionSelector,
 } from '@iiif/parser/presentation-3/types';
 import { EntityBody } from './EntityModel.ts';
+import { EventBody } from './EventModel.ts';
 import { Id } from './Id.ts';
 
 export type CanvasAnnotationPage =
@@ -41,7 +42,7 @@ type BlockWithLabel = {
   };
 };
 
-export type Body = IiifBody | BlockWithLabel | TextualBody | EntityBody;
+export type Body = IiifBody | BlockWithLabel | TextualBody | EntityBody | EventBody;
 
 export const isBlockWithLabel = (toTest?: Body): toTest is BlockWithLabel => !!(toTest as BlockWithLabel)?.source.label;
 

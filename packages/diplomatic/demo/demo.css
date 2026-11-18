@@ -5,8 +5,8 @@ body {
 
 .stage {
   .original-layout {
-    & .entity.selected {
-      background: #8d8dff;
+    & .selected-entity {
+      --entity-layer: #8d8dff;
     }
   }
 

@@ -3,6 +3,8 @@ export { filterByTextSelectorOrLog } from './filterByTextSelectorOrLog.ts';
 
 export * from './AnnoModel';
 export * from './EntityModel';
+export * from './EventModel';
+export * from './ClassifiedModel';
 export * from './CidocEntityModel';
 export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';
@@ -10,7 +12,6 @@ export { findSvgPath } from './findSvgPath';
 export type { SvgPath } from './findSvgPath';
 export { findTextPositionSelector, isTextPositionSelector } from './findTextPositionSelector';
 export {
-  findNormalizedTextLength,
   findTextRanges,
   findTextRangeSelector,
   isTextRange,
@@ -31,3 +32,6 @@ export { isSvgSelector } from './isSvgSelector';
 export { getPageText } from './getPageText';
 export { toClassName } from './toClassName';
 export { canvasName } from './canvasName';
+export * from './SearchHitModel';
+export { findClassifiedTarget } from './findClassifiedTarget.ts';
+export { findWordsByOffsets, type Offsets, type WordOffsets } from './findWordsByOffsets.ts';

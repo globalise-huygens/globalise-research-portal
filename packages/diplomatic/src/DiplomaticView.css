@@ -6,9 +6,13 @@
     --diplomatic-muted: var(--color-neutral-600, #666666);
     --entity-highlight-color: var(--color-brand-parchment, #b99b7f);
     --entity-highlight-fill: var(--color-parchment-100, #f0ebe5);
-    --entity-highlight-hover-weight: 40%;
     --entity-highlight-selected-weight: 60%;
     --entity-highlight-text: var(--color-brand-black, #0c0a09);
+    --search-hit-fill: var(--color-search-hit);
+    --search-hit-active-fill: var(--color-search-hit-active);
+    --event-highlight-color: var(--color-entity-event);
+    --event-highlight-fill: color-mix(in srgb, var(--event-highlight-color) 20%, transparent);
+    --event-highlight-selected-weight: 60%;
 
     color: var(--diplomatic-text);
 
@@ -17,32 +21,49 @@
     }
 
     .entity {
-        background: var(--entity-highlight-fill);
-        box-decoration-break: clone;
+        --entity-layer: var(--entity-highlight-fill);
         color: var(--diplomatic-text);
     }
 
-    .entity.selected,
-    .selected {
+    .search-hit {
+        --search-hit-layer: var(--search-hit-fill);
+
+        &.active-hit {
+            --search-hit-layer: var(--search-hit-active-fill);
+        }
+    }
+
+    .search-hit.entity {
+        box-shadow: inset 0 -2px 0 var(--entity-highlight-color);
+    }
+
+    .selected-word {
         background: var(--diplomatic-selected);
     }
 
-    .entity:hover {
-        background: color-mix(
-          in srgb,
-          var(--entity-highlight-color) var(--entity-highlight-hover-weight),
-          var(--entity-highlight-fill)
-        );
-        color: var(--entity-highlight-text);
+    .selected-word > .search-hit {
+        --search-hit-layer: transparent;
     }
 
-    .entity.selected {
-        background: color-mix(
+    .selected-entity {
+        --entity-layer: color-mix(
           in srgb,
           var(--entity-highlight-color) var(--entity-highlight-selected-weight),
           var(--entity-highlight-fill)
         );
         color: var(--entity-highlight-text);
+    }
+
+    .event {
+        --event-layer: var(--event-highlight-fill);
+    }
+
+    .selected-event {
+        --event-layer: color-mix(
+          in srgb,
+          var(--event-highlight-color) var(--event-highlight-selected-weight),
+          var(--event-highlight-fill)
+        );
     }
 
     .line-numbers .line-number {

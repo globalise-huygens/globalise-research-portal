@@ -12,7 +12,7 @@ const contentWarning = {
   linkLabel: 'Read more about problematic content',
 };
 
-export function ManifestContentWarning() {
+export function ManifestContentWarning({ iconOnly = false }: { iconOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isHoverPreviewOpen, setIsHoverPreviewOpen] = useState(false);
   const isDetailsOpen = isOpen || isHoverPreviewOpen;
@@ -30,7 +30,7 @@ export function ManifestContentWarning() {
         onPress={() => setIsOpen((open) => !open)}
         size="compact"
       >
-        {contentWarning.title}
+        {!iconOnly && contentWarning.title}
       </ToolButton>
       {isDetailsOpen && (
         <div

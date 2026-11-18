@@ -8,6 +8,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
       { title: 'Globalise' },
+      { name: 'version', content: __APP_VERSION__ },
     ],
     links: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
   }),

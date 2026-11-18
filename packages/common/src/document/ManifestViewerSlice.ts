@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   Annotation,
@@ -7,7 +8,7 @@ import {
   getPageText,
   Id,
   isEmbeddedAnnotationPage,
-  isEntity,
+  isClassified,
   PartOf,
 } from '../annotation';
 import { FetchError, fetchJson } from '../util/fetchJson';
@@ -51,8 +52,9 @@ export const emptyAnnotationIndex: AnnotationIndexes = {
   lineToBlock: {},
   blockToLines: {},
   wordToBlock: {},
-  entityToWords: {},
-  entityToBlock: {},
+  classifiedToWords: {},
+  classifiedToBlock: {},
+  wordOffsets: [],
 };
 
 const emptyCanvasState: CanvasState = {
@@ -75,7 +77,7 @@ function createReadyCanvas(pages: EmbeddedCanvasAnnotationPage[]) {
   const { id: pageId } = getPageText(mapped);
   for (const id in mapped) {
     const item = mapped[id];
-    if (!isEntity(item)) {
+    if (!isClassified(item)) {
       continue;
     }
     const foundSelector = findTextPositionSelector(item, pageId);
@@ -269,7 +271,7 @@ export function useLoadCanvas() {
 
 const emptyAnnotations = {};
 
-export function useAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
+export function useCanvasAnnotations(canvasId: CanvasId): Record<Id, Annotation> {
   return useDocumentStore((s) => {
     const canvas = s.canvases[canvasId];
     const annotations = canvas?.annotations;
@@ -313,6 +315,11 @@ export function useSelectedCanvas(): CanvasStatus {
     }
     return { isInit: true, id: selectedCanvasId, ...canvas, selectedCanvasSource };
   }));
+}
+
+export function useInitialCanvasId(): CanvasId | undefined {
+  const [initialCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? undefined);
+  return initialCanvasId;
 }
 
 export function useIsSelectedCanvas(canvasId: CanvasId): boolean {
