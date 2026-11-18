@@ -48,19 +48,14 @@ export function ManifestCanvasNavigation() {
     setSelectedCanvas(canvasId, 'external');
   }
 
-  function navigateToScanNumber(scanNumber: number) {
-    const nextScanNumber = clamp(scanNumber, 1, totalScans);
-    const nextCanvasId = canvases[nextScanNumber - 1]?.id;
-    selectCanvas(nextCanvasId);
-  }
-
-  function commitScanInput() {
-    const parsed = Number.parseInt(scanInputValue, 10);
-    if (Number.isNaN(parsed)) {
+  function selectCanvasFromInput() {
+    const scanNumber = Number.parseInt(scanInputValue, 10);
+    if (Number.isNaN(scanNumber)) {
       setScanInput(null);
       return;
     }
-    navigateToScanNumber(parsed);
+    const index = clamp(scanNumber, 1, totalScans) - 1;
+    selectCanvas(canvases[index]?.id);
   }
 
   function handleScanInputChange(value: string) {
@@ -101,7 +96,7 @@ export function ManifestCanvasNavigation() {
           style={{ width: `${Math.max(2, String(totalScans).length)}ch` }}
           type="text"
           value={scanInputValue}
-          onBlur={commitScanInput}
+          onBlur={selectCanvasFromInput}
           onChange={(event) => {
             handleScanInputChange(event.currentTarget.value);
           }}
@@ -109,7 +104,7 @@ export function ManifestCanvasNavigation() {
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault();
-              commitScanInput();
+              selectCanvasFromInput();
             } else if (event.key === 'Escape') {
               event.preventDefault();
               setScanInput(null);
