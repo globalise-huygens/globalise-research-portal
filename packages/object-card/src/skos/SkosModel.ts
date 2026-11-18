@@ -5,6 +5,7 @@ export type SkosValue = LanguageValue;
 export type SkosConcept = {
   id: string;
   type: string | string[];
+  _label?: string;
   prefLabel?: SkosValue[];
   altLabel?: SkosValue[];
   definition?: SkosValue[];
@@ -35,7 +36,7 @@ export type SkosMatch = SkosConcept | string;
 
 export function getConceptLabel(concept: SkosConcept): string {
   const preferredLabel = getValue(concept.prefLabel);
-  return preferredLabel || concept.id;
+  return preferredLabel ? preferredLabel : concept._label ?? '';
 }
 
 export function isSkosConcept(value: unknown): value is SkosConcept {
@@ -62,6 +63,7 @@ export function matchLabel(match: SkosMatch): string {
     return getExternalSourceLabel(match);
   }
   return match.prefLabel?.[0]['@value']
+    ?? match._label
     ?? match.id;
 }
 

@@ -772,9 +772,6 @@ importers:
       '@knaw-huc/osd-iiif-viewer':
         specifier: ^0.7.1
         version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
-      '@tanstack/react-query':
-        specifier: ^5.104.4
-        version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8

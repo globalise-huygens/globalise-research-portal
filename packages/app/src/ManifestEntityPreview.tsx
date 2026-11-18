@@ -215,15 +215,12 @@ const dimensionPreview: EntityPreviewBehavior = {
     ?? body.ascribes_appellation?.content
     ?? (body.value === undefined
       ? body.classified_as._label
-      : String(body.value)),
+      : body.unit?._label
+        ? `${body.value} ${body.unit._label}`
+        : String(body.value)),
   getProperties: ({ body }) => [
     { label: 'Value', value: body.value ?? '-' },
-    {
-      label: 'Unit',
-      value: body.unit?.id
-        ? <RelationLink node={body.unit} />
-        : '-',
-    },
+    { label: 'Unit', value: body.unit?._label ?? '-' },
   ],
 };
 

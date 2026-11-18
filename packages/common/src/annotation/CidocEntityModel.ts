@@ -34,7 +34,6 @@ export type EntityPreviewStrategy =
 
 export type EntityClassificationDefinition = {
   cidocClassName: CidocClassName;
-  label: string;
   highlightLabel: string;
   highlightGroup?: {
     id: string;
@@ -57,7 +56,6 @@ const placeHighlightGroup = { id: 'places', label: 'Places' } as const;
 const entityClassificationDefinitionById = {
   'ner:per_name': {
     cidocClassName: 'cidoc-actor',
-    label: 'Name of Person',
     highlightLabel: 'by Name',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
@@ -65,7 +63,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:per_attr': {
     cidocClassName: 'cidoc-type',
-    label: 'Person Attribute',
     highlightLabel: 'by Attributes',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
@@ -73,7 +70,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:prf': {
     cidocClassName: 'cidoc-type',
-    label: 'Profession',
     highlightLabel: 'by Profession',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
@@ -81,7 +77,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:status': {
     cidocClassName: 'cidoc-type',
-    label: 'Status',
     highlightLabel: 'by Civic Status',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
@@ -89,7 +84,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:eth_rel': {
     cidocClassName: 'cidoc-type',
-    label: 'Ethno-Religious Appellation',
     highlightLabel: 'by Ethno-Religious Appellation',
     highlightGroup: personHighlightGroup,
     presentationType: 'person',
@@ -97,7 +91,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:org': {
     cidocClassName: 'cidoc-actor',
-    label: 'Name of Organisation',
     highlightLabel: 'by Name',
     highlightGroup: organisationHighlightGroup,
     presentationType: 'organisation',
@@ -105,7 +98,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:ship': {
     cidocClassName: 'cidoc-physical-thing',
-    label: 'Name of Ship',
     highlightLabel: 'by Name',
     highlightGroup: shipHighlightGroup,
     presentationType: 'ship',
@@ -113,7 +105,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:ship_type': {
     cidocClassName: 'cidoc-type',
-    label: 'Ship Type',
     highlightLabel: 'by Type',
     highlightGroup: shipHighlightGroup,
     presentationType: 'ship',
@@ -121,7 +112,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:cmty_name': {
     cidocClassName: 'cidoc-physical-thing',
-    label: 'Name of Commodity',
     highlightLabel: 'by Name',
     highlightGroup: commodityHighlightGroup,
     presentationType: 'commodity',
@@ -129,7 +119,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:cmty_qual': {
     cidocClassName: 'cidoc-type',
-    label: 'Commodity Qualifier',
     highlightLabel: 'by Qualifier',
     highlightGroup: commodityHighlightGroup,
     presentationType: 'commodity',
@@ -137,14 +126,12 @@ const entityClassificationDefinitionById = {
   },
   'ner:date': {
     cidocClassName: 'cidoc-time-span',
-    label: 'Date',
     highlightLabel: 'Dates',
     presentationType: 'date',
     previewStrategy: 'named',
   },
   'ner:loc_name': {
     cidocClassName: 'cidoc-place',
-    label: 'Name of Place',
     highlightLabel: 'by Name',
     highlightGroup: placeHighlightGroup,
     presentationType: 'place',
@@ -152,7 +139,6 @@ const entityClassificationDefinitionById = {
   },
   'ner:loc_adj': {
     cidocClassName: 'cidoc-place',
-    label: 'Location Form',
     highlightLabel: 'by Location Form',
     highlightGroup: placeHighlightGroup,
     presentationType: 'place',
@@ -160,14 +146,12 @@ const entityClassificationDefinitionById = {
   },
   'ner:doc': {
     cidocClassName: 'cidoc-conceptual-object',
-    label: 'Document',
     highlightLabel: 'Documents',
     presentationType: 'document',
     previewStrategy: 'classification',
   },
   'ner:cmty_quant': {
     cidocClassName: 'cidoc-dimension',
-    label: 'Quantity',
     highlightLabel: 'Unit',
     presentationType: 'dimensions',
     previewStrategy: 'dimension',
@@ -219,10 +203,7 @@ export function getCidocEntityClassificationId(
 
 export function getCidocEntityClassifiedAsLabel(entity: Annotation) {
   const body = getPrimaryEntityBody(entity);
-  const classificationId = getCidocEntityClassificationId(entity);
-  return classificationId
-    ? getEntityClassificationDefinition(classificationId).label
-    : body.classified_as.id;
+  return body.classified_as._label;
 }
 
 export function isCidocEntityClassificationId(

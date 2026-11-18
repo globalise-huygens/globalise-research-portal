@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getStatusValues } from './getStatusValues.ts';
 
-const clerk = { type: 'Type', id: 'https://data.example.org/type:clerk' };
+const clerk = { type: 'Type', _label: 'clerk' };
 
 describe(getStatusValues.name, () => {
   it('reads nodes and literal values', () => {

@@ -1,5 +1,7 @@
-import { useMetadataNodes } from '@globalise/common';
-import { EmptyPair, Joined, LinkedArtRelation, Pair } from '../common';
+import { label as labelOf, url as urlOf, useMetadataNodes } from '@globalise/common';
+import { EntityTag } from '@globalise/design';
+import { toHref } from '@globalise/router';
+import { EmptyPair, Joined, Pair } from '../common';
 import type { FieldProps } from './FieldProps';
 
 export function TypeField({
@@ -15,9 +17,13 @@ export function TypeField({
   return (
     <Pair label={label}>
       <Joined>
-        {types.map((type, i) => (
-          <LinkedArtRelation key={type.id ?? i} node={type} />
-        ))}
+        {types.map((type) => {
+          const uri = urlOf(type);
+          if (!uri?.startsWith('https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:')) {
+            return labelOf(type);
+          }
+          return <EntityTag type="concept" href={toHref({ to: '/object-card', search: { uri } })}>{labelOf(type)}</EntityTag>;
+        })}
       </Joined>
     </Pair>
   );

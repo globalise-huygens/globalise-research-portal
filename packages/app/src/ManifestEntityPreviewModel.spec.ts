@@ -20,10 +20,11 @@ function createBody(
   };
   return {
     type,
-    classified_as: { id: 'ner:per_name', type: 'Type' },
+    classified_as: { id: 'ner:per_name', type: 'Type', _label: 'Name of Person' },
     ascribes_classification: {
       id: 'ner:per_name',
       type: 'Type',
+      _label: 'Name of Person',
     },
     ...(type === 'AppellativeStatus' && { has_appellative_subject: subject }),
     ...(type === 'ClassificatoryStatus' && { has_classificatory_subject: subject }),

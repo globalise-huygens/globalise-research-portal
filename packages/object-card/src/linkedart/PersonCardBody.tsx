@@ -24,7 +24,7 @@ import { type ReactNode } from 'react';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
-import { statusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
+import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import {
   getResidenceLabel,
@@ -41,10 +41,10 @@ type PersonCardBodyProps = {
 
 export function PersonCardBody({ entity }: PersonCardBodyProps) {
   const notes = getNotes(entity);
-  const occupationGroup = statusGroups.find(
+  const occupationGroup = personStatusGroups.find(
     (group) => group.type === 'SocialStatus',
   );
-  const locationGroup = statusGroups.find(
+  const locationGroup = personStatusGroups.find(
     (group) => group.type === 'ResidentialStatus',
   );
   const additionalSources = locationGroup
@@ -56,11 +56,11 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     [...getVisibleSources(entity), ...additionalSources].map((source) => [JSON.stringify(source), source]),
   ).values()];
   const relationshipTypes = ['FamilyStatus', 'SocialRelationStatus', 'MembershipStatus'];
-  const relationshipGroups = statusGroups.filter((group) =>
+  const relationshipGroups = personStatusGroups.filter((group) =>
     relationshipTypes.includes(group.type) && hasGroupInformation(entity, group),
   );
   const unassignedDates = [...new Set(getValues(entity['aaao:ZP17i_is_social_status_subject_of']).map(formatRecordedDate))];
-  const profileGroups = statusGroups.filter(
+  const profileGroups = personStatusGroups.filter(
     (group) => group !== occupationGroup && group !== locationGroup && !relationshipTypes.includes(group.type),
   );
   const hasPersonalDetails = getPersonNameRecords(entity).length > 0
@@ -75,10 +75,10 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     <ObjectCardBody>
       <ObjectCardPanel side="left">
         {occupationGroup && (
-          <StatusGroupDisplay entity={entity} group={occupationGroup} />
+          <PersonStatusGroup entity={entity} group={occupationGroup} />
         )}
         {locationGroup && (
-          <StatusGroupDisplay
+          <PersonStatusGroup
             entity={entity}
             group={locationGroup}
           />
@@ -97,7 +97,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               title="Died"
             />
             {profileGroups.map((group) => (
-              <StatusGroupDisplay
+              <PersonStatusGroup
                 key={group.label}
                 entity={entity}
                 group={group}
@@ -137,7 +137,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           <ObjectCardSection title="Relationships" collapsible>
             <div className="person-status-list">
               {relationshipGroups.map((group) => (
-                <StatusGroupDisplay key={group.label} entity={entity} group={group} section={false} />
+                <PersonStatusGroup key={group.label} entity={entity} group={group} section={false} />
               ))}
             </div>
           </ObjectCardSection>
@@ -164,9 +164,9 @@ export function PersonOverview({ entity }: PersonCardBodyProps) {
     ...new Set(sortPersonNames(getPersonNameRecords(entity)).map((record) => record.name)),
   ];
   const alternativeNames = names.slice(1);
-  const classifications = uniqueStatusValues(getStatusNodes(entity, statusGroups[0])
+  const classifications = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[0])
     .flatMap((status) => getStatusValues(status, ['ascribes_classification'])));
-  const occupations = uniqueStatusValues(getStatusNodes(entity, statusGroups[1])
+  const occupations = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[1])
     .flatMap((status) => getStatusValues(status, ['ascribes_social_status'])));
   const born = findByPath(entity, ['born']);
   const died = findByPath(entity, ['died']);
@@ -207,7 +207,7 @@ function PersonOverviewFact({ label: factLabel, values }: PersonOverviewFactProp
         {values.map((value, index) => (
           <span key={index}>
             {index > 0 && ', '}
-            {isLinkedArtNode(value) ? <RelationLink node={value} /> : value}
+            {isLinkedArtNode(value) ? <RelationValue node={value} /> : value}
           </span>
         ))}
       </span>
@@ -243,7 +243,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
                 {places.map((place, placeIndex) => (
                   <span key={placeIndex}>
                     {placeIndex > 0 && ', '}
-                    {isLinkedArtNode(place) ? <RelationLink node={place} /> : place}
+                    {isLinkedArtNode(place) ? <RelationValue node={place} /> : place}
                   </span>
                 ))}
               </>
@@ -386,19 +386,19 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
     );
 }
 
-type StatusGroupDisplayProps = {
+type PersonStatusGroupProps = {
+  children?: ReactNode;
   entity: LinkedArtNode;
   group: StatusGroup;
   section?: boolean;
-  children?: ReactNode;
 };
 
-export function StatusGroupDisplay({
+export function PersonStatusGroup({
   entity,
   group,
   section = true,
   children,
-}: StatusGroupDisplayProps) {
+}: PersonStatusGroupProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
   const additionalNodes = getAdditionalStatusNodes(entity, group);
@@ -634,6 +634,7 @@ function StatusValuesProperty({
 
 function StatusValues({
   values,
+  linked = true,
   stacked,
 }: Pick<StatusValuesPropertyProps, 'values' | 'linked' | 'stacked'>) {
   return (
@@ -642,7 +643,9 @@ function StatusValues({
         <span key={index}>
           {!stacked && index > 0 && ', '}
           {isLinkedArtNode(value)
-            ? <RelationLink node={value} />
+            ? linked
+              ? <RelationLink node={value} />
+              : <RelationValue node={value} />
             : value}
         </span>
       ))}
