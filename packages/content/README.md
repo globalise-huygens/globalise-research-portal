@@ -8,16 +8,15 @@ Run from the repo root:
 
 ```shell
 pnpm content:init
-pnpm content:build
-pnpm content:build --force
+pnpm content:build [--force]
 ```
 
-Moving to newer content:
+Moving to newer content commit:
 
 ```shell
 pnpm content:fetch
-pnpm content:checkout [hash]
-pnpm content:update
+pnpm content:checkout <hash>
+git diff HEAD content
 ```
 
 Output is created in `packages/app/dist/content/`:
