@@ -15,7 +15,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
 import { Route as ContentIndexRouteImport } from './routes/content/index'
 import { Route as ContentSlugRouteImport } from './routes/content/$slug'
-import { Route as ManifestIndexRouteImport } from './routes/manifest/index'
+import { Route as HdlChar5820Dot500Dot14722SplatRouteImport } from './routes/hdl:20[.]500[.]14722/$'
 import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -48,11 +48,12 @@ const ContentSlugRoute = ContentSlugRouteImport.update({
   path: '/content/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ManifestIndexRoute = ManifestIndexRouteImport.update({
-  id: '/manifest/',
-  path: '/manifest/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const HdlChar5820Dot500Dot14722SplatRoute =
+  HdlChar5820Dot500Dot14722SplatRouteImport.update({
+    id: '/hdl:20.500.14722/$',
+    path: '/hdl:20.500.14722/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
   id: '/object-card/',
   path: '/object-card/',
@@ -64,9 +65,9 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/content/$slug': typeof ContentSlugRoute
+  '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
-  '/manifest/': typeof ManifestIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -74,9 +75,9 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/content/$slug': typeof ContentSlugRoute
+  '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
   '/catalog': typeof CatalogIndexRoute
   '/content': typeof ContentIndexRoute
-  '/manifest': typeof ManifestIndexRoute
   '/object-card': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesById {
@@ -85,9 +86,9 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/content/$slug': typeof ContentSlugRoute
+  '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
-  '/manifest/': typeof ManifestIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRouteTypes {
@@ -97,9 +98,9 @@ export interface FileRouteTypes {
     | '/map'
     | '/search'
     | '/content/$slug'
+    | '/hdl:20.500.14722/$'
     | '/catalog/'
     | '/content/'
-    | '/manifest/'
     | '/object-card/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -107,9 +108,9 @@ export interface FileRouteTypes {
     | '/map'
     | '/search'
     | '/content/$slug'
+    | '/hdl:20.500.14722/$'
     | '/catalog'
     | '/content'
-    | '/manifest'
     | '/object-card'
   id:
     | '__root__'
@@ -117,9 +118,9 @@ export interface FileRouteTypes {
     | '/map'
     | '/search'
     | '/content/$slug'
+    | '/hdl:20.500.14722/$'
     | '/catalog/'
     | '/content/'
-    | '/manifest/'
     | '/object-card/'
   fileRoutesById: FileRoutesById
 }
@@ -128,9 +129,9 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   SearchRoute: typeof SearchRoute
   ContentSlugRoute: typeof ContentSlugRoute
+  HdlChar5820Dot500Dot14722SplatRoute: typeof HdlChar5820Dot500Dot14722SplatRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   ContentIndexRoute: typeof ContentIndexRoute
-  ManifestIndexRoute: typeof ManifestIndexRoute
   ObjectCardIndexRoute: typeof ObjectCardIndexRoute
 }
 
@@ -178,11 +179,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContentSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/manifest/': {
-      id: '/manifest/'
-      path: '/manifest'
-      fullPath: '/manifest/'
-      preLoaderRoute: typeof ManifestIndexRouteImport
+    '/hdl:20.500.14722/$': {
+      id: '/hdl:20.500.14722/$'
+      path: '/hdl:20.500.14722/$'
+      fullPath: '/hdl:20.500.14722/$'
+      preLoaderRoute: typeof HdlChar5820Dot500Dot14722SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/object-card/': {
@@ -200,9 +201,9 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   SearchRoute: SearchRoute,
   ContentSlugRoute: ContentSlugRoute,
+  HdlChar5820Dot500Dot14722SplatRoute: HdlChar5820Dot500Dot14722SplatRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   ContentIndexRoute: ContentIndexRoute,
-  ManifestIndexRoute: ManifestIndexRoute,
   ObjectCardIndexRoute: ObjectCardIndexRoute,
 }
 export const routeTree = rootRouteImport
