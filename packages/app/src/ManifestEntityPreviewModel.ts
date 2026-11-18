@@ -1,4 +1,4 @@
-import { findByPath, isLinkedArtNode } from '@globalise/common';
+import { findByPath, type LinkedArtNode } from '@globalise/common';
 import { toHref } from '@globalise/router';
 import {
   getEntitySubject,
@@ -51,11 +51,11 @@ export function getObjectCardHref(uri: string): string {
   return toHref({ to: '/object-card', search: { uri } });
 }
 
-export function getEquivalentTarget(value: unknown) {
-  if (!isLinkedArtNode(value)) {
+export function getEquivalentTarget(node?: LinkedArtNode): LinkedArtNode | undefined {
+  if (!node) {
     return undefined;
   }
-  const matches = findByPath(value, ['is_similarity_subject_of'])
+  const matches = findByPath(node, ['is_similarity_subject_of'])
     .filter((status) => status.ascribes_similarity_relation === 'la:equivalent')
     .flatMap((status) => findByPath(status, ['ascribes_similarity_target']))
     .filter((target) => !!target.id);
