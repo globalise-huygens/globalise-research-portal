@@ -31,6 +31,24 @@
       gap: var(--s8);
     }
 
+    .ship-voyage-hierarchy,
+    .ship-voyage-nested-list {
+      margin: 0;
+      list-style: none;
+    }
+
+    .ship-voyage-hierarchy {
+      padding: 0;
+    }
+
+    .ship-voyage-nested-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s8);
+      margin: var(--s8) 0 0 var(--s16);
+      padding: 0 0 0 var(--s12);
+    }
+
     .person-status-values.stacked {
       display: flex;
       flex-direction: column;
@@ -118,7 +136,7 @@
       align-items: baseline;
     }
 
-    &:is(.person-card, .place-card) {
+    &:is(.person-card, .place-card, .ship-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -172,13 +190,13 @@
         padding: var(--s16);
       }
 
-      .panel[data-side="left"] {
+      .panel[data-side='left'] {
         border-right: 1px solid var(--color-neutral-600);
         border-bottom: 0;
         background: var(--color-neutral-900);
       }
 
-      .panel[data-side="right"] {
+      .panel[data-side='right'] {
         background: var(--color-neutral-800);
       }
 
@@ -233,11 +251,12 @@
       }
 
       .source-identifier {
-        margin-right: var(--s8);
+        min-width: 0;
       }
 
       .source-citation {
         display: flex;
+        column-gap: var(--s8);
         min-width: 0;
         flex-wrap: wrap;
         align-items: baseline;
@@ -265,7 +284,7 @@
   }
 
   @media (max-width: 1023px) {
-    .entity-card.person-card {
+    .entity-card:is(.person-card, .place-card, .ship-card) {
       height: auto;
       max-height: none;
       overflow: visible;
@@ -275,7 +294,7 @@
         overflow: visible;
       }
 
-      .panel[data-side="left"] {
+      .panel[data-side='left'] {
         border-right: 0;
         border-bottom: 1px solid var(--color-neutral-600);
       }
@@ -283,17 +302,21 @@
   }
 
   @media (max-width: 479px) {
-    .entity-card.person-card .property {
+    .entity-card:is(.person-card, .place-card, .ship-card) .property {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--s4);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .entity-card.person-card .section-toggle-icon,
-    .entity-card.person-card .external-link,
-    .entity-card.person-card .reference-panel .load-more,
-    .entity-card.person-card .reference-panel-item .reference-action {
+    .entity-card:is(.person-card, .place-card, .ship-card) .section-toggle-icon,
+    .entity-card:is(.person-card, .place-card, .ship-card) .external-link,
+    .entity-card:is(.person-card, .place-card, .ship-card)
+      .reference-panel
+      .load-more,
+    .entity-card:is(.person-card, .place-card, .ship-card)
+      .reference-panel-item
+      .reference-action {
       transition: none;
     }
   }

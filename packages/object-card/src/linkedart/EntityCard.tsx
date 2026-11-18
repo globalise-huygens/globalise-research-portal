@@ -29,6 +29,7 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
+import { getShipTitle, ShipCardBody, ShipOverview } from './ShipCardBody.tsx';
 import { PlaceCardBody, PlaceOverview } from './PlaceCardBody.tsx';
 import './EntityCard.css';
 
@@ -45,7 +46,7 @@ export function EntityCard() {
 
   return (
     <ObjectCard
-      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'place' ? 'entity-card place-card' : 'entity-card'}
+      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'ship' ? 'entity-card ship-card' : entityType === 'place' ? 'entity-card place-card' : 'entity-card'}
     >
       <ObjectCardHeader
         actions={
@@ -57,11 +58,12 @@ export function EntityCard() {
       >
         <EntityTypeBadge type={entityType}/>
         <ObjectCardTitle>
-          {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
+          {entityType === 'person' ? getPersonTitle(entity) : entityType === 'ship' ? getShipTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
+        {entityType === 'ship' && <ShipOverview entity={entity}/>}
         {entityType === 'place' && <PlaceOverview entity={entity}/>}
-        {entityType !== 'person' && entityType !== 'place' && !!identifiers.length && (
+        {entityType !== 'person' && entityType !== 'ship' && entityType !== 'place' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>
@@ -69,6 +71,8 @@ export function EntityCard() {
       </ObjectCardHeader>
       {entityType === 'person' ? (
         <PersonCardBody entity={entity}/>
+      ) : entityType === 'ship' ? (
+        <ShipCardBody entity={entity}/>
       ) : entityType === 'place' ? (
         <PlaceCardBody entity={entity}/>
       ) : (

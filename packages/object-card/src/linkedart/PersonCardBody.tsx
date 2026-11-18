@@ -1,3 +1,4 @@
+import { StatusValues } from './StatusValues.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import {
   findByPath,
@@ -387,21 +388,23 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
 }
 
 type PersonStatusGroupProps = {
+  children?: ReactNode;
   entity: LinkedArtNode;
   group: StatusGroup;
   section?: boolean;
 };
 
-function PersonStatusGroup({
+export function PersonStatusGroup({
   entity,
   group,
   section = true,
+  children,
 }: PersonStatusGroupProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
   const additionalNodes = getAdditionalStatusNodes(entity, group);
   const isOccupationGroup = group.type === 'SocialStatus';
-  if (!statuses.length && !additionalNodes.length) {
+  if (!children && !statuses.length && !additionalNodes.length) {
     return null;
   }
 
@@ -465,11 +468,12 @@ function PersonStatusGroup({
   return section ? (
     <ObjectCardSection title={group.label} collapsible>
       <div className="person-status-list">
+        {children}
         {content}
         <UnassignedStatusInformation nodes={additionalNodes} />
       </div>
     </ObjectCardSection>
-  ) : <>{content}<UnassignedStatusInformation nodes={additionalNodes} /></>;
+  ) : <>{children}{content}<UnassignedStatusInformation nodes={additionalNodes} /></>;
 }
 
 function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
@@ -626,27 +630,6 @@ function StatusValuesProperty({
       label={propertyLabel}
       value={<StatusValues values={values} linked={linked} stacked={stacked} />}
     />
-  );
-}
-
-function StatusValues({
-  values,
-  linked = true,
-  stacked,
-}: Pick<StatusValuesPropertyProps, 'values' | 'linked' | 'stacked'>) {
-  return (
-    <span className={`person-status-values${stacked ? ' stacked' : ''}`}>
-      {values.map((value, index) => (
-        <span key={index}>
-          {!stacked && index > 0 && ', '}
-          {isLinkedArtNode(value)
-            ? linked
-              ? <RelationLink node={value} />
-              : <RelationValue node={value} />
-            : value}
-        </span>
-      ))}
-    </span>
   );
 }
 
