@@ -7,6 +7,7 @@ import {
   getPresentationFamily,
   type AnnotationPresentationFamily,
 } from '../PresentationFamily.ts';
+import { thesaurusBase } from '../uri';
 
 export const cidocClassNames = [
   'cidoc-actor',
@@ -47,9 +48,6 @@ export type EntityClassificationDefinition = {
   previewStrategy: EntityPreviewStrategy;
   typeLabel?: string;
 };
-
-const nerClassificationBase =
-  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:';
 
 const personHighlightGroup = { id: 'persons', label: 'Persons' } as const;
 const organisationHighlightGroup = { id: 'organisations', label: 'Organisations' } as const;
@@ -206,7 +204,7 @@ export function getEntityClassificationDefinition(
 export function getEntityClassificationUri(
   classificationId: CidocEntityClassificationId,
 ): string {
-  return `${nerClassificationBase}${classificationId.replace(/^ner:/, '')}`;
+  return `${thesaurusBase}${classificationId.replace(/^ner:/, '')}`;
 }
 
 export function getCidocEntityClassificationId(
