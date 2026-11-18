@@ -63,14 +63,8 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
-      {(!!names.length || !!events.length || !!directClassifications.length) && <ObjectCardSection title="Ship details" collapsible>
+      {(!!names.length || !!events.length) && <ObjectCardSection title="Ship details" collapsible>
         <div className="person-status-list">
-          {!!directClassifications.length && <ObjectCardPropertyList className="person-status-details">
-            <ObjectCardProperty label="Object type" value={directClassifications.map((classification, index) => <span key={index}>
-              {index > 0 && ', '}
-              {isLinkedArtNode(classification) ? <RelationLink node={classification} /> : classification}
-            </span>)} />
-          </ObjectCardPropertyList>}
           {names.map(({ key, records }) => <ObjectCardDisclosure key={key} summary={<span className="person-status-summary-content">
             {[...new Set(records.flatMap(({ status }) => {
               const timespan = findTimespan(status);
@@ -125,7 +119,26 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
           {ownershipChanges.map((event, index) => <ShipEvent key={event.id ?? `change-${index}`} event={event} fallback="Ownership change" identifiers={identifiers} />)}
         </div>
       </ObjectCardSection>}
-      {classificationGroup && <StatusGroupDisplay entity={entity} group={classificationGroup} />}
+      {classificationGroup && <StatusGroupDisplay
+        entity={entity}
+        group={classificationGroup}
+      >
+        {!!directClassifications.length && <ObjectCardDisclosure summary={
+          <span className="person-status-summary-property">
+            <span className="person-status-summary-label">Object type: </span>
+            <span className="person-status-summary-value">
+              {directClassifications.map((classification, index) => (
+                <span key={index}>
+                  {index > 0 && ', '}
+                  {isLinkedArtNode(classification)
+                    ? <RelationLink node={classification} />
+                    : classification}
+                </span>
+              ))}
+            </span>
+          </span>
+        } />}
+      </StatusGroupDisplay>}
       {statusKeys.filter(({ key }) => key !== 'is_appellative_subject_of' && key !== 'is_ownership_subject_of' && key !== 'is_classificatory_subject_of').map((item) => (
         <StatusSection key={item.key} entity={entity} labeledKey={item} />
       ))}

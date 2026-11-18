@@ -390,18 +390,20 @@ type StatusGroupDisplayProps = {
   entity: LinkedArtNode;
   group: StatusGroup;
   section?: boolean;
+  children?: ReactNode;
 };
 
 export function StatusGroupDisplay({
   entity,
   group,
   section = true,
+  children,
 }: StatusGroupDisplayProps) {
   const statuses = getStatusNodes(entity, group)
     .filter((status) => hasStatusValues(status, group));
   const additionalNodes = getAdditionalStatusNodes(entity, group);
   const isOccupationGroup = group.type === 'SocialStatus';
-  if (!statuses.length && !additionalNodes.length) {
+  if (!children && !statuses.length && !additionalNodes.length) {
     return null;
   }
 
@@ -465,11 +467,12 @@ export function StatusGroupDisplay({
   return section ? (
     <ObjectCardSection title={group.label} collapsible>
       <div className="person-status-list">
+        {children}
         {content}
         <UnassignedStatusInformation nodes={additionalNodes} />
       </div>
     </ObjectCardSection>
-  ) : <>{content}<UnassignedStatusInformation nodes={additionalNodes} /></>;
+  ) : <>{children}{content}<UnassignedStatusInformation nodes={additionalNodes} /></>;
 }
 
 function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
