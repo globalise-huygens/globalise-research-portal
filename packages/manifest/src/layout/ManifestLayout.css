@@ -183,6 +183,7 @@
   z-index: 1200;
   top: calc(100% + var(--s8));
   left: 50%;
+  box-sizing: border-box;
   width: min(23rem, calc(100vw - var(--s32)));
   transform: translateX(-50%);
   border: 1px solid rgb(255 84 61 / 0.7);
@@ -190,6 +191,14 @@
   padding: var(--s12);
   color: var(--color-brand-vermilion);
   box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+}
+
+.manifest-viewer[data-layout="mobile"] .content-warning {
+  position: static;
+
+  > .details {
+    width: min(23rem, calc(100% - var(--s32)));
+  }
 }
 
 .manifest-viewer .content-warning > .tool-button {
