@@ -20,11 +20,14 @@ import { getResourcePreview } from './ResourcePreviewModel.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
+  resolveExternal?: boolean;
 };
 
-export function RelationLink({ node }: RelationLinkProps) {
+export function RelationLink({ node, resolveExternal = true }: RelationLinkProps) {
   const href = url(node);
-  const { text, resource, isPending } = useRelationValue(node, href);
+  const { text, resource, isPending } = useRelationValue(
+    node, href, resolveExternal,
+  );
   const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
     <span key={related.id ?? index}>
       {index > 0 && ', '}
@@ -48,12 +51,21 @@ export function RelationLink({ node }: RelationLinkProps) {
   )}</PreviewCard>;
 }
 
-export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
-  const { text } = useRelationValue(node, url(node));
+export function RelationValue({
+  node, render, resolveExternal = true,
+}: RelationLinkProps & { render?: (text: string) => ReactNode }) {
+  const { text } = useRelationValue(node, url(node), resolveExternal);
   return <>{render ? render(text) : text}</>;
 }
 
-function useRelationValue(node: LinkedArtNode, href?: string) {
+function useRelationValue(
+  node: LinkedArtNode,
+  targetHref?: string,
+  resolveExternal = true,
+) {
+  const shouldResolve = targetHref
+    && (resolveExternal || isInternalUri(targetHref));
+  const href = shouldResolve ? targetHref : undefined;
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
   const { data: resource, isPending } = useQuery(entityResourceQueryOptions(href ?? ''));

@@ -4,7 +4,7 @@ import { toHref } from '@globalise/router';
 import { isInternalUri } from '../isInternalUri.ts';
 import { type QueryClient } from '@tanstack/react-query';
 
-export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelItemData[] {
+export function getEntityReferenceLinks(entity: LinkedArtNode): ReferencePanelItemData[] {
   return findByPath(entity, ['subject_of']).flatMap((reference) => {
     const uri = resourceUri(reference);
     if (!uri) {
@@ -26,8 +26,8 @@ export function getPersonReferenceLinks(entity: LinkedArtNode): ReferencePanelIt
  * Keep the original reference for empty or unavailable collections so the
  * source remains accessible even when individual scan links cannot be shown.
  */
-export async function loadPersonReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
-  const links = getPersonReferenceLinks(entity);
+export async function loadEntityReferences(entity: LinkedArtNode, queryClient: QueryClient): Promise<ReferencePanelItemData[]> {
+  const links = getEntityReferenceLinks(entity);
   const collections = findByPath(entity, ['subject_of'])
     .filter((reference) => hasType(reference, 'AnnotationCollection'));
   const groups = await Promise.all(links.map(async (link) => {
@@ -37,7 +37,7 @@ export async function loadPersonReferences(entity: LinkedArtNode, queryClient: Q
     }
     try {
       const items = await queryClient.query({
-        queryKey: ['person-reference-collection', uri],
+        queryKey: ['entity-reference-collection', uri],
         queryFn: ({ signal }) => loadCollection(uri, signal),
         staleTime: Infinity,
         retry: false,

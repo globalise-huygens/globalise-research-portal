@@ -70,6 +70,7 @@ export type StatusProperty = {
 
 // Only presentation overrides live here. The annotation determines which fields exist.
 const statusPropertyLabels: Record<string, Omit<StatusProperty, 'keys'>> = {
+  ascribes_appellation: { label: 'Name' },
   ascribes_classification: { label: 'Classification' },
   ascribes_social_status: { label: 'Status or occupation' },
   ascribes_social_status_in_relation_to: { label: 'In relation to' },
@@ -108,3 +109,8 @@ export function getPropertyLabel(key: string): string {
   const words = key.slice(key.indexOf(prefix) + prefix.length).replaceAll('_', ' ');
   return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
 }
+
+export const placeDetailGroups: LabeledKey[] = [
+  { key: 'is_appellative_subject_of', label: 'Name' },
+  { key: 'is_classificatory_subject_of', label: 'Classifications' },
+];

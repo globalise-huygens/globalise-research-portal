@@ -1,3 +1,4 @@
+import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import {
   findByPath,
   findTimespan,
@@ -24,7 +25,7 @@ import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
-import { PersonReferencePanel } from './PersonReferencePanel.tsx';
+import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import {
   getResidenceLabel,
   groupPersonStatuses,
@@ -142,7 +143,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           </ObjectCardSection>
         )}
       </ObjectCardPanel>
-      <PersonReferencePanel entity={entity} />
+      <EntityReferencePanel entity={entity} />
     </ObjectCardBody>
   );
 }
@@ -690,19 +691,5 @@ function NotesProperty({ node }: { node: LinkedArtNode }) {
       label="Notes"
       value={<StatusValues linked={false} stacked values={notes} />}
     />
-  );
-}
-
-function RecordedDatesValue({ dates }: { dates: RecordedDates }) {
-  return (
-    <span className="person-status-summary-date timespan-boundaries">
-      {!!dates.starts.length && (
-        <span>Recorded starts: {dates.starts.join(', ')}</span>
-      )}
-      {!!dates.ends.length && (
-        <span>Recorded ends: {dates.ends.join(', ')}</span>
-      )}
-      {!!dates.dates.length && <span>Recorded dates: {dates.dates.join(', ')}</span>}
-    </span>
   );
 }
