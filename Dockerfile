@@ -19,6 +19,9 @@ RUN pnpm install --frozen-lockfile
 # Only build the app:
 RUN pnpm build:app
 
+# Build content, checked out as submodule by CI:
+RUN pnpm content:build
+
 # Ignore dev dependencies:
 RUN pnpm deploy --filter @globalise/app --prod /app
 
@@ -28,6 +31,7 @@ FROM node:26-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV GLOBALISE_CONTENT=/app/dist/content
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 reactapp
