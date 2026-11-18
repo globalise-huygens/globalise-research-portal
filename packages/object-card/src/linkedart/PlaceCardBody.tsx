@@ -29,7 +29,7 @@ import {
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { getPersonNameRecords } from './PersonStatusModel.ts';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
-import { getNotes, SourceList } from './SourceList.tsx';
+import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 
@@ -361,48 +361,16 @@ function getPlaceEvidence(node: LinkedArtNode) {
     findByPath(remark, ['referred_to_by']));
   const remarkNotes = remarks.map(getContent).filter(Boolean);
   const notes = [...new Set([...getNotes(node), ...remarkNotes])];
-  const sources = mergeCitationEvidence([...citations, ...remarkCitations]);
-  return { notes, sources };
+  const sources = [...citations, ...remarkCitations]
+    .filter((source) => isVisibleSource(source));
+  const uniqueSources = new Map(
+    sources.map((source) => [JSON.stringify(source), source]),
+  );
+  return { notes, sources: [...uniqueSources.values()] };
 }
 
 function isPlaceRemark(reference: LinkedArtNode): boolean {
   const classifications = findByPath(reference, ['classified_as']);
   return classifications.some((type) =>
     type.id === 'http://vocab.getty.edu/aat/300435415');
-}
-
-function mergeCitationEvidence(sources: LinkedArtNode[]): LinkedArtNode[] {
-  const merged = new Map<string, LinkedArtNode>();
-  for (const source of sources) {
-    const key = source.id ?? JSON.stringify(source);
-    const existing = merged.get(key);
-    if (!existing) {
-      merged.set(key, source);
-      continue;
-    }
-    const combined = { ...existing };
-    for (const [property, value] of Object.entries(source)) {
-      const previous = combined[property];
-      if (previous == null) {
-        combined[property] = value;
-        continue;
-      }
-      const hasDifferentValue = value != null
-        && JSON.stringify(previous) !== JSON.stringify(value);
-      if (hasDifferentValue) {
-        combined[property] = mergeCitationValues(previous, value);
-      }
-    }
-    merged.set(key, combined);
-  }
-  return [...merged.values()];
-}
-
-function mergeCitationValues(previous: unknown, value: unknown): unknown[] {
-  const previousValues = Array.isArray(previous) ? previous : [previous];
-  const incomingValues = Array.isArray(value) ? value : [value];
-  const values = [...previousValues, ...incomingValues];
-  const uniqueValues = new Map(values.map((item) =>
-    [JSON.stringify(item), item]));
-  return [...uniqueValues.values()];
 }
