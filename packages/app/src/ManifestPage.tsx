@@ -32,6 +32,7 @@ import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
 import { useSharableRouteState } from './share/useSharableRouteState';
+import { createSharableHref } from './share/createSharableHref';
 import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
@@ -39,6 +40,7 @@ const route = getRouteApi(`/${handle}/$`);
 const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
+  console.log(ManifestPage.name, 'href:', location.href);
   const navigate = route.useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
   const viewer = useMemo(() => parseViewerPath(pathname) ?? defaultInventory, [pathname]);
@@ -136,6 +138,11 @@ export function ManifestPage() {
     });
   }
 
+  function shareRoute() {
+    const href = createSharableHref(sharableRoute);
+    void navigator.clipboard.writeText(new URL(href, window.location.origin).href);
+  }
+
   function handleManifestChange(manifest: string) {
     const href = toManifestHref(manifest, {});
     if (href) {
@@ -150,6 +157,7 @@ export function ManifestPage() {
           <ManifestViewer
             initialCanvasId={initialCanvasId}
             error={error}
+            onShare={shareRoute}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
               <ManifestDropdown

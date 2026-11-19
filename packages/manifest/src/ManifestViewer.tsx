@@ -12,10 +12,11 @@ export type ManifestViewerProps = {
   initialCanvasId?: CanvasId;
   topLeft?: ReactNode;
   error?: ErrorMessage;
+  onShare?: () => void;
   onClose?: () => void;
 };
 
-export function ManifestViewer({ initialCanvasId, topLeft, error, onClose }: ManifestViewerProps) {
+export function ManifestViewer({ initialCanvasId, topLeft, error, onShare, onClose }: ManifestViewerProps) {
   const isInitCanvases = useInitCanvases(initialCanvasId);
   useSyncSelectedDocument();
 
@@ -25,6 +26,7 @@ export function ManifestViewer({ initialCanvasId, topLeft, error, onClose }: Man
 
   return (
     <ManifestLayout
+      onShare={onShare}
       onClose={onClose}
       topLeft={topLeft}
       error={error}
