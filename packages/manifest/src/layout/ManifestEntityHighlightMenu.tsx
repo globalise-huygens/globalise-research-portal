@@ -100,7 +100,9 @@ export function ManifestEntityHighlightMenu() {
 
   const handleSelectedKeysChange = React.useCallback(
     (update: React.SetStateAction<Set<string>>) => {
-      const updated = typeof update === 'function' ? update(new Set(selectedKeys)) : update;
+      const updated = typeof update === 'function'
+        ? update(new Set(selectedKeys))
+        : update;
       const next = new Set<ClassifiedCategory>(
         [...selectedCategories].filter((category) => !isCidocEntityClassificationId(category)),
       );
