@@ -7,10 +7,10 @@ import { useReadingLayout } from './ReadingLayout';
 
 export function ManifestReadingToolbar({
   children,
-  showClassifiedHighlights = false,
+  showClassifiedHighlightControls = false,
 }: {
   children: ReactNode;
-  showClassifiedHighlights?: boolean;
+  showClassifiedHighlightControls?: boolean;
 }) {
   const { tools } = useReadingLayout();
   if (!tools) {
@@ -26,7 +26,7 @@ export function ManifestReadingToolbar({
     }}>
     <div className="mobile-reading-controls" role="group" aria-label="View controls">{children}</div>
     <div className="mobile-highlight-controls" role="group" aria-label="Highlight controls">
-      {showClassifiedHighlights && (
+      {showClassifiedHighlightControls && (
         <>
           <ManifestEntityHighlightMenu />
           <ManifestEventsToggle />
