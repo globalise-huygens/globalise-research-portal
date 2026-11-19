@@ -73,7 +73,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   return (
     <Popover
       size="compact"
-      className={cn('entity-preview-card', className)}
+      className={cn('preview-card-surface', 'entity-preview-card', className)}
     >
       <div className="header">
         <div className="identity">
@@ -110,7 +110,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               </EntityBadge>
             ))}
           </div>
-          <div className="title">{data.title}</div>
+          <div className="title preview-card-title">{data.title}</div>
         </div>
 
         <div className="actions">
