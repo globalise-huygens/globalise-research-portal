@@ -95,6 +95,13 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           visibility: isVisible ? 'visible' : 'hidden',
         }}
       >
+        {isInRenderRange && (
+          <CanvasHeaderLabel
+            canvasId={canvasId}
+            canvasDocuments={canvasDocuments}
+            isCurrent={isCurrent}
+          />
+        )}
         {isInRenderRange && error && (
           <TranscriptionPlaceholder
             color="indianred"
@@ -126,15 +133,6 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
               showScanMargin={true}
             />
           </div>
-        )}
-        {isInRenderRange && (
-          <>
-            <CanvasHeaderLabel
-              canvasId={canvasId}
-              canvasDocuments={canvasDocuments}
-              isCurrent={isCurrent}
-            />
-          </>
         )}
       </div>
     </div>
