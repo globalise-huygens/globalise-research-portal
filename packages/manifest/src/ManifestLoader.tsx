@@ -1,22 +1,47 @@
-import { useLoadManifest, useManifest } from '@knaw-huc/osd-iiif-viewer';
-import { ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  useLoadManifest,
+  useManifest,
+} from '@knaw-huc/osd-iiif-viewer';
+import { fetchPatchManifest } from '@globalise/facsimile';
 
-export function ManifestLoader(props: {
-  url: string;
-  children: ReactNode;
-}) {
+
+type ManifestLoaderProps = {
+  children: React.ReactNode,
+  url: string,
+  canvasId?: string,
+};
+
+export function ManifestLoader(
+  { children, url, canvasId }: ManifestLoaderProps,
+) {
   const loadManifest = useLoadManifest();
-  const { isReady, isLoading, error } = useManifest();
+
+  const manifest = useManifest();
+
+  const { data: patched } = useQuery({
+    queryKey: ['manifest', url],
+    queryFn: ({ signal }) => fetchPatchManifest(url, signal),
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
-    void loadManifest(props.url);
-  }, [props.url, loadManifest]);
+    if (patched && manifest.url !== url) {
+      void loadManifest(url, { manifest: patched, canvasId });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadManifest, patched, url]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (manifest.isLoading) {
+    return <>Loading manifest...</>;
   }
-  if (isLoading || !isReady) {
-    return <div>Loading manifest...</div>;
+  if (manifest.error) {
+    return <>Error: {manifest.error}</>;
   }
-  return <>{props.children}</>;
+  if (!manifest.isReady) {
+    return null;
+  }
+
+  return <>{children}</>;
 }

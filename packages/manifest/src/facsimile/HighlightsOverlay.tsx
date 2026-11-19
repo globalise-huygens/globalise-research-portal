@@ -5,8 +5,8 @@ import { CanvasOverlay } from './CanvasOverlay.tsx';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
-  useAnnotations,
-  useWordEntityClassifications,
+  useAnnotationsWithSearchHits,
+  useWordClassifications,
   useIsLayoutElementsVisible,
   useIsSelectedCanvas,
   usePages,
@@ -15,6 +15,7 @@ import {
   BlockHighlight,
   FacsimileTooltip,
   FacsimileTooltipProps,
+  SearchHitWordHighlights,
   SelectedWordHighlights,
   toBlockHighlightConfigs,
   toWordHighlightConfigs,
@@ -35,8 +36,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
   const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
-  const annotations = useAnnotations(lazyCanvas.canvasId);
-  const entityClassificationByWord = useWordEntityClassifications(lazyCanvas.canvasId);
+  const annotations = useAnnotationsWithSearchHits(lazyCanvas.canvasId);
+  const classificationsByWord = useWordClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
@@ -69,8 +70,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
 
   const words = useMemo(
-    () => toWordHighlightConfigs(annotations, entityClassificationByWord),
-    [annotations, entityClassificationByWord],
+    () => toWordHighlightConfigs(annotations, classificationsByWord),
+    [annotations, classificationsByWord],
   );
   const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
@@ -93,6 +94,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
               points={path}
             />
           ))}
+          <SearchHitWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
           {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>

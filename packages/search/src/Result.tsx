@@ -1,5 +1,6 @@
 import { JSX, ReactNode } from 'react';
 import { cn, EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
+import Mention from './Mention';
 import classes from './Result.module.css';
 
 import type { DocumentSearchResult } from './elasticsearch/search.server';
@@ -54,14 +55,11 @@ export function DocumentResultContent(result: DocumentSearchResult) {
       </ul>
 
       <ul className={classes.mentions}>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
-        <li>Dag register der daagelijxe voor vallen gehouden, toot Casteel, de Poedes hoop</li>
+        {result.mentions.map((mention, idx) => <Mention
+          key={idx}
+          document={result}
+          snippet={mention}/>,
+        )}
       </ul>
 
       <pre>

@@ -141,6 +141,7 @@ export function ManifestTranscriptionControls() {
       />
       <TooltipIconButton
         aria-label="Reset transcription zoom"
+        className="zoom-action"
         tooltip="Reset transcription size to 100%"
         icon={<IconReset />}
         onPress={() => applyZoomPercent(100)}

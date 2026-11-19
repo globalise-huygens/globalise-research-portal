@@ -1,13 +1,14 @@
 import {
   cidocEntityClassificationIds,
-  getCidocClassNameByClassificationId,
+  getEntityPresentationFamilyByClassificationId,
   getEntityClassificationDefinition,
   isCidocEntityClassificationId,
   type CidocEntityClassificationId,
+  type ClassifiedCategory,
 } from '@globalise/common/annotation';
 import {
-  setEntityHighlightCategories,
-  useEntityHighlightCategories,
+  setHighlightCategories,
+  useHighlightCategories,
 } from '@globalise/common/document';
 import {
   EntityIcon,
@@ -76,20 +77,20 @@ const entityCategories: EntityHighlightCategory[] =
   entityCategoryConfigs.map((category) => {
     const subcategories = category.subcategories?.map((subcategory) => ({
       ...subcategory,
-      tone: getCidocClassNameByClassificationId(subcategory.id),
+      family: getEntityPresentationFamilyByClassificationId(subcategory.id),
     }));
 
     return {
       ...category,
-      tone: isCidocEntityClassificationId(category.id)
-        ? getCidocClassNameByClassificationId(category.id)
-        : subcategories?.[0]?.tone,
+      family: isCidocEntityClassificationId(category.id)
+        ? getEntityPresentationFamilyByClassificationId(category.id)
+        : subcategories?.[0]?.family,
       subcategories,
     };
   });
 
 export function ManifestEntityHighlightMenu() {
-  const selectedCategories = useEntityHighlightCategories();
+  const selectedCategories = useHighlightCategories();
   const selectedKeys = React.useMemo(
     () => new Set<string>(selectedCategories),
     [selectedCategories],
@@ -99,7 +100,9 @@ export function ManifestEntityHighlightMenu() {
     (update: React.SetStateAction<Set<string>>) => {
       const current = new Set<string>(selectedCategories);
       const updated = typeof update === 'function' ? update(current) : update;
-      const next = new Set<CidocEntityClassificationId>();
+      const next = new Set<ClassifiedCategory>(
+        [...selectedCategories].filter((category) => !isCidocEntityClassificationId(category)),
+      );
 
       for (const key of updated) {
         if (isCidocEntityClassificationId(key)) {
@@ -107,7 +110,7 @@ export function ManifestEntityHighlightMenu() {
         }
       }
 
-      setEntityHighlightCategories(next);
+      setHighlightCategories(next);
     },
     [selectedCategories],
   );

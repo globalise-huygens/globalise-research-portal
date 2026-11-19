@@ -32,10 +32,4 @@
         outline: 2px solid var(--color-brand-turquoise, #29bfcc);
         outline-offset: 2px;
     }
-
-    @media (width >= 48rem) {
-        height: 100%;
-        min-height: 0;
-        overflow: hidden;
-    }
 }

@@ -1,11 +1,11 @@
+import { toHref } from '@globalise/router';
 import {
   getEntitySubject,
   type EntityBody,
 } from '@globalise/common/annotation';
+import { thesaurusBase } from '@globalise/common/uri';
 
 const GLOBALISE_DATA_ORIGIN = 'https://data.globalise.huygens.knaw.nl';
-const GLOBALISE_THESAURUS_BASE =
-  `${GLOBALISE_DATA_ORIGIN}/hdl:20.500.14722/thesaurus:`;
 
 export function getInternalConceptUri(uri: string): string | undefined {
   try {
@@ -21,7 +21,7 @@ export function getInternalConceptUri(uri: string): string | undefined {
       ? /^\/globalise\/([0-9a-f-]+)\/?$/i.exec(parsed.pathname)
       : null;
     return poolPartyMatch
-      ? `${GLOBALISE_THESAURUS_BASE}${poolPartyMatch[1]}`
+      ? `${thesaurusBase}${poolPartyMatch[1]}`
       : undefined;
   } catch {
     return undefined;
@@ -46,5 +46,5 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
 }
 
 export function getObjectCardHref(uri: string): string {
-  return `/object-card?uri=${encodeURIComponent(uri)}`;
+  return toHref({ to: '/object-card', search: { uri } });
 }

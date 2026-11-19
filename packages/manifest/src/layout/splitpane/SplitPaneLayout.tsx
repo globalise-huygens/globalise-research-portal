@@ -6,7 +6,7 @@ import './SplitPaneLayout.css';
 import {
   resetScaling,
   setPaneRatio,
-  useSettings,
+  usePaneRatio,
 } from '@globalise/common/document';
 
 type DocumentLayoutProps = {
@@ -22,7 +22,7 @@ export const layoutBreakpoint = 1024;
 
 export function SplitPaneLayout({ children }: DocumentLayoutProps) {
   const direction = useLayoutDirection(layoutBreakpoint);
-  const { paneRatio } = useSettings();
+  const paneRatio = usePaneRatio();
   const paneSizes = [`${paneRatio * 100}%`, `${(1 - paneRatio) * 100}%`];
 
   const divider = useCallback(

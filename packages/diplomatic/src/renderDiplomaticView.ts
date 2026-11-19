@@ -1,14 +1,14 @@
 import {
   Annotation,
   filterByTextSelectorOrLog,
-  getEntityAnnotationBodyClassName,
+  findClassifiedTarget,
   findTextPositionSelector,
-  getCidocEntityClassifiedAsLabel,
-  getCidocClassName,
+  getClassifiedClassNames,
+  getClassifiedType,
   getPageText,
   indexAnnotations,
-  isEntity,
-  toClassName,
+  isClassified,
+  isSearchHit,
 } from '@globalise/common/annotation';
 import { removeHoverAttribute, setHoverAttribute } from '@globalise/common/document';
 import { noop, orThrow } from '@globalise/common';
@@ -55,7 +55,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  $view.classList.add('original-layout');
+  $view.classList.add('original-layout', 'highlight-layers');
 
   const mergedConfig = {
     onHover: noop, onClick: noop, ...defaultConfig, ...config,
@@ -82,9 +82,10 @@ export function renderDiplomaticView(
 
   const { id: pageAnnoId, text: pageText } = getPageText(annotations);
 
-  const entityAnnos = Object.values(annotations).filter(isEntity);
+  const classifiedAnnos = Object.values(annotations).filter(isClassified);
+  const searchHitAnnos = Object.values(annotations).filter(isSearchHit);
   const markedAnnos = filterByTextSelectorOrLog(
-    [...wordAnnos, ...entityAnnos],
+    [...wordAnnos, ...classifiedAnnos, ...searchHitAnnos],
     pageAnnoId,
   );
 
@@ -99,37 +100,38 @@ export function renderDiplomaticView(
     (a) => a.id,
   );
 
-  const { blockToLines, wordToBlock } = indexAnnotations(annotations, pageAnnoId);
-  const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const { blockToLines, wordToBlock, classifiedToWords } = indexAnnotations(annotations, pageAnnoId);
+  const $classifiedToSegments: Record<Id, HTMLSpanElement[]> = {};
+  const $searchHitToSegments: Record<Id, HTMLSpanElement[]> = {};
 
-  function getEntitySegment(event: FocusEvent) {
+  function getClassifiedSegment(event: FocusEvent) {
     if (!(event.target instanceof HTMLSpanElement)) {
       return null;
     }
 
-    return event.target.dataset.entityId
+    return event.target.dataset.classifiedId
       ? event.target
       : null;
   }
 
-  function handleEntityFocus(event: FocusEvent) {
-    const $segment = getEntitySegment(event);
+  function handleClassifiedFocus(event: FocusEvent) {
+    const $segment = getClassifiedSegment(event);
     if ($segment) {
       setHoverAttribute($segment);
-      onHover($segment.dataset.entityId ?? null);
+      onHover($segment.dataset.classifiedId ?? null);
     }
   }
 
-  function handleEntityBlur(event: FocusEvent) {
-    const $segment = getEntitySegment(event);
+  function handleClassifiedBlur(event: FocusEvent) {
+    const $segment = getClassifiedSegment(event);
     if ($segment) {
       removeHoverAttribute($segment);
       onHover(null);
     }
   }
 
-  $layoutView.addEventListener('focusin', handleEntityFocus);
-  $layoutView.addEventListener('focusout', handleEntityBlur);
+  $layoutView.addEventListener('focusin', handleClassifiedFocus);
+  $layoutView.addEventListener('focusout', handleClassifiedBlur);
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -146,38 +148,32 @@ export function renderDiplomaticView(
       $segments.push($segment);
       $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.start, segment.end);
-      const entity = segment.annotations.find((a) => isEntity(a));
+      const searchHit = segment.annotations.find(isSearchHit);
+      if (searchHit) {
+        $segment.classList.add('search-hit');
+        ($searchHitToSegments[searchHit.id] ??= []).push($segment);
+      }
 
-      if (entity) {
-        const visualCategory = getCidocClassName(entity);
-        const entityLabel = toClassName(getCidocEntityClassifiedAsLabel(entity));
-        const entityType = getEntityAnnotationBodyClassName(entity);
-        $segment.classList.add(
-          ...[
-            'entity',
-            entityType,
-            visualCategory,
-            entityLabel,
-          ],
-        );
+      for (const annotation of segment.annotations.filter(isClassified)) {
+        $segment.classList.add(...getClassifiedClassNames(annotation));
+        ($classifiedToSegments[annotation.id] ??= []).push($segment);
+      }
+      const target = findClassifiedTarget(segment.annotations, classifiedToWords);
+
+      if (target && isClassified(target)) {
         $segment.tabIndex = 0;
-        $segment.dataset.entityId = entity.id;
+        $segment.dataset.classifiedId = target.id;
         $segment.setAttribute('role', 'button');
         $segment.setAttribute('aria-haspopup', 'dialog');
         $segment.setAttribute(
           'aria-label',
-          `Select entity: ${$segment.textContent}`,
+          `Select: ${$segment.textContent}`,
         );
 
-        if (!$entityToSegments[entity.id]) {
-          $entityToSegments[entity.id] = [];
-        }
-        $entityToSegments[entity.id].push($segment);
-
-        $segment.addEventListener('click', () => onClick(entity.id));
+        $segment.addEventListener('click', () => onClick(target.id));
         $segment.addEventListener('mouseenter', () => {
           setHoverAttribute($segment, 'delayed');
-          onHover(entity.id);
+          onHover(target.id);
         });
         $segment.addEventListener('mouseleave', () => {
           if (document.activeElement !== $segment) {
@@ -188,7 +184,7 @@ export function renderDiplomaticView(
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            onClick(entity.id);
+            onClick(target.id);
           }
         });
       } else {
@@ -272,12 +268,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.add('selected');
+      $word.classList.add('selected-word');
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
-    } else if (isEntity(annotation)) {
-      const $segments = $entityToSegments[id];
-      $segments?.forEach(($r) => { $r.classList.add('selected'); });
+    } else if (isClassified(annotation)) {
+      const $segments = $classifiedToSegments[id];
+      for (const $s of $segments) {
+        $s.classList.add(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -287,12 +285,14 @@ export function renderDiplomaticView(
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
       const $word = $fragments[id];
-      $word.classList.remove('selected');
+      $word.classList.remove('selected-word');
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
-    } else if (isEntity(annotation)) {
-      const $segments = $entityToSegments[id];
-      $segments?.forEach(($r) => $r.classList.remove('selected'));
+    } else if (isClassified(annotation)) {
+      const $segments = $classifiedToSegments[id];
+      for (const $s of $segments) {
+        $s.classList.remove(`selected-${getClassifiedType(annotation)}`);
+      }
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
@@ -310,6 +310,12 @@ export function renderDiplomaticView(
 
       selectedIds.length = 0;
       selectedIds.push(...ids);
+    },
+    setActiveHits: (...ids: string[]) => {
+      for (const [id, $segments] of Object.entries($searchHitToSegments)) {
+        const isActiveHit = ids.includes(id);
+        $segments.forEach(($s) => $s.classList.toggle('active-hit', isActiveHit));
+      }
     },
   };
 }

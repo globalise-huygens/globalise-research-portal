@@ -1,13 +1,16 @@
 import type { Vault } from '@iiif/helpers/vault';
 import { getValue } from '@iiif/helpers';
-import type { MetadataItem } from '@iiif/presentation-3';
 import type { CanvasId } from '@globalise/common/document';
 import { findThumbnail } from '@knaw-huc/osd-iiif-viewer';
+import { findMetadataValue } from '../findMetadataValue.ts';
 
 export type ManifestScan = {
   canvasId: CanvasId;
   scanNumber: number;
   thumbnailUrl?: string;
+  width: number;
+  height: number;
+  pageMetadata: { label: string; value: string }[];
 };
 
 export type ManifestDocument = {
@@ -15,6 +18,7 @@ export type ManifestDocument = {
   label: string;
   metadataUrl?: string;
   tanapId?: string;
+  language?: string;
   scans: ManifestScan[];
 };
 
@@ -84,8 +88,7 @@ function toDocument(
     if (!scanNumber) {
       continue;
     }
-    const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
-    scans.push({ canvasId: canvasId, scanNumber, thumbnailUrl });
+    scans.push(toScan(vault, canvasId, scanNumber));
   }
   scans.sort((a, b) => a.scanNumber - b.scanNumber);
   const title = findMetadataValue(range.metadata, 'Title');
@@ -94,14 +97,17 @@ function toDocument(
     label: title ?? getValue(range.label),
     metadataUrl: range.seeAlso[0]?.id,
     tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
+    language: findMetadataValue(range.metadata, 'Language'),
     scans,
   };
 }
 
-function findMetadataValue(
-  metadata: MetadataItem[],
-  label: string,
-): string | undefined {
-  const item = metadata.find((item) => getValue(item.label) === label);
-  return item && getValue(item.value);
+function toScan(vault: Vault, canvasId: CanvasId, scanNumber: number): ManifestScan {
+  const canvas = vault.get({ id: canvasId, type: 'Canvas' });
+  const thumbnailUrl = findThumbnail(vault, canvas, 120) ?? undefined;
+  const pageMetadata = (canvas.metadata ?? [])
+    .map((item) => ({ label: getValue(item.label), value: getValue(item.value) }))
+    .filter((item) => /^(language|folio( number)?|page( number)?|side|recto|verso|recto\/verso)$/i.test(item.label)
+      && item.value);
+  return { canvasId, scanNumber, thumbnailUrl, pageMetadata, width: canvas.width, height: canvas.height };
 }

@@ -23,6 +23,13 @@ export function setLazyCanvases(lazyCanvases: LazyTiledImage[], resetLoaded = tr
   });
 }
 
+export function resetLazyCollectionViewer() {
+  lazyCollectionViewerStore.setState(
+    lazyCollectionViewerStore.getInitialState(),
+    true,
+  );
+}
+
 export function setLoaded(loaded: Set<CanvasId>) {
   lazyCollectionViewerStore.setState({ loaded });
 }

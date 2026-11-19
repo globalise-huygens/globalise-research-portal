@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/app" },
     { "path": "packages/common" },
+    { "path": "packages/content" },
     { "path": "packages/design" },
     { "path": "packages/diplomatic" },
     { "path": "packages/facsimile" },
@@ -11,6 +12,8 @@
     { "path": "packages/map" },
     { "path": "packages/metadata" },
     { "path": "packages/object-card" },
+    { "path": "packages/router" },
     { "path": "packages/search" },
+    { "path": "packages/searchfield" }
   ]
 }

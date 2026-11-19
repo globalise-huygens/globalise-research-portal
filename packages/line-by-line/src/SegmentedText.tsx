@@ -6,45 +6,49 @@ import type {
 } from 'react';
 import {
   Annotation,
+  ClassifiedCategory,
+  findClassifiedTarget,
   Id,
-  isEntity,
-  isHighlightedEntity,
-  isWord,
+  isClassified,
+  isHiddenClassified,
 } from '@globalise/common/annotation';
 import {
   removeHoverAttribute,
   setHoverAttribute,
   setHovered,
   toggleClicked,
-  useEntityHighlightCategories,
 } from '@globalise/common/document';
-import { AnnotationSegment } from './AnnotationSegment';
-import { NestedSegment } from './NestedSegment';
+import { cn } from '@globalise/design';
+import { getAnnotationClassNames } from './getAnnotationClassNames';
 
 type TextProps = {
-  canvasId: string;
   blockId: Id | null;
   segments: TextSegment<Annotation>[];
+  highlightCategories: Set<ClassifiedCategory>;
+  classifiedToWords: Record<Id, Id[]>;
+  selectedIds: Id[];
+  activeHitIds: Id[];
 };
 
 export function SegmentedText(
-  { canvasId, blockId, segments }: TextProps,
+  {
+    blockId, segments, highlightCategories, classifiedToWords, selectedIds, activeHitIds,
+  }: TextProps,
 ) {
-  const highlightedEntityCategories = useEntityHighlightCategories();
-
   return <>
     {segments.map((segment) => {
       const body = segment.value;
-      const hoveredAnnotation = segment.annotations.find(
-        (annotation) => isHighlightedEntity(
-          annotation, highlightedEntityCategories,
-        ),
-      ) ?? segment.annotations.find(isWord);
+      const shownClassified = segment.annotations
+        .filter((annotation) => !isHiddenClassified(annotation, highlightCategories));
+      const hoveredAnnotation = findClassifiedTarget(
+        shownClassified,
+        classifiedToWords,
+      );
       const hoverId = hoveredAnnotation?.id
         ?? blockId
         ?? null;
-      const isEntityTrigger = hoveredAnnotation
-        ? isEntity(hoveredAnnotation)
+      const isClassifiedTrigger = hoveredAnnotation
+        ? isClassified(hoveredAnnotation)
         : false;
 
       function showPreview(element: Element, openImmediately = false) {
@@ -70,7 +74,7 @@ export function SegmentedText(
       }
 
       function handleFocus(event: FocusEvent<HTMLSpanElement>) {
-        if (isEntityTrigger) {
+        if (isClassifiedTrigger) {
           showPreview(event.currentTarget, true);
         }
       }
@@ -81,7 +85,7 @@ export function SegmentedText(
 
       function handleKeyDown(event: KeyboardEvent<HTMLSpanElement>) {
         if (
-          isEntityTrigger &&
+          isClassifiedTrigger &&
           hoverId &&
           (event.key === 'Enter' || event.key === ' ')
         ) {
@@ -100,32 +104,28 @@ export function SegmentedText(
       return (
         <span
           key={segment.index}
-          tabIndex={isEntityTrigger ? 0 : undefined}
-          role={isEntityTrigger ? 'button' : undefined}
-          aria-haspopup={isEntityTrigger ? 'dialog' : undefined}
-          aria-label={isEntityTrigger ? `Select entity: ${body}` : undefined}
+          tabIndex={isClassifiedTrigger ? 0 : undefined}
+          role={isClassifiedTrigger ? 'button' : undefined}
+          aria-haspopup={isClassifiedTrigger ? 'dialog' : undefined}
+          aria-label={isClassifiedTrigger ? `Select: ${body}` : undefined}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
+          className={cn([
+            ...getAnnotationClassNames(segment.annotations, highlightCategories, selectedIds),
+            hasAnnotation(segment, activeHitIds) && 'active-hit',
+          ])}
         >
-          <NestedSegment
-            annotations={segment.annotations}
-            annotation={(annotation, children) => (
-              <AnnotationSegment
-                canvasId={canvasId}
-                annotation={annotation}
-              >
-                {children}
-              </AnnotationSegment>
-            )}
-          >
-            {body}
-          </NestedSegment>
+          {body}
         </span>
       );
     })}
   </>;
+}
+
+function hasAnnotation(segment: TextSegment<Annotation>, ids: Id[]): boolean {
+  return segment.annotations.some((annotation) => ids.includes(annotation.id));
 }
