@@ -58,7 +58,7 @@ export function renderDiplomaticView(
   $view.classList.add('original-layout', 'highlight-layers');
 
   const mergedConfig = {
-    onHover: noop, onClick: noop, ...defaultConfig, ...config,
+    onClick: noop, ...defaultConfig, ...config,
   };
   const {
     showBlocks,
@@ -118,7 +118,7 @@ export function renderDiplomaticView(
     const $segment = getClassifiedSegment(event);
     if ($segment) {
       setHoverAttribute($segment);
-      onHover($segment.dataset.classifiedId ?? null);
+      onHover?.($segment.dataset.classifiedId ?? null);
     }
   }
 
@@ -126,12 +126,14 @@ export function renderDiplomaticView(
     const $segment = getClassifiedSegment(event);
     if ($segment) {
       removeHoverAttribute($segment);
-      onHover(null);
+      onHover?.(null);
     }
   }
 
-  $layoutView.addEventListener('focusin', handleClassifiedFocus);
-  $layoutView.addEventListener('focusout', handleClassifiedBlur);
+  if (onHover) {
+    $layoutView.addEventListener('focusin', handleClassifiedFocus);
+    $layoutView.addEventListener('focusout', handleClassifiedBlur);
+  }
 
   for (const wordGroup of groupedByWord) {
     if (!wordGroup.isGroup) {
@@ -164,23 +166,25 @@ export function renderDiplomaticView(
         $segment.tabIndex = 0;
         $segment.dataset.classifiedId = target.id;
         $segment.setAttribute('role', 'button');
-        $segment.setAttribute('aria-haspopup', 'dialog');
+        if (onHover) {
+          $segment.setAttribute('aria-haspopup', 'dialog');
+          $segment.addEventListener('mouseenter', () => {
+            setHoverAttribute($segment, 'delayed');
+            onHover(target.id);
+          });
+          $segment.addEventListener('mouseleave', () => {
+            if (document.activeElement !== $segment) {
+              removeHoverAttribute($segment);
+              onHover(null);
+            }
+          });
+        }
         $segment.setAttribute(
           'aria-label',
           `Select: ${$segment.textContent}`,
         );
 
         $segment.addEventListener('click', () => onClick(target.id));
-        $segment.addEventListener('mouseenter', () => {
-          setHoverAttribute($segment, 'delayed');
-          onHover(target.id);
-        });
-        $segment.addEventListener('mouseleave', () => {
-          if (document.activeElement !== $segment) {
-            removeHoverAttribute($segment);
-            onHover(null);
-          }
-        });
         $segment.addEventListener('keydown', (event) => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
@@ -190,14 +194,16 @@ export function renderDiplomaticView(
       } else {
         const blockId = wordToBlock[wordId];
         $segment.addEventListener('click', () => onClick(wordId));
-        $segment.addEventListener('mouseenter', () => {
-          setHoverAttribute($segment, 'delayed');
-          onHover(wordId);
-        });
-        $segment.addEventListener('mouseleave', () => {
-          removeHoverAttribute($segment);
-          onHover(blockId ?? null);
-        });
+        if (onHover) {
+          $segment.addEventListener('mouseenter', () => {
+            setHoverAttribute($segment, 'delayed');
+            onHover(wordId);
+          });
+          $segment.addEventListener('mouseleave', () => {
+            removeHoverAttribute($segment);
+            onHover(blockId ?? null);
+          });
+        }
       }
     }
     $word.replaceChildren(...$segments);
@@ -233,9 +239,11 @@ export function renderDiplomaticView(
       lines.forEach((l) => hideLine(l));
     }
 
-    for (const [blockId, $block] of Object.entries($blocks)) {
-      $block.on('mouseenter', () => onHover(blockId));
-      $block.on('mouseleave', () => onHover(null));
+    if (onHover) {
+      for (const [blockId, $block] of Object.entries($blocks)) {
+        $block.on('mouseenter', () => onHover(blockId));
+        $block.on('mouseleave', () => onHover(null));
+      }
     }
 
     selectBlock = (id: Id) => {

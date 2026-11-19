@@ -28,14 +28,14 @@ export function ManifestClassifiedPreview() {
   const hovered = useDocumentStore((s) => s.hovered);
   const canvases = useDocumentStore((s) => s.canvases);
   const showLayoutElements = useIsLayoutElementsVisible();
-  const scanPreviewHidden = !showLayoutElements && preview?.anchor.matches('polygon.word-highlight');
-
-  useEffect(updatePreview, [hovered, canvases, preview, scanPreviewHidden]);
+  useEffect(updatePreview, [hovered, canvases, preview, showLayoutElements]);
 
   function updatePreview() {
-    if (scanPreviewHidden) {
+    if (!showLayoutElements) {
       isOpen.current = false;
-      setPreview(null);
+      if (preview) {
+        setPreview(null);
+      }
       return;
     }
     const anchor = hovered ? getHoverElement() : null;
@@ -58,7 +58,7 @@ export function ManifestClassifiedPreview() {
     }
   }
 
-  if (!preview || scanPreviewHidden) {
+  if (!preview || !showLayoutElements) {
     return null;
   }
 
