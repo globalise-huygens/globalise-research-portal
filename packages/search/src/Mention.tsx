@@ -1,8 +1,8 @@
 import { Link } from 'react-aria-components';
 import { toViewerHref, useSearch } from '@globalise/router';
-import { Highlight } from '@knaw-huc/faceted-search-react';
 import { createManifestId, parseDocumentName } from '@globalise/common/uri';
-import { POST_TAG, PRE_TAG } from './elasticsearch/highlightTags';
+import { MarkedText } from '@globalise/design';
+import { isHit, parseAnnotatedText } from './elasticsearch/parseAnnotatedText';
 import classes from './Mention.module.css';
 
 import type { DocumentSearchResult } from './elasticsearch/search.server';
@@ -15,6 +15,7 @@ type MentionProps = {
 export default function Mention({ document, snippet }: MentionProps) {
   const urlParams = useSearch({ from: '/search' });
   const range = parseDocumentName(document.name);
+  const { plainText, segments } = parseAnnotatedText(snippet);
   return (
     <li className={classes.mention}>
       <Link
@@ -23,16 +24,11 @@ export default function Mention({ document, snippet }: MentionProps) {
           manifest: createManifestId(range),
           document: document.name,
           documentId: document.id,
-          snippet,
+          snippet: plainText,
         })}
         className={classes.link}
       >
-        <Highlight
-          text={snippet}
-          startMarker={PRE_TAG}
-          endMarker={POST_TAG}
-          render={(text) => <mark>{text}</mark>}
-        />
+        <MarkedText text={plainText} ranges={segments.filter(isHit)}/>
       </Link>
     </li>
   );

@@ -3,7 +3,6 @@ import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import type { GlobaliseSearchState } from '../utils/getSearchState';
-import { tagAnnotatedHits } from './tagAnnotatedHits';
 
 import type { EntityTagType } from '@globalise/design';
 
@@ -91,7 +90,7 @@ const search = createServerFn({ method: 'POST' })
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,
       endDate: hit._source!.endDate,
-      mentions: hit.highlight?.annotatedText.map(tagAnnotatedHits) ?? [],
+      mentions: hit.highlight?.annotatedText ?? [],
     }));
   });
 

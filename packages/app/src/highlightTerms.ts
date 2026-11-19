@@ -1,31 +1,20 @@
 import minBy from 'lodash/minBy';
 import { truncate } from '@globalise/common';
+import type { TextPosition } from '@globalise/design';
 
 const snippetLead = 40;
 const snippetLength = 160;
 
-export type TextPart = {
-  text: string;
-  isMatch: boolean;
-};
-
-type TermMatch = {
-  start: number;
-  end: number;
-};
-
-export function splitByTerms(text: string, terms: string[]): TextPart[] {
-  const parts: TextPart[] = [];
-  let rest = text;
-  let match = findFirstTerm(rest, terms);
+export function findTerms(text: string, terms: string[]): TextPosition[] {
+  const ranges: TextPosition[] = [];
+  let offset = 0;
+  let match = findFirstTerm(text, terms, offset);
   while (match) {
-    parts.push({ text: rest.slice(0, match.start), isMatch: false });
-    parts.push({ text: rest.slice(match.start, match.end), isMatch: true });
-    rest = rest.slice(match.end);
-    match = findFirstTerm(rest, terms);
+    ranges.push(match);
+    offset = match.end;
+    match = findFirstTerm(text, terms, offset);
   }
-  parts.push({ text: rest, isMatch: false });
-  return parts.filter((part) => part.text);
+  return ranges;
 }
 
 export function createSnippet(text: string, terms: string[]): string {
@@ -37,10 +26,10 @@ export function createSnippet(text: string, terms: string[]): string {
   return truncate(text, start, start + snippetLength);
 }
 
-function findFirstTerm(text: string, terms: string[]): TermMatch | undefined {
+function findFirstTerm(text: string, terms: string[], offset = 0): TextPosition | undefined {
   const lowerText = text.toLowerCase();
   const matches = terms.map((term) => {
-    const start = lowerText.indexOf(term);
+    const start = lowerText.indexOf(term, offset);
     return { start, end: start + term.length };
   });
   const found = matches.filter((match) => match.start >= 0);
