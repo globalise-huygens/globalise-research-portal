@@ -2,11 +2,11 @@
   display: contents;
 }
 
-.manifest-display-settings[data-scan-numbers="false"] .canvas-header > .scan {
+.manifest-display-settings[data-scan-numbers="false"] .canvas-header-content > .scan {
   display: none;
 }
 
-.manifest-display-settings[data-document-starts="false"] .canvas-header > .boundary {
+.manifest-display-settings[data-document-starts="false"] .canvas-header-content > .boundary {
   display: none;
 }
 
@@ -20,7 +20,8 @@
 }
 
 .viewer-overlays-menu.popover {
-  width: min(18rem, calc(100vw - 1rem));
+  width: max-content;
+  max-width: calc(100vw - 1rem);
   box-sizing: border-box;
   border-radius: 0;
 
@@ -28,5 +29,10 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .checkbox-control {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }

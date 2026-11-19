@@ -2,14 +2,16 @@
   position: absolute;
   inset: 0 0 auto;
   z-index: 2;
+  container-type: inline-size;
+  pointer-events: none;
+}
+
+.canvas-header-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.25rem;
-  container-type: inline-size;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  pointer-events: none;
+  gap: min(0.25rem, 2cqi);
+  padding: min(0.5rem, 3cqi);
 }
 
 .canvas-label {
@@ -75,12 +77,8 @@ button.canvas-label {
 
   .short-label {
     display: none;
-  }
-}
-
-@media (pointer: coarse) {
-  .canvas-label {
-    height: 2.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -91,10 +89,10 @@ button.canvas-label {
   pointer-events: none;
 }
 
-@container (width < 6rem) {
+@container (width < 10rem) {
   .canvas-label {
-    gap: 0.2rem;
-    padding-inline: 0.25rem;
+    height: 1.5rem;
+    padding-inline: 0.3rem;
   }
 
   .canvas-label .prefix {
@@ -102,7 +100,7 @@ button.canvas-label {
   }
 }
 
-@container (width < 10rem) {
+@container (width < 15rem) {
   .canvas-header .boundary .label {
     display: none;
   }
@@ -112,8 +110,36 @@ button.canvas-label {
   }
 }
 
-@container (width < 6rem) {
+@container (width < 10rem) {
   .canvas-header .boundary .short-label {
     display: none;
+  }
+}
+
+@container (width < 6rem) {
+  .canvas-label {
+    height: 2em;
+    gap: 0.2em;
+    padding: 0 0.3em;
+    border-width: min(1px, 1cqi);
+    font-size: min(0.75rem, var(--compact-label-size));
+    line-height: 1;
+  }
+
+  .canvas-label svg {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  .canvas-header .boundary {
+    flex-shrink: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  @container (width >= 6rem) {
+    .canvas-label {
+      min-height: 2.75rem;
+    }
   }
 }

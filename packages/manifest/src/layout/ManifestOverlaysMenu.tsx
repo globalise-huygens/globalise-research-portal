@@ -2,7 +2,7 @@ import { useContext, useMemo, useState, type ReactNode } from 'react';
 import {
   Dialog, DialogTrigger, Popover as OverlayPopover,
 } from 'react-aria-components';
-import { Checkbox, IconLayers, Popover } from '@globalise/design';
+import { Checkbox, IconLayoutElements, Popover } from '@globalise/design';
 import {
   setLayoutElementsVisible, useIsLayoutElementsVisible,
 } from '@globalise/common/document';
@@ -38,6 +38,16 @@ export function ManifestDisplaySettings({ children }: { children: ReactNode }) {
 export function ManifestOverlaysMenu() {
   const settings = useContext(ViewerDisplayContext);
   const showLayoutElements = useIsLayoutElementsVisible();
+  const anySelected = settings.showScanNumbers || settings.showDocumentStarts
+    || showLayoutElements;
+  const allSelected = settings.showScanNumbers && settings.showDocumentStarts
+    && showLayoutElements;
+
+  function setAllVisible(visible: boolean) {
+    settings.setShowScanNumbers(visible);
+    settings.setShowDocumentStarts(visible);
+    setLayoutElementsVisible(visible);
+  }
 
   return (
     <DialogTrigger>
@@ -45,7 +55,8 @@ export function ManifestOverlaysMenu() {
         aria-label="Overlays"
         tooltip="Overlays"
         className={TOP_BAR_BUTTON}
-        icon={<IconLayers className="toolbar-icon" aria-hidden="true" />}
+        isActive={anySelected}
+        icon={<IconLayoutElements className="toolbar-icon" aria-hidden="true" />}
       />
       <OverlayPopover
         placement="bottom end"
@@ -55,6 +66,14 @@ export function ManifestOverlaysMenu() {
       >
         <Dialog aria-label="Overlays" className="viewer-overlays-menu-dialog">
           <Popover size="compact" className="viewer-overlays-menu">
+            <Checkbox
+              aria-label="All overlays"
+              isSelected={allSelected}
+              isIndeterminate={anySelected && !allSelected}
+              onChange={setAllVisible}
+            >
+              All overlays
+            </Checkbox>
             <Checkbox
               aria-label="Scan numbers"
               isSelected={settings.showScanNumbers}
