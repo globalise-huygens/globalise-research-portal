@@ -1,29 +1,29 @@
-import { startTransition, useEffect, Suspense, useState, type CSSProperties } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useEffect, useState, useMemo, useDeferredValue, type CSSProperties } from 'react';
+import { useIsFetching, useSuspenseQuery } from '@tanstack/react-query';
 import { Slider, SliderTrack, SliderThumb, Group, Button, NumberField, Input, Label } from 'react-aria-components';
 import { useFacet, useNumericRangeFacet, useSearchState } from '@knaw-huc/faceted-search-react';
 import { cn, IconExpandSection } from '@globalise/design';
-import rangeFacetItemsQueryOptions from './queries/rangeFacetItemsQueryOptions';
-import getSearchState from './utils/getSearchState';
+import rangeFacetItemsQueryOptions, { rangeFacetItemsQueryKey } from './queries/rangeFacetItemsQueryOptions';
+import getSearchState, { type GlobaliseSearchState } from './utils/getSearchState';
 import Facet from './Facet';
 import Histogram from './Histogram';
 import classes from './RangeFacet.module.css';
 
 export default function RangeFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFacet(facetKey, '');
+  const isFetching = useIsFetching({ queryKey: rangeFacetItemsQueryKey(facetKey) }) > 0;
 
   return (
-    <Facet label={label}>
-      <Suspense fallback={'Loading...'}>
-        <RangeSlider facetKey={facetKey}/>
-      </Suspense>
+    <Facet label={label} isPending={isFetching}>
+      <RangeSlider facetKey={facetKey}/>
     </Facet>
   );
 }
 
 function RangeSlider({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
-  const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(facetKey, getSearchState(state)));
+  const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state), [state]);
+  const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));
 
   const min = terms[0].start;
   const max = terms[terms.length - 1].end;
@@ -46,16 +46,12 @@ function RangeSlider({ facetKey }: { facetKey: string }) {
       value[1] = max;
     }
     setCurMinMax(value);
-    onRangeChangeCommit(value[0], value[1]);
+    onChange(value[0], value[1]);
   }
 
   function onRangeChange(min: number, max: number) {
     setCurMinMax([min, max]);
-    onRangeChangeCommit(min, max);
-  }
-
-  function onRangeChangeCommit(min: number, max: number) {
-    startTransition(() => onChange(min, max));
+    onChange(min, max);
   }
 
   return (

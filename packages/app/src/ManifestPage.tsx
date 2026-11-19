@@ -1,45 +1,59 @@
 import {
   type DocumentState,
-  setSelectedCanvas,
+  findActiveSearchHits,
+  findInitialCanvasId,
+  setSearchHits,
   useDocumentStore,
 } from '@globalise/common/document';
-import { ManifestLoader } from '@globalise/facsimile';
 import {
-  ManifestCanvasNavigation,
-  ManifestViewer,
+  getManifestSearchState,
+  highlightDocumentQueryOptions,
+} from '@globalise/search';
+import { Spinner } from '@globalise/design';
+import {
   ManifestDropdown,
-  ManifestFacsimileViewer,
-  ManifestTranscriptionViewer,
+  ManifestViewer,
+  type ErrorMessage,
   useCollectionManifests,
+  ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { getRouteApi, toCanvasHref, toManifestHref } from '@globalise/router';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
-import { ManifestEntityPreview } from './ManifestEntityPreview.tsx';
+import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
+import { createManifestId, handle, idBase } from '@globalise/common/uri';
 
-const defaultManifest =
-  'https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json';
+const defaultManifest = createManifestId({ inventory: '1053' });
 
-const collectionUrl =
-  'https://data.globalise.huygens.knaw.nl/' +
-  'hdl:20.500.14722/inventory:collection';
+const route = getRouteApi(`/${handle}/$`);
 
-const MANIFEST = 'manifest';
-const CANVAS = 'canvas';
+const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
-  const navigate = useNavigate();
-  const params = new URLSearchParams(typeof location === 'undefined' ? '' : location.search);
-  const initialCanvasId = params.get(CANVAS) ?? undefined;
-  const [manifestUrl, setManifestUrl] = useState(
-    params.get(MANIFEST) ?? defaultManifest,
+  const navigate = route.useNavigate();
+  const search = route.useSearch();
+  const manifestUrl = search.manifest ?? defaultManifest;
+  const searchState = getManifestSearchState(search);
+  const { data: highlights, isLoading: isHighlighting } = useQuery(
+    highlightDocumentQueryOptions(searchState),
   );
+  const activeHit = highlights?.hits
+    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
+  const activeHitCanvasId = activeHit?.canvasId;
+
+  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
+
+  let error: ErrorMessage | undefined = undefined;
+  if (searchState && !activeHitCanvasId) {
+    error = { message: 'Search result could not be located: showing first page in document.' };
+  }
 
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(syncCanvasParam, []);
+  useEffect(syncCanvasParam, [navigate, search]);
 
   function syncCanvasParam() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -47,10 +61,28 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set(CANVAS, selectedCanvasId);
-      history.replaceState({}, '', newUrl);
+      const href = toCanvasHref(selectedCanvasId, { ...search, canvas: selectedCanvasId });
+      if (href) {
+        void navigate({ href, replace: true });
+      }
     });
+  }
+
+  useEffect(logSearchHits, []);
+
+  function logSearchHits() {
+    return useDocumentStore.subscribe((state, prev) => {
+      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
+        return;
+      }
+      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
+    });
+  }
+
+  useEffect(storeSearchHits, [highlights]);
+
+  function storeSearchHits() {
+    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
   }
 
   useEffect(logTextRanges, []);
@@ -65,7 +97,7 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(navigateToObjectCard, []);
+  useEffect(navigateToObjectCard, [navigate]);
 
   function navigateToObjectCard() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -90,47 +122,36 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        navigate({ to: '/object-card', search: { uri } })
-          .catch(console.error);
+        void navigate({ to: '/object-card', search: { uri } });
       }
     });
   }
 
-  function handleManifestChange(url: string) {
-    setManifestUrl(url);
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(MANIFEST, url);
-    newUrl.searchParams.delete(CANVAS);
-    history.pushState({}, '', newUrl);
+  function handleManifestChange(manifest: string) {
+    const href = toManifestHref(manifest, { ...search, manifest });
+    if (href) {
+      void navigate({ href });
+    }
   }
 
   return (
     <ViewerProvider>
-      <ManifestLoader url={manifestUrl}>
-        <ManifestViewer
-          onClose={() => void navigate({ to: '/' })}
-          topLeft={
-            <ManifestDropdown
-              manifests={allManifests}
-              selected={manifestUrl}
-              onChange={handleManifestChange}
-            />
-          }
-          scan={
-            <ManifestFacsimileViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
-            />
-          }
-          transcription={
-            <ManifestTranscriptionViewer
-              initialCanvasId={initialCanvasId}
-              onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
-            />
-          }
-          bottom={<ManifestCanvasNavigation/>}
-        />
-        <ManifestEntityPreview />
+      <ManifestLoader url={manifestUrl} canvasId={initialCanvasId}>
+        {isHighlighting ? <Spinner label="Loading search result"/> : (
+          <ManifestViewer
+            initialCanvasId={initialCanvasId}
+            error={error}
+            onClose={() => void navigate({ to: '/' })}
+            topLeft={
+              <ManifestDropdown
+                manifests={allManifests}
+                selected={manifestUrl}
+                onChange={handleManifestChange}
+              />
+            }
+          />
+        )}
+        <ManifestClassifiedPreview/>
       </ManifestLoader>
     </ViewerProvider>
   );

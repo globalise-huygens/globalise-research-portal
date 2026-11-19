@@ -3,7 +3,7 @@ import {
   IconContentWarning,
   ToolButton,
 } from '@globalise/design';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 const contentWarning = {
   title: 'Content Warning',
@@ -12,30 +12,28 @@ const contentWarning = {
   linkLabel: 'Read more about problematic content',
 };
 
-export function ManifestContentWarning() {
+export function ManifestContentWarning({ iconOnly = false }: { iconOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHoverPreviewOpen, setIsHoverPreviewOpen] = useState(false);
-  const isDetailsOpen = isOpen || isHoverPreviewOpen;
+  const detailsId = useId();
 
   return (
     <div className="content-warning">
       <ToolButton
         aria-label={isOpen ? 'Hide content warning' : 'Show content warning'}
+        aria-expanded={isOpen}
+        aria-controls={isOpen ? detailsId : undefined}
         icon={<IconContentWarning />}
         isActive={isOpen}
-        onBlur={() => setIsHoverPreviewOpen(false)}
-        onFocus={() => setIsHoverPreviewOpen(true)}
-        onMouseEnter={() => setIsHoverPreviewOpen(true)}
-        onMouseLeave={() => setIsHoverPreviewOpen(false)}
         onPress={() => setIsOpen((open) => !open)}
         size="compact"
       >
-        {contentWarning.title}
+        {!iconOnly && contentWarning.title}
       </ToolButton>
-      {isDetailsOpen && (
+      {isOpen && (
         <div
+          id={detailsId}
           className="details"
-          role="dialog"
+          role="region"
           aria-label={contentWarning.title}
         >
           <p>{contentWarning.body}</p>

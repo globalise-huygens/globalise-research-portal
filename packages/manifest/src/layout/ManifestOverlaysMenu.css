@@ -1,8 +1,12 @@
-.manifest-viewer[data-scan-numbers="false"] .canvas-header > .scan {
+.manifest-display-settings {
+  display: contents;
+}
+
+.manifest-display-settings[data-scan-numbers="false"] .canvas-header > .scan {
   display: none;
 }
 
-.manifest-viewer[data-document-boundaries="false"] .canvas-header > .boundary {
+.manifest-display-settings[data-document-boundaries="false"] .canvas-header > .boundary {
   display: none;
 }
 

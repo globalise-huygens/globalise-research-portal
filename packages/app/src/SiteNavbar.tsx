@@ -4,6 +4,7 @@ import {
   NavLink,
   NavLinks,
 } from '@globalise/design';
+import { defaultInventory, toHref, toViewerHref } from '@globalise/router';
 import '@globalise/design/styles.css';
 import './SiteNavbar.css';
 
@@ -13,17 +14,22 @@ export function SiteNavbar() {
       <Navbar
         aria-label="Primary navigation"
         logo={
-          <NavLink href="/" aria-label="Globalise home" className="site-navbar__home">
-            <LogoNavbar className="site-navbar__logo" />
+          <NavLink
+            href={toHref({ to: '/' })}
+            aria-label="Globalise home"
+            className="site-navbar__home"
+          >
+            <LogoNavbar className="site-navbar__logo"/>
           </NavLink>
         }
       >
         <NavLinks className="site-navbar__links">
-          <NavLink href="/search">Search</NavLink>
-          <NavLink href="/manifest">Manifest Viewer</NavLink>
-          <NavLink href="/catalog">Catalog</NavLink>
-          <NavLink href="/object-card">Object Card</NavLink>
-          <NavLink href="/map">World map</NavLink>
+          <NavLink href={toHref({ to: '/search' })}>Search</NavLink>
+          <NavLink href={toViewerHref(defaultInventory, {})}>Manifest Viewer</NavLink>
+          <NavLink href={toHref({ to: '/catalog' })}>Catalog</NavLink>
+          <NavLink href={toHref({ to: '/object-card' })}>Object Card</NavLink>
+          <NavLink href={toHref({ to: '/map' })}>World map</NavLink>
+          <NavLink href={toHref({ to: '/content' })}>Content</NavLink>
         </NavLinks>
       </Navbar>
     </header>

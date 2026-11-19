@@ -3,6 +3,7 @@ import {
   useHighlightedAnnotations,
   usePages,
   usePartOf,
+  useActiveHitAnnotationsInDiplomatic,
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
@@ -49,6 +50,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
     () => selectedIds.filter((id) => annotations[id]),
     [selectedIds, annotations],
   );
+  const activeHits = useActiveHitAnnotationsInDiplomatic(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
 
   useEffect(() => {
@@ -117,6 +119,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
               id={canvasId}
               annotations={annotations}
               selected={selected}
+              activeHits={activeHits}
               page={partOf}
               fit="width"
               showBlocks={showBlocks}

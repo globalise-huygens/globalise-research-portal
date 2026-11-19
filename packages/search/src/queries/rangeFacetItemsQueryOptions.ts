@@ -4,8 +4,10 @@ import type { GlobaliseSearchState } from '../utils/getSearchState';
 
 export default function rangeFacetItemsQueryOptions(key: string, state: GlobaliseSearchState) {
   return queryOptions({
-    queryKey: ['range', key, state.query, state.facets],
+    queryKey: [...rangeFacetItemsQueryKey(key), state.query, state.facets],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: () => rangeFacetItems({ data: { key, query: state.query, facets: state.facets } }),
   });
 }
+
+export const rangeFacetItemsQueryKey = (key: string) => ['range', key];

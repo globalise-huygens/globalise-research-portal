@@ -8,11 +8,12 @@
   "include": ["src", "vite.config.ts"],
   "references": [
     { "path": "../common" },
+    { "path": "../content" },
     { "path": "../design" },
-    { "path": "../facsimile" },
     { "path": "../manifest" },
     { "path": "../metadata" },
     { "path": "../object-card" },
+    { "path": "../router" },
     { "path": "../search" },
     { "path": "../map" }
   ]

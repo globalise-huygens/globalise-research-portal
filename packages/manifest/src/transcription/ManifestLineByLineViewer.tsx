@@ -2,10 +2,11 @@ import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
+  useInitialCanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
 import { useDiplomaticViewScale } from '@globalise/common/document';
-import { CanvasNormalized } from '@iiif/presentation-3-normalized';
+import { CanvasNormalized } from '@iiif/parser/presentation-3-normalized/types';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { useCanvasDocuments } from '@globalise/metadata';
 import { useEffect, useMemo, useRef } from 'react';
@@ -23,7 +24,6 @@ type CanvasInfo = {
 };
 
 type Props = {
-  initialCanvasId?: string;
   showLayoutElements: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
@@ -33,11 +33,11 @@ const DEFAULT_ITEM_HEIGHT = 600;
 const INCREASE_VIEWPORT_BY = 0;
 
 export function ManifestLineByLineViewer({
-  initialCanvasId,
   showLayoutElements,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
+  const initialCanvasId = useInitialCanvasId();
   const transcriptionScale = useDiplomaticViewScale();
   const canvasDocuments = useCanvasDocuments();
 

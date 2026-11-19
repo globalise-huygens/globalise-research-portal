@@ -1,6 +1,11 @@
 import React, { useMemo } from 'react';
-import { Id } from '@globalise/common/annotation';
-import { useIsSelectedInLineByLine } from '@globalise/common/document';
+import { ClassifiedCategory, Id } from '@globalise/common/annotation';
+import {
+  useCanvasIndexes,
+  useHighlightCategories,
+  useIsSelectedInLineByLine,
+} from '@globalise/common/document';
+import { cn } from '@globalise/design';
 import { SegmentedLine } from './SegmentedLine';
 import { LineSegments } from './useLineSegments';
 
@@ -16,6 +21,8 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
   { canvasId, lineSegments, showLayoutElements }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
+  const highlightCategories = useHighlightCategories();
+  const { classifiedToWords } = useCanvasIndexes(canvasId);
 
   const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
 
@@ -31,7 +38,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
 
   return (
     <div
-      className="normalized-view"
+      className="normalized-view highlight-layers"
       data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
     >
       <div className="text">
@@ -43,6 +50,8 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
             lineIds={lineIds}
             segmentsByLine={segmentsByLine}
             lineNumberStart={blockLineNumberStarts[i] + 1}
+            highlightCategories={highlightCategories}
+            classifiedToWords={classifiedToWords}
           />
         ))}
       </div>
@@ -56,17 +65,21 @@ type BlockGroupProps = {
   lineIds: Id[];
   segmentsByLine: LineSegments['segmentsByLine'];
   lineNumberStart: number;
+  highlightCategories: Set<ClassifiedCategory>;
+  classifiedToWords: Record<Id, Id[]>;
 };
 
 function BlockGroup(
-  { canvasId, blockId, lineIds, segmentsByLine, lineNumberStart }: BlockGroupProps,
+  {
+    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords,
+  }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInLineByLine(canvasId, blockId);
 
   let count = 0;
 
   return (
-    <div className={`block-group ${isSelected ? 'selected' : ''}`}>
+    <div className={cn(['block-group', isSelected && 'selected'])}>
       {lineIds.map((lineId) => {
         const segments = segmentsByLine[lineId];
         if (!segments) {
@@ -81,6 +94,8 @@ function BlockGroup(
             lineNumber={lineNumberStart + count - 1}
             blockId={blockId}
             segments={segments}
+            highlightCategories={highlightCategories}
+            classifiedToWords={classifiedToWords}
           />
         );
       })}

@@ -5,6 +5,15 @@
 }
 
 .selected-word-highlight {
+    fill: var(--annotation-family-scan-fill, var(--viewer-word-fill));
     mix-blend-mode: multiply;
     pointer-events: none;
+}
+
+.search-hit-word-highlight {
+    fill: var(--search-hit);
+
+    &.active-hit {
+        fill: var(--search-hit-active);
+    }
 }

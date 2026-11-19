@@ -1,10 +1,10 @@
 import { fetchJson, getJsonUrl } from '@globalise/common';
+import { thesaurusBase } from '@globalise/common/uri';
 import { useObjectCardStore, setObjectCardState } from '../ObjectCardStore.ts';
 import { getErrorMessage } from '../LoadState.ts';
 import { emptySkosSchemesState, SchemeBundle, SkosSchemesState } from './SkosSchemesState.ts';
 
-export const schemesUri =
-  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:schemes';
+export const schemesUri = `${thesaurusBase}schemes`;
 
 export type SkosSchemesSlice = {
   skosSchemesState: SkosSchemesState;

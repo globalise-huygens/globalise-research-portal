@@ -21,7 +21,7 @@ export function ManifestDisplaySettings({ children }: { children: ReactNode }) {
   return (
     <ViewerDisplayContext.Provider value={settings}>
       <div
-        className="gds manifest-viewer"
+        className="manifest-display-settings"
         data-scan-numbers={showScanNumbers}
         data-document-boundaries={showDocumentBoundaries}
       >

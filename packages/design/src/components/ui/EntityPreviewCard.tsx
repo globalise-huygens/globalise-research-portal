@@ -5,6 +5,7 @@ import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 import { getEntityTypeLabel, type EntityType } from './EntityIcon';
+import { getPresentationFamily } from '@globalise/common';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
@@ -45,6 +46,10 @@ function getEntityBadgeType(
     return 'dimensions';
   }
 
+  if (type === 'event') {
+    return 'occurrence';
+  }
+
   return type;
 }
 
@@ -82,6 +87,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 aria-label={`Category: ${categoryLabel}`}
                 className="category-trigger"
                 data-type={getEntityBadgeType(data.type)}
+                data-presentation-family={getPresentationFamily(data.type)}
               >
                 {data.icon ? (
                   <span className="category-icon">
@@ -114,7 +120,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               aria-label={openFullCardLabel}
               className="icon-action"
             >
-              <IconArrowTopRight className="icon-action-icon" />
+              <IconArrowTopRight aria-hidden="true" className="icon-action-icon" />
             </a>
           )}
         </div>
@@ -130,7 +136,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               <dt className="property-label">
                 {property.label}
               </dt>
-              <dd className="property-value">
+              <dd className={cn('property-value', typeof property.value === 'string' && 'is-text')}>
                 {property.value}
               </dd>
             </div>

@@ -1,4 +1,8 @@
-import { EntityBadge, EntityBadgeType } from '@globalise/design';
+import {
+  EntityBadge,
+  EntityBadgeType,
+  IconEntityPerson,
+} from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
 const badgeByEntityType: Record<LinkedArtEntityType, EntityBadgeType | null> = {
@@ -26,5 +30,14 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
   if (!badgeType) {
     return null;
   }
-  return <EntityBadge type={badgeType}>{type}</EntityBadge>;
+  return (
+    <EntityBadge
+      type={badgeType}
+      icon={type === 'person'
+        ? <IconEntityPerson aria-hidden="true" />
+        : undefined}
+    >
+      {type}
+    </EntityBadge>
+  );
 }

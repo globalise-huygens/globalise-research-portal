@@ -1,0 +1,32 @@
+.manifest-preview-link {
+  display: inline-flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 0.2em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-brand-mint);
+  }
+
+  > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: none;
+  }
+}

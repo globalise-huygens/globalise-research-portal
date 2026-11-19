@@ -1,18 +1,20 @@
 import { create } from 'zustand';
 
-import type { EntityHighlightSlice } from './EntityHighlightSlice';
+import type { ClassifiedHighlightSlice } from './ClassifiedHighlightSlice';
 import type { LayoutElementsSlice } from './LayoutElementsSlice';
 import type { ManifestViewerSlice } from './ManifestViewerSlice';
+import type { SearchHitSlice } from './SearchHitSlice';
 import type { SelectionSlice } from './SelectionSlice';
 import type { TocSlice } from './TocSlice';
 import type { MetadataSlice } from './ManifestMetadataSlice.ts';
 
-import { cidocEntityClassificationIds } from '../annotation';
+import { cidocEntityClassificationIds, eventCategory } from '../annotation';
 
 export type DocumentState =
-  & EntityHighlightSlice
+  & ClassifiedHighlightSlice
   & LayoutElementsSlice
   & ManifestViewerSlice
+  & SearchHitSlice
   & SelectionSlice
   & MetadataSlice
   & TocSlice;
@@ -24,6 +26,11 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
   canvases: {},
 };
 
+const defaultSearchHitSlice: SearchHitSlice = {
+  searchHits: {},
+  activeEsHitIndex: null,
+};
+
 const defaultSelectionSlice: SelectionSlice = {
   hovered: null,
   clicked: null,
@@ -33,8 +40,8 @@ const defaultLayoutElementsSlice: LayoutElementsSlice = {
   isLayoutElementsVisible: true,
 };
 
-const defaultEntityHighlightSlice: EntityHighlightSlice = {
-  entityHighlightCategories: new Set(cidocEntityClassificationIds),
+const defaultClassifiedHighlightSlice: ClassifiedHighlightSlice = {
+  highlightCategories: new Set([...cidocEntityClassificationIds, eventCategory]),
 };
 
 const defaultMetadataSlice = {
@@ -42,13 +49,14 @@ const defaultMetadataSlice = {
 };
 
 const defaultTocSlice = {
-  toc: { expandedDocIds: [], revealRequest: null },
+  toc: { expandedDocIds: [], navigation: null, revealRequest: null },
 };
 
 export const useDocumentStore = create<DocumentState>(() => ({
-  ...defaultEntityHighlightSlice,
+  ...defaultClassifiedHighlightSlice,
   ...defaultLayoutElementsSlice,
   ...defaultManifestViewerSlice,
+  ...defaultSearchHitSlice,
   ...defaultSelectionSlice,
   ...defaultMetadataSlice,
   ...defaultTocSlice,

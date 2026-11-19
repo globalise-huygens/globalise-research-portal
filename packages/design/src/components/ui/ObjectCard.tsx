@@ -1,5 +1,11 @@
-import { IconArrowTopRight, IconClose, IconExternalLink } from '../icons';
+import {
+  IconArrowTopRight,
+  IconClose,
+  IconExpandSection,
+  IconExternalLink,
+} from '../icons';
 import { cn } from '../../lib';
+import { Tooltip } from './Tooltip';
 import * as React from 'react';
 import {
   Button as AriaButton,
@@ -81,13 +87,7 @@ function ObjectCardActionTooltip({
 
   return (
     <span className="action-with-tooltip">
-      {children}
-      <span
-        aria-hidden="true"
-        className="action-tooltip tooltip"
-      >
-        {label}
-      </span>
+      <Tooltip label={label}>{children}</Tooltip>
     </span>
   );
 }
@@ -180,18 +180,80 @@ export type ObjectCardSectionProps = {
   title?: string;
   scrollable?: boolean;
   sticky?: boolean;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
+
+export type ObjectCardDisclosureButtonProps = Omit<AriaButtonProps, 'className' | 'style' | 'children'> & {
+  className?: string;
+  children?: React.ReactNode;
+};
+
+function ObjectCardDisclosureButton({ className, children, ...props }: ObjectCardDisclosureButtonProps) {
+  return (
+    <AriaButton className={cn('section-toggle', className)} {...props}>
+      {children}
+      <IconExpandSection aria-hidden="true" className="section-toggle-icon" />
+    </AriaButton>
+  );
+}
+
+export type ObjectCardDisclosureProps = {
+  summary: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+  defaultExpanded?: boolean;
+};
+
+function ObjectCardDisclosure({ summary, children, className, defaultExpanded = false }: ObjectCardDisclosureProps) {
+  const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const contentId = React.useId();
+  const summaryId = React.useId();
+  const actionLabelId = React.useId();
+
+  if (!React.Children.toArray(children).length) {
+    return <div className={cn('disclosure', className)}><div className="disclosure-summary">{summary}</div></div>;
+  }
+
+  return (
+    <div className={cn('disclosure', className)}>
+      <div className="disclosure-header">
+        <div id={summaryId} className="disclosure-summary">{summary}</div>
+        <span id={actionLabelId} className="disclosure-action-label">Details for</span>
+        <ObjectCardDisclosureButton
+          aria-controls={contentId}
+          aria-expanded={isExpanded}
+          aria-labelledby={`${actionLabelId} ${summaryId}`}
+          className="disclosure-toggle"
+          onPress={() => setIsExpanded((expanded) => !expanded)}
+        />
+      </div>
+      <div id={contentId} hidden={!isExpanded} className="disclosure-content">{children}</div>
+    </div>
+  );
+}
 
 function ObjectCardSection({
   title,
   scrollable,
   sticky,
+  collapsible = false,
+  defaultExpanded = true,
   className,
   children,
 }: ObjectCardSectionProps) {
   const headingId = React.useId();
+  const contentId = React.useId();
+  const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const isCollapsible = collapsible && Boolean(title);
+  const content = scrollable ? (
+    <div className="section-scroll">{children}</div>
+  ) : (
+    children
+  );
+
   return (
     <Group
       aria-labelledby={title ? headingId : undefined}
@@ -199,7 +261,17 @@ function ObjectCardSection({
       data-has-title={title ? 'true' : 'false'}
       data-sticky={sticky ? 'true' : undefined}
     >
-      {title && (
+      {title && isCollapsible ? (
+        <AriaHeading level={3} id={headingId} className="section-heading">
+          <ObjectCardDisclosureButton
+            aria-controls={contentId}
+            aria-expanded={isExpanded}
+            onPress={() => setIsExpanded((expanded) => !expanded)}
+          >
+            <span>{title}</span>
+          </ObjectCardDisclosureButton>
+        </AriaHeading>
+      ) : title ? (
         <AriaHeading
           level={3}
           id={headingId}
@@ -207,11 +279,13 @@ function ObjectCardSection({
         >
           {title}
         </AriaHeading>
-      )}
-      {scrollable ? (
-        <div className="section-scroll">{children}</div>
+      ) : null}
+      {isCollapsible ? (
+        <div id={contentId} hidden={!isExpanded} className="section-content">
+          {content}
+        </div>
       ) : (
-        children
+        content
       )}
     </Group>
   );
@@ -266,7 +340,7 @@ const ObjectCardExternalLink = React.forwardRef<
   const content = (
     <>
       <span className="external-link-label">{children}</span>
-      <IconExternalLink className="external-link-icon"/>
+      <IconExternalLink aria-hidden="true" className="external-link-icon"/>
     </>
   );
 
@@ -375,6 +449,8 @@ export {
   ObjectCardAction,
   objectCardActionVariants,
   ObjectCardBody,
+  ObjectCardDisclosure,
+  ObjectCardDisclosureButton,
   ObjectCardExternalLink,
   ObjectCardFooter,
   ObjectCardHeader,

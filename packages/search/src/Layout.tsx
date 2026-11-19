@@ -5,11 +5,11 @@ import Results from './Results';
 import ResultsHeader from './ResultsHeader';
 import classes from './Layout.module.css';
 
-export default function Layout() {
+export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
   return (
     <div className={classes.search}>
       <div className={classes.searchHeader}>
-        <SearchField/>
+        <SearchField autoFocus={autoFocus} />
       </div>
 
       <div className={classes.facetSearch} aria-hidden="true"/>

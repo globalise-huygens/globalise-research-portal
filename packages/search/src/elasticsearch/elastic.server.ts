@@ -39,8 +39,10 @@ export const rangeFacets: Record<string, RangeFacet> = {
   },
 };
 
+const TreeQuerySchema = z.looseObject({}) as unknown as z.ZodType<TreeQuery>;
+
 export const GlobaliseSearchStateSchema = z.object({
-  query: z.looseObject({}).optional() as unknown as z.ZodType<TreeQuery | undefined>,
+  query: TreeQuerySchema.optional(),
   facets: z.record(z.string(), z.array(z.string())).refine(
     (record) => Object.keys(record).every((key) => [
       ...Object.keys(hierarchyFacets),
@@ -55,10 +57,14 @@ export const GlobaliseSearchStateSchema = z.object({
   ).optional(),
 });
 
-export function getSearchQuery(query?: TreeQuery, selected?: Record<string, string[]>): QueryDslQueryContainer | null {
+export function getSearchQuery(
+  query?: TreeQuery,
+  selected?: Record<string, string[]>,
+  documentId?: string,
+): QueryDslQueryContainer | null {
   const selectedHierarchies = getSelectedForFacet(selected, hierarchyFacets);
   const selectedRanges = getSelectedForFacet(selected, rangeFacets);
-  if (!query && !selectedHierarchies && !selectedRanges) {
+  if (!query && !selectedHierarchies && !selectedRanges && !documentId) {
     return null;
   }
 
@@ -83,7 +89,8 @@ export function getSearchQuery(query?: TreeQuery, selected?: Record<string, stri
   //   },
   // }]) : [];
   const rangeFilters: object[] = [];
-  const filters = [...hierarchyFilters, ...rangeFilters];
+  const documentFilters = documentId ? [{ ids: { values: [documentId] } }] : [];
+  const filters = [...hierarchyFilters, ...rangeFilters, ...documentFilters];
 
   return {
     bool: {

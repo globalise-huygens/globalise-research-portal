@@ -2,7 +2,7 @@ import { TiledImage, Viewer } from 'openseadragon';
 import { CanvasId, LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { fitLayout } from './util/fitLayout.ts';
 import { fetchJson } from '@globalise/common';
-import { throttle } from 'lodash';
+import throttle from 'lodash/throttle';
 
 export type LazyCanvasTileLoaderOptions = {
   /**
