@@ -12,27 +12,6 @@
   pointer-events: none;
 }
 
-.document-start-line {
-  position: absolute;
-  inset: 0 0 auto;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  transform: translateY(-100%);
-  pointer-events: none;
-}
-
-.document-start-rule {
-  flex: 1 1 0;
-  min-width: 0;
-  border-block-start: 1px solid var(--color-parchment-800);
-}
-
-.document-scan-count {
-  flex-shrink: 0;
-}
-
 .canvas-label {
   display: inline-flex;
   align-items: center;
@@ -88,6 +67,15 @@ button.canvas-label {
   }
 }
 
+.document-start-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.document-start-label-short {
+  display: none;
+}
+
 @media (pointer: coarse) {
   .canvas-label {
     height: 2.75rem;
@@ -108,6 +96,22 @@ button.canvas-label {
   }
 
   .canvas-label .prefix {
+    display: none;
+  }
+}
+
+@container (width < 10rem) {
+  .document-start-label {
+    display: none;
+  }
+
+  .document-start-label-short {
+    display: inline;
+  }
+}
+
+@container (width < 6rem) {
+  .document-start-label-short {
     display: none;
   }
 }

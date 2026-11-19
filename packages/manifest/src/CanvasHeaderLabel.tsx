@@ -14,27 +14,17 @@ export function CanvasHeaderLabel({ canvasId, canvasDocuments, isCurrent = false
   const scanNumber = canvasName(canvasId);
 
   return (
-    <>
+    <span className="canvas-header">
       {starting.length ? (
-        <span className="document-start-line">
-          <DocumentStartPreview
-            documents={starting}
-            scanNumber={scanNumber}
-            isCurrent={isCurrent}
-          />
-          <span className="document-start-rule" aria-hidden="true" />
-          {starting.length === 1 && (
-            <span className="canvas-label document-scan-count">
-              {starting[0].scans.length} scan{starting[0].scans.length === 1 ? '' : 's'}
-            </span>
-          )}
-        </span>
+        <DocumentStartPreview
+          documents={starting}
+          scanNumber={scanNumber}
+          isCurrent={isCurrent}
+        />
       ) : null}
-      <span className="canvas-header">
-        <span className="canvas-label scan" aria-current={isCurrent ? 'page' : undefined}>
-          <span className="prefix">Scan</span> {scanNumber}
-        </span>
+      <span className="canvas-label scan" aria-current={isCurrent ? 'page' : undefined}>
+        <span className="prefix">Scan</span> {scanNumber}
       </span>
-    </>
+    </span>
   );
 }

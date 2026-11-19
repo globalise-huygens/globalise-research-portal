@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useId, useRef, useState } from 'rea
 import { Popover as OverlayPopover } from 'react-aria-components';
 import { IconEntityDocument, Popover } from '@globalise/design';
 import { revealTocDocuments } from '@globalise/common/document';
-import type { ManifestDocument } from '@globalise/metadata';
+import { formatDocumentScanSummary, type ManifestDocument } from '@globalise/metadata';
 import './DocumentStartPreview.css';
 import { ViewerDisplayContext } from './layout/ViewerDisplayContext';
 
@@ -106,7 +106,7 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
         type="button"
         className="canvas-label boundary"
         aria-current={isCurrent ? 'page' : undefined}
-        aria-label={`Preview ${documents.length === 1 ? 'new document' : `${documents.length} new documents`} at scan ${scanNumber}`}
+        aria-label={`${documents.length === 1 ? 'Document start' : `${documents.length} document starts`} at scan ${scanNumber}`}
         aria-haspopup="dialog"
         aria-expanded={mode !== 'closed'}
         aria-controls={mode !== 'closed' ? id : undefined}
@@ -150,7 +150,10 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
         }}
       >
         <IconEntityDocument aria-hidden="true" />
-        {documents.length > 1 && <span>{documents.length}</span>}
+        <span className="document-start-label">
+          {documents.length === 1 ? 'Document start' : `${documents.length} document starts`}
+        </span>
+        <span className="document-start-label-short" aria-hidden="true">Start</span>
       </button>
       {mode !== 'closed' && (
         <OverlayPopover
@@ -184,14 +187,7 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
               {documents.map((document) => (
                 <li key={document.id}>
                   <h3>{document.label}</h3>
-                  <p>
-                    {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}
-                    {document.scans.length === 1 ? (
-                      <> · Scan {document.scans[0].scanNumber}</>
-                    ) : (
-                      <> · First scan {document.scans[0].scanNumber} · Last scan {document.scans.at(-1)!.scanNumber}</>
-                    )}
-                  </p>
+                  <p>{formatDocumentScanSummary(document.scans)}</p>
                   <button
                     type="button"
                     className="show-document"

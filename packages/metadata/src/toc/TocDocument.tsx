@@ -8,8 +8,7 @@ import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
-import { toDocumentPageSections } from './toDocumentPageSections.ts';
-import { formatDocumentPageSections } from './formatDocumentPageSections.ts';
+import { formatDocumentScanSummary } from './formatDocumentPageSections.ts';
 
 export type TocDocumentProps = {
   document: ManifestDocument;
@@ -38,13 +37,7 @@ export function TocDocument(
         >
           <IconEntityDocument className="document-icon"/>
           <span>{document.label}</span>
-          <small>
-            {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:
-            {' '}
-            {formatDocumentPageSections(
-              toDocumentPageSections(document.scans),
-            )}
-          </small>
+          <small>{formatDocumentScanSummary(document.scans)}</small>
         </button>
         <button
           type="button"

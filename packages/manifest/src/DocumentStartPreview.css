@@ -6,7 +6,9 @@
 
 .document-start-preview.popover {
   box-sizing: border-box;
-  width: min(22rem, calc(100vw - 1rem));
+  width: max-content;
+  max-width: min(22rem, calc(100vw - 1rem));
+  padding: 0.75rem;
   max-height: min(28rem, 70dvh);
   overflow-y: auto;
   overscroll-behavior: contain;
