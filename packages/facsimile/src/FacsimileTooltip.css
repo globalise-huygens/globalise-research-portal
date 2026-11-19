@@ -1,4 +1,8 @@
 .facsimile-tooltip {
   position: fixed;
   pointer-events: none;
+
+  .preview-card-title {
+    line-height: 1.5;
+  }
 }
