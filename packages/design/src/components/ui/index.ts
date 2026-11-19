@@ -174,3 +174,7 @@ export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';
 
 export { Spinner } from './Spinner';
 export type { SpinnerProps } from './Spinner';
+
+export { MarkedText } from './MarkedText';
+export type { MarkedTextProps } from './MarkedText';
+export type { TextPosition } from '@knaw-huc/text-annotation-segmenter';

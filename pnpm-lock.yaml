@@ -344,6 +344,12 @@ importers:
 
   packages/app:
     dependencies:
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@19.3.0)(react@19.3.1)
+      '@emotion/styled':
+        specifier: ^11.14.1
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
       '@globalise/common':
         specifier: workspace:*
         version: link:../common
@@ -377,6 +383,12 @@ importers:
       '@knaw-huc/osd-iiif-viewer':
         specifier: ^0.7.1
         version: 0.7.1(@iiif/helpers@4.0.0(@iiif/parser@4.0.3))(@iiif/parser@4.0.3)(openseadragon@6.1.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zustand@5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1)))
+      '@mui/icons-material':
+        specifier: ^7.3.8
+        version: 7.3.11(@mui/material@7.3.11(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
+      '@mui/material':
+        specifier: ^7.3.8
+        version: 7.3.11(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-query':
         specifier: ^5.104.4
         version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
@@ -389,6 +401,9 @@ importers:
       hast-util-to-jsx-runtime:
         specifier: ^2.3.6
         version: 2.3.6
+      lodash:
+        specifier: ^4.18.1
+        version: 4.18.1
       minisearch:
         specifier: ^7.2.0
         version: 7.2.0
@@ -521,6 +536,9 @@ importers:
       '@globalise/common':
         specifier: workspace:*
         version: link:../common
+      '@knaw-huc/text-annotation-segmenter':
+        specifier: ^0.8.0
+        version: 0.8.0
       '@react-aria/focus':
         specifier: ^3.22.1
         version: 3.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

@@ -110,7 +110,11 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               </EntityBadge>
             ))}
           </div>
-          <div className="title preview-card-title">{data.title}</div>
+          <div className="title preview-card-title">
+            {data.openFullCardHref ? (
+              <a href={data.openFullCardHref}>{data.title}</a>
+            ) : data.title}
+          </div>
         </div>
 
         <div className="actions">

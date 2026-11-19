@@ -107,6 +107,21 @@
       outline-color: rgb(255 255 255 / 0.3);
     }
 
+    .title a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+
+      &:hover {
+        color: var(--color-brand-mint);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+    }
+
     .actions {
       display: flex;
       flex-shrink: 0;
