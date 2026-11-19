@@ -9,12 +9,14 @@ import {
   Tooltip,
 } from '@globalise/design';
 import { Button as AriaButton } from 'react-aria-components';
+import { EntityCategoryPreview, type EntityCategoryPreviewData } from './EntityCategoryPreview';
 import './EntityHighlightMenu.css';
 
 export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
   family?: AnnotationPresentationFamily;
+  preview?: EntityCategoryPreviewData;
 };
 
 export type EntityHighlightCategory = {
@@ -22,6 +24,7 @@ export type EntityHighlightCategory = {
   label: string;
   icon?: React.ReactNode;
   family?: AnnotationPresentationFamily;
+  preview?: EntityCategoryPreviewData;
   subcategories?: EntityHighlightSubcategory[];
 };
 
@@ -59,6 +62,7 @@ function EntityHighlightMenu({
   const [isOpen, setIsOpen] = React.useState(false);
   const [expandedGroup, setExpandedGroup] = React.useState<string | null>(null);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const previewHintId = React.useId();
   const allLeafKeys = React.useMemo(
     () => categories.flatMap((category) => getLeafKeys(category)),
     [categories],
@@ -75,7 +79,14 @@ function EntityHighlightMenu({
     }
 
     const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isInsidePreview = Array.from(
+        rootRef.current?.querySelectorAll('[data-preview-controls]') ?? [],
+      ).some((trigger) => {
+        const id = trigger.getAttribute('data-preview-controls');
+        return id && document.getElementById(id)?.contains(target);
+      });
+      if (!rootRef.current?.contains(target) && !isInsidePreview) {
         setIsOpen(false);
       }
     };
@@ -146,6 +157,9 @@ function EntityHighlightMenu({
 
   return (
     <div ref={rootRef} className={cn('entity-menu', className)}>
+      <span id={previewHintId} className="preview-hint">
+        A preview opens on focus. Press Tab to explore it.
+      </span>
       <Tooltip label={triggerLabel}>
         <ToolButton
           aria-expanded={isOpen}
@@ -220,7 +234,38 @@ function EntityHighlightMenu({
                       )}
                       data-level="category"
                     >
-                      {hasSubcategories ? (
+                      {category.preview ? (
+                        <EntityCategoryPreview
+                          data={category.preview}
+                          label={category.label}
+                          openOnTouch={!hasSubcategories}
+                        >
+                          {(attributes) => (
+                            hasSubcategories ? (
+                              <AriaButton
+                                aria-label={`Toggle ${category.label} subcategories`}
+                                aria-describedby={previewHintId}
+                                aria-expanded={isExpanded}
+                                data-preview-controls={attributes['aria-controls']}
+                                className="label expand"
+                                onPress={() => toggleExpandedGroup(category.id)}
+                              >
+                                {label}
+                                <IconExpandSection aria-hidden="true" className="expand-icon" />
+                              </AriaButton>
+                            ) : (
+                              <AriaButton
+                                {...attributes}
+                                aria-label={`Preview ${category.label}`}
+                                data-preview-controls={attributes['aria-controls']}
+                                className="label preview-label"
+                              >
+                                {label}
+                              </AriaButton>
+                            )
+                          )}
+                        </EntityCategoryPreview>
+                      ) : hasSubcategories ? (
                         <Tooltip
                           label={`${isExpanded ? 'Hide' : 'Show'} ${category.label} subcategories`}
                         >
@@ -268,11 +313,27 @@ function EntityHighlightMenu({
                               )}
                               data-level="subcategory"
                             >
-                              <div className="label">
-                                <span className="label-text">
-                                  {subcategory.label}
-                                </span>
-                              </div>
+                              {subcategory.preview ? (
+                                <EntityCategoryPreview
+                                  data={subcategory.preview}
+                                  label={`${category.label} ${subcategory.label}`}
+                                >
+                                  {(attributes) => (
+                                    <AriaButton
+                                      {...attributes}
+                                      aria-label={`Preview ${category.label} ${subcategory.label}`}
+                                      data-preview-controls={attributes['aria-controls']}
+                                      className="label preview-label"
+                                    >
+                                      <span className="label-text">{subcategory.label}</span>
+                                    </AriaButton>
+                                  )}
+                                </EntityCategoryPreview>
+                              ) : (
+                                <div className="label">
+                                  <span className="label-text">{subcategory.label}</span>
+                                </div>
+                              )}
                               <Checkbox
                                 aria-label={`Toggle ${subcategory.label} entity highlights`}
                                 isSelected={selectedKeys.has(leafKey)}

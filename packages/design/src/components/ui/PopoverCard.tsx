@@ -12,7 +12,7 @@ const PopoverCardContext = createContext<{
   keepOpen: () => void;
 } | undefined>(undefined);
 
-export function PopoverCard({ children, label, isPending = false, renderTrigger, anchor, isHovered, openImmediately = false, onOpenChange }: {
+export function PopoverCard({ children, label, isPending = false, renderTrigger, anchor, isHovered, openImmediately = false, onOpenChange, openOnTouch = true, openOnPress = false, closeOnFocusLeave = false, preferBeside = false }: {
   children?: ReactNode;
   label: string;
   isPending?: boolean;
@@ -21,6 +21,10 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   isHovered?: boolean;
   openImmediately?: boolean;
   onOpenChange?: (open: boolean) => void;
+  openOnTouch?: boolean;
+  openOnPress?: boolean;
+  closeOnFocusLeave?: boolean;
+  preferBeside?: boolean;
 }) {
   const id = useId();
   const parent = useContext(PopoverCardContext);
@@ -173,7 +177,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [visible, isRoot, anchor]);
   const position = usePopoverCardPosition({
-    visible, anchor, trigger, popupElement, parentElement, parentPosition,
+    visible, anchor, trigger, popupElement, parentElement, parentPosition, preferBeside,
     onAnchorRemoved: close,
   });
 
@@ -194,7 +198,15 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         }
       }}
       onFocusCapture={keepOpen}
-      onBlurCapture={scheduleClose}
+      onBlurCapture={(event) => {
+        const next = event.relatedTarget;
+        if (closeOnFocusLeave && next instanceof Node
+          && !trigger.current?.contains(next) && !popupElement?.contains(next)) {
+          close();
+        } else {
+          scheduleClose();
+        }
+      }}
       onKeyDown={(event) => {
         if (event.defaultPrevented) {
           return;
@@ -242,13 +254,14 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         const isInsideTrigger = trigger.current?.contains(event.target as Node);
         const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
         const shouldOpenOnTouch = touch.current && !isKeyboardActivation
-          && hasPopupContent && isInsideTrigger && isPlainPrimaryClick;
+          && hasPopupContent && isInsideTrigger && isPlainPrimaryClick && openOnTouch;
 
-        if (!shouldOpenOnTouch) {
-          return;
+        if (shouldOpenOnTouch) {
+          event.preventDefault();
+          keepOpen();
+        } else if (openOnPress && hasPopupContent && isInsideTrigger && isPlainPrimaryClick) {
+          keepOpen();
         }
-        event.preventDefault();
-        keepOpen();
       }}
       onPointerEnter={(event) => {
         if (event.pointerType === 'touch') {
@@ -262,8 +275,18 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
           scheduleClose();
         }
       }}
-      onFocusCapture={keepOpen}
+      onFocusCapture={(event) => {
+        if (openOnTouch || !touch.current || event.target.matches(':focus-visible')) {
+          keepOpen();
+        }
+      }}
       onBlurCapture={scheduleClose}
+      onKeyUpCapture={(event) => {
+        if (openOnPress && hasPopupContent && event.key === ' ' && !hasModifierKey(event)
+          && trigger.current?.contains(event.target as Node)) {
+          keepOpen();
+        }
+      }}
       onKeyDown={(event) => {
         if (event.defaultPrevented) {
           return;
