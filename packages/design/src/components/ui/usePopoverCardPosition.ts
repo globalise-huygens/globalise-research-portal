@@ -8,11 +8,12 @@ export type UsePopoverCardPositionOptions = {
   popupElement: HTMLElement | null;
   parentElement?: HTMLElement | null;
   parentPosition?: CSSProperties;
+  preferBeside?: boolean;
   onAnchorRemoved: () => void;
 };
 
 export function usePopoverCardPosition({
-  visible, anchor, trigger, popupElement, parentElement, parentPosition, onAnchorRemoved,
+  visible, anchor, trigger, popupElement, parentElement, parentPosition, preferBeside, onAnchorRemoved,
 }: UsePopoverCardPositionOptions) {
   const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
   const dismiss = useEffectEvent(onAnchorRemoved);
@@ -29,7 +30,7 @@ export function usePopoverCardPosition({
         dismiss();
         return;
       }
-      const next = computePosition(target, popupElement, parentElement);
+      const next = computePosition(target, popupElement, parentElement, preferBeside);
       setPosition((current) => isSamePosition(current, next) ? current : next);
     };
     const scheduleUpdate = () => {
@@ -56,14 +57,14 @@ export function usePopoverCardPosition({
         cancelAnimationFrame(frame);
       }
     };
-  }, [visible, popupElement, parentElement, parentPosition, anchor, trigger]);
+  }, [visible, popupElement, parentElement, parentPosition, anchor, trigger, preferBeside]);
 
   return position;
 }
 
-function computePosition(target: Element, popupElement: HTMLElement, parentElement?: HTMLElement | null): CSSProperties {
+function computePosition(target: Element, popupElement: HTMLElement, parentElement?: HTMLElement | null, preferBeside = false): CSSProperties {
   const { width, height } = popupElement.getBoundingClientRect();
-  const place = parentElement ? placePopoverCardBeside : placePopoverCard;
+  const place = parentElement || preferBeside ? placePopoverCardBeside : placePopoverCard;
   const reference = parentElement ?? target;
   return place(reference.getBoundingClientRect(), width, height, window.innerWidth, window.innerHeight);
 }

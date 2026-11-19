@@ -18,6 +18,8 @@
     "@globalise/facsimile": "workspace:*",
     "@globalise/line-by-line": "workspace:*",
     "@globalise/metadata": "workspace:*",
+    "@globalise/object-card": "workspace:*",
+    "@globalise/router": "workspace:*",
     "@iiif/helpers": "^4.0.0",
     "@iiif/parser": "^4.0.3",
     "@knaw-huc/osd-iiif-viewer": "^0.7.1",
