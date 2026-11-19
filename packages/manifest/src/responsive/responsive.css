@@ -243,7 +243,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s4);
-    overflow-y: auto;
     padding: var(--s8) var(--s12);
     border: 0;
     background: var(--color-neutral-900);
@@ -256,6 +255,18 @@
     flex-wrap: wrap;
     gap: var(--s4);
     margin-left: auto;
+
+    /* Anchor the menu to the whole toolbar when its buttons wrap. */
+    .entity-menu {
+      position: static;
+    }
+
+    .entity-menu > .surface {
+      max-width: 100%;
+      max-height: 45dvh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
   }
 
   .mobile-reading-controls {
