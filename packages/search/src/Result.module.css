@@ -96,4 +96,29 @@
         padding: 1em;
         overflow-x: auto;
     }
+
+    @media (width < 48rem) {
+        flex-direction: column;
+        gap: var(--s8, 8px);
+        padding: var(--s12, 12px) 0;
+        overflow-wrap: anywhere;
+
+        .aside {
+            width: auto;
+            align-items: start;
+        }
+
+        .aside .labels {
+            align-items: start;
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+
+        .main ul.mentions {
+            max-height: none;
+            overflow: visible;
+        }
+    }
 }

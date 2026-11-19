@@ -7,6 +7,10 @@ import classes from './Selection.module.css';
 export default function Selection() {
   const [selectedFacets, clearFacets] = useSelectedFacets(false);
 
+  if (!selectedFacets.length) {
+    return null;
+  }
+
   return (
     <section className={classes.selection} aria-label="Selected filters">
       <Button className={classes.clear} onClick={clearFacets}>
