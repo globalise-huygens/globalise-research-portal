@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
+import { useDocumentStore } from '@globalise/common/document';
 import type { ManifestLayoutProps } from '../layout/ManifestLayout';
 import { TOP_BAR_BUTTON } from '../layout/buttonClasses';
 import { CollapsedMetadataRail } from '../layout/CollapsedMetadataRail';
@@ -18,7 +19,7 @@ import { ManifestContentWarning } from '../layout/ManifestContentWarning';
 import { ManifestError } from '../layout/ManifestError';
 import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
 import { ManifestEventsToggle } from '../layout/ManifestEventsToggle';
-import { ManifestLayoutElementsToggle } from '../layout/ManifestLayoutElementsToggle';
+import { ManifestOverlaysMenu } from '../layout/ManifestOverlaysMenu';
 import { SplitPaneLayout } from '../layout/splitpane';
 import { TooltipIconButton } from '../layout/TooltipIconButton';
 import { ViewerPane } from './ViewerPane';
@@ -58,6 +59,13 @@ export function DesktopLayout({
     setExpandedSections((prev) => new Set(prev).add(sectionId));
     setIsSidebarExpanded(true);
   }, []);
+
+  React.useEffect(() => useDocumentStore.subscribe((state, previous) => {
+    const navigation = state.toc.navigation;
+    if (navigation?.target === 'reveal' && navigation !== previous.toc.navigation) {
+      expandSidebarSection('toc');
+    }
+  }), [expandSidebarSection]);
 
   const scanPane = isScanVisible ? (
     <ViewerPane type="scan" isBordered={isTextVisible}>
@@ -193,7 +201,6 @@ export function DesktopLayout({
               <TooltipIconButton
                 aria-label="Swap scan and transcription viewer"
                 tooltip="Swap scan and transcription viewer"
-                isActive={isViewerOrderSwapped}
                 isDisabled={!isScanVisible || !isTextVisible}
                 className={TOP_BAR_BUTTON}
                 icon={
@@ -203,7 +210,7 @@ export function DesktopLayout({
               />
               <ManifestEntityHighlightMenu />
               <ManifestEventsToggle />
-              <ManifestLayoutElementsToggle />
+              <ManifestOverlaysMenu />
               {topRight}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>

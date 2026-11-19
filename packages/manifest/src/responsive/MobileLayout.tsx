@@ -4,6 +4,7 @@ import {
   setMobileSettings,
   setTranscriptionMode,
   type TranscriptionMode,
+  useDocumentStore,
   useMobileSettings,
   useTranscriptionMode,
 } from '@globalise/common/document';
@@ -82,6 +83,15 @@ export function MobileLayout({
   const toolsId = React.useId();
   const toolsButtonRef = React.useRef<HTMLButtonElement>(null);
   const panel = mobilePanels.find((panel) => panel.id === selectedView);
+
+  React.useEffect(() => useDocumentStore.subscribe((state, previous) => {
+    const navigation = state.toc.navigation;
+    if (navigation?.target === 'reveal' && navigation !== previous.toc.navigation) {
+      setIsToolsOpen(false);
+      setIsScanNavigationOpen(false);
+      setMobileSettings({ selectedView: 'toc' });
+    }
+  }), []);
 
   function isSelected(item: MenuItem) {
     const {

@@ -1,0 +1,38 @@
+.manifest-display-settings {
+  display: contents;
+}
+
+.manifest-display-settings[data-scan-numbers="false"] .canvas-header-content > .scan {
+  display: none;
+}
+
+.manifest-display-settings[data-document-starts="false"] .canvas-header-content > .boundary {
+  display: none;
+}
+
+.viewer-overlays-menu-overlay {
+  z-index: 100;
+  max-width: calc(100vw - 1rem);
+}
+
+.viewer-overlays-menu-dialog {
+  outline: none;
+}
+
+.viewer-overlays-menu.popover {
+  width: max-content;
+  max-width: calc(100vw - 1rem);
+  box-sizing: border-box;
+  border-radius: 0;
+
+  > .body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .checkbox-control {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}

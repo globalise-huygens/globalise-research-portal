@@ -9,6 +9,7 @@ import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
+import { formatDocumentScanSummary } from './formatDocumentScanSummary.ts';
 import { useScrollToSelectedInToc } from './useScrollToSelectedInToc.ts';
 import { useSyncSelectedScanInToc } from './useSyncSelectedScanInToc.ts';
 
@@ -29,9 +30,9 @@ export function TocDocument(
   const headerRef = useRef<HTMLButtonElement>(null);
   const scanRef = useRef<HTMLButtonElement>(null);
   useSyncSelectedScanInToc({ isCurrent, listRef, headerRef, scanRef });
-  useScrollToSelectedInToc({ isCurrent, isExpanded, listRef, articleRef, headerRef, scanRef });
-  const firstScanNumber = document.scans[0].scanNumber;
-  const lastScanNumber = document.scans.at(-1)!.scanNumber;
+  useScrollToSelectedInToc({
+    documentId: document.id, isExpanded, listRef, articleRef, headerRef, scanRef,
+  });
 
   return (
     <article
@@ -52,9 +53,7 @@ export function TocDocument(
         <IconExpandSection className="disclosure-icon" aria-hidden="true"/>
         <small>
           {isCurrent && 'Current document · '}
-          {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:
-          {' '}{firstScanNumber}
-          {firstScanNumber !== lastScanNumber && `–${lastScanNumber}`}
+          {formatDocumentScanSummary(document.scans)}
         </small>
       </Button>
 

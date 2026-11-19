@@ -1,16 +1,16 @@
-import { useLayoutEffect, type RefObject } from 'react';
+import { useEffect, type RefObject } from 'react';
 import { clearTocNavigation, useTocNavigation } from '@globalise/common/document';
 import { scrollToScan, scrollToTocElement, type ScanScrollRefs } from './scrollToScan';
 
 export type ScrollToSelectedInTocProps = ScanScrollRefs & {
-  isCurrent: boolean;
+  documentId: string;
   isExpanded: boolean;
   articleRef: RefObject<HTMLElement | null>;
 };
 
 export function useScrollToSelectedInToc(
   {
-    isCurrent,
+    documentId,
     isExpanded,
     listRef,
     articleRef,
@@ -18,11 +18,12 @@ export function useScrollToSelectedInToc(
     scanRef,
   }: ScrollToSelectedInTocProps,
 ) {
-  const navigation = useTocNavigation();
+  const navigation = useTocNavigation(documentId);
 
-  useLayoutEffect(
+  // On mobile, revealing a document mounts the list and its items together.
+  useEffect(
     scrollToSelected,
-    [isCurrent, isExpanded, navigation, listRef, articleRef, headerRef, scanRef],
+    [isExpanded, navigation, listRef, articleRef, headerRef, scanRef],
   );
 
   function scrollToSelected() {
@@ -30,18 +31,45 @@ export function useScrollToSelectedInToc(
     const article = articleRef.current;
     const header = headerRef.current;
     const scan = scanRef.current;
-    if (!isCurrent || !list || !header) {
+    if (!navigation || !list || !header) {
       return;
     }
-    if (navigation === 'document' && article) {
-      scrollToTocElement(list, article);
-      header.focus({ preventScroll: true });
-      clearTocNavigation();
-    }
-    if (navigation === 'scan' && scan) {
+    if (navigation.target === 'scan') {
+      if (!scan) {
+        return;
+      }
       scrollToScan(list, scan, header);
       scan.focus({ preventScroll: true });
-      clearTocNavigation();
+      clearTocNavigation(navigation);
+      return;
     }
+    if (!article) {
+      return;
+    }
+
+    const focusDocument = () => {
+      scrollToTocElement(list, article);
+      header.focus({ preventScroll: true });
+      clearTocNavigation(navigation);
+    };
+    if (navigation.target === 'document') {
+      focusDocument();
+      return;
+    }
+    return afterSidebarResize(list, focusDocument);
   }
+}
+
+function afterSidebarResize(list: HTMLElement, focusDocument: () => void) {
+  // Opening the sidebar changes the height of wrapped document titles.
+  let timer: ReturnType<typeof setTimeout>;
+  const observer = new ResizeObserver(() => {
+    clearTimeout(timer);
+    timer = setTimeout(focusDocument, 80);
+  });
+  observer.observe(list);
+  return () => {
+    observer.disconnect();
+    clearTimeout(timer);
+  };
 }

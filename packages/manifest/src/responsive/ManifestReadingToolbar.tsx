@@ -2,7 +2,7 @@ import { FloatingToolbar, IconClose, ToolButton } from '@globalise/design';
 import type { ReactNode } from 'react';
 import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
 import { ManifestEventsToggle } from '../layout/ManifestEventsToggle';
-import { ManifestLayoutElementsToggle } from '../layout/ManifestLayoutElementsToggle';
+import { ManifestOverlaysMenu } from '../layout/ManifestOverlaysMenu';
 import { useReadingLayout } from './ReadingLayout';
 
 export function ManifestReadingToolbar({ children }: { children: ReactNode }) {
@@ -22,7 +22,7 @@ export function ManifestReadingToolbar({ children }: { children: ReactNode }) {
     <div className="mobile-highlight-controls" role="group" aria-label="Highlight controls">
       <ManifestEntityHighlightMenu />
       <ManifestEventsToggle />
-      <ManifestLayoutElementsToggle />
+      <ManifestOverlaysMenu />
       <ToolButton className="mobile-tools-close" aria-label="Close reading tools" icon={<IconClose />} onPress={tools.onClose} size="touch" />
     </div>
   </FloatingToolbar>;

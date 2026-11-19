@@ -11,7 +11,6 @@ import { memo, useEffect, useMemo } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
-import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 import { TranscriptionPlaceholder } from './TranscriptionPlaceholder.tsx';
 import { CanvasAnnotationPage } from '@globalise/common/annotation';
 
@@ -96,6 +95,13 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
           visibility: isVisible ? 'visible' : 'hidden',
         }}
       >
+        {isInRenderRange && (
+          <CanvasHeaderLabel
+            canvasId={canvasId}
+            canvasDocuments={canvasDocuments}
+            isCurrent={isCurrent}
+          />
+        )}
         {isInRenderRange && error && (
           <TranscriptionPlaceholder
             color="indianred"
@@ -127,19 +133,6 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
               showScanMargin={true}
             />
           </div>
-        )}
-        {isInRenderRange && (
-          <>
-            <CanvasHeaderLabel
-              canvasId={canvasId}
-              canvasDocuments={canvasDocuments}
-              isCurrent={isCurrent}
-            />
-            <CanvasFooterLabel
-              canvasDocuments={canvasDocuments}
-              isCurrent={isCurrent}
-            />
-          </>
         )}
       </div>
     </div>

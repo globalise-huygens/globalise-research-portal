@@ -6,6 +6,7 @@ import { useInitCanvases } from '@globalise/common/document/browser';
 import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
 import { ManifestTranscriptionViewer } from './transcription/ManifestTranscriptionViewer';
+import { ManifestDisplaySettings } from './layout/ManifestOverlaysMenu';
 
 export type ManifestViewerProps = {
   initialCanvasId?: CanvasId;
@@ -22,13 +23,23 @@ export function ManifestViewer({ initialCanvasId, topLeft, error, onClose }: Man
   }
 
   return (
-    <ManifestLayout
-      onClose={onClose}
-      topLeft={topLeft}
-      error={error}
-      scan={<ManifestFacsimileViewer onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')} />}
-      transcription={<ManifestTranscriptionViewer onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')} />}
-      bottom={<ManifestCanvasNavigation />}
-    />
+    <ManifestDisplaySettings>
+      <ManifestLayout
+        onClose={onClose}
+        topLeft={topLeft}
+        error={error}
+        scan={(
+          <ManifestFacsimileViewer
+            onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
+          />
+        )}
+        transcription={(
+          <ManifestTranscriptionViewer
+            onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
+          />
+        )}
+        bottom={<ManifestCanvasNavigation />}
+      />
+    </ManifestDisplaySettings>
   );
 }

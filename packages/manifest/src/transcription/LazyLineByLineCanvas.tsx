@@ -8,7 +8,6 @@ import type { CanvasAnnotationPage } from '@globalise/common/annotation';
 import { LineByLineView } from '@globalise/line-by-line';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
-import { CanvasFooterLabel } from '../CanvasFooterLabel.tsx';
 
 type Props = {
   canvasId: string;
@@ -61,7 +60,6 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
         canvasDocuments={canvasDocuments}
         isCurrent={isCurrentCanvas}
       />
-      <CanvasFooterLabel canvasDocuments={canvasDocuments} isCurrent={isCurrentCanvas}/>
       {error && <Placeholder color='indianred'>Error: {error}</Placeholder>}
       {!hasAnnotationPages && <Placeholder>No transcription</Placeholder>}
       {isLoading && <Placeholder>Loading...</Placeholder>}

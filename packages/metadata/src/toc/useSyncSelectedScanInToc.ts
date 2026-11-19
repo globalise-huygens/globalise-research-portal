@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useSelectedCanvas } from '@globalise/common/document';
+import { useDocumentStore, useSelectedCanvas } from '@globalise/common/document';
 import { isVisible } from '@globalise/common';
 import debounce from 'lodash/debounce';
 import { scrollToScan, type ScanScrollRefs } from './scrollToScan';
@@ -33,7 +33,11 @@ export function useSyncSelectedScanInToc(
     sync.current.cancel();
     const changed = previousCanvasId.current !== selectedCanvasId;
     previousCanvasId.current = selectedCanvasId;
+    const navigation = useDocumentStore.getState().toc.navigation;
     if (!changed || !isCurrent || selectedCanvasSource === 'external') {
+      return;
+    }
+    if (navigation?.target === 'reveal') {
       return;
     }
     sync.current({ listRef, headerRef, scanRef });

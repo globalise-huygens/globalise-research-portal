@@ -1,96 +1,84 @@
+.canvas-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  container-type: inline-size;
+  pointer-events: none;
+}
+
+.canvas-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: min(0.25rem, 2cqi);
+  padding: min(0.5rem, 3cqi);
+}
+
 .canvas-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  height: 2rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
   border: 1px solid var(--color-parchment-400);
-  background: color-mix(
-    in srgb,
-    var(--color-parchment-50) 92%,
-    transparent
-  );
+  border-radius: 0;
+  padding: 0.3rem 0.5rem;
+  background: var(--color-parchment-50);
   color: var(--color-parchment-800);
   font-family: var(--font-sans);
   font-size: 0.75rem;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  line-height: 1rem;
-  padding: 0.2rem 0.4rem;
-  --label-muted: var(--color-parchment-700);
-  max-width: 100%;
-  box-sizing: border-box;
-  white-space: nowrap;
-  overflow: hidden;
-  pointer-events: auto;
-  opacity: 0.5;
+  line-height: 1.25;
 
-  .prefix,
-  .separator,
-  .document:not([data-boundary]) {
-    color: var(--label-muted);
-    font-weight: 400;
-  }
-
-  .scan,
-  .documents,
-  .document {
-    display: inline-flex;
-    gap: 0.35rem;
-  }
-
-  .documents,
-  .document {
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .scan,
-  .more-documents {
+  svg {
+    width: 1rem;
+    height: 1rem;
     flex-shrink: 0;
   }
 
-  .truncated-title {
-    display: inline-flex;
-    min-width: 0;
-    white-space: pre;
-
-    .head {
-      min-width: var(--tail-length);
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .tail {
-      flex-shrink: 0;
-    }
-  }
-
-  .arrow {
+  &.scan {
+    margin-inline-start: auto;
     flex-shrink: 0;
-    align-self: center;
-    border-inline: 0.3rem solid transparent;
-    border-top: 0.4rem solid currentColor;
   }
 
-  .document:not([data-boundary]),
-  .separator:not([data-boundary]) {
-    display: none;
-  }
-
-  &:hover .document,
-  &:hover .separator {
-    display: inline-flex;
-  }
-
-  &[aria-current="true"],
-  &:hover {
-    opacity: 1;
-  }
-
-  &[aria-current="true"] {
-    border-color: var(--color-brand-white);
+  &[aria-current="page"] {
+    border-color: var(--color-turquoise-800);
     background: var(--color-turquoise-800);
     color: var(--color-brand-white);
-    --label-muted: rgb(255 255 255 / 0.78);
+  }
+}
+
+button.canvas-label {
+  flex-shrink: 1;
+  pointer-events: auto;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-turquoise-800);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--color-parchment-50);
+  }
+}
+
+.canvas-header .boundary {
+  .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .short-label {
+    display: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -101,37 +89,57 @@
   pointer-events: none;
 }
 
-.canvas-header,
-.canvas-footer {
-  position: absolute;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  box-sizing: border-box;
-  padding: 0.625rem;
-  pointer-events: none;
-  container-type: inline-size;
-}
+@container (width < 10rem) {
+  .canvas-label {
+    height: 1.5rem;
+    padding-inline: 0.3rem;
+  }
 
-.canvas-header {
-  inset: 0 0 auto;
-}
-
-.canvas-footer {
-  inset: auto 0 0;
-
-  .arrow {
-    rotate: 180deg;
+  .canvas-label .prefix {
+    display: none;
   }
 }
 
-@container (width < 8rem) {
+@container (width < 15rem) {
+  .canvas-header .boundary .label {
+    display: none;
+  }
+
+  .canvas-header .boundary .short-label {
+    display: inline;
+  }
+}
+
+@container (width < 10rem) {
+  .canvas-header .boundary .short-label {
+    display: none;
+  }
+}
+
+@container (width < 6rem) {
   .canvas-label {
-    .separator,
-    &:hover .separator,
-    .prefix {
-      display: none;
+    height: 2em;
+    gap: 0.2em;
+    padding: 0 0.3em;
+    border-width: min(1px, 1cqi);
+    font-size: min(0.75rem, var(--compact-label-size));
+    line-height: 1;
+  }
+
+  .canvas-label svg {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  .canvas-header .boundary {
+    flex-shrink: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  @container (width >= 6rem) {
+    .canvas-label {
+      min-height: 2.75rem;
     }
   }
 }
