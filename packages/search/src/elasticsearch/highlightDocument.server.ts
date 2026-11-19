@@ -22,8 +22,10 @@ export type DocumentHighlights = {
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
   .extend({
     docDbId: z.string(),
-    docEsId: z.string(),
-    snippet: z.string(),
+    target: z.union([
+      z.object({ snippet: z.string() }),
+      z.object({ esHitIndex: z.number().int().min(0) }),
+    ]),
   });
 
 const highlightDocument = createServerFn({ method: 'POST' })
@@ -44,14 +46,18 @@ const highlightDocument = createServerFn({ method: 'POST' })
         esHitIndex,
       }));
     });
-    const snippet = getSnippetOffsets(text, data.snippet);
-    const activeEsHitIndex = findActiveEsHitIndex(offsets, snippet);
+    const { target } = data;
+    const activeEsHitIndex = 'snippet' in target
+      ? findActiveEsHitIndex(offsets, getSnippetOffsets(text, target.snippet))
+      : target.esHitIndex;
     return { hits, activeEsHitIndex };
   });
 
 export default highlightDocument;
 
 async function fetchTaggedText(request: ManifestSearchState): Promise<string | undefined> {
+  const { docDbId } = request;
+  const query = getSearchQuery(request.query, { selected: request.facets, documentName: docDbId });
   const result = await elastic.search({
     index: 'documents',
     size: 1,
@@ -61,7 +67,7 @@ async function fetchTaggedText(request: ManifestSearchState): Promise<string | u
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
-    query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
+    query: query ?? undefined,
   });
   const annotatedText = result.hits.hits[0]?.highlight?.annotatedText[0];
   return annotatedText && tagAnnotatedHits(annotatedText);

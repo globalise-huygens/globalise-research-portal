@@ -1,7 +1,7 @@
 import { Link } from 'react-aria-components';
 import { toViewerHref, useSearch } from '@globalise/router';
 import { Highlight } from '@knaw-huc/faceted-search-react';
-import { createManifestId, parseDocumentName } from '@globalise/common/uri';
+import { parseDocumentName } from '@globalise/common/uri';
 import { POST_TAG, PRE_TAG } from './elasticsearch/highlightTags';
 import classes from './Mention.module.css';
 
@@ -20,9 +20,6 @@ export default function Mention({ document, snippet }: MentionProps) {
       <Link
         href={range && toViewerHref(range, {
           ...urlParams,
-          manifest: createManifestId(range),
-          document: document.name,
-          documentId: document.id,
           snippet,
         })}
         className={classes.link}

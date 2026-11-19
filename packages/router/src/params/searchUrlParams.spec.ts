@@ -13,6 +13,11 @@ describe(validateSearchUrlParams.name, () => {
     expect(validated.profession).toEqual(['schipper']);
   });
 
+  it('drops empty facet values', () => {
+    const validated = validateSearchUrlParams({ ead: '' });
+    expect(validated).toEqual({});
+  });
+
   it('reads the page after the first', () => {
     expect(validateSearchUrlParams({ page: '3' }).page).toBe(3);
   });
