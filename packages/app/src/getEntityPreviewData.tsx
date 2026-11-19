@@ -17,7 +17,11 @@ import {
 } from '@globalise/design';
 import type { ReactNode } from 'react';
 import { ClassificationPreview } from './ClassificationPreview.tsx';
-import { getInternalConceptUri, getLinkedObjectCardHref } from './ManifestEntityPreviewModel';
+import {
+  getEquivalentTarget,
+  getInternalConceptUri,
+  getLinkedObjectCardHref,
+} from './ManifestEntityPreviewModel';
 
 export function getEntityPreviewData(annotation: Annotation<EntityBody>): EntityPreviewCardData {
   const body = getPrimaryEntityBody(annotation);
@@ -84,7 +88,9 @@ type LinkedConceptReference = {
 function getClassificationConceptReference(
   body: EntityBody,
 ): LinkedConceptReference | undefined {
-  const classification = body.ascribes_classification;
+  const recordedClassification = body.ascribes_classification;
+  const classification = getEquivalentTarget(recordedClassification)
+    ?? recordedClassification;
   if (!classification?.id || classification.type !== 'Concept') {
     return undefined;
   }
