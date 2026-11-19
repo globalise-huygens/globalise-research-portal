@@ -34,13 +34,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const isTileLoaded = lazyCollectionViewerStore(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
-  const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
-  const annotations = useAnnotationsWithSearchHits(lazyCanvas.canvasId);
-  const classificationsByWord = useWordClassifications(lazyCanvas.canvasId);
   const showLayoutElements = useIsLayoutElementsVisible();
-  const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
-  const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
-  const isInteractive = useDeferredValue(isSelectedCanvas, false);
 
   const annotationPages = useMemo(() => {
     if (!vault) {
@@ -56,6 +50,17 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationPages]);
 
+  return isTileLoaded && showLayoutElements && <ScanAnnotations lazyCanvas={lazyCanvas}/>;
+});
+
+function ScanAnnotations({ lazyCanvas }: HighlightsOverlayProps) {
+  const { vault } = useManifest();
+  const [tooltip, setTooltip] = useState<FacsimileTooltipProps | null>(null);
+  const annotations = useAnnotationsWithSearchHits(lazyCanvas.canvasId);
+  const classificationsByWord = useWordClassifications(lazyCanvas.canvasId);
+  const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
+  const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
+  const isInteractive = useDeferredValue(isSelectedCanvas, false);
 
   let canvasSize: { width: number; height: number } | null = null;
   if (vault) {
@@ -74,7 +79,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
-  if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
+  if (!isReady || !hasAnnotations || !canvasSize) {
     return null;
   }
 
@@ -85,7 +90,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >
-          {showLayoutElements && blocks.map(({ id, path }) => (
+          {blocks.map(({ id, path }) => (
             <BlockHighlight
               key={id}
               canvasId={lazyCanvas.canvasId}
@@ -101,4 +106,4 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
-});
+}

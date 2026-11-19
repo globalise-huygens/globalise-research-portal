@@ -5,7 +5,9 @@ export type LayoutElementsSlice = {
 };
 
 export function setLayoutElementsVisible(isLayoutElementsVisible: boolean) {
-  setState({ isLayoutElementsVisible });
+  setState(isLayoutElementsVisible
+    ? { isLayoutElementsVisible }
+    : { isLayoutElementsVisible, hovered: null });
 }
 
 export function useIsLayoutElementsVisible() {

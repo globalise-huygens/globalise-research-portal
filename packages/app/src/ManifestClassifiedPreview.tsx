@@ -13,6 +13,7 @@ import {
   type Selection,
   setHovered,
   useDocumentStore,
+  useIsLayoutElementsVisible,
 } from '@globalise/common/document';
 import { PreviewCard } from '@globalise/design';
 import { useEffect, useRef, useState } from 'react';
@@ -26,10 +27,17 @@ export function ManifestClassifiedPreview() {
 
   const hovered = useDocumentStore((s) => s.hovered);
   const canvases = useDocumentStore((s) => s.canvases);
+  const showLayoutElements = useIsLayoutElementsVisible();
+  const scanPreviewHidden = !showLayoutElements && preview?.anchor.matches('polygon.word-highlight');
 
-  useEffect(updatePreview, [hovered, canvases, preview]);
+  useEffect(updatePreview, [hovered, canvases, preview, scanPreviewHidden]);
 
   function updatePreview() {
+    if (scanPreviewHidden) {
+      isOpen.current = false;
+      setPreview(null);
+      return;
+    }
     const anchor = hovered ? getHoverElement() : null;
     const annotation = getHoveredAnnotation(canvases, hovered);
     if (!annotation || !anchor) {
@@ -50,7 +58,7 @@ export function ManifestClassifiedPreview() {
     }
   }
 
-  if (!preview) {
+  if (!preview || scanPreviewHidden) {
     return null;
   }
 
