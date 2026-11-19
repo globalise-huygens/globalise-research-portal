@@ -34,7 +34,7 @@ export function ManifestTranscriptionViewer({
 
   return (
     <div className="transcription-viewer">
-      <ManifestReadingToolbar>
+      <ManifestReadingToolbar showClassifiedHighlightControls>
         <ManifestTranscriptionControls />
       </ManifestReadingToolbar>
       {content}
