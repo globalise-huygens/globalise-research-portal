@@ -1,7 +1,11 @@
 import { useContext, useMemo, useState, type ReactNode } from 'react';
-import { Dialog, DialogTrigger, Popover as OverlayPopover } from 'react-aria-components';
+import {
+  Dialog, DialogTrigger, Popover as OverlayPopover,
+} from 'react-aria-components';
 import { Checkbox, IconLayers, Popover } from '@globalise/design';
-import { setLayoutElementsVisible, useIsLayoutElementsVisible } from '@globalise/common/document';
+import {
+  setLayoutElementsVisible, useIsLayoutElementsVisible,
+} from '@globalise/common/document';
 import { ViewerDisplayContext } from './ViewerDisplayContext';
 import { TooltipIconButton } from './TooltipIconButton';
 import { TOP_BAR_BUTTON } from './buttonClasses';
@@ -10,20 +14,20 @@ import './ManifestOverlaysMenu.css';
 /** Keep visibility changes outside the viewer components and their layout. */
 export function ManifestDisplaySettings({ children }: { children: ReactNode }) {
   const [showScanNumbers, setShowScanNumbers] = useState(true);
-  const [showDocumentBoundaries, setShowDocumentBoundaries] = useState(true);
+  const [showDocumentStarts, setShowDocumentStarts] = useState(true);
   const settings = useMemo(() => ({
     showScanNumbers,
-    showDocumentBoundaries,
+    showDocumentStarts,
     setShowScanNumbers,
-    setShowDocumentBoundaries,
-  }), [showScanNumbers, showDocumentBoundaries]);
+    setShowDocumentStarts,
+  }), [showScanNumbers, showDocumentStarts]);
 
   return (
     <ViewerDisplayContext.Provider value={settings}>
       <div
         className="manifest-display-settings"
         data-scan-numbers={showScanNumbers}
-        data-document-boundaries={showDocumentBoundaries}
+        data-document-starts={showDocumentStarts}
       >
         {children}
       </div>
@@ -59,11 +63,11 @@ export function ManifestOverlaysMenu() {
               Scan numbers
             </Checkbox>
             <Checkbox
-              aria-label="Document boundaries"
-              isSelected={settings.showDocumentBoundaries}
-              onChange={settings.setShowDocumentBoundaries}
+              aria-label="Document starts"
+              isSelected={settings.showDocumentStarts}
+              onChange={settings.setShowDocumentStarts}
             >
-              Document boundaries
+              Document starts
             </Checkbox>
             <Checkbox
               aria-label="Layout elements and line numbers"

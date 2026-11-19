@@ -1,22 +1,15 @@
-import { useCallback, useContext, useEffect, useId, useRef, useState } from 'react';
+import {
+  useCallback, useContext, useEffect, useId, useRef, useState,
+  type KeyboardEvent as ReactKeyboardEvent, type MouseEvent, type PointerEvent,
+} from 'react';
 import { Popover as OverlayPopover } from 'react-aria-components';
 import { IconEntityDocument, Popover } from '@globalise/design';
-import { revealTocDocuments } from '@globalise/common/document';
-import { formatDocumentScanSummary, type ManifestDocument } from '@globalise/metadata';
+import { navigateToc } from '@globalise/common/document';
+import {
+  formatDocumentScanSummary, type ManifestDocument,
+} from '@globalise/metadata';
 import './DocumentStartPreview.css';
 import { ViewerDisplayContext } from './layout/ViewerDisplayContext';
-
-// Only an open preview subscribes to visibility settings. Closed markers and
-// scan/transcription content do not need to render when a display option changes.
-function CloseHiddenPreview({ onHide }: { onHide: () => void }) {
-  const { showDocumentBoundaries } = useContext(ViewerDisplayContext);
-  useEffect(() => {
-    if (!showDocumentBoundaries) {
-      onHide();
-    }
-  }, [showDocumentBoundaries, onHide]);
-  return null;
-}
 
 type Props = {
   documents: ManifestDocument[];
@@ -24,23 +17,23 @@ type Props = {
   isCurrent: boolean;
 };
 
-/** A preview only: opening this card never selects a scan or loads document metadata. */
 export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props) {
   const [mode, setMode] = useState<'closed' | 'preview' | 'pinned'>('closed');
   const triggerRef = useRef<HTMLButtonElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const openTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isRestoringFocus = useRef(false);
   const id = useId();
+  const isOpen = mode !== 'closed';
+  const documentCount = documents.length;
+  const markerLabel = documentCount === 1
+    ? 'Document start'
+    : `${documentCount} document starts`;
 
-  useEffect(() => () => {
-    clearTimeout(openTimer.current);
-    clearTimeout(closeTimer.current);
-  }, []);
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   function keepOpen() {
-    clearTimeout(closeTimer.current);
+    clearTimeout(timer.current);
   }
 
   function preview() {
@@ -49,10 +42,11 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
   }
 
   function scheduleClose() {
-    clearTimeout(openTimer.current);
-    clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => {
-      if (triggerRef.current === document.activeElement || cardRef.current?.contains(document.activeElement)) {
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      const focusedElement = document.activeElement;
+      const focusIsInPreview = cardRef.current?.contains(focusedElement);
+      if (triggerRef.current === focusedElement || focusIsInPreview) {
         return;
       }
       setMode((current) => current === 'preview' ? 'closed' : current);
@@ -60,8 +54,7 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
   }
 
   const close = useCallback(() => {
-    clearTimeout(openTimer.current);
-    clearTimeout(closeTimer.current);
+    clearTimeout(timer.current);
     if (cardRef.current?.contains(document.activeElement)) {
       isRestoringFocus.current = true;
       triggerRef.current?.focus({ preventScroll: true });
@@ -71,33 +64,71 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
   }, []);
 
   useEffect(() => {
-    if (mode === 'closed') {
+    if (!isOpen) {
       return;
     }
     // OpenSeadragon handles wheel scrolling without a DOM scroll event.
     // Dismiss instead of tracking the moving scan on every animation frame.
     const dismissOnWheel = (event: WheelEvent) => {
-      if (event.target instanceof Node && !cardRef.current?.contains(event.target)) {
+      const isInsidePreview = event.target instanceof Node
+        && cardRef.current?.contains(event.target);
+      if (!isInsidePreview) {
         close();
       }
     };
     // Handle reverse Tab before the portal's focus scope moves to the
     // element preceding the trigger. Here the expected destination is the trigger.
     const returnToTrigger = (event: KeyboardEvent) => {
-      if (event.key === 'Tab' && event.shiftKey
-        && event.target === cardRef.current?.querySelector('.show-document')) {
+      const firstAction = cardRef.current?.querySelector('.show-document');
+      if (event.key === 'Tab' && event.shiftKey && event.target === firstAction) {
         event.preventDefault();
         event.stopPropagation();
         triggerRef.current?.focus({ preventScroll: true });
       }
     };
-    document.addEventListener('wheel', dismissOnWheel, { capture: true, passive: true });
+    document.addEventListener('wheel', dismissOnWheel, {
+      capture: true, passive: true,
+    });
     window.addEventListener('keydown', returnToTrigger, true);
     return () => {
       document.removeEventListener('wheel', dismissOnWheel, true);
       window.removeEventListener('keydown', returnToTrigger, true);
     };
-  }, [mode, close]);
+  }, [isOpen, close]);
+
+  function schedulePreview(event: PointerEvent<HTMLButtonElement>) {
+    if (event.pointerType === 'touch') {
+      return;
+    }
+    keepOpen();
+    timer.current = setTimeout(preview, 250);
+  }
+
+  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    if (event.key === 'Escape' || (event.key === 'Tab' && event.shiftKey)) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+      }
+      close();
+      return;
+    }
+    if (event.key !== 'Tab' || !isOpen) {
+      return;
+    }
+    const firstAction = cardRef.current?.querySelector<HTMLButtonElement>(
+      '.show-document',
+    );
+    if (firstAction) {
+      event.preventDefault();
+      firstAction.focus();
+    }
+  }
+
+  function togglePinned(event: MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    keepOpen();
+    setMode((current) => current === 'pinned' ? 'closed' : 'pinned');
+  }
 
   return (
     <>
@@ -106,19 +137,12 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
         type="button"
         className="canvas-label boundary"
         aria-current={isCurrent ? 'page' : undefined}
-        aria-label={`${documents.length === 1 ? 'Document start' : `${documents.length} document starts`} at scan ${scanNumber}`}
+        aria-label={`${markerLabel} at scan ${scanNumber}`}
         aria-haspopup="dialog"
-        aria-expanded={mode !== 'closed'}
-        aria-controls={mode !== 'closed' ? id : undefined}
+        aria-expanded={isOpen}
+        aria-controls={isOpen ? id : undefined}
         onPointerDown={(event) => event.stopPropagation()}
-        onPointerEnter={(event) => {
-          if (event.pointerType === 'touch') {
-            return;
-          }
-          keepOpen();
-          clearTimeout(openTimer.current);
-          openTimer.current = setTimeout(preview, 250);
-        }}
+        onPointerEnter={schedulePreview}
         onPointerLeave={scheduleClose}
         onFocus={() => {
           if (!isRestoringFocus.current) {
@@ -126,36 +150,14 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
           }
         }}
         onBlur={scheduleClose}
-        onKeyDown={(event) => {
-          if (event.key === 'Escape') {
-            event.preventDefault();
-            close();
-          }
-          if (event.key === 'Tab' && event.shiftKey) {
-            close();
-          }
-          if (event.key === 'Tab' && !event.shiftKey && mode !== 'closed') {
-            const firstAction = cardRef.current?.querySelector<HTMLButtonElement>('button');
-            if (firstAction) {
-              event.preventDefault();
-              firstAction.focus();
-            }
-          }
-        }}
-        onClick={(event) => {
-          event.stopPropagation();
-          clearTimeout(openTimer.current);
-          keepOpen();
-          setMode((current) => current === 'pinned' ? 'closed' : 'pinned');
-        }}
+        onKeyDown={handleTriggerKeyDown}
+        onClick={togglePinned}
       >
         <IconEntityDocument aria-hidden="true" />
-        <span className="document-start-label">
-          {documents.length === 1 ? 'Document start' : `${documents.length} document starts`}
-        </span>
-        <span className="document-start-label-short" aria-hidden="true">Start</span>
+        <span className="label">{markerLabel}</span>
+        <span className="short-label" aria-hidden="true">Start</span>
       </button>
-      {mode !== 'closed' && (
+      {isOpen && (
         <OverlayPopover
           ref={cardRef}
           triggerRef={triggerRef}
@@ -194,7 +196,7 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
                     aria-label={`Show ${document.label} in table of contents`}
                     onClick={() => {
                       close();
-                      revealTocDocuments([document.id]);
+                      navigateToc('reveal', document.id);
                     }}
                   >
                     Show in table of contents
@@ -207,4 +209,15 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
       )}
     </>
   );
+}
+
+// Subscribe only while the preview is open to keep closed markers CSS-driven.
+function CloseHiddenPreview({ onHide }: { onHide: () => void }) {
+  const { showDocumentStarts } = useContext(ViewerDisplayContext);
+  useEffect(() => {
+    if (!showDocumentStarts) {
+      onHide();
+    }
+  }, [showDocumentStarts, onHide]);
+  return null;
 }

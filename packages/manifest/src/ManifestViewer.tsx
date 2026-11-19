@@ -28,8 +28,16 @@ export function ManifestViewer({ initialCanvasId, topLeft, error, onClose }: Man
         onClose={onClose}
         topLeft={topLeft}
         error={error}
-        scan={<ManifestFacsimileViewer onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')} />}
-        transcription={<ManifestTranscriptionViewer onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')} />}
+        scan={(
+          <ManifestFacsimileViewer
+            onCanvasChange={(id) => setSelectedCanvas(id, 'facsimile')}
+          />
+        )}
+        transcription={(
+          <ManifestTranscriptionViewer
+            onCanvasChange={(id) => setSelectedCanvas(id, 'transcription')}
+          />
+        )}
         bottom={<ManifestCanvasNavigation />}
       />
     </ManifestDisplaySettings>

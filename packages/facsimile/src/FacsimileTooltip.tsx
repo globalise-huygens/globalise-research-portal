@@ -1,25 +1,10 @@
-import { useMemo } from 'react';
-import { Tooltip } from '@globalise/design';
+import './FacsimileTooltip.css';
+export type FacsimileTooltipProps = { text: string; x: number; y: number };
 
-export type FacsimileTooltipProps = { text: string; trigger: Element };
-
-export function FacsimileTooltip(
-  { text, trigger, onDismiss }: FacsimileTooltipProps & { onDismiss: () => void },
-) {
-  const triggerRef = useMemo(() => ({ current: trigger }), [trigger]);
+export function FacsimileTooltip({ x, y, text }: FacsimileTooltipProps) {
   return (
-    <Tooltip
-      label={text}
-      placement="top"
-      isOpen
-      triggerRef={triggerRef}
-      onOpenChange={(open) => {
-        if (!open) {
-          onDismiss();
-        }
-      }}
-    >
-      {null}
-    </Tooltip>
+    <div className="facsimile-tooltip" style={{ left: x + 10, top: y - 30 }}>
+      {text}
+    </div>
   );
 }

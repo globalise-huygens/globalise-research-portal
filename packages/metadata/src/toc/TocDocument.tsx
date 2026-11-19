@@ -9,7 +9,7 @@ import { IconEntityDocument, IconExpandSection } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
-import { formatDocumentScanSummary } from './formatDocumentPageSections.ts';
+import { formatDocumentScanSummary } from './formatDocumentScanSummary.ts';
 import { useScrollToSelectedInToc } from './useScrollToSelectedInToc.ts';
 import { useSyncSelectedScanInToc } from './useSyncSelectedScanInToc.ts';
 
@@ -30,14 +30,15 @@ export function TocDocument(
   const headerRef = useRef<HTMLButtonElement>(null);
   const scanRef = useRef<HTMLButtonElement>(null);
   useSyncSelectedScanInToc({ isCurrent, listRef, headerRef, scanRef });
-  useScrollToSelectedInToc({ isCurrent, isExpanded, listRef, articleRef, headerRef, scanRef });
+  useScrollToSelectedInToc({
+    documentId: document.id, isExpanded, listRef, articleRef, headerRef, scanRef,
+  });
 
   return (
     <article
       ref={articleRef}
       className="toc-document"
       data-current={isCurrent}
-      data-document-id={document.id}
     >
       <Button
         ref={headerRef}

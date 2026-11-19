@@ -6,7 +6,7 @@
   display: none;
 }
 
-.manifest-display-settings[data-document-boundaries="false"] .canvas-header > .boundary {
+.manifest-display-settings[data-document-starts="false"] .canvas-header > .boundary {
   display: none;
 }
 

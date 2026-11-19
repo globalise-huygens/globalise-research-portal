@@ -61,7 +61,8 @@ export function DesktopLayout({
   }, []);
 
   React.useEffect(() => useDocumentStore.subscribe((state, previous) => {
-    if (state.toc.revealRequest && state.toc.revealRequest !== previous.toc.revealRequest) {
+    const navigation = state.toc.navigation;
+    if (navigation?.target === 'reveal' && navigation !== previous.toc.navigation) {
       expandSidebarSection('toc');
     }
   }), [expandSidebarSection]);

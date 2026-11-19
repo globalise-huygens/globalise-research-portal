@@ -40,7 +40,7 @@ export const WordHighlight = memo(function WordHighlight(
     }
     setHovered(hovering ? id : null);
     if (hovering && !isClassifiedTrigger) {
-      setTooltip({ text, trigger: event.currentTarget });
+      setTooltip({ text, x: event.clientX, y: event.clientY });
     } else {
       setTooltip(null);
     }
@@ -56,6 +56,11 @@ export const WordHighlight = memo(function WordHighlight(
       aria-label={isClassifiedTrigger ? `Select word: ${text}` : undefined}
       onPointerDown={handlePointerDown}
       onMouseEnter={(event) => handleHover(true, event)}
+      onMouseMove={(event) => {
+        if (!isClassifiedTrigger) {
+          handleHover(true, event);
+        }
+      }}
       onMouseLeave={(event) => handleHover(false, event)}
       onFocus={(event) => {
         if (isClassifiedTrigger) {

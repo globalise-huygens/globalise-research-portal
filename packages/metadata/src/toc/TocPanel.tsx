@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { clearTocRevealRequest, expandTocDocument, navigateToc, useDocumentStore, useSelectedCanvas, type TocNavigation } from '@globalise/common/document';
+import {
+  expandTocDocument, navigateToc, useSelectedCanvas, type TocNavigation,
+} from '@globalise/common/document';
 import { IconEntityDocument, IconScan, ToolButton } from '@globalise/design';
 import { useToc } from './useToc';
 import { TocDocument } from './TocDocument.tsx';
@@ -14,37 +16,6 @@ export function TocPanel() {
   const { id: selectedCanvasId } = useSelectedCanvas();
   const tocListRef = useRef<HTMLDivElement>(null);
   const [preferredDocumentId, setPreferredDocumentId] = useState<string>();
-  const revealRequest = useDocumentStore((s) => s.toc.revealRequest);
-
-  useEffect(() => {
-    const documentId = revealRequest?.documentIds.find((id) =>
-      documents.some((document) => document.id === id),
-    );
-    const list = tocListRef.current;
-    if (!documentId || !list) {
-      return;
-    }
-    const article = list.querySelector<HTMLElement>(`[data-document-id="${CSS.escape(documentId)}"]`);
-    const header = article?.querySelector<HTMLButtonElement>('button.header');
-    if (!article || !header) {
-      return;
-    }
-    let timer: ReturnType<typeof setTimeout>;
-    const observer = new ResizeObserver(() => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        observer.disconnect();
-        header.focus({ preventScroll: true });
-        article.scrollIntoView({ block: 'start', inline: 'nearest' });
-        clearTocRevealRequest();
-      }, 80);
-    });
-    observer.observe(list);
-    return () => {
-      observer.disconnect();
-      clearTimeout(timer);
-    };
-  }, [revealRequest, documents]);
 
   const currentDocument = useMemo(
     () => findCurrentDocument(documents, selectedCanvasId, preferredDocumentId),

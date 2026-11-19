@@ -49,7 +49,7 @@ const defaultMetadataSlice = {
 };
 
 const defaultTocSlice = {
-  toc: { expandedDocIds: [], navigation: null, revealRequest: null },
+  toc: { expandedDocIds: [], navigation: null },
 };
 
 export const useDocumentStore = create<DocumentState>(() => ({

@@ -67,13 +67,15 @@ button.canvas-label {
   }
 }
 
-.document-start-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.canvas-header .boundary {
+  .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.document-start-label-short {
-  display: none;
+  .short-label {
+    display: none;
+  }
 }
 
 @media (pointer: coarse) {
@@ -101,17 +103,17 @@ button.canvas-label {
 }
 
 @container (width < 10rem) {
-  .document-start-label {
+  .canvas-header .boundary .label {
     display: none;
   }
 
-  .document-start-label-short {
+  .canvas-header .boundary .short-label {
     display: inline;
   }
 }
 
 @container (width < 6rem) {
-  .document-start-label-short {
+  .canvas-header .boundary .short-label {
     display: none;
   }
 }

@@ -1,11 +1,12 @@
 import { setState, useDocumentStore } from './DocumentStore';
 
-export type TocNavigation = 'document' | 'scan';
+export type TocNavigation = 'document' | 'scan' | 'reveal';
+
+type TocNavigationRequest = { target: TocNavigation; documentId: string };
 
 export type TocState = {
   expandedDocIds: string[];
-  navigation: TocNavigation | null;
-  revealRequest: { documentIds: string[] } | null;
+  navigation: TocNavigationRequest | null;
 };
 
 export type TocSlice = {
@@ -38,39 +39,37 @@ export function expandTocDocument(id: string) {
   });
 }
 
-export function navigateToc(navigation: TocNavigation, documentId: string) {
-  if (navigation === 'scan') {
-    expandTocDocument(documentId);
-  }
-  setState((s) => ({ toc: { ...s.toc, navigation } }));
+export function navigateToc(target: TocNavigation, documentId: string) {
+  setState(({ toc }) => {
+    const shouldExpand = target !== 'document'
+      && !toc.expandedDocIds.includes(documentId);
+    return {
+      toc: {
+        expandedDocIds: shouldExpand
+          ? [...toc.expandedDocIds, documentId]
+          : toc.expandedDocIds,
+        navigation: { target, documentId },
+      },
+    };
+  });
 }
 
-export function clearTocNavigation() {
-  setState((s) => ({ toc: { ...s.toc, navigation: null } }));
+export function clearTocNavigation(request: TocNavigationRequest) {
+  setState(({ toc }) => {
+    if (toc.navigation !== request) {
+      return { toc };
+    }
+    return { toc: { ...toc, navigation: null } };
+  });
 }
 
-export function useTocNavigation(): TocNavigation | null {
-  return useDocumentStore((s) => s.toc.navigation);
+export function useTocNavigation(documentId: string) {
+  return useDocumentStore(({ toc }) => {
+    const request = toc.navigation;
+    return request?.documentId === documentId ? request : null;
+  });
 }
 
 export function useIsTocDocumentExpanded(id: string): boolean {
   return useDocumentStore((s) => s.toc.expandedDocIds.includes(id));
-}
-
-/** Reveal document details without changing the selected scan or viewer position. */
-export function revealTocDocuments(documentIds: string[]) {
-  if (!documentIds.length) {
-    return;
-  }
-  setState((s) => ({
-    toc: {
-      ...s.toc,
-      expandedDocIds: [...new Set([...s.toc.expandedDocIds, ...documentIds])],
-      revealRequest: { documentIds },
-    },
-  }));
-}
-
-export function clearTocRevealRequest() {
-  setState((s) => ({ toc: { ...s.toc, revealRequest: null } }));
 }

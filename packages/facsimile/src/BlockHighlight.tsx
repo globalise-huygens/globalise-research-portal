@@ -20,6 +20,7 @@ export const BlockHighlight = memo(function BlockHighlight(
       onMouseEnter={() => { setHovered(id); }}
       onMouseLeave={() => { setHovered(null); }}
     >
+      <polygon className="layout-element-halo" points={points} />
       <polygon className="layout-element-shape" points={points} />
     </g>
   );

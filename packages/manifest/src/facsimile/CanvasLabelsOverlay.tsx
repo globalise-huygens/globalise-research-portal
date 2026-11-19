@@ -4,7 +4,6 @@ import { Overlay } from '@knaw-huc/osd-iiif-viewer';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
-import '../CanvasLabel.css';
 
 type Props = {
   lazyCanvas: LazyTiledImage;

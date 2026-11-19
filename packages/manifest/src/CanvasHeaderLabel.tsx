@@ -22,7 +22,10 @@ export function CanvasHeaderLabel({ canvasId, canvasDocuments, isCurrent = false
           isCurrent={isCurrent}
         />
       ) : null}
-      <span className="canvas-label scan" aria-current={isCurrent ? 'page' : undefined}>
+      <span
+        className="canvas-label scan"
+        aria-current={isCurrent ? 'page' : undefined}
+      >
         <span className="prefix">Scan</span> {scanNumber}
       </span>
     </span>

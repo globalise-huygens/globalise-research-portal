@@ -98,7 +98,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
           {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
         </svg>
       </Overlay>
-      {tooltip && <FacsimileTooltip {...tooltip} onDismiss={() => setTooltip(null)}/>}
+      {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
 });
