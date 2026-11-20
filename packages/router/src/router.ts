@@ -60,6 +60,9 @@ function createAppRouter() {
     pathParamsAllowedCharacters: [':'],
     parseSearch: parseUrlParams,
     stringifySearch: stringifyUrlParams,
+    scrollToTopSelectors: [
+      '.site-content:has(> .blog-index, > .blog-post)',
+    ],
     defaultNotFoundComponent: NotFoundPage,
   });
 }
