@@ -61,7 +61,7 @@ function createAppRouter() {
     parseSearch: parseUrlParams,
     stringifySearch: stringifyUrlParams,
     scrollToTopSelectors: [
-      '.site-content:has(> .blog-index, > .blog-post)',
+      '.site-content:has(> :is(.blog-index, .blog-post, .content-page, .content-home))',
     ],
     defaultNotFoundComponent: NotFoundPage,
   });

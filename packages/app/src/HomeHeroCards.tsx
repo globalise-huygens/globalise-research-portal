@@ -1,19 +1,37 @@
 import { CardHero } from '@globalise/design';
+import { toHref, useRouter } from '@globalise/router';
+import type { PageMeta } from '@globalise/content';
 import { landingPageContent } from './landingPageContent';
 import './HomeHeroCards.css';
 
-export function HomeHeroCards() {
+export function HomeHeroCards({
+  featuredPosts,
+}: {
+  featuredPosts: PageMeta[];
+}) {
+  const router = useRouter();
+  const { archive, blog, featuredPostLabel } = landingPageContent.cards;
+
   return (
     <div className="home-hero-cards">
       <ul>
-        {landingPageContent.cards.map(({ label, title }) => (
-          <li key={title}>
+        <li>
+          <CardHero {...archive} hoverColor="parchment" href={toHref({ to: '/search' })}/>
+        </li>
+        <li>
+          <CardHero {...blog} hoverColor="mint" href={toHref({ to: '/content/blog' })}/>
+        </li>
+        {featuredPosts.map(({ slug, title, hero }) => (
+          <li key={slug}>
             <CardHero
-              label={label}
+              label={featuredPostLabel}
               title={title}
-              tabIndex={0}
+              href={router.buildLocation({
+                to: '/content/$slug',
+                params: { slug },
+              }).href}
             >
-              <div className="home-hero-card-placeholder" aria-hidden="true" />
+              {hero && <img src={hero.src} alt="" loading="lazy"/>}
             </CardHero>
           </li>
         ))}
