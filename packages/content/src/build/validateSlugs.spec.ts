@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { VFile } from 'vfile';
 import { validateSlugs } from './validateSlugs.ts';
 import type { PageBuild } from './page/buildPage.ts';
-import { PageMeta } from '../ContentPage.ts';
+import type { PageMeta } from '../ContentPage.ts';
 
 describe(validateSlugs.name, () => {
   it('invalidates page with duplicate slug, with an error', () => {
@@ -20,7 +20,14 @@ describe(validateSlugs.name, () => {
 });
 
 function createBuild(path: string, slug: string): PageBuild {
-  const meta: PageMeta = { path, title: slug, slug };
+  const meta: PageMeta = {
+    path, title: slug, slug,
+    summary: 'Example content',
+    type: 'page',
+    status: 'draft',
+    authors: [],
+    featured: false,
+  };
   return {
     source: new VFile({ path }),
     page: { meta, tree: { type: 'root', children: [] } },

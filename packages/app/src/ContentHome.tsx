@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-aria-components';
 import debounce from 'lodash/debounce';
-import { getRouteApi, useRouter } from '@globalise/router';
+import { getRouteApi, toHref, useRouter } from '@globalise/router';
 import { Highlight } from './Highlight.tsx';
 import { createSnippet } from './highlightTerms.ts';
 import { useContentSearchIndex } from './useContentSearchIndex.ts';
@@ -34,13 +34,20 @@ export function ContentHome() {
   return (
     <div className="content-home">
       <h1>Content</h1>
+      <p><Link href={toHref({ to: '/content/blog' })}>Browse the blog</Link></p>
       <input
         type="search"
-        placeholder="Search"
+        aria-label="Search site content"
+        placeholder="Search site content"
         defaultValue={q}
         disabled={!contentSearchIndex}
         onChange={(event) => searchDebounced(event.target.value)}
       />
+      <p>
+        <Link href={toHref({ to: '/search', search: { q } })}>
+          Search the archive
+        </Link>
+      </p>
       <p>{rows.length} pages</p>
       <table>
         <thead>
