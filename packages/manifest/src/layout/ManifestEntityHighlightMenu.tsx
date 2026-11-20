@@ -19,6 +19,7 @@ import {
   EntityHighlightMenu,
   type EntityHighlightCategory,
 } from './EntityHighlightMenu';
+import type { EntityCategoryPreviewData } from './EntityCategoryPreview';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
 import { getEntityCategoryConceptUri } from './entityCategoryConcepts';
@@ -86,7 +87,6 @@ const entityCategories: EntityHighlightCategory[] =
         isAppellativeSubject: subcategory.id === 'ner:loc_adj',
       },
     }));
-    const firstClassificationId = category.subcategories?.[0]?.id;
     const classificationId = isCidocEntityClassificationId(category.id)
       ? category.id
       : undefined;
@@ -97,17 +97,7 @@ const entityCategories: EntityHighlightCategory[] =
         ? getEntityPresentationFamilyByClassificationId(classificationId)
         : subcategories?.[0]?.family,
       subcategories,
-      preview: classificationId
-        ? {
-          uri: getEntityClassificationUri(classificationId),
-          conceptUri: getEntityCategoryConceptUri(classificationId),
-        }
-        : firstClassificationId
-          ? {
-            uri: getEntityCategoryConceptUri(firstClassificationId),
-            classificationIds: category.subcategories?.map((subcategory) => subcategory.id),
-          }
-          : undefined,
+      preview: getCategoryPreview(category, classificationId),
     };
   });
 
@@ -151,4 +141,27 @@ export function ManifestEntityHighlightMenu() {
       allLabel="Show all"
     />
   );
+}
+
+function getCategoryPreview(
+  category: EntityHighlightCategoryConfig,
+  classificationId?: CidocEntityClassificationId,
+): EntityCategoryPreviewData | undefined {
+  if (classificationId) {
+    return {
+      uri: getEntityClassificationUri(classificationId),
+      conceptUri: getEntityCategoryConceptUri(classificationId),
+    };
+  }
+
+  const subcategories = category.subcategories ?? [];
+  const [firstSubcategory] = subcategories;
+  if (!firstSubcategory) {
+    return;
+  }
+  // The first subcategory's linked concept supplies the group overview.
+  return {
+    uri: getEntityCategoryConceptUri(firstSubcategory.id),
+    classificationIds: subcategories.map(({ id }) => id),
+  };
 }

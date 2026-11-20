@@ -81,15 +81,6 @@
     min-width: 0;
   }
 
-  .entity-menu .preview-hint {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
   .entity-menu .expand,
   .entity-menu .preview-label {
     width: 100%;

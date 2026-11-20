@@ -12,7 +12,11 @@ const PopoverCardContext = createContext<{
   keepOpen: () => void;
 } | undefined>(undefined);
 
-export function PopoverCard({ children, label, isPending = false, renderTrigger, anchor, isHovered, openImmediately = false, onOpenChange, openOnTouch = true, openOnPress = false, closeOnFocusLeave = false, preferBeside = false }: {
+export function PopoverCard({
+  children, label, isPending = false, renderTrigger, anchor, isHovered,
+  openImmediately = false, onOpenChange, openOnTouch = true,
+  openOnPress = false, closeOnFocusLeave = false, preferBeside = false,
+}: {
   children?: ReactNode;
   label: string;
   isPending?: boolean;
@@ -178,7 +182,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
   }, [visible, isRoot, anchor]);
   const position = usePopoverCardPosition({
     visible, anchor, trigger, popupElement, parentElement, parentPosition, preferBeside,
-    onAnchorRemoved: close,
+    onAnchorUnavailable: close,
   });
 
   const card = (
@@ -253,13 +257,16 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
         const isKeyboardActivation = event.detail === 0;
         const isInsideTrigger = trigger.current?.contains(event.target as Node);
         const isPlainPrimaryClick = event.button === 0 && !hasModifierKey(event);
-        const shouldOpenOnTouch = touch.current && !isKeyboardActivation
-          && hasPopupContent && isInsideTrigger && isPlainPrimaryClick && openOnTouch;
+        if (!hasPopupContent || !isInsideTrigger || !isPlainPrimaryClick) {
+          return;
+        }
+        const shouldOpenOnTouch = openOnTouch && touch.current
+          && !isKeyboardActivation;
 
         if (shouldOpenOnTouch) {
           event.preventDefault();
           keepOpen();
-        } else if (openOnPress && hasPopupContent && isInsideTrigger && isPlainPrimaryClick) {
+        } else if (openOnPress) {
           keepOpen();
         }
       }}
