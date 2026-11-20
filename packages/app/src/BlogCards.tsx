@@ -3,7 +3,13 @@ import { Link } from 'react-aria-components';
 import type { PageMeta } from '@globalise/content';
 import './BlogCards.css';
 
-export function BlogCards({ posts }: { posts: PageMeta[] }) {
+export function BlogCards({
+  posts,
+  heading: Heading = 'h2',
+}: {
+  posts: PageMeta[];
+  heading?: 'h2' | 'h3';
+}) {
   const router = useRouter();
 
   return (
@@ -17,7 +23,7 @@ export function BlogCards({ posts }: { posts: PageMeta[] }) {
             {hero && <img src={hero.src} alt="" loading="lazy"/>}
             <div className="details">
               <span className="label">Blog post</span>
-              <h2>{title}</h2>
+              <Heading>{title}</Heading>
               <span className="action" aria-hidden="true">Read post →</span>
             </div>
           </Link>

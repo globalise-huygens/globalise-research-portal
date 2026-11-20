@@ -4,7 +4,10 @@ import { Link } from 'react-aria-components';
 import { isBlogPost } from './isBlogPost.ts';
 import { BlogCards } from './BlogCards.tsx';
 import { renderHtmlTree } from './renderHtmlTree.ts';
-import { clearClientSearchQueryHighlight, highlightClientSearchQuery } from './highlightClientSearchQuery.ts';
+import {
+  clearClientSearchQueryHighlight,
+  highlightClientSearchQuery,
+} from './highlightClientSearchQuery.ts';
 import type { ContentPage, PageMeta } from '@globalise/content';
 import './ContentPageView.css';
 
@@ -14,7 +17,11 @@ type ContentPageViewProps = {
   relatedPosts: PageMeta[];
 };
 
-export function ContentPageView({ page, query, relatedPosts }: ContentPageViewProps) {
+export function ContentPageView({
+  page,
+  query,
+  relatedPosts,
+}: ContentPageViewProps) {
   const articleRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -60,7 +67,7 @@ export function ContentPageView({ page, query, relatedPosts }: ContentPageViewPr
         {relatedPosts.length > 0 && (
           <section className="related" aria-labelledby="related-posts">
             <h2 id="related-posts">Related posts</h2>
-            <BlogCards posts={relatedPosts}/>
+            <BlogCards posts={relatedPosts} heading="h3"/>
           </section>
         )}
       </main>
@@ -73,7 +80,6 @@ export function ContentPageView({ page, query, relatedPosts }: ContentPageViewPr
     </article>
   );
 }
-
 
 function PostHero({ hero }: { hero: NonNullable<PageMeta['hero']> }) {
   const { src, alt, caption, credit, source, licence } = hero;
