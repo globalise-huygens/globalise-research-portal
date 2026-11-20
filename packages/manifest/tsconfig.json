@@ -12,5 +12,7 @@
     { "path": "../diplomatic" },
     { "path": "../facsimile" },
     { "path": "../line-by-line" },
+    { "path": "../object-card" },
+    { "path": "../router" },
   ]
 }
