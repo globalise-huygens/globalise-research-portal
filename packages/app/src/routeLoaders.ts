@@ -12,12 +12,14 @@ export type ContentPageLoaderData = {
 };
 
 export const routeLoaders: RouteLoaders = {
-  '/content/blog': async () => {
+  '/': async () => {
     const pages = await getContentIndexServer();
-    return pages
-      .filter(isBlogPost)
-      .sort((a, b) => publicationDate(b).localeCompare(publicationDate(a)));
+    const featuredPosts = pages.filter((page) =>
+      page.featured && (page.status === 'approved' || page.status === 'published'),
+    );
+    return sortBlogPosts(featuredPosts).slice(0, 3);
   },
+  '/content/blog': async () => sortBlogPosts(await getContentIndexServer()),
   '/content/': () => getContentIndexServer(),
   '/content/$slug': async ({ params }): Promise<ContentPageLoaderData> => {
     const page = await getContentPageServer({ data: params.slug });
@@ -25,6 +27,12 @@ export const routeLoaders: RouteLoaders = {
     return { page, relatedPosts };
   },
 };
+
+function sortBlogPosts(pages: PageMeta[]): PageMeta[] {
+  return pages
+    .filter(isBlogPost)
+    .sort((a, b) => publicationDate(b).localeCompare(publicationDate(a)));
+}
 
 function publicationDate(page: PageMeta): string {
   return page.datePublished ?? page.originalPublication?.date ?? '';

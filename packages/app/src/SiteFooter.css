@@ -1,4 +1,6 @@
 .site-footer {
+  background: var(--color-brand-black);
+  color: var(--color-neutral-300);
   border-top: 1px solid var(--color-neutral-700);
   padding-block: var(--s48) var(--s24);
   font-family: var(--font-sans);
@@ -7,6 +9,11 @@
 
   .gds-container {
     box-sizing: border-box;
+  }
+
+  a {
+    color: var(--color-brand-white);
+    text-underline-offset: 0.2em;
   }
 
   ul {

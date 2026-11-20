@@ -93,6 +93,7 @@ export const siteMap = {
                 },
                 {
                   title: 'Blog',
+                  to: '/content/blog',
                   source: 'pages/about/project/blog.md',
                 },
               ],

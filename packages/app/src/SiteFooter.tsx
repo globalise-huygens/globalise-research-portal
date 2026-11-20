@@ -1,24 +1,29 @@
 import './SiteFooter.css';
+import { toHref, useRouter } from '@globalise/router';
+import { useQuery } from '@tanstack/react-query';
+import { getContentIndexServer } from '@globalise/content/serve';
+import { contentIndexOptions } from './contentIndexOptions.ts';
+import { Link } from 'react-aria-components';
 import { Container } from '@globalise/design';
 import { landingPageContent } from './landingPageContent';
 import { siteMap } from './siteMap';
 
 type SiteMapPage = {
   readonly title?: string;
+  readonly source?: string;
+  readonly to?: '/content/blog';
   readonly pages?: readonly SiteMapPage[];
 };
 
-// Untitled entries organize the sitemap without adding a footer label.
-function footerPages(pages: readonly SiteMapPage[]): SiteMapPage[] {
-  return pages.flatMap((page) =>
-    page.title ? [page] : footerPages(page.pages ?? []),
-  );
-}
-
-// These groups follow issue #129. Planned pages remain text until they have
-// published content; do not send visitors to placeholders or missing routes.
 export function SiteFooter() {
+  const router = useRouter();
+  const { data: contentIndex = [] } = useQuery({
+    ...contentIndexOptions,
+    queryFn: getContentIndexServer,
+  });
+  const pagesBySource = new Map(contentIndex.map((page) => [page.path, page]));
   const footer = landingPageContent.footer;
+
   return (
     <footer className="site-footer" aria-label={footer.label}>
       <Container>
@@ -27,9 +32,27 @@ export function SiteFooter() {
             <section key={title}>
               <h2>{title}</h2>
               <ul>
-                {footerPages(pages).map((page) => (
-                  <li key={page.title}>{page.title}</li>
-                ))}
+                {footerPages(pages).map((entry) => {
+                  const page = entry.source
+                    ? pagesBySource.get(entry.source)
+                    : undefined;
+                  const href = entry.to
+                    ? toHref({ to: entry.to })
+                    : page && isPublished(page.status)
+                      ? router.buildLocation({
+                        to: '/content/$slug',
+                        params: { slug: page.slug },
+                      }).href
+                      : undefined;
+
+                  return (
+                    <li key={entry.title}>
+                      {href
+                        ? <Link href={href}>{entry.title}</Link>
+                        : entry.title}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}
@@ -46,4 +69,18 @@ export function SiteFooter() {
       </Container>
     </footer>
   );
+}
+
+function footerPages(pages: readonly SiteMapPage[]): SiteMapPage[] {
+  return pages.flatMap((page) => {
+    const children = footerPages(page.pages ?? []);
+    if (!page.title) {
+      return children;
+    }
+    return [page, ...children.filter((child) => child.to)];
+  });
+}
+
+function isPublished(status: string): boolean {
+  return status === 'approved' || status === 'published';
 }
