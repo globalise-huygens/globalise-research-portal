@@ -20,6 +20,18 @@
     width: clamp(12rem, 24vw, 14rem);
   }
 
+  .card-cover {
+    background: var(--color-turquoise-600);
+  }
+
+  [data-color="parchment"] .card-cover {
+    background: var(--color-parchment-600);
+  }
+
+  [data-color="mint"] .card-cover {
+    background: var(--color-brand-mint);
+  }
+
   .copy {
     min-height: 0;
     overflow: hidden;

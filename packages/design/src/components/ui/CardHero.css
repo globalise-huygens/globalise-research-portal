@@ -52,8 +52,10 @@
       transition: opacity 300ms ease;
     }
 
-    &:has(.media) .content {
-      opacity: 0;
+    @media (hover: hover) {
+      &:has(.media):not(:hover, :focus-visible) .content {
+        opacity: 0;
+      }
     }
 
     &:is(:hover, :focus-visible) .media {
