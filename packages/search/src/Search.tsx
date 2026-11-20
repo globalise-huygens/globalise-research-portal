@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { FacetedSearch, getReadableRange, type Facets } from '@knaw-huc/faceted-search-react';
 import { facets, getRouteApi } from '@globalise/router';
 import Layout from './Layout';
@@ -16,7 +17,13 @@ const facetsObj = facets.reduce<Facets>((acc, f) => {
   return acc;
 }, {});
 
-export default function Search({ autoFocus = false }: { autoFocus?: boolean }) {
+export default function Search({
+  autoFocus = false,
+  searchHeaderLink,
+}: {
+  autoFocus?: boolean;
+  searchHeaderLink?: ReactNode;
+}) {
   const urlParams = route.useSearch();
   const navigate = route.useNavigate();
 
@@ -31,7 +38,7 @@ export default function Search({ autoFocus = false }: { autoFocus?: boolean }) {
           replace: true,
         })}
       >
-        <Layout autoFocus={autoFocus} />
+        <Layout autoFocus={autoFocus} searchHeaderLink={searchHeaderLink} />
       </FacetedSearch>
     </div>
   );

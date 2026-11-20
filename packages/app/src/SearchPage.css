@@ -1,0 +1,7 @@
+.content-search-link {
+    display: inline-block;
+    margin-top: var(--s16);
+    color: var(--text-on-dark);
+    font: 500 0.875rem / 1.5 var(--font-sans);
+    text-underline-offset: 0.15em;
+}

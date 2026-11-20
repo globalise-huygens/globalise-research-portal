@@ -37,11 +37,17 @@ export function ContentHome() {
       <p><Link href={toHref({ to: '/content/blog' })}>Browse the blog</Link></p>
       <input
         type="search"
-        placeholder="Search"
+        aria-label="Search site content"
+        placeholder="Search site content"
         defaultValue={q}
         disabled={!contentSearchIndex}
         onChange={(event) => searchDebounced(event.target.value)}
       />
+      <p>
+        <Link href={toHref({ to: '/search', search: { q } })}>
+          Search the archive
+        </Link>
+      </p>
       <p>{rows.length} pages</p>
       <table>
         <thead>
