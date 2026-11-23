@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useDocumentStore } from './DocumentStore';
 import {
+  clearSearchHits,
   findActiveCanvasSearchHits,
   findActiveSearchHit,
   groupByCanvas,
@@ -79,5 +80,23 @@ describe(selectSearchHit.name, () => {
   it('keeps the canvas selection for a hit on the selected canvas', () => {
     selectSearchHit(1);
     expect(useDocumentStore.getState().selectedCanvasAt).toBe(0);
+  });
+});
+
+describe(clearSearchHits.name, () => {
+  it('clears the search hit request, query and hits', () => {
+    const document = { inventory: 'foo', page: 'bar', endPage: 'baz' };
+    useDocumentStore.setState({
+      searchHitRequest: { document, target: { hitIndex: 0 } },
+      searchHitQuery: { query: 'foo', facets: {} },
+    });
+    setSearchHits(hits, 0);
+    clearSearchHits();
+    expect(useDocumentStore.getState()).toMatchObject({
+      searchHitRequest: null,
+      searchHitQuery: null,
+      hits: [],
+      activeHitIndex: null,
+    });
   });
 });

@@ -1,5 +1,5 @@
 import { clamp } from '@globalise/common';
-import { IconLeft, IconRight } from '@globalise/design';
+import { IconClose, IconLeft, IconRight } from '@globalise/design';
 import { useState } from 'react';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
@@ -10,9 +10,12 @@ export type PrevNextInputBrowserProps = {
   index: number;
   total: number;
   onSelect: (index: number) => void;
+  onClose?: () => void;
 };
 
-export function PrevNextInputBrowser({ label, name, index, total, onSelect }: PrevNextInputBrowserProps) {
+export function PrevNextInputBrowser(
+  { label, name, index, total, onSelect, onClose }: PrevNextInputBrowserProps
+) {
   const [input, setInput] = useState<string | null>(null);
 
   const inputValue = input ?? String(index + 1);
@@ -80,6 +83,17 @@ export function PrevNextInputBrowser({ label, name, index, total, onSelect }: Pr
         />
         <span>of {total}</span>
       </span>
+
+      {onClose && (
+        <TooltipIconButton
+          aria-label={`Close ${label}`}
+          tooltip={`Close ${label}`}
+          tooltipPlacement="top"
+          className={BOTTOM_BAR_BUTTON}
+          icon={<IconClose className="h-s16 w-s16" />}
+          onPress={onClose}
+        />
+      )}
 
       <TooltipIconButton
         aria-label={`Next ${name}`}

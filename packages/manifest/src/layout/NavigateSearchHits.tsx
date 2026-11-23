@@ -1,4 +1,5 @@
 import {
+  clearSearchHits,
   selectSearchHit,
   useActiveHitIndex,
   useSearchHitCount,
@@ -21,6 +22,7 @@ export function NavigateSearchHits() {
         index={activeHitIndex}
         total={hitCount}
         onSelect={selectSearchHit}
+        onClose={clearSearchHits}
       />
     </div>
   );

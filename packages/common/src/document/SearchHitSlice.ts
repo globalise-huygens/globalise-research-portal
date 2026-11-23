@@ -1,7 +1,11 @@
 import { useShallow } from 'zustand/react/shallow';
 import type { Id } from '../annotation';
 import type { DocumentRef } from '../uri';
-import { setState, useDocumentStore } from './DocumentStore';
+import {
+  defaultSearchHitSlice,
+  setState,
+  useDocumentStore,
+} from './DocumentStore';
 import { type CanvasId, setSelectedCanvas } from './ManifestViewerSlice';
 
 export type SearchHitSlice = {
@@ -47,6 +51,10 @@ export function setSearchHitRequest(searchHitRequest: SearchHitRequest | null) {
 
 export function setSearchHitQuery(searchQuery: SearchHitQuery | null) {
   setState({ searchHitQuery: searchQuery });
+}
+
+export function clearSearchHits() {
+  setState(defaultSearchHitSlice);
 }
 
 export function useSearchHitRequest(): SearchHitRequest | null {

@@ -26,7 +26,7 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
   canvases: {},
 };
 
-const defaultSearchHitSlice: SearchHitSlice = {
+export const defaultSearchHitSlice: SearchHitSlice = {
   searchHitRequest: null,
   searchHitQuery: null,
   hits: [],
