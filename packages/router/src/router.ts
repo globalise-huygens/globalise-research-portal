@@ -57,6 +57,7 @@ function createAppRouter() {
   return createRouter({
     routeTree,
     context: { queryClient: new QueryClient() } satisfies RouterContext,
+    pathParamsAllowedCharacters: [':'],
     parseSearch: parseUrlParams,
     stringifySearch: stringifyUrlParams,
     defaultNotFoundComponent: NotFoundPage,

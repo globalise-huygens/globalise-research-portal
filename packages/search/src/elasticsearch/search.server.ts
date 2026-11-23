@@ -3,7 +3,6 @@ import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import type { GlobaliseSearchState } from '../utils/getSearchState';
-import { tagAnnotatedHits } from './tagAnnotatedHits';
 
 import type { EntityTagType } from '@globalise/design';
 
@@ -47,7 +46,7 @@ const SearchRequestSchema = GlobaliseSearchStateSchema.extend({
 const search = createServerFn({ method: 'POST' })
   .validator(SearchRequestSchema)
   .handler(async ({ data }): Promise<SearchResult[]> => {
-    const esQuery = getSearchQuery(data.query, data.facets) ?? undefined;
+    const esQuery = getSearchQuery(data.query, { selected: data.facets }) ?? undefined;
     console.log('ElasticSearch query', JSON.stringify(esQuery, null, 2));
 
     const result = await elastic.search<ElasticDocument>({
@@ -91,7 +90,7 @@ const search = createServerFn({ method: 'POST' })
       settlement: hit._source!.settlement,
       startDate: hit._source!.startDate,
       endDate: hit._source!.endDate,
-      mentions: hit.highlight?.annotatedText.map(tagAnnotatedHits) ?? [],
+      mentions: hit.highlight?.annotatedText ?? [],
     }));
   });
 

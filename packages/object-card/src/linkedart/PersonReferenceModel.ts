@@ -1,6 +1,6 @@
 import { asArray, fetchJson, findByPath, getJsonUrl, isUrl, type LinkedArtNode } from '@globalise/common';
 import type { ReferencePanelItemData } from '@globalise/design';
-import { toHref } from '@globalise/router';
+import { toCanvasHref } from '@globalise/router';
 import { isInternalUri } from '../isInternalUri.ts';
 import { type QueryClient } from '@tanstack/react-query';
 
@@ -77,19 +77,15 @@ function annotationReference(value: unknown): ReferencePanelItemData | undefined
   const canvas = asArray(annotation.partOf).map(resource)
     .find((node) => node && hasType(node, 'Canvas'));
   const canvasUri = resourceUri(canvas);
-  const manifest = asArray(canvas?.partOf).map(resource)
-    .find((node) => node && hasType(node, 'Manifest'));
-  const manifestUri = resourceUri(manifest);
   const scanIdentifier = canvasUri?.split('/canvas:')[1];
+  const scanHref = canvasUri ? toCanvasHref(canvasUri, {}) : undefined;
   return {
     id: uri,
     title: scanIdentifier ?? 'Corpus mention',
     metadata: 'Corpus mention',
-    href: manifestUri && canvasUri
-      ? toHref({ to: '/manifest', search: { manifest: jsonUri(manifestUri), canvas: canvasUri } })
-      : uri,
-    hrefType: manifestUri && canvasUri ? 'internal' : 'external',
-    hrefLabel: manifestUri && canvasUri ? `Open source scan: ${scanIdentifier ?? canvasUri}` : `Open corpus mention: ${uri}`,
+    href: scanHref ?? uri,
+    hrefType: scanHref ? 'internal' : 'external',
+    hrefLabel: scanHref ? `Open source scan: ${scanIdentifier ?? canvasUri}` : `Open corpus mention: ${uri}`,
     copyLabel: `Copy corpus mention URI: ${uri}`,
     uri,
   };

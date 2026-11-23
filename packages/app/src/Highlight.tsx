@@ -1,4 +1,5 @@
-import { splitByTerms } from './highlightTerms.ts';
+import { MarkedText } from '@globalise/design';
+import { findTerms } from './highlightTerms.ts';
 
 type HighlightProps = {
   text?: string;
@@ -6,8 +7,5 @@ type HighlightProps = {
 };
 
 export function Highlight({ text = '', terms }: HighlightProps) {
-  return splitByTerms(text, terms).map((part, index) => part.isMatch
-    ? <mark key={index}>{part.text}</mark>
-    : part.text,
-  );
+  return <MarkedText text={text} ranges={findTerms(text, terms)}/>;
 }
