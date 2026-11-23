@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createDocumentId,
+  createDocumentName,
   parseDocumentId,
   parseDocumentName,
 } from './documentId';
@@ -35,5 +36,12 @@ describe(createDocumentId.name, () => {
   it('builds the document id of a page range', () => {
     const range = { inventory: '1053', page: '0003', endPage: '0067' };
     expect(createDocumentId(range)).toBe(document);
+  });
+});
+
+describe(createDocumentName.name, () => {
+  it('builds the document name of a page range', () => {
+    const range = { inventory: '1053', page: '0003', endPage: '0067' };
+    expect(createDocumentName(range)).toBe(documentName);
   });
 });
