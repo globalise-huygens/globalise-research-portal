@@ -18,9 +18,19 @@
         width: var(--s24, 24px);
         height: var(--s24, 24px);
         flex-shrink: 0;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
+        border: 0;
+        padding: 0;
         background: transparent;
+        color: inherit;
+        cursor: pointer;
+
+        &:focus-visible,
+        &[data-focus-visible] {
+            outline: 2px solid var(--color-ring);
+            outline-offset: -2px;
+        }
 
         svg {
             width: var(--s16, 16px);

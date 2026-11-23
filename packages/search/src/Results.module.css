@@ -2,6 +2,10 @@
     flex: 1;
     overflow: auto;
 
+    @media (width < 48rem) {
+        overflow: visible;
+    }
+
     > ul {
         display: flex;
         flex-direction: column;
