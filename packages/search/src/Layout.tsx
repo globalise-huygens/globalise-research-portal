@@ -28,7 +28,7 @@ export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
           <SearchField autoFocus={autoFocus} isMobile={isMobile} />
           {isMobile && (
             <DialogTrigger>
-              <ToolButton size="touch" aria-label="Open facettes"
+              <ToolButton size="touch" aria-label="Open filters"
                 icon={<IconLeftPanelOpen aria-hidden="true" />}
               />
               <ModalOverlay isDismissable className={classes.filterOverlay}>
@@ -37,8 +37,8 @@ export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
                     {({ close }) => (
                       <>
                         <header className={classes.filterHeader}>
-                          <Heading slot="title">Facettes</Heading>
-                          <ToolButton size="touch" aria-label="Close facettes"
+                          <Heading slot="title">Filters</Heading>
+                          <ToolButton size="touch" aria-label="Close filters"
                             icon={<IconClose aria-hidden="true" />}
                             onPress={close}
                           />
