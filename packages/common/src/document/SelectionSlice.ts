@@ -1,5 +1,5 @@
 import { Annotation, Id, isBlock, isClassified, isWord } from '../annotation';
-import { DocumentState, setState } from './DocumentStore';
+import { DocumentState, setState, useDocumentStore } from './DocumentStore';
 import { Selection } from './Selection';
 import { CanvasState } from './ManifestViewerSlice';
 
@@ -8,7 +8,11 @@ export type SelectionSlice = {
   clicked: Selection | null;
 };
 
-export function setHovered(id: Id | null) {
+export function setHovered(id: Id | null): void {
+  // In quiet mode, no hovered elements:
+  if (!useDocumentStore.getState().isLayoutElementsVisible) {
+    return;
+  }
   setState((s) => ({ hovered: createSelection(s, id) }));
 }
 

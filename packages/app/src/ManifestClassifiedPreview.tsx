@@ -13,7 +13,6 @@ import {
   type Selection,
   setHovered,
   useDocumentStore,
-  useIsLayoutElementsVisible,
 } from '@globalise/common/document';
 import { PreviewCard } from '@globalise/design';
 import { useEffect, useRef, useState } from 'react';
@@ -27,17 +26,10 @@ export function ManifestClassifiedPreview() {
 
   const hovered = useDocumentStore((s) => s.hovered);
   const canvases = useDocumentStore((s) => s.canvases);
-  const showLayoutElements = useIsLayoutElementsVisible();
-  useEffect(updatePreview, [hovered, canvases, preview, showLayoutElements]);
+
+  useEffect(updatePreview, [hovered, canvases, preview]);
 
   function updatePreview() {
-    if (!showLayoutElements) {
-      isOpen.current = false;
-      if (preview) {
-        setPreview(null);
-      }
-      return;
-    }
     const anchor = hovered ? getHoverElement() : null;
     const annotation = getHoveredAnnotation(canvases, hovered);
     if (!annotation || !anchor) {
@@ -58,7 +50,7 @@ export function ManifestClassifiedPreview() {
     }
   }
 
-  if (!preview || !showLayoutElements) {
+  if (!preview) {
     return null;
   }
 

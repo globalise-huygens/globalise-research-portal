@@ -17,12 +17,11 @@ type LineProps = {
   segments: TextSegment<Annotation>[];
   highlightCategories: Set<ClassifiedCategory>;
   classifiedToWords: Record<Id, Id[]>;
-  showLayoutElements: boolean;
 };
 
 export const SegmentedLine = memo(function SegmentedLine(
   {
-    canvasId, lineId, lineNumber, blockId, segments, highlightCategories, classifiedToWords, showLayoutElements,
+    canvasId, lineId, lineNumber, blockId, segments, highlightCategories, classifiedToWords,
   }: LineProps,
 ) {
   const annotationIds = useMemo(
@@ -46,8 +45,12 @@ export const SegmentedLine = memo(function SegmentedLine(
       ref={ref}
       className="line"
       data-line-id={lineId}
-      onMouseEnter={showLayoutElements && blockId ? () => setHovered(blockId) : undefined}
-      onMouseLeave={showLayoutElements ? () => setHovered(null) : undefined}
+      onMouseEnter={() => {
+        if (blockId) {
+          setHovered(blockId);
+        }
+      }}
+      onMouseLeave={() => { setHovered(null); }}
     >
       <span className="line-number">
         {`${lineNumber}`.padStart(2, ' ')}
@@ -60,7 +63,6 @@ export const SegmentedLine = memo(function SegmentedLine(
           classifiedToWords={classifiedToWords}
           selectedIds={selectedIds}
           activeHitIds={activeHitIds}
-          showLayoutElements={showLayoutElements}
         />
       </span>
     </span>

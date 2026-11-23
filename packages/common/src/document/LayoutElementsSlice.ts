@@ -1,20 +1,15 @@
 import { setState, useDocumentStore } from './DocumentStore';
-import { getHoverElement, removeHoverAttribute } from './SelectionAttribute';
 
 export type LayoutElementsSlice = {
   isLayoutElementsVisible: boolean;
 };
 
 export function setLayoutElementsVisible(isLayoutElementsVisible: boolean) {
-  if (!isLayoutElementsVisible) {
-    const anchor = getHoverElement();
-    if (anchor) {
-      removeHoverAttribute(anchor);
-    }
-  }
-  setState(isLayoutElementsVisible
-    ? { isLayoutElementsVisible }
-    : { isLayoutElementsVisible, hovered: null });
+  setState({
+    isLayoutElementsVisible,
+    // In quiet mode no hovered elements:
+    hovered: null,
+  });
 }
 
 export function useIsLayoutElementsVisible() {
