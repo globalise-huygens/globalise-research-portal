@@ -1,8 +1,11 @@
 import {
   type DocumentState,
-  findActiveSearchHits,
+  type HtrHit,
+  findActiveSearchHit,
   findInitialCanvasId,
   setSearchHits,
+  toActiveHitIndex,
+  useActiveHitIndex,
   useDocumentStore,
 } from '@globalise/common/document';
 import {
@@ -41,6 +44,8 @@ const route = getRouteApi(`/${handle}/$`);
 
 const collectionUrl = `${idBase}/inventory:collection`;
 
+const noHits: HtrHit[] = [];
+
 export function ManifestPage() {
   const navigate = route.useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
@@ -52,17 +57,20 @@ export function ManifestPage() {
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
   );
-  const activeHit = highlights?.hits
-    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
-  const activeHitCanvasId = activeHit?.canvasId;
+  const hits = highlights?.hits ?? noHits;
+  const locatedHitIndex = highlights?.locatedHitIndex ?? null;
+  const activeHitIndex = toActiveHitIndex(hits, locatedHitIndex);
+  const activeHitCanvasId = findActiveSearchHit({ hits, activeHitIndex })?.canvasId ?? null;
 
   const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
-  const sharedRoute = toManifestRoute(sharableRoute);
+  const browsedHitIndex = useActiveHitIndex();
+  const sharedRoute = toManifestRoute(sharableRoute, browsedHitIndex);
   const share = createShareLink(sharedRoute, window.location.origin, shareLabels[sharedRoute.type]);
 
   let error: ErrorMessage | undefined = undefined;
-  if (searchState && !activeHitCanvasId) {
-    error = { message: 'Search result could not be located: showing first page in document.' };
+  if (searchState && locatedHitIndex === null) {
+    const showing = activeHitCanvasId ? 'first hit' : 'first page in document';
+    error = { message: `Search result could not be located: showing ${showing}.` };
   }
 
   const allManifests = useCollectionManifests(collectionUrl);
@@ -82,21 +90,10 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logSearchHits, []);
-
-  function logSearchHits() {
-    return useDocumentStore.subscribe((state, prev) => {
-      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
-        return;
-      }
-      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
-    });
-  }
-
-  useEffect(storeSearchHits, [highlights]);
+  useEffect(storeSearchHits, [hits, activeHitIndex]);
 
   function storeSearchHits() {
-    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
+    setSearchHits(hits, activeHitIndex);
   }
 
   useEffect(logTextRanges, []);

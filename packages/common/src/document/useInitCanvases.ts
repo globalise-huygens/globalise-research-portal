@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { type CanvasId, initCanvases } from './ManifestViewerSlice';
 
-export function useInitCanvases(canvasId?: CanvasId): boolean {
+export function useInitCanvases(canvasId: CanvasId | null): boolean {
   const { vault, id: manifestId, isReady } = useManifest();
   const [initializedManifestId, setInitializedManifestId] = useState<string | null>(null);
   const isInitialized = isReady && initializedManifestId === manifestId;

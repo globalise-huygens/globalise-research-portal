@@ -31,8 +31,8 @@ export function useResolveManifestRoute(viewer: ViewerRef): boolean {
     if (resolvedRoute.document) {
       setSelectedDocument(createDocumentId(resolvedRoute.document));
     }
-    setSearchHitRequest(resolvedRoute.searchHit ?? null);
-    setSearchHitQuery(resolvedRoute.searchHitQuery ?? null);
+    setSearchHitRequest(resolvedRoute.searchHit);
+    setSearchHitQuery(resolvedRoute.searchHitQuery);
     void navigate({ href: resolvedRoute.canvasPath, replace: true });
   }
 

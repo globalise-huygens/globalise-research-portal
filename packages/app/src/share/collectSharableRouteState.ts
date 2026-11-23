@@ -8,19 +8,17 @@ export type SharableRouteState = {
   ref: ViewerRef;
   searchHit: SearchHitRequest | null;
   searchHitQuery: SearchHitQuery | null;
-  activeEsHitIndex: number | null;
 };
 
 export type StoredRouteState = {
-  selectedDocument?: DocumentRef;
+  selectedDocument: DocumentRef | null;
   searchHit: SearchHitRequest | null;
   searchHitQuery: SearchHitQuery | null;
-  activeEsHitIndex: number | null;
 };
 
 export function collectSharableRouteState(
   viewer: ViewerRef,
-  { selectedDocument, searchHit, searchHitQuery, activeEsHitIndex }: StoredRouteState,
+  { selectedDocument, searchHit, searchHitQuery }: StoredRouteState,
 ): SharableRouteState {
   const isSearchHitInView = searchHit?.document.inventory === viewer.inventory;
   return {
@@ -29,20 +27,19 @@ export function collectSharableRouteState(
       : findDocumentOnFirstPage(viewer, selectedDocument),
     searchHit: isSearchHitInView ? searchHit : null,
     searchHitQuery: isSearchHitInView ? searchHitQuery : null,
-    activeEsHitIndex: isSearchHitInView ? activeEsHitIndex : null,
   };
 }
 
 function findDocumentOnFirstPage(
   viewer: ViewerRef,
-  selectedDocument: DocumentRef | undefined,
+  selectedDocument: DocumentRef | null,
 ): ViewerRef {
   return isFirstPageOf(viewer, selectedDocument) ? selectedDocument : viewer;
 }
 
 function isFirstPageOf(
   viewer: ViewerRef,
-  document: DocumentRef | undefined,
+  document: DocumentRef | null,
 ): document is DocumentRef {
   return !!document
     && 'page' in viewer

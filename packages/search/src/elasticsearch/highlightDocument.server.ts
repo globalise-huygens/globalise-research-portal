@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import type { HtrHit } from '@globalise/common/document';
+import type { HtrHit, SearchHitRef } from '@globalise/common/document';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
-import { isHit, parseAnnotatedText } from './parseAnnotatedText';
+import { type AnnotatedSegment, isHit, parseAnnotatedText } from './parseAnnotatedText';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets } from './calculateHtrOffsets';
 import { findActiveEsHitIndex } from './findActiveEsHitIndex';
+import { findFirstHitIndex } from './findFirstHitIndex';
 import { mergeContinuousOffsets } from './mergeContinuousOffsets.ts';
 import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
@@ -14,7 +15,7 @@ import type { ManifestSearchState } from '../utils/getManifestSearchState';
 
 export type DocumentHighlights = {
   hits: HtrHit[];
-  activeEsHitIndex: number | null;
+  locatedHitIndex: number | null;
 };
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
@@ -22,7 +23,7 @@ const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
     docDbId: z.string(),
     target: z.union([
       z.object({ snippet: z.string() }),
-      z.object({ esHitIndex: z.number().int().min(0) }),
+      z.object({ hitIndex: z.number().int().min(0) }),
     ]),
   });
 
@@ -31,7 +32,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<DocumentHighlights> => {
     const annotatedText = await fetchAnnotatedText(data);
     if (!annotatedText) {
-      return { hits: [], activeEsHitIndex: null };
+      return { hits: [], locatedHitIndex: null };
     }
     const { plainText, segments } = parseAnnotatedText(annotatedText);
     const esHits = segments.filter(isHit);
@@ -45,14 +46,23 @@ const highlightDocument = createServerFn({ method: 'POST' })
         esHitIndex,
       }));
     });
-    const { target } = data;
-    const activeEsHitIndex = 'snippet' in target
-      ? findActiveEsHitIndex(esHits, getSnippetOffsets(plainText, target.snippet))
-      : target.esHitIndex;
-    return { hits, activeEsHitIndex };
+    return { hits, locatedHitIndex: locateHitIndex(hits, data.target, plainText, esHits) };
   });
 
 export default highlightDocument;
+
+function locateHitIndex(
+  hits: HtrHit[],
+  target: SearchHitRef,
+  plainText: string,
+  esHits: AnnotatedSegment[],
+): number | null {
+  if ('snippet' in target) {
+    const esHitIndex = findActiveEsHitIndex(esHits, getSnippetOffsets(plainText, target.snippet));
+    return findFirstHitIndex(hits, esHitIndex);
+  }
+  return hits[target.hitIndex] ? target.hitIndex : null;
+}
 
 async function fetchAnnotatedText(request: ManifestSearchState): Promise<string | undefined> {
   const { docDbId } = request;

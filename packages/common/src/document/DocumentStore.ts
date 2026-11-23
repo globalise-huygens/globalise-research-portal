@@ -29,8 +29,9 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
 const defaultSearchHitSlice: SearchHitSlice = {
   searchHitRequest: null,
   searchHitQuery: null,
+  hits: [],
   searchHits: {},
-  activeEsHitIndex: null,
+  activeHitIndex: null,
 };
 
 const defaultSelectionSlice: SelectionSlice = {

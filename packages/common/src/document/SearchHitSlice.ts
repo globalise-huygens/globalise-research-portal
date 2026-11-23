@@ -2,16 +2,17 @@ import { useShallow } from 'zustand/react/shallow';
 import type { Id } from '../annotation';
 import type { DocumentRef } from '../uri';
 import { setState, useDocumentStore } from './DocumentStore';
-import type { CanvasId } from './ManifestViewerSlice';
+import { type CanvasId, setSelectedCanvas } from './ManifestViewerSlice';
 
 export type SearchHitSlice = {
   searchHitRequest: SearchHitRequest | null;
   searchHitQuery: SearchHitQuery | null;
+  hits: HtrHit[];
   searchHits: Record<CanvasId, HtrHit[]>;
-  activeEsHitIndex: number | null;
+  activeHitIndex: number | null;
 };
 
-type LoadedSearchHits = Pick<SearchHitSlice, 'searchHits' | 'activeEsHitIndex'>;
+type ActiveSearchHit = Pick<SearchHitSlice, 'hits' | 'activeHitIndex'>;
 
 export type SearchHitRequest = {
   document: DocumentRef;
@@ -22,7 +23,7 @@ export type SearchHitRef = SearchHitSnippetRef | SearchHitIndexRef;
 
 export type SearchHitSnippetRef = { snippet: string };
 
-export type SearchHitIndexRef = { esHitIndex: number };
+export type SearchHitIndexRef = { hitIndex: number };
 
 /**
  * The fulltext search query and facets, as retrieved from the url, to determine the manifest viewer hits
@@ -56,12 +57,38 @@ export function useSearchHitQuery(): SearchHitQuery | null {
   return useDocumentStore((s) => s.searchHitQuery);
 }
 
-export function useActiveEsHitIndex(): number | null {
-  return useDocumentStore((s) => s.activeEsHitIndex);
+export function useActiveHitIndex(): number | null {
+  return useDocumentStore((s) => s.activeHitIndex);
 }
 
-export function setSearchHits(hits: HtrHit[], activeEsHitIndex: number | null) {
-  setState({ searchHits: groupByCanvas(hits), activeEsHitIndex });
+export function useSearchHitCount(): number {
+  return useDocumentStore((s) => s.hits.length);
+}
+
+export function setSearchHits(hits: HtrHit[], activeHitIndex: number | null) {
+  setState({ hits, searchHits: groupByCanvas(hits), activeHitIndex });
+}
+
+export function selectSearchHit(hitIndex: number) {
+  const { hits, selectedCanvasId } = useDocumentStore.getState();
+  const hit = hits[hitIndex];
+  if (!hit) {
+    return;
+  }
+  setState({ activeHitIndex: hitIndex });
+  if (hit.canvasId !== selectedCanvasId) {
+    setSelectedCanvas(hit.canvasId, 'external');
+  }
+}
+
+export function toActiveHitIndex(
+  hits: HtrHit[],
+  locatedHitIndex: number | null,
+): number | null {
+  if (!hits.length) {
+    return null;
+  }
+  return locatedHitIndex ?? 0;
 }
 
 export function groupByCanvas(hits: HtrHit[]): Record<CanvasId, HtrHit[]> {
@@ -82,15 +109,17 @@ export function useActiveCanvasSearchHits(canvasId: CanvasId): HtrHit[] {
   return useDocumentStore(useShallow((s) => findActiveCanvasSearchHits(s, canvasId)));
 }
 
-export function findActiveSearchHits(s: LoadedSearchHits): HtrHit[] {
-  return Object.keys(s.searchHits)
-    .flatMap((canvasId) => findActiveCanvasSearchHits(s, canvasId));
+export function findActiveSearchHit(s: ActiveSearchHit): HtrHit | null {
+  if (s.activeHitIndex === null) {
+    return null;
+  }
+  return s.hits[s.activeHitIndex] ?? null;
 }
 
 export function findActiveCanvasSearchHits(
-  slice: LoadedSearchHits,
+  s: ActiveSearchHit,
   canvasId: CanvasId,
 ): HtrHit[] {
-  return (slice.searchHits[canvasId] ?? noHits)
-    .filter((hit) => hit.esHitIndex === slice.activeEsHitIndex);
+  const hit = findActiveSearchHit(s);
+  return hit?.canvasId === canvasId ? [hit] : noHits;
 }

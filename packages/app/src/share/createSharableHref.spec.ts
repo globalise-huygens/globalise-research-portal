@@ -14,7 +14,7 @@ const routes: Record<ManifestRoute['type'], ManifestRoute> = {
   inventory: { type: 'inventory', ref: inventory, searchHitQuery },
   scan: { type: 'scan', ref: page },
   document: { type: 'document', ref: document },
-  hit: { type: 'hit', searchHit: { document, hit: { esHitIndex: 3 } }, searchHitQuery },
+  hit: { type: 'hit', searchHit: { document, hit: { hitIndex: 3 } }, searchHitQuery },
 };
 
 describe(createSharableHref.name, () => {

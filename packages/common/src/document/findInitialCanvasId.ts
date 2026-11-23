@@ -3,8 +3,8 @@ import { type ViewerRef, createCanvasId } from '../uri';
 
 export function findInitialCanvasId(
   ref: ViewerRef,
-  activeHitCanvasId?: CanvasId,
-): CanvasId | undefined {
+  activeHitCanvasId: CanvasId | null,
+): CanvasId | null {
   if ('endPage' in ref) {
     return activeHitCanvasId ?? createCanvasId(ref);
   }

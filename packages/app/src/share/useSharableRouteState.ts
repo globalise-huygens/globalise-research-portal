@@ -1,5 +1,4 @@
 import {
-  useActiveEsHitIndex,
   useSearchHitQuery,
   useSearchHitRequest,
   useSelectedDocumentId,
@@ -11,10 +10,9 @@ export function useSharableRouteState(viewer: ViewerRef): SharableRouteState {
   const selectedDocumentId = useSelectedDocumentId();
   const searchHit = useSearchHitRequest();
   const searchHitQuery = useSearchHitQuery();
-  const activeEsHitIndex = useActiveEsHitIndex();
   const selectedDocument = selectedDocumentId
-    ? parseDocumentId(selectedDocumentId)
-    : undefined;
-  const stored = { selectedDocument, searchHit, searchHitQuery, activeEsHitIndex };
+    ? parseDocumentId(selectedDocumentId) ?? null
+    : null;
+  const stored = { selectedDocument, searchHit, searchHitQuery };
   return collectSharableRouteState(viewer, stored);
 }
