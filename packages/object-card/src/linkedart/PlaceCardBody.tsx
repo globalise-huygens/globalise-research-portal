@@ -12,6 +12,7 @@ import {
   type StatusValue,
 } from '@globalise/common';
 import {
+  cn,
   ObjectCardBody,
   ObjectCardDisclosure,
   ObjectCardPanel,
@@ -25,6 +26,7 @@ import {
   relationKeys,
   statusKeys,
   placeDetailGroups,
+  type StatusProperty,
 } from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { getPersonNameRecords } from './PersonStatusModel.ts';
@@ -172,8 +174,6 @@ function PlaceRecord({
   classificationLabel = 'Classification',
 }: PlaceRecordProps) {
   const properties = getStatusProperties(record);
-  const missingClassification = record.type === 'ClassificatoryStatus'
-    && !getStatusValues(record, ['ascribes_classification']).length;
   const timespan = findTimespan(record);
   const dates = timespan ? null : getRecordedDates(record);
   const classifications = [...getStatusValues(record, ['classified_as']),
@@ -184,69 +184,21 @@ function PlaceRecord({
     ...findByPath(record, ['took_place_at']),
   ];
   const content = getContent(record);
-  const isTopographical = record.type === 'TopographicalStatus';
-  const isSimilarity = record.type === 'SimilarityStatus';
-  let relationshipTarget: string | undefined;
-  if (isTopographical) {
-    relationshipTarget = 'ascribes_place';
-  } else if (isSimilarity) {
-    relationshipTarget = 'ascribes_similarity_target';
-  }
-  const targets = relationshipTarget
-    ? getStatusValues(record, [relationshipTarget])
-    : [];
-  const relationshipKey = isSimilarity
-    ? 'ascribes_similarity_relation'
-    : 'ascribes_topographical_relation';
-  let relationship = getStatusValues(record, [relationshipKey]);
-  if (isTopographical && classifications.length) {
-    relationship = classifications;
-  }
-  const combinedRelationships = isTopographical
-    && relationship.length > 1 && targets.length > 1;
-  const recordedLabels = Array.isArray(record._label)
-    ? record._label
-    : [record._label];
-  const statements = combinedRelationships
-    ? recordedLabels.filter((value): value is string =>
-      typeof value === 'string')
-    : [];
-  const primaryProperty = properties[0];
-  const summaryValues = relationshipTarget
-    ? targets
-    : primaryProperty?.values ?? classifications;
-  let summaryLabel: ReactNode;
-  let summaryValue: ReactNode;
-  let separator = ': ';
-  if (missingClassification) {
-    summaryLabel = title ?? 'Classifications';
-    summaryValue = 'Value unavailable';
-  } else {
-    summaryLabel = getPlaceRecordSummaryLabel({
-      combinedRelationships,
-      relationshipTarget,
-      relationship,
-      fallback: title ?? primaryProperty?.label ?? 'Recorded information',
-    });
-    summaryValue = <PlaceValues values={summaryValues} />;
-    separator = relationshipTarget ? ' ' : ': ';
-  }
-  const valueClassName = !missingClassification
-    && record.type === 'AppellativeStatus'
-    ? 'person-status-summary-value person-name-value'
-    : 'person-status-summary-value';
+  const relationship = getPlaceRelationship(record, classifications);
+  const statements = relationship?.statements ?? [];
   return <ObjectCardDisclosure summary={
     <span className="person-status-summary-content">
       {timespan && <span className="person-status-summary-date">
         <TimespanValue timespan={timespan} mode="summary" />
       </span>}
       {dates && <RecordedDatesValue dates={dates} />}
-      <span className="person-status-summary-property">
-        <span className="person-status-summary-label">
-          {summaryLabel}{separator}
-        </span>
-        <span className={valueClassName}>{summaryValue}</span>
-      </span>
+      <PlaceRecordSummary
+        record={record}
+        title={title}
+        relationship={relationship}
+        primaryProperty={properties[0]}
+        classifications={classifications}
+      />
     </span>
   }>
     <ObjectCardPropertyList className="person-status-details">
@@ -291,27 +243,129 @@ function PlaceRecord({
   </ObjectCardDisclosure>;
 }
 
-function getPlaceRecordSummaryLabel({
-  combinedRelationships,
-  relationshipTarget,
+type PlaceRecordSummaryProps = {
+  record: LinkedArtNode;
+  title?: string;
+  relationship?: PlaceRelationship;
+  primaryProperty?: StatusProperty & { values: StatusValue[] };
+  classifications: StatusValue[];
+};
+
+function PlaceRecordSummary({
+  record,
+  title,
   relationship,
-  fallback,
-}: {
-  combinedRelationships: boolean;
-  relationshipTarget?: string;
-  relationship: StatusValue[];
-  fallback: string;
-}): ReactNode {
-  if (combinedRelationships) {
-    return 'Related places';
+  primaryProperty,
+  classifications,
+}: PlaceRecordSummaryProps) {
+  const isClassificatory = record.type === 'ClassificatoryStatus';
+  if (isClassificatory && !hasClassification(record)) {
+    return <SummaryProperty label={title ?? 'Classifications'}>
+      Value unavailable
+    </SummaryProperty>;
   }
-  if (!relationshipTarget) {
-    return fallback;
+  if (relationship?.isCombined) {
+    return <SummaryProperty label="Related places" separator=" ">
+      <PlaceValues values={relationship.targets} />
+    </SummaryProperty>;
   }
-  if (!relationship.length) {
+  if (relationship) {
+    const label = <RelationshipLabel types={relationship.types} />;
+    return <SummaryProperty label={label} separator=" ">
+      <PlaceValues values={relationship.targets} />
+    </SummaryProperty>;
+  }
+  const label = title ?? primaryProperty?.label ?? 'Recorded information';
+  const values = primaryProperty?.values ?? classifications;
+  const isName = record.type === 'AppellativeStatus';
+  return <SummaryProperty label={label} isName={isName}>
+    <PlaceValues values={values} />
+  </SummaryProperty>;
+}
+
+function RelationshipLabel({ types }: { types: StatusValue[] }) {
+  if (!types.length) {
     return 'Related to';
   }
-  return <PlaceValues values={relationship} linked={false} />;
+  return <PlaceValues values={types} linked={false} />;
+}
+
+type SummaryPropertyProps = {
+  label: ReactNode;
+  separator?: string;
+  isName?: boolean;
+  children: ReactNode;
+};
+
+function SummaryProperty({
+  label,
+  separator = ': ',
+  isName = false,
+  children,
+}: SummaryPropertyProps) {
+  const valueClassName = cn([
+    'person-status-summary-value',
+    isName && 'person-name-value',
+  ]);
+  return <span className="person-status-summary-property">
+    <span className="person-status-summary-label">
+      {label}{separator}
+    </span>
+    <span className={valueClassName}>{children}</span>
+  </span>;
+}
+
+function hasClassification(record: LinkedArtNode) {
+  const classification = getStatusValues(record, ['ascribes_classification']);
+  return classification.length > 0;
+}
+
+type PlaceRelationship = {
+  targets: StatusValue[];
+  types: StatusValue[];
+  statements: string[];
+  isCombined: boolean;
+};
+
+const relationshipTargetKeys: Record<string, string> = {
+  TopographicalStatus: 'ascribes_place',
+  SimilarityStatus: 'ascribes_similarity_target',
+};
+
+function getPlaceRelationship(
+  record: LinkedArtNode,
+  classifications: StatusValue[],
+): PlaceRelationship | undefined {
+  const targetKey = relationshipTargetKeys[record.type];
+  if (!targetKey) {
+    return undefined;
+  }
+  const targets = getStatusValues(record, [targetKey]);
+  const types = getRelationshipTypes(record, classifications);
+  const isCombined = record.type === 'TopographicalStatus'
+    && types.length > 1 && targets.length > 1;
+  const statements = isCombined ? getRecordedStatements(record) : [];
+  return { targets, types, statements, isCombined };
+}
+
+function getRelationshipTypes(
+  record: LinkedArtNode,
+  classifications: StatusValue[],
+): StatusValue[] {
+  if (record.type === 'SimilarityStatus') {
+    return getStatusValues(record, ['ascribes_similarity_relation']);
+  }
+  if (classifications.length) {
+    return classifications;
+  }
+  return getStatusValues(record, ['ascribes_topographical_relation']);
+}
+
+function getRecordedStatements(record: LinkedArtNode): string[] {
+  const labels: unknown[] = Array.isArray(record._label)
+    ? record._label
+    : [record._label];
+  return labels.filter((value): value is string => typeof value === 'string');
 }
 
 function PlaceValues({ values, linked = true }: { values: StatusValue[]; linked?: boolean }) {
