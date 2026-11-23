@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseViewerPath } from '@globalise/common/uri';
+import { handle, parseViewerSplat } from '@globalise/common/uri';
 import { validateManifestUrlParams } from '@globalise/router';
 import { type ManifestRoute, parseManifestRoute } from './ManifestRoute';
 import { createSharableHref } from './createSharableHref';
@@ -48,6 +48,6 @@ describe(createSharableHref.name, () => {
 
 function parseHref(href: string): ManifestRoute {
   const { pathname, searchParams } = new URL(href, 'https://foo.bar');
-  const ref = parseViewerPath(pathname) ?? inventory;
+  const ref = parseViewerSplat(pathname.slice(`/${handle}/`.length)) ?? inventory;
   return parseManifestRoute(ref, validateManifestUrlParams(Object.fromEntries(searchParams)));
 }

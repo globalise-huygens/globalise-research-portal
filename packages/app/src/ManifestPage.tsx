@@ -26,11 +26,10 @@ import {
   getRouteApi,
   toCanvasHref,
   toManifestHref,
-  useLocation,
 } from '@globalise/router';
-import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
+import { createManifestId, handle, idBase } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
@@ -48,9 +47,9 @@ const noHits: HtrHit[] = [];
 
 export function ManifestPage() {
   const navigate = route.useNavigate();
-  const pathname = useLocation({ select: (location) => location.pathname });
-  const viewer = useMemo(() => parseViewerPath(pathname) ?? defaultInventory, [pathname]);
-  const isResolved = useResolveManifestRoute(viewer);
+  const parsedViewer = route.useParams({ select: ({ viewer }) => viewer });
+  const viewer = parsedViewer ?? defaultInventory;
+  const isResolved = useResolveManifestRoute(parsedViewer);
   const manifestUrl = createManifestId(viewer);
   const sharableRoute = useSharableRouteState(viewer);
   const searchState = getManifestSearchState(sharableRoute.searchHit, sharableRoute.searchHitQuery);

@@ -87,7 +87,7 @@ describe(clearSearchHits.name, () => {
   it('clears the search hit request, query and hits', () => {
     const document = { inventory: 'foo', page: 'bar', endPage: 'baz' };
     useDocumentStore.setState({
-      searchHitRequest: { document, target: { hitIndex: 0 } },
+      searchHitRequest: { document, hit: { hitIndex: 0 } },
       searchHitQuery: { query: 'foo', facets: {} },
     });
     setSearchHits(hits, 0);
