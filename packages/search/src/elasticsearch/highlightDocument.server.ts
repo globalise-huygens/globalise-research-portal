@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { HtrHit } from '@globalise/common/document';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
-import { getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
+import { checkFacets, getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
 import { isHit, parseAnnotatedText } from './parseAnnotatedText';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets } from './calculateHtrOffsets';
@@ -11,6 +11,7 @@ import { mergeContinuousOffsets } from './mergeContinuousOffsets.ts';
 import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
 import type { ManifestSearchState } from '../utils/getManifestSearchState';
+import documents from '../indices/documents/index.ts';
 
 export type DocumentHighlights = {
   hits: HtrHit[];
@@ -22,7 +23,8 @@ const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
     docDbId: z.string(),
     docEsId: z.string(),
     snippet: z.string(),
-  });
+    // Highlighted documents are only used with the 'documents' index, so it's hardcoded below
+  }).superRefine((data, ctx) => checkFacets({ ...data, index: 'documents' }, ctx));
 
 const highlightDocument = createServerFn({ method: 'POST' })
   .validator(HighlightDocumentRequestSchema)
@@ -52,6 +54,7 @@ export default highlightDocument;
 
 async function fetchAnnotatedText(request: ManifestSearchState): Promise<string | undefined> {
   const result = await elastic.search({
+    // Highlighted documents are only used with the 'documents' index, so it's hardcoded below
     index: 'documents',
     size: 1,
     _source: false,
@@ -60,7 +63,7 @@ async function fetchAnnotatedText(request: ManifestSearchState): Promise<string 
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
-    query: getSearchQuery(request.query, request.facets, request.docEsId) ?? undefined,
+    query: getSearchQuery(documents, request.query, request.facets, request.docEsId) ?? undefined,
   });
   return result.hits.hits[0]?.highlight?.annotatedText[0];
 }

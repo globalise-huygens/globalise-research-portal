@@ -26,6 +26,7 @@ import Facet from './Facet';
 import classes from './HierarchyFacet.module.css';
 
 import type { HierarchyFacetItem } from './elasticsearch/hierarchyFacetItems.server';
+import { useActiveIndex } from './utils/useActiveIndex';
 
 function mapLabels(results: HierarchyFacetItem[]) {
   return results.reduce<Record<string, string>>((acc, result) => {
@@ -40,8 +41,9 @@ function mapLabels(results: HierarchyFacetItem[]) {
 }
 
 export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
+  const activeIndex = useActiveIndex();
   const { label } = useFilterFacet(facetKey);
-  const isFetching = useIsFetching({ queryKey: hierarchyFacetItemsQueryKey(facetKey) }) > 0;
+  const isFetching = useIsFetching({ queryKey: hierarchyFacetItemsQueryKey(activeIndex, facetKey) }) > 0;
 
   return (
     <Facet label={label} isPending={isFetching}>
@@ -52,10 +54,11 @@ export default function HierarchyFacet({ facetKey }: { facetKey: string }) {
 
 function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
+  const activeIndex = useActiveIndex();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
   const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state), [state]);
-  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));
+  const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(activeIndex, facetKey, useDeferredValue(searchState)));
   const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(new Set());
 
   useEffect(() => updateFacetValueLabels(mapLabels(items)), [updateFacetValueLabels, items]);

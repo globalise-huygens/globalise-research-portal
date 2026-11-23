@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createServerFn } from '@tanstack/react-start';
-import { rangeFacets as items, GlobaliseSearchStateSchema } from './elastic.server';
+import { checkFacets, GlobaliseSearchStateSchema } from './elastic.server';
+import { indexKeys, indices } from '../indices';
 
 export type Term = {
   start: number;
@@ -9,7 +10,13 @@ export type Term = {
 };
 
 const RangeFacetItemsRequestSchema = GlobaliseSearchStateSchema.extend({
-  key: z.enum(Object.keys(items)),
+  index: z.enum(indexKeys),
+  key: z.string(),
+}).superRefine((data, ctx) => {
+  checkFacets(data, ctx);
+  if (!Object.hasOwn(indices[data.index].rangeFacets, data.key)) {
+    ctx.addIssue({ code: 'custom', path: ['key'], message: `Unknown range facet '${data.key}' for index '${data.index}'` });
+  }
 });
 
 const rangeFacetItems = createServerFn({ method: 'POST' })

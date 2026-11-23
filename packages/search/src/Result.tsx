@@ -1,9 +1,7 @@
 import { JSX, ReactNode } from 'react';
-import { cn, EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
-import Mention from './Mention';
+import { EntityBadge, EntityTag, EntityTagType } from '@globalise/design';
 import classes from './Result.module.css';
 
-import type { DocumentSearchResult } from './elasticsearch/search.server';
 
 export type ResultProps = {
   type: EntityTagType;
@@ -44,29 +42,5 @@ export default function Result({ type, begin, end, title, subline, children }: R
         {children}
       </div>
     </li>
-  );
-}
-
-export function DocumentResultContent(result: DocumentSearchResult) {
-  return (
-    <>
-      <ul className={cn(classes.metadata, classes.archive)}>
-        {result.archive.map((item, idx) => <li key={idx}>{item}</li>)}
-      </ul>
-
-      <ul className={classes.mentions}>
-        {result.mentions.map((mention, idx) => <Mention
-          key={idx}
-          document={result}
-          snippet={mention}/>,
-        )}
-      </ul>
-
-      <pre>
-        <code>
-          {JSON.stringify(result, null, 2)}
-        </code>
-      </pre>
-    </>
   );
 }
