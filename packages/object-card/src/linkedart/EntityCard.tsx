@@ -29,7 +29,8 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
-import { PlaceCardBody, PlaceOverview } from './PlaceCardBody.tsx';
+import { PlaceCardBody } from './place/PlaceCardBody.tsx';
+import { PlaceOverview } from './place/PlaceOverview.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
