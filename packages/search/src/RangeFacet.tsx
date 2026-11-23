@@ -8,10 +8,12 @@ import getSearchState, { type GlobaliseSearchState } from './utils/getSearchStat
 import Facet from './Facet';
 import Histogram from './Histogram';
 import classes from './RangeFacet.module.css';
+import { useActiveIndex } from './utils/useActiveIndex';
 
 export default function RangeFacet({ facetKey }: { facetKey: string }) {
   const { label } = useFacet(facetKey, '');
-  const isFetching = useIsFetching({ queryKey: rangeFacetItemsQueryKey(facetKey) }) > 0;
+  const activeIndex = useActiveIndex();
+  const isFetching = useIsFetching({ queryKey: rangeFacetItemsQueryKey(activeIndex, facetKey) }) > 0;
 
   return (
     <Facet label={label} isPending={isFetching}>
@@ -22,8 +24,9 @@ export default function RangeFacet({ facetKey }: { facetKey: string }) {
 
 function RangeSlider({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
+  const activeIndex = useActiveIndex();
   const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state), [state]);
-  const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));
+  const { data: terms } = useSuspenseQuery(rangeFacetItemsQueryOptions(activeIndex, facetKey, useDeferredValue(searchState)));
 
   const min = terms[0].start;
   const max = terms[terms.length - 1].end;

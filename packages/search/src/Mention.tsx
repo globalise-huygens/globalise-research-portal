@@ -4,8 +4,7 @@ import { createManifestId, parseDocumentName } from '@globalise/common/uri';
 import { MarkedText } from '@globalise/design';
 import { isHit, parseAnnotatedText } from './elasticsearch/parseAnnotatedText';
 import classes from './Mention.module.css';
-
-import type { DocumentSearchResult } from './elasticsearch/search.server';
+import type { DocumentSearchResult } from './indices/documents/documentsTypes';
 
 type MentionProps = {
   document: DocumentSearchResult;

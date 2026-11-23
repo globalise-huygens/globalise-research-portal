@@ -3,7 +3,10 @@ import { createServerFn } from '@tanstack/react-start';
 import { AggregationsStringTermsAggregate, AggregationsStringTermsBucket } from '@elastic/elasticsearch/lib/api/types';
 import elastic from './client.server';
 import { getLabel } from './labels.server';
-import { getSearchQuery, hierarchyFacets as items, GlobaliseSearchStateSchema, type FacetRequest } from './elastic.server';
+import { checkFacets, getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
+import { indexKeys, indices } from '../indices';
+
+type HierarchyFacetItemsRequest = z.infer<typeof HierarchyFacetItemsRequestSchema>;
 
 export type HierarchyFacetItem = {
   id: string;
@@ -13,7 +16,13 @@ export type HierarchyFacetItem = {
 };
 
 const HierarchyFacetItemsRequestSchema = GlobaliseSearchStateSchema.extend({
-  key: z.enum(Object.keys(items)),
+  index: z.enum(indexKeys),
+  key: z.string(),
+}).superRefine((data, ctx) => {
+  checkFacets(data, ctx);
+  if (!Object.hasOwn(indices[data.index].hierarchyFacets, data.key)) {
+    ctx.addIssue({ code: 'custom', path: ['key'], message: `Unknown hierarchy facet '${data.key}' for index '${data.index}'` });
+  }
 });
 
 const separator = '|';
@@ -22,11 +31,12 @@ const cache = new Map<string, Promise<HierarchyFacetItem[]>>();
 const hierarchyFacetItems = createServerFn({ method: 'POST' })
   .validator(HierarchyFacetItemsRequestSchema)
   .handler(async ({ data }) => {
+    const cacheKey = `${data.index}:${data.key}`;
     if (!data.query && (!data.facets || Object.keys(data.facets).length === 0)) {
-      if (!cache.has(data.key)) {
-        cache.set(data.key, getHierarchyFacetItems(data));
+      if (!cache.has(cacheKey)) {
+        cache.set(cacheKey, getHierarchyFacetItems(data));
       }
-      return cache.get(data.key)!;
+      return cache.get(cacheKey)!;
     }
     return getHierarchyFacetItems(data);
   });
@@ -42,14 +52,15 @@ function countMissing(items: HierarchyFacetItem[]) {
   }
 }
 
-async function getHierarchyFacetItems(data: FacetRequest) {
+async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
+  const index = indices[data.index];
   const result = await elastic.search({
-    index: 'documents',
+    index: index.esIndex,
     size: 0,
     aggs: {
       items: {
         terms: {
-          field: items[data.key].tree,
+          field: index.hierarchyFacets[data.key].tree,
           size: 10000,
           order: {
             _count: 'desc',
@@ -57,7 +68,7 @@ async function getHierarchyFacetItems(data: FacetRequest) {
         },
       },
     },
-    query: getSearchQuery(data.query, data.facets) ?? undefined,
+    query: getSearchQuery(index, data.query, data.facets) ?? undefined,
   });
 
   const tree = ((result.aggregations?.items as AggregationsStringTermsAggregate)
