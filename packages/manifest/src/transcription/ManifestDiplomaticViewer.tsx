@@ -24,7 +24,7 @@ type CanvasInfo = {
 };
 
 type Props = {
-  showLayoutElements: boolean;
+  isInReadingMode: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
 
@@ -32,7 +32,7 @@ const MIN_CANVASES_TO_RENDER = 4;
 const MAX_VIEWPORTS_TO_RENDER = 2;
 
 export function ManifestDiplomaticViewer({
-  showLayoutElements,
+  isInReadingMode,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
@@ -286,7 +286,7 @@ export function ManifestDiplomaticViewer({
               isVisible={visibleCanvases.has(i)}
               isCurrent={i === selectedIndex}
               isInRenderRange={isInRenderRange(i)}
-              showBlocks={showLayoutElements}
+              showBlocks={isInReadingMode}
             />
           ))}
       </div>

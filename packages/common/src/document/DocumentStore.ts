@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import type { ClassifiedHighlightSlice } from './ClassifiedHighlightSlice';
-import type { LayoutElementsSlice } from './LayoutElementsSlice';
+import type { ReadingModeSlice } from './ReadingModeSlice.ts';
 import type { ManifestViewerSlice } from './ManifestViewerSlice';
 import type { SearchHitSlice } from './SearchHitSlice';
 import type { SelectionSlice } from './SelectionSlice';
@@ -12,7 +12,7 @@ import { cidocEntityClassificationIds, eventCategory } from '../annotation';
 
 export type DocumentState =
   & ClassifiedHighlightSlice
-  & LayoutElementsSlice
+  & ReadingModeSlice
   & ManifestViewerSlice
   & SearchHitSlice
   & SelectionSlice
@@ -36,8 +36,8 @@ const defaultSelectionSlice: SelectionSlice = {
   clicked: null,
 };
 
-const defaultLayoutElementsSlice: LayoutElementsSlice = {
-  isLayoutElementsVisible: true,
+const defaultReadingModeSlice: ReadingModeSlice = {
+  isInReadingMode: false,
 };
 
 const defaultClassifiedHighlightSlice: ClassifiedHighlightSlice = {
@@ -54,7 +54,7 @@ const defaultTocSlice = {
 
 export const useDocumentStore = create<DocumentState>(() => ({
   ...defaultClassifiedHighlightSlice,
-  ...defaultLayoutElementsSlice,
+  ...defaultReadingModeSlice,
   ...defaultManifestViewerSlice,
   ...defaultSearchHitSlice,
   ...defaultSelectionSlice,

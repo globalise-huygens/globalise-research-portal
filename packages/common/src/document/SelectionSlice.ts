@@ -9,8 +9,8 @@ export type SelectionSlice = {
 };
 
 export function setHovered(id: Id | null): void {
-  // In quiet mode, no hovered elements:
-  if (!useDocumentStore.getState().isLayoutElementsVisible) {
+  // In reading mode, no hovered elements:
+  if (useDocumentStore.getState().isInReadingMode) {
     return;
   }
   setState((s) => ({ hovered: createSelection(s, id) }));

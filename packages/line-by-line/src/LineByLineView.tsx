@@ -6,12 +6,12 @@ import { useLineSegments } from './useLineSegments';
 export type LineByLineLayoutProps = {
   canvasId: string;
   annotations: Record<Id, Annotation>;
-  showLayoutElements?: boolean;
+  isInReadingMode?: boolean;
   style?: React.CSSProperties;
 };
 
 export const LineByLineView = React.memo(function LineByLineView(
-  { canvasId, annotations, showLayoutElements = true }: LineByLineLayoutProps,
+  { canvasId, annotations, isInReadingMode = true }: LineByLineLayoutProps,
 ) {
   const lineSegments = useLineSegments(canvasId, annotations);
 
@@ -19,7 +19,7 @@ export const LineByLineView = React.memo(function LineByLineView(
     <NormalizedLayout
       canvasId={canvasId}
       lineSegments={lineSegments}
-      showLayoutElements={showLayoutElements}
+      isInReadingMode={isInReadingMode}
     />
   );
 });

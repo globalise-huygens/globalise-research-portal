@@ -14,11 +14,11 @@ import './NormalizedLayout.css';
 type Props = {
   canvasId: string;
   lineSegments: LineSegments;
-  showLayoutElements: boolean;
+  isInReadingMode: boolean;
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  { canvasId, lineSegments, showLayoutElements }: Props,
+  { canvasId, lineSegments, isInReadingMode }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
   const highlightCategories = useHighlightCategories();
@@ -39,7 +39,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
   return (
     <div
       className="normalized-view highlight-layers"
-      data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
+      data-layout-elements-visible={isInReadingMode ? 'true' : 'false'}
     >
       <div className="text">
         {blockEntries.map(([blockId, lineIds], i) => (

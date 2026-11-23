@@ -1,5 +1,5 @@
 import {
-  useIsLayoutElementsVisible,
+  useIsInReadingMode,
   useTranscriptionMode,
 } from '@globalise/common/document';
 import { ManifestReadingToolbar } from '../responsive/ManifestReadingToolbar';
@@ -17,17 +17,17 @@ export function ManifestTranscriptionViewer({
   onCanvasChange,
 }: Props) {
   const transcriptionMode = useTranscriptionMode();
-  const showLayoutElements = useIsLayoutElementsVisible();
+  const isInReadingMode = !useIsInReadingMode();
 
   const content =
     transcriptionMode === 'line-by-line' ? (
       <ManifestLineByLineViewer
-        showLayoutElements={showLayoutElements}
+        isInReadingMode={isInReadingMode}
         onCanvasChange={onCanvasChange}
       />
     ) : (
       <ManifestDiplomaticViewer
-        showLayoutElements={showLayoutElements}
+        isInReadingMode={isInReadingMode}
         onCanvasChange={onCanvasChange}
       />
     );
