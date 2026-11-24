@@ -246,13 +246,6 @@
       gap: var(--s8);
     }
 
-    .node-list .entity-tag {
-      width: 100%;
-      align-items: flex-start;
-      justify-content: space-between;
-      color: var(--brand-turquoise);
-    }
-
     .node-list .entity-tag .label {
       overflow-wrap: anywhere;
       white-space: normal;
