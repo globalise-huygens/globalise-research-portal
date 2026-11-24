@@ -67,6 +67,7 @@ function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardTyp
     case 'conceptscheme':
     case 'concept':
     case 'collection': return 'concept';
+    case 'occurrence': return 'occurrence';
     default: return previewTypeByResource[resource.type] ?? (resource.prefLabel ? 'concept' : 'entity');
   }
 }
