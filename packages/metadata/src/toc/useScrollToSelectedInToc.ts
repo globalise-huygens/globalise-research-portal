@@ -61,15 +61,32 @@ export function useScrollToSelectedInToc(
 }
 
 function afterSidebarResize(list: HTMLElement, focusDocument: () => void) {
-  // Opening the sidebar changes the height of wrapped document titles.
-  let timer: ReturnType<typeof setTimeout>;
-  const observer = new ResizeObserver(() => {
-    clearTimeout(timer);
-    timer = setTimeout(focusDocument, 80);
+  let cancelled = false;
+  const frame = requestAnimationFrame(() => {
+    const transitions = [];
+    for (
+      let element: HTMLElement | null = list;
+      element;
+      element = element.parentElement
+    ) {
+      for (const animation of element.getAnimations()) {
+        if ('transitionProperty' in animation
+          && (animation.transitionProperty === 'width'
+            || animation.transitionProperty === 'grid-template-columns')) {
+          transitions.push(animation.finished);
+        }
+      }
+    }
+
+    // Wait for layout to settle before measuring the wrapped document title.
+    void Promise.allSettled(transitions).then(() => {
+      if (!cancelled) {
+        focusDocument();
+      }
+    });
   });
-  observer.observe(list);
   return () => {
-    observer.disconnect();
-    clearTimeout(timer);
+    cancelled = true;
+    cancelAnimationFrame(frame);
   };
 }
