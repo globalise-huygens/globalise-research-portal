@@ -6,6 +6,7 @@ export { ClassifiedPanel, IdentifiedPanel } from './entities';
 export {
   TocPanel,
   useCanvasDocuments,
+  useSelectedDocument,
   useSyncSelectedDocument,
   type CanvasDocuments,
   type ManifestDocument,

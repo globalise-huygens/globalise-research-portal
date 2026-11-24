@@ -8,17 +8,19 @@ import {
 import { ReactNode } from 'react';
 import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { findMetadataValue } from '@globalise/metadata';
+import { DocumentBadge, SidebarBadge } from './SidebarBadge.tsx';
 
-export type SidebarId = 'inventory' | 'toc' | 'entities' | 'events';
+export type SidebarId = 'inventory' | 'toc' | 'classified' | 'identified';
 
 export type SidebarPanel = {
   id: SidebarId
   icon: ReactNode,
+  hasHeaderIcon: boolean,
   label: string,
   shortLabel: string,
   description: string,
   railLabel?: string,
-  badge?: string
+  badge?: ReactNode
 };
 
 const sidebarPanels: SidebarPanel[] = [
@@ -29,6 +31,7 @@ const sidebarPanels: SidebarPanel[] = [
     description:
       'View this inventory’s metadata and its place in the archive hierarchy',
     icon: <IconInventory className="sidebar-icon" />,
+    hasHeaderIcon: true,
   },
   {
     id: 'toc',
@@ -37,29 +40,34 @@ const sidebarPanels: SidebarPanel[] = [
     description:
       'Browse the documents in this inventory in archival order. Select a document to explore its metadata and scans',
     icon: <IconTableOfContent className="sidebar-icon" />,
+    hasHeaderIcon: true,
   },
   {
-    id: 'entities',
-    label: 'Entity tags',
-    shortLabel: 'Entities',
+    id: 'classified',
+    label: 'Classified as',
+    shortLabel: 'Classified',
     description:
-      'Explore words and phrases recognised in the current document and linked, where possible, to people, places, dates, objects, and other concepts',
+      'Explore the marked NER categories in the current document.',
     icon: <IconEntities className="sidebar-icon" />,
+    hasHeaderIcon: false,
+    badge: <DocumentBadge />,
   },
   {
-    id: 'events',
-    label: 'Event tags',
-    shortLabel: 'Events',
+    id: 'identified',
+    label: 'Identified as',
+    shortLabel: 'Identified',
     description:
-      'Explore actions and events recognised in the current document. Use these tags to find related passages',
+      'Explore the recognized entities in the current document.',
     icon: <IconEvents className="sidebar-icon" />,
+    hasHeaderIcon: false,
+    badge: <DocumentBadge />,
   },
 ];
 
 export function useSidebarPanels(): SidebarPanel[] {
   const inventoryNumber = useInventoryNumber();
-  return sidebarPanels.map((panel) => panel.id === 'inventory'
-    ? { ...panel, badge: inventoryNumber, railLabel: inventoryNumber }
+  return sidebarPanels.map((panel) => panel.id === 'inventory' && inventoryNumber
+    ? { ...panel, badge: <SidebarBadge label={inventoryNumber} />, railLabel: inventoryNumber }
     : panel);
 }
 

@@ -29,9 +29,9 @@ export function ExpandedMetadataSidebar({
                 onPress={() => onToggleSection(item.id)}
               >
                 <span className="content">
-                  <span className="icon">{item.icon}</span>
+                  {item.hasHeaderIcon && <span className="icon">{item.icon}</span>}
                   <span className="label">{item.label}</span>
-                  {item.badge && <span className="badge">{item.badge}</span>}
+                  {item.badge}
                 </span>
                 <SidebarDisclosureIcon isExpanded={isExpanded} />
               </AriaButton>
@@ -46,8 +46,8 @@ export function ExpandedMetadataSidebar({
               >
                 {panelId === 'inventory' && <MetadataPanel />}
                 {panelId === 'toc' && <TocPanel />}
-                {panelId === 'entities' && <ClassifiedPanel />}
-                {panelId === 'events' && <IdentifiedPanel />}
+                {panelId === 'classified' && <ClassifiedPanel />}
+                {panelId === 'identified' && <IdentifiedPanel />}
               </div>
             )}
           </React.Fragment>
