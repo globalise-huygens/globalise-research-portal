@@ -77,13 +77,8 @@ function annotationReference(value: unknown): ReferencePanelItemData | undefined
   const canvas = asArray(annotation.partOf).map(resource)
     .find((node) => node && hasType(node, 'Canvas'));
   const canvasUri = resourceUri(canvas);
-  const manifest = asArray(canvas?.partOf).map(resource)
-    .find((node) => node && hasType(node, 'Manifest'));
-  const manifestUri = resourceUri(manifest);
   const scanIdentifier = canvasUri?.split('/canvas:')[1];
-  const scanHref = manifestUri && canvasUri
-    ? toCanvasHref(canvasUri, { manifest: jsonUri(manifestUri), canvas: canvasUri })
-    : undefined;
+  const scanHref = canvasUri ? toCanvasHref(canvasUri, {}) : undefined;
   return {
     id: uri,
     title: scanIdentifier ?? 'Corpus mention',
