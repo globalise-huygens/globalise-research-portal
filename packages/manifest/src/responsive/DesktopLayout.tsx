@@ -1,3 +1,4 @@
+import { useRevealToc } from './useRevealToc.ts';
 import {
   IconLeftPanelClose,
   IconLeftPanelOpen,
@@ -9,7 +10,6 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
-import { useDocumentStore } from '@globalise/common/document';
 import type { ManifestLayoutProps } from '../layout/ManifestLayout';
 import { TOP_BAR_BUTTON } from '../layout/buttonClasses';
 import { CollapsedMetadataRail } from '../layout/CollapsedMetadataRail';
@@ -60,12 +60,7 @@ export function DesktopLayout({
     setIsSidebarExpanded(true);
   }, []);
 
-  React.useEffect(() => useDocumentStore.subscribe((state, previous) => {
-    const navigation = state.toc.navigation;
-    if (navigation?.target === 'reveal' && navigation !== previous.toc.navigation) {
-      expandSidebarSection('toc');
-    }
-  }), [expandSidebarSection]);
+  useRevealToc(() => expandSidebarSection('toc'));
 
   const scanPane = isScanVisible ? (
     <ViewerPane type="scan" isBordered={isTextVisible}>
