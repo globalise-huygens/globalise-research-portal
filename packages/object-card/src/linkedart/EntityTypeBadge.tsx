@@ -3,6 +3,7 @@ import {
   EntityBadgeType,
   IconEntityPerson,
   IconEntityPlace,
+  IconEvents,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
@@ -32,13 +33,21 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
     return null;
   }
   return (
-    <EntityBadge
-      type={badgeType}
-      icon={type === 'person'
-        ? <IconEntityPerson aria-hidden="true" />
-        : type === 'place' ? <IconEntityPlace aria-hidden="true" /> : undefined}
-    >
+    <EntityBadge type={badgeType} icon={getEntityTypeIcon(type)}>
       {type}
     </EntityBadge>
   );
+}
+
+function getEntityTypeIcon(type: LinkedArtEntityType) {
+  switch (type) {
+    case 'person':
+      return <IconEntityPerson aria-hidden="true" />;
+    case 'place':
+      return <IconEntityPlace aria-hidden="true" />;
+    case 'occurrence':
+      return <IconEvents aria-hidden="true" />;
+    default:
+      return undefined;
+  }
 }

@@ -1,6 +1,9 @@
 import { isUrl } from '@globalise/common';
 
-const internalHost = 'data.globalise.huygens.knaw.nl';
+const internalHosts = new Set([
+  'data.globalise.huygens.knaw.nl',
+  'id.globalise.nl',
+]);
 
 export function isInternalUri(uri?: string): boolean {
   if (!uri) {
@@ -10,7 +13,7 @@ export function isInternalUri(uri?: string): boolean {
     return false;
   }
   try {
-    return new URL(uri).hostname === internalHost;
+    return internalHosts.has(new URL(uri).hostname);
   } catch {
     return false;
   }

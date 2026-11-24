@@ -118,7 +118,7 @@
       align-items: baseline;
     }
 
-    &:is(.person-card, .place-card) {
+    &:is(.person-card, .place-card, .occurrence-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -265,7 +265,8 @@
   }
 
   @media (max-width: 1023px) {
-    .entity-card.person-card {
+    .entity-card.person-card,
+    .entity-card.occurrence-card {
       height: auto;
       max-height: none;
       overflow: visible;
