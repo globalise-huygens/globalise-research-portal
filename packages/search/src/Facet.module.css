@@ -68,12 +68,6 @@
             display: flex;
             flex-shrink: 0;
             fill: currentColor;
-            rotate: 0deg;
-            transition: rotate 120ms ease-out;
-        }
-
-        &[aria-expanded="true"] > svg {
-            rotate: 180deg;
         }
     }
 

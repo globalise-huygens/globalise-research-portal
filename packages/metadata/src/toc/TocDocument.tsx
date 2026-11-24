@@ -5,7 +5,7 @@ import {
   useIsTocDocumentExpanded,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import { IconEntityDocument, IconExpandSection } from '@globalise/design';
+import { ExpandCollapseIcon, IconEntityDocument } from '@globalise/design';
 import type { ManifestDocument } from './toToc';
 import { TocDocumentMetadata } from './TocDocumentMetadata.tsx';
 import { TocScan } from './TocScan.tsx';
@@ -48,7 +48,7 @@ export function TocDocument(
       >
         <IconEntityDocument className="document-icon" aria-hidden="true"/>
         <span className="document-title">{document.label}</span>
-        <IconExpandSection className="disclosure-icon" aria-hidden="true"/>
+        <ExpandCollapseIcon isExpanded={isExpanded} className="disclosure-icon"/>
         <small>
           {isCurrent && 'Current document · '}
           {document.scans.length} scan{document.scans.length === 1 ? '' : 's'}:

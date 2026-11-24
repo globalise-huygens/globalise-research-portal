@@ -3,7 +3,7 @@ import type { AnnotationPresentationFamily } from '@globalise/common/annotation'
 import {
   Checkbox,
   cn,
-  IconExpandSection,
+  ExpandCollapseIcon,
   Popover,
   ToolButton,
   Tooltip,
@@ -231,8 +231,8 @@ function EntityHighlightMenu({
                             onPress={() => toggleExpandedGroup(category.id)}
                           >
                             {label}
-                            <IconExpandSection
-                              aria-hidden="true"
+                            <ExpandCollapseIcon
+                              isExpanded={isExpanded}
                               className="expand-icon"
                             />
                           </AriaButton>

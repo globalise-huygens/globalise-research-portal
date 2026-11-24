@@ -281,12 +281,6 @@
   .toc-document .disclosure-icon {
     width: var(--s20);
     height: var(--s20);
-    transform: rotate(-90deg);
-    transition: transform 120ms ease-out;
-  }
-
-  .toc-document > .header[aria-expanded="true"] .disclosure-icon {
-    transform: rotate(0deg);
   }
 
   .toc-document-metadata {
