@@ -118,7 +118,18 @@
       align-items: baseline;
     }
 
-    &:is(.person-card, .place-card, .occurrence-card) {
+    &.conversion-card .conversion-target-value {
+      margin-top: var(--s12);
+    }
+
+    &.conversion-card .conversion-summary .disclosure-header .disclosure-summary {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--s8);
+    }
+
+    &:is(.person-card, .place-card, .occurrence-card, .conversion-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -270,7 +281,8 @@
 
   @media (max-width: 1023px) {
     .entity-card.person-card,
-    .entity-card.occurrence-card {
+    .entity-card.occurrence-card,
+    .entity-card.conversion-card {
       height: auto;
       max-height: none;
       overflow: visible;

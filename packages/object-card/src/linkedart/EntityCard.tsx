@@ -36,6 +36,7 @@ import {
   OccurrenceOverview,
   getOccurrenceTitle,
 } from './occurrence/OccurrenceCardBody.tsx';
+import { ConversionCardBody } from './conversion/ConversionCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -63,14 +64,15 @@ export function EntityCard() {
     cardClass += ' occurrence-card';
     title = getOccurrenceTitle(entity);
     body = <OccurrenceCardBody entity={entity} />;
+  } else if (entityType === 'conversion') {
+    cardClass += ' conversion-card';
+    body = <ConversionCardBody entity={entity} />;
   }
   const showIdentifiers = identifiers.length > 0
     && !['person', 'place', 'occurrence'].includes(entityType);
 
   return (
-    <ObjectCard
-      className={cardClass}
-    >
+    <ObjectCard className={cardClass}>
       <ObjectCardHeader
         actions={
           <>
