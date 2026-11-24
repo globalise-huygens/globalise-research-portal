@@ -20,15 +20,18 @@ import {
   toWordHighlightConfigs,
   WordHighlights,
 } from '@globalise/facsimile';
+import type { CanvasDocuments } from '@globalise/metadata';
+import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
 
 type HighlightsOverlayProps = {
-  lazyCanvas: LazyTiledImage,
+  lazyCanvas: LazyTiledImage;
+  canvasDocuments?: CanvasDocuments;
 };
 
 export const HighlightsOverlay = memo(function HighlightsOverlay(
-  { lazyCanvas }: HighlightsOverlayProps,
+  { lazyCanvas, canvasDocuments }: HighlightsOverlayProps,
 ) {
   const { vault } = useManifest();
   const isTileLoaded = lazyCollectionViewerStore(
@@ -74,29 +77,38 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   );
   const blocks = useMemo(() => toBlockHighlightConfigs(annotations), [annotations]);
 
-  if (!isTileLoaded || !isReady || !hasAnnotations || !canvasSize) {
+  if (!isTileLoaded) {
     return null;
   }
 
   return (
     <>
       <Overlay location={location}>
-        <svg
-          viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
-          style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
-        >
-          {showLayoutElements && blocks.map(({ id, path }) => (
-            <BlockHighlight
-              key={id}
-              canvasId={lazyCanvas.canvasId}
-              id={id}
-              points={path}
-            />
-          ))}
-          <SearchHitWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
-          <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
-          {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
-        </svg>
+        <div className="canvas-labels-overlay">
+          {isReady && hasAnnotations && canvasSize && (
+            <svg
+              viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
+              style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
+            >
+              {showLayoutElements && blocks.map(({ id, path }) => (
+                <BlockHighlight
+                  key={id}
+                  canvasId={lazyCanvas.canvasId}
+                  id={id}
+                  points={path}
+                />
+              ))}
+              <SearchHitWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
+              <SelectedWordHighlights canvasId={lazyCanvas.canvasId} words={words}/>
+              {isInteractive && <WordHighlights words={words} setTooltip={setTooltip}/>}
+            </svg>
+          )}
+          <CanvasHeaderLabel
+            canvasId={lazyCanvas.canvasId}
+            canvasDocuments={canvasDocuments}
+            isCurrent={isSelectedCanvas}
+          />
+        </div>
       </Overlay>
       {tooltip && <FacsimileTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
