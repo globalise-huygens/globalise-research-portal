@@ -1,0 +1,31 @@
+import { idBase, matchUri } from './uriPatterns.ts';
+import type { PageRef } from './canvasId';
+
+export type DocumentRef = PageRef & {
+  endPage: string;
+};
+
+export function parseDocumentId(
+  id: string,
+): DocumentRef | undefined {
+  const groups = matchUri('document', id);
+  return groups && { inventory: groups.inventory, page: groups.page, endPage: groups.endPage };
+}
+
+export function parseDocumentName(
+  name: string,
+): DocumentRef | undefined {
+  return parseDocumentId(`${idBase}/document:${name}`);
+}
+
+export function createDocumentId(
+  document: DocumentRef,
+): string {
+  return `${idBase}/document:${createDocumentName(document)}`;
+}
+
+export function createDocumentName(
+  { inventory, page, endPage }: DocumentRef,
+): string {
+  return `NL-HaNA_1.04.02_${inventory}_${page}-${endPage}`;
+}

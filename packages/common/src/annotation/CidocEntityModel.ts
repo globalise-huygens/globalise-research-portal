@@ -3,6 +3,11 @@ import {
   EntityAnnotationBodyType,
   getPrimaryEntityBody,
 } from './EntityModel.ts';
+import {
+  getPresentationFamily,
+  type AnnotationPresentationFamily,
+} from '../PresentationFamily.ts';
+import { thesaurusBase } from '../uri';
 
 export const cidocClassNames = [
   'cidoc-actor',
@@ -43,9 +48,6 @@ export type EntityClassificationDefinition = {
   previewStrategy: EntityPreviewStrategy;
   typeLabel?: string;
 };
-
-const nerClassificationBase =
-  'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:';
 
 const personHighlightGroup = { id: 'persons', label: 'Persons' } as const;
 const organisationHighlightGroup = { id: 'organisations', label: 'Organisations' } as const;
@@ -182,6 +184,17 @@ export function getCidocClassNameByClassificationId(
   return getEntityClassificationDefinition(classificationId).cidocClassName;
 }
 
+export function getEntityPresentationFamilyByClassificationId(
+  classificationId: CidocEntityClassificationId,
+): AnnotationPresentationFamily {
+  const { presentationType } = getEntityClassificationDefinition(classificationId);
+  const family = getPresentationFamily(presentationType);
+  if (!family) {
+    throw new Error(`No presentation family for ${presentationType}`);
+  }
+  return family;
+}
+
 export function getEntityClassificationDefinition(
   classificationId: CidocEntityClassificationId,
 ): EntityClassificationDefinition {
@@ -191,7 +204,7 @@ export function getEntityClassificationDefinition(
 export function getEntityClassificationUri(
   classificationId: CidocEntityClassificationId,
 ): string {
-  return `${nerClassificationBase}${classificationId.replace(/^ner:/, '')}`;
+  return `${thesaurusBase}${classificationId.replace(/^ner:/, '')}`;
 }
 
 export function getCidocEntityClassificationId(

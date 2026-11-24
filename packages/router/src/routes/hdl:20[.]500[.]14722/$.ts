@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { resetUrlParamsOnManifestChange, validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
 
 /**
  * TODO Enable ssr for manifest viewer: only osd needs the browser
@@ -8,10 +8,7 @@ import { resetUrlParamsOnManifestChange, validateManifestUrlParams } from '../..
  * - import openseadragon lazily
  * - use type only imports for osd types
  */
-export const Route = createFileRoute('/manifest/')({
+export const Route = createFileRoute('/hdl:20.500.14722/$')({
   validateSearch: validateManifestUrlParams,
-  search: {
-    middlewares: [resetUrlParamsOnManifestChange],
-  },
   ssr: false,
 });

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '../../lib';
+import { getPresentationFamily } from '@globalise/common';
 
 export type EntityBadgeType =
   | 'ship'
@@ -19,15 +20,6 @@ export type EntityBadgeType =
   | 'ner'
   | 'lin';
 
-const colorByType: Partial<Record<EntityBadgeType, EntityBadgeType>> = {
-  polity: 'organisation',
-  rulership: 'organisation',
-  voyage: 'ship',
-  conversion: 'document',
-  occurrence: 'document',
-  concept: 'document',
-};
-
 export type EntityBadgeProps = {
   type?: EntityBadgeType;
   icon?: React.ReactNode;
@@ -44,7 +36,8 @@ function EntityBadge({
   return (
     <span
       className={cn('entity-badge', className)}
-      data-type={colorByType[badgeType] ?? badgeType}
+      data-type={badgeType}
+      data-presentation-family={getPresentationFamily(badgeType)}
       {...props}
     >
       {icon && <span className="icon">{icon}</span>}

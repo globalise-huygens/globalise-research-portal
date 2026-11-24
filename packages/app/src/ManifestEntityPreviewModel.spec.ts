@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { EntityBody } from '@globalise/common/annotation';
 import {
+  getEquivalentTarget,
   getInternalConceptUri,
   getLinkedObjectCardHref,
   getObjectCardHref,
@@ -67,5 +68,29 @@ describe('manifest entity preview links', () => {
       'https://example.com/person/123',
     ))).toBeUndefined();
     expect(getLinkedObjectCardHref(createBody('#person'))).toBeUndefined();
+  });
+});
+
+describe('recorded equivalent targets', () => {
+  const target = { id: publicConceptUri, type: 'Concept' };
+  const match = {
+    type: 'SimilarityStatus',
+    ascribes_similarity_relation: 'la:equivalent',
+    ascribes_similarity_target: target,
+  };
+
+  it('uses a single recorded equivalent target', () => {
+    expect(getEquivalentTarget({
+      type: 'Concept', is_similarity_subject_of: [match],
+    })).toEqual(target);
+  });
+
+  it('does not choose between different equivalent targets', () => {
+    const other = { ...match, ascribes_similarity_target: {
+      ...target, id: `${publicConceptUri}-other`,
+    } };
+    expect(getEquivalentTarget({
+      type: 'Concept', is_similarity_subject_of: [match, other],
+    })).toBeUndefined();
   });
 });

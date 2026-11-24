@@ -1,11 +1,9 @@
-import { getHighlight, type Offsets } from '@knaw-huc/faceted-search-react';
-import { POST_TAG, PRE_TAG } from './highlightTags';
+import type { Offsets } from '@knaw-huc/faceted-search-react';
 
 export function getSnippetOffsets(text: string, snippet: string): Offsets | null {
-  const { text: untaggedSnippet, spans: [firstHit] } = getHighlight(snippet, PRE_TAG, POST_TAG);
-  const snippetStart = text.indexOf(untaggedSnippet);
-  if (snippetStart === -1 || !firstHit) {
+  const start = text.indexOf(snippet);
+  if (start === -1) {
     return null;
   }
-  return { start: snippetStart + firstHit.start, end: snippetStart + firstHit.end };
+  return { start, end: start + snippet.length };
 }

@@ -151,7 +151,7 @@
     min-width: 0;
     align-items: center;
     gap: var(--s4);
-    color: var(--color-brand-white);
+    color: var(--brand-turquoise);
     text-decoration-line: underline;
     text-underline-offset: 0.18em;
   }

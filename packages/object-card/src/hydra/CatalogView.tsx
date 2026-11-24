@@ -7,6 +7,7 @@ import {
 } from '@globalise/design';
 import {
   getLinkedArtEntityType,
+  getPresentationFamily,
   type LinkedArtEntityType,
 } from '@globalise/common';
 import { EntityTypeBadge } from '../linkedart';
@@ -176,6 +177,7 @@ function SchemaGroup({
         {schemas.map(({ member, type }) => {
           const schemaTitle =
             schemaTitles[type] ?? member.title ?? member['@id'];
+          const family = getPresentationFamily(type);
 
           return (
             <CardArticle
@@ -183,7 +185,10 @@ function SchemaGroup({
               href={toHydraHref(member)}
               label={title === 'Entities' ? 'Entity' : 'Concept'}
               title={schemaTitle}
-              className={`catalog-schema-tile catalog-schema-tile--${type}`}
+              className={[
+                'catalog-schema-tile',
+                family && `annotation-${family}`,
+              ].filter(Boolean).join(' ')}
             />
           );
         })}

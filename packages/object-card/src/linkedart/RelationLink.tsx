@@ -1,5 +1,5 @@
 import {
-  EntityPreview,
+  PreviewCard,
   EntityTag,
   type EntityTagType,
   ObjectCardExternalLink,
@@ -38,7 +38,7 @@ export function RelationLink({ node, resolveExternal = true }: RelationLinkProps
   if (!href) {
     return <span className="relation">{text}</span>;
   }
-  return <EntityPreview data={preview} isPending={isPending}>{(attributes) => isInternalUri(href) ? (
+  return <PreviewCard data={preview} isPending={isPending}>{(attributes) => isInternalUri(href) ? (
     <EntityTag
       {...attributes}
       type={getEntityTagType(getLinkedArtEntityType(href))}
@@ -48,7 +48,7 @@ export function RelationLink({ node, resolveExternal = true }: RelationLinkProps
     </EntityTag>
   ) : (
     <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
-  )}</EntityPreview>;
+  )}</PreviewCard>;
 }
 
 export function RelationValue({

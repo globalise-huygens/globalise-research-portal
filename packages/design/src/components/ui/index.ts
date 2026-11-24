@@ -1,4 +1,4 @@
-export { EntityPreview } from './EntityPreview';
+export { PreviewCard } from './PreviewCard.tsx';
 export { PopoverCard } from './PopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
@@ -174,3 +174,7 @@ export { EntityIcon, getEntityTypeLabel, type EntityType } from './EntityIcon';
 
 export { Spinner } from './Spinner';
 export type { SpinnerProps } from './Spinner';
+
+export { MarkedText } from './MarkedText';
+export type { MarkedTextProps } from './MarkedText';
+export type { TextPosition } from '@knaw-huc/text-annotation-segmenter';

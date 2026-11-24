@@ -20,7 +20,7 @@ export type ClassifiedHighlightSlice = {
 };
 
 export type WordClassifications = {
-  tones: Record<Id, ClassifiedTone>;
+  tones: Record<Id, ClassifiedTone | undefined>;
   targetId?: Id;
 };
 

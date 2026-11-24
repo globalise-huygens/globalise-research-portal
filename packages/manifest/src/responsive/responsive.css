@@ -176,34 +176,16 @@
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
     align-self: stretch;
-    border-top: 1px solid var(--color-neutral-700);
-  }
-
-  .mobile-information-menu button {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     gap: var(--s4);
-    border: 0;
-    border-top: 3px solid transparent;
-    background: transparent;
-    color: var(--color-neutral-300);
-    padding: var(--s4) 0;
-    font: inherit;
+    padding: var(--s4);
+  }
+
+  .mobile-information-menu .tool-button {
+    min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    padding: 0;
     font-size: 11px;
-  }
-
-  .mobile-information-menu button[aria-pressed="true"] {
-    border-top-color: var(--color-brand-mint);
-    background: var(--color-neutral-800);
-    color: var(--color-brand-white);
-  }
-
-  .mobile-information-menu button:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: -2px;
   }
 
   .mobile-information-menu svg {
