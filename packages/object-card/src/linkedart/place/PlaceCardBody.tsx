@@ -26,14 +26,17 @@ import { PlaceRecord } from './PlaceRecord.tsx';
 import { SummaryProperty } from './SummaryProperty.tsx';
 
 export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
-  const locations = findByPath(entity, ['is_approximated_by_declarative_place']);
+  const locations = findByPath(entity, [
+    'is_approximated_by_declarative_place',
+  ]);
   const definitions = findByPath(entity, ['place_is_defined_by']);
   const { sources, notes } = getPlaceEvidence(entity);
   const details = placeDetailGroups.flatMap(({ key, label: title }) =>
     findByPath(entity, [key]).map((record) => ({ record, title })));
   const classifications = getStatusValues(entity, ['classified_as']);
   const detailKeys = new Set(placeDetailGroups.map(({ key }) => key));
-  const otherStatusGroups = statusKeys.filter(({ key }) => !detailKeys.has(key));
+  const otherStatusGroups = statusKeys.filter(({ key }) =>
+    !detailKeys.has(key));
   const groups = [
     ...otherStatusGroups,
     { key: 'is_topographical_subject_of', label: 'Geographical relationships' },
@@ -109,7 +112,9 @@ export function PlaceCardBody({ entity }: { entity: LinkedArtNode }) {
           </ObjectCardPropertyList>
         </ObjectCardSection>;
       })}
-      {hasEvidence && <ObjectCardSection title="Further information" collapsible>
+      {hasEvidence && <ObjectCardSection
+        title="Further information" collapsible
+      >
         <div className="person-status-list">
           {!!notes.length && <ObjectCardDisclosure summary="Notes">
             <ObjectCardPropertyList className="person-status-details">

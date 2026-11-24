@@ -41,14 +41,17 @@ export function PlaceRecord({
   const properties = getStatusProperties(record);
   const timespan = findTimespan(record);
   const dates = timespan ? null : getRecordedDates(record);
-  const classifications = [...getStatusValues(record, ['classified_as']),
-    ...findByPath(record, ['ascribes_appellation', 'classified_as'])];
+  const recordClassifications = getStatusValues(record, ['classified_as']);
+  const nameClassifications = findByPath(record, [
+    'ascribes_appellation', 'classified_as',
+  ]);
+  const classifications = [...recordClassifications, ...nameClassifications];
   const { sources, notes } = getPlaceEvidence(record);
   const places = [
     ...findByPath(record, ['has_geographic_scope']),
     ...findByPath(record, ['took_place_at']),
   ];
-  const content = getContent(record);
+  const description = getContent(record);
   const relationship = getPlaceRelationship(record, classifications);
   const statements = relationship?.statements ?? [];
   return <ObjectCardDisclosure summary={
@@ -74,7 +77,9 @@ export function PlaceRecord({
             <span key={statement}>{statement}</span>)}
         </span>}
       />}
-      {content && <ObjectCardProperty label="Description" value={content} />}
+      {description && <ObjectCardProperty
+        label="Description" value={description}
+      />}
       {properties.map((property) => {
         const isRelationship = property.keys.some((key) =>
           key.endsWith('_relation'));

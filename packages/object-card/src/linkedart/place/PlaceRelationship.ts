@@ -15,7 +15,7 @@ export function getPlaceRelationship(
   record: LinkedArtNode,
   classifications: StatusValue[],
 ): PlaceRelationship | undefined {
-  const targetKey = relationshipTargetKeys[record.type];
+  const targetKey = relationshipTargetKeys.get(record.type);
   if (!targetKey) {
     return undefined;
   }
@@ -27,10 +27,10 @@ export function getPlaceRelationship(
   return { targets, types, statements, isCombined };
 }
 
-const relationshipTargetKeys: Record<string, string> = {
-  TopographicalStatus: 'ascribes_place',
-  SimilarityStatus: 'ascribes_similarity_target',
-};
+const relationshipTargetKeys = new Map([
+  ['TopographicalStatus', 'ascribes_place'],
+  ['SimilarityStatus', 'ascribes_similarity_target'],
+]);
 
 function getRelationshipTypes(
   record: LinkedArtNode,
