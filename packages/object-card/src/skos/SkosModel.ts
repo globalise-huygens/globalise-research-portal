@@ -70,12 +70,16 @@ export function matchLabel(match: SkosMatch): string {
 
 function getExternalSourceLabel(uri: string): string {
   try {
-    const hostname = new URL(uri).hostname.replace(/^www\./, '');
+    const url = new URL(uri);
+    const hostname = url.hostname.replace(/^www\./, '');
     if (hostname === 'vocab.getty.edu') {
       return 'Getty AAT';
     }
     if (hostname === 'wikidata.org') {
       return 'Wikidata';
+    }
+    if (hostname === 'w3id.org') {
+      return url.pathname.split('/').filter(Boolean).pop() ?? hostname;
     }
     return hostname;
   } catch {
