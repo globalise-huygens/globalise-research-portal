@@ -1,4 +1,4 @@
-import { getValue, type LanguageValue } from '@globalise/common';
+import { getValue, type LanguageValue, type LinkedArtNode } from '@globalise/common';
 
 export type SkosValue = LanguageValue;
 
@@ -23,6 +23,7 @@ export type SkosConcept = {
   hasTopConcept?: SkosConcept[];
   inScheme?: SkosConcept[];
   topConceptOf?: SkosConcept[];
+  present_at?: LinkedArtNode[];
 
   /**
    * External relations:
