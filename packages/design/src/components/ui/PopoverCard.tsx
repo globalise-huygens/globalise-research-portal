@@ -1,3 +1,4 @@
+import { useDismissOnOutsideWheel } from './useDismissOnOutsideWheel';
 import { usePopoverCardPosition } from './usePopoverCardPosition';
 import { getFocusableTreeWalker } from '@react-aria/focus';
 import { createContext, useContext, useEffect, useEffectEvent, useId, useRef, useState, type AriaAttributes, type CSSProperties, type ReactNode } from 'react';
@@ -86,6 +87,7 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
     }
   });
   const dismiss = useEffectEvent(close);
+  useDismissOnOutsideWheel(Boolean(anchor), () => popupElement, close);
   useEffect(() => {
     if (!anchor) {
       return;
@@ -108,11 +110,9 @@ export function PopoverCard({ children, label, isPending = false, renderTrigger,
       }
       dismiss();
     };
-    window.addEventListener('wheel', dismissOnMovement, { capture: true, passive: true });
     window.addEventListener('scroll', dismissOnMovement, true);
     window.addEventListener('pointerdown', dismissOnMovement, true);
     return () => {
-      window.removeEventListener('wheel', dismissOnMovement, true);
       window.removeEventListener('scroll', dismissOnMovement, true);
       window.removeEventListener('pointerdown', dismissOnMovement, true);
     };

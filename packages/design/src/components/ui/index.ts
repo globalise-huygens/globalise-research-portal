@@ -1,5 +1,6 @@
 export { PreviewCard } from './PreviewCard.tsx';
 export { PopoverCard } from './PopoverCard';
+export { useDismissOnOutsideWheel } from './useDismissOnOutsideWheel';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 

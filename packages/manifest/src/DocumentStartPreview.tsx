@@ -3,7 +3,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent, type MouseEvent, type PointerEvent,
 } from 'react';
 import { Popover as OverlayPopover } from 'react-aria-components';
-import { IconEntityDocument, Popover } from '@globalise/design';
+import { IconEntityDocument, Popover, useDismissOnOutsideWheel } from '@globalise/design';
 import { navigateToc } from '@globalise/common/document';
 import {
   formatDocumentScanSummary, type ManifestDocument,
@@ -63,19 +63,13 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
     setMode('closed');
   }, []);
 
+  // OpenSeadragon wheel navigation moves the anchor without scrolling the DOM.
+  useDismissOnOutsideWheel(isOpen, () => cardRef.current, close);
+
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    // OpenSeadragon handles wheel scrolling without a DOM scroll event.
-    // Dismiss instead of tracking the moving scan on every animation frame.
-    const dismissOnWheel = (event: WheelEvent) => {
-      const isInsidePreview = event.target instanceof Node
-        && cardRef.current?.contains(event.target);
-      if (!isInsidePreview) {
-        close();
-      }
-    };
     // Handle reverse Tab before the portal's focus scope moves to the
     // element preceding the trigger. Here the expected destination is the trigger.
     const returnToTrigger = (event: KeyboardEvent) => {
@@ -86,12 +80,8 @@ export function DocumentStartPreview({ documents, scanNumber, isCurrent }: Props
         triggerRef.current?.focus({ preventScroll: true });
       }
     };
-    document.addEventListener('wheel', dismissOnWheel, {
-      capture: true, passive: true,
-    });
     window.addEventListener('keydown', returnToTrigger, true);
     return () => {
-      document.removeEventListener('wheel', dismissOnWheel, true);
       window.removeEventListener('keydown', returnToTrigger, true);
     };
   }, [isOpen, close]);
