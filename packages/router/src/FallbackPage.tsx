@@ -1,21 +1,18 @@
-import { Link, useLocation } from '@tanstack/react-router';
+import { IconArrowTopRight } from '@globalise/design';
+import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import './FallbackPage.css';
 
 export function NotFoundPage() {
-  const pathname = useLocation({ select: (location) => location.pathname });
-  const isContentPath = pathname.startsWith('/content/');
-
   return (
     <FallbackPage
       status="404"
       title="Page not found"
       description="This page may have moved, or the address may be incorrect."
     >
-      <Link to="/" className="primary">Back to home</Link>
-      {isContentPath
-        ? <Link to="/content">Search site content</Link>
-        : <Link to="/search">Search the archive</Link>}
+      <FallbackLink to="/" className="primary">Back to home</FallbackLink>
+      <FallbackLink to="/content">Search site content</FallbackLink>
+      <FallbackLink to="/search">Search the archive</FallbackLink>
     </FallbackPage>
   );
 }
@@ -34,7 +31,7 @@ export function RouteErrorPage() {
       >
         Try again
       </button>
-      <Link to="/">Back to home</Link>
+      <FallbackLink to="/">Back to home</FallbackLink>
     </FallbackPage>
   );
 }
@@ -52,12 +49,33 @@ function FallbackPage({
 }) {
   return (
     <main className="fallback-page">
-      <div className="message">
-        <p className="status">{status}</p>
-        <h1>{title}</h1>
-        <p className="description">{description}</p>
-        <div className="actions">{children}</div>
+      <div className="gds-container" data-size="shell">
+        <div className="gds-grid">
+          <div className="message slot-content-narrow">
+            <p className="status">{status}</p>
+            <h1>{title}</h1>
+            <p className="description">{description}</p>
+            <div className="actions">{children}</div>
+          </div>
+        </div>
       </div>
     </main>
+  );
+}
+
+function FallbackLink({
+  to,
+  className,
+  children,
+}: {
+  to: '/' | '/content' | '/search';
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link to={to} className={className}>
+      {children}
+      <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+    </Link>
   );
 }

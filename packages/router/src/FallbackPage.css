@@ -1,20 +1,26 @@
 .fallback-page {
     box-sizing: border-box;
     min-height: 100%;
-    padding: clamp(3rem, 10vw, 8rem) 1.25rem;
+    padding-block: var(--s48);
     background: var(--color-brand-black);
     color: var(--color-brand-white);
     font: 400 1rem / 1.55 var(--font-sans);
 
+    @media (min-width: 768px) {
+        padding-block: var(--s64);
+    }
+
+    @media (min-width: 1280px) {
+        padding-block: var(--s96);
+    }
+
     .message {
-        max-width: 48rem;
-        margin-inline: auto;
         border-top: 2px solid var(--color-brand-mint);
-        padding-top: clamp(1.5rem, 4vw, 2.5rem);
+        padding-top: var(--s24);
     }
 
     .status {
-        margin: 0 0 0.75rem;
+        margin: 0 0 var(--s8);
         color: var(--color-brand-mint);
         font-weight: 500;
         letter-spacing: 0.08em;
@@ -29,7 +35,7 @@
 
     .description {
         max-width: 45ch;
-        margin: 1rem 0 0;
+        margin: var(--s16) 0 0;
         color: var(--color-neutral-200);
     }
 
@@ -37,21 +43,33 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 0.75rem 1.5rem;
-        margin-top: 2rem;
+        gap: var(--s8) var(--s24);
+        margin-top: var(--s32);
     }
 
     a {
+        display: inline-flex;
+        min-height: var(--s48);
+        align-items: center;
         color: inherit;
-        text-underline-offset: 0.2em;
+        gap: var(--s8);
+        text-decoration: none;
+
+        &:not(.primary):hover {
+            color: var(--color-brand-mint);
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
     }
 
     .primary {
         display: inline-flex;
-        min-height: 2.75rem;
+        min-height: var(--s48);
         align-items: center;
         border: 0;
-        padding: 0.5rem 1rem;
+        padding: var(--s8) var(--s16);
         background: var(--color-brand-mint);
         color: var(--color-brand-black);
         font: inherit;
