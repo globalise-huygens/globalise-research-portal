@@ -3,6 +3,7 @@ import { toHref } from '@globalise/router';
 import { IconArrowTopRight } from '@globalise/design';
 import { Link } from 'react-aria-components';
 import { blogPostDate, isBlogPost } from './blogPost.ts';
+import type { BlogPostMeta } from './blogPost.ts';
 import { BlogCards } from './BlogCards.tsx';
 import { renderHtmlTree } from './renderHtmlTree.ts';
 import {
@@ -15,7 +16,7 @@ import './ContentPageView.css';
 type ContentPageViewProps = {
   page: ContentPage;
   query?: string;
-  relatedPosts: PageMeta[];
+  relatedPosts: BlogPostMeta[];
 };
 
 export function ContentPageView({

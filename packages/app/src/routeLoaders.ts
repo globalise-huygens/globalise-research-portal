@@ -4,11 +4,12 @@ import {
   getContentPageServer,
 } from '@globalise/content/serve';
 import { blogPostDate, isBlogPost } from './blogPost.ts';
+import type { BlogPostMeta } from './blogPost.ts';
 import type { RouteLoaders } from '@globalise/router';
 
 export type ContentPageLoaderData = {
   page: ContentPage;
-  relatedPosts: PageMeta[];
+  relatedPosts: BlogPostMeta[];
 };
 
 export const routeLoaders: RouteLoaders = {
@@ -28,7 +29,7 @@ export const routeLoaders: RouteLoaders = {
   },
 };
 
-async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
+async function getRelatedBlogPosts(meta: PageMeta): Promise<BlogPostMeta[]> {
   if (!isBlogPost(meta)) {
     return [];
   }
@@ -41,14 +42,14 @@ async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
 
   const pages = await getContentIndexServer();
   const requestedSlugs = new Set(relatedSlugs);
-  const postsBySlug = new Map<string, PageMeta>();
+  const postsBySlug = new Map<string, BlogPostMeta>();
   for (const page of pages) {
     if (requestedSlugs.has(page.slug) && isBlogPost(page)) {
       postsBySlug.set(page.slug, page);
     }
   }
 
-  const relatedPosts: PageMeta[] = [];
+  const relatedPosts: BlogPostMeta[] = [];
   for (const slug of relatedSlugs) {
     const post = postsBySlug.get(slug);
     if (post) {
