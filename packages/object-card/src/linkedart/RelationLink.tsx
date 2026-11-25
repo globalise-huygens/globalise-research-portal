@@ -20,15 +20,18 @@ import { getResourcePreview } from './ResourcePreviewModel.ts';
 
 type RelationLinkProps = {
   node: LinkedArtNode;
+  resolveExternal?: boolean;
 };
 
 export function RelationLink({
-  node, label, previewOnDemand = false,
+  node, resolveExternal = true, label, previewOnDemand = false,
 }: RelationLinkProps & { label?: string; previewOnDemand?: boolean }) {
   const href = url(node);
   const [hasOpened, setHasOpened] = useState(false);
   const loadResource = !previewOnDemand || hasOpened;
-  const { text, resource, isPending } = useRelationValue(node, href, loadResource);
+  const { text, resource, isPending } = useRelationValue(
+    node, href, resolveExternal, loadResource,
+  );
   const linkLabel = label ?? text;
 
   if (!href) {
@@ -70,8 +73,10 @@ export function RelationLink({
   );
 }
 
-export function RelationValue({ node, render }: RelationLinkProps & { render?: (text: string) => ReactNode }) {
-  const { text } = useRelationValue(node, url(node));
+export function RelationValue({
+  node, render, resolveExternal = true,
+}: RelationLinkProps & { render?: (text: string) => ReactNode }) {
+  const { text } = useRelationValue(node, url(node), resolveExternal);
   return <>{render ? render(text) : text}</>;
 }
 
@@ -84,7 +89,15 @@ function renderRelatedNodes(nodes: LinkedArtNode[]) {
   ));
 }
 
-function useRelationValue(node: LinkedArtNode, href?: string, loadResource = true) {
+function useRelationValue(
+  node: LinkedArtNode,
+  targetHref?: string,
+  resolveExternal = true,
+  loadResource = true,
+) {
+  const shouldResolve = targetHref
+    && (resolveExternal || isInternalUri(targetHref));
+  const href = shouldResolve ? targetHref : undefined;
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
   const { data: resource, isPending } = useQuery({
