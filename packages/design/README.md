@@ -58,6 +58,7 @@ These icons are [Material Symbols](https://fonts.google.com/icons) by Google, li
 - `IconExpandSection`
 - `IconExternalLink`
 - `IconFitWidth`
+- `IconInfo`
 - `IconLeftPanelClose`
 - `IconLeftPanelOpen`
 - `IconMenu`

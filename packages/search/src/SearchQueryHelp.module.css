@@ -1,0 +1,110 @@
+.query-help {
+    margin-bottom: var(--s24);
+    border: 1px solid var(--color-neutral-700);
+    padding: var(--s16);
+    background: var(--color-neutral-900);
+    color: var(--color-brand-white);
+    font: 400 var(--text-sm) / 1.5 var(--font-sans);
+    letter-spacing: normal;
+    overflow-wrap: anywhere;
+
+    h2, p, dl, dd {
+        margin: 0;
+    }
+
+    h2 {
+        font: 500 var(--text-xl) / 1.25 var(--font-serif);
+    }
+
+    p {
+        color: var(--color-neutral-200);
+    }
+
+    code {
+        display: inline-block;
+        padding: var(--s4) var(--s8);
+        border: 1px solid var(--color-neutral-700);
+        background: var(--color-neutral-800);
+    }
+}
+
+.topics {
+    margin: var(--s16) 0;
+    padding: 0;
+    list-style: none;
+
+    > li + li {
+        border-top: 1px solid var(--color-neutral-700);
+    }
+
+    summary {
+        display: flex;
+        justify-content: space-between;
+        min-height: var(--s44);
+        align-items: center;
+        gap: var(--s16);
+        padding-inline: var(--s8);
+        font: 500 var(--text-lg) / 1.1 var(--font-serif);
+        cursor: pointer;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &:hover {
+            background: rgb(255 255 255 / 0.08);
+        }
+
+        &:focus-visible {
+            outline: none;
+            background: rgb(255 255 255 / 0.06);
+            box-shadow: inset 3px 0 0 var(--color-neutral-500);
+        }
+    }
+
+    summary svg {
+        flex-shrink: 0;
+        @media (prefers-reduced-motion: no-preference) {
+            transition: rotate 120ms ease-out;
+        }
+    }
+
+    details[open] > summary svg {
+        rotate: 180deg;
+    }
+
+    details > dl {
+        padding-inline: var(--s8);
+    }
+}
+
+.query-help .examples {
+    margin-block: var(--s4) var(--s12);
+
+    > div {
+        display: grid;
+        grid-template-columns: minmax(8rem, 2fr) minmax(0, 5fr);
+        align-items: start;
+        gap: var(--s8) var(--s16);
+        padding-block: var(--s4);
+
+        @media (width < 48rem) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    dt {
+        padding-block: var(--s4);
+        font-weight: 500;
+    }
+
+    dd {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--s4) var(--s8);
+    }
+}
+
+.query-help .topic-note {
+    margin: var(--s8) var(--s8) var(--s16);
+}

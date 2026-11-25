@@ -28,6 +28,7 @@ export { IconEvents } from './IconEvents';
 export { IconExpandSection } from './IconExpandSection';
 export { IconExternalLink } from './IconExternalLink';
 export { IconFitWidth } from './IconFitWidth';
+export { IconInfo } from './IconInfo';
 export { IconInventory } from './IconInventory';
 export { IconInvert } from './IconInvert';
 export { IconLayoutElements } from './IconLayoutElements';

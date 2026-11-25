@@ -6,6 +6,7 @@ import {
   svgEntityPlace,
   svgEntityPerson,
   IconSearch,
+  IconInfo,
   IconUndo,
   IconRedo,
   IconClose,
@@ -28,13 +29,23 @@ const icons: Record<string, string> = {
 export default function SearchField({
   autoFocus = false,
   isMobile = false,
-}: { autoFocus?: boolean; isMobile?: boolean }) {
+  queryHelpId,
+  queryHelpOpen,
+  onToggleQueryHelp,
+}: {
+  autoFocus?: boolean;
+  isMobile?: boolean;
+  queryHelpId: string;
+  queryHelpOpen: boolean;
+  onToggleQueryHelp: () => void;
+}) {
   const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
   const actions = [
     { id: 'search', label: 'Search', icon: IconSearch, disabled: false },
+    { id: 'help', label: 'Search query help', icon: IconInfo, disabled: false },
     {
       id: 'undo', label: 'Undo search edit', icon: IconUndo,
       disabled: !history.canUndo,
@@ -47,6 +58,10 @@ export default function SearchField({
   ] as const;
 
   function runAction(action: (typeof actions)[number]['id']) {
+    if (action === 'help') {
+      onToggleQueryHelp();
+      return;
+    }
     searchFieldRef.current?.[action]();
   }
 
@@ -58,6 +73,13 @@ export default function SearchField({
       return () => cancelAnimationFrame(frame);
     }
   }, [autoFocus]);
+
+  const queryHelpButton = {
+    className: classes.queryHelpToggle,
+    'aria-label': 'Search query help',
+    'aria-expanded': queryHelpOpen,
+    'aria-controls': queryHelpId,
+  };
 
   const darkTheme: ThemeConfig = {
     fontFamily: 'var(--font-sans)',
@@ -101,27 +123,40 @@ export default function SearchField({
       </div>
 
       {isMobile ? (
-        <MenuTrigger>
-          <ToolButton size="touch" aria-label="Search actions"
-            icon={<IconSearch aria-hidden="true" />}
+        <div className={classes.mobileActions}>
+          <ToolButton
+            {...queryHelpButton}
+            size="touch"
+            icon={<IconInfo aria-hidden="true"/>}
+            onPress={onToggleQueryHelp}
           />
-          <Popover placement="bottom end" className={classes.actionPopover}>
-            <Menu className={classes.actionMenu}>
-              {actions.map(({ id, label, icon: Icon, disabled }) => (
-                <MenuItem key={id} className={classes.actionItem}
-                  isDisabled={disabled} onAction={() => runAction(id)}>
-                  <Icon aria-hidden="true" />
-                  {label}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Popover>
-        </MenuTrigger>
+          <MenuTrigger>
+            <ToolButton size="touch" aria-label="Search actions"
+              icon={<IconSearch aria-hidden="true" />}
+            />
+            <Popover placement="bottom end" className={classes.actionPopover}>
+              <Menu className={classes.actionMenu}>
+                {actions.filter(({ id }) => id !== 'help').map(({ id, label, icon: Icon, disabled }) => (
+                  <MenuItem key={id} className={classes.actionItem}
+                    isDisabled={disabled} onAction={() => runAction(id)}>
+                    <Icon aria-hidden="true" />
+                    {label}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+        </div>
       ) : (
         <div className={classes.buttons}>
           {actions.map(({ id, label, icon: Icon, disabled }) => (
-            <Button key={id} aria-label={label}
-              onClick={() => runAction(id)} isDisabled={disabled}>
+            <Button
+              key={id}
+              aria-label={label}
+              {...(id === 'help' ? queryHelpButton : {})}
+              onPress={() => runAction(id)}
+              isDisabled={disabled}
+            >
               <Icon aria-hidden="true" />
             </Button>
           ))}
