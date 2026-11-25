@@ -1,12 +1,14 @@
 import handler, { createServerEntry } from '@tanstack/react-start/server-entry';
 import { getContentAsset } from '@globalise/content/serve';
-import { provideRouteComponents, provideRouteLoaders } from '@globalise/router';
+import { provideFallbackComponents, provideRouteComponents, provideRouteLoaders } from '@globalise/router';
+import { NotFoundPage, RouteErrorPage } from './FallbackPage.tsx';
 import { routeComponents } from './routeComponents.ts';
 import { routeLoaders } from './routeLoaders.ts';
 import { landingPageContent } from './landingPageContent.ts';
 
 provideRouteComponents(routeComponents, landingPageContent.metadata);
 provideRouteLoaders(routeLoaders);
+provideFallbackComponents({ notFound: NotFoundPage, error: RouteErrorPage });
 
 /**
  * Serve content assets, or use default router

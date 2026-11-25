@@ -1,7 +1,6 @@
 import { type AnyRoute, createRouter, type RouteComponent, type RouteIds } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { orThrow } from '@globalise/common';
-import { NotFoundPage, RouteErrorPage } from './FallbackPage.tsx';
 import { parseUrlParams, stringifyUrlParams } from './params/urlParams.ts';
 import { routeTree } from './routeTree.gen.ts';
 
@@ -18,6 +17,11 @@ export type RouteComponents = Record<RouteId, RouteComponent>;
 export type RouteLoaders = Partial<Record<RouteId, RouteLoader>>;
 
 type RouteLoader = (match: { params: Record<string, string> }) => Promise<unknown>;
+
+export type FallbackComponents = {
+  notFound: RouteComponent;
+  error: RouteComponent;
+};
 
 export function getRouter(): AppRouter {
   const router = createAppRouter();
@@ -49,9 +53,14 @@ export function provideRouteComponents(
   homeMetadata = metadata;
 }
 
+export function provideFallbackComponents(components: FallbackComponents) {
+  fallbackComponents = components;
+}
+
 let routeComponents: RouteComponents | undefined;
 let routeLoaders: RouteLoaders = {};
 let homeMetadata: { title: string; description: string } | undefined;
+let fallbackComponents: FallbackComponents | undefined;
 
 function createAppRouter() {
   return createRouter({
@@ -63,8 +72,8 @@ function createAppRouter() {
     scrollToTopSelectors: [
       '.site-content:has(> :is(.blog-index, .blog-post, .content-page, .content-home))',
     ],
-    defaultNotFoundComponent: NotFoundPage,
-    defaultErrorComponent: RouteErrorPage,
+    defaultNotFoundComponent: fallbackComponents?.notFound,
+    defaultErrorComponent: fallbackComponents?.error,
   });
 }
 

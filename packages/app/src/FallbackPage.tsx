@@ -1,7 +1,7 @@
 import { IconArrowTopRight } from '@globalise/design';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import './FallbackPage.css';
+import '../../router/src/FallbackPage.css';
 
 export function NotFoundPage() {
   return (
