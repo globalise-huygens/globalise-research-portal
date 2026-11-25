@@ -1,5 +1,7 @@
+import { VFile } from 'vfile';
 import { describe, expect, it } from 'vitest';
-import { isLocal } from './validateLocalLinks.ts';
+import { isLocal, validateLocalLinks } from './validateLocalLinks.ts';
+import type { Element } from 'hast';
 
 describe(isLocal.name, () => {
   it.each([
@@ -28,3 +30,23 @@ describe(isLocal.name, () => {
     expect(isLocal('')).toBe(false);
   });
 });
+
+describe(validateLocalLinks.name, () => {
+  it.each([
+    '/b.png',
+    '../assets/b.png',
+    '/assets/b.md',
+  ])('warns about an image that is not served as an asset: %s', (src) => {
+    expect(readImageRules(src)).toContain('unserved-image');
+  });
+
+  it('accepts an image served as an asset', () => {
+    expect(readImageRules('/assets/b.png')).not.toContain('unserved-image');
+  });
+});
+
+function readImageRules(src: string): string[] {
+  const image: Element = { type: 'element', tagName: 'img', properties: { src }, children: [] };
+  const issues = validateLocalLinks({ type: 'root', children: [image] }, new VFile({ path: 'a.md' }));
+  return issues.map(({ ruleId }) => ruleId);
+}

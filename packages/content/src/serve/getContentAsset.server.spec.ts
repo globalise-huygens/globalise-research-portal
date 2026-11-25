@@ -31,5 +31,10 @@ describe('getContentAsset', () => {
   it('skips paths outside the assets', async () => {
     expect(await getContentAsset('/b.png')).toBeUndefined();
     expect(await getContentAsset('/assets/../b.png')).toBeUndefined();
+    expect(await getContentAsset('/assets/%2e%2e/b.png')).toBeUndefined();
+  });
+
+  it('skips malformed paths', async () => {
+    expect(await getContentAsset('/assets/%E0%A4%A.png')).toBeUndefined();
   });
 });
