@@ -1,14 +1,47 @@
 .object-card-page {
-  padding-block: var(--s16) var(--s32);
+  --page-background: var(--color-background-fixed-card);
+
+  box-sizing: border-box;
+  min-height: 100%;
+  background: var(--page-background);
+  padding-block-end: var(--s32);
+
+  > .gds-container {
+    box-sizing: border-box;
+  }
 
   .object-card {
     height: auto;
     max-height: none;
     overflow: visible;
+    background: transparent;
     box-shadow: none;
+
+    > .header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      border-bottom-color: rgb(255 255 255 / 0.14);
+      background: var(--page-background);
+    }
 
     > .body, .panel {
       overflow: visible;
+    }
+
+    .panel {
+      border-inline-end-color: rgb(255 255 255 / 0.08);
+      background: transparent;
+    }
+
+    @media (width < 1024px) {
+      > .body {
+        row-gap: var(--s16);
+      }
+
+      .panel {
+        border-bottom: 0;
+      }
     }
   }
 }
