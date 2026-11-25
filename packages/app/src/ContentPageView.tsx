@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { toHref } from '@globalise/router';
-import { IconArrowTopRight } from '@globalise/design';
+import { IconArrowLeftAlt } from '@globalise/design';
 import { Link } from 'react-aria-components';
 import { blogPostDate, isBlogPost } from './blogPost.ts';
 import type { BlogPostMeta } from './blogPost.ts';
@@ -55,7 +55,7 @@ export function ContentPageView({
         <article ref={articleRef}>
           <header className="heading">
             <Link href={toHref({ to: '/content/blog' })}>
-              <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+              <IconArrowLeftAlt width="16" height="16" aria-hidden="true"/>
               All blog posts
             </Link>
             {title}
