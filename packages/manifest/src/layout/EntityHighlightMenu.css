@@ -12,10 +12,8 @@
     width: 216px;
     border-color: rgb(255 255 255 / 0.2);
     border-radius: 0;
-    background: rgb(12 10 9 / 0.72);
     padding: var(--s12);
     box-shadow: 0 4px 16px rgb(0 0 0 / 0.24);
-    backdrop-filter: blur(2px);
   }
 
   .entity-menu > .surface > .body,
@@ -49,7 +47,6 @@
   }
 
   .entity-menu .row {
-    background: var(--annotation-family-menu-surface, transparent);
     color: var(--color-brand-white);
   }
 
@@ -79,23 +76,15 @@
     white-space: nowrap;
   }
 
-  .entity-menu .actions {
-    display: flex;
-    align-items: center;
-    gap: var(--s4);
-  }
-
   .entity-menu .expand {
-    display: flex;
-    width: var(--s20);
-    height: var(--s20);
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    min-height: var(--s28);
     border: 0;
     border-radius: 2px;
     background: transparent;
     padding: 0;
     color: inherit;
+    text-align: left;
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
@@ -107,9 +96,8 @@
   }
 
   .entity-menu .expand:focus-visible {
-    outline: none;
-    outline-offset: 0;
-    box-shadow: none;
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
   }
 
   .entity-menu .row[data-level="subcategory"] {
@@ -124,6 +112,8 @@
   .entity-menu .expand-icon {
     width: var(--s16);
     height: var(--s16);
+    flex-shrink: 0;
+    margin-left: auto;
     transition: transform 120ms ease-out;
   }
 
