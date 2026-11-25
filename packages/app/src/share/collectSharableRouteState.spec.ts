@@ -3,7 +3,7 @@ import { collectSharableRouteState } from './collectSharableRouteState.ts';
 
 const firstPage = { inventory: '1053', page: '0003' };
 const document = { ...firstPage, endPage: '0071' };
-const searchHit = { document, target: { snippet: 's1' } };
+const searchHit = { document, hit: { snippet: 's1' } };
 const searchHitQuery = { query: 'Batavia', facets: {} };
 const noSearchHit = {
   searchHit: null,

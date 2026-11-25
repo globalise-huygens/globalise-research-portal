@@ -1,15 +1,30 @@
-import { toViewerHref, validateSearchUrlParams } from '@globalise/router';
-import type { SharableRouteState } from './collectSharableRouteState';
+import type { SearchHitQuery, SearchHitRef } from '@globalise/common/document';
+import { type ManifestUrlParams, toViewerHref, validateSearchUrlParams } from '@globalise/router';
+import type { ManifestRoute } from './ManifestRoute';
 
-export function createSharableHref(
-  { ref, searchHit, searchHitQuery, activeEsHitIndex }: SharableRouteState,
-): string {
-  if (searchHit && activeEsHitIndex !== null) {
-    const { query: q, facets } = searchHitQuery ?? { facets: {} };
-    return toViewerHref(searchHit.document, {
-      ...validateSearchUrlParams({ q, ...facets }),
-      'hit-index': activeEsHitIndex,
-    });
+export function createSharableHref(route: ManifestRoute): string {
+  switch (route.type) {
+    case 'hit': {
+      const { searchHit: { document, hit }, searchHitQuery } = route;
+      return toViewerHref(document, {
+        ...toSearchUrlParams(searchHitQuery),
+        ...toSearchHitUrlParams(hit),
+      });
+    }
+    case 'document':
+      return toViewerHref(route.ref, {});
+    default:
+      return toViewerHref(route.ref, toSearchUrlParams(route.searchHitQuery));
   }
-  return toViewerHref(ref, {});
+}
+
+function toSearchUrlParams(searchHitQuery?: SearchHitQuery): ManifestUrlParams {
+  const { query: q, facets } = searchHitQuery ?? { facets: {} };
+  return validateSearchUrlParams({ q, ...facets });
+}
+
+function toSearchHitUrlParams(hit: SearchHitRef): ManifestUrlParams {
+  return 'snippet' in hit
+    ? { snippet: hit.snippet }
+    : { 'hit-index': hit.esHitIndex };
 }

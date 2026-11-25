@@ -1,9 +1,9 @@
 import type { ShareLink } from '@globalise/manifest';
-import type { SharableRouteState } from './collectSharableRouteState';
+import type { ManifestRoute } from './ManifestRoute';
 import { createSharableHref } from './createSharableHref';
 
 export function createShareLink(
-  route: SharableRouteState,
+  route: ManifestRoute,
   origin: string,
   label: string,
 ): ShareLink {

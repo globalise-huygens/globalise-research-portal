@@ -6,6 +6,7 @@ import {
   setSelectedDocument,
 } from '@globalise/common/document';
 import { type ViewerRef, createDocumentId } from '@globalise/common/uri';
+import { parseManifestRoute } from './ManifestRoute';
 import { resolveManifestRoute } from './resolveManifestRoute';
 
 export function useResolveManifestRoute(viewer: ViewerRef): boolean {
@@ -15,7 +16,7 @@ export function useResolveManifestRoute(viewer: ViewerRef): boolean {
   const resolvedRoute = useMemo(
     () => {
       const params = validateManifestUrlParams(searchParams);
-      return resolveManifestRoute(viewer, params);
+      return resolveManifestRoute(parseManifestRoute(viewer, params));
     },
     [viewer, searchParams],
   );

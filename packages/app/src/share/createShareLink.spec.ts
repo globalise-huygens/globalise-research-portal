@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import type { ManifestRoute } from './ManifestRoute';
 import { createShareLink } from './createShareLink';
 
-const page = { inventory: '1053', page: '0004' };
-const route = { ref: page, searchHit: null, searchHitQuery: null, activeEsHitIndex: null };
+const route: ManifestRoute = { type: 'scan', ref: { inventory: '1053', page: '0004' } };
 
 describe(createShareLink.name, () => {
   it('links to the sharable href on the given origin', () => {

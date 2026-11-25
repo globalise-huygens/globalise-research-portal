@@ -33,6 +33,8 @@ import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
 import { useSharableRouteState } from './share/useSharableRouteState';
 import { createShareLink } from './share/createShareLink';
+import { shareLabels } from './share/shareLabels';
+import { toManifestRoute } from './share/toManifestRoute';
 import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
@@ -56,7 +58,8 @@ export function ManifestPage() {
   const activeHitCanvasId = activeHit?.canvasId;
 
   const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
-  const share = createShareLink(sharableRoute, window.location.origin, 'Copy link to share');
+  const sharedRoute = toManifestRoute(sharableRoute);
+  const share = createShareLink(sharedRoute, window.location.origin, shareLabels[sharedRoute.type]);
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
