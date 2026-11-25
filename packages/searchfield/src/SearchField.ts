@@ -6,6 +6,7 @@ import {
   redoDepth,
   standardKeymap,
   historyKeymap,
+  isolateHistory,
 } from '@codemirror/commands';
 import { EditorState, Compartment } from '@codemirror/state';
 import { autocompletion } from '@codemirror/autocomplete';
@@ -73,6 +74,31 @@ export default class SearchField<E extends object = object> {
     this.view.dispatch({
       changes: { from: 0, to: this.view.state.doc.length, insert: '' },
     });
+  }
+
+  public insertQuery(text: string, cursorOffset = text.length) {
+    const { state } = this.view;
+    const { doc } = state;
+    const cursor = state.selection.main.to;
+    let from = cursor;
+    for (let node = syntaxTree(state).resolveInner(cursor).parent; node; node = node.parent) {
+      if (node.name === 'Clause' && cursor > node.from && cursor < node.to) {
+        from = node.to;
+      }
+    }
+    const before = doc.sliceString(Math.max(0, from - 1), from);
+    const after = doc.sliceString(from, from + 1);
+    const leadingSpace = before && !/\s/.test(before) ? ' ' : '';
+    const trailingSpace = after && !/\s/.test(after) ? ' ' : '';
+
+    this.view.dispatch({
+      changes: { from, insert: leadingSpace + text + trailingSpace },
+      selection: { anchor: from + leadingSpace.length + cursorOffset },
+      scrollIntoView: true,
+      annotations: isolateHistory.of('full'),
+      userEvent: 'input',
+    });
+    this.focus();
   }
 
   public focus() {
