@@ -2,6 +2,7 @@ import {
   EntityBadge,
   EntityBadgeType,
   IconEntityPerson,
+  IconEntityPlace,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
@@ -35,7 +36,7 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
       type={badgeType}
       icon={type === 'person'
         ? <IconEntityPerson aria-hidden="true" />
-        : undefined}
+        : type === 'place' ? <IconEntityPlace aria-hidden="true" /> : undefined}
     >
       {type}
     </EntityBadge>
