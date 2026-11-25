@@ -1,11 +1,35 @@
 import { useShallow } from 'zustand/react/shallow';
 import type { Id } from '../annotation';
+import type { DocumentRef } from '../uri';
 import { setState, useDocumentStore } from './DocumentStore';
 import type { CanvasId } from './ManifestViewerSlice';
 
 export type SearchHitSlice = {
+  searchHitRequest: SearchHitRequest | null;
+  searchHitQuery: SearchHitQuery | null;
   searchHits: Record<CanvasId, HtrHit[]>;
   activeEsHitIndex: number | null;
+};
+
+type LoadedSearchHits = Pick<SearchHitSlice, 'searchHits' | 'activeEsHitIndex'>;
+
+export type SearchHitRequest = {
+  document: DocumentRef;
+  target: SearchHitTarget;
+};
+
+export type SearchHitTarget = SnippetTarget | IndexTarget;
+
+export type SnippetTarget = { snippet: string };
+
+export type IndexTarget = { esHitIndex: number };
+
+/**
+ * The fulltext search query and facets, as retrieved from the url, to determine the manifest viewer hits
+ */
+export type SearchHitQuery = {
+  query?: string;
+  facets: Record<string, string[]>;
 };
 
 export type HtrHit = {
@@ -15,6 +39,26 @@ export type HtrHit = {
   end: number;
   esHitIndex: number;
 };
+
+export function setSearchHitRequest(searchHitRequest: SearchHitRequest | null) {
+  setState({ searchHitRequest });
+}
+
+export function setSearchHitQuery(searchQuery: SearchHitQuery | null) {
+  setState({ searchHitQuery: searchQuery });
+}
+
+export function useSearchHitRequest(): SearchHitRequest | null {
+  return useDocumentStore((s) => s.searchHitRequest);
+}
+
+export function useSearchHitQuery(): SearchHitQuery | null {
+  return useDocumentStore((s) => s.searchHitQuery);
+}
+
+export function useActiveEsHitIndex(): number | null {
+  return useDocumentStore((s) => s.activeEsHitIndex);
+}
 
 export function setSearchHits(hits: HtrHit[], activeEsHitIndex: number | null) {
   setState({ searchHits: groupByCanvas(hits), activeEsHitIndex });
@@ -38,13 +82,13 @@ export function useActiveCanvasSearchHits(canvasId: CanvasId): HtrHit[] {
   return useDocumentStore(useShallow((s) => findActiveCanvasSearchHits(s, canvasId)));
 }
 
-export function findActiveSearchHits(s: SearchHitSlice): HtrHit[] {
+export function findActiveSearchHits(s: LoadedSearchHits): HtrHit[] {
   return Object.keys(s.searchHits)
     .flatMap((canvasId) => findActiveCanvasSearchHits(s, canvasId));
 }
 
 export function findActiveCanvasSearchHits(
-  slice: SearchHitSlice,
+  slice: LoadedSearchHits,
   canvasId: CanvasId,
 ): HtrHit[] {
   return (slice.searchHits[canvasId] ?? noHits)
