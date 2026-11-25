@@ -3,7 +3,7 @@ import {
   getContentIndexServer,
   getContentPageServer,
 } from '@globalise/content/serve';
-import { isBlogPost } from './isBlogPost.ts';
+import { blogPostDate, isBlogPost } from './blogPost.ts';
 import type { RouteLoaders } from '@globalise/router';
 
 export type ContentPageLoaderData = {
@@ -15,11 +15,16 @@ export const routeLoaders: RouteLoaders = {
   '/': async () => {
     const pages = await getContentIndexServer();
     const featuredPosts = pages.filter((page) =>
-      page.featured && (page.status === 'approved' || page.status === 'published'),
+      page.featured &&
+      (page.status === 'approved' || page.status === 'published') &&
+      isBlogPost(page),
     );
     return sortBlogPosts(featuredPosts).slice(0, 3);
   },
-  '/content/blog': async () => sortBlogPosts(await getContentIndexServer()),
+  '/content/blog': async () => {
+    const pages = await getContentIndexServer();
+    return sortBlogPosts(pages.filter(isBlogPost));
+  },
   '/content/': () => getContentIndexServer(),
   '/content/$slug': async ({ params }): Promise<ContentPageLoaderData> => {
     const page = await getContentPageServer({ data: params.slug });
@@ -29,13 +34,9 @@ export const routeLoaders: RouteLoaders = {
 };
 
 function sortBlogPosts(pages: PageMeta[]): PageMeta[] {
-  return pages
-    .filter(isBlogPost)
-    .sort((a, b) => publicationDate(b).localeCompare(publicationDate(a)));
-}
-
-function publicationDate(page: PageMeta): string {
-  return page.datePublished ?? page.originalPublication?.date ?? '';
+  return pages.sort((a, b) =>
+    (blogPostDate(b) ?? '').localeCompare(blogPostDate(a) ?? ''),
+  );
 }
 
 async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
@@ -50,10 +51,20 @@ async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
   }
 
   const pages = await getContentIndexServer();
-  const postsBySlug = new Map(
-    pages.filter(isBlogPost).map((post) => [post.slug, post]),
-  );
-  return relatedSlugs
-    .map((slug) => postsBySlug.get(slug))
-    .filter((post) => post !== undefined);
+  const requestedSlugs = new Set(relatedSlugs);
+  const postsBySlug = new Map<string, PageMeta>();
+  for (const page of pages) {
+    if (requestedSlugs.has(page.slug) && isBlogPost(page)) {
+      postsBySlug.set(page.slug, page);
+    }
+  }
+
+  const relatedPosts: PageMeta[] = [];
+  for (const slug of relatedSlugs) {
+    const post = postsBySlug.get(slug);
+    if (post) {
+      relatedPosts.push(post);
+    }
+  }
+  return relatedPosts;
 }

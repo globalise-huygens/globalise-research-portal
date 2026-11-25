@@ -14,7 +14,7 @@ import {
   useRouter,
 } from '@globalise/router';
 import type { ContentPageLoaderData } from './routeLoaders.ts';
-import { isBlogPost } from './isBlogPost.ts';
+import { isBlogPost } from './blogPost.ts';
 import '@globalise/design/styles.css';
 import './SiteNavbar.css';
 
@@ -79,22 +79,22 @@ export function SiteNavbar() {
             </Button>
           )}
         </NavLinks>
-        {contentSearchOpen && isContentPage && (
-          <SearchField
-            aria-label="Search site content"
-            className="content-search-popover"
-            onSubmit={searchContent}
-          >
-            <Input
-              autoFocus
-              placeholder="Search site content"
-            />
-            <Button type="submit" aria-label="Submit site content search">
-              <ContentSearchIcon/>
-            </Button>
-          </SearchField>
-        )}
       </Navbar>
+      {contentSearchOpen && isContentPage && (
+        <SearchField
+          aria-label="Search site content"
+          className="content-search-popover"
+          onSubmit={searchContent}
+        >
+          <Input
+            autoFocus
+            placeholder="Search site content"
+          />
+          <Button type="submit" aria-label="Submit site content search">
+            <ContentSearchIcon/>
+          </Button>
+        </SearchField>
+      )}
     </header>
   );
 }

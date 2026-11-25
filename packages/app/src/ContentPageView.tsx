@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { toHref } from '@globalise/router';
+import { IconArrowTopRight } from '@globalise/design';
 import { Link } from 'react-aria-components';
-import { isBlogPost } from './isBlogPost.ts';
+import { blogPostDate, isBlogPost } from './blogPost.ts';
 import { BlogCards } from './BlogCards.tsx';
 import { renderHtmlTree } from './renderHtmlTree.ts';
 import {
@@ -37,20 +38,25 @@ export function ContentPageView({
 
   if (isBlogPost(page.meta)) {
     const { meta, tree } = page;
-    const [first, ...rest] = tree.children;
+    const [first] = tree.children;
     const startsWithTitle = first?.type === 'element' && first.tagName === 'h1';
     const title = startsWithTitle
       ? renderHtmlTree({ ...tree, children: [first] })
       : <h1>{meta.title}</h1>;
-    const body = startsWithTitle ? { ...tree, children: rest } : tree;
-    const date = meta.datePublished ?? meta.originalPublication?.date;
+    const body = startsWithTitle
+      ? { ...tree, children: tree.children.slice(1) }
+      : tree;
+    const date = blogPostDate(meta);
     const byline = meta.authors.join(', ');
 
     return (
       <main className="blog-post">
         <article ref={articleRef}>
           <header className="heading">
-            <Link href={toHref({ to: '/content/blog' })}>All blog posts</Link>
+            <Link href={toHref({ to: '/content/blog' })}>
+              <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+              All blog posts
+            </Link>
             {title}
             {meta.subtitle && <p className="subtitle">{meta.subtitle}</p>}
             {(byline || date) && (
