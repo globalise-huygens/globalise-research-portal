@@ -81,6 +81,9 @@ function getExternalSourceLabel(uri: string): string {
     if (hostname === 'w3id.org') {
       return url.pathname.split('/').filter(Boolean).pop() ?? hostname;
     }
+    if (hostname === 'w3.org') {
+      return url.hash.replace(/^#/, '') || hostname;
+    }
     return hostname;
   } catch {
     return uri;
