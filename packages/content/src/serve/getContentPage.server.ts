@@ -14,7 +14,15 @@ export const getContentPageServer = createServerFn()
     try {
       return JSON.parse(await readContentFile(toPageFile(slug))) as ContentPage;
     } catch (error) {
-      console.error(`Globalise content page ${slug} unavailable:`, error);
+      if (isMissingFile(error)) {
+        console.warn(`Not found: content page ${slug}`);
+      } else {
+        console.error(`Globalise content page ${slug} unavailable:`, error);
+      }
       throw notFound();
     }
   });
+
+function isMissingFile(error: unknown): boolean {
+  return (error as NodeJS.ErrnoException).code === 'ENOENT';
+}
