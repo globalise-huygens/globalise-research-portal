@@ -1,7 +1,6 @@
 import './SiteFooter.css';
 import { toHref, useRouter } from '@globalise/router';
 import { useQuery } from '@tanstack/react-query';
-import { getContentIndexServer } from '@globalise/content/serve';
 import { contentIndexOptions } from './contentIndexOptions.ts';
 import { Link } from 'react-aria-components';
 import { Container } from '@globalise/design';
@@ -17,10 +16,7 @@ type SiteMapPage = {
 
 export function SiteFooter() {
   const router = useRouter();
-  const { data: contentIndex = [] } = useQuery({
-    ...contentIndexOptions,
-    queryFn: getContentIndexServer,
-  });
+  const { data: contentIndex = [] } = useQuery(contentIndexOptions);
   const pagesBySource = new Map(contentIndex.map((page) => [page.path, page]));
   const footer = landingPageContent.footer;
 

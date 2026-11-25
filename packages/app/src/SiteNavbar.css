@@ -67,36 +67,6 @@
     }
 }
 
-.site-header[data-content-page] {
-    .gds-navbar {
-        justify-content: space-between;
-    }
-
-    .gds-nav-search {
-        max-width: 23.75rem;
-        border-radius: 0.25rem;
-    }
-
-    .site-navbar__links {
-        margin-left: 0;
-    }
-}
-
-.site-header[data-content-page="blog-index"] {
-    background: var(--brand-mint);
-    border-bottom-color: transparent;
-    color: var(--brand-black);
-
-    .gds-nav-link, .gds-navbar__toggle, .site-navbar__home,
-    .gds-search-field-icon, .gds-search-field-input {
-        color: inherit;
-    }
-
-    .gds-nav-search {
-        background: rgb(0 0 0 / 0.06);
-    }
-}
-
 .site-header .content-search-toggle,
 .site-header .content-search-popover button {
     display: inline-flex;
