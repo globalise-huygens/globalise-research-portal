@@ -564,6 +564,7 @@
 }
 
 .manifest-viewer .sidebar-button .label {
+  flex-shrink: 0;
   color: var(--color-brand-white);
   font-size: var(--text-base);
   font-weight: 400;
@@ -576,10 +577,25 @@
   justify-content: center;
   height: var(--s24);
   min-width: var(--s36);
+  gap: var(--s4);
+  padding-inline: var(--s4);
   border: 1px solid var(--color-neutral-500);
   background: var(--color-neutral-700);
   color: var(--color-brand-white);
   font-size: var(--text-sm);
+}
+
+.manifest-viewer .sidebar-button .badge-icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.manifest-viewer .sidebar-button .badge-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .manifest-viewer .sidebar-panel {
