@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import Facets from './Facets';
 import Selection from './Selection';
 import SearchField from './SearchField';
@@ -6,18 +5,11 @@ import Results from './Results';
 import ResultsHeader from './ResultsHeader';
 import classes from './Layout.module.css';
 
-export default function Layout({
-  autoFocus = false,
-  searchHeaderLink,
-}: {
-  autoFocus?: boolean;
-  searchHeaderLink?: ReactNode;
-}) {
+export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
   return (
     <div className={classes.search}>
       <div className={classes.searchHeader}>
         <SearchField autoFocus={autoFocus} />
-        {searchHeaderLink}
       </div>
 
       <div className={classes.facetSearch} aria-hidden="true"/>

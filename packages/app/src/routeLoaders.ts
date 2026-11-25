@@ -3,7 +3,7 @@ import {
   getContentIndexServer,
   getContentPageServer,
 } from '@globalise/content/serve';
-import { isBlogPost } from './isBlogPost.ts';
+import { blogPostDate, isBlogPost } from './blogPost.ts';
 import type { RouteLoaders } from '@globalise/router';
 
 export type ContentPageLoaderData = {
@@ -16,7 +16,9 @@ export const routeLoaders: RouteLoaders = {
     const pages = await getContentIndexServer();
     return pages
       .filter(isBlogPost)
-      .sort((a, b) => publicationDate(b).localeCompare(publicationDate(a)));
+      .sort((a, b) =>
+        (blogPostDate(b) ?? '').localeCompare(blogPostDate(a) ?? ''),
+      );
   },
   '/content/': () => getContentIndexServer(),
   '/content/$slug': async ({ params }): Promise<ContentPageLoaderData> => {
@@ -25,10 +27,6 @@ export const routeLoaders: RouteLoaders = {
     return { page, relatedPosts };
   },
 };
-
-function publicationDate(page: PageMeta): string {
-  return page.datePublished ?? page.originalPublication?.date ?? '';
-}
 
 async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
   if (!isBlogPost(meta)) {
@@ -42,10 +40,20 @@ async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
   }
 
   const pages = await getContentIndexServer();
-  const postsBySlug = new Map(
-    pages.filter(isBlogPost).map((post) => [post.slug, post]),
-  );
-  return relatedSlugs
-    .map((slug) => postsBySlug.get(slug))
-    .filter((post) => post !== undefined);
+  const requestedSlugs = new Set(relatedSlugs);
+  const postsBySlug = new Map<string, PageMeta>();
+  for (const page of pages) {
+    if (requestedSlugs.has(page.slug) && isBlogPost(page)) {
+      postsBySlug.set(page.slug, page);
+    }
+  }
+
+  const relatedPosts: PageMeta[] = [];
+  for (const slug of relatedSlugs) {
+    const post = postsBySlug.get(slug);
+    if (post) {
+      relatedPosts.push(post);
+    }
+  }
+  return relatedPosts;
 }
