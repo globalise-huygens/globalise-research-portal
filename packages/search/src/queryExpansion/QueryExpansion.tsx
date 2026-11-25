@@ -1,15 +1,33 @@
+import { Suspense, useEffect } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { Button, DisclosureGroup, Disclosure, DisclosurePanel } from 'react-aria-components';
 import { DialogTrigger, Popover } from 'react-aria-components/Popover';
 import { Checkbox, IconExpandSection } from '@globalise/design';
-import type { QueryExpansion, SourceExpansion } from './getQueryExpansionQueryOptions';
+import getQueryExpansionQueryOptions, {
+  type QueryExpansion,
+  type SourceExpansion,
+} from './getQueryExpansionQueryOptions';
 import { useTermSelection } from './TermSelectionProvider';
 import classes from './QueryExpansion.module.css';
 
 export default function QueryExpansion() {
-  const { queryExpansion } = useTermSelection();
+  return (
+    <Suspense>
+      <QueryExpansionInner/>
+    </Suspense>
+  );
+}
 
-  const terms = Object.keys(queryExpansion?.terms ?? {});
-  if (!queryExpansion || terms.length === 0) {
+function QueryExpansionInner() {
+  const { query } = useSearchFacet();
+  const { updateQueryExpansion } = useTermSelection();
+  const { data } = useSuspenseQuery(getQueryExpansionQueryOptions(query ?? ''));
+
+  useEffect(() => updateQueryExpansion(data), [updateQueryExpansion, data]);
+
+  const terms = Object.keys(data.terms);
+  if (terms.length === 0) {
     return null;
   }
 
@@ -22,7 +40,7 @@ export default function QueryExpansion() {
       </Button>
 
       <Popover>
-        <TermsSelection queryExpansion={queryExpansion}/>
+        <TermsSelection queryExpansion={data}/>
       </Popover>
     </DialogTrigger>
   );

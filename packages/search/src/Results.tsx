@@ -7,33 +7,25 @@ import Result, { DocumentResultContent } from './Result';
 import classes from './Results.module.css';
 
 import type { DocumentSearchResult, SearchResult } from './elasticsearch/search.server';
-import { useTermSelection } from './queryExpansion/TermSelectionProvider';
 
 const isDocument = (result: SearchResult): result is DocumentSearchResult => result.type === 'document';
 
 export default function Results() {
-  const { selectedExpansions } = useTermSelection();
-
-  // Wait for the query expansions, so the search does not run twice (first without and then with expansions)
-  if (!selectedExpansions) {
-    return 'Loading...';
-  }
-
   return (
     <Suspense fallback={'Loading...'}>
-      <ResultPages selectedExpansions={selectedExpansions}/>
+      <ResultPages/>
     </Suspense>
   );
 }
 
-function ResultPages({ selectedExpansions }: { selectedExpansions: Record<string, string[]> }) {
+function ResultPages() {
   const { pageSize } = usePagination();
   const state = useSearchState();
   const {
     data: { pages },
     fetchNextPage,
     isFetchingNextPage,
-  } = useSuspenseInfiniteQuery(searchQueryOptions(getSearchState(state, selectedExpansions), pageSize));
+  } = useSuspenseInfiniteQuery(searchQueryOptions(getSearchState(state), pageSize));
   const loadingResultsRef = useRef<HTMLDivElement>(null);
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {

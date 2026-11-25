@@ -26,7 +26,6 @@ import Facet from './Facet';
 import classes from './HierarchyFacet.module.css';
 
 import type { HierarchyFacetItem } from './elasticsearch/hierarchyFacetItems.server';
-import { useTermSelection } from './queryExpansion/TermSelectionProvider';
 
 function mapLabels(results: HierarchyFacetItem[]) {
   return results.reduce<Record<string, string>>((acc, result) => {
@@ -55,9 +54,7 @@ function HierarchyFacetItems({ facetKey }: { facetKey: string }) {
   const state = useSearchState();
   const { selected, onSelect } = useFilterFacetSelection(facetKey);
   const updateFacetValueLabels = useUpdateFacetValueLabels(facetKey);
-  // The expansions are added here to keep the counts in sync with the expanded query
-  const { selectedExpansions } = useTermSelection();
-  const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state, selectedExpansions), [state, selectedExpansions]);
+  const searchState = useMemo<GlobaliseSearchState>(() => getSearchState(state), [state]);
   const { data: items } = useSuspenseQuery(hierarchyFacetItemsQueryOptions(facetKey, useDeferredValue(searchState)));
   const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(new Set());
 
