@@ -15,12 +15,11 @@ import { useSyncSelectedScanInToc } from './useSyncSelectedScanInToc.ts';
 export type TocDocumentProps = {
   document: ManifestDocument;
   isCurrent: boolean;
-  onSelect: () => void;
   listRef: RefObject<HTMLDivElement | null>;
 };
 
 export function TocDocument(
-  { document, isCurrent, onSelect, listRef }: TocDocumentProps,
+  { document, isCurrent, listRef }: TocDocumentProps,
 ) {
   const isExpanded = useIsTocDocumentExpanded(document.id);
   const { id: selectedCanvasId } = useSelectedCanvas();
@@ -68,8 +67,8 @@ export function TocDocument(
                 <TocScan
                   key={scan.canvasId}
                   scan={scan}
+                  documentId={document.id}
                   isSelected={isSelected}
-                  onSelect={onSelect}
                   scanRef={isSelected ? scanRef : undefined}
                 />
               );

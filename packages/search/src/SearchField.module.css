@@ -162,3 +162,38 @@
     }
 
 }
+
+.action-popover {
+    z-index: 50;
+    border: 1px solid var(--color-neutral-700);
+    background: var(--color-neutral-900);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+}
+
+.action-menu {
+    padding: var(--s4);
+}
+
+.action-item {
+    display: flex;
+    min-height: var(--s44);
+    align-items: center;
+    gap: var(--s8);
+    padding-inline: var(--s12);
+    cursor: pointer;
+
+    &[data-focused] {
+        background: var(--color-neutral-800);
+    }
+
+    &[data-disabled] {
+        opacity: 0.45;
+        cursor: default;
+    }
+
+    svg {
+        width: var(--s16);
+        height: var(--s16);
+    }
+}

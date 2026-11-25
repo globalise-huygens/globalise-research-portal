@@ -27,6 +27,7 @@ const entityPresentation = {
   polity: { label: 'Polity', Icon: IconEntityOrganisation },
   quantity: { label: 'Quantity', Icon: IconEntityDimensions },
   ship: { label: 'Ship', Icon: IconEntityShip },
+  occurrence: { label: 'Occurrence', Icon: IconEvents },
 };
 
 export type EntityType = keyof typeof entityPresentation;

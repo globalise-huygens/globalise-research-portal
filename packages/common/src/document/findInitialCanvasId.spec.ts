@@ -2,31 +2,29 @@ import { describe, expect, it } from 'vitest';
 import { findInitialCanvasId } from './findInitialCanvasId';
 import { createCanvasId } from '../uri';
 
-const document = 'NL-HaNA_1.04.02_1053_0003-0071';
-const documentStart = { inventory: '1053', page: '0003' };
-const documentStartCanvasId = createCanvasId(documentStart);
+const inventory = { inventory: '1053' };
+const scan = { ...inventory, page: '0004' };
+const document = { ...inventory, page: '0003', endPage: '0071' };
 
 describe(findInitialCanvasId.name, () => {
-  it('prefers the canvas from the url', () => {
-    const canvas = findInitialCanvasId({ canvas: 'url', document }, 'hit');
-    expect(canvas).toBe('url');
+  it('prefers the canvas of the scan path, even with an active hit', () => {
+    expect(findInitialCanvasId(scan, 'hit')).toBe(createCanvasId(scan));
   });
 
-  it('uses the canvas of the active hit when the url has no canvas', () => {
-    expect(findInitialCanvasId({ document }, 'hit')).toBe('hit');
+  it('uses the canvas of the active hit within a document', () => {
+    expect(findInitialCanvasId(document, 'hit')).toBe('hit');
   });
 
   it('uses the first page of the document without an active hit', () => {
-    expect(findInitialCanvasId({ document })).toBe(documentStartCanvasId);
+    const firstScan = createCanvasId({ ...inventory, page: '0003' });
+    expect(findInitialCanvasId(document)).toBe(firstScan);
   });
 
-  it('uses the page of a single page document', () => {
-    const singlePage = 'NL-HaNA_1.04.02_1053_0003-0003';
-    const canvas = findInitialCanvasId({ document: singlePage });
-    expect(canvas).toBe(documentStartCanvasId);
+  it('uses the canvas of the active hit within an inventory', () => {
+    expect(findInitialCanvasId(inventory, 'hit')).toBe('hit');
   });
 
-  it('finds no canvas without url canvas, active hit and document', () => {
-    expect(findInitialCanvasId({})).toBeUndefined();
+  it('finds no canvas without scan path, active hit and document', () => {
+    expect(findInitialCanvasId(inventory)).toBeUndefined();
   });
 });
