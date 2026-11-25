@@ -1,11 +1,9 @@
 export {
-  provideFallbackComponents,
-  provideRouteComponents,
-  provideRouteLoaders,
-  type FallbackComponents,
+  provideRouterSetup,
   type RouteComponents,
   type RouteId,
   type RouteLoaders,
+  type RouterSetup,
 } from './router.ts';
 export { toHref } from './toHref.ts';
 export { defaultInventory, toCanvasHref, toManifestHref, toViewerHref } from './viewer/viewerHref.ts';
