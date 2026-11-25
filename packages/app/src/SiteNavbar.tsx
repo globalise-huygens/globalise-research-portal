@@ -30,6 +30,7 @@ export function SiteNavbar() {
           <NavLink href={toHref({ to: '/object-card' })}>Object Card</NavLink>
           <NavLink href={toHref({ to: '/map' })}>World map</NavLink>
           <NavLink href={toHref({ to: '/content' })}>Content</NavLink>
+          <NavLink href={toHref({ to: '/content/blog' })}>Blog</NavLink>
         </NavLinks>
       </Navbar>
     </header>

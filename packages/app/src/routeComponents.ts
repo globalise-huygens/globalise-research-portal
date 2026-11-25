@@ -10,6 +10,7 @@ export const routeComponents: RouteComponents = {
   '/catalog/': lazyRouteComponent(() => import('./CatalogPage.tsx'), 'CatalogPage'),
   [`/${handle}/$` as const]: lazyRouteComponent(() => import('./ManifestPage.tsx'), 'ManifestPage'),
   '/object-card/': lazyRouteComponent(() => import('./ObjectCardPage.tsx'), 'ObjectCardPage'),
+  '/content/blog': lazyRouteComponent(() => import('./BlogIndex.tsx'), 'BlogIndex'),
   '/content/': lazyRouteComponent(() => import('./ContentHome.tsx'), 'ContentHome'),
   '/content/$slug': lazyRouteComponent(() => import('./ContentPage.tsx'), 'ContentPage'),
 };

@@ -25,7 +25,14 @@ describe(buildPageLinks.name, () => {
 function resolve(href: string) {
   const link: Element = { type: 'element', tagName: 'a', properties: { href }, children: [] };
   const page: ContentPage = {
-    meta: { path: 'pages/a.md', title: 'Foo', slug: 'foo' },
+    meta: {
+      path: 'pages/a.md', title: 'Foo', slug: 'foo',
+      summary: 'Example content',
+      type: 'page',
+      status: 'draft',
+      authors: [],
+      featured: false,
+    },
     tree: { type: 'root', children: [link] },
   };
   buildPageLinks([page]);
