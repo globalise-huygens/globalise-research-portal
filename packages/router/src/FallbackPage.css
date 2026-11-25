@@ -1,0 +1,70 @@
+.fallback-page {
+    box-sizing: border-box;
+    min-height: 100%;
+    padding: clamp(3rem, 10vw, 8rem) 1.25rem;
+    background: var(--color-brand-black);
+    color: var(--color-brand-white);
+    font: 400 1rem / 1.55 var(--font-sans);
+
+    .message {
+        max-width: 48rem;
+        margin-inline: auto;
+        border-top: 2px solid var(--color-brand-mint);
+        padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .status {
+        margin: 0 0 0.75rem;
+        color: var(--color-brand-mint);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    h1 {
+        margin: 0;
+        font: 500 clamp(2.25rem, 6vw, 4rem) / 1.1 var(--font-serif);
+        text-wrap: balance;
+    }
+
+    .description {
+        max-width: 45ch;
+        margin: 1rem 0 0;
+        color: var(--color-neutral-200);
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1.5rem;
+        margin-top: 2rem;
+    }
+
+    a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+    }
+
+    .primary {
+        display: inline-flex;
+        min-height: 2.75rem;
+        align-items: center;
+        border: 0;
+        padding: 0.5rem 1rem;
+        background: var(--color-brand-mint);
+        color: var(--color-brand-black);
+        font: inherit;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+            background: var(--color-brand-white);
+        }
+    }
+
+    :is(a, button):focus-visible {
+        outline: 2px solid var(--color-brand-mint);
+        outline-offset: 3px;
+    }
+}
