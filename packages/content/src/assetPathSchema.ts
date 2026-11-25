@@ -3,19 +3,18 @@ import { z } from 'zod';
 import { assetsDir } from './contentFiles.ts';
 
 export const assetPathSchema = z.string()
-  .refine(isDecodable, 'not decodable')
-  .transform(decodeURI)
-  .refine((path) => path.startsWith(`/${assetsDir}/`), 'outside the assets')
-  .refine((path) => !path.split('/').includes('..'), 'path contains ..')
-  .transform((path, ctx) => {
-    const extension = extname(path).toLowerCase();
-    const contentType = imageTypes.get(extension);
-    if (!contentType) {
-      ctx.issues.push({ code: 'custom', message: `unknown image type: ${extension}`, input: path });
-      return z.NEVER;
-    }
-    return { path, contentType };
-  });
+  .refine(isDecodable, { error: 'not decodable', abort: true })
+  .refine((path) => decodeURI(path).startsWith(`/${assetsDir}/`), 'outside the assets')
+  .refine((path) => !decodeURI(path).split('/').includes('..'), 'path contains ..')
+  .refine(toImageType, { error: ({ input }) => `unknown image type: ${toExtension(String(input))}` });
+
+export function toImageType(path: string): string | undefined {
+  return imageTypes.get(toExtension(path));
+}
+
+function toExtension(path: string): string {
+  return extname(path).toLowerCase();
+}
 
 const imageTypes = new Map([
   ['.gif', 'image/gif'],

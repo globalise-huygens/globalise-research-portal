@@ -33,20 +33,21 @@ describe(isLocal.name, () => {
 
 describe(validateLocalLinks.name, () => {
   it.each([
-    '/b.png',
-    '../assets/b.png',
-    '/assets/b.md',
-  ])('warns about an image that is not served as an asset: %s', (src) => {
-    expect(readImageRules(src)).toContain('unserved-image');
+    ['/b.png', 'outside the assets'],
+    ['../assets/b.png', 'outside the assets'],
+    ['/assets/../b.png', 'path contains ..'],
+    ['/assets/b.md', 'unknown image type: .md'],
+  ])('warns why an image is not served as an asset: %s', (src, why) => {
+    expect(readUnservedImage(src)).toContain(why);
   });
 
   it('accepts an image served as an asset', () => {
-    expect(readImageRules('/assets/b.png')).not.toContain('unserved-image');
+    expect(readUnservedImage('/assets/b.png')).toBeUndefined();
   });
 });
 
-function readImageRules(src: string): string[] {
+function readUnservedImage(src: string): string | undefined {
   const image: Element = { type: 'element', tagName: 'img', properties: { src }, children: [] };
   const issues = validateLocalLinks({ type: 'root', children: [image] }, new VFile({ path: 'a.md' }));
-  return issues.map(({ ruleId }) => ruleId);
+  return issues.find(({ ruleId }) => ruleId === 'unserved-image')?.reason;
 }

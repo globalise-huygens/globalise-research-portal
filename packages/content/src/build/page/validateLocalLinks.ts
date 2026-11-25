@@ -21,10 +21,12 @@ export function validateLocalLinks(tree: Root, source: VFile): Issue[] {
       const place = node.position;
       issues.push(createWarningIssue(reason, 'unresolved-link', place));
     }
-    if (link && node.tagName === 'img' && !assetPathSchema.safeParse(link).success) {
-      const reason = `Unserved image \`${link}\``;
+    const assetError = link && node.tagName === 'img' && assetPathSchema.safeParse(link).error;
+    if (assetError) {
+      const issue = assetError.issues.map(({ message }) => message).join(', ');
+      const message = `Unserved image \`${link}\`: ${issue}`;
       const place = node.position;
-      issues.push(createWarningIssue(reason, 'unserved-image', place));
+      issues.push(createWarningIssue(message, 'unserved-image', place));
     }
   });
   return issues;
