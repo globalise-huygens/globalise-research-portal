@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@globalise/design';
 import * as React from 'react';
-import type { ManifestLayoutProps } from '../layout/ManifestLayout';
+import type { ManifestLayoutProps } from '../layout';
 import { TOP_BAR_BUTTON } from '../layout/buttonClasses';
 import { CollapsedMetadataRail } from '../layout/CollapsedMetadataRail';
 import { ExpandedMetadataSidebar } from '../layout/ExpandedMetadataSidebar';
@@ -20,7 +20,7 @@ import { ManifestError } from '../layout/ManifestError';
 import { ManifestEntityHighlightMenu } from '../layout/ManifestEntityHighlightMenu';
 import { ManifestEventsToggle } from '../layout/ManifestEventsToggle';
 import { ManifestLayoutElementsToggle } from '../layout/ManifestLayoutElementsToggle';
-import { SplitPaneLayout } from '../layout/splitpane';
+import { SplitPaneLayout } from '../layout';
 import { TooltipIconButton } from '../layout/TooltipIconButton';
 import { ViewerPane } from './ViewerPane';
 
@@ -32,7 +32,7 @@ export function DesktopLayout({
   transcription,
   bottom,
   error,
-  onShare,
+  shareLink,
   onClose,
 }: ManifestLayoutProps) {
   const [isSidebarExpanded, setIsSidebarExpanded] = React.useState(true);
@@ -207,7 +207,7 @@ export function DesktopLayout({
               <ManifestEventsToggle />
               <ManifestLayoutElementsToggle />
               {topRight}
-              {onShare && <ManifestShareButton onShare={onShare} />}
+              {shareLink && <ManifestShareButton link={shareLink} />}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>
           </header>

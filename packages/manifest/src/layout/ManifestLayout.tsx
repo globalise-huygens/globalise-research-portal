@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { DesktopLayout } from '../responsive/DesktopLayout';
 import { MobileLayout } from '../responsive/MobileLayout';
 import type { ErrorMessage } from './ManifestError';
+import type { ShareLink } from './ManifestShareButton';
 
 export type ManifestLayoutProps = {
   topLeft?: ReactNode;
@@ -16,7 +17,7 @@ export type ManifestLayoutProps = {
   transcription?: ReactNode;
   bottom?: ReactNode;
   error?: ErrorMessage;
-  onShare?: () => void;
+  shareLink?: ShareLink;
   onClose?: () => void;
 };
 

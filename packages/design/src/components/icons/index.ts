@@ -51,7 +51,6 @@ export { IconScan } from './IconScan';
 export { IconSaturation } from './IconSaturation';
 export { IconSearch } from './IconSearch';
 export { IconSetting } from './IconSetting';
-export { IconShare } from './IconShare';
 export { IconShowMore } from './IconShowMore';
 export { IconSwap } from './IconSwap';
 export { IconTableOfContent } from './IconTableOfContent';

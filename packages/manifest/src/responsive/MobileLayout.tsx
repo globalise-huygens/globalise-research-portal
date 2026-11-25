@@ -72,7 +72,7 @@ export function MobileLayout({
   transcription,
   bottom,
   error,
-  onShare,
+  shareLink,
   onClose,
 }: ManifestLayoutProps) {
   const mobilePanels = useMobilePanels();
@@ -146,7 +146,7 @@ export function MobileLayout({
 
             <div className="top-bar-group right">
               {topRight}
-              {onShare && <ManifestShareButton onShare={onShare} />}
+              {shareLink && <ManifestShareButton link={shareLink} />}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>
           </header>

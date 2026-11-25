@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { type CanvasId, setSelectedCanvas } from '@globalise/common/document';
 import { useInitCanvases } from '@globalise/common/document/browser';
 import { useSyncSelectedDocument } from '@globalise/metadata';
-import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage } from './layout';
+import { ManifestCanvasNavigation, ManifestLayout, type ErrorMessage, type ShareLink } from './layout';
 import { ManifestFacsimileViewer } from './facsimile/ManifestFacsimileViewer';
 import { ManifestTranscriptionViewer } from './transcription/ManifestTranscriptionViewer';
 
@@ -12,11 +12,11 @@ export type ManifestViewerProps = {
   initialCanvasId?: CanvasId;
   topLeft?: ReactNode;
   error?: ErrorMessage;
-  onShare?: () => void;
+  share?: ShareLink;
   onClose?: () => void;
 };
 
-export function ManifestViewer({ initialCanvasId, topLeft, error, onShare, onClose }: ManifestViewerProps) {
+export function ManifestViewer({ initialCanvasId, topLeft, error, share, onClose }: ManifestViewerProps) {
   const isInitCanvases = useInitCanvases(initialCanvasId);
   useSyncSelectedDocument();
 
@@ -26,7 +26,7 @@ export function ManifestViewer({ initialCanvasId, topLeft, error, onShare, onClo
 
   return (
     <ManifestLayout
-      onShare={onShare}
+      shareLink={share}
       onClose={onClose}
       topLeft={topLeft}
       error={error}

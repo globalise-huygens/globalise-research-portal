@@ -32,7 +32,7 @@ import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
 import { useSharableRouteState } from './share/useSharableRouteState';
-import { createSharableHref } from './share/createSharableHref';
+import { createShareLink } from './share/createShareLink';
 import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
@@ -56,6 +56,7 @@ export function ManifestPage() {
   const activeHitCanvasId = activeHit?.canvasId;
 
   const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
+  const share = createShareLink(sharableRoute, window.location.origin, 'Copy link to share');
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
@@ -138,11 +139,6 @@ export function ManifestPage() {
     });
   }
 
-  function shareRoute() {
-    const href = createSharableHref(sharableRoute);
-    void navigator.clipboard.writeText(new URL(href, window.location.origin).href);
-  }
-
   function handleManifestChange(manifest: string) {
     const href = toManifestHref(manifest, {});
     if (href) {
@@ -157,7 +153,7 @@ export function ManifestPage() {
           <ManifestViewer
             initialCanvasId={initialCanvasId}
             error={error}
-            onShare={shareRoute}
+            share={share}
             onClose={() => void navigate({ to: '/' })}
             topLeft={
               <ManifestDropdown
