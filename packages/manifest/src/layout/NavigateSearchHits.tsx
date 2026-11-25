@@ -15,15 +15,21 @@ export function NavigateSearchHits() {
   }
 
   return (
-    <div className="bar-group">
-      <PrevNextInputBrowser
-        label="search hits"
-        name="search hit"
-        index={activeHitIndex}
-        total={hitCount}
-        onSelect={selectSearchHit}
-        onClose={clearSearchHits}
+    <>
+      <span
+        aria-hidden="true"
+        className="top-bar-divider vertical"
       />
-    </div>
+      <div className="bar-group search-hit-navigation">
+        <PrevNextInputBrowser
+          label="Search hits"
+          name="search hit"
+          index={activeHitIndex}
+          total={hitCount}
+          onSelect={selectSearchHit}
+          onClose={clearSearchHits}
+        />
+      </div>
+    </>
   );
 }

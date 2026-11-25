@@ -2,7 +2,8 @@
   --manifest-top-bar-height: var(--s56);
   --manifest-bottom-bar-height: calc(56px + env(safe-area-inset-bottom));
   --touch-target: 44px;
-  --scan-navigation-height: 48px;
+  --scan-navigation-row-height: 48px;
+  --scan-navigation-height: var(--scan-navigation-row-height);
   --reading-tools-bottom-inset: var(--s8);
 
   padding-inline: 0;
@@ -94,10 +95,15 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  &:has(.scan-navigation .search-hit-navigation) {
+    --scan-navigation-height: calc(2 * var(--scan-navigation-row-height));
+  }
+
   .scan-navigation {
     display: flex;
+    flex-direction: column;
     min-width: 0;
-    justify-content: center;
+    justify-content: space-around;
     position: absolute;
     bottom: 100%;
     left: 0;
