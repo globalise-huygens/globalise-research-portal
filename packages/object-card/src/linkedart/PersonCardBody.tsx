@@ -25,6 +25,7 @@ import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
 import { PersonReferencePanel } from './PersonReferencePanel.tsx';
+import { PersonPlaces } from './PersonPlaces.tsx';
 import {
   getResidenceLabel,
   groupPersonStatuses,
@@ -141,6 +142,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             </div>
           </ObjectCardSection>
         )}
+        <PersonPlaces entity={entity} />
       </ObjectCardPanel>
       <PersonReferencePanel entity={entity} />
     </ObjectCardBody>
