@@ -11,7 +11,7 @@ const route = getRouteApi('/content/blog');
 export function BlogIndex() {
   const pages: ContentIndex = route.useLoaderData();
   const { q } = route.useSearch();
-  const searchIndex = useContentSearchIndex();
+  const { data: searchIndex } = useContentSearchIndex();
   const matchingSlugs = q && searchIndex
     ? new Set(searchIndex.search(q).map((result) => String(result.id)))
     : undefined;
