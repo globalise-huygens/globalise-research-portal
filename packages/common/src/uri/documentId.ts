@@ -19,7 +19,13 @@ export function parseDocumentName(
 }
 
 export function createDocumentId(
+  document: DocumentRef,
+): string {
+  return `${idBase}/document:${createDocumentName(document)}`;
+}
+
+export function createDocumentName(
   { inventory, page, endPage }: DocumentRef,
 ): string {
-  return `${idBase}/document:NL-HaNA_1.04.02_${inventory}_${page}-${endPage}`;
+  return `NL-HaNA_1.04.02_${inventory}_${page}-${endPage}`;
 }

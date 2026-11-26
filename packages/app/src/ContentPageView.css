@@ -7,7 +7,6 @@
         max-width: 100%;
         height: auto;
     }
-
     ::highlight(content-query) {
         background-color: color-mix(in srgb, var(--color-search-hit) 50%, transparent);
     }
@@ -39,6 +38,12 @@
 
         a, .byline {
             font-size: 0.875rem;
+        }
+
+        > a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
         }
 
         h1 {
@@ -141,3 +146,4 @@
         background-color: color-mix(in srgb, var(--color-search-hit) 50%, transparent);
     }
 }
+

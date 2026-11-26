@@ -1,6 +1,5 @@
 import { label as labelOf, url as urlOf, useMetadataNodes } from '@globalise/common';
-import { EntityTag } from '@globalise/design';
-import { toHref } from '@globalise/router';
+import { RelationLink } from '@globalise/object-card';
 import { thesaurusBase } from '@globalise/common/uri';
 import { EmptyPair, Joined, Pair } from '../common';
 import type { FieldProps } from './FieldProps';
@@ -18,12 +17,20 @@ export function TypeField({
   return (
     <Pair label={label}>
       <Joined>
-        {types.map((type) => {
+        {types.map((type, index) => {
           const uri = urlOf(type);
+          const typeLabel = labelOf(type);
           if (!uri?.startsWith(thesaurusBase)) {
-            return labelOf(type);
+            return typeLabel;
           }
-          return <EntityTag type="concept" href={toHref({ to: '/object-card', search: { uri } })}>{labelOf(type)}</EntityTag>;
+          return (
+            <RelationLink
+              key={`${uri}-${index}`}
+              node={type}
+              label={typeLabel}
+              previewOnDemand
+            />
+          );
         })}
       </Joined>
     </Pair>

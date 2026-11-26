@@ -18,15 +18,21 @@ import {
   ManifestLoader,
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
-import { getRouteApi, toCanvasHref, toManifestHref } from '@globalise/router';
+import {
+  defaultInventory,
+  getRouteApi,
+  toCanvasHref,
+  toManifestHref,
+  useLocation,
+} from '@globalise/router';
+import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
-import { createManifestId, handle, idBase } from '@globalise/common/uri';
-
-const defaultManifest = createManifestId({ inventory: '1053' });
+import { useSharableRouteState } from './share/useSharableRouteState';
+import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/$`);
 
@@ -34,9 +40,12 @@ const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
   const navigate = route.useNavigate();
-  const search = route.useSearch();
-  const manifestUrl = search.manifest ?? defaultManifest;
-  const searchState = getManifestSearchState(search);
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const viewer = useMemo(() => parseViewerPath(pathname) ?? defaultInventory, [pathname]);
+  const isResolved = useResolveManifestRoute(viewer);
+  const manifestUrl = createManifestId(viewer);
+  const sharableRoute = useSharableRouteState(viewer);
+  const searchState = getManifestSearchState(sharableRoute.searchHit, sharableRoute.searchHitQuery);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
   );
@@ -44,7 +53,7 @@ export function ManifestPage() {
     .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
   const activeHitCanvasId = activeHit?.canvasId;
 
-  const initialCanvasId = findInitialCanvasId(search, activeHitCanvasId);
+  const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
 
   let error: ErrorMessage | undefined = undefined;
   if (searchState && !activeHitCanvasId) {
@@ -53,7 +62,7 @@ export function ManifestPage() {
 
   const allManifests = useCollectionManifests(collectionUrl);
 
-  useEffect(syncCanvasParam, [navigate, search]);
+  useEffect(syncCanvasParam, [navigate]);
 
   function syncCanvasParam() {
     return useDocumentStore.subscribe((state, prev) => {
@@ -61,7 +70,7 @@ export function ManifestPage() {
       if (!selectedCanvasId || selectedCanvasId === prev.selectedCanvasId) {
         return;
       }
-      const href = toCanvasHref(selectedCanvasId, { ...search, canvas: selectedCanvasId });
+      const href = toCanvasHref(selectedCanvasId, {});
       if (href) {
         void navigate({ href, replace: true });
       }
@@ -128,7 +137,7 @@ export function ManifestPage() {
   }
 
   function handleManifestChange(manifest: string) {
-    const href = toManifestHref(manifest, { ...search, manifest });
+    const href = toManifestHref(manifest, {});
     if (href) {
       void navigate({ href });
     }
@@ -137,7 +146,7 @@ export function ManifestPage() {
   return (
     <ViewerProvider>
       <ManifestLoader url={manifestUrl} canvasId={initialCanvasId}>
-        {isHighlighting ? <Spinner label="Loading search result"/> : (
+        {!isResolved || isHighlighting ? <Spinner label="Loading search result"/> : (
           <ManifestViewer
             initialCanvasId={initialCanvasId}
             error={error}

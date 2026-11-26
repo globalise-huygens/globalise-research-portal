@@ -2,6 +2,7 @@ import '@globalise/design/styles.css';
 import './ObjectCardPage.css';
 import { useEffect } from 'react';
 import { getRouteApi } from '@globalise/router';
+import { Container, Grid } from '@globalise/design';
 import { thesaurusBase } from '@globalise/common/uri';
 import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
 
@@ -18,9 +19,13 @@ export function ObjectCardPage() {
 
   return (
     <main className='object-card-page'>
-      <div className='object-card-page__content'>
-        <ObjectCardView/>
-      </div>
+      <Container>
+        <Grid>
+          <div className="slot-content-band">
+            <ObjectCardView/>
+          </div>
+        </Grid>
+      </Container>
     </main>
   );
 }

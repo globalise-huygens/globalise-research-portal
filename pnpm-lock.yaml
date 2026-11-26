@@ -778,6 +778,9 @@ importers:
       '@globalise/design':
         specifier: workspace:*
         version: link:../design
+      '@globalise/object-card':
+        specifier: workspace:*
+        version: link:../object-card
       '@globalise/router':
         specifier: workspace:*
         version: link:../router
