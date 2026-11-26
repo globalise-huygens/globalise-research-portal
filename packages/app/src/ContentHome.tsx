@@ -111,7 +111,7 @@ function ResultList({
               </aside>
               <div className="result-main">
                 <h3>
-                  <Link href={href}>
+                  <Link href={href} routerOptions={query ? { resetScroll: false } : undefined}>
                     <span><Highlight text={title} terms={terms}/></span>
                     <IconArrowTopRight width="18" height="18" aria-hidden="true"/>
                   </Link>

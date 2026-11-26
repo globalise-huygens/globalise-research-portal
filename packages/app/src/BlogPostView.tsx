@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { toHref } from '@globalise/router';
 import { IconArrowLeftAlt } from '@globalise/design';
 import { Link } from 'react-aria-components';
@@ -7,10 +7,7 @@ import { BlogCards } from './BlogCards.tsx';
 import { blogPostDate } from './blogPost.ts';
 import type { BlogPostMeta } from './blogPost.ts';
 import { renderHtmlTree } from './renderHtmlTree.ts';
-import {
-  clearClientSearchQueryHighlight,
-  highlightClientSearchQuery,
-} from './highlightClientSearchQuery.ts';
+import { useQueryHighlight } from './useQueryHighlight.ts';
 
 type BlogPostViewProps = {
   meta: BlogPostMeta;
@@ -26,17 +23,7 @@ export function BlogPostView({
   relatedPosts,
 }: BlogPostViewProps) {
   const articleRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const article = articleRef.current;
-    if (!article || !query) {
-      return;
-    }
-    const hitRanges = highlightClientSearchQuery(article, query);
-    const firstHitElement = hitRanges[0]?.startContainer.parentElement;
-    firstHitElement?.scrollIntoView({ block: 'center' });
-    return clearClientSearchQueryHighlight;
-  }, [meta, tree, query]);
+  useQueryHighlight(articleRef, tree, query);
 
   const [first] = tree.children;
   const startsWithTitle = first?.type === 'element' && first.tagName === 'h1';
