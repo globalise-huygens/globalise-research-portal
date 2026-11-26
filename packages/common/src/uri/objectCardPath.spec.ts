@@ -3,16 +3,29 @@ import { createObjectCardPath, createObjectCardSplat, parseObjectCardSplat } fro
 
 const uri = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/foo:bar';
 const splat = 'foo:bar';
+const externalUri = 'https://foo.bar/baz';
 
 describe(createObjectCardPath.name, () => {
   it('builds the path of an object card', () => {
     expect(createObjectCardPath(uri)).toBe('/hdl:20.500.14722/foo:bar');
   });
+
+  it('ignores uris outside the handle', () => {
+    expect(createObjectCardPath(externalUri)).toBeNull();
+  });
 });
 
 describe(createObjectCardSplat.name, () => {
-  it('strips the id base from the uri', () => {
+  it('reads the type and id of a uri', () => {
     expect(createObjectCardSplat(uri)).toBe(splat);
+  });
+
+  it('reads the type and id of a uri on another host', () => {
+    expect(createObjectCardSplat('https://id.globalise.nl/hdl:20.500.14722/foo:bar')).toBe(splat);
+  });
+
+  it('ignores uris outside the handle', () => {
+    expect(createObjectCardSplat(externalUri)).toBeNull();
   });
 });
 

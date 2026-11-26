@@ -130,7 +130,7 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        void navigate({ to: '/object-card', search: { uri } });
+        void navigate({ to: `/${handle}/$`, params: { uri } });
       }
     });
   }

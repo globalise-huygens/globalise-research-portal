@@ -17,6 +17,7 @@ import {
   getPreferredLanguageValue,
   type LanguageValue,
 } from '@globalise/common';
+import { handle } from '@globalise/common/uri';
 import { useNavigate } from '@globalise/router';
 import {
   ConceptHierarchy,
@@ -40,7 +41,7 @@ export function ConceptCard() {
   }
 
   function handleSelect(selected: SkosConcept) {
-    void navigate({ to: '/object-card', search: { uri: selected.id } });
+    void navigate({ to: `/${handle}/$`, params: { uri: selected.id } });
   }
 
   const url = getJsonUrl(uri);

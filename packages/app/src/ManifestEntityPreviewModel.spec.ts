@@ -4,7 +4,6 @@ import {
   getEquivalentTarget,
   getInternalConceptUri,
   getLinkedObjectCardHref,
-  getObjectCardHref,
 } from './ManifestEntityPreviewModel';
 
 const conceptId = '8fa3d88a-021c-4976-ab8e-1773b93889fe';
@@ -57,7 +56,8 @@ describe('manifest entity preview links', () => {
   ] as const)('links public GLOBALISE %s subjects to their object cards', (type) => {
     const uri =
       'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/person:123';
-    expect(getLinkedObjectCardHref(createBody(uri, type))).toBe(getObjectCardHref(uri));
+    const href = getLinkedObjectCardHref(createBody(uri, type));
+    expect(href).toBe('/hdl:20.500.14722/person:123');
   });
 
   it('does not link annotation-local or external entity subjects', () => {

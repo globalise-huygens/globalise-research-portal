@@ -1,10 +1,9 @@
 import { findByPath, type LinkedArtNode } from '@globalise/common';
-import { toHref } from '@globalise/router';
 import {
   getEntitySubject,
   type EntityBody,
 } from '@globalise/common/annotation';
-import { thesaurusBase } from '@globalise/common/uri';
+import { createObjectCardPath, thesaurusBase } from '@globalise/common/uri';
 
 const GLOBALISE_DATA_ORIGIN = 'https://data.globalise.huygens.knaw.nl';
 
@@ -43,11 +42,7 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
   } catch {
     return undefined;
   }
-  return getObjectCardHref(uri);
-}
-
-export function getObjectCardHref(uri: string): string {
-  return toHref({ to: '/object-card', search: { uri } });
+  return createObjectCardPath(uri) ?? undefined;
 }
 
 export function getEquivalentTarget(node?: LinkedArtNode): LinkedArtNode | undefined {

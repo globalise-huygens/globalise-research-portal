@@ -19,7 +19,7 @@ describe('getResourcePreview', () => {
     const preview = getResourcePreview(person, `${internalBase}/person:Person_1`);
 
     expect(preview.type).toBe('person');
-    expect(preview.openFullCardHref).toContain('/object-card');
+    expect(preview.openFullCardHref).toBe('/hdl:20.500.14722/person:Person_1');
     expect(preview.properties).toEqual([
       { label: 'Also called', value: 'Johannes Janssen' },
       { label: 'Born', value: '1650-03-01' },

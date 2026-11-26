@@ -14,6 +14,6 @@ export const Route = createFileRoute('/hdl:20.500.14722/$')({
       }
       return { uri };
     },
-    stringify: ({ uri }) => ({ _splat: createObjectCardSplat(uri) }),
+    stringify: ({ uri }) => ({ _splat: createObjectCardSplat(uri) ?? '' }),
   },
 });

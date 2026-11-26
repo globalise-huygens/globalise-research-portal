@@ -18,7 +18,6 @@ import { Route as ContentSlugRouteImport } from './routes/content/$slug'
 import { Route as ContentBlogRouteImport } from './routes/content/blog'
 import { Route as HdlChar5820Dot500Dot14722SplatRouteImport } from './routes/hdl:20[.]500[.]14722/$'
 import { Route as HdlChar5820Dot500Dot14722InventoryChar58Char123Char125RouteImport } from './routes/hdl:20[.]500[.]14722/inventory:{$}'
-import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -67,11 +66,6 @@ const HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route =
     path: '/hdl:20.500.14722/inventory:{$}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
-  id: '/object-card/',
-  path: '/object-card/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -83,7 +77,6 @@ export interface FileRoutesByFullPath {
   '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
-  '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -95,7 +88,6 @@ export interface FileRoutesByTo {
   '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog': typeof CatalogIndexRoute
   '/content': typeof ContentIndexRoute
-  '/object-card': typeof ObjectCardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -108,7 +100,6 @@ export interface FileRoutesById {
   '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
-  '/object-card/': typeof ObjectCardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -122,7 +113,6 @@ export interface FileRouteTypes {
     | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog/'
     | '/content/'
-    | '/object-card/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -134,7 +124,6 @@ export interface FileRouteTypes {
     | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog'
     | '/content'
-    | '/object-card'
   id:
     | '__root__'
     | '/'
@@ -146,7 +135,6 @@ export interface FileRouteTypes {
     | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog/'
     | '/content/'
-    | '/object-card/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -159,7 +147,6 @@ export interface RootRouteChildren {
   HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route: typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   CatalogIndexRoute: typeof CatalogIndexRoute
   ContentIndexRoute: typeof ContentIndexRoute
-  ObjectCardIndexRoute: typeof ObjectCardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -227,13 +214,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/object-card/': {
-      id: '/object-card/'
-      path: '/object-card'
-      fullPath: '/object-card/'
-      preLoaderRoute: typeof ObjectCardIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -248,7 +228,6 @@ const rootRouteChildren: RootRouteChildren = {
     HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route,
   CatalogIndexRoute: CatalogIndexRoute,
   ContentIndexRoute: ContentIndexRoute,
-  ObjectCardIndexRoute: ObjectCardIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
