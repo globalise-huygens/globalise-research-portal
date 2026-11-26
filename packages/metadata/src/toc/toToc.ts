@@ -3,7 +3,7 @@ import { getValue } from '@iiif/helpers';
 import type { CanvasId } from '@globalise/common/document';
 import { findThumbnail } from '@knaw-huc/osd-iiif-viewer';
 import { findMetadataValue } from '../findMetadataValue.ts';
-import {orThrow} from "@globalise/common";
+import { orThrow } from '@globalise/common';
 
 export type ManifestScan = {
   canvasId: CanvasId;
