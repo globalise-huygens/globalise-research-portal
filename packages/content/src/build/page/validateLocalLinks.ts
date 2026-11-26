@@ -38,7 +38,7 @@ export function isLocal(link: string): boolean {
   return !isEmpty && !hasScheme && !isProtocolRelative && !isAnchor;
 }
 
-function resolveLink(source: VFile, link: string): string {
+export function resolveLink(source: VFile, link: string): string {
   const [path] = link.split(/[#?]/);
   const target = decodeURI(path);
   return target.startsWith('/')
