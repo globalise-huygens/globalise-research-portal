@@ -60,3 +60,31 @@
     outline: 2px solid var(--ring);
     outline-offset: 3px;
 }
+
+@media (768px <= width < 960px) {
+    .site-navbar__links {
+        gap: var(--s12);
+    }
+}
+
+@media (640px <= width < 768px) {
+    .site-header {
+        .gds-navbar {
+            height: auto;
+            flex-wrap: wrap;
+            padding-block: var(--s16);
+        }
+
+        .gds-navbar__top {
+            width: 100%;
+        }
+
+        .gds-navbar__toggle, .gds-navbar__mobile-panel {
+            display: flex;
+        }
+
+        .site-navbar__links {
+            display: none;
+        }
+    }
+}

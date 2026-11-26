@@ -12,6 +12,7 @@ export type TooltipProps = {
   className?: string;
   delay?: number;
   closeDelay?: number;
+  isOpen?: boolean;
 } & Omit<AriaTooltipProps, 'children' | 'className'>;
 
 export function Tooltip({
@@ -20,12 +21,13 @@ export function Tooltip({
   className,
   delay = 350,
   closeDelay = 80,
+  isOpen,
   placement = 'bottom',
   offset = 8,
   ...props
 }: TooltipProps) {
   return (
-    <AriaTooltipTrigger delay={delay} closeDelay={closeDelay}>
+    <AriaTooltipTrigger delay={delay} closeDelay={closeDelay} isOpen={isOpen}>
       {children}
       <AriaTooltip
         placement={placement}

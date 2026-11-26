@@ -17,6 +17,7 @@ import {
   getPreferredLanguageValue,
   type LanguageValue,
 } from '@globalise/common';
+import { handle } from '@globalise/common/uri';
 import { useNavigate } from '@globalise/router';
 import {
   ConceptHierarchy,
@@ -28,6 +29,7 @@ import {
 } from './';
 import { CardCopyAction } from '../CardCopyAction.tsx';
 import { CardOpenAction } from '../CardOpenAction.tsx';
+import { RelationLink } from '../linkedart/RelationLink.tsx';
 import { HtmlValue } from './HtmlValue.tsx';
 
 export function ConceptCard() {
@@ -39,7 +41,7 @@ export function ConceptCard() {
   }
 
   function handleSelect(selected: SkosConcept) {
-    void navigate({ to: '/object-card', search: { uri: selected.id } });
+    void navigate({ to: `/${handle}/$`, params: { uri: selected.id } });
   }
 
   const url = getJsonUrl(uri);
@@ -80,7 +82,8 @@ export function ConceptCard() {
     (concept.topConceptOf?.length ?? 0) +
     (concept.related?.length ?? 0) >
     0;
-  const hasLeftPanel = hasDefinitions || hasExternal;
+  const hasOccurrences = (concept.present_at?.length ?? 0) > 0;
+  const hasLeftPanel = hasDefinitions || hasExternal || hasOccurrences;
   const hasBody = hasLeftPanel || hasGraph;
   const cardClassName = ['concept-card', !hasBody ? 'header-only' : undefined]
     .filter(Boolean)
@@ -169,6 +172,18 @@ export function ConceptCard() {
                       />
                     )}
                   </ObjectCardPropertyList>
+                </ObjectCardSection>
+              )}
+              {hasOccurrences && (
+                <ObjectCardSection title="Occurrences" className="occurrences">
+                  <section className="occurrence-group">
+                    <h4 className="occurrence-title">Present at</h4>
+                    <div className="node-list">
+                      {concept.present_at?.map((node) => (
+                        <RelationLink key={node.id} node={node} />
+                      ))}
+                    </div>
+                  </section>
                 </ObjectCardSection>
               )}
               {hasExternal && (

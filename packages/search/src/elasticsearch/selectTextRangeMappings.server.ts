@@ -61,5 +61,5 @@ function openDatabase(): DatabaseSync {
   if (!dbPath) {
     throw new Error(`${dbPathEnvKey} is not set`);
   }
-  return new DatabaseSync(dbPath, { readOnly: true });
+  return new DatabaseSync(`file:${dbPath}?immutable=1`, { readOnly: true });
 }

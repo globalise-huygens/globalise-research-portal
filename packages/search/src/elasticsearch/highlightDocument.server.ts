@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import type { HtrHit } from '@globalise/common/document';
+import type { HtrHit, SearchHitRef } from '@globalise/common/document';
 import { createServerFn } from '@tanstack/react-start';
 import elastic from './client.server';
 import { checkFacets, getSearchQuery, GlobaliseSearchStateSchema } from './elastic.server';
-import { isHit, parseAnnotatedText } from './parseAnnotatedText';
+import { type AnnotatedSegment, isHit, parseAnnotatedText } from './parseAnnotatedText';
 import { getSnippetOffsets } from './getSnippetOffsets';
 import { calculateHtrOffsets } from './calculateHtrOffsets';
 import { findActiveEsHitIndex } from './findActiveEsHitIndex';
+import { findFirstHitIndex } from './findFirstHitIndex';
 import { mergeContinuousOffsets } from './mergeContinuousOffsets.ts';
 import { selectTextRangeMappings } from './selectTextRangeMappings.server';
 
@@ -15,15 +16,16 @@ import documents from '../indices/documents/index.ts';
 
 export type DocumentHighlights = {
   hits: HtrHit[];
-  activeEsHitIndex: number | null;
+  locatedHitIndex: number | null;
 };
 
 const HighlightDocumentRequestSchema = GlobaliseSearchStateSchema
   .extend({
     docDbId: z.string(),
-    docEsId: z.string(),
-    snippet: z.string(),
-    // Highlighted documents are only used with the 'documents' index, so it's hardcoded below
+    target: z.union([
+      z.object({ snippet: z.string() }),
+      z.object({ hitIndex: z.number().int().min(0) }),
+    ]),
   }).superRefine((data, ctx) => checkFacets({ ...data, index: 'documents' }, ctx));
 
 const highlightDocument = createServerFn({ method: 'POST' })
@@ -31,7 +33,7 @@ const highlightDocument = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<DocumentHighlights> => {
     const annotatedText = await fetchAnnotatedText(data);
     if (!annotatedText) {
-      return { hits: [], activeEsHitIndex: null };
+      return { hits: [], locatedHitIndex: null };
     }
     const { plainText, segments } = parseAnnotatedText(annotatedText);
     const esHits = segments.filter(isHit);
@@ -45,17 +47,30 @@ const highlightDocument = createServerFn({ method: 'POST' })
         esHitIndex,
       }));
     });
-    const snippet = getSnippetOffsets(plainText, data.snippet);
-    const activeEsHitIndex = findActiveEsHitIndex(esHits, snippet);
-    return { hits, activeEsHitIndex };
+    return { hits, locatedHitIndex: locateHitIndex(hits, data.target, plainText, esHits) };
   });
 
 export default highlightDocument;
 
+function locateHitIndex(
+  hits: HtrHit[],
+  target: SearchHitRef,
+  plainText: string,
+  esHits: AnnotatedSegment[],
+): number | null {
+  if ('snippet' in target) {
+    const esHitIndex = findActiveEsHitIndex(esHits, getSnippetOffsets(plainText, target.snippet));
+    return findFirstHitIndex(hits, esHitIndex);
+  }
+  return hits[target.hitIndex] ? target.hitIndex : null;
+}
+
 async function fetchAnnotatedText(request: ManifestSearchState): Promise<string | undefined> {
+  const { docDbId } = request;
+  const query = getSearchQuery(documents, request.query, { selected: request.facets, documentName: docDbId });
   const result = await elastic.search({
     // Highlighted documents are only used with the 'documents' index, so it's hardcoded below
-    index: 'documents',
+    index: documents.esIndex,
     size: 1,
     _source: false,
     highlight: {
@@ -63,7 +78,7 @@ async function fetchAnnotatedText(request: ManifestSearchState): Promise<string 
         annotatedText: { type: 'annotated', number_of_fragments: 0 },
       },
     },
-    query: getSearchQuery(documents, request.query, request.facets, request.docEsId) ?? undefined,
+    query: query ?? undefined,
   });
   return result.hits.hits[0]?.highlight?.annotatedText[0];
 }

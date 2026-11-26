@@ -103,7 +103,7 @@ function createReadyCanvas(pages: EmbeddedCanvasAnnotationPage[]) {
  * If selectedCanvasId exists, select it.
  * Otherwise, pick first canvas.
  */
-export function initCanvases(canvasIds: Id[], selectedCanvasId?: CanvasId) {
+export function initCanvases(canvasIds: Id[], selectedCanvasId: CanvasId | null = null) {
   const canvases: Record<Id, CanvasState> = {};
   for (const id of canvasIds) {
     canvases[id] = { ...emptyCanvasState };
@@ -317,17 +317,13 @@ export function useSelectedCanvas(): CanvasStatus {
   }));
 }
 
-export function useInitialCanvasId(): CanvasId | undefined {
-  const [initialCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId ?? undefined);
+export function useInitialCanvasId(): CanvasId | null {
+  const [initialCanvasId] = useState(() => useDocumentStore.getState().selectedCanvasId);
   return initialCanvasId;
 }
 
 export function useIsSelectedCanvas(canvasId: CanvasId): boolean {
   return useDocumentStore((s) => s.selectedCanvasId === canvasId);
-}
-
-export function useIsCanvasInit(id?: CanvasId): boolean {
-  return useDocumentStore((s) => !!(id && s.canvases[id]));
 }
 
 export const setStateLogged = (

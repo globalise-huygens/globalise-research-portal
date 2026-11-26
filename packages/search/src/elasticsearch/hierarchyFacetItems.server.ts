@@ -68,7 +68,7 @@ async function getHierarchyFacetItems(data: HierarchyFacetItemsRequest) {
         },
       },
     },
-    query: getSearchQuery(index, data.query, data.facets) ?? undefined,
+    query: getSearchQuery(index, data.query, { selected: data.facets }) ?? undefined,
   });
 
   const tree = ((result.aggregations?.items as AggregationsStringTermsAggregate)

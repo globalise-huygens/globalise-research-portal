@@ -2,7 +2,9 @@
   --manifest-top-bar-height: var(--s56);
   --manifest-bottom-bar-height: calc(56px + env(safe-area-inset-bottom));
   --touch-target: 44px;
-  --scan-navigation-height: 48px;
+  --scan-navigation-row-height: 48px;
+  --scan-navigation-height: var(--scan-navigation-row-height);
+  --reading-tools-bottom-inset: var(--s8);
 
   padding-inline: 0;
 
@@ -93,10 +95,15 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  &:has(.scan-navigation .search-hit-navigation) {
+    --scan-navigation-height: calc(2 * var(--scan-navigation-row-height));
+  }
+
   .scan-navigation {
     display: flex;
+    flex-direction: column;
     min-width: 0;
-    justify-content: center;
+    justify-content: space-around;
     position: absolute;
     bottom: 100%;
     left: 0;
@@ -107,8 +114,12 @@
     border-top: 1px solid var(--color-neutral-700);
   }
 
-  &[data-navigation-open] .scan-navigation-handle {
-    top: calc(-1 * (var(--touch-target) + var(--scan-navigation-height)));
+  &[data-navigation-open] {
+    --reading-tools-bottom-inset: calc(var(--s8) + var(--scan-navigation-height));
+
+    .scan-navigation-handle {
+      top: calc(-1 * (var(--touch-target) + var(--scan-navigation-height)));
+    }
   }
 
   .scan-navigation-handle {
@@ -209,6 +220,7 @@
   .mobile-reader {
     position: absolute;
     inset: 0;
+    container-type: size;
   }
 
   .mobile-reader[data-covered] {
@@ -243,7 +255,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s4);
-    overflow-y: auto;
     padding: var(--s8) var(--s12);
     border: 0;
     background: var(--color-neutral-900);
@@ -256,6 +267,25 @@
     flex-wrap: wrap;
     gap: var(--s4);
     margin-left: auto;
+
+    /* Anchor the menu to the whole toolbar when its buttons wrap. */
+    .entity-menu {
+      position: static;
+    }
+
+    .entity-menu > .surface {
+      max-width: 100%;
+      /* Leave room for the controls, toolbar padding, gap, and pane insets. */
+      max-height: min(
+        45dvh,
+        calc(
+          100cqh - var(--touch-target) - 4 * var(--s8)
+          - var(--reading-tools-bottom-inset)
+        )
+      );
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
   }
 
   .mobile-reading-controls {

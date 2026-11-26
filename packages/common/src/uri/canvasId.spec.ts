@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { idBase } from './uriPatterns.ts';
 import { createCanvasId, parseCanvasId, parseCanvasName } from './canvasId';
 
-// future: https://id.globalise.nl/hdl:20.500.14722
-const handle = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722';
-
-const canvas = `${handle}/canvas:NL-HaNA_1.04.02_1053_0004`;
-const canvasPostfixed = `${handle}/canvas:NL-HaNA_1.04.02_9817_P01`;
-const textPage = `${handle}/annotations:text:NL-HaNA_1.04.02_1053_0004`;
+const canvas = `${idBase}/canvas:NL-HaNA_1.04.02_1053_0004`;
+const canvasPostfixed = `${idBase}/canvas:NL-HaNA_1.04.02_9817_P01`;
+const textPage = `${idBase}/annotations:text:NL-HaNA_1.04.02_1053_0004`;
 
 describe(parseCanvasId.name, () => {
   it('reads the inventory and page of a canvas', () => {

@@ -23,7 +23,7 @@ const search = createServerFn({ method: 'POST' })
       size: data.limit ?? 10,
       highlight: index.highlight,
       _source: index.source,
-      query: getSearchQuery(index, data.query, data.facets) ?? undefined,
+      query: getSearchQuery(index, data.query, { selected: data.facets }) ?? undefined,
     });
 
     return result.hits.hits.map((hit) => index.toResult(hit));

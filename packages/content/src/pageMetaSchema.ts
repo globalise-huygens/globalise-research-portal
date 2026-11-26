@@ -26,11 +26,11 @@ export const optionalFrontmatterSchema = z.object({
   })),
   hero: optional(z.object({
     src: text,
-    alt: text,
-    caption: text,
-    credit: text,
-    source: text,
-    licence: text,
+    alt: optional(text),
+    caption: optional(text),
+    credit: optional(text),
+    source: optional(text),
+    licence: optional(text),
   })),
 });
 

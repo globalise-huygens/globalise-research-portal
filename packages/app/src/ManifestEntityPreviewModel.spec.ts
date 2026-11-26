@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import { handle, idBase } from '@globalise/common/uri';
 import type { EntityBody } from '@globalise/common/annotation';
 import {
+  getEquivalentTarget,
   getInternalConceptUri,
   getLinkedObjectCardHref,
-  getObjectCardHref,
 } from './ManifestEntityPreviewModel';
 
 const conceptId = '8fa3d88a-021c-4976-ab8e-1773b93889fe';
 const publicConceptUri =
-  `https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:${conceptId}`;
+  `${idBase}/thesaurus:${conceptId}`;
 
 function createBody(
   subjectId: string,
@@ -55,17 +56,42 @@ describe('manifest entity preview links', () => {
     'Dimension',
   ] as const)('links public GLOBALISE %s subjects to their object cards', (type) => {
     const uri =
-      'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/person:123';
-    expect(getLinkedObjectCardHref(createBody(uri, type))).toBe(getObjectCardHref(uri));
+      `${idBase}/person:123`;
+    const href = getLinkedObjectCardHref(createBody(uri, type));
+    expect(href).toBe(`/${handle}/person:123`);
   });
 
   it('does not link annotation-local or external entity subjects', () => {
     expect(getLinkedObjectCardHref(createBody(
-      'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:entities#1',
+      `${idBase}/annotations:entities#1`,
     ))).toBeUndefined();
     expect(getLinkedObjectCardHref(createBody(
       'https://example.com/person/123',
     ))).toBeUndefined();
     expect(getLinkedObjectCardHref(createBody('#person'))).toBeUndefined();
+  });
+});
+
+describe('recorded equivalent targets', () => {
+  const target = { id: publicConceptUri, type: 'Concept' };
+  const match = {
+    type: 'SimilarityStatus',
+    ascribes_similarity_relation: 'la:equivalent',
+    ascribes_similarity_target: target,
+  };
+
+  it('uses a single recorded equivalent target', () => {
+    expect(getEquivalentTarget({
+      type: 'Concept', is_similarity_subject_of: [match],
+    })).toEqual(target);
+  });
+
+  it('does not choose between different equivalent targets', () => {
+    const other = { ...match, ascribes_similarity_target: {
+      ...target, id: `${publicConceptUri}-other`,
+    } };
+    expect(getEquivalentTarget({
+      type: 'Concept', is_similarity_subject_of: [match, other],
+    })).toBeUndefined();
   });
 });

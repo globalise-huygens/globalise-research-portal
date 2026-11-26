@@ -10,7 +10,7 @@ import { fetchPatchManifest } from '@globalise/facsimile';
 type ManifestLoaderProps = {
   children: React.ReactNode,
   url: string,
-  canvasId?: string,
+  canvasId: string | null,
 };
 
 export function ManifestLoader(
@@ -28,7 +28,7 @@ export function ManifestLoader(
 
   useEffect(() => {
     if (patched && manifest.url !== url) {
-      void loadManifest(url, { manifest: patched, canvasId });
+      void loadManifest(url, { manifest: patched, canvasId: canvasId ?? undefined });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadManifest, patched, url]);

@@ -11,9 +11,10 @@
 }
 
 .search-hit-word-highlight {
-    fill: var(--search-hit);
+    fill: color-mix(in srgb, var(--search-hit) 45%, transparent);
+    mix-blend-mode: multiply;
 
     &.active-hit {
-        fill: var(--search-hit-active);
+        fill: color-mix(in srgb, var(--search-hit-active) 45%, transparent);
     }
 }

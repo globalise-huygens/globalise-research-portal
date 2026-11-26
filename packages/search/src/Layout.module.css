@@ -24,6 +24,10 @@
         margin-bottom: var(--s32, 32px);
     }
 
+    .search-controls {
+        display: contents;
+    }
+
     .facet-search,
     .selection-slot {
         min-height: var(--s80, 80px);
@@ -76,6 +80,69 @@
         line-height: 1.1;
     }
 
+    @media (width < 48rem) {
+        height: 100%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--s12, 12px);
+        padding-block: 0;
+
+        .search-controls {
+            display: flow-root;
+            position: relative;
+            z-index: 1;
+            flex: none;
+            background: var(--color-brand-black, #0c0a09);
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: var(--s4);
+            margin-bottom: 0;
+            padding-block: var(--s8);
+
+            :global(.tool-button) {
+                width: var(--s44);
+                flex: 0 0 var(--s44);
+                padding-inline: 0;
+
+                > svg {
+                    width: var(--s20);
+                    height: var(--s20);
+                    flex-shrink: 0;
+                }
+            }
+        }
+
+        .facet-search,
+        .facets {
+            display: none;
+        }
+
+        .selection-slot {
+            min-height: 0;
+            padding-block: var(--s8);
+        }
+
+        .selection-slot:empty {
+            display: none;
+        }
+
+        .result-list {
+            display: block;
+            flex: 1 1 0;
+            min-height: 0;
+            position: relative;
+            contain: paint;
+            overflow: auto;
+            padding-top: 0;
+            padding-bottom: var(--s24);
+        }
+    }
+
     @media (width >= 48rem) {
         grid-template-columns:
             clamp(
@@ -126,4 +193,53 @@
             padding-left: var(--s32, 32px);
         }
     }
+}
+
+.filter-overlay {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    background: rgb(0 0 0 / 55%);
+}
+
+.filter-drawer {
+    width: min(22rem, calc(100% - var(--s32)));
+    height: 100%;
+    background: var(--color-neutral-800);
+    color: var(--color-brand-white);
+    font-family: var(--font-sans);
+}
+
+.filter-dialog {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    min-height: var(--s48);
+    padding-inline: var(--s32) var(--s8);
+    background: var(--color-brand-black);
+
+    h2 {
+        margin: 0;
+        font-size: var(--text-sm);
+        font-weight: 500;
+    }
+
+    :global(.tool-button) > svg {
+        width: var(--s20);
+        height: var(--s20);
+        flex-shrink: 0;
+    }
+}
+
+.filter-list {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
 }
