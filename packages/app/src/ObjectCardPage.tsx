@@ -3,18 +3,16 @@ import './ObjectCardPage.css';
 import { useEffect } from 'react';
 import { getRouteApi } from '@globalise/router';
 import { Container, Grid } from '@globalise/design';
-import { thesaurusBase } from '@globalise/common/uri';
+import { handle } from '@globalise/common/uri';
 import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
 
-const route = getRouteApi('/object-card/');
-
-const defaultUri = `${thesaurusBase}00caf575-0d33-49f0-83d7-3f550c681355`;
+const route = getRouteApi(`/${handle}/$`);
 
 export function ObjectCardPage() {
-  const { uri } = route.useSearch();
+  const { uri } = route.useParams();
 
   useEffect(() => {
-    loadObjectCard(uri ?? defaultUri).catch(console.error);
+    loadObjectCard(uri).catch(console.error);
   }, [uri]);
 
   return (

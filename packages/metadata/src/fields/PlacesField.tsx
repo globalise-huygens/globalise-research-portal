@@ -1,7 +1,8 @@
 import {
   getLinkedArtEntityType, url as urlOf, useMetadataNodes,
 } from '@globalise/common';
-import { isInternalUri, RelationLink } from '@globalise/object-card';
+import { RelationLink } from '@globalise/object-card';
+import { isInternalUri } from '@globalise/common/uri';
 import { EmptyPair, Joined, Pair, PlaceTag } from '../common';
 import type { FieldProps } from './FieldProps';
 

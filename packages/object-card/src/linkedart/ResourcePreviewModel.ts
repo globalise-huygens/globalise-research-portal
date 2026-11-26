@@ -5,8 +5,7 @@ import { getRelationValue, getResolvedRelationValue } from './RelationValueModel
 import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
 import { EntityIcon } from '@globalise/design';
-import { isInternalUri } from '../isInternalUri.ts';
-import { toHref } from '@globalise/router';
+import { createObjectCardPath } from '@globalise/common/uri';
 
 /**
  * Builds a preview from a Linked Art resource. It chooses a title and type,
@@ -47,10 +46,11 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
       properties.push({ label, value: [...new Set(dates)].join('; ') });
     }
   }
+  const objectCardPath = createObjectCardPath(uri);
   return {
     type, title, properties, icon: createElement(EntityIcon, { type }),
-    openFullCardHref: isInternalUri(uri) ? toHref({ to: '/object-card', search: { uri } }) : uri,
-    openFullCardLabel: isInternalUri(uri) ? `Open ${title} in a full object card` : `Open ${title}`,
+    openFullCardHref: objectCardPath ?? uri,
+    openFullCardLabel: objectCardPath ? `Open ${title} in a full object card` : `Open ${title}`,
   };
 }
 

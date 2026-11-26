@@ -1,6 +1,6 @@
 import { fetchJson, getJsonUrl, isLinkedArtNode, type LinkedArtNode } from '@globalise/common';
 import { queryOptions } from '@tanstack/react-query';
-import { isInternalUri } from '../isInternalUri.ts';
+import { isInternalUri } from '@globalise/common/uri';
 
 export function entityResourceQueryOptions(uri: string) {
   return queryOptions({

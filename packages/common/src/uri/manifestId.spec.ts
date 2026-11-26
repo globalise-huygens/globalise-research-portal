@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { idBase } from './uriPatterns.ts';
 import { createManifestId, parseManifestId } from './manifestId';
 
-// future: https://id.globalise.nl/hdl:20.500.14722
-const handle = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722';
-
-const manifest = `${handle}/inventory:1053.manifest`;
-const manifestPostfixed = `${handle}/inventory:1171A.manifest`;
+const manifest = `${idBase}/inventory:1053.manifest`;
+const manifestPostfixed = `${idBase}/inventory:1171A.manifest`;
 const range = `${manifest}/range/NL-HaNA_1.04.02_1053_0003-0067`;
 
 describe(parseManifestId.name, () => {

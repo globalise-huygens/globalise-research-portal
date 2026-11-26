@@ -10,10 +10,9 @@ import {
   type LinkedArtNode,
   url,
 } from '@globalise/common';
-import { toHref } from '@globalise/router';
+import { createObjectCardPath, isInternalUri } from '@globalise/common/uri';
 import { useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
@@ -38,6 +37,8 @@ export function RelationLink({
     return <span className="relation">{linkLabel}</span>;
   }
 
+  const objectCardPath = createObjectCardPath(href);
+
   // The recorded reference can open the card before its details are fetched.
   const previewResource = resource ?? (previewOnDemand ? node : undefined);
   const preview = previewResource
@@ -56,11 +57,11 @@ export function RelationLink({
       isPending={isPending}
       onOpenChange={previewOnDemand ? handleOpenChange : undefined}
     >
-      {(attributes) => isInternalUri(href) ? (
+      {(attributes) => objectCardPath ? (
         <EntityTag
           {...attributes}
           type={getEntityTagType(getLinkedArtEntityType(href))}
-          href={toHref({ to: '/object-card', search: { uri: href } })}
+          href={objectCardPath}
         >
           {linkLabel}
         </EntityTag>

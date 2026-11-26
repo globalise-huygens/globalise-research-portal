@@ -22,7 +22,6 @@ import {
 } from '@globalise/manifest';
 import { ViewerProvider } from '@knaw-huc/osd-iiif-viewer';
 import {
-  defaultInventory,
   getRouteApi,
   toCanvasHref,
   toManifestHref,
@@ -39,7 +38,7 @@ import { shareLabels } from './share/shareLabels';
 import { toManifestRoute } from './share/toManifestRoute';
 import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
-const route = getRouteApi(`/${handle}/$`);
+const route = getRouteApi(`/${handle}/inventory:{$}`);
 
 const collectionUrl = `${idBase}/inventory:collection`;
 
@@ -47,9 +46,8 @@ const noHits: HtrHit[] = [];
 
 export function ManifestPage() {
   const navigate = route.useNavigate();
-  const parsedViewer = route.useParams({ select: ({ viewer }) => viewer });
-  const viewer = parsedViewer ?? defaultInventory;
-  const isResolved = useResolveManifestRoute(parsedViewer);
+  const viewer = route.useParams({ select: ({ viewer }) => viewer });
+  const isResolved = useResolveManifestRoute(viewer);
   const manifestUrl = createManifestId(viewer);
   const sharableRoute = useSharableRouteState(viewer);
   const searchState = getManifestSearchState(sharableRoute.searchHit, sharableRoute.searchHitQuery);
@@ -132,7 +130,7 @@ export function ManifestPage() {
       const ascribes_classification = entityBody?.ascribes_classification;
       const uri = ascribes_classification?.id;
       if (uri) {
-        void navigate({ to: '/object-card', search: { uri } });
+        void navigate({ to: `/${handle}/$`, params: { uri } });
       }
     });
   }

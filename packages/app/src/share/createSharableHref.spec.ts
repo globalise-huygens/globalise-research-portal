@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { handle, parseViewerSplat } from '@globalise/common/uri';
+import { handle, parseViewerSplat, viewerPathPrefix } from '@globalise/common/uri';
 import { validateManifestUrlParams } from '@globalise/router';
 import { type ManifestRoute, parseManifestRoute } from './ManifestRoute';
 import { createSharableHref } from './createSharableHref';
 
-const inventoryPath = '/hdl:20.500.14722/inventory:1053';
+const inventoryPath = `/${handle}/inventory:1053`;
 const inventory = { inventory: '1053' };
 const page = { inventory: '1053', page: '0004' };
 const document = { inventory: '1053', page: '0003', endPage: '0071' };
@@ -48,6 +48,6 @@ describe(createSharableHref.name, () => {
 
 function parseHref(href: string): ManifestRoute {
   const { pathname, searchParams } = new URL(href, 'https://foo.bar');
-  const ref = parseViewerSplat(pathname.slice(`/${handle}/`.length)) ?? inventory;
+  const ref = parseViewerSplat(pathname.slice(viewerPathPrefix.length)) ?? inventory;
   return parseManifestRoute(ref, validateManifestUrlParams(Object.fromEntries(searchParams)));
 }
