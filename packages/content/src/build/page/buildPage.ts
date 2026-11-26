@@ -1,4 +1,5 @@
 import { removePosition } from 'unist-util-remove-position';
+import { addImageSizes } from './addImageSizes.ts';
 import { convertToHtml } from './convertToHtml.ts';
 import { parseMarkdown } from './parseMarkdown.ts';
 import { readFrontMatter } from './readFrontMatter.ts';
@@ -23,6 +24,7 @@ export async function buildPage(source: VFile): Promise<PageBuild> {
   const { meta, issues: fieldIssues } = validateFrontMatter(frontMatter, source.path);
   const tree = await convertToHtml(markdown, source);
   const linkIssues = validateLocalLinks(tree, source);
+  await addImageSizes(tree, source);
   removePosition(tree, { force: true });
   return {
     source,
