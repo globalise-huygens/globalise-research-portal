@@ -45,13 +45,13 @@ export function toViewerRoute(
 }
 
 function parseSearchHitRef(
-  { snippet, 'hit-index': esHitIndex }: ManifestUrlParams,
+  { snippet, 'hit-index': hitIndex }: ManifestUrlParams,
 ): SearchHitRef | undefined {
   if (snippet) {
     return { snippet };
   }
-  if (esHitIndex !== undefined) {
-    return { esHitIndex };
+  if (hitIndex !== undefined) {
+    return { hitIndex };
   }
 }
 

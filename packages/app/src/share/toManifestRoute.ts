@@ -2,12 +2,13 @@ import type { SharableRouteState } from './collectSharableRouteState';
 import { type ManifestRoute, toViewerRoute } from './ManifestRoute';
 
 export function toManifestRoute(
-  { ref, searchHit, searchHitQuery, activeEsHitIndex }: SharableRouteState,
+  { ref, searchHit, searchHitQuery }: SharableRouteState,
+  activeHitIndex: number | null,
 ): ManifestRoute {
-  if (searchHit && activeEsHitIndex !== null) {
+  if (searchHit && activeHitIndex !== null) {
     return {
       type: 'hit',
-      searchHit: { document: searchHit.document, hit: { esHitIndex: activeEsHitIndex } },
+      searchHit: { document: searchHit.document, hit: { hitIndex: activeHitIndex } },
       searchHitQuery: searchHitQuery ?? undefined,
     };
   }

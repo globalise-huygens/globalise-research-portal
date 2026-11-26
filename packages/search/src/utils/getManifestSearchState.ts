@@ -12,9 +12,9 @@ export type ManifestSearchState = GlobaliseSearchState & {
 export default function getManifestSearchState(
   searchHit: SearchHitRequest | null,
   searchContext: SearchHitQuery | null,
-): ManifestSearchState | undefined {
+): ManifestSearchState | null {
   if (!searchHit) {
-    return;
+    return null;
   }
   const { query: q, facets } = searchContext ?? { facets: {} };
   const searchUrlParams = validateSearchUrlParams({ q, ...facets });

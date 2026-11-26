@@ -7,7 +7,7 @@ const searchHit = { document, hit: { snippet: 's1' } };
 describe(getManifestSearchState.name, () => {
   it('needs a search hit', () => {
     const searchContext = { query: 'Batavia', facets: {} };
-    expect(getManifestSearchState(null, searchContext)).toBeUndefined();
+    expect(getManifestSearchState(null, searchContext)).toBeNull();
   });
 
   it('highlights the search hit within its document', () => {

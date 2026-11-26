@@ -12,7 +12,7 @@ import {
   useViewerStore,
 } from '@knaw-huc/osd-iiif-viewer';
 import { Point, Viewer as OsdViewer } from 'openseadragon';
-import { PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import { PropsWithChildren, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { findCenterScan } from './findCenterScan.ts';
 import {
   resetLazyCollectionViewer,
@@ -66,16 +66,12 @@ export function LazyCollectionViewer({
     return createLazyTiledImages(vault, manifestId, gap);
   }, [vault, manifestId, isReady, gap]);
 
-  const lazyCanvasesRef = useRef(lazyCanvases);
-  const onCanvasChangeRef = useRef(onCanvasChange);
-
-  useEffect(() => {
-    lazyCanvasesRef.current = lazyCanvases;
-  }, [lazyCanvases]);
-
-  useEffect(() => {
-    onCanvasChangeRef.current = onCanvasChange;
-  }, [onCanvasChange]);
+  const selectCenterScan = useEffectEvent((viewer: OsdViewer) => {
+    const centerId = findCenterScan(viewer, lazyCanvases);
+    if (centerId) {
+      onCanvasChange(centerId);
+    }
+  });
 
   useEffect(() => resetLazyCollectionViewer, []);
 
@@ -119,6 +115,15 @@ export function LazyCollectionViewer({
     const verticalCenter = canvas.y + canvas.height / 2;
     viewer.viewport.panTo(new Point(0.5, verticalCenter), true);
   }
+
+  useEffect(() => {
+    if (!viewer) {
+      return;
+    }
+    const onViewportChange = () => selectCenterScan(viewer);
+    viewer.addHandler('viewport-change', onViewportChange);
+    return () => viewer.removeHandler('viewport-change', onViewportChange);
+  }, [viewer]);
 
   useEffect(createViewer, [isScrollReady, store]);
 
@@ -174,22 +179,13 @@ export function LazyCollectionViewer({
       setScrolling(false);
     };
 
-    const onViewportChange = () => {
-      const centerId = findCenterScan(viewer, lazyCanvasesRef.current);
-      if (centerId) {
-        onCanvasChangeRef.current(centerId);
-      }
-    };
-
     viewer.addHandler('animation-start', onAnimationStart);
     viewer.addHandler('animation-finish', onAnimationFinish);
-    viewer.addHandler('viewport-change', onViewportChange);
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
       viewer.removeHandler('animation-start', onAnimationStart);
       viewer.removeHandler('animation-finish', onAnimationFinish);
-      viewer.removeHandler('viewport-change', onViewportChange);
       setScrolling(false);
       viewer.destroy();
       store.getState().resetViewer();

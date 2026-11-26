@@ -9,17 +9,19 @@ const firstPage = `${inventoryPath}/0003`;
 const inventory = { inventory: '1053' };
 const page = { inventory: '1053', page: '0004' };
 const document = { inventory: '1053', page: '0003', endPage: '0071' };
+const noSearchHit = { searchHit: null, searchHitQuery: null };
+const nothingResolved = { document: null, ...noSearchHit };
 
 describe('document on its first page', () => {
   // /hdl:20.500.14722/inventory:1053/0003-0071
   it('selects the document and opens its first page', () => {
     const route = resolve(document, {});
-    expect(route).toEqual({ canvasPath: firstPage, document });
+    expect(route).toEqual({ canvasPath: firstPage, document, ...noSearchHit });
   });
 
   it('drops a query without search hit', () => {
     const route = resolve(document, { q: 'Batavia' });
-    expect(route).toEqual({ canvasPath: firstPage, document });
+    expect(route).toEqual({ canvasPath: firstPage, document, ...noSearchHit });
   });
 });
 
@@ -48,7 +50,7 @@ describe('document with a search hit index', () => {
 
   it('requests the search hit by its index', () => {
     const route = resolve(document, search);
-    const hit = { esHitIndex: 3 };
+    const hit = { hitIndex: 3 };
     const searchHit = { document, hit };
     expect(route.searchHit).toEqual(searchHit);
   });
@@ -65,18 +67,19 @@ describe('canvas and inventory paths', () => {
     const facets = {};
     expect(route).toEqual({
       canvasPath: `${inventoryPath}/0004`,
+      ...nothingResolved,
       searchHitQuery: { query: 'Batavia', facets },
     });
   });
 
   it('keeps a canvas path as is', () => {
     const route = resolve(page, {});
-    expect(route).toEqual({ canvasPath: `${inventoryPath}/0004` });
+    expect(route).toEqual({ canvasPath: `${inventoryPath}/0004`, ...nothingResolved });
   });
 
   it('keeps an inventory path as is', () => {
     const route = resolve(inventory, {});
-    expect(route).toEqual({ canvasPath: inventoryPath });
+    expect(route).toEqual({ canvasPath: inventoryPath, ...nothingResolved });
   });
 });
 

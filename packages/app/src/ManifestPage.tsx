@@ -1,8 +1,11 @@
 import {
   type DocumentState,
-  findActiveSearchHits,
+  type HtrHit,
+  findActiveSearchHit,
   findInitialCanvasId,
   setSearchHits,
+  toActiveHitIndex,
+  useActiveHitIndex,
   useDocumentStore,
 } from '@globalise/common/document';
 import {
@@ -23,11 +26,10 @@ import {
   getRouteApi,
   toCanvasHref,
   toManifestHref,
-  useLocation,
 } from '@globalise/router';
-import { createManifestId, handle, idBase, parseViewerPath } from '@globalise/common/uri';
+import { createManifestId, handle, idBase } from '@globalise/common/uri';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { findTextRanges, isEntity } from '@globalise/common/annotation';
 import { asArray } from '@globalise/common';
 import { ManifestClassifiedPreview } from './ManifestClassifiedPreview.tsx';
@@ -41,28 +43,33 @@ const route = getRouteApi(`/${handle}/$`);
 
 const collectionUrl = `${idBase}/inventory:collection`;
 
+const noHits: HtrHit[] = [];
+
 export function ManifestPage() {
   const navigate = route.useNavigate();
-  const pathname = useLocation({ select: (location) => location.pathname });
-  const viewer = useMemo(() => parseViewerPath(pathname) ?? defaultInventory, [pathname]);
-  const isResolved = useResolveManifestRoute(viewer);
+  const parsedViewer = route.useParams({ select: ({ viewer }) => viewer });
+  const viewer = parsedViewer ?? defaultInventory;
+  const isResolved = useResolveManifestRoute(parsedViewer);
   const manifestUrl = createManifestId(viewer);
   const sharableRoute = useSharableRouteState(viewer);
   const searchState = getManifestSearchState(sharableRoute.searchHit, sharableRoute.searchHitQuery);
   const { data: highlights, isLoading: isHighlighting } = useQuery(
     highlightDocumentQueryOptions(searchState),
   );
-  const activeHit = highlights?.hits
-    .find((hit) => hit.esHitIndex === highlights.activeEsHitIndex);
-  const activeHitCanvasId = activeHit?.canvasId;
+  const hits = highlights?.hits ?? noHits;
+  const locatedHitIndex = highlights?.locatedHitIndex ?? null;
+  const activeHitIndex = toActiveHitIndex(hits, locatedHitIndex);
+  const activeHitCanvasId = findActiveSearchHit({ hits, activeHitIndex })?.canvasId ?? null;
 
   const initialCanvasId = findInitialCanvasId(sharableRoute.ref, activeHitCanvasId);
-  const sharedRoute = toManifestRoute(sharableRoute);
+  const browsedHitIndex = useActiveHitIndex();
+  const sharedRoute = toManifestRoute(sharableRoute, browsedHitIndex);
   const share = createShareLink(sharedRoute, window.location.origin, shareLabels[sharedRoute.type]);
 
   let error: ErrorMessage | undefined = undefined;
-  if (searchState && !activeHitCanvasId) {
-    error = { message: 'Search result could not be located: showing first page in document.' };
+  if (searchState && locatedHitIndex === null) {
+    const showing = activeHitCanvasId ? 'first hit' : 'first page in document';
+    error = { message: `Search result could not be located: showing ${showing}.` };
   }
 
   const allManifests = useCollectionManifests(collectionUrl);
@@ -82,21 +89,10 @@ export function ManifestPage() {
     });
   }
 
-  useEffect(logSearchHits, []);
-
-  function logSearchHits() {
-    return useDocumentStore.subscribe((state, prev) => {
-      if (state.searchHits === prev.searchHits && state.activeEsHitIndex === prev.activeEsHitIndex) {
-        return;
-      }
-      console.info('searchHits', state.searchHits, 'active', findActiveSearchHits(state));
-    });
-  }
-
-  useEffect(storeSearchHits, [highlights]);
+  useEffect(storeSearchHits, [hits, activeHitIndex]);
 
   function storeSearchHits() {
-    setSearchHits(highlights?.hits ?? [], highlights?.activeEsHitIndex ?? null);
+    setSearchHits(hits, activeHitIndex);
   }
 
   useEffect(logTextRanges, []);

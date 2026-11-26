@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { createViewerSplat, parseViewerSplat } from '@globalise/common/uri';
 import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
 
 /**
@@ -9,6 +10,16 @@ import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
  * - use type only imports for osd types
  */
 export const Route = createFileRoute('/hdl:20.500.14722/$')({
+  params: {
+
+    /**
+     * Splat is a 'catch-all route' matching everything after `/hdl:20.500.14722` using the `$` wildcard.
+     * This allows the app to parse the url once, creating a clean, browsable navigation history.
+     * See: https://tanstack.com/router/latest/docs/routing/routing-concepts#splat-catch-all-routes
+     */
+    parse: ({ _splat }) => ({ viewer: parseViewerSplat(_splat ?? '') }),
+    stringify: ({ viewer }) => ({ _splat: viewer ? createViewerSplat(viewer) : '' }),
+  },
   validateSearch: validateManifestUrlParams,
   ssr: false,
 });

@@ -8,10 +8,9 @@ const searchHitQuery = { query: 'Batavia', facets: {} };
 const noSearchHit = {
   searchHit: null,
   searchHitQuery: null,
-  activeEsHitIndex: null,
 };
 const selected = { selectedDocument: document, ...noSearchHit };
-const stored = { ...selected, searchHit, searchHitQuery, activeEsHitIndex: 3 };
+const stored = { ...selected, searchHit, searchHitQuery };
 
 describe(collectSharableRouteState.name, () => {
   it('views the selected document while on its first page', () => {
@@ -24,7 +23,7 @@ describe(collectSharableRouteState.name, () => {
   });
 
   it('views the page without a selected document', () => {
-    const state = collectSharableRouteState(firstPage, noSearchHit);
+    const state = collectSharableRouteState(firstPage, { selectedDocument: null, ...noSearchHit });
     expect(state.ref).toBe(firstPage);
   });
 
@@ -41,7 +40,6 @@ describe(collectSharableRouteState.name, () => {
       ref: otherInventory,
       searchHit: null,
       searchHitQuery: null,
-      activeEsHitIndex: null,
     });
   });
 });

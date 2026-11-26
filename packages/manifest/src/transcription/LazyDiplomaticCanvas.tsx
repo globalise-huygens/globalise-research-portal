@@ -7,7 +7,7 @@ import {
   useSelectedAnnotationsInDiplomatic,
 } from '@globalise/common/document';
 import { DiplomaticView } from '@globalise/diplomatic';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useEffectEvent, useMemo, useRef } from 'react';
 import { canvasIndexAttribute } from './canvasIndexAttribute.ts';
 import type { CanvasDocuments } from '@globalise/metadata';
 import { CanvasHeaderLabel } from '../CanvasHeaderLabel.tsx';
@@ -53,6 +53,15 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
   );
   const activeHits = useActiveHitAnnotationsInDiplomatic(canvasId);
   const { isReady: isCanvasReady, error, hasAnnotations } = usePages(canvasId);
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  const scrollToActiveHit = useEffectEvent(() => {
+    if (isCurrent) {
+      canvasRef.current?.querySelector('.active-hit')?.scrollIntoView({ block: 'nearest' });
+    }
+  });
+
+  useEffect(() => scrollToActiveHit(), [activeHits]);
 
   useEffect(() => {
     if (isVisible && annotationPages.length) {
@@ -74,6 +83,7 @@ export const LazyDiplomaticCanvas = memo(function LazyDiplomaticCanvas({
 
   return (
     <div
+      ref={canvasRef}
       {...{ [canvasIndexAttribute]: index }}
       style={{
         position: 'relative',

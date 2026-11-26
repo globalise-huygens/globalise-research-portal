@@ -26,5 +26,5 @@ function toSearchUrlParams(searchHitQuery?: SearchHitQuery): ManifestUrlParams {
 function toSearchHitUrlParams(hit: SearchHitRef): ManifestUrlParams {
   return 'snippet' in hit
     ? { snippet: hit.snippet }
-    : { 'hit-index': hit.esHitIndex };
+    : { 'hit-index': hit.hitIndex };
 }

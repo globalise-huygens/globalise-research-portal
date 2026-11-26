@@ -18,22 +18,28 @@ export function isInventoryRef(ref: ViewerRef): ref is InventoryRef {
 export function createViewerPath(
   ref: ViewerRef,
 ): string {
-  const inventoryPath = `/${handle}/inventory:${ref.inventory}`;
-  if ('endPage' in ref) {
-    return `${inventoryPath}/${ref.page}-${ref.endPage}`;
-  }
-  if ('page' in ref) {
-    return `${inventoryPath}/${ref.page}`;
-  }
-  return inventoryPath;
+  return `/${handle}/${createViewerSplat(ref)}`;
 }
 
-export function parseViewerPath(
-  path: string,
-): ViewerRef | undefined {
-  const groups = matchUri('viewerPath', path);
+export function createViewerSplat(
+  ref: ViewerRef,
+): string {
+  const inventorySplat = `inventory:${ref.inventory}`;
+  if ('endPage' in ref) {
+    return `${inventorySplat}/${ref.page}-${ref.endPage}`;
+  }
+  if ('page' in ref) {
+    return `${inventorySplat}/${ref.page}`;
+  }
+  return inventorySplat;
+}
+
+export function parseViewerSplat(
+  splat: string,
+): ViewerRef | null {
+  const groups = matchUri('viewerSplat', splat);
   if (!groups) {
-    return undefined;
+    return null;
   }
   const { inventory, page, endPage } = groups;
   if (endPage) {
