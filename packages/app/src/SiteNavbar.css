@@ -20,7 +20,7 @@
     box-sizing: border-box;
     width: 100%;
     border-bottom: 1px solid rgb(255 255 255 / 0.1);
-    background: rgb(12 10 9 / 0.95);
+    background: var(--color-brand-black);
     backdrop-filter: blur(12px);
 }
 
@@ -74,16 +74,17 @@
     height: var(--control);
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-neutral-500);
-    border-radius: 0.25rem;
+    border: 0;
+    border-radius: 0;
     background: var(--color-neutral-900);
     color: var(--color-brand-white);
     cursor: pointer;
 }
 
-.site-header .content-search-toggle:hover,
-.site-header .content-search-popover button:hover {
-    background: var(--color-neutral-700);
+.site-header .content-search-toggle:is(:hover, [data-hovered], [data-pressed], [aria-expanded="true"]),
+.site-header .content-search-popover button:is(:hover, [data-hovered], [data-pressed]) {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
 }
 
 .site-header .content-search-toggle:focus-visible,
@@ -110,7 +111,7 @@
     gap: var(--s8);
     border: 1px solid var(--color-neutral-500);
     padding: var(--s8);
-    background: var(--color-neutral-950);
+    background: var(--color-brand-black);
     box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
 }
 
@@ -119,7 +120,7 @@
     height: var(--control);
     flex: 1;
     border: 0;
-    background: transparent;
+    background: var(--color-brand-black);
     color: var(--color-brand-white);
     font: 500 1rem / 1.4 var(--font-sans);
 }
@@ -129,7 +130,7 @@
     opacity: 1;
 }
 
-.site-header .content-search-popover .react-aria-SearchField {
+.site-header .content-search-popover .navbar-search-field {
     display: flex;
     width: 100%;
     align-items: center;

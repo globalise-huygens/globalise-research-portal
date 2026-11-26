@@ -1,6 +1,7 @@
-import { IconArrowTopRight, IconSearch } from '@globalise/design';
+import { ContentSearchIcon } from './ContentSearchIcon.tsx';
+import { IconArrowLeftAlt, IconArrowTopRight } from '@globalise/design';
 import { getRouteApi, toHref, useRouter } from '@globalise/router';
-import { Button, Input, Link, SearchField } from 'react-aria-components';
+import { Button, Link } from 'react-aria-components';
 import type { ContentIndex, PageMeta } from '@globalise/content';
 import type { SubmitEvent } from 'react';
 import type { SearchResult } from 'minisearch';
@@ -11,7 +12,7 @@ import './ContentHome.css';
 
 const route = getRouteApi('/content/');
 
-type ContentResult = Pick<PageMeta, 'slug' | 'title'> & {
+type ContentResult = Pick<PageMeta, 'slug' | 'title' | 'type'> & {
   snippet: string;
   terms: string[];
 };
@@ -31,27 +32,29 @@ export function ContentHome() {
   return (
     <main className="content-home">
       <header className="intro">
-        <h1>Search site content</h1>
-        <form onSubmit={searchContent}>
-          <SearchField
+        <p className="eyebrow">Website content</p>
+        <h1>Search the website</h1>
+        <p>Find project information, articles and blog posts. For historical documents, use the archive search.</p>
+        <form className="search-field" onSubmit={searchContent}>
+          <input
             key={q ?? ''}
-            className="search-field"
-            aria-label="Search site content"
+            type="search"
+            name="q"
+            aria-label="Search website content"
             defaultValue={q ?? ''}
-          >
-            <Input name="q" placeholder="Search articles and project pages"/>
-            <Button type="submit">
-              <IconSearch width="20" height="20" aria-hidden="true"/>
-              Search
-            </Button>
-          </SearchField>
+            placeholder="Search website content"
+          />
+          <Button type="submit" aria-label="Search website content">
+            <ContentSearchIcon/>
+            Search
+          </Button>
         </form>
         <div className="links">
           <Link href={toHref({ to: '/content/blog' })}>
-            Browse the blog <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+            <IconArrowLeftAlt width="16" height="16" aria-hidden="true"/> Browse the blog
           </Link>
           <Link href={toHref({ to: '/search', search: { q } })}>
-            Search the archive <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+            <IconArrowLeftAlt width="16" height="16" aria-hidden="true"/> Search the archive
           </Link>
         </div>
       </header>
@@ -65,10 +68,10 @@ export function ContentHome() {
 function ContentSearchResults({ query }: { query: string }) {
   const { data: searchIndex, isError } = useContentSearchIndex();
   if (isError) {
-    return <p role="status">Site content search is unavailable.</p>;
+    return <p role="status">Website search is unavailable. Please try again.</p>;
   }
   if (!searchIndex) {
-    return <p role="status">Searching site content…</p>;
+    return <p role="status">Searching website content…</p>;
   }
 
   const results = searchIndex.search(query).map(toSearchResult);
@@ -90,11 +93,11 @@ function ResultList({
 
   return (
     <section aria-labelledby="content-results">
-      <h2 id="content-results">
-        {query ? `${results.length} ${countLabel} for “${query}”` : 'Browse site content'}
+      <h2 id="content-results" role="status">
+        {query ? `${results.length} ${countLabel} for “${query}”` : 'Browse website content'}
       </h2>
       <ul className="results">
-        {results.map(({ slug, title, snippet, terms }) => {
+        {results.map(({ slug, title, type, snippet, terms }) => {
           const { href } = router.buildLocation({
             to: '/content/$slug',
             params: { slug },
@@ -102,13 +105,19 @@ function ResultList({
           });
           return (
             <li key={slug}>
-              <h3>
-                <Link href={href}>
-                  <span><Highlight text={title} terms={terms}/></span>
-                  <IconArrowTopRight width="18" height="18" aria-hidden="true"/>
-                </Link>
-              </h3>
-              {snippet && <p><Highlight text={snippet} terms={terms}/></p>}
+              <aside className="result-meta">
+                <span className="content-type">{type === 'archived-post' ? 'Blog post' : 'Project page'}</span>
+                <span>Website content</span>
+              </aside>
+              <div className="result-main">
+                <h3>
+                  <Link href={href}>
+                    <span><Highlight text={title} terms={terms}/></span>
+                    <IconArrowTopRight width="18" height="18" aria-hidden="true"/>
+                  </Link>
+                </h3>
+                {snippet && <p><Highlight text={snippet} terms={terms}/></p>}
+              </div>
             </li>
           );
         })}
@@ -117,12 +126,12 @@ function ResultList({
   );
 }
 
-function toBrowseResult({ slug, title, summary }: PageMeta): ContentResult {
-  return { slug, title, snippet: summary, terms: [] };
+function toBrowseResult({ slug, title, summary, type }: PageMeta): ContentResult {
+  return { slug, title, type, snippet: summary, terms: [] };
 }
 
 function toSearchResult(hit: SearchResult): ContentResult {
-  const { id, title, text, summary, terms } = hit;
+  const { id, title, text, summary, terms, type } = hit;
   const snippet = createSnippet(text ?? '', terms) || (summary ?? '');
-  return { slug: id, title, snippet, terms };
+  return { slug: id, title, type, snippet, terms };
 }
