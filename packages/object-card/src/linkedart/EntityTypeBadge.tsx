@@ -2,6 +2,7 @@ import {
   EntityBadge,
   EntityBadgeType,
   IconEntityPerson,
+  IconEntityShip,
   IconEntityPlace,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
@@ -31,13 +32,14 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
   if (!badgeType) {
     return null;
   }
+  const icons = {
+    person: IconEntityPerson,
+    ship: IconEntityShip,
+    place: IconEntityPlace,
+  };
+  const Icon = icons[type as keyof typeof icons];
   return (
-    <EntityBadge
-      type={badgeType}
-      icon={type === 'person'
-        ? <IconEntityPerson aria-hidden="true" />
-        : type === 'place' ? <IconEntityPlace aria-hidden="true" /> : undefined}
-    >
+    <EntityBadge type={badgeType} icon={Icon && <Icon aria-hidden="true" />}>
       {type}
     </EntityBadge>
   );
