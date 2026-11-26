@@ -64,3 +64,4 @@ These icons are [Material Symbols](https://fonts.google.com/icons) by Google, li
 - `IconProgressActivity`
 - `IconSearch`
 - `IconShowMore`
+- `IconToll`

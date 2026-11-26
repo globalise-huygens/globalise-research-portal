@@ -4,6 +4,7 @@ import {
   IconEntityPerson,
   IconEntityPlace,
   IconEvents,
+  IconToll,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
@@ -47,6 +48,8 @@ function getEntityTypeIcon(type: LinkedArtEntityType) {
       return <IconEntityPlace aria-hidden="true" />;
     case 'occurrence':
       return <IconEvents aria-hidden="true" />;
+    case 'conversion':
+      return <IconToll aria-hidden="true" />;
     default:
       return undefined;
   }
