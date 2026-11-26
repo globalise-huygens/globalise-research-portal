@@ -18,12 +18,12 @@ import {
 } from '@globalise/design';
 import { NodeList } from './NodeList.tsx';
 import {
-  getEntityNameRecords,
+  getPersonNameRecords,
   groupRecords,
-  sortEntityNames,
-} from './EntityStatusModel.ts';
+  sortPersonNames,
+} from './PersonStatusModel.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
-import { StatusValues } from './StatusValues.tsx';
+import { StatusValues, PersonStatusGroup } from './PersonCardBody.tsx';
 import { RelationLink } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
@@ -37,7 +37,6 @@ import {
   shipNameLabels,
 } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
-import { EntityStatusGroup } from './EntityStatusGroup.tsx';
 import { useQueries } from '@tanstack/react-query';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import {
@@ -57,7 +56,7 @@ export function getShipTitle(entity: LinkedArtNode): string {
   return (
     [
       preferred && getContent(preferred),
-      sortEntityNames(getEntityNameRecords(entity))[0]?.name,
+      sortPersonNames(getPersonNameRecords(entity))[0]?.name,
     ].find((value) => !!value) ?? 'Name not recorded'
   );
 }
@@ -65,7 +64,7 @@ export function getShipTitle(entity: LinkedArtNode): string {
 export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
   const title = getShipTitle(entity);
   const names = [
-    ...new Set(getEntityNameRecords(entity).map((record) => record.name)),
+    ...new Set(getPersonNameRecords(entity).map((record) => record.name)),
   ].filter((name) => name !== title);
   const history = getShipHistory(entity).filter(
     ({ event }) =>
@@ -104,7 +103,7 @@ export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
 
 export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
   const title = getShipTitle(entity);
-  const records = sortEntityNames(getEntityNameRecords(entity)).sort(
+  const records = sortPersonNames(getPersonNameRecords(entity)).sort(
     (left, right) => Number(right.name === title) - Number(left.name === title),
   );
   const names = groupRecords(
@@ -320,7 +319,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
           </ObjectCardSection>
         )}
         {classificationGroup && (
-          <EntityStatusGroup entity={entity} group={classificationGroup}>
+          <PersonStatusGroup entity={entity} group={classificationGroup}>
             {!!directClassifications.length && (
               <ObjectCardDisclosure
                 summary={
@@ -335,7 +334,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
                 }
               />
             )}
-          </EntityStatusGroup>
+          </PersonStatusGroup>
         )}
         {statusKeys
           .filter(

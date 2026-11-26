@@ -3,12 +3,12 @@ import {
   getEntityTitle,
   type LinkedArtNode,
 } from '@globalise/common';
-import { getEntityNameRecords } from '../EntityStatusModel.ts';
+import { getPersonNameRecords } from '../PersonStatusModel.ts';
 import { PlaceValues } from './PlaceValues.tsx';
 
 export function PlaceOverview({ entity }: { entity: LinkedArtNode }) {
   const title = getEntityTitle(entity);
-  const recordedNames = getEntityNameRecords(entity).map(({ name }) => name);
+  const recordedNames = getPersonNameRecords(entity).map(({ name }) => name);
   const names = [...new Set(recordedNames)].filter((name) => name !== title);
   const certainty = findByPath(entity, [
     'is_approximated_by_declarative_place',
