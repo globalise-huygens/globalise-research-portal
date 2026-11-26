@@ -1,6 +1,6 @@
 export { useDocumentStore, type DocumentState } from './DocumentStore';
 export * from './ClassifiedHighlightSlice';
-export * from './LayoutElementsSlice';
+export * from './ReadingModeSlice.ts';
 export * from './ManifestViewerSlice';
 export * from './SearchHitSlice';
 export * from './SelectionAttribute';

@@ -83,7 +83,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       fit,
       showBlocks,
       showScanMargin,
-      onHover: showBlocks === false ? undefined : setHovered,
+      onHover: setHovered,
       onClick: toggleClicked,
     });
     view.setSelected(...selected);

@@ -14,11 +14,11 @@ import './NormalizedLayout.css';
 type Props = {
   canvasId: string;
   lineSegments: LineSegments;
-  showLayoutElements: boolean;
+  isInReadingMode: boolean;
 };
 
 export const NormalizedLayout = React.memo(function NormalizedLayout(
-  { canvasId, lineSegments, showLayoutElements }: Props,
+  { canvasId, lineSegments, isInReadingMode }: Props,
 ) {
   const { segmentsByLine, blockToLines } = lineSegments;
   const highlightCategories = useHighlightCategories();
@@ -39,7 +39,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
   return (
     <div
       className="normalized-view highlight-layers"
-      data-layout-elements-visible={showLayoutElements ? 'true' : 'false'}
+      data-layout-elements-visible={isInReadingMode ? 'true' : 'false'}
     >
       <div className="text">
         {blockEntries.map(([blockId, lineIds], i) => (
@@ -52,7 +52,6 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
             lineNumberStart={blockLineNumberStarts[i] + 1}
             highlightCategories={highlightCategories}
             classifiedToWords={classifiedToWords}
-            showLayoutElements={showLayoutElements}
           />
         ))}
       </div>
@@ -68,12 +67,11 @@ type BlockGroupProps = {
   lineNumberStart: number;
   highlightCategories: Set<ClassifiedCategory>;
   classifiedToWords: Record<Id, Id[]>;
-  showLayoutElements: boolean;
 };
 
 function BlockGroup(
   {
-    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords, showLayoutElements,
+    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords,
   }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInLineByLine(canvasId, blockId);
@@ -98,7 +96,6 @@ function BlockGroup(
             segments={segments}
             highlightCategories={highlightCategories}
             classifiedToWords={classifiedToWords}
-            showLayoutElements={showLayoutElements}
           />
         );
       })}

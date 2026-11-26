@@ -28,12 +28,11 @@ type TextProps = {
   classifiedToWords: Record<Id, Id[]>;
   selectedIds: Id[];
   activeHitIds: Id[];
-  showLayoutElements: boolean;
 };
 
 export function SegmentedText(
   {
-    blockId, segments, highlightCategories, classifiedToWords, selectedIds, activeHitIds, showLayoutElements,
+    blockId, segments, highlightCategories, classifiedToWords, selectedIds, activeHitIds,
   }: TextProps,
 ) {
   return <>
@@ -107,12 +106,12 @@ export function SegmentedText(
           key={segment.index}
           tabIndex={isClassifiedTrigger ? 0 : undefined}
           role={isClassifiedTrigger ? 'button' : undefined}
-          aria-haspopup={isClassifiedTrigger && showLayoutElements ? 'dialog' : undefined}
+          aria-haspopup={isClassifiedTrigger ? 'dialog' : undefined}
           aria-label={isClassifiedTrigger ? `Select: ${body}` : undefined}
-          onMouseEnter={showLayoutElements ? handleMouseEnter : undefined}
-          onMouseLeave={showLayoutElements ? handleMouseLeave : undefined}
-          onFocus={showLayoutElements ? handleFocus : undefined}
-          onBlur={showLayoutElements ? handleBlur : undefined}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
           className={cn([

@@ -15,7 +15,7 @@ type Props = {
   annotationPages: CanvasAnnotationPage[];
   canvasDocuments?: CanvasDocuments;
   scale: number;
-  showLayoutElements: boolean;
+  isInReadingMode: boolean;
   isCurrentCanvas: boolean;
 };
 
@@ -25,7 +25,7 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
     annotationPages,
     canvasDocuments,
     scale,
-    showLayoutElements,
+    isInReadingMode,
     isCurrentCanvas,
   }: Props,
 ) {
@@ -70,7 +70,7 @@ export const LazyLineByLineCanvas = memo(function LazyLineByLineCanvas(
           <LineByLineView
             canvasId={canvasId}
             annotations={annotations}
-            showLayoutElements={showLayoutElements}
+            isInReadingMode={isInReadingMode}
           />
         </div>
       )}

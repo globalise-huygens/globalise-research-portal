@@ -6,7 +6,7 @@ import {
   loadCanvasAnnotationPages,
   useAnnotationsWithSearchHits,
   useWordClassifications,
-  useIsLayoutElementsVisible,
+  useIsInReadingMode,
   useIsSelectedCanvas,
   usePages,
 } from '@globalise/common/document';
@@ -34,7 +34,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const isTileLoaded = lazyCollectionViewerStore(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
-  const showLayoutElements = useIsLayoutElementsVisible();
+  const isInReadingMode = useIsInReadingMode();
 
   const annotationPages = useMemo(() => {
     if (!vault) {
@@ -50,7 +50,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationPages]);
 
-  return isTileLoaded && showLayoutElements && <ScanAnnotations lazyCanvas={lazyCanvas}/>;
+  return isTileLoaded && !isInReadingMode && <ScanAnnotations lazyCanvas={lazyCanvas}/>;
 });
 
 function ScanAnnotations({ lazyCanvas }: HighlightsOverlayProps) {

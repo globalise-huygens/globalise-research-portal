@@ -1,6 +1,6 @@
 import {
-  setLayoutElementsVisible,
-  useIsLayoutElementsVisible,
+  setInReadingMode,
+  useIsInReadingMode,
 } from '@globalise/common/document';
 import { IconLayoutElements } from '@globalise/design';
 import { TOP_BAR_BUTTON } from './buttonClasses';
@@ -9,7 +9,7 @@ import { TooltipIconButton } from './TooltipIconButton';
 const tooltip = 'Highlight layout elements and show line numbers';
 
 export function ManifestLayoutElementsToggle() {
-  const isVisible = useIsLayoutElementsVisible();
+  const isVisible = !useIsInReadingMode();
 
   return (
     <TooltipIconButton
@@ -21,7 +21,7 @@ export function ManifestLayoutElementsToggle() {
       icon={
         <IconLayoutElements className="toolbar-icon" />
       }
-      onPress={() => setLayoutElementsVisible(!isVisible)}
+      onPress={() => setInReadingMode(isVisible)}
     />
   );
 }

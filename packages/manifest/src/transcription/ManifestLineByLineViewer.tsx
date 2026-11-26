@@ -24,7 +24,7 @@ type CanvasInfo = {
 };
 
 type Props = {
-  showLayoutElements: boolean;
+  isInReadingMode: boolean;
   onCanvasChange: (canvasId: string) => void;
 };
 
@@ -33,7 +33,7 @@ const DEFAULT_ITEM_HEIGHT = 600;
 const INCREASE_VIEWPORT_BY = 0;
 
 export function ManifestLineByLineViewer({
-  showLayoutElements,
+  isInReadingMode,
   onCanvasChange,
 }: Props) {
   const { vault, id: manifestId, isReady: isManifestReady } = useManifest();
@@ -167,7 +167,7 @@ export function ManifestLineByLineViewer({
             annotationPages={canvasInfos[index].annotationPages}
             canvasDocuments={canvasDocuments.get(canvasInfos[index].canvasId)}
             scale={transcriptionScale}
-            showLayoutElements={showLayoutElements}
+            isInReadingMode={isInReadingMode}
             isCurrentCanvas={selectedCanvasId === canvasInfos[index].canvasId}
           />
         </div>
