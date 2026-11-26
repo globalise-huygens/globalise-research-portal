@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { handle, idBase } from '@globalise/common/uri';
 import type { EntityBody } from '@globalise/common/annotation';
 import {
   getEquivalentTarget,
@@ -8,7 +9,7 @@ import {
 
 const conceptId = '8fa3d88a-021c-4976-ab8e-1773b93889fe';
 const publicConceptUri =
-  `https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/thesaurus:${conceptId}`;
+  `${idBase}/thesaurus:${conceptId}`;
 
 function createBody(
   subjectId: string,
@@ -55,14 +56,14 @@ describe('manifest entity preview links', () => {
     'Dimension',
   ] as const)('links public GLOBALISE %s subjects to their object cards', (type) => {
     const uri =
-      'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/person:123';
+      `${idBase}/person:123`;
     const href = getLinkedObjectCardHref(createBody(uri, type));
-    expect(href).toBe('/hdl:20.500.14722/person:123');
+    expect(href).toBe(`/${handle}/person:123`);
   });
 
   it('does not link annotation-local or external entity subjects', () => {
     expect(getLinkedObjectCardHref(createBody(
-      'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:entities#1',
+      `${idBase}/annotations:entities#1`,
     ))).toBeUndefined();
     expect(getLinkedObjectCardHref(createBody(
       'https://example.com/person/123',

@@ -3,20 +3,14 @@ import {
   getEntitySubject,
   type EntityBody,
 } from '@globalise/common/annotation';
-import { createObjectCardPath, thesaurusBase } from '@globalise/common/uri';
-
-const GLOBALISE_DATA_ORIGIN = 'https://data.globalise.huygens.knaw.nl';
+import { createObjectCardPath, isInternalUri, thesaurusBase } from '@globalise/common/uri';
 
 export function getInternalConceptUri(uri: string): string | undefined {
+  if (isInternalUri(uri) && uri.includes('/thesaurus:')) {
+    return uri.replace(/\.json$/, '');
+  }
   try {
     const parsed = new URL(uri);
-    if (
-      parsed.protocol === 'https:'
-      && parsed.origin === GLOBALISE_DATA_ORIGIN
-      && parsed.pathname.includes('/thesaurus:')
-    ) {
-      return uri.replace(/\.json$/, '');
-    }
     const poolPartyMatch = parsed.hostname === 'digitaalerfgoed.poolparty.biz'
       ? /^\/globalise\/([0-9a-f-]+)\/?$/i.exec(parsed.pathname)
       : null;
@@ -32,14 +26,6 @@ export function getLinkedObjectCardHref(body: EntityBody): string | undefined {
   const subject = getEntitySubject(body);
   const uri = getEquivalentTarget(subject)?.id ?? subject?.id;
   if (!uri || uri.includes('#') || uri.includes('/annotations:')) {
-    return undefined;
-  }
-  try {
-    const parsed = new URL(uri);
-    if (parsed.protocol !== 'https:' || parsed.origin !== GLOBALISE_DATA_ORIGIN) {
-      return undefined;
-    }
-  } catch {
     return undefined;
   }
   return createObjectCardPath(uri) ?? undefined;

@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { handle, idBase } from './uriPatterns.ts';
 import { createObjectCardPath, createObjectCardSplat, parseObjectCardSplat } from './objectCardPath';
 
-const uri = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/foo:bar';
+const uri = `${idBase}/foo:bar`;
 const splat = 'foo:bar';
 const externalUri = 'https://foo.bar/baz';
 
 describe(createObjectCardPath.name, () => {
   it('builds the path of an object card', () => {
-    expect(createObjectCardPath(uri)).toBe('/hdl:20.500.14722/foo:bar');
+    expect(createObjectCardPath(uri)).toBe(`/${handle}/foo:bar`);
   });
 
   it('ignores uris outside the handle', () => {
@@ -21,7 +22,7 @@ describe(createObjectCardSplat.name, () => {
   });
 
   it('reads the type and id of a uri on another host', () => {
-    expect(createObjectCardSplat('https://id.globalise.nl/hdl:20.500.14722/foo:bar')).toBe(splat);
+    expect(createObjectCardSplat(`https://id.globalise.nl/${handle}/foo:bar`)).toBe(splat);
   });
 
   it('ignores uris outside the handle', () => {

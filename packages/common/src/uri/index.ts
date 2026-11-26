@@ -5,3 +5,4 @@ export * from './documentId';
 export * from './annotationId';
 export * from './viewerPath';
 export * from './objectCardPath';
+export * from './isInternalUri';

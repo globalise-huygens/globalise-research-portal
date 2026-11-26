@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { handle, idBase } from '@globalise/common/uri';
 import type { LinkedArtNode } from '@globalise/common';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
-
-const internalBase = 'https://data.globalise.huygens.knaw.nl/hdl:20.500.14722';
 
 describe('getResourcePreview', () => {
   it('previews a person with names and a birth date, linking to the object card', () => {
@@ -16,10 +15,10 @@ describe('getResourcePreview', () => {
       born: { type: 'Birth', timespan: { type: 'TimeSpan', begin_of_the_begin: '1650-03-01', end_of_the_end: '1650-03-01' } },
     } as unknown as LinkedArtNode;
 
-    const preview = getResourcePreview(person, `${internalBase}/person:Person_1`);
+    const preview = getResourcePreview(person, `${idBase}/person:Person_1`);
 
     expect(preview.type).toBe('person');
-    expect(preview.openFullCardHref).toBe('/hdl:20.500.14722/person:Person_1');
+    expect(preview.openFullCardHref).toBe(`/${handle}/person:Person_1`);
     expect(preview.properties).toEqual([
       { label: 'Also called', value: 'Johannes Janssen' },
       { label: 'Born', value: '1650-03-01' },

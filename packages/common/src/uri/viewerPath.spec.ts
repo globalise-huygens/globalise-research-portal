@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { handle } from './uriPatterns.ts';
 import { createViewerPath, parseViewerSplat } from './viewerPath';
 
-const inventoryPath = '/hdl:20.500.14722/inventory:1053';
+const inventoryPath = `/${handle}/inventory:1053`;
 const pagePath = `${inventoryPath}/0004`;
 const documentPath = `${inventoryPath}/0003-0067`;
 

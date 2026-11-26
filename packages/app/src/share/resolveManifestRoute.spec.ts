@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import type { ViewerRef } from '@globalise/common/uri';
+import { handle, type ViewerRef } from '@globalise/common/uri';
 import type { ManifestUrlParams } from '@globalise/router';
 import { parseManifestRoute } from './ManifestRoute';
 import { resolveManifestRoute } from './resolveManifestRoute';
 
-const inventoryPath = '/hdl:20.500.14722/inventory:1053';
+const inventoryPath = `/${handle}/inventory:1053`;
 const firstPage = `${inventoryPath}/0003`;
 const inventory = { inventory: '1053' };
 const page = { inventory: '1053', page: '0004' };

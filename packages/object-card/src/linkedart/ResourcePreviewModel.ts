@@ -5,7 +5,6 @@ import { getRelationValue, getResolvedRelationValue } from './RelationValueModel
 import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
 import { EntityIcon } from '@globalise/design';
-import { isInternalUri } from '../isInternalUri.ts';
 import { createObjectCardPath } from '@globalise/common/uri';
 
 /**
@@ -47,7 +46,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
       properties.push({ label, value: [...new Set(dates)].join('; ') });
     }
   }
-  const objectCardPath = isInternalUri(uri) ? createObjectCardPath(uri) : null;
+  const objectCardPath = createObjectCardPath(uri);
   return {
     type, title, properties, icon: createElement(EntityIcon, { type }),
     openFullCardHref: objectCardPath ?? uri,

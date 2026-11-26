@@ -1,7 +1,7 @@
 import { asArray, fetchJson, findByPath, getJsonUrl, isUrl, type LinkedArtNode } from '@globalise/common';
 import type { ReferencePanelItemData } from '@globalise/design';
 import { toCanvasHref } from '@globalise/router';
-import { isInternalUri } from '../isInternalUri.ts';
+import { isInternalUri } from '@globalise/common/uri';
 import { type QueryClient } from '@tanstack/react-query';
 
 export function getEntityReferenceLinks(entity: LinkedArtNode): ReferencePanelItemData[] {
