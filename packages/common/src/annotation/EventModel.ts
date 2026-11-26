@@ -12,6 +12,8 @@ export type EventClassification = {
   id: string;
   type: string;
   _label: string;
+  // Can be nested:
+  classified_as?: EventClassification;
 };
 
 const eventTypology = 'https://github.com/globalise-huygens/nlp-event-detection/wiki#';
@@ -29,6 +31,6 @@ export function getEventBodies(annotation: Annotation): EventBody[] {
   return asArray(annotation.body).filter(isEventBody);
 }
 
-export function getEventId(annotation: Annotation<EventBody>): string {
-  return getEventBodies(annotation)[0].id;
+export function getEventBody(annotation: Annotation<EventBody>): EventBody {
+  return getEventBodies(annotation)[0];
 }

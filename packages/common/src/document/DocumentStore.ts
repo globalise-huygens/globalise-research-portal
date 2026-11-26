@@ -26,9 +26,12 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
   canvases: {},
 };
 
-const defaultSearchHitSlice: SearchHitSlice = {
+export const defaultSearchHitSlice: SearchHitSlice = {
+  searchHitRequest: null,
+  searchHitQuery: null,
+  hits: [],
   searchHits: {},
-  activeEsHitIndex: null,
+  activeHitIndex: null,
 };
 
 const defaultSelectionSlice: SelectionSlice = {
@@ -49,7 +52,7 @@ const defaultMetadataSlice = {
 };
 
 const defaultTocSlice = {
-  toc: { expandedDocIds: [], navigation: null },
+  toc: { selectedDocumentId: null, expandedDocIds: [], navigation: null },
 };
 
 export const useDocumentStore = create<DocumentState>(() => ({

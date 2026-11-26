@@ -14,6 +14,6 @@
     }
 
     mark {
-        background: color-mix(in srgb, var(--color-yellow-300, #fff751) 50%, transparent);
+        background: color-mix(in srgb, var(--color-search-hit) 50%, transparent);
     }
 }

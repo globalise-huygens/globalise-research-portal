@@ -10,7 +10,7 @@ import {
   type LinkedArtNode,
   url,
 } from '@globalise/common';
-import { isInternalUri } from '../isInternalUri.ts';
+import { isInternalUri } from '@globalise/common/uri';
 import { RelationLink, RelationValue } from './RelationLink.tsx';
 import { getRelationValue } from './RelationValueModel.ts';
 

@@ -6,6 +6,7 @@ export * from './EntityModel';
 export * from './EventModel';
 export * from './ClassifiedModel';
 export * from './CidocEntityModel';
+export type { AnnotationPresentationFamily } from '../PresentationFamily.ts';
 export type { Id } from './Id';
 export { parseSvgPath } from './parseSvgPath';
 export { findSvgPath } from './findSvgPath';

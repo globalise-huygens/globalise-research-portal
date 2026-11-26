@@ -1,5 +1,5 @@
 import { DatabaseSync, type StatementSync } from 'node:sqlite';
-import { toCanvasId } from '@globalise/common/document';
+import { createCanvasId, parseCanvasName } from '@globalise/common/uri';
 import type { TextRangeMapping } from './calculateHtrOffsets';
 
 type TextRangeMappingRow = Omit<TextRangeMapping, 'canvasId'> & {
@@ -33,10 +33,10 @@ export function selectTextRangeMappings(
     return [];
   }
   const rows = database.selectMappings.all(docDbId) as TextRangeMappingRow[];
-  return rows.map(({ shortPageId, ...mapping }) => ({
-    ...mapping,
-    canvasId: toCanvasId(canvasNamePrefix + shortPageId),
-  }));
+  return rows.flatMap(({ shortPageId, ...mapping }) => {
+    const page = parseCanvasName(canvasNamePrefix + shortPageId);
+    return page ? [{ ...mapping, canvasId: createCanvasId(page) }] : [];
+  });
 }
 
 type GlobaliseDatabase = {
@@ -61,5 +61,5 @@ function openDatabase(): DatabaseSync {
   if (!dbPath) {
     throw new Error(`${dbPathEnvKey} is not set`);
   }
-  return new DatabaseSync(dbPath, { readOnly: true });
+  return new DatabaseSync(`file:${dbPath}?immutable=1`, { readOnly: true });
 }

@@ -12,12 +12,14 @@ import {
   IconSetting,
   IconTranscriptionDiplomatic,
   IconTranscriptionNormalised,
+  ToolButton,
 } from '@globalise/design';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
 import * as React from 'react';
 import { Button as AriaButton } from 'react-aria-components';
-import type { ManifestLayoutProps } from '../layout/ManifestLayout';
+import type { ManifestLayoutProps } from '../layout';
 import { ManifestCloseButton } from '../layout/ManifestCloseButton';
+import { ManifestShareButton } from '../layout/ManifestShareButton';
 import { ManifestContentWarning } from '../layout/ManifestContentWarning';
 import { ManifestError } from '../layout/ManifestError';
 import { type SidebarPanel, useSidebarPanels } from '../layout/useSidebarPanels';
@@ -70,6 +72,7 @@ export function MobileLayout({
   transcription,
   bottom,
   error,
+  shareLink,
   onClose,
 }: ManifestLayoutProps) {
   const mobilePanels = useMobilePanels();
@@ -143,6 +146,7 @@ export function MobileLayout({
 
             <div className="top-bar-group right">
               {topRight}
+              {shareLink && <ManifestShareButton link={shareLink} />}
               {onClose && <ManifestCloseButton onClose={onClose} />}
             </div>
           </header>
@@ -173,14 +177,23 @@ export function MobileLayout({
               {bottom}
             </div>
             <nav className="mobile-information-menu" aria-label="Viewer information">
-              {menuItems.map((item) => <AriaButton key={item.label}
-                aria-label={item.description}
-                aria-pressed={isSelected(item)}
-                aria-controls={readingAreaId}
-                onPress={() => select(item)}>
-                <span aria-hidden="true">{item.icon}</span>
-                <span>{item.label}</span>
-              </AriaButton>)}
+              {menuItems.map((item) => {
+                const selected = isSelected(item);
+                return (
+                  <ToolButton
+                    key={item.label}
+                    size="touch"
+                    icon={<span aria-hidden="true">{item.icon}</span>}
+                    isActive={selected}
+                    aria-label={item.description}
+                    aria-pressed={selected}
+                    aria-controls={readingAreaId}
+                    onPress={() => select(item)}
+                  >
+                    {item.label}
+                  </ToolButton>
+                );
+              })}
             </nav>
           </footer>
         </div>

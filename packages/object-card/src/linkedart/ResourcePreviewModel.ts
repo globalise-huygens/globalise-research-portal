@@ -1,12 +1,11 @@
 import { findTimespan, findByPath, getContent, getLinkedArtEntityType, getValue, getValues, type LinkedArtNode } from '@globalise/common';
 import type { EntityPreviewCardData, EntityPreviewCardProperty, EntityPreviewCardType } from '@globalise/design';
-import { getPersonNameRecords } from './PersonStatusModel.ts';
+import { getEntityNameRecords } from './EntityStatusModel.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
 import { EntityIcon } from '@globalise/design';
-import { isInternalUri } from '../isInternalUri.ts';
-import { toHref } from '@globalise/router';
+import { createObjectCardPath } from '@globalise/common/uri';
 
 /**
  * Builds a preview from a Linked Art resource. It chooses a title and type,
@@ -27,7 +26,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
   const names = [...new Set([
     ...getValues(resource.altLabel),
     ...findByPath(resource, ['identified_by']).filter((name) => name.type === 'Name').map(getContent),
-    ...getPersonNameRecords(resource).map((record) => record.name),
+    ...getEntityNameRecords(resource).map((record) => record.name),
   ].map((name) => name.trim()).filter((name) => name && name !== title))];
   if (names.length) {
     properties.push({ label: type === 'person' ? 'Also called' : 'Alt label', value: names.join(', ') });
@@ -47,10 +46,11 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
       properties.push({ label, value: [...new Set(dates)].join('; ') });
     }
   }
+  const objectCardPath = createObjectCardPath(uri);
   return {
     type, title, properties, icon: createElement(EntityIcon, { type }),
-    openFullCardHref: isInternalUri(uri) ? toHref({ to: '/object-card', search: { uri } }) : uri,
-    openFullCardLabel: isInternalUri(uri) ? `Open ${title} in a full object card` : `Open ${title}`,
+    openFullCardHref: objectCardPath ?? uri,
+    openFullCardLabel: objectCardPath ? `Open ${title} in a full object card` : `Open ${title}`,
   };
 }
 
@@ -67,6 +67,7 @@ function previewType(resource: LinkedArtNode, uri: string): EntityPreviewCardTyp
     case 'conceptscheme':
     case 'concept':
     case 'collection': return 'concept';
+    case 'occurrence': return 'occurrence';
     default: return previewTypeByResource[resource.type] ?? (resource.prefLabel ? 'concept' : 'entity');
   }
 }

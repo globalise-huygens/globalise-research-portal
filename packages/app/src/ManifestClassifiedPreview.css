@@ -1,0 +1,35 @@
+.manifest-preview-link {
+  display: inline-flex;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+a.manifest-preview-link {
+  align-items: baseline;
+  gap: 0.2em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-brand-mint);
+  }
+
+  svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: none;
+  }
+}

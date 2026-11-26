@@ -1,3 +1,4 @@
+import { hasStatusEvidence, EntityStatusGroup, EntitySummaryProperty, StatusRecordCount, StatusRecordLabel, hasGroupInformation, hasStatusValues, getStatusNodes, StatusValuesProperty, SourcesProperty, getVisibleSources, NotesProperty } from './EntityStatusGroup.tsx';
 import { StatusValues } from './StatusValues.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import {
@@ -5,7 +6,6 @@ import {
   findTimespan,
   formatRecordedDate,
   getRecordedDates,
-  type RecordedDates,
   getContent,
   getStatusValues,
   getValues,
@@ -21,20 +21,17 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import { type ReactNode } from 'react';
-import { RelationLink, RelationValue } from './RelationLink.tsx';
-import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
+import { RelationValue } from './RelationLink.tsx';
+import { getNotes, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
-import { personStatusGroups, getStatusProperties, type StatusProperty, type StatusGroup } from './LabeledKey.ts';
+import { personStatusGroups } from './LabeledKey.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import {
-  getResidenceLabel,
-  groupPersonStatuses,
   groupRecords,
-  getPersonNameRecords,
-  sortPersonNames,
+  getEntityNameRecords,
+  sortEntityNames,
   uniqueStatusValues,
-} from './PersonStatusModel.ts';
+} from './EntityStatusModel.ts';
 
 type PersonCardBodyProps = {
   entity: LinkedArtNode;
@@ -64,7 +61,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
   const profileGroups = personStatusGroups.filter(
     (group) => group !== occupationGroup && group !== locationGroup && !relationshipTypes.includes(group.type),
   );
-  const hasPersonalDetails = getPersonNameRecords(entity).length > 0
+  const hasPersonalDetails = getEntityNameRecords(entity).length > 0
     || getPersonEvents(entity, 'born').length > 0
     || getPersonEvents(entity, 'died').length > 0
     || profileGroups.some((group) => hasGroupInformation(entity, group))
@@ -76,10 +73,10 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
     <ObjectCardBody>
       <ObjectCardPanel side="left">
         {occupationGroup && (
-          <PersonStatusGroup entity={entity} group={occupationGroup} />
+          <EntityStatusGroup entity={entity} group={occupationGroup} />
         )}
         {locationGroup && (
-          <PersonStatusGroup
+          <EntityStatusGroup
             entity={entity}
             group={locationGroup}
           />
@@ -98,7 +95,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
               title="Died"
             />
             {profileGroups.map((group) => (
-              <PersonStatusGroup
+              <EntityStatusGroup
                 key={group.label}
                 entity={entity}
                 group={group}
@@ -107,7 +104,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
             ))}
             {!!unassignedDates.length && (
               <ObjectCardDisclosure
-                summary={<PersonSummaryProperty label="Recorded status dates" value={unassignedDates.join(', ')} />}
+                summary={<EntitySummaryProperty label="Recorded status dates" value={unassignedDates.join(', ')} />}
               >
                 <p className="person-status-note">These dates are not linked to a specific occupation or status in this record.</p>
               </ObjectCardDisclosure>
@@ -138,7 +135,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
           <ObjectCardSection title="Relationships" collapsible>
             <div className="person-status-list">
               {relationshipGroups.map((group) => (
-                <PersonStatusGroup key={group.label} entity={entity} group={group} section={false} />
+                <EntityStatusGroup key={group.label} entity={entity} group={group} section={false} />
               ))}
             </div>
           </ObjectCardSection>
@@ -150,7 +147,7 @@ export function PersonCardBody({ entity }: PersonCardBodyProps) {
 }
 
 export function getPersonTitle(entity: LinkedArtNode): string {
-  const [name] = sortPersonNames(getPersonNameRecords(entity))
+  const [name] = sortEntityNames(getEntityNameRecords(entity))
     .map((record) => record.name);
   return (
     [name, getContent(entity), ...findByPath(entity, ['identified_by'])
@@ -162,7 +159,7 @@ export function getPersonTitle(entity: LinkedArtNode): string {
 
 export function PersonOverview({ entity }: PersonCardBodyProps) {
   const names = [
-    ...new Set(sortPersonNames(getPersonNameRecords(entity)).map((record) => record.name)),
+    ...new Set(sortEntityNames(getEntityNameRecords(entity)).map((record) => record.name)),
   ];
   const alternativeNames = names.slice(1);
   const classifications = uniqueStatusValues(getStatusNodes(entity, personStatusGroups[0])
@@ -257,7 +254,7 @@ function PersonOverviewEvents({ label: factLabel, events }: {
 }
 
 function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
-  const groups = groupRecords(getPersonNameRecords(entity), (record) => record.name);
+  const groups = groupRecords(getEntityNameRecords(entity), (record) => record.name);
   return <>{groups.map(({ key, records }) => {
     const details = records.some(({ status }) => hasNameDetails(status)) ? records : [];
     return (
@@ -265,7 +262,7 @@ function PersonNameDetailsSection({ entity }: PersonCardBodyProps) {
         key={key}
         summary={(
           <>
-            <PersonSummaryProperty
+            <EntitySummaryProperty
               label="Name"
               value={<span className="person-name-value">{records[0].name}</span>}
             />
@@ -293,14 +290,6 @@ function hasNameDetails(status: LinkedArtNode): boolean {
   return hasStatusEvidence(status)
     || !!findTimespan(status)
     || !!getRecordedDates(status);
-}
-
-function StatusRecordCount({ count }: { count: number }) {
-  return count > 1 ? <span className="person-status-count">{count} records</span> : null;
-}
-
-function StatusRecordLabel({ index }: { index: number }) {
-  return <div className="person-status-label">Record {index + 1}</div>;
 }
 
 function StatusDateProperty({ node, showMissing = false }: { node: LinkedArtNode; showMissing?: boolean }) {
@@ -343,12 +332,12 @@ function PersonEventSection({
       key={index}
       summary={(
         <div className="person-status-summary-content">
-          <PersonSummaryProperty
+          <EntitySummaryProperty
             label={title}
             value={timespan ? <TimespanValue timespan={timespan} mode="event" /> : dates && <RecordedDatesValue dates={dates} />}
           />
           {!!locations.length && (
-            <PersonSummaryProperty
+            <EntitySummaryProperty
               label={property === 'born' ? 'Birthplace' : 'Place of death'}
               value={<StatusValues values={locations} />}
             />
@@ -385,294 +374,4 @@ function getPersonEvents(entity: LinkedArtNode, property: 'born' | 'died') {
     .filter(({ locations, classifications, dates, notes, sources, timespan }) =>
       locations.length > 0 || classifications.length > 0 || !!dates || notes.length > 0 || sources.length > 0 || !!timespan,
     );
-}
-
-type PersonStatusGroupProps = {
-  children?: ReactNode;
-  entity: LinkedArtNode;
-  group: StatusGroup;
-  section?: boolean;
-};
-
-export function PersonStatusGroup({
-  entity,
-  group,
-  section = true,
-  children,
-}: PersonStatusGroupProps) {
-  const statuses = getStatusNodes(entity, group)
-    .filter((status) => hasStatusValues(status, group));
-  const additionalNodes = getAdditionalStatusNodes(entity, group);
-  const isOccupationGroup = group.type === 'SocialStatus';
-  if (!children && !statuses.length && !additionalNodes.length) {
-    return null;
-  }
-
-  const content = groupPersonStatuses(statuses).map(({ key, records }, index) => {
-    const status = records[0];
-    const dateKey = (node: LinkedArtNode) => JSON.stringify([
-      findTimespan(node), getRecordedDates(node),
-    ]);
-    const statusDates = dateKey(status);
-    const sharedDates = records.every((record) => dateKey(record) === statusDates);
-    const timespan = sharedDates ? findTimespan(status) : null;
-    const recordedDates = sharedDates && !timespan ? getRecordedDates(status) : null;
-    const summaryProperties = getStatusProperties(status);
-    const details = records.some((record) => hasStatusDetails(record, group)) ? records : [];
-
-    return (
-      <ObjectCardDisclosure
-        key={key}
-        className={isOccupationGroup ? 'person-occupation-status' : undefined}
-        defaultExpanded={section && index === 0}
-        summary={(
-          <>
-            <PersonStatusSummary
-              group={group}
-              properties={summaryProperties}
-              recordedDates={recordedDates}
-              timespan={timespan}
-            />
-            {!sharedDates && records.map((record, recordIndex) => {
-              const recordTimespan = findTimespan(record);
-              const recordDates = recordTimespan ? null : getRecordedDates(record);
-              return (
-                <div key={recordIndex} className="person-status-summary-date">
-                  <StatusRecordLabel index={recordIndex} />
-                  {recordTimespan
-                    ? <TimespanValue timespan={recordTimespan} mode="summary" />
-                    : recordDates
-                      ? <RecordedDatesValue dates={recordDates} />
-                      : 'Date: not recorded'}
-                </div>
-              );
-            })}
-            <StatusRecordCount count={records.length} />
-          </>
-        )}
-      >
-        {details.length > 0 ? details.map((record, recordIndex) => (
-          <div key={recordIndex} className="person-status-record">
-            {records.length > 1 && <StatusRecordLabel index={recordIndex} />}
-            <ObjectCardPropertyList className="person-status-details">
-              <StatusValuesProperty label="Geographic scope" values={getStatusValues(record, ['has_geographic_scope'])} />
-              <StatusValuesProperty label="Classification" values={getStatusValues(record, ['classified_as'])} />
-              <NotesProperty node={record} />
-              <SourcesProperty className={isOccupationGroup ? 'person-status-sources' : undefined} node={record} />
-            </ObjectCardPropertyList>
-          </div>
-        )) : null}
-      </ObjectCardDisclosure>
-    );
-  });
-  return section ? (
-    <ObjectCardSection title={group.label} collapsible>
-      <div className="person-status-list">
-        {children}
-        {content}
-        <UnassignedStatusInformation nodes={additionalNodes} />
-      </div>
-    </ObjectCardSection>
-  ) : <>{children}{content}<UnassignedStatusInformation nodes={additionalNodes} /></>;
-}
-
-function UnassignedStatusInformation({ nodes }: { nodes: LinkedArtNode[] }) {
-  const sources = nodes.filter((node) => node.type === 'LinguisticObject' && isVisibleSource(node, true, true));
-  const places = nodes.filter((node) => node.type === 'Place');
-  const terms = nodes.filter((node) => node.type === 'Type');
-  const other = nodes.filter((node) => !['LinguisticObject', 'Place', 'Type'].includes(node.type));
-  if (!sources.length && !places.length && !terms.length && !other.length) {
-    return null;
-  }
-  return (
-    <ObjectCardDisclosure summary={<span className="person-status-summary-label">Other recorded information</span>}>
-      <p className="person-status-note">This information is recorded separately from individual status records.</p>
-      <ObjectCardPropertyList className="person-status-details">
-        <StatusValuesProperty label="Places mentioned" values={places} />
-        <StatusValuesProperty label="Recorded terms" values={terms} />
-        <StatusValuesProperty label="Other values" values={other} />
-        {!!sources.length && (
-          <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes />} />
-        )}
-      </ObjectCardPropertyList>
-    </ObjectCardDisclosure>
-  );
-}
-
-type PersonStatusSummaryProps = {
-  group: StatusGroup;
-  properties: (StatusProperty & { values: StatusValue[] })[];
-  recordedDates: RecordedDates | null;
-  timespan: ReturnType<typeof findTimespan>;
-};
-
-function PersonStatusSummary({
-  group,
-  properties,
-  recordedDates,
-  timespan,
-}: PersonStatusSummaryProps) {
-  const isOccupation = group.type === 'SocialStatus';
-  const connection = group.type === 'ResidentialStatus'
-    ? properties.find((property) => property.keys.includes('ascribes_residence_relation'))
-    : undefined;
-  const place = properties.find((property) => property.keys.includes('ascribes_residence_place'));
-  const renderProperties = (displayedProperties: typeof properties) => displayedProperties.length
-    ? displayedProperties.map((property, index) => (
-      <PersonSummaryProperty
-        key={property.label}
-        label={isOccupation && index === 0 ? undefined : property.label}
-        value={<StatusValues values={property.values} linked={property.linked} stacked={property.stacked} />}
-      />
-    ))
-    : isOccupation && (timespan || recordedDates)
-      ? null
-      : <span className="person-status-summary-label">{isOccupation ? 'Status details' : group.label}</span>;
-  const renderConnection = (text: string) => {
-    const residenceLabel = getResidenceLabel([text]);
-    return residenceLabel && place
-      ? renderProperties([{ ...place, label: residenceLabel }])
-      : renderProperties(properties);
-  };
-  return (
-    <div className="person-status-summary-content">
-      {timespan && (
-        <span className="person-status-summary-date">
-          <TimespanValue timespan={timespan} mode="summary" />
-        </span>
-      )}
-      {recordedDates && <RecordedDatesValue dates={recordedDates} />}
-      {connection?.values.length === 1 && place
-        ? isLinkedArtNode(connection.values[0])
-          ? <RelationValue node={connection.values[0]} render={renderConnection} />
-          : renderConnection(connection.values[0])
-        : renderProperties(properties)}
-    </div>
-  );
-}
-
-type PersonSummaryPropertyProps = {
-  label?: string;
-  value?: ReactNode;
-};
-
-function PersonSummaryProperty({ label: propertyLabel, value }: PersonSummaryPropertyProps) {
-  if (!value) {
-    return null;
-  }
-  return (
-    <span className="person-status-summary-property">
-      {propertyLabel && (
-        <span className="person-status-summary-label">{propertyLabel}: </span>
-      )}
-      <span className="person-status-summary-value">{value}</span>
-    </span>
-  );
-}
-
-function hasStatusEvidence(status: LinkedArtNode, includeSources = true): boolean {
-  return getStatusValues(status, ['classified_as']).length > 0
-    || includeSources && getVisibleSources(status).length > 0
-    || getNotes(status).length > 0;
-}
-
-function hasStatusDetails(status: LinkedArtNode, _group: StatusGroup, includeSources = true): boolean {
-  return getStatusValues(status, ['has_geographic_scope']).length > 0
-    || hasStatusEvidence(status, includeSources);
-}
-
-function getAdditionalStatusNodes(entity: LinkedArtNode, group: StatusGroup) {
-  return findByPath(entity, [group.key]).filter((node) => node.type !== group.type
-    && (node.type !== 'LinguisticObject' || isVisibleSource(node, true, true)));
-}
-
-function hasGroupInformation(entity: LinkedArtNode, group: StatusGroup) {
-  return getStatusNodes(entity, group).some((status) => hasStatusValues(status, group))
-    || getAdditionalStatusNodes(entity, group).length > 0;
-}
-
-function hasStatusValues(status: LinkedArtNode, group: StatusGroup): boolean {
-  return getStatusProperties(status).length > 0 || hasStatusDetails(status, group, group.type !== 'ResidentialStatus')
-    || !!findTimespan(status)
-    || !!getRecordedDates(status);
-}
-
-function getStatusNodes(
-  entity: LinkedArtNode,
-  definition: Pick<StatusGroup, 'key' | 'type'>,
-): LinkedArtNode[] {
-  return findByPath(entity, [definition.key]).filter(
-    (status) => status.type === definition.type,
-  );
-}
-
-type StatusValuesPropertyProps = {
-  className?: string;
-  label: string;
-  linked?: boolean;
-  stacked?: boolean;
-  values: StatusValue[];
-};
-
-function StatusValuesProperty({
-  className,
-  label: propertyLabel,
-  linked,
-  stacked,
-  values,
-}: StatusValuesPropertyProps) {
-  if (!values.length) {
-    return null;
-  }
-  return (
-    <ObjectCardProperty
-      className={className}
-      label={propertyLabel}
-      value={<StatusValues values={values} linked={linked} stacked={stacked} />}
-    />
-  );
-}
-
-function SourcesProperty({
-  className,
-  node,
-}: {
-  className?: string;
-  node: LinkedArtNode;
-}) {
-  const sources = getVisibleSources(node);
-  if (!sources.length) {
-    return null;
-  }
-  return (
-    <ObjectCardProperty
-      className={className}
-      label="Sources"
-      value={(
-        <SourceList
-          includeInternalLabels
-          showNotes
-          sources={sources}
-        />
-      )}
-    />
-  );
-}
-
-function getVisibleSources(node: LinkedArtNode): LinkedArtNode[] {
-  return findByPath(node, ['referred_to_by'])
-    .filter((source) => isVisibleSource(source, true, true));
-}
-
-function NotesProperty({ node }: { node: LinkedArtNode }) {
-  const notes = getNotes(node);
-  if (!notes.length) {
-    return null;
-  }
-  return (
-    <ObjectCardProperty
-      label="Notes"
-      value={<StatusValues linked={false} stacked values={notes} />}
-    />
-  );
 }

@@ -9,6 +9,7 @@ import {
   IconEntityPerson,
   IconEntityPlace,
   IconEntityShip,
+  IconEvents,
 } from '../icons';
 
 const entityPresentation = {
@@ -19,12 +20,14 @@ const entityPresentation = {
   date: { label: 'Date', Icon: IconEntityDate },
   dimensions: { label: 'Measure', Icon: IconEntityDimensions },
   document: { label: 'Document', Icon: IconEntityDocument },
+  event: { label: 'Event', Icon: IconEvents },
   organisation: { label: 'Organisation', Icon: IconEntityOrganisation },
   person: { label: 'Person', Icon: IconEntityPerson },
   place: { label: 'Place', Icon: IconEntityPlace },
   polity: { label: 'Polity', Icon: IconEntityOrganisation },
   quantity: { label: 'Quantity', Icon: IconEntityDimensions },
   ship: { label: 'Ship', Icon: IconEntityShip },
+  occurrence: { label: 'Occurrence', Icon: IconEvents },
 };
 
 export type EntityType = keyof typeof entityPresentation;

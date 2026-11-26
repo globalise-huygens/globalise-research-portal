@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { AnnotationPresentationFamily } from '@globalise/common/annotation';
 import {
   Checkbox,
   cn,
@@ -13,14 +14,14 @@ import './EntityHighlightMenu.css';
 export type EntityHighlightSubcategory = {
   id?: string;
   label: string;
-  tone?: string;
+  family?: AnnotationPresentationFamily;
 };
 
 export type EntityHighlightCategory = {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  tone?: string;
+  family?: AnnotationPresentationFamily;
   subcategories?: EntityHighlightSubcategory[];
 };
 
@@ -197,50 +198,56 @@ function EntityHighlightMenu({
                 const isExpanded = expandedGroup === category.id;
                 const hasSubcategories =
                   category.subcategories && category.subcategories.length > 0;
+                const label = (
+                  <>
+                    {category.icon && (
+                      <span className="icon">
+                        {category.icon}
+                      </span>
+                    )}
+                    <span className="label-text">
+                      {category.label}
+                    </span>
+                  </>
+                );
 
                 return (
                   <div key={category.id} className="category">
                     <div
-                      className={cn('row', category.tone)}
+                      className={cn(
+                        'row',
+                        category.family && `annotation-${category.family}`,
+                      )}
                       data-level="category"
                     >
-                      <div className="label">
-                        {category.icon && (
-                          <span className="icon">
-                            {category.icon}
-                          </span>
-                        )}
-                        <span className="label-text">
-                          {category.label}
-                        </span>
-                      </div>
-                      <div className="actions">
-                        {hasSubcategories && (
-                          <Tooltip
-                            label={`${isExpanded ? 'Hide' : 'Show'} ${category.label} subcategories`}
+                      {hasSubcategories ? (
+                        <Tooltip
+                          label={`${isExpanded ? 'Hide' : 'Show'} ${category.label} subcategories`}
+                        >
+                          <AriaButton
+                            aria-label={`Toggle ${category.label} subcategories`}
+                            aria-expanded={isExpanded}
+                            className="label expand"
+                            onPress={() => toggleExpandedGroup(category.id)}
                           >
-                            <AriaButton
-                              aria-label={`Toggle ${category.label} subcategories`}
-                              aria-expanded={isExpanded}
-                              className="expand"
-                              onPress={() => toggleExpandedGroup(category.id)}
-                            >
-                              <IconExpandSection
-                                aria-hidden="true"
-                                className="expand-icon"
-                              />
-                            </AriaButton>
-                          </Tooltip>
-                        )}
-                        <Checkbox
-                          aria-label={`Toggle ${category.label} entity highlights`}
-                          isSelected={isSelected}
-                          isIndeterminate={isIndeterminate}
-                          onChange={(nextSelected) =>
-                            toggleCategory(category, nextSelected)
-                          }
-                        />
-                      </div>
+                            {label}
+                            <IconExpandSection
+                              aria-hidden="true"
+                              className="expand-icon"
+                            />
+                          </AriaButton>
+                        </Tooltip>
+                      ) : (
+                        <div className="label">{label}</div>
+                      )}
+                      <Checkbox
+                        aria-label={`Toggle ${category.label} entity highlights`}
+                        isSelected={isSelected}
+                        isIndeterminate={isIndeterminate}
+                        onChange={(nextSelected) =>
+                          toggleCategory(category, nextSelected)
+                        }
+                      />
                     </div>
 
                     {isExpanded && hasSubcategories && (
@@ -255,7 +262,9 @@ function EntityHighlightMenu({
                               key={leafKey}
                               className={cn(
                                 'row',
-                                subcategory.tone ?? category.tone,
+                                (subcategory.family ?? category.family)
+                                  ? `annotation-${subcategory.family ?? category.family}`
+                                  : undefined,
                               )}
                               data-level="subcategory"
                             >

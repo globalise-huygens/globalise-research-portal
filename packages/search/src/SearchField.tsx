@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button } from 'react-aria-components';
+import { Button, Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
 import { useQueryClient } from '@tanstack/react-query';
-import { getSVGElement } from '@globalise/common';
+import { getPresentationFamily, getSVGElement } from '@globalise/common';
 import {
   svgEntityPlace,
   svgEntityPerson,
@@ -9,6 +9,7 @@ import {
   IconUndo,
   IconRedo,
   IconClose,
+  ToolButton,
 } from '@globalise/design';
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
 import { UpdateState, ThemeConfig, AutocompleteConfig } from '@knaw-huc/searchfield';
@@ -18,17 +19,36 @@ import classes from './SearchField.module.css';
 
 import { type AutocompleteSuggestion } from './elasticsearch/autocomplete.server';
 
-const types: Record<string, { color: string, svg: string }> = {
-  'Place': { color: 'var(--entity-place)', svg: svgEntityPlace },
-  'Polity': { color: 'var(--entity-actor)', svg: svgEntityPerson },
-  'Person': { color: 'var(--entity-actor)', svg: svgEntityPerson },
+const icons: Record<string, string> = {
+  Place: svgEntityPlace,
+  Polity: svgEntityPerson,
+  Person: svgEntityPerson,
 };
 
-export default function SearchField({ autoFocus = false }: { autoFocus?: boolean }) {
+export default function SearchField({
+  autoFocus = false,
+  isMobile = false,
+}: { autoFocus?: boolean; isMobile?: boolean }) {
   const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
   const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
+  const actions = [
+    { id: 'search', label: 'Search', icon: IconSearch, disabled: false },
+    {
+      id: 'undo', label: 'Undo search edit', icon: IconUndo,
+      disabled: !history.canUndo,
+    },
+    {
+      id: 'redo', label: 'Redo search edit', icon: IconRedo,
+      disabled: !history.canRedo,
+    },
+    { id: 'clear', label: 'Clear search', icon: IconClose, disabled: false },
+  ] as const;
+
+  function runAction(action: (typeof actions)[number]['id']) {
+    searchFieldRef.current?.[action]();
+  }
 
   useEffect(() => {
     if (autoFocus) {
@@ -62,7 +82,10 @@ export default function SearchField({ autoFocus = false }: { autoFocus?: boolean
     ].filter(Boolean).join(' • '),
     icon: (sugg) => toIcon(sugg.type),
     token: {
-      color: (token) => types[token.type]?.color,
+      color: (token) => {
+        const family = getPresentationFamily(token.type);
+        return family ? `var(--annotation-${family})` : undefined;
+      },
       icon: (token) => toIcon(token.type),
     },
   };
@@ -77,27 +100,38 @@ export default function SearchField({ autoFocus = false }: { autoFocus?: boolean
           enableHistory enableLuceneQuerySyntax/>
       </div>
 
-      <div className={classes.buttons}>
-        <Button aria-label="Search" onClick={() => searchFieldRef.current?.search()}>
-          <IconSearch aria-hidden="true"/>
-        </Button>
-        <Button aria-label="Undo search edit" onClick={() => searchFieldRef.current?.undo()}
-          isDisabled={!history.canUndo}>
-          <IconUndo aria-hidden="true"/>
-        </Button>
-        <Button aria-label="Redo search edit" onClick={() => searchFieldRef.current?.redo()}
-          isDisabled={!history.canRedo}>
-          <IconRedo aria-hidden="true"/>
-        </Button>
-        <Button aria-label="Clear search" onClick={() => searchFieldRef.current?.clear()}>
-          <IconClose aria-hidden="true"/>
-        </Button>
-      </div>
+      {isMobile ? (
+        <MenuTrigger>
+          <ToolButton size="touch" aria-label="Search actions"
+            icon={<IconSearch aria-hidden="true" />}
+          />
+          <Popover placement="bottom end" className={classes.actionPopover}>
+            <Menu className={classes.actionMenu}>
+              {actions.map(({ id, label, icon: Icon, disabled }) => (
+                <MenuItem key={id} className={classes.actionItem}
+                  isDisabled={disabled} onAction={() => runAction(id)}>
+                  <Icon aria-hidden="true" />
+                  {label}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Popover>
+        </MenuTrigger>
+      ) : (
+        <div className={classes.buttons}>
+          {actions.map(({ id, label, icon: Icon, disabled }) => (
+            <Button key={id} aria-label={label}
+              onClick={() => runAction(id)} isDisabled={disabled}>
+              <Icon aria-hidden="true" />
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 function toIcon(type: string): SVGElement | undefined {
-  const svg = types[type]?.svg;
+  const svg = icons[type];
   return svg ? getSVGElement(svg) : undefined;
 }

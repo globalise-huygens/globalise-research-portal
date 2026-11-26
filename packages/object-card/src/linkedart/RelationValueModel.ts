@@ -5,8 +5,8 @@ import {
   getValues,
   type LinkedArtNode,
 } from '@globalise/common';
-import { isInternalUri } from '../isInternalUri.ts';
-import { getPersonNameRecords, sortPersonNames } from './PersonStatusModel.ts';
+import { isInternalUri } from '@globalise/common/uri';
+import { getEntityNameRecords, sortEntityNames } from './EntityStatusModel.ts';
 
 /**
  * Choose a readable name or label from the entity data already available.
@@ -22,7 +22,7 @@ export function getRelationValue(node: LinkedArtNode): string {
   const preferredName = ['en', 'nl'].map((language) => candidates.find((name) =>
     findByPath(name, ['language']).some((value) => value.id?.endsWith(`/${language}`)),
   )).find(Boolean) ?? candidates[0];
-  const appellation = sortPersonNames(getPersonNameRecords(node))[0]?.name;
+  const appellation = sortEntityNames(getEntityNameRecords(node))[0]?.name;
   const labels = getValues(node._label);
   // An embedded vocabulary label list contains variants, not a preferred term.
   const label = node.type === 'Type' && labels.length > 1

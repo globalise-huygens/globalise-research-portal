@@ -1,7 +1,7 @@
 import { findByPath, findTimespan, getContent, getEntityIdentifiers, getRecordedDates, getStatusValues, url, type LinkedArtNode } from '@globalise/common';
 import { ObjectCardBody, ObjectCardDisclosure, ObjectCardPanel, ObjectCardProperty, ObjectCardPropertyList, ObjectCardSection } from '@globalise/design';
 import { NodeList } from './NodeList.tsx';
-import { getPersonNameRecords, groupRecords, sortPersonNames } from './PersonStatusModel.ts';
+import { getEntityNameRecords, groupRecords, sortEntityNames } from './EntityStatusModel.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { StatusValues } from './StatusValues.tsx';
 import { RelationLink } from './RelationLink.tsx';
@@ -11,7 +11,7 @@ import { RecordedDatesValue } from './RecordedDatesValue.tsx';
 import { formatTimespanSummary } from './TimespanFormat.ts';
 import { relationKeys, personStatusGroups, statusKeys, shipHistoryGroups, shipNameLabels } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
-import { PersonStatusGroup } from './PersonCardBody.tsx';
+import { EntityStatusGroup } from './EntityStatusGroup.tsx';
 import { useQueries } from '@tanstack/react-query';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { buildVoyageHierarchy, type VoyageHierarchyNode } from './ShipVoyageModel';
@@ -19,13 +19,13 @@ import { buildVoyageHierarchy, type VoyageHierarchyNode } from './ShipVoyageMode
 export function getShipTitle(entity: LinkedArtNode): string {
   const preferred = findByPath(entity, ['is_appellative_subject_of', 'ascribes_appellation'])
     .find((name) => findByPath(name, ['classified_as']).some((type) => type.id === 'http://vocab.getty.edu/aat/300404670'));
-  return [preferred && getContent(preferred), sortPersonNames(getPersonNameRecords(entity))[0]?.name]
+  return [preferred && getContent(preferred), sortEntityNames(getEntityNameRecords(entity))[0]?.name]
     .find((value) => !!value) ?? 'Name not recorded';
 }
 
 export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
   const title = getShipTitle(entity);
-  const names = [...new Set(getPersonNameRecords(entity).map((record) => record.name))]
+  const names = [...new Set(getEntityNameRecords(entity).map((record) => record.name))]
     .filter((name) => name !== title);
   const history = getShipHistory(entity)
     .filter(({ event }) => !!findTimespan(event) || !!getRecordedDates(event) || findByPath(event, ['took_place_at']).length > 0);
@@ -47,7 +47,7 @@ export function ShipOverview({ entity }: { entity: LinkedArtNode }) {
 
 export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
   const title = getShipTitle(entity);
-  const records = sortPersonNames(getPersonNameRecords(entity))
+  const records = sortEntityNames(getEntityNameRecords(entity))
     .sort((left, right) => Number(right.name === title) - Number(left.name === title));
   const names = groupRecords(removeEmptyDuplicateNames(records), (record) => record.name);
   const events = getShipHistory(entity);
@@ -84,15 +84,17 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
               const timespan = findTimespan(status);
               const dates = timespan ? null : getRecordedDates(status);
               const hasSources = sources.some((source) => isVisibleSource(source, true, true, identifiers));
+              const notes = getNotes(status);
               const classifications = findByPath(status, ['ascribes_appellation'])
                 .filter((name) => getContent(name) === records[0].name)
                 .flatMap((name) => findByPath(name, ['classified_as']));
               return <div key={recordKey} className="person-status-record">
                 {records.length > 1 && <div className="person-status-label">Record {index + 1}</div>}
-                {timespan || dates || hasSources || classifications.length ? <ObjectCardPropertyList className="person-status-details">
+                {timespan || dates || hasSources || classifications.length || notes.length ? <ObjectCardPropertyList className="person-status-details">
                   {!!classifications.length && <ObjectCardProperty label="Classification" value={<StatusValues values={classifications} />} />}
                   {timespan && <ObjectCardProperty label="Date bounds" value={<TimespanValue timespan={timespan} mode="boundaries" />} />}
                   {dates && <ObjectCardProperty label="Dates" value={<RecordedDatesValue dates={dates} />} />}
+                  {!!notes.length && <ObjectCardProperty label="Notes" value={<StatusValues values={notes} linked={false} stacked />} />}
                   {hasSources && <ObjectCardProperty label="Sources" value={<SourceList sources={sources} includeInternalLabels showNotes excludedIdentifiers={identifiers} />} />}
                 </ObjectCardPropertyList> : <p className="person-status-note">No additional details recorded.</p>}
               </div>;
@@ -116,7 +118,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
           {ownershipChanges.map((event, index) => <ShipEvent key={event.id ?? `change-${index}`} event={event} fallback="Ownership change" identifiers={identifiers} />)}
         </div>
       </ObjectCardSection>}
-      {classificationGroup && <PersonStatusGroup
+      {classificationGroup && <EntityStatusGroup
         entity={entity}
         group={classificationGroup}
       >
@@ -128,7 +130,7 @@ export function ShipCardBody({ entity }: { entity: LinkedArtNode }) {
             </span>
           </span>
         } />}
-      </PersonStatusGroup>}
+      </EntityStatusGroup>}
       {statusKeys.filter(({ key }) => key !== 'is_appellative_subject_of' && key !== 'is_ownership_subject_of' && key !== 'is_classificatory_subject_of').map((item) => (
         <StatusSection key={item.key} entity={entity} labeledKey={item} />
       ))}

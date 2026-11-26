@@ -5,6 +5,7 @@ import { Popover } from './Popover';
 import { Tooltip } from './Tooltip';
 import { EntityBadge, type EntityBadgeType } from './EntityBadge';
 import { getEntityTypeLabel, type EntityType } from './EntityIcon';
+import { getPresentationFamily } from '@globalise/common';
 
 export type EntityPreviewCardAutomationBadge = 'ner' | 'lin';
 
@@ -45,6 +46,10 @@ function getEntityBadgeType(
     return 'dimensions';
   }
 
+  if (type === 'event') {
+    return 'occurrence';
+  }
+
   return type;
 }
 
@@ -68,7 +73,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
   return (
     <Popover
       size="compact"
-      className={cn('entity-preview-card', className)}
+      className={cn('preview-card-surface', 'entity-preview-card', className)}
     >
       <div className="header">
         <div className="identity">
@@ -82,6 +87,7 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
                 aria-label={`Category: ${categoryLabel}`}
                 className="category-trigger"
                 data-type={getEntityBadgeType(data.type)}
+                data-presentation-family={getPresentationFamily(data.type)}
               >
                 {data.icon ? (
                   <span className="category-icon">
@@ -104,7 +110,11 @@ function EntityPreviewCard({ data, className }: EntityPreviewCardProps) {
               </EntityBadge>
             ))}
           </div>
-          <div className="title">{data.title}</div>
+          <div className="title preview-card-title">
+            {data.openFullCardHref ? (
+              <a href={data.openFullCardHref}>{data.title}</a>
+            ) : data.title}
+          </div>
         </div>
 
         <div className="actions">

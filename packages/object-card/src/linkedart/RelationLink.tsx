@@ -1,5 +1,5 @@
 import {
-  EntityPreview,
+  PreviewCard,
   EntityTag,
   type EntityTagType,
   ObjectCardExternalLink,
@@ -10,10 +10,9 @@ import {
   type LinkedArtNode,
   url,
 } from '@globalise/common';
-import { toHref } from '@globalise/router';
-import { type ReactNode } from 'react';
+import { createObjectCardPath, isInternalUri } from '@globalise/common/uri';
+import { useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { isInternalUri } from '../isInternalUri.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { entityResourceQueryOptions } from './RelationValueResolver.ts';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
@@ -23,32 +22,56 @@ type RelationLinkProps = {
   resolveExternal?: boolean;
 };
 
-export function RelationLink({ node, resolveExternal = true }: RelationLinkProps) {
+export function RelationLink({
+  node, resolveExternal = true, label, previewOnDemand = false,
+}: RelationLinkProps & { label?: string; previewOnDemand?: boolean }) {
   const href = url(node);
+  const [hasOpened, setHasOpened] = useState(false);
+  const loadResource = !previewOnDemand || hasOpened;
   const { text, resource, isPending } = useRelationValue(
-    node, href, resolveExternal,
+    node, href, resolveExternal, loadResource,
   );
-  const preview = resource && href ? getResourcePreview(resource, href, (nodes) => nodes.map((related, index) => (
-    <span key={related.id ?? index}>
-      {index > 0 && ', '}
-      <RelationLink node={related} />
-    </span>
-  ))) : undefined;
+  const linkLabel = label ?? text;
 
   if (!href) {
-    return <span className="relation">{text}</span>;
+    return <span className="relation">{linkLabel}</span>;
   }
-  return <EntityPreview data={preview} isPending={isPending}>{(attributes) => isInternalUri(href) ? (
-    <EntityTag
-      {...attributes}
-      type={getEntityTagType(getLinkedArtEntityType(href))}
-      href={toHref({ to: '/object-card', search: { uri: href } })}
+
+  const objectCardPath = createObjectCardPath(href);
+
+  // The recorded reference can open the card before its details are fetched.
+  const previewResource = resource ?? (previewOnDemand ? node : undefined);
+  const preview = previewResource
+    ? getResourcePreview(previewResource, href, renderRelatedNodes)
+    : undefined;
+
+  function handleOpenChange(open: boolean) {
+    if (open) {
+      setHasOpened(true);
+    }
+  }
+
+  return (
+    <PreviewCard
+      data={preview}
+      isPending={isPending}
+      onOpenChange={previewOnDemand ? handleOpenChange : undefined}
     >
-      {text}
-    </EntityTag>
-  ) : (
-    <ObjectCardExternalLink {...attributes} href={href}>{text}</ObjectCardExternalLink>
-  )}</EntityPreview>;
+      {(attributes) => objectCardPath ? (
+        <EntityTag
+          {...attributes}
+          type={getEntityTagType(getLinkedArtEntityType(href))}
+          href={objectCardPath}
+        >
+          {linkLabel}
+        </EntityTag>
+      ) : (
+        <ObjectCardExternalLink {...attributes} href={href}>
+          {linkLabel}
+        </ObjectCardExternalLink>
+      )}
+    </PreviewCard>
+  );
 }
 
 export function RelationValue({
@@ -58,20 +81,33 @@ export function RelationValue({
   return <>{render ? render(text) : text}</>;
 }
 
+function renderRelatedNodes(nodes: LinkedArtNode[]) {
+  return nodes.map((node, index) => (
+    <span key={node.id ?? index}>
+      {index > 0 && ', '}
+      <RelationLink node={node} />
+    </span>
+  ));
+}
+
 function useRelationValue(
   node: LinkedArtNode,
   targetHref?: string,
   resolveExternal = true,
+  loadResource = true,
 ) {
   const shouldResolve = targetHref
     && (resolveExternal || isInternalUri(targetHref));
   const href = shouldResolve ? targetHref : undefined;
   const safeFallback = getRelationValue(node);
   const pendingValue = href ? getRelationValue({ ...node, id: undefined, _label: undefined }) : safeFallback;
-  const { data: resource, isPending } = useQuery(entityResourceQueryOptions(href ?? ''));
+  const { data: resource, isPending } = useQuery({
+    ...entityResourceQueryOptions(href ?? ''),
+    enabled: Boolean(href) && loadResource,
+  });
   return {
     resource: resource ?? undefined,
-    isPending: !!href && isPending,
+    isPending: Boolean(href) && loadResource && isPending,
     text: isPending ? pendingValue : getResolvedRelationValue(resource ?? undefined) ?? safeFallback,
   };
 }

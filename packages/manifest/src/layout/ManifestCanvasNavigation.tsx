@@ -1,81 +1,36 @@
-import { clamp } from '@globalise/common';
 import {
   setSelectedCanvas,
   type CanvasId,
   useSelectedCanvas,
 } from '@globalise/common/document';
-import {
-  IconLeft,
-  IconLeftFirst,
-  IconRight,
-  IconRightLast,
-} from '@globalise/design';
-import { useViewer } from '@knaw-huc/osd-iiif-viewer';
-import { Point } from 'openseadragon';
-import { useState } from 'react';
-import { lazyCollectionViewerStore } from '../facsimile/LazyCollectionViewerStore.ts';
+import { IconLeftFirst, IconRightLast } from '@globalise/design';
+import { useManifest } from '@knaw-huc/osd-iiif-viewer';
 import { BOTTOM_BAR_BUTTON } from './buttonClasses.ts';
+import { PrevNextInputBrowser } from './PrevNextInputBrowser.tsx';
 import { TooltipIconButton } from './TooltipIconButton.tsx';
 
 export function ManifestCanvasNavigation() {
-  const viewer = useViewer();
-  const lazyCanvases = lazyCollectionViewerStore((s) => s.lazyCanvases);
+  const { vault, id: manifestId, isReady } = useManifest();
   const { id: selectedCanvasId } = useSelectedCanvas();
-  const [scanInput, setScanInput] = useState<string | null>(null);
-  const selectedIndex = lazyCanvases.findIndex(
-    (c) => c.canvasId === selectedCanvasId,
-  );
 
-  if (!lazyCanvases.length || selectedIndex === -1) {
+  if (!isReady || !manifestId) {
     return null;
   }
 
-  const currentScanNumber = selectedIndex + 1;
-  const totalScans = lazyCanvases.length;
-  const scanInputValue = scanInput ?? String(currentScanNumber);
+  const { items: canvases } = vault.get({ id: manifestId, type: 'Manifest' });
+  const selectedIndex = canvases.findIndex(({ id }) => id === selectedCanvasId);
+  if (selectedIndex === -1) {
+    return null;
+  }
+
+  const totalScans = canvases.length;
   const hasPrev = selectedIndex > 0;
-  const hasNext = selectedIndex < lazyCanvases.length - 1;
-  const firstId = lazyCanvases[0]?.canvasId;
-  const prevId = lazyCanvases[selectedIndex - 1]?.canvasId;
-  const nextId = lazyCanvases[selectedIndex + 1]?.canvasId;
-  const lastId = lazyCanvases[lazyCanvases.length - 1]?.canvasId;
+  const hasNext = selectedIndex < totalScans - 1;
 
-  function scrollTo(canvasId?: CanvasId) {
-    if (!canvasId) {
-      return;
+  function selectCanvas(canvasId?: CanvasId) {
+    if (canvasId) {
+      setSelectedCanvas(canvasId, 'external');
     }
-    setScanInput(null);
-    setSelectedCanvas(canvasId, 'external');
-    if (!viewer) {
-      return;
-    }
-    const canvas = lazyCanvases.find((c) => c.canvasId === canvasId);
-    if (!canvas) {
-      return;
-    }
-    viewer.viewport.panTo(new Point(0.5, canvas.y + canvas.height / 2));
-  }
-
-  function navigateToScanNumber(scanNumber: number) {
-    const nextScanNumber = clamp(scanNumber, 1, totalScans);
-    const nextCanvasId = lazyCanvases[nextScanNumber - 1]?.canvasId;
-    setScanInput(null);
-    scrollTo(nextCanvasId);
-  }
-
-  function commitScanInput() {
-    const parsed = Number.parseInt(scanInputValue, 10);
-    if (Number.isNaN(parsed)) {
-      setScanInput(null);
-      return;
-    }
-    navigateToScanNumber(parsed);
-  }
-
-  function handleScanInputChange(value: string) {
-    setScanInput(
-      value.replace(/[^\d]/g, '').slice(0, String(totalScans).length),
-    );
   }
 
   return (
@@ -87,56 +42,14 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasPrev}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconLeftFirst className="h-s16 w-s16" />}
-        onPress={() => scrollTo(firstId)}
+        onPress={() => selectCanvas(canvases[0]?.id)}
       />
-      <TooltipIconButton
-        aria-label="Previous scan"
-        tooltip="Go to previous scan"
-        tooltipPlacement="top"
-        isDisabled={!hasPrev}
-        className={BOTTOM_BAR_BUTTON}
-        icon={<IconLeft className="h-s16 w-s16" />}
-        onPress={() => scrollTo(prevId)}
-      />
-
-      <span className="scan-position">
-        <span>Scan</span>
-        <input
-          aria-label={`Current scan number, 1 to ${totalScans}`}
-          className="scan-position-input"
-          inputMode="numeric"
-          maxLength={String(totalScans).length}
-          pattern="[0-9]*"
-          style={{ width: `${Math.max(2, String(totalScans).length)}ch` }}
-          type="text"
-          value={scanInputValue}
-          onBlur={commitScanInput}
-          onChange={(event) => {
-            handleScanInputChange(event.currentTarget.value);
-          }}
-          onFocus={(event) => event.currentTarget.select()}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              commitScanInput();
-            } else if (event.key === 'Escape') {
-              event.preventDefault();
-              setScanInput(null);
-              event.currentTarget.blur();
-            }
-          }}
-        />
-        <span>of {totalScans}</span>
-      </span>
-
-      <TooltipIconButton
-        aria-label="Next scan"
-        tooltip="Go to next scan"
-        tooltipPlacement="top"
-        isDisabled={!hasNext}
-        className={BOTTOM_BAR_BUTTON}
-        icon={<IconRight className="h-s16 w-s16" />}
-        onPress={() => scrollTo(nextId)}
+      <PrevNextInputBrowser
+        label="Scan"
+        name="scan"
+        index={selectedIndex}
+        total={totalScans}
+        onSelect={(index) => selectCanvas(canvases[index]?.id)}
       />
       <TooltipIconButton
         aria-label="Last scan"
@@ -145,7 +58,7 @@ export function ManifestCanvasNavigation() {
         isDisabled={!hasNext}
         className={BOTTOM_BAR_BUTTON}
         icon={<IconRightLast className="h-s16 w-s16" />}
-        onPress={() => scrollTo(lastId)}
+        onPress={() => selectCanvas(canvases[totalScans - 1]?.id)}
       />
     </div>
   );

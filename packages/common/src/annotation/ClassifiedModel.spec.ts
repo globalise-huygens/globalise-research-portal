@@ -1,17 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import type { Annotation, Body } from './AnnoModel';
-import { type ClassifiedCategory, eventCategory, isHighlighted } from './ClassifiedModel';
+import {
+  type ClassifiedBody,
+  type ClassifiedCategory,
+  eventCategory,
+  getClassifiedTone,
+  isHighlighted,
+} from './ClassifiedModel';
+
+const event = createAnnotation<ClassifiedBody>({
+  classified_as: { id: 'https://github.com/globalise-huygens/nlp-event-detection/wiki#Giving' },
+});
+
+const person = createAnnotation<ClassifiedBody>({
+  type: 'AppellativeStatus',
+  classified_as: { id: 'ner:per_name' },
+});
 
 describe('isHighlighted', () => {
-  const event = createAnnotation({
-    classified_as: { id: 'https://github.com/globalise-huygens/nlp-event-detection/wiki#Giving' },
-  });
-
-  const person = createAnnotation({
-    type: 'AppellativeStatus',
-    classified_as: { id: 'ner:per_name' },
-  });
-
   const word = createAnnotation({ type: 'TextualBody', value: 'gecoren' });
 
   it('highlights events and entities by their category alike', () => {
@@ -30,6 +36,24 @@ describe('isHighlighted', () => {
   });
 });
 
-function createAnnotation(body: object): Annotation {
-  return { id: 'annotation', type: 'Annotation', body: [body as Body], target: [] };
+describe('getClassifiedTone', () => {
+  it('tones events as event', () => {
+    expect(getClassifiedTone(event)).toBe('event');
+  });
+
+  it('tones entities by their presentation family', () => {
+    expect(getClassifiedTone(person)).toBe('person');
+  });
+
+  it('has no tone for entities with an unknown classification', () => {
+    const entity = createAnnotation<ClassifiedBody>({
+      type: 'AppellativeStatus',
+      classified_as: { id: 'foo' },
+    });
+    expect(getClassifiedTone(entity)).toBeUndefined();
+  });
+});
+
+function createAnnotation<B extends Body = Body>(body: object): Annotation<B> {
+  return { id: 'annotation', type: 'Annotation', body: [body as B], target: [] };
 }

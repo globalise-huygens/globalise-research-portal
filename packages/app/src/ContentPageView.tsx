@@ -1,15 +1,26 @@
 import { useEffect, useRef } from 'react';
+import { isBlogPost } from './blogPost.ts';
+import type { BlogPostMeta } from './blogPost.ts';
+import { BlogPostView } from './BlogPostView.tsx';
 import { renderHtmlTree } from './renderHtmlTree.ts';
-import { clearClientSearchQueryHighlight, highlightClientSearchQuery } from './highlightClientSearchQuery.ts';
+import {
+  clearClientSearchQueryHighlight,
+  highlightClientSearchQuery,
+} from './highlightClientSearchQuery.ts';
 import type { ContentPage } from '@globalise/content';
 import './ContentPageView.css';
 
 type ContentPageViewProps = {
   page: ContentPage;
   query?: string;
+  relatedPosts: BlogPostMeta[];
 };
 
-export function ContentPageView({ page, query }: ContentPageViewProps) {
+export function ContentPageView({
+  page,
+  query,
+  relatedPosts,
+}: ContentPageViewProps) {
   const articleRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -22,6 +33,17 @@ export function ContentPageView({ page, query }: ContentPageViewProps) {
     firstHitElement?.scrollIntoView({ block: 'center' });
     return clearClientSearchQueryHighlight;
   }, [page, query]);
+
+  if (isBlogPost(page.meta)) {
+    return (
+      <BlogPostView
+        meta={page.meta}
+        tree={page.tree}
+        query={query}
+        relatedPosts={relatedPosts}
+      />
+    );
+  }
 
   return (
     <article ref={articleRef} className="content-page">

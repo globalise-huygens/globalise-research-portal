@@ -5,14 +5,16 @@
 }
 
 .selected-word-highlight {
+    fill: var(--annotation-family-scan-fill, var(--viewer-word-fill));
     mix-blend-mode: multiply;
     pointer-events: none;
 }
 
 .search-hit-word-highlight {
-    fill: var(--color-search-hit);
+    fill: color-mix(in srgb, var(--search-hit) 45%, transparent);
+    mix-blend-mode: multiply;
 
     &.active-hit {
-        fill: var(--color-search-hit-active);
+        fill: color-mix(in srgb, var(--search-hit-active) 45%, transparent);
     }
 }
