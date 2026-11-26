@@ -36,7 +36,10 @@ import {
   OccurrenceOverview,
   getOccurrenceTitle,
 } from './occurrence/OccurrenceCardBody.tsx';
-import { ConversionCardBody } from './conversion/ConversionCardBody.tsx';
+import {
+  ConversionCardBody,
+  getConversionTitle,
+} from './conversion/ConversionCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -49,27 +52,27 @@ export function EntityCard() {
   const identifiers = getEntityIdentifiers(entity);
   const sources = findByPath(entity, ['referred_to_by']);
   const entityType = getLinkedArtEntityType(uri);
-
-  let cardClass = 'entity-card';
-  let title = getEntityTitle(entity);
+  const hasSpecialCard = ['person', 'place', 'occurrence', 'conversion']
+    .includes(entityType);
+  const cardClass = hasSpecialCard
+    ? `entity-card ${entityType}-card`
+    : 'entity-card';
   let body;
+  let title = getEntityTitle(entity);
   if (entityType === 'person') {
-    cardClass += ' person-card';
-    title = getPersonTitle(entity);
     body = <PersonCardBody entity={entity} />;
+    title = getPersonTitle(entity);
   } else if (entityType === 'place') {
-    cardClass += ' place-card';
     body = <PlaceCardBody entity={entity} />;
   } else if (entityType === 'occurrence') {
-    cardClass += ' occurrence-card';
-    title = getOccurrenceTitle(entity);
     body = <OccurrenceCardBody entity={entity} />;
+    title = getOccurrenceTitle(entity);
   } else if (entityType === 'conversion') {
-    cardClass += ' conversion-card';
     body = <ConversionCardBody entity={entity} />;
+    title = getConversionTitle(entity);
   }
   const showIdentifiers = identifiers.length > 0
-    && !['person', 'place', 'occurrence'].includes(entityType);
+    && !['person', 'place', 'occurrence', 'conversion'].includes(entityType);
 
   return (
     <ObjectCard className={cardClass}>

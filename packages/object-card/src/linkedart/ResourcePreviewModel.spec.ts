@@ -9,6 +9,20 @@ import {
   OccurrenceCardBody,
   OccurrenceOverview,
 } from './occurrence/OccurrenceCardBody.tsx';
+import {
+  ConversionCardBody,
+  getConversionTitle,
+} from './conversion/ConversionCardBody.tsx';
+
+vi.mock('./EntityReferencePanel.tsx', () => ({
+  EntityReferencePanel: () => createElement('div', null, 'References'),
+}));
+vi.mock('./RelationLink.tsx', () => ({
+  RelationLink: ({ node }: { node: LinkedArtNode }) =>
+    createElement('a', { href: node.id }, node.id),
+  RelationValue: ({ node }: { node: LinkedArtNode }) =>
+    createElement('span', null, node.content),
+}));
 
 vi.mock('./place/PlaceRecord.tsx', () => ({
   PlaceRecord: ({ title }: { title: string }) =>
@@ -157,5 +171,90 @@ describe('occurrence card', () => {
     expect(html).toContain('1764-01-01');
     expect(html).toContain('1765-01-01');
     expect(html).toContain('1766-01-01');
+  });
+});
+
+describe('conversion card', () => {
+  it('does not use an embedded label as a title', () => {
+    expect(getConversionTitle({
+      type: 'FinancialExchange',
+      _label: 'untrusted',
+    })).toBe('Name not recorded');
+  });
+
+  it('displays values, ranges and recorded original names without labels', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [{
+          type: 'Dimension',
+          value: '1.0',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/unit' },
+          identified_by: [{
+            type: 'Name',
+            content: 'Marck',
+            classified_as: [{
+              type: 'Type',
+              id: 'http://vocab.getty.edu/aat/300417204',
+              _label: 'untrusted',
+            }],
+          }],
+        }],
+        ascribes_exchange_value_equivalent: [{
+          type: 'Dimension',
+          lower_value_limit: '71',
+          upper_value_limit: '71.25',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/target' },
+        }],
+      }],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('1.0');
+    expect(html).toContain('71–71.25');
+    expect(html).toContain('Marck');
+    expect(html).toContain('https://example.org/unit');
+    expect(html).not.toContain('untrusted');
+    expect(html).toContain('References');
+  });
+
+  it('keeps all recorded exchange dimensions', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [
+          { type: 'Dimension', value: '1' },
+          { type: 'Dimension', value: '2' },
+        ],
+      }],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('>1<');
+    expect(html).toContain('>2<');
+  });
+
+  it('keeps additional dates when a nested timespan is present', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      timespan: {
+        type: 'TimeSpan',
+        begin_of_the_begin: '1691-01-01',
+        end_of_the_end: '1691-12-31',
+      },
+      'crm:P4_has_time-span': ['1692-01-01', '1693-01-01'],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('1692-01-01');
+    expect(html).toContain('1693-01-01');
   });
 });

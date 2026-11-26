@@ -4,9 +4,10 @@ import {
   getContent,
   getRecordedDates,
   getStatusValues,
+  getTimespan,
   getValue,
+  getValues,
   isLinkedArtNode,
-  label,
   type LinkedArtNode,
 } from '@globalise/common';
 import {
@@ -17,12 +18,13 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import type { ReactNode } from 'react';
 import { EntityReferencePanel } from '../EntityReferencePanel.tsx';
 import { RecordedDatesValue } from '../RecordedDatesValue.tsx';
 import { RelationLink } from '../RelationLink.tsx';
 import { SourceList } from '../SourceList.tsx';
 import { TimespanValue } from '../TimespanValue.tsx';
+import { getPlaceEvidence } from '../place/PlaceEvidence.ts';
+import { PlaceRecord } from '../place/PlaceRecord.tsx';
 import { PlaceValues } from '../place/PlaceValues.tsx';
 import { SummaryProperty } from '../place/SummaryProperty.tsx';
 
@@ -38,82 +40,129 @@ type ConversionDimension = {
 export function ConversionCardBody({ entity }: { entity: LinkedArtNode }) {
   const exchanges = findByPath(entity, ['intentionally_initiated']);
   const timespan = findTimespan(entity);
-  const dates = timespan ? null : getRecordedDates(entity);
-  const places = findByPath(entity, ['is_event_location_subject_of'])
-    .flatMap((status) => getStatusValues(status, ['ascribes_place']));
-  const sources = findByPath(entity, ['referred_to_by']);
-  const remarkSources = sources.filter((source) =>
-    findByPath(source, ['classified_as']).some((classification) =>
-      label(classification).toLowerCase().includes('remarks'),
-    ),
+  const recordedDates = getRecordedDates(entity);
+  const nestedTimespan = isLinkedArtNode(entity.timespan)
+    ? entity.timespan : null;
+  const hasAdditionalDates = !!nestedTimespan && (
+    !getTimespan(nestedTimespan)
+    || getValues(entity['crm:P4_has_time-span']).length > 0
   );
-  const bibliographicSources = sources.filter((source) => !remarkSources.includes(source));
+  const dates = !timespan || hasAdditionalDates ? recordedDates : null;
+  const locations = findByPath(entity, ['is_event_location_subject_of']);
+  const { notes, sources } = getPlaceEvidence(entity);
   const classifications = getStatusValues(entity, ['classified_as']);
+  const hasDetails = exchanges.length > 0 || !!timespan || !!dates
+    || locations.length > 0 || classifications.length > 0;
+  const hasEvidence = notes.length > 0 || sources.length > 0;
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
-      {(!!exchanges.length || !!timespan || !!dates || !!places.length || !!classifications.length) && (
+      {hasDetails && (
         <ObjectCardSection title="Conversion details" collapsible>
           <div className="person-status-list">
-            {timespan && <ObjectCardPropertyList className="person-status-details">
-              <ObjectCardProperty label="Date" value={<TimespanValue timespan={timespan} mode="event" />} />
-            </ObjectCardPropertyList>}
-            {dates && <ObjectCardPropertyList className="person-status-details">
-              <ObjectCardProperty label="Date" value={<RecordedDatesValue dates={dates} />} />
-            </ObjectCardPropertyList>}
-            {!!places.length && <ObjectCardPropertyList className="person-status-details">
-              <ObjectCardProperty label="Place" value={<PlaceValues values={places} />} />
-            </ObjectCardPropertyList>}
+            {timespan && <ObjectCardDisclosure summary={
+              <SummaryProperty label="Date">
+                <TimespanValue timespan={timespan} mode="event" />
+              </SummaryProperty>
+            }>
+              <ObjectCardPropertyList className="person-status-details">
+                <ObjectCardProperty
+                  label="Date bounds"
+                  value={<TimespanValue timespan={timespan} mode="boundaries" />}
+                />
+              </ObjectCardPropertyList>
+            </ObjectCardDisclosure>}
+            {dates && <ObjectCardDisclosure summary={
+              <SummaryProperty label="Date">
+                <RecordedDatesValue dates={dates} />
+              </SummaryProperty>
+            } />}
+            {locations.map((record, index) => <PlaceRecord
+              key={record.id ?? index}
+              record={record}
+              title="Recorded location"
+            />)}
             {exchanges.map((exchange, index) => (
               <ExchangeDisclosure key={exchange.id ?? index} exchange={exchange} />
             ))}
-            {!!classifications.length && <ObjectCardPropertyList className="person-status-details">
-              <ObjectCardProperty label="Classification" value={<PlaceValues values={classifications} />} />
-            </ObjectCardPropertyList>}
+            {!!classifications.length && <ObjectCardDisclosure summary={
+              <SummaryProperty label="Classification">
+                <PlaceValues values={classifications} />
+              </SummaryProperty>
+            } />}
           </div>
         </ObjectCardSection>
       )}
-      {!!remarkSources.length && <ObjectCardSection title="Remarks" collapsible>
-        <SourceList sources={remarkSources} includeInternalLabels showNotes />
-      </ObjectCardSection>}
-      {!!bibliographicSources.length && <ObjectCardSection title="Sources" collapsible>
-        <SourceList sources={bibliographicSources} />
+      {hasEvidence && <ObjectCardSection
+        title="Further information" collapsible
+      >
+        <div className="person-status-list">
+          {!!notes.length && <ObjectCardDisclosure summary="Notes">
+            <ObjectCardPropertyList className="person-status-details">
+              <ObjectCardProperty label="Notes" value={notes.join('\n\n')} />
+            </ObjectCardPropertyList>
+          </ObjectCardDisclosure>}
+          {!!sources.length && <ObjectCardDisclosure summary="Sources">
+            <ObjectCardPropertyList className="person-status-details">
+              <ObjectCardProperty
+                label="Sources" value={<SourceList sources={sources} />}
+              />
+            </ObjectCardPropertyList>
+          </ObjectCardDisclosure>}
+        </div>
       </ObjectCardSection>}
     </ObjectCardPanel>
     <EntityReferencePanel entity={entity} />
   </ObjectCardBody>;
 }
 
+export function getConversionTitle(entity: LinkedArtNode): string {
+  const names = findByPath(entity, ['identified_by'])
+    .filter((identifier) => identifier.type === 'Name')
+    .map(getContent);
+  return [...names, getContent(entity)].find(Boolean) ?? 'Name not recorded';
+}
+
 function ExchangeDisclosure({ exchange }: { exchange: LinkedArtNode }) {
-  const from = getDimension(findByPath(exchange, ['has_exchange_value_subject'])[0]);
-  const to = getDimension(findByPath(exchange, ['ascribes_exchange_value_equivalent'])[0]);
+  const from = findByPath(exchange, ['has_exchange_value_subject'])
+    .map(getDimension);
+  const to = findByPath(exchange, ['ascribes_exchange_value_equivalent'])
+    .map(getDimension);
   const summary = <>
-    {from && <SummaryProperty label="From" separator=" ">{formatDimensionLabel(from)}</SummaryProperty>}
-    {from && to && ' · '}
-    {to && <SummaryProperty label="To" separator=" ">{formatDimensionLabel(to)}</SummaryProperty>}
-    {!from && !to && label(exchange)}
+    {from.map((dimension, index) => <SummaryProperty
+      key={`from-${index}`} label="From" separator=" "
+    >
+      <DimensionSummary dimension={dimension} />
+    </SummaryProperty>)}
+    {!!from.length && !!to.length && ' · '}
+    {to.map((dimension, index) => <SummaryProperty
+      key={`to-${index}`} label="To" separator=" "
+    >
+      <DimensionSummary dimension={dimension} />
+    </SummaryProperty>)}
+    {!from.length && !to.length && 'Exchange value not recorded'}
   </>;
 
   return <ObjectCardDisclosure
     className="conversion-summary"
     summary={summary}
-    defaultExpanded
   >
     <ObjectCardPropertyList className="person-status-details">
-      <DimensionDetails dimension={from} label="From" />
-      <DimensionDetails dimension={to} label="To" />
+      {from.map((dimension, index) => <DimensionDetails
+        key={`from-${index}`} dimension={dimension} label="From"
+      />)}
+      {to.map((dimension, index) => <DimensionDetails
+        key={`to-${index}`} dimension={dimension} label="To"
+      />)}
     </ObjectCardPropertyList>
   </ObjectCardDisclosure>;
 }
 
 function DimensionDetails({ dimension, label: side }: {
-  dimension?: ConversionDimension;
+  dimension: ConversionDimension;
   label: 'From' | 'To';
 }) {
-  if (!dimension) {
-    return null;
-  }
-  const originalName = getDimensionName(dimension, 'original');
+  const originalName = getOriginalDimensionName(dimension);
   const amount = formatDimensionAmount(dimension);
   return <>
     <ObjectCardProperty
@@ -125,7 +174,9 @@ function DimensionDetails({ dimension, label: side }: {
       label={`${side} unit`}
       value={<RelationLink node={dimension.unit} />}
     />}
-    {originalName && <ObjectCardProperty label={`${side} original name`} value={originalName} />}
+    {originalName && <ObjectCardProperty
+      label={`${side} original name`} value={originalName}
+    />}
     {!!dimension.commodities.length && <ObjectCardProperty
       label={`${side} commodities`}
       value={<PlaceValues values={dimension.commodities} />}
@@ -133,46 +184,61 @@ function DimensionDetails({ dimension, label: side }: {
   </>;
 }
 
-function getDimension(node?: LinkedArtNode): ConversionDimension | undefined {
-  if (!node) {
-    return undefined;
-  }
+function getDimension(node: LinkedArtNode): ConversionDimension {
   return {
-    names: findByPath(node, ['identified_by']).filter((identifier) => identifier.type === 'Name'),
-    value: getValue(node.value),
-    lowerValue: getValue(node.lower_value_limit),
-    upperValue: getValue(node.upper_value_limit),
+    names: findByPath(node, ['identified_by'])
+      .filter((identifier) => identifier.type === 'Name'),
+    value: getValue(node.value) || undefined,
+    lowerValue: getValue(node.lower_value_limit) || undefined,
+    upperValue: getValue(node.upper_value_limit) || undefined,
     unit: findByPath(node, ['unit'])[0],
     commodities: findByPath(node, ['is_dimension_of_commodity_type']),
   };
 }
 
-function formatDimensionLabel(dimension?: ConversionDimension): ReactNode {
-  if (!dimension) {
-    return null;
+function DimensionSummary({ dimension }: { dimension: ConversionDimension }) {
+  const amount = formatDimensionAmount(dimension);
+  const name = getStandardDimensionName(dimension);
+  const unitContent = dimension.unit ? getContent(dimension.unit) : '';
+  const fallback = name || unitContent;
+  if (!amount && !dimension.unit?.id && !fallback) {
+    return <>Value not recorded</>;
   }
-  const name = dimension.unit && label(dimension.unit);
-  return name && (dimension.unit?.id
-    ? <RelationLink node={dimension.unit} />
-    : name);
+  return <>
+    {amount && <>{amount} </>}
+    {dimension.unit?.id
+      ? <RelationLink node={dimension.unit} />
+      : fallback}
+  </>;
 }
 
-function getDimensionName(
+function getOriginalDimensionName(
   dimension: ConversionDimension,
-  kind: 'original' | 'standard',
 ): string | undefined {
   const name = dimension.names.find((name) =>
-    getStatusValues(name, ['classified_as']).some((classification) =>
-      isLinkedArtNode(classification)
-      &&
-      label(classification).toLowerCase().includes(kind),
+    findByPath(name, ['classified_as']).some((classification) =>
+      classification.id === 'http://vocab.getty.edu/aat/300417204',
     ),
   );
-  return name ? getContent(name) || label(name) : undefined;
+  return name ? getContent(name) : undefined;
 }
 
-function formatDimensionAmount(dimension: ConversionDimension): string | undefined {
+function getStandardDimensionName(dimension: ConversionDimension): string {
+  const name = dimension.names.find((item) =>
+    findByPath(item, ['classified_as']).some((classification) =>
+      classification.id === 'http://vocab.getty.edu/aat/300458887',
+    ),
+  );
+  return name ? getContent(name) : '';
+}
+
+function formatDimensionAmount(
+  dimension: ConversionDimension,
+): string | undefined {
   const lower = dimension.lowerValue ?? dimension.value;
   const upper = dimension.upperValue ?? dimension.value;
-  return lower && upper && lower !== upper ? `${lower}–${upper}` : lower ?? upper;
+  if (lower && upper && lower !== upper) {
+    return `${lower}–${upper}`;
+  }
+  return lower ?? upper;
 }
