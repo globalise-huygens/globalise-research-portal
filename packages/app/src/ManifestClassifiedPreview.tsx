@@ -14,7 +14,7 @@ import {
   setHovered,
   useDocumentStore,
 } from '@globalise/common/document';
-import { PreviewCard } from '@globalise/design';
+import { AttachedPreviewCard } from '@globalise/design';
 import { useEffect, useRef, useState } from 'react';
 import './ManifestClassifiedPreview.css';
 import { getEntityPreviewData } from './getEntityPreviewData';
@@ -67,10 +67,10 @@ export function ManifestClassifiedPreview() {
     }
   }
 
-  return <PreviewCard
+  return <AttachedPreviewCard
     key={annotation.id}
     data={getPreviewData(annotation)}
-    anchor={anchor}
+    trigger={anchor}
     isHovered={preview.isHovered}
     openImmediately={preview.openImmediately}
     onOpenChange={handleOpenChange}

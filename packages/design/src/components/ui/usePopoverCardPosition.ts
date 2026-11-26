@@ -1,37 +1,41 @@
-import { useEffectEvent, useLayoutEffect, useState, type CSSProperties, type RefObject } from 'react';
+import { useEffectEvent, useLayoutEffect, useState, type CSSProperties } from 'react';
 import { placePopoverCard, placePopoverCardBeside } from './PopoverCardPosition';
+
+export type PopoverCardPlacement = 'below' | 'beside';
 
 export type UsePopoverCardPositionOptions = {
   visible: boolean;
-  anchor?: Element;
-  trigger: RefObject<HTMLSpanElement | null>;
+  target: Element | null;
   popupElement: HTMLElement | null;
   parentElement?: HTMLElement | null;
   parentPosition?: CSSProperties;
-  preferBeside?: boolean;
-  onAnchorUnavailable: () => void;
+  placement: PopoverCardPlacement;
+  onTargetUnavailable: () => void;
 };
 
 export function usePopoverCardPosition({
-  visible, anchor, trigger, popupElement, parentElement, parentPosition,
-  preferBeside, onAnchorUnavailable,
+  visible,
+  target,
+  popupElement,
+  parentElement,
+  parentPosition,
+  placement,
+  onTargetUnavailable,
 }: UsePopoverCardPositionOptions) {
   const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
-  const dismiss = useEffectEvent(onAnchorUnavailable);
+  const dismiss = useEffectEvent(onTargetUnavailable);
 
   useLayoutEffect(() => {
-    const target = anchor ?? trigger.current;
     if (!visible || !target || !popupElement) {
       return;
     }
-    const shouldTrackScroll = !anchor;
     let frame: number | undefined;
     const update = () => {
       if (!target.isConnected) {
         dismiss();
         return;
       }
-      const next = computePosition(target, popupElement, parentElement, preferBeside);
+      const next = calcPosition(target, popupElement, parentElement, placement);
       setPosition((current) => isSamePosition(current, next) ? current : next);
     };
     const scheduleUpdate = () => {
@@ -44,52 +48,41 @@ export function usePopoverCardPosition({
     const observer = new ResizeObserver(scheduleUpdate);
     observer.observe(popupElement);
     observer.observe(target);
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      if (entry && !entry.isIntersecting) {
+        dismiss();
+      }
+    });
+    visibilityObserver.observe(target);
     window.addEventListener('resize', scheduleUpdate);
-    // The portal can stay visible after scrolling clips its inline trigger.
-    let visibilityObserver: IntersectionObserver | undefined;
-    if (shouldTrackScroll) {
-      window.addEventListener('scroll', scheduleUpdate, true);
-      visibilityObserver = new IntersectionObserver(([entry]) => {
-        if (entry && !entry.isIntersecting) {
-          dismiss();
-        }
-      });
-      visibilityObserver.observe(target);
-    }
+    window.addEventListener('scroll', scheduleUpdate, true);
     return () => {
       observer.disconnect();
-      visibilityObserver?.disconnect();
+      visibilityObserver.disconnect();
       window.removeEventListener('resize', scheduleUpdate);
-      if (shouldTrackScroll) {
-        window.removeEventListener('scroll', scheduleUpdate, true);
-      }
+      window.removeEventListener('scroll', scheduleUpdate, true);
       if (frame !== undefined) {
         cancelAnimationFrame(frame);
       }
     };
-  }, [
-    visible, popupElement, parentElement, parentPosition, anchor, trigger,
-    preferBeside,
-  ]);
+  }, [visible, target, popupElement, parentElement, parentPosition, placement]);
 
   return position;
 }
 
-function computePosition(
+function calcPosition(
   target: Element,
   popupElement: HTMLElement,
-  parentElement?: HTMLElement | null,
-  preferBeside = false,
+  parentElement: HTMLElement | null | undefined,
+  placement: PopoverCardPlacement,
 ): CSSProperties {
   const { width, height } = popupElement.getBoundingClientRect();
-  const place = parentElement || preferBeside
+  const place = parentElement || placement === 'beside'
     ? placePopoverCardBeside
     : placePopoverCard;
   const reference = parentElement ?? target;
-  return place(
-    reference.getBoundingClientRect(), width, height,
-    window.innerWidth, window.innerHeight,
-  );
+  const rect = reference.getBoundingClientRect();
+  return place(rect, width, height, window.innerWidth, window.innerHeight);
 }
 
 function isSamePosition(a: CSSProperties, b: CSSProperties) {

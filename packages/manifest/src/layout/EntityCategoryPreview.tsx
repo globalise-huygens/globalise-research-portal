@@ -4,7 +4,7 @@ import {
   type CidocEntityClassificationId,
 } from '@globalise/common/annotation';
 import {
-  EntityIcon, EntityPreviewCard, PopoverCard, type EntityPreviewCardProperty,
+  EntityIcon, EntityPreviewCard, WrappingPopoverCard, type EntityPreviewCardProperty,
 } from '@globalise/design';
 import { entityResourceQueryOptions, RelationLink } from '@globalise/object-card';
 import { toHref } from '@globalise/router';
@@ -30,16 +30,15 @@ export function EntityCategoryPreview({
   children: (attributes: AriaAttributes) => ReactNode;
 }) {
   return (
-    <PopoverCard
+    <WrappingPopoverCard
       label={`${label} preview`}
-      preferBeside
+      content={<EntityCategoryPreviewContent data={data} />}
+      placement="beside"
       closeOnFocusLeave
       openOnTouch={openOnTouch}
       openOnPress={openOnTouch}
-      renderTrigger={children}
-    >
-      <EntityCategoryPreviewContent data={data} />
-    </PopoverCard>
+      trigger={children}
+    />
   );
 }
 

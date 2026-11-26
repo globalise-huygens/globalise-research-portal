@@ -1,5 +1,7 @@
-export { PreviewCard } from './PreviewCard.tsx';
-export { PopoverCard } from './PopoverCard';
+export { AttachedPreviewCard } from './AttachedPreviewCard';
+export { WrappingPreviewCard } from './WrappingPreviewCard';
+export { WrappingPopoverCard } from './WrappingPopoverCard';
+export type { WrappingPopoverCardProps } from './WrappingPopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 

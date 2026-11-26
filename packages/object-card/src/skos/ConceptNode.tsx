@@ -1,4 +1,4 @@
-import { PreviewCard, IconArrowTopRight, ObjectCardAction } from '@globalise/design';
+import { WrappingPreviewCard, IconArrowTopRight, ObjectCardAction } from '@globalise/design';
 import { getConceptLabel, type SkosConcept } from './SkosModel.ts';
 import { getResourcePreview } from '../linkedart/ResourcePreviewModel.ts';
 
@@ -78,7 +78,7 @@ export function ConceptNodeRow({
   }
 
   return (
-    <PreviewCard data={getResourcePreview({ ...concept, type: 'Concept' }, concept.id)}>
+    <WrappingPreviewCard data={getResourcePreview({ ...concept, type: 'Concept' }, concept.id)}>
       {(attributes) => <ObjectCardAction
         {...attributes}
         className="concept-link"
@@ -86,6 +86,6 @@ export function ConceptNodeRow({
       >
         {content}
       </ObjectCardAction>}
-    </PreviewCard>
+    </WrappingPreviewCard>
   );
 }
