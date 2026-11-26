@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createViewerSplat, parseViewerSplat } from '@globalise/common/uri';
 import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
 
@@ -17,8 +17,14 @@ export const Route = createFileRoute('/hdl:20.500.14722/inventory:{$}')({
      * This allows the app to parse the url once, creating a clean, browsable navigation history.
      * See: https://tanstack.com/router/latest/docs/routing/routing-concepts#splat-catch-all-routes
      */
-    parse: ({ _splat }) => ({ viewer: parseViewerSplat(_splat ?? '') }),
-    stringify: ({ viewer }) => ({ _splat: viewer ? createViewerSplat(viewer) : '' }),
+    parse: ({ _splat }) => {
+      const viewer = parseViewerSplat(_splat ?? '');
+      if (!viewer) {
+        throw notFound();
+      }
+      return { viewer };
+    },
+    stringify: ({ viewer }) => ({ _splat: createViewerSplat(viewer) }),
   },
   validateSearch: validateManifestUrlParams,
   ssr: false,

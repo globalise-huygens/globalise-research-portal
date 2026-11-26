@@ -18,7 +18,7 @@ export function ObjectCardPage() {
 
 export function HandleObjectCardPage() {
   const { uri } = handleRoute.useParams();
-  return <ObjectCard uri={uri ?? defaultUri}/>;
+  return <ObjectCard uri={uri}/>;
 }
 
 function ObjectCard({ uri }: { uri: string }) {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { type ManifestUrlParams, defaultInventory, getRouteApi, useNavigate } from '@globalise/router';
+import { type ManifestUrlParams, getRouteApi, useNavigate } from '@globalise/router';
 import {
   setSearchHitQuery,
   setSearchHitRequest,
@@ -11,15 +11,14 @@ import { resolveManifestRoute } from './resolveManifestRoute';
 
 const route = getRouteApi(`/${handle}/inventory:{$}`);
 
-export function useResolveManifestRoute(viewer: ViewerRef | null): boolean {
+export function useResolveManifestRoute(viewer: ViewerRef): boolean {
   const navigate = useNavigate();
   const search = route.useSearch();
   const resolvedRoute = useMemo(
-    () => resolveManifestRoute(parseManifestRoute(viewer ?? defaultInventory, search)),
+    () => resolveManifestRoute(parseManifestRoute(viewer, search)),
     [viewer, search],
   );
-  const isResolved = viewer !== null
-    && createViewerPath(viewer) === resolvedRoute.canvasPath
+  const isResolved = createViewerPath(viewer) === resolvedRoute.canvasPath
     && !hasParams(search);
 
   useEffect(storeResolvedRoute, [navigate, resolvedRoute, isResolved]);
