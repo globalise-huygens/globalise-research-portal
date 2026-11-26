@@ -52,6 +52,7 @@ export const NormalizedLayout = React.memo(function NormalizedLayout(
             lineNumberStart={blockLineNumberStarts[i] + 1}
             highlightCategories={highlightCategories}
             classifiedToWords={classifiedToWords}
+            showLayoutElements={showLayoutElements}
           />
         ))}
       </div>
@@ -67,11 +68,12 @@ type BlockGroupProps = {
   lineNumberStart: number;
   highlightCategories: Set<ClassifiedCategory>;
   classifiedToWords: Record<Id, Id[]>;
+  showLayoutElements: boolean;
 };
 
 function BlockGroup(
   {
-    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords,
+    canvasId, blockId, lineIds, segmentsByLine, lineNumberStart, highlightCategories, classifiedToWords, showLayoutElements,
   }: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInLineByLine(canvasId, blockId);
@@ -96,6 +98,7 @@ function BlockGroup(
             segments={segments}
             highlightCategories={highlightCategories}
             classifiedToWords={classifiedToWords}
+            showLayoutElements={showLayoutElements}
           />
         );
       })}
