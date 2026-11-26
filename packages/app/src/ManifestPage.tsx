@@ -42,7 +42,6 @@ const route = getRouteApi(`/${handle}/$`);
 const collectionUrl = `${idBase}/inventory:collection`;
 
 export function ManifestPage() {
-  console.log(ManifestPage.name, 'href:', location.href);
   const navigate = route.useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
   const viewer = useMemo(() => parseViewerPath(pathname) ?? defaultInventory, [pathname]);
