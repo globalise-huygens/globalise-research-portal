@@ -76,7 +76,13 @@
     white-space: nowrap;
   }
 
-  .entity-menu .expand {
+  .entity-menu .row > span {
+    display: block;
+    min-width: 0;
+  }
+
+  .entity-menu .expand,
+  .entity-menu .preview-label {
     width: 100%;
     min-height: var(--s28);
     border: 0;
@@ -91,11 +97,13 @@
     transition: background-color 75ms ease-out;
   }
 
-  .entity-menu .expand:hover {
+  .entity-menu .expand:hover,
+  .entity-menu .preview-label:hover {
     background: rgb(12 10 9 / 0.15);
   }
 
-  .entity-menu .expand:focus-visible {
+  .entity-menu .expand:focus-visible,
+  .entity-menu .preview-label:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: -2px;
   }

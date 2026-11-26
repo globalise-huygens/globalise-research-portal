@@ -8,14 +8,16 @@ export type UsePopoverCardPositionOptions = {
   popupElement: HTMLElement | null;
   parentElement?: HTMLElement | null;
   parentPosition?: CSSProperties;
-  onAnchorRemoved: () => void;
+  preferBeside?: boolean;
+  onAnchorUnavailable: () => void;
 };
 
 export function usePopoverCardPosition({
-  visible, anchor, trigger, popupElement, parentElement, parentPosition, onAnchorRemoved,
+  visible, anchor, trigger, popupElement, parentElement, parentPosition,
+  preferBeside, onAnchorUnavailable,
 }: UsePopoverCardPositionOptions) {
   const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden' });
-  const dismiss = useEffectEvent(onAnchorRemoved);
+  const dismiss = useEffectEvent(onAnchorUnavailable);
 
   useLayoutEffect(() => {
     const target = anchor ?? trigger.current;
@@ -29,7 +31,7 @@ export function usePopoverCardPosition({
         dismiss();
         return;
       }
-      const next = computePosition(target, popupElement, parentElement);
+      const next = computePosition(target, popupElement, parentElement, preferBeside);
       setPosition((current) => isSamePosition(current, next) ? current : next);
     };
     const scheduleUpdate = () => {
@@ -43,11 +45,20 @@ export function usePopoverCardPosition({
     observer.observe(popupElement);
     observer.observe(target);
     window.addEventListener('resize', scheduleUpdate);
+    // The portal can stay visible after scrolling clips its inline trigger.
+    let visibilityObserver: IntersectionObserver | undefined;
     if (shouldTrackScroll) {
       window.addEventListener('scroll', scheduleUpdate, true);
+      visibilityObserver = new IntersectionObserver(([entry]) => {
+        if (entry && !entry.isIntersecting) {
+          dismiss();
+        }
+      });
+      visibilityObserver.observe(target);
     }
     return () => {
       observer.disconnect();
+      visibilityObserver?.disconnect();
       window.removeEventListener('resize', scheduleUpdate);
       if (shouldTrackScroll) {
         window.removeEventListener('scroll', scheduleUpdate, true);
@@ -56,16 +67,29 @@ export function usePopoverCardPosition({
         cancelAnimationFrame(frame);
       }
     };
-  }, [visible, popupElement, parentElement, parentPosition, anchor, trigger]);
+  }, [
+    visible, popupElement, parentElement, parentPosition, anchor, trigger,
+    preferBeside,
+  ]);
 
   return position;
 }
 
-function computePosition(target: Element, popupElement: HTMLElement, parentElement?: HTMLElement | null): CSSProperties {
+function computePosition(
+  target: Element,
+  popupElement: HTMLElement,
+  parentElement?: HTMLElement | null,
+  preferBeside = false,
+): CSSProperties {
   const { width, height } = popupElement.getBoundingClientRect();
-  const place = parentElement ? placePopoverCardBeside : placePopoverCard;
+  const place = parentElement || preferBeside
+    ? placePopoverCardBeside
+    : placePopoverCard;
   const reference = parentElement ?? target;
-  return place(reference.getBoundingClientRect(), width, height, window.innerWidth, window.innerHeight);
+  return place(
+    reference.getBoundingClientRect(), width, height,
+    window.innerWidth, window.innerHeight,
+  );
 }
 
 function isSamePosition(a: CSSProperties, b: CSSProperties) {

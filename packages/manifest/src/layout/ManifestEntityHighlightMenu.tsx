@@ -2,6 +2,7 @@ import {
   cidocEntityClassificationIds,
   getEntityPresentationFamilyByClassificationId,
   getEntityClassificationDefinition,
+  getEntityClassificationUri,
   isCidocEntityClassificationId,
   type CidocEntityClassificationId,
   type ClassifiedCategory,
@@ -18,8 +19,10 @@ import {
   EntityHighlightMenu,
   type EntityHighlightCategory,
 } from './EntityHighlightMenu';
+import type { EntityCategoryPreviewData } from './EntityCategoryPreview';
 import * as React from 'react';
 import { TOP_BAR_BUTTON } from './buttonClasses';
+import { getEntityCategoryConceptUri } from './entityCategoryConcepts';
 
 const iconClassName = 'toolbar-icon';
 
@@ -78,14 +81,23 @@ const entityCategories: EntityHighlightCategory[] =
     const subcategories = category.subcategories?.map((subcategory) => ({
       ...subcategory,
       family: getEntityPresentationFamilyByClassificationId(subcategory.id),
+      preview: {
+        uri: getEntityClassificationUri(subcategory.id),
+        conceptUri: getEntityCategoryConceptUri(subcategory.id),
+        isAppellativeSubject: subcategory.id === 'ner:loc_adj',
+      },
     }));
+    const classificationId = isCidocEntityClassificationId(category.id)
+      ? category.id
+      : undefined;
 
     return {
       ...category,
-      family: isCidocEntityClassificationId(category.id)
-        ? getEntityPresentationFamilyByClassificationId(category.id)
+      family: classificationId
+        ? getEntityPresentationFamilyByClassificationId(classificationId)
         : subcategories?.[0]?.family,
       subcategories,
+      preview: getCategoryPreview(category, classificationId),
     };
   });
 
@@ -129,4 +141,27 @@ export function ManifestEntityHighlightMenu() {
       allLabel="Show all"
     />
   );
+}
+
+function getCategoryPreview(
+  category: EntityHighlightCategoryConfig,
+  classificationId?: CidocEntityClassificationId,
+): EntityCategoryPreviewData | undefined {
+  if (classificationId) {
+    return {
+      uri: getEntityClassificationUri(classificationId),
+      conceptUri: getEntityCategoryConceptUri(classificationId),
+    };
+  }
+
+  const subcategories = category.subcategories ?? [];
+  const [firstSubcategory] = subcategories;
+  if (!firstSubcategory) {
+    return;
+  }
+  // The first subcategory's linked concept supplies the group overview.
+  return {
+    uri: getEntityCategoryConceptUri(firstSubcategory.id),
+    classificationIds: subcategories.map(({ id }) => id),
+  };
 }
