@@ -608,17 +608,11 @@
 
 .manifest-viewer .sidebar-disclosure {
   color: currentColor;
-  transition: transform 100ms ease-out;
-}
-
-.manifest-viewer .sidebar-disclosure.expanded {
-  transform: rotate(180deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .manifest-viewer .sidebar,
-  .manifest-viewer .frame,
-  .manifest-viewer .sidebar-disclosure {
+  .manifest-viewer .frame {
     transition: none;
   }
 }

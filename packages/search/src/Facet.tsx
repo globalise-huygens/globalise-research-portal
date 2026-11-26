@@ -1,5 +1,5 @@
 import { type ReactNode, Suspense, useContext } from 'react';
-import { IconExpandSection, Spinner, cn } from '@globalise/design';
+import { ExpandCollapseIcon, Spinner, cn } from '@globalise/design';
 import { Disclosure, DisclosurePanel, Button, DisclosureStateContext } from 'react-aria-components';
 import classes from './Facet.module.css';
 
@@ -38,7 +38,7 @@ function FacetHeader({ label, isPending }: { label: string, isPending: boolean }
         <Spinner className={cn(classes.spinner, isPending && classes.pending)}/>
       </span>
 
-      <IconExpandSection/>
+      <ExpandCollapseIcon isExpanded={isExpanded}/>
     </Button>
   );
 }

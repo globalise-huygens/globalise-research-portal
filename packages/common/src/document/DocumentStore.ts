@@ -26,11 +26,12 @@ const defaultManifestViewerSlice: ManifestViewerSlice = {
   canvases: {},
 };
 
-const defaultSearchHitSlice: SearchHitSlice = {
+export const defaultSearchHitSlice: SearchHitSlice = {
   searchHitRequest: null,
   searchHitQuery: null,
+  hits: [],
   searchHits: {},
-  activeEsHitIndex: null,
+  activeHitIndex: null,
 };
 
 const defaultSelectionSlice: SelectionSlice = {

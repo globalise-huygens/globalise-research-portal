@@ -1,9 +1,11 @@
-import { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { memo, useDeferredValue, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { Rect } from 'openseadragon';
-import { Overlay, useManifest } from '@knaw-huc/osd-iiif-viewer';
+import { Overlay, useManifest, useViewer } from '@knaw-huc/osd-iiif-viewer';
+import { isVisible } from '@globalise/common';
 import {
   getAnnotationPages,
   loadCanvasAnnotationPages,
+  useActiveCanvasSearchHits,
   useAnnotationsWithSearchHits,
   useWordClassifications,
   useIsLayoutElementsVisible,
@@ -22,6 +24,7 @@ import {
 } from '@globalise/facsimile';
 import { LazyTiledImage } from './LazyCollectionViewerModel.ts';
 import { lazyCollectionViewerStore } from './LazyCollectionViewerStore.ts';
+import { panIntoView } from './util/panIntoView.ts';
 
 type HighlightsOverlayProps = {
   lazyCanvas: LazyTiledImage,
@@ -31,6 +34,8 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   { lazyCanvas }: HighlightsOverlayProps,
 ) {
   const { vault } = useManifest();
+  const viewer = useViewer();
+  const svgRef = useRef<SVGSVGElement>(null);
   const isTileLoaded = lazyCollectionViewerStore(
     (s) => s.loaded.has(lazyCanvas.canvasId),
   );
@@ -41,6 +46,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
   const { isReady, hasAnnotations } = usePages(lazyCanvas.canvasId);
   const isSelectedCanvas = useIsSelectedCanvas(lazyCanvas.canvasId);
   const isInteractive = useDeferredValue(isSelectedCanvas, false);
+  const activeHits = useActiveCanvasSearchHits(lazyCanvas.canvasId);
 
   const annotationPages = useMemo(() => {
     if (!vault) {
@@ -56,6 +62,15 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     }
   }, [isTileLoaded, lazyCanvas.canvasId, annotationPages]);
 
+
+  const scrollToActiveHit = useEffectEvent(() => {
+    const activeHit = svgRef.current?.querySelector('.active-hit');
+    if (isSelectedCanvas && viewer && activeHit && !isVisible(viewer.element, activeHit)) {
+      panIntoView(viewer, activeHit);
+    }
+  });
+
+  useEffect(() => scrollToActiveHit(), [activeHits]);
 
   let canvasSize: { width: number; height: number } | null = null;
   if (vault) {
@@ -82,6 +97,7 @@ export const HighlightsOverlay = memo(function HighlightsOverlay(
     <>
       <Overlay location={location}>
         <svg
+          ref={svgRef}
           viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
           style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         >

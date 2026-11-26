@@ -92,14 +92,17 @@ const entityCategories: EntityHighlightCategory[] =
 export function ManifestEntityHighlightMenu() {
   const selectedCategories = useHighlightCategories();
   const selectedKeys = React.useMemo(
-    () => new Set<string>(selectedCategories),
+    () => new Set<string>(
+      [...selectedCategories].filter(isCidocEntityClassificationId),
+    ),
     [selectedCategories],
   );
 
   const handleSelectedKeysChange = React.useCallback(
     (update: React.SetStateAction<Set<string>>) => {
-      const current = new Set<string>(selectedCategories);
-      const updated = typeof update === 'function' ? update(current) : update;
+      const updated = typeof update === 'function'
+        ? update(new Set(selectedKeys))
+        : update;
       const next = new Set<ClassifiedCategory>(
         [...selectedCategories].filter((category) => !isCidocEntityClassificationId(category)),
       );
@@ -112,7 +115,7 @@ export function ManifestEntityHighlightMenu() {
 
       setHighlightCategories(next);
     },
-    [selectedCategories],
+    [selectedCategories, selectedKeys],
   );
 
   return (

@@ -5,7 +5,7 @@ import {
   getValues,
   type LinkedArtNode,
 } from '@globalise/common';
-import { isInternalUri } from '../isInternalUri.ts';
+import { isInternalUri } from '@globalise/common/uri';
 import { getPersonNameRecords, sortPersonNames } from './PersonStatusModel.ts';
 
 /**

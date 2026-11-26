@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import getManifestSearchState from './getManifestSearchState';
 
 const document = { inventory: '1053', page: '0003', endPage: '0071' };
-const searchHit = { document, target: { snippet: 's1' } };
+const searchHit = { document, hit: { snippet: 's1' } };
 
 describe(getManifestSearchState.name, () => {
   it('needs a search hit', () => {
     const searchContext = { query: 'Batavia', facets: {} };
-    expect(getManifestSearchState(null, searchContext)).toBeUndefined();
+    expect(getManifestSearchState(null, searchContext)).toBeNull();
   });
 
   it('highlights the search hit within its document', () => {

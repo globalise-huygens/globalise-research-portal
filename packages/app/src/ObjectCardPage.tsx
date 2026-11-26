@@ -2,25 +2,28 @@ import '@globalise/design/styles.css';
 import './ObjectCardPage.css';
 import { useEffect } from 'react';
 import { getRouteApi } from '@globalise/router';
-import { thesaurusBase } from '@globalise/common/uri';
+import { Container, Grid } from '@globalise/design';
+import { handle } from '@globalise/common/uri';
 import { loadObjectCard, ObjectCardView } from '@globalise/object-card';
 
-const route = getRouteApi('/object-card/');
-
-const defaultUri = `${thesaurusBase}00caf575-0d33-49f0-83d7-3f550c681355`;
+const route = getRouteApi(`/${handle}/$`);
 
 export function ObjectCardPage() {
-  const { uri } = route.useSearch();
+  const { uri } = route.useParams();
 
   useEffect(() => {
-    loadObjectCard(uri ?? defaultUri).catch(console.error);
+    loadObjectCard(uri).catch(console.error);
   }, [uri]);
 
   return (
     <main className='object-card-page'>
-      <div className='object-card-page__content'>
-        <ObjectCardView/>
-      </div>
+      <Container>
+        <Grid>
+          <div className="slot-content-band">
+            <ObjectCardView/>
+          </div>
+        </Grid>
+      </Container>
     </main>
   );
 }

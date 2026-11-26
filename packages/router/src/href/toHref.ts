@@ -1,5 +1,5 @@
 import type { RegisteredRouter, ToOptions } from '@tanstack/react-router';
-import { stringifyUrlParams } from './params/urlParams.ts';
+import { stringifyUrlParams } from '../params/urlParams.ts';
 
 export function toHref<const TTo extends `/${string}`>(options: HrefOptions<TTo>): string {
   return `${options.to}${stringifyUrlParams(options.search ?? {})}`;

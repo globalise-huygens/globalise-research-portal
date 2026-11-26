@@ -45,19 +45,14 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
 }
 
 export function getEntityTitle(entity: LinkedArtNode): string {
-  const name = findByPath(entity, ['identified_by'])
-    .filter((identifier) => identifier.type === 'Name')
-    .map(getContent)
-    .find((found) => !!found);
-  const [appellative_name] = findByPath(entity, ['is_appellative_subject_of'])
+  const [name] = findByPath(entity, ['is_appellative_subject_of'])
     .map(getStatusLabel)
     .filter((found) => !!found);
-  return name ?? appellative_name ?? label(entity);
+  return name ?? label(entity);
 }
 
 export function getEntityIdentifiers(entity: LinkedArtNode): string[] {
   return findByPath(entity, ['identified_by'])
-    .filter((identifier) => identifier.type === 'Identifier')
     .map(getContent)
     .filter((found) => !!found);
 }

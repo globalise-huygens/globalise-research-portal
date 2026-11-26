@@ -1,10 +1,11 @@
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useEffectEvent, useMemo, useRef } from 'react';
 import { TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import { Annotation, ClassifiedCategory, Id } from '@globalise/common/annotation';
 import {
   setHovered,
   useActiveHitAnnotationsInLineByLine,
   useIsClickedInLineByLine,
+  useIsSelectedCanvas,
   useSelectedAnnotationsInLineByLine,
 } from '@globalise/common/document';
 import { SegmentedText } from './SegmentedText';
@@ -31,6 +32,7 @@ export const SegmentedLine = memo(function SegmentedLine(
   const selectedIds = useSelectedAnnotationsInLineByLine(canvasId, annotationIds);
   const activeHitIds = useActiveHitAnnotationsInLineByLine(canvasId, annotationIds);
   const isClicked = useIsClickedInLineByLine(canvasId, annotationIds);
+  const isSelectedCanvas = useIsSelectedCanvas(canvasId);
 
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -39,6 +41,14 @@ export const SegmentedLine = memo(function SegmentedLine(
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [isClicked]);
+
+  const scrollToActiveHit = useEffectEvent(() => {
+    if (isSelectedCanvas && activeHitIds.length) {
+      ref.current?.scrollIntoView({ block: 'nearest' });
+    }
+  });
+
+  useEffect(() => scrollToActiveHit(), [activeHitIds]);
 
   return (
     <span

@@ -1,25 +1,25 @@
 import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate, validateManifestUrlParams } from '@globalise/router';
+import { type ManifestUrlParams, getRouteApi, useNavigate } from '@globalise/router';
 import {
   setSearchHitQuery,
   setSearchHitRequest,
   setSelectedDocument,
 } from '@globalise/common/document';
-import { type ViewerRef, createDocumentId } from '@globalise/common/uri';
+import { type ViewerRef, createDocumentId, createViewerPath, handle } from '@globalise/common/uri';
+import { parseManifestRoute } from './ManifestRoute';
 import { resolveManifestRoute } from './resolveManifestRoute';
+
+const route = getRouteApi(`/${handle}/inventory:{$}`);
 
 export function useResolveManifestRoute(viewer: ViewerRef): boolean {
   const navigate = useNavigate();
-  const href = useLocation({ select: (location) => location.href });
-  const searchParams = useLocation({ select: (location) => location.search });
+  const search = route.useSearch();
   const resolvedRoute = useMemo(
-    () => {
-      const params = validateManifestUrlParams(searchParams);
-      return resolveManifestRoute(viewer, params);
-    },
-    [viewer, searchParams],
+    () => resolveManifestRoute(parseManifestRoute(viewer, search)),
+    [viewer, search],
   );
-  const isResolved = href === resolvedRoute.canvasPath;
+  const isResolved = createViewerPath(viewer) === resolvedRoute.canvasPath
+    && !hasParams(search);
 
   useEffect(storeResolvedRoute, [navigate, resolvedRoute, isResolved]);
 
@@ -30,10 +30,14 @@ export function useResolveManifestRoute(viewer: ViewerRef): boolean {
     if (resolvedRoute.document) {
       setSelectedDocument(createDocumentId(resolvedRoute.document));
     }
-    setSearchHitRequest(resolvedRoute.searchHit ?? null);
-    setSearchHitQuery(resolvedRoute.searchHitQuery ?? null);
+    setSearchHitRequest(resolvedRoute.searchHit);
+    setSearchHitQuery(resolvedRoute.searchHitQuery);
     void navigate({ href: resolvedRoute.canvasPath, replace: true });
   }
 
   return isResolved;
+}
+
+function hasParams(search: ManifestUrlParams): boolean {
+  return Object.values(search).some((value) => value !== undefined);
 }

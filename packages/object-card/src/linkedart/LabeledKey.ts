@@ -114,3 +114,8 @@ export const placeDetailGroups: LabeledKey[] = [
   { key: 'is_appellative_subject_of', label: 'Name' },
   { key: 'is_classificatory_subject_of', label: 'Classifications' },
 ];
+
+export const occurrenceDetailGroups: LabeledKey[] = [
+  { key: 'is_appellative_subject_of', label: 'Name' },
+  { key: 'is_event_location_subject_of', label: 'Recorded location' },
+];

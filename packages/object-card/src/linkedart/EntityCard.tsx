@@ -31,7 +31,7 @@ import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
 import { PlaceCardBody } from './place/PlaceCardBody.tsx';
 import { PlaceOverview } from './place/PlaceOverview.tsx';
-import { OccurrenceCardBody } from './occurrence/OccurrenceCardBody.tsx';
+import { OccurrenceCardBody, OccurrenceOverview, getOccurrenceTitle } from './occurrence/OccurrenceCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -45,13 +45,27 @@ export function EntityCard() {
   const sources = findByPath(entity, ['referred_to_by']);
   const entityType = getLinkedArtEntityType(uri);
 
+  let cardClass = 'entity-card';
+  let title = getEntityTitle(entity);
+  let body;
+  if (entityType === 'person') {
+    cardClass += ' person-card';
+    title = getPersonTitle(entity);
+    body = <PersonCardBody entity={entity} />;
+  } else if (entityType === 'place') {
+    cardClass += ' place-card';
+    body = <PlaceCardBody entity={entity} />;
+  } else if (entityType === 'occurrence') {
+    cardClass += ' occurrence-card';
+    title = getOccurrenceTitle(entity);
+    body = <OccurrenceCardBody entity={entity} />;
+  }
+  const showIdentifiers = !['person', 'place', 'occurrence'].includes(entityType)
+    && identifiers.length > 0;
+
   return (
     <ObjectCard
-      className={entityType === 'person'
-        ? 'entity-card person-card'
-        : entityType === 'place'
-          ? 'entity-card place-card'
-          : entityType === 'occurrence' ? 'entity-card occurrence-card' : 'entity-card'}
+      className={cardClass}
     >
       <ObjectCardHeader
         actions={
@@ -63,25 +77,18 @@ export function EntityCard() {
       >
         <EntityTypeBadge type={entityType}/>
         <ObjectCardTitle>
-          {entityType === 'person'
-            ? getPersonTitle(entity)
-            : getEntityTitle(entity)}
+          {title}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
         {entityType === 'place' && <PlaceOverview entity={entity}/>}
-        {entityType !== 'person' && entityType !== 'place' && !!identifiers.length && (
+        {entityType === 'occurrence' && <OccurrenceOverview entity={entity}/>}
+        {showIdentifiers && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>
         )}
       </ObjectCardHeader>
-      {entityType === 'person' ? (
-        <PersonCardBody entity={entity}/>
-      ) : entityType === 'place' ? (
-        <PlaceCardBody entity={entity}/>
-      ) : entityType === 'occurrence' ? (
-        <OccurrenceCardBody entity={entity}/>
-      ) : (
+      {body ?? (
         <ObjectCardBody>
           <ObjectCardPanel side="left">
             <EntitySummary entity={entity}/>

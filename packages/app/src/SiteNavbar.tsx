@@ -5,8 +5,11 @@ import {
   NavLinks,
 } from '@globalise/design';
 import { defaultInventory, toHref, toViewerHref } from '@globalise/router';
+import { handle } from '@globalise/common/uri';
 import '@globalise/design/styles.css';
 import './SiteNavbar.css';
+
+const defaultObjectCardPath = `/${handle}/thesaurus:00caf575-0d33-49f0-83d7-3f550c681355`;
 
 export function SiteNavbar() {
   return (
@@ -27,9 +30,10 @@ export function SiteNavbar() {
           <NavLink href={toHref({ to: '/search' })}>Search</NavLink>
           <NavLink href={toViewerHref(defaultInventory, {})}>Manifest Viewer</NavLink>
           <NavLink href={toHref({ to: '/catalog' })}>Catalog</NavLink>
-          <NavLink href={toHref({ to: '/object-card' })}>Object Card</NavLink>
+          <NavLink href={defaultObjectCardPath}>Object Card</NavLink>
           <NavLink href={toHref({ to: '/map' })}>World map</NavLink>
           <NavLink href={toHref({ to: '/content' })}>Content</NavLink>
+          <NavLink href={toHref({ to: '/content/blog' })}>Blog</NavLink>
         </NavLinks>
       </Navbar>
     </header>

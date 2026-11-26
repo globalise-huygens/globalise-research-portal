@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { createViewerPath, parseViewerPath } from './viewerPath';
+import { handle } from './uriPatterns.ts';
+import { createViewerPath, parseViewerSplat } from './viewerPath';
 
-const inventoryPath = '/hdl:20.500.14722/inventory:1053';
+const inventoryPath = `/${handle}/inventory:1053`;
 const pagePath = `${inventoryPath}/0004`;
 const documentPath = `${inventoryPath}/0003-0067`;
+
+const inventorySplat = '1053';
+const pageSplat = `${inventorySplat}/0004`;
+const documentSplat = `${inventorySplat}/0003-0067`;
 
 const inventoryRef = { inventory: '1053' };
 const pageRef = { inventory: '1053', page: '0004' };
@@ -23,20 +28,20 @@ describe(createViewerPath.name, () => {
   });
 });
 
-describe(parseViewerPath.name, () => {
-  it('reads the inventory of an inventory path', () => {
-    expect(parseViewerPath(inventoryPath)).toEqual(inventoryRef);
+describe(parseViewerSplat.name, () => {
+  it('reads the inventory of an inventory splat', () => {
+    expect(parseViewerSplat(inventorySplat)).toEqual(inventoryRef);
   });
 
-  it('reads the inventory and page of a scan path', () => {
-    expect(parseViewerPath(pagePath)).toEqual(pageRef);
+  it('reads the inventory and page of a scan splat', () => {
+    expect(parseViewerSplat(pageSplat)).toEqual(pageRef);
   });
 
-  it('reads the inventory and page range of a document path', () => {
-    expect(parseViewerPath(documentPath)).toEqual(documentRef);
+  it('reads the inventory and page range of a document splat', () => {
+    expect(parseViewerSplat(documentSplat)).toEqual(documentRef);
   });
 
-  it('ignores other paths', () => {
-    expect(parseViewerPath('/manifest')).toBeUndefined();
+  it('ignores other splats', () => {
+    expect(parseViewerSplat('manifest')).toBeNull();
   });
 });

@@ -17,7 +17,7 @@ describe(findInitialCanvasId.name, () => {
 
   it('uses the first page of the document without an active hit', () => {
     const firstScan = createCanvasId({ ...inventory, page: '0003' });
-    expect(findInitialCanvasId(document)).toBe(firstScan);
+    expect(findInitialCanvasId(document, null)).toBe(firstScan);
   });
 
   it('uses the canvas of the active hit within an inventory', () => {
@@ -25,6 +25,6 @@ describe(findInitialCanvasId.name, () => {
   });
 
   it('finds no canvas without scan path, active hit and document', () => {
-    expect(findInitialCanvasId(inventory)).toBeUndefined();
+    expect(findInitialCanvasId(inventory, null)).toBeNull();
   });
 });

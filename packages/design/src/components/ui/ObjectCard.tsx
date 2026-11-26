@@ -1,10 +1,10 @@
 import {
   IconArrowTopRight,
   IconClose,
-  IconExpandSection,
   IconExternalLink,
 } from '../icons';
 import { cn } from '../../lib';
+import { ExpandCollapseIcon } from './ExpandCollapseIcon.tsx';
 import { Tooltip } from './Tooltip';
 import * as React from 'react';
 import {
@@ -186,16 +186,17 @@ export type ObjectCardSectionProps = {
   children?: React.ReactNode;
 };
 
-export type ObjectCardDisclosureButtonProps = Omit<AriaButtonProps, 'className' | 'style' | 'children'> & {
+export type ObjectCardDisclosureButtonProps = Omit<AriaButtonProps, 'className' | 'style' | 'children' | 'aria-expanded'> & {
+  isExpanded: boolean;
   className?: string;
   children?: React.ReactNode;
 };
 
-function ObjectCardDisclosureButton({ className, children, ...props }: ObjectCardDisclosureButtonProps) {
+function ObjectCardDisclosureButton({ isExpanded, className, children, ...props }: ObjectCardDisclosureButtonProps) {
   return (
-    <AriaButton className={cn('section-toggle', className)} {...props}>
+    <AriaButton aria-expanded={isExpanded} className={cn('section-toggle', className)} {...props}>
       {children}
-      <IconExpandSection aria-hidden="true" className="section-toggle-icon" />
+      <ExpandCollapseIcon isExpanded={isExpanded} className="section-toggle-icon" />
     </AriaButton>
   );
 }
@@ -224,7 +225,7 @@ function ObjectCardDisclosure({ summary, children, className, defaultExpanded = 
         <span id={actionLabelId} className="disclosure-action-label">Details for</span>
         <ObjectCardDisclosureButton
           aria-controls={contentId}
-          aria-expanded={isExpanded}
+          isExpanded={isExpanded}
           aria-labelledby={`${actionLabelId} ${summaryId}`}
           className="disclosure-toggle"
           onPress={() => setIsExpanded((expanded) => !expanded)}
@@ -265,7 +266,7 @@ function ObjectCardSection({
         <AriaHeading level={3} id={headingId} className="section-heading">
           <ObjectCardDisclosureButton
             aria-controls={contentId}
-            aria-expanded={isExpanded}
+            isExpanded={isExpanded}
             onPress={() => setIsExpanded((expanded) => !expanded)}
           >
             <span>{title}</span>

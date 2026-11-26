@@ -36,12 +36,6 @@
             width: var(--s16, 16px);
             height: var(--s16, 16px);
             fill: currentColor;
-            rotate: 180deg;
-            transition: rotate 150ms ease;
-        }
-
-        &.expanded svg {
-            rotate: 0deg;
         }
     }
 

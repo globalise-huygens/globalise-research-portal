@@ -1,14 +1,19 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { validateManifestUrlParams } from '../../params/manifestUrlParams.ts';
+import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createObjectCardSplat, parseObjectCardSplat } from '@globalise/common/uri';
 
-/**
- * TODO Enable ssr for manifest viewer: only osd needs the browser
- * - split @knaw-huc/osd-iiif-viewer into iiif and osd barrel
- * - metadata, toc and stores should only use the iiif barrel
- * - import openseadragon lazily
- * - use type only imports for osd types
- */
 export const Route = createFileRoute('/hdl:20.500.14722/$')({
-  validateSearch: validateManifestUrlParams,
-  ssr: false,
+
+  /**
+   * See also: ./inventory:{$}.ts
+   */
+  params: {
+    parse: ({ _splat }) => {
+      const uri = parseObjectCardSplat(_splat ?? '');
+      if (!uri) {
+        throw notFound();
+      }
+      return { uri };
+    },
+    stringify: ({ uri }) => ({ _splat: createObjectCardSplat(uri) ?? '' }),
+  },
 });

@@ -236,13 +236,6 @@
     .section-toggle-icon {
       width: var(--s20);
       height: var(--s20);
-      flex-shrink: 0;
-      rotate: 0deg;
-      transition: rotate 120ms ease-out;
-    }
-
-    .section-toggle[aria-expanded="true"] .section-toggle-icon {
-      rotate: 180deg;
     }
 
     .disclosure {
@@ -519,8 +512,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .object-card .disclosure,
-    .object-card .section-toggle-icon {
+    .object-card .disclosure {
       transition: none;
     }
   }

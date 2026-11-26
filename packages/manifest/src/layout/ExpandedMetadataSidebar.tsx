@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { SidebarId, useSidebarPanels } from './useSidebarPanels.tsx';
-import { SidebarDisclosureIcon } from './SidebarDisclosureIcon';
 import { MetadataPanel, TocPanel } from '@globalise/metadata';
-import { Tooltip } from '@globalise/design';
+import { ExpandCollapseIcon, Tooltip } from '@globalise/design';
 import { Button as AriaButton } from 'react-aria-components';
 
 export function ExpandedMetadataSidebar({
@@ -33,7 +32,7 @@ export function ExpandedMetadataSidebar({
                   <span className="label">{item.label}</span>
                   {item.badge && <span className="badge">{item.badge}</span>}
                 </span>
-                <SidebarDisclosureIcon isExpanded={isExpanded} />
+                <ExpandCollapseIcon isExpanded={isExpanded} className="sidebar-disclosure" />
               </AriaButton>
             </Tooltip>
 

@@ -1,0 +1,17 @@
+@layer components {
+  .expand-collapse-icon {
+    flex-shrink: 0;
+    rotate: -90deg;
+    transition: rotate 120ms ease-out;
+
+    &.expanded {
+      rotate: 0deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .expand-collapse-icon {
+      transition: none;
+    }
+  }
+}

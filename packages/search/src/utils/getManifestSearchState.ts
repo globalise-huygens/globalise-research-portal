@@ -1,26 +1,26 @@
 import getSearchState, { type GlobaliseSearchState } from './getSearchState';
 import { validateSearchUrlParams } from '@globalise/router';
-import type { SearchHitQuery, SearchHitRequest, SearchHitTarget } from '@globalise/common/document';
+import type { SearchHitQuery, SearchHitRequest, SearchHitRef } from '@globalise/common/document';
 import { createDocumentName } from '@globalise/common/uri';
 import { toSearchState } from '../url';
 
 export type ManifestSearchState = GlobaliseSearchState & {
   docDbId: string;
-  target: SearchHitTarget;
+  target: SearchHitRef;
 };
 
 export default function getManifestSearchState(
   searchHit: SearchHitRequest | null,
   searchContext: SearchHitQuery | null,
-): ManifestSearchState | undefined {
+): ManifestSearchState | null {
   if (!searchHit) {
-    return;
+    return null;
   }
   const { query: q, facets } = searchContext ?? { facets: {} };
   const searchUrlParams = validateSearchUrlParams({ q, ...facets });
   return {
     ...getSearchState(toSearchState(searchUrlParams)),
     docDbId: createDocumentName(searchHit.document),
-    target: searchHit.target,
+    target: searchHit.hit,
   };
 }

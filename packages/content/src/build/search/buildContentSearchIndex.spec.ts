@@ -33,7 +33,14 @@ describe(buildContentSearchIndex.name, () => {
 function createPage(slug: string, title: string, body: string): ContentPage {
   const paragraph: Element = { type: 'element', tagName: 'p', properties: {}, children: [{ type: 'text', value: body }] };
   return {
-    meta: { path: `${slug}.md`, title, slug },
+    meta: {
+      path: `${slug}.md`, title, slug,
+      summary: 'Example content',
+      type: 'page',
+      status: 'draft',
+      authors: [],
+      featured: false,
+    },
     tree: { type: 'root', children: [paragraph] },
   };
 }
