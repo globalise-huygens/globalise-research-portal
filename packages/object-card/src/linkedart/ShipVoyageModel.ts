@@ -6,19 +6,25 @@ export type VoyageHierarchyNode = {
   children: VoyageHierarchyNode[];
 };
 
-export function buildVoyageHierarchy(voyages: LinkedArtNode[]): VoyageHierarchyNode[] {
+export function buildVoyageHierarchy(
+  voyages: LinkedArtNode[],
+): VoyageHierarchyNode[] {
   const nodes = voyages.map((voyage, index): VoyageHierarchyNode => ({
     key: voyage.id ?? `voyage-${index}`,
     voyage,
     children: [],
   }));
-  const nodesById = new Map(nodes.flatMap((node) =>
-    node.voyage.id ? [[node.voyage.id, node] as const] : [],
-  ));
+  const nodesById = new Map(
+    nodes.flatMap((node) =>
+      node.voyage.id ? [[node.voyage.id, node] as const] : [],
+    ),
+  );
   const parentByNode = new Map<VoyageHierarchyNode, VoyageHierarchyNode>();
 
   for (const node of nodes) {
-    const parentId = findByPath(node.voyage, ['part_of']).find((parent) => parent.id)?.id;
+    const parentId = findByPath(node.voyage, ['part_of']).find(
+      (parent) => parent.id,
+    )?.id;
     const parent = parentId ? nodesById.get(parentId) : undefined;
     if (parent && parent !== node) {
       parentByNode.set(node, parent);

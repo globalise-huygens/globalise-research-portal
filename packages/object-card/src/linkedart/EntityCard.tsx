@@ -45,41 +45,48 @@ export function EntityCard() {
   const sources = findByPath(entity, ['referred_to_by']);
   const entityType = getLinkedArtEntityType(uri);
 
+  let cardClass = 'entity-card';
+  let title = getEntityTitle(entity);
+  let body;
+  if (entityType === 'person') {
+    cardClass += ' person-card';
+    title = getPersonTitle(entity);
+    body = <PersonCardBody entity={entity} />;
+  } else if (entityType === 'ship') {
+    cardClass += ' ship-card';
+    title = getShipTitle(entity);
+    body = <ShipCardBody entity={entity} />;
+  } else if (entityType === 'place') {
+    cardClass += ' place-card';
+    body = <PlaceCardBody entity={entity} />;
+  }
+  const showIdentifiers = !body && identifiers.length > 0;
+
   return (
-    <ObjectCard
-      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'ship' ? 'entity-card ship-card' : entityType === 'place' ? 'entity-card place-card' : 'entity-card'}
-    >
+    <ObjectCard className={cardClass}>
       <ObjectCardHeader
         actions={
           <>
-            <CardCopyAction uri={uri} label="Copy entity URI"/>
-            <CardOpenAction url={getJsonUrl(uri)} label="Open entity JSON-LD"/>
+            <CardCopyAction uri={uri} label="Copy entity URI" />
+            <CardOpenAction url={getJsonUrl(uri)} label="Open entity JSON-LD" />
           </>
         }
       >
-        <EntityTypeBadge type={entityType}/>
-        <ObjectCardTitle>
-          {entityType === 'person' ? getPersonTitle(entity) : entityType === 'ship' ? getShipTitle(entity) : getEntityTitle(entity)}
-        </ObjectCardTitle>
-        {entityType === 'person' && <PersonOverview entity={entity}/>}
-        {entityType === 'ship' && <ShipOverview entity={entity}/>}
-        {entityType === 'place' && <PlaceOverview entity={entity}/>}
-        {entityType !== 'person' && entityType !== 'ship' && entityType !== 'place' && !!identifiers.length && (
+        <EntityTypeBadge type={entityType} />
+        <ObjectCardTitle>{title}</ObjectCardTitle>
+        {entityType === 'person' && <PersonOverview entity={entity} />}
+        {entityType === 'ship' && <ShipOverview entity={entity} />}
+        {entityType === 'place' && <PlaceOverview entity={entity} />}
+        {showIdentifiers && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>
         )}
       </ObjectCardHeader>
-      {entityType === 'person' ? (
-        <PersonCardBody entity={entity}/>
-      ) : entityType === 'ship' ? (
-        <ShipCardBody entity={entity}/>
-      ) : entityType === 'place' ? (
-        <PlaceCardBody entity={entity}/>
-      ) : (
+      {body ?? (
         <ObjectCardBody>
           <ObjectCardPanel side="left">
-            <EntitySummary entity={entity}/>
+            <EntitySummary entity={entity} />
             {eventKeys.map((labeledKey) => (
               <EventSection
                 key={labeledKey.key}
@@ -87,7 +94,7 @@ export function EntityCard() {
                 labeledKey={labeledKey}
               />
             ))}
-            {!!sources.length && <SourceList sources={sources}/>}
+            {!!sources.length && <SourceList sources={sources} />}
           </ObjectCardPanel>
           <ObjectCardPanel side="right">
             {statusKeys.map((labeledKey) => (
