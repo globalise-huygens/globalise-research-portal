@@ -1,4 +1,10 @@
-export { provideRouteComponents, provideRouteLoaders, type RouteComponents, type RouteId, type RouteLoaders } from './router.ts';
+export {
+  provideRouterSetup,
+  type RouteComponents,
+  type RouteId,
+  type RouteLoaders,
+  type RouterSetup,
+} from './router.ts';
 export { toHref } from './toHref.ts';
 export { defaultInventory, toCanvasHref, toManifestHref, toViewerHref } from './viewer/viewerHref.ts';
 export { validateFacets, validateSearchUrlParams, type SearchUrlParams } from './params/searchUrlParams.ts';

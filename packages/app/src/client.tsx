@@ -1,13 +1,10 @@
 import { StrictMode, startTransition } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { StartClient } from '@tanstack/react-start/client';
-import { provideRouteComponents, provideRouteLoaders } from '@globalise/router';
-import { routeComponents } from './routeComponents.ts';
-import { routeLoaders } from './routeLoaders.ts';
-import { landingPageContent } from './landingPageContent.ts';
+import { provideRouterSetup } from '@globalise/router';
+import { routerSetup } from './routerSetup.ts';
 
-provideRouteComponents(routeComponents, landingPageContent.metadata);
-provideRouteLoaders(routeLoaders);
+provideRouterSetup(routerSetup);
 
 startTransition(() => {
   hydrateRoot(

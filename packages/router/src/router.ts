@@ -1,7 +1,13 @@
-import { type AnyRoute, createRouter, type RouteComponent, type RouteIds } from '@tanstack/react-router';
+import {
+  type AnyRoute,
+  createRouter,
+  type ErrorRouteComponent,
+  type NotFoundRouteComponent,
+  type RouteComponent,
+  type RouteIds,
+} from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { orThrow } from '@globalise/common';
-import { NotFoundPage, RouteErrorPage } from './FallbackPage.tsx';
 import { parseUrlParams, stringifyUrlParams } from './params/urlParams.ts';
 import { routeTree } from './routeTree.gen.ts';
 
@@ -19,41 +25,43 @@ export type RouteLoaders = Partial<Record<RouteId, RouteLoader>>;
 
 type RouteLoader = (match: { params: Record<string, string> }) => Promise<unknown>;
 
+export type RouterSetup = {
+  components: RouteComponents;
+  loaders: RouteLoaders;
+  fallbacks: FallbackComponents;
+  homeMetadata?: { title: string; description: string };
+};
+
+type FallbackComponents = {
+  notFound: NotFoundRouteComponent;
+  error: ErrorRouteComponent;
+};
+
 export function getRouter(): AppRouter {
-  const router = createAppRouter();
-  const components = routeComponents ?? orThrow('Provide the route components before creating the router');
-  const metadata = homeMetadata;
+  const { components, loaders, fallbacks, homeMetadata } = routerSetup
+    ?? orThrow('Provide the router setup before creating the router');
+  const router = createAppRouter(fallbacks);
   for (const id of Object.keys(components) as RouteId[]) {
     const route: AnyRoute = router.routesById[id];
-    route.options.loader = routeLoaders[id];
+    route.options.loader = loaders[id];
     route.update({
       component: components[id],
-      ...(id === '/' && metadata ? { head: () => ({ meta: [
-        { title: metadata.title },
-        { name: 'description', content: metadata.description },
+      ...(id === '/' && homeMetadata ? { head: () => ({ meta: [
+        { title: homeMetadata.title },
+        { name: 'description', content: homeMetadata.description },
       ] }) } : {}),
     });
   }
   return router;
 }
 
-export function provideRouteLoaders(loaders: RouteLoaders) {
-  routeLoaders = loaders;
+export function provideRouterSetup(setup: RouterSetup) {
+  routerSetup = setup;
 }
 
-export function provideRouteComponents(
-  components: RouteComponents,
-  metadata?: { title: string; description: string },
-) {
-  routeComponents = components;
-  homeMetadata = metadata;
-}
+let routerSetup: RouterSetup | undefined;
 
-let routeComponents: RouteComponents | undefined;
-let routeLoaders: RouteLoaders = {};
-let homeMetadata: { title: string; description: string } | undefined;
-
-function createAppRouter() {
+function createAppRouter(fallbacks: FallbackComponents) {
   return createRouter({
     routeTree,
     context: { queryClient: new QueryClient() } satisfies RouterContext,
@@ -63,8 +71,8 @@ function createAppRouter() {
     scrollToTopSelectors: [
       '.site-content:has(> :is(.blog-index, .blog-post, .content-page, .content-home))',
     ],
-    defaultNotFoundComponent: NotFoundPage,
-    defaultErrorComponent: RouteErrorPage,
+    defaultNotFoundComponent: fallbacks.notFound,
+    defaultErrorComponent: fallbacks.error,
   });
 }
 

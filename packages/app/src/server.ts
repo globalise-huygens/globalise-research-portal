@@ -1,12 +1,9 @@
 import handler, { createServerEntry } from '@tanstack/react-start/server-entry';
 import { getContentAsset } from '@globalise/content/serve';
-import { provideRouteComponents, provideRouteLoaders } from '@globalise/router';
-import { routeComponents } from './routeComponents.ts';
-import { routeLoaders } from './routeLoaders.ts';
-import { landingPageContent } from './landingPageContent.ts';
+import { provideRouterSetup } from '@globalise/router';
+import { routerSetup } from './routerSetup.ts';
 
-provideRouteComponents(routeComponents, landingPageContent.metadata);
-provideRouteLoaders(routeLoaders);
+provideRouterSetup(routerSetup);
 
 /**
  * Serve content assets, or use default router
