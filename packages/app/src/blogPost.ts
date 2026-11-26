@@ -1,6 +1,11 @@
 import type { PageMeta } from '@globalise/content';
 
-export function isBlogPost(page: PageMeta): boolean {
+export type BlogPostMeta = PageMeta & {
+  type: 'archived-post';
+  path: `pages/about/archive/blog/${string}`;
+};
+
+export function isBlogPost(page: PageMeta): page is BlogPostMeta {
   return page.type === 'archived-post' &&
     page.path.startsWith('pages/about/archive/blog/');
 }

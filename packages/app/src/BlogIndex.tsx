@@ -1,22 +1,22 @@
 import { getRouteApi, toHref } from '@globalise/router';
-import { IconArrowTopRight } from '@globalise/design';
+import { IconArrowLeftAlt } from '@globalise/design';
 import { Link } from 'react-aria-components';
 import { BlogCards } from './BlogCards.tsx';
 import { useContentSearchIndex } from './useContentSearchIndex.ts';
-import type { ContentIndex } from '@globalise/content';
+import type { BlogPostMeta } from './blogPost.ts';
 import './BlogIndex.css';
 
 const route = getRouteApi('/content/blog');
 
 export function BlogIndex() {
-  const posts: ContentIndex = route.useLoaderData();
+  const posts: BlogPostMeta[] = route.useLoaderData();
   const { q } = route.useSearch();
 
   return (
     <main className="blog-index">
       <header className="intro">
         <Link href={toHref({ to: '/content' })} className="back">
-          <IconArrowTopRight width="16" height="16" aria-hidden="true"/>
+          <IconArrowLeftAlt width="16" height="16" aria-hidden="true"/>
           Back to content
         </Link>
         <h1>Explore the blog</h1>
@@ -27,7 +27,7 @@ export function BlogIndex() {
   );
 }
 
-function BlogSearchResults({ posts, query }: { posts: ContentIndex; query: string }) {
+function BlogSearchResults({ posts, query }: { posts: BlogPostMeta[]; query: string }) {
   const { data: searchIndex, isError } = useContentSearchIndex();
   if (isError) {
     return <p className="empty" role="status">Blog search is unavailable.</p>;
@@ -44,7 +44,7 @@ function BlogPostList({
   posts,
   emptyMessage = 'No blog posts are available.',
 }: {
-  posts: ContentIndex;
+  posts: BlogPostMeta[];
   emptyMessage?: string;
 }) {
   if (!posts.length) {

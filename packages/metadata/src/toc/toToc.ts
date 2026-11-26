@@ -3,6 +3,7 @@ import { getValue } from '@iiif/helpers';
 import type { CanvasId } from '@globalise/common/document';
 import { findThumbnail } from '@knaw-huc/osd-iiif-viewer';
 import { findMetadataValue } from '../findMetadataValue.ts';
+import { orThrow } from '@globalise/common';
 
 export type ManifestScan = {
   canvasId: CanvasId;
@@ -93,7 +94,7 @@ function toDocument(
   scans.sort((a, b) => a.scanNumber - b.scanNumber);
   const title = findMetadataValue(range.metadata, 'Title');
   return {
-    id: range.id,
+    id: range.seeAlso[0]?.id ?? orThrow(`No document id for ${range.id}`),
     label: title ?? getValue(range.label),
     metadataUrl: range.seeAlso[0]?.id,
     tanapId: findMetadataValue(range.metadata, 'TANAP-id'),
