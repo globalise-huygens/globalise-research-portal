@@ -2,10 +2,13 @@ import {
   findByPath,
   findTimespan,
   getContent,
-  getEntityTitle,
   getRecordedDates,
   getStatusValues,
+  getTimespan,
+  isLinkedArtNode,
   type LinkedArtNode,
+  type RecordedDates,
+  type Timespan,
 } from '@globalise/common';
 import {
   ObjectCardBody,
@@ -15,7 +18,6 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
-import { EntityReferencePanel } from '../EntityReferencePanel.tsx';
 import { occurrenceDetailGroups } from '../LabeledKey.ts';
 import { getPersonNameRecords } from '../PersonStatusModel.ts';
 import { RecordedDatesValue } from '../RecordedDatesValue.tsx';
@@ -29,15 +31,16 @@ export function OccurrenceCardBody({ entity }: { entity: LinkedArtNode }) {
   const involved = findByPath(entity, ['involved']);
   const classifications = getStatusValues(entity, ['classified_as']);
   const timespan = findTimespan(entity);
-  const dates = timespan ? null : getRecordedDates(entity);
+  const dates = getAdditionalDates(entity, timespan);
   const sources = findByPath(entity, ['referred_to_by'])
-    .filter((source) => isVisibleSource(source, true, true));
+    .filter((source) => isVisibleSource(source, false, true));
   const notes = getNotes(entity);
   const records = occurrenceDetailGroups.flatMap(({ key, label: title }) =>
     findByPath(entity, [key]).map((record) => ({ record, title })),
   );
   const hasDetails = involved.length > 0 || classifications.length > 0
     || !!timespan || !!dates || records.length > 0;
+  const hasEvidence = notes.length > 0 || sources.length > 0;
 
   return <ObjectCardBody>
     <ObjectCardPanel side="left">
@@ -75,7 +78,9 @@ export function OccurrenceCardBody({ entity }: { entity: LinkedArtNode }) {
           />)}
         </div>
       </ObjectCardSection>}
-      {!!(notes.length || sources.length) && <ObjectCardSection title="Further information" collapsible>
+      {hasEvidence && <ObjectCardSection
+        title="Further information" collapsible
+      >
         <div className="person-status-list">
           {!!notes.length && <ObjectCardDisclosure summary="Notes">
             <ObjectCardPropertyList className="person-status-details">
@@ -86,14 +91,13 @@ export function OccurrenceCardBody({ entity }: { entity: LinkedArtNode }) {
             <ObjectCardPropertyList className="person-status-details">
               <ObjectCardProperty
                 label="Sources"
-                value={<SourceList sources={sources} includeInternalLabels showNotes />}
+                value={<SourceList sources={sources} showNotes />}
               />
             </ObjectCardPropertyList>
           </ObjectCardDisclosure>}
         </div>
       </ObjectCardSection>}
     </ObjectCardPanel>
-    <EntityReferencePanel entity={entity} />
   </ObjectCardBody>;
 }
 
@@ -102,17 +106,40 @@ export function getOccurrenceTitle(entity: LinkedArtNode): string {
     .filter((identifier) => identifier.type === 'Name')
     .map(getContent)
     .find(Boolean);
-  return recordedTitle ?? getEntityTitle(entity);
+  const [recordedName] = getPersonNameRecords(entity);
+  const candidates = [recordedTitle, recordedName?.name, getContent(entity)];
+  return candidates.find(Boolean) ?? 'Name not recorded';
 }
 
 export function OccurrenceOverview({ entity }: { entity: LinkedArtNode }) {
   const title = getOccurrenceTitle(entity);
-  const names = [...new Set(getPersonNameRecords(entity).map(({ name }) => name))]
-    .filter((name) => name !== title);
+  const recordedNames = getPersonNameRecords(entity).map(({ name }) => name);
+  const names = [...new Set(recordedNames)].filter((name) => name !== title);
   if (!names.length) {
     return null;
   }
   return <div className="person-overview">
     <span className="person-overview-fact">also: {names.join(', ')}</span>
   </div>;
+}
+
+function getAdditionalDates(
+  entity: LinkedArtNode,
+  timespan: Timespan | null,
+): RecordedDates | null {
+  const dates = getRecordedDates(entity);
+  if (!timespan || !dates) {
+    return dates;
+  }
+  const nested = isLinkedArtNode(entity.timespan) ? entity.timespan : null;
+  if (!nested) {
+    return null;
+  }
+  if (!getTimespan(nested)) {
+    return dates;
+  }
+  if (dates.dates.length) {
+    return { starts: [], ends: [], dates: dates.dates };
+  }
+  return null;
 }

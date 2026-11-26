@@ -31,7 +31,11 @@ import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
 import { PlaceCardBody } from './place/PlaceCardBody.tsx';
 import { PlaceOverview } from './place/PlaceOverview.tsx';
-import { OccurrenceCardBody, OccurrenceOverview, getOccurrenceTitle } from './occurrence/OccurrenceCardBody.tsx';
+import {
+  OccurrenceCardBody,
+  OccurrenceOverview,
+  getOccurrenceTitle,
+} from './occurrence/OccurrenceCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -60,8 +64,8 @@ export function EntityCard() {
     title = getOccurrenceTitle(entity);
     body = <OccurrenceCardBody entity={entity} />;
   }
-  const showIdentifiers = !['person', 'place', 'occurrence'].includes(entityType)
-    && identifiers.length > 0;
+  const showIdentifiers = identifiers.length > 0
+    && !['person', 'place', 'occurrence'].includes(entityType);
 
   return (
     <ObjectCard
