@@ -1,6 +1,8 @@
+import { ContentSearchIcon } from './ContentSearchIcon.tsx';
 import { useState } from 'react';
+import type { SubmitEvent } from 'react';
 import { useRouterState } from '@tanstack/react-router';
-import { Button, Input, SearchField } from 'react-aria-components';
+import { Button } from 'react-aria-components';
 import {
   LogoNavbar,
   Navbar,
@@ -36,11 +38,14 @@ export function SiteNavbar() {
     },
   });
 
-  function searchContent(value: string) {
+  function searchContent(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const value = new FormData(event.currentTarget).get('q');
+    const query = typeof value === 'string' ? value.trim() : '';
     setContentSearchOpen(false);
     void router.navigate({
       to: '/content',
-      search: { q: value.trim() || undefined },
+      search: { q: query || undefined },
     });
   }
 
@@ -81,33 +86,21 @@ export function SiteNavbar() {
         </NavLinks>
       </Navbar>
       {contentSearchOpen && isContentPage && (
-        <SearchField
-          aria-label="Search site content"
-          className="content-search-popover"
-          onSubmit={searchContent}
-        >
-          <Input
-            autoFocus
-            placeholder="Search site content"
-          />
-          <Button type="submit" aria-label="Submit site content search">
-            <ContentSearchIcon/>
-          </Button>
-        </SearchField>
+        <form className="content-search-popover" onSubmit={searchContent}>
+          <div className="navbar-search-field">
+            <input
+              type="search"
+              autoFocus
+              name="q"
+              aria-label="Search website content"
+              placeholder="Search site content"
+            />
+            <Button type="submit" aria-label="Submit site content search">
+              <ContentSearchIcon/>
+            </Button>
+          </div>
+        </form>
       )}
     </header>
-  );
-}
-
-function ContentSearchIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="content-search-icon"
-    >
-      <path d="M10 3a7 7 0 1 0 4.3 12.52L20 21.2l1.2-1.2-5.68-5.7A7 7 0 0 0 10 3Zm0 1.7a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6Z"/>
-      <path d="M3 20h10v1.6H3zM3 17.2h7v1.5H3z"/>
-    </svg>
   );
 }
