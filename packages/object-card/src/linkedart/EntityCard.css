@@ -31,6 +31,18 @@
       gap: var(--s8);
     }
 
+    .voyage-identifier {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--s4);
+
+      .header-action-icon {
+        width: var(--s16);
+        height: var(--s16);
+      }
+    }
+
     .ship-voyage-hierarchy,
     .ship-voyage-nested-list {
       margin: 0;
