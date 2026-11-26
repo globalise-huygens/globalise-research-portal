@@ -26,7 +26,7 @@ export function ContentHome() {
     [navigate],
   );
   useEffect(() => () => searchDebounced.cancel(), [searchDebounced]);
-  const contentSearchIndex = useContentSearchIndex();
+  const { data: contentSearchIndex } = useContentSearchIndex();
   const rows: ContentHomeRow[] = q && contentSearchIndex
     ? contentSearchIndex.search(q).map(toRow)
     : pages.map((page) => ({ ...page, terms: [] }));

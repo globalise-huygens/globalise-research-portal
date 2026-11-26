@@ -2,6 +2,7 @@ import { getRouteApi, toHref } from '@globalise/router';
 import { IconArrowLeftAlt } from '@globalise/design';
 import { Link } from 'react-aria-components';
 import { BlogCards } from './BlogCards.tsx';
+import { useContentSearchIndex } from './useContentSearchIndex.ts';
 import type { BlogPostMeta } from './blogPost.ts';
 import './BlogIndex.css';
 
@@ -9,6 +10,7 @@ const route = getRouteApi('/content/blog');
 
 export function BlogIndex() {
   const posts: BlogPostMeta[] = route.useLoaderData();
+  const { q } = route.useSearch();
 
   return (
     <main className="blog-index">
@@ -20,9 +22,33 @@ export function BlogIndex() {
         <h1>Explore the blog</h1>
         <p>Read archived posts from the Globalise project website.</p>
       </header>
-      {posts.length > 0
-        ? <BlogCards posts={posts}/>
-        : <p className="empty">No blog posts are available.</p>}
+      {q ? <BlogSearchResults posts={posts} query={q}/> : <BlogPostList posts={posts}/>}
     </main>
   );
+}
+
+function BlogSearchResults({ posts, query }: { posts: BlogPostMeta[]; query: string }) {
+  const { data: searchIndex, isError } = useContentSearchIndex();
+  if (isError) {
+    return <p className="empty" role="status">Blog search is unavailable.</p>;
+  }
+  if (!searchIndex) {
+    return <p className="empty" role="status">Searching blog posts…</p>;
+  }
+  const matchingSlugs = new Set(searchIndex.search(query).map(({ id }) => String(id)));
+  const matches = posts.filter(({ slug }) => matchingSlugs.has(slug));
+  return <BlogPostList posts={matches} emptyMessage="No blog posts match your search."/>;
+}
+
+function BlogPostList({
+  posts,
+  emptyMessage = 'No blog posts are available.',
+}: {
+  posts: BlogPostMeta[];
+  emptyMessage?: string;
+}) {
+  if (!posts.length) {
+    return <p className="empty">{emptyMessage}</p>;
+  }
+  return <BlogCards posts={posts}/>;
 }

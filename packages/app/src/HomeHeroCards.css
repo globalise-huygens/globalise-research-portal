@@ -8,40 +8,32 @@
   scrollbar-color: var(--color-neutral-600) transparent;
 
   ul {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: var(--s24);
-    width: min(100%, 120rem);
+    display: flex;
+    gap: var(--s16);
+    width: max-content;
     margin: 0 auto;
-    padding: 0;
+    padding: var(--s8);
     list-style: none;
   }
 
   li {
-    min-width: 0;
+    width: clamp(12rem, 24vw, 14rem);
   }
 
-  li:nth-child(7n + 1) { --placeholder-color: var(--color-parchment-600); --card-color: var(--color-brand-parchment); }
-  li:nth-child(7n + 2) { --placeholder-color: var(--color-brand-vermilion); --card-color: var(--color-brand-vermilion); }
-  li:nth-child(7n + 3) { --placeholder-color: var(--color-turquoise-600); --card-color: var(--color-brand-turquoise); }
-  li:nth-child(7n + 4) { --placeholder-color: var(--color-brand-mint); --card-color: var(--color-brand-mint); }
-  li:nth-child(7n + 5) { --placeholder-color: var(--color-neutral-700); --card-color: var(--color-brand-vermilion); }
-  li:nth-child(7n + 6) { --placeholder-color: var(--color-parchment-800); --card-color: var(--color-brand-parchment); }
-  li:nth-child(7n + 7) { --placeholder-color: var(--color-neutral-600); --card-color: var(--color-brand-turquoise); }
-
-  .card-hero {
-    background: var(--card-color);
+  .card-cover {
+    background: var(--color-turquoise-600);
   }
 
-  .home-hero-card-placeholder {
-    background: var(--placeholder-color);
+  [data-color="parchment"] .card-cover {
+    background: var(--color-parchment-600);
   }
 
-  @media (max-width: 1599px) {
-    ul {
-      width: max-content;
-      grid-template-columns: repeat(7, clamp(12rem, 24vw, 14rem));
-      gap: var(--s16);
-    }
+  [data-color="mint"] .card-cover {
+    background: var(--color-brand-mint);
+  }
+
+  .copy {
+    min-height: 0;
+    overflow: hidden;
   }
 }

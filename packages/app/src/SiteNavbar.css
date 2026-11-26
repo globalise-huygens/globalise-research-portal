@@ -61,30 +61,70 @@
     outline-offset: 3px;
 }
 
-@media (768px <= width < 960px) {
+@media (640px <= width < 960px) {
     .site-navbar__links {
         gap: var(--s12);
     }
 }
 
-@media (640px <= width < 768px) {
-    .site-header {
-        .gds-navbar {
-            height: auto;
-            flex-wrap: wrap;
-            padding-block: var(--s16);
-        }
+.site-header .content-search-toggle,
+.site-header .content-search-popover button {
+    display: inline-flex;
+    width: var(--control);
+    height: var(--control);
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-neutral-500);
+    border-radius: 0.25rem;
+    background: var(--color-neutral-900);
+    color: var(--color-brand-white);
+    cursor: pointer;
+}
 
-        .gds-navbar__top {
-            width: 100%;
-        }
+.site-header .content-search-toggle:hover,
+.site-header .content-search-popover button:hover {
+    background: var(--color-neutral-700);
+}
 
-        .gds-navbar__toggle, .gds-navbar__mobile-panel {
-            display: flex;
-        }
+.site-header .content-search-toggle:focus-visible,
+.site-header .content-search-popover button:focus-visible,
+.site-header .content-search-popover input:focus-visible {
+    outline: 2px solid var(--color-brand-turquoise);
+    outline-offset: 2px;
+}
 
-        .site-navbar__links {
-            display: none;
-        }
-    }
+.site-header .content-search-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: currentColor;
+}
+
+.site-header .content-search-popover {
+    position: absolute;
+    z-index: 2;
+    top: calc(100% + var(--s8));
+    right: var(--shell-margin);
+    display: flex;
+    width: min(24rem, calc(100vw - 2 * var(--shell-margin)));
+    align-items: center;
+    gap: var(--s8);
+    border: 1px solid var(--color-neutral-500);
+    padding: var(--s8);
+    background: var(--color-neutral-950);
+    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.35);
+}
+
+.site-header .content-search-popover input {
+    min-width: 0;
+    height: var(--control);
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--color-brand-white);
+    font: 500 1rem / 1.4 var(--font-sans);
+}
+
+.site-header .content-search-popover input::placeholder {
+    color: var(--color-neutral-200);
+    opacity: 1;
 }

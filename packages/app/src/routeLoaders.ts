@@ -13,13 +13,17 @@ export type ContentPageLoaderData = {
 };
 
 export const routeLoaders: RouteLoaders = {
+  '/': async () => {
+    const pages = await getContentIndexServer();
+    const featuredPosts = pages.filter(isBlogPost).filter((page) =>
+      page.featured &&
+      (page.status === 'approved' || page.status === 'published'),
+    );
+    return sortBlogPosts(featuredPosts).slice(0, 3);
+  },
   '/content/blog': async () => {
     const pages = await getContentIndexServer();
-    return pages
-      .filter(isBlogPost)
-      .sort((a, b) =>
-        (blogPostDate(b) ?? '').localeCompare(blogPostDate(a) ?? ''),
-      );
+    return sortBlogPosts(pages.filter(isBlogPost));
   },
   '/content/': () => getContentIndexServer(),
   '/content/$slug': async ({ params }): Promise<ContentPageLoaderData> => {
@@ -28,6 +32,12 @@ export const routeLoaders: RouteLoaders = {
     return { page, relatedPosts };
   },
 };
+
+function sortBlogPosts(pages: BlogPostMeta[]): BlogPostMeta[] {
+  return pages.sort((a, b) =>
+    (blogPostDate(b) ?? '').localeCompare(blogPostDate(a) ?? ''),
+  );
+}
 
 async function getRelatedBlogPosts(meta: PageMeta): Promise<BlogPostMeta[]> {
   if (!isBlogPost(meta)) {
