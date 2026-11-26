@@ -1,4 +1,11 @@
-import { type AnyRoute, createRouter, type RouteComponent, type RouteIds } from '@tanstack/react-router';
+import {
+  type AnyRoute,
+  createRouter,
+  type ErrorRouteComponent,
+  type NotFoundRouteComponent,
+  type RouteComponent,
+  type RouteIds,
+} from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { orThrow } from '@globalise/common';
 import { parseUrlParams, stringifyUrlParams } from './params/urlParams.ts';
@@ -26,8 +33,8 @@ export type RouterSetup = {
 };
 
 type FallbackComponents = {
-  notFound: RouteComponent;
-  error: RouteComponent;
+  notFound: NotFoundRouteComponent;
+  error: ErrorRouteComponent;
 };
 
 export function getRouter(): AppRouter {
