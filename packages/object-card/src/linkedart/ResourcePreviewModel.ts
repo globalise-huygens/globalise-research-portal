@@ -1,6 +1,6 @@
 import { findTimespan, findByPath, getContent, getLinkedArtEntityType, getValue, getValues, type LinkedArtNode } from '@globalise/common';
 import type { EntityPreviewCardData, EntityPreviewCardProperty, EntityPreviewCardType } from '@globalise/design';
-import { getEntityNameRecords } from './EntityStatusModel.ts';
+import { getPersonNameRecords } from './PersonStatusModel.ts';
 import { getRelationValue, getResolvedRelationValue } from './RelationValueModel.ts';
 import { formatTimespan } from './TimespanFormat.ts';
 import { createElement, type ReactNode } from 'react';
@@ -26,7 +26,7 @@ export function getResourcePreview(resource: LinkedArtNode, uri: string, renderR
   const names = [...new Set([
     ...getValues(resource.altLabel),
     ...findByPath(resource, ['identified_by']).filter((name) => name.type === 'Name').map(getContent),
-    ...getEntityNameRecords(resource).map((record) => record.name),
+    ...getPersonNameRecords(resource).map((record) => record.name),
   ].map((name) => name.trim()).filter((name) => name && name !== title))];
   if (names.length) {
     properties.push({ label: type === 'person' ? 'Also called' : 'Alt label', value: names.join(', ') });
