@@ -1,8 +1,14 @@
+import { useEffect, useRef } from 'react';
+import { useLocation } from '@globalise/router';
+import { createObjectCardSplat } from '@globalise/common/uri';
+import { CardCopyAction } from '../CardCopyAction.tsx';
+import { CardOpenAction } from '../CardOpenAction.tsx';
 import {
   findByPath,
   findTimespan,
   getContent,
   getEntityIdentifiers,
+  getJsonUrl,
   getRecordedDates,
   getStatusValues,
   url,
@@ -24,7 +30,7 @@ import {
 } from './EntityStatusModel.ts';
 import { EntityReferencePanel } from './EntityReferencePanel.tsx';
 import { StatusValues } from './StatusValues.tsx';
-import { RelationLink } from './RelationLink.tsx';
+import { RelationValue } from './RelationLink.tsx';
 import { getNotes, isVisibleSource, SourceList } from './SourceList.tsx';
 import { TimespanValue } from './TimespanValue.tsx';
 import { RecordedDatesValue } from './RecordedDatesValue.tsx';
@@ -584,11 +590,32 @@ function ShipVoyageList({
       entityResourceQueryOptions(url(voyage) ?? ''),
     ),
   });
+  const list = useRef<HTMLOListElement>(null);
+  const hash = useLocation({ select: (location) => location.hash });
+  const pending = results.some((result) => result.isPending);
+  useEffect(() => {
+    if (!hash || pending) {return;}
+    const anchor = decodeURIComponent(hash.replace(/^#/, ''));
+    const target = document.getElementById(anchor);
+    if (!target || !list.current?.contains(target)) {return;}
+    let ancestor: HTMLElement | null = target;
+    while (ancestor && list.current.contains(ancestor)) {
+      const toggle = ancestor.querySelector<HTMLButtonElement>(
+        ':scope > .disclosure > .disclosure-header .disclosure-toggle[aria-expanded="false"]',
+      );
+      toggle?.click();
+      ancestor = ancestor.parentElement;
+    }
+    const frame = requestAnimationFrame(() =>
+      target.scrollIntoView({ block: 'center' }),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [hash, pending]);
   const hierarchy = buildVoyageHierarchy(
     voyages.map((voyage, index) => results[index].data ?? voyage),
   );
   return (
-    <ol className="person-status-list ship-voyage-hierarchy">
+    <ol ref={list} className="person-status-list ship-voyage-hierarchy">
       {hierarchy.map((node) => (
         <ShipVoyageNode key={node.key} node={node} identifiers={identifiers} />
       ))}
@@ -603,8 +630,9 @@ function ShipVoyageNode({
   node: VoyageHierarchyNode;
   identifiers: string[];
 }) {
+  const anchor = node.voyage.id && createObjectCardSplat(node.voyage.id);
   return (
-    <li>
+    <li id={anchor ?? undefined}>
       <ShipVoyage voyage={node.voyage} identifiers={identifiers} />
       {!!node.children.length && (
         <ol className="ship-voyage-nested-list">
@@ -628,6 +656,7 @@ function ShipVoyage({
   voyage: LinkedArtNode;
   identifiers: string[];
 }) {
+  const voyageUri = url(voyage);
   const timespan = findTimespan(voyage);
   const dates = timespan ? null : getRecordedDates(voyage);
   const sources = findByPath(voyage, ['referred_to_by']);
@@ -659,8 +688,21 @@ function ShipVoyage({
     >
       <ObjectCardPropertyList className="person-status-details">
         <ObjectCardProperty
-          label="Voyage"
-          value={<RelationLink node={voyage} />}
+          label="Voyage ID"
+          value={
+            <span className="voyage-identifier">
+              <RelationValue node={voyage} />
+              {voyageUri && (
+                <>
+                  <CardCopyAction uri={voyageUri} label="Copy voyage URI" />
+                  <CardOpenAction
+                    url={getJsonUrl(voyageUri)}
+                    label="Open voyage JSON-LD"
+                  />
+                </>
+              )}
+            </span>
+          }
         />
         {timespan && (
           <ObjectCardProperty

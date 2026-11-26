@@ -38,6 +38,10 @@ export function RelationLink({
   }
 
   const objectCardPath = createObjectCardPath(href);
+  if (objectCardPath && getLinkedArtEntityType(href) === 'voyage') {
+    return <EntityTag type="voyage" href={objectCardPath}>{linkLabel}</EntityTag>;
+  }
+
 
   // The recorded reference can open the card before its details are fetched.
   const previewResource = resource ?? (previewOnDemand ? node : undefined);

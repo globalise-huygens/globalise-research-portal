@@ -23,3 +23,5 @@ export {
   useCollection,
 } from './hydra';
 export { RelationLink } from './linkedart/RelationLink.tsx';
+
+export { entityResourceQueryOptions } from './linkedart/RelationValueResolver.ts';
