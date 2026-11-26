@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { SubmitEvent } from 'react';
 import { useRouterState } from '@tanstack/react-router';
 import { Button, Input, SearchField } from 'react-aria-components';
 import {
@@ -36,11 +37,14 @@ export function SiteNavbar() {
     },
   });
 
-  function searchContent(value: string) {
+  function searchContent(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const value = new FormData(event.currentTarget).get('q');
+    const query = typeof value === 'string' ? value.trim() : '';
     setContentSearchOpen(false);
     void router.navigate({
       to: '/content',
-      search: { q: value.trim() || undefined },
+      search: { q: query || undefined },
     });
   }
 
@@ -81,19 +85,18 @@ export function SiteNavbar() {
         </NavLinks>
       </Navbar>
       {contentSearchOpen && isContentPage && (
-        <SearchField
-          aria-label="Search site content"
-          className="content-search-popover"
-          onSubmit={searchContent}
-        >
-          <Input
-            autoFocus
-            placeholder="Search site content"
-          />
-          <Button type="submit" aria-label="Submit site content search">
-            <ContentSearchIcon/>
-          </Button>
-        </SearchField>
+        <form className="content-search-popover" onSubmit={searchContent}>
+          <SearchField aria-label="Search site content">
+            <Input
+              autoFocus
+              name="q"
+              placeholder="Search site content"
+            />
+            <Button type="submit" aria-label="Submit site content search">
+              <ContentSearchIcon/>
+            </Button>
+          </SearchField>
+        </form>
       )}
     </header>
   );
