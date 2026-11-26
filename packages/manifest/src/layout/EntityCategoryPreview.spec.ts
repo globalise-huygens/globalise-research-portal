@@ -1,18 +1,18 @@
-import { createElement, type ComponentProps } from 'react';
+import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { PopoverCard } from '@globalise/design';
+import type { WrappingPopoverCardProps } from '@globalise/design';
 import { describe, expect, it, vi } from 'vitest';
 import { EntityCategoryPreview } from './EntityCategoryPreview';
 
-vi.mock('@globalise/design', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@globalise/design')>();
-  return {
-    ...actual,
-    PopoverCard: ({ children, renderTrigger }: ComponentProps<typeof PopoverCard>) =>
-      createElement('div', null, renderTrigger?.({}), children),
-  };
-});
+vi.mock('@globalise/design', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@globalise/design')>(),
+  WrappingPopoverCard: PopoverCardStub,
+}));
+
+function PopoverCardStub({ trigger, content }: WrappingPopoverCardProps) {
+  return createElement('div', null, trigger({}), content);
+}
 
 describe('EntityCategoryPreview', () => {
   it('links the NER card and appellative subject concept using resolved labels', () => {

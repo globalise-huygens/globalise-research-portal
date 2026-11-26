@@ -1,4 +1,4 @@
-import { EntityTag, PreviewCard, type EntityPreviewCardData } from '@globalise/design';
+import { EntityTag, WrappingPreviewCard, type EntityPreviewCardData } from '@globalise/design';
 
 type ClassificationPreviewProps = {
   label: string;
@@ -7,12 +7,12 @@ type ClassificationPreviewProps = {
 
 export function ClassificationPreview({ label, data }: ClassificationPreviewProps) {
   return (
-    <PreviewCard data={data}>
+    <WrappingPreviewCard data={data}>
       {(attributes) => (
         <button {...attributes} type="button" className="manifest-preview-link">
           <EntityTag type="concept">{label}</EntityTag>
         </button>
       )}
-    </PreviewCard>
+    </WrappingPreviewCard>
   );
 }
