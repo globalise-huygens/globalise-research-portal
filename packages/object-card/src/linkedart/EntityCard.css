@@ -130,10 +130,6 @@
         gap: var(--s8);
       }
 
-      .conversion-evidence-label {
-        font-family: var(--font-mono);
-      }
-
       .conversion-overview-fact {
         display: inline-flex;
         flex-wrap: wrap;

@@ -103,14 +103,14 @@ export function ConversionCardBody({ entity }: { entity: LinkedArtNode }) {
       >
         <div className="person-status-list">
           {!!notes.length && <ObjectCardDisclosure summary={
-            <span className="conversion-evidence-label">Notes</span>
+            <span className="person-status-summary-value">Notes</span>
           }>
             <ObjectCardPropertyList className="person-status-details">
               <ObjectCardProperty label="Notes" value={notes.join('\n\n')} />
             </ObjectCardPropertyList>
           </ObjectCardDisclosure>}
           {!!sources.length && <ObjectCardDisclosure summary={
-            <span className="conversion-evidence-label">Sources</span>
+            <span className="person-status-summary-value">Sources</span>
           }>
             <ObjectCardPropertyList className="person-status-details">
               <ObjectCardProperty
