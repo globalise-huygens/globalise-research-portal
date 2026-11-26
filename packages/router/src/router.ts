@@ -1,7 +1,7 @@
 import { type AnyRoute, createRouter, type RouteComponent, type RouteIds } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { orThrow } from '@globalise/common';
-import { NotFoundPage } from './NotFoundPage.tsx';
+import { NotFoundPage, RouteErrorPage } from './FallbackPage.tsx';
 import { parseUrlParams, stringifyUrlParams } from './params/urlParams.ts';
 import { routeTree } from './routeTree.gen.ts';
 
@@ -64,6 +64,7 @@ function createAppRouter() {
       '.site-content:has(> :is(.blog-index, .blog-post, .content-page, .content-home))',
     ],
     defaultNotFoundComponent: NotFoundPage,
+    defaultErrorComponent: RouteErrorPage,
   });
 }
 
