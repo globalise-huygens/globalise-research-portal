@@ -9,7 +9,7 @@ import { type ViewerRef, createDocumentId, createViewerPath, handle } from '@glo
 import { parseManifestRoute } from './ManifestRoute';
 import { resolveManifestRoute } from './resolveManifestRoute';
 
-const route = getRouteApi(`/${handle}/$`);
+const route = getRouteApi(`/${handle}/inventory:{$}`);
 
 export function useResolveManifestRoute(viewer: ViewerRef | null): boolean {
   const navigate = useNavigate();

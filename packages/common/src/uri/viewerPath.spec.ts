@@ -5,7 +5,7 @@ const inventoryPath = '/hdl:20.500.14722/inventory:1053';
 const pagePath = `${inventoryPath}/0004`;
 const documentPath = `${inventoryPath}/0003-0067`;
 
-const inventorySplat = 'inventory:1053';
+const inventorySplat = '1053';
 const pageSplat = `${inventorySplat}/0004`;
 const documentSplat = `${inventorySplat}/0003-0067`;
 

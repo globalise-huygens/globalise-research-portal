@@ -39,7 +39,7 @@ import { shareLabels } from './share/shareLabels';
 import { toManifestRoute } from './share/toManifestRoute';
 import { useResolveManifestRoute } from './share/useResolveManifestRoute';
 
-const route = getRouteApi(`/${handle}/$`);
+const route = getRouteApi(`/${handle}/inventory:{$}`);
 
 const collectionUrl = `${idBase}/inventory:collection`;
 

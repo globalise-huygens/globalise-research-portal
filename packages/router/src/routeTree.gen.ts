@@ -17,6 +17,7 @@ import { Route as ContentIndexRouteImport } from './routes/content/index'
 import { Route as ContentSlugRouteImport } from './routes/content/$slug'
 import { Route as ContentBlogRouteImport } from './routes/content/blog'
 import { Route as HdlChar5820Dot500Dot14722SplatRouteImport } from './routes/hdl:20[.]500[.]14722/$'
+import { Route as HdlChar5820Dot500Dot14722InventoryChar58Char123Char125RouteImport } from './routes/hdl:20[.]500[.]14722/inventory:{$}'
 import { Route as ObjectCardIndexRouteImport } from './routes/object-card/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -60,6 +61,12 @@ const HdlChar5820Dot500Dot14722SplatRoute =
     path: '/hdl:20.500.14722/$',
     getParentRoute: () => rootRouteImport,
   } as any)
+const HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route =
+  HdlChar5820Dot500Dot14722InventoryChar58Char123Char125RouteImport.update({
+    id: '/hdl:20.500.14722/inventory:{$}',
+    path: '/hdl:20.500.14722/inventory:{$}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ObjectCardIndexRoute = ObjectCardIndexRouteImport.update({
   id: '/object-card/',
   path: '/object-card/',
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/content/$slug': typeof ContentSlugRoute
   '/content/blog': typeof ContentBlogRoute
   '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
+  '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/content/$slug': typeof ContentSlugRoute
   '/content/blog': typeof ContentBlogRoute
   '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
+  '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog': typeof CatalogIndexRoute
   '/content': typeof ContentIndexRoute
   '/object-card': typeof ObjectCardIndexRoute
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/content/$slug': typeof ContentSlugRoute
   '/content/blog': typeof ContentBlogRoute
   '/hdl:20.500.14722/$': typeof HdlChar5820Dot500Dot14722SplatRoute
+  '/hdl:20.500.14722/inventory:{$}': typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   '/catalog/': typeof CatalogIndexRoute
   '/content/': typeof ContentIndexRoute
   '/object-card/': typeof ObjectCardIndexRoute
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/content/$slug'
     | '/content/blog'
     | '/hdl:20.500.14722/$'
+    | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog/'
     | '/content/'
     | '/object-card/'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/content/$slug'
     | '/content/blog'
     | '/hdl:20.500.14722/$'
+    | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog'
     | '/content'
     | '/object-card'
@@ -131,6 +143,7 @@ export interface FileRouteTypes {
     | '/content/$slug'
     | '/content/blog'
     | '/hdl:20.500.14722/$'
+    | '/hdl:20.500.14722/inventory:{$}'
     | '/catalog/'
     | '/content/'
     | '/object-card/'
@@ -143,6 +156,7 @@ export interface RootRouteChildren {
   ContentSlugRoute: typeof ContentSlugRoute
   ContentBlogRoute: typeof ContentBlogRoute
   HdlChar5820Dot500Dot14722SplatRoute: typeof HdlChar5820Dot500Dot14722SplatRoute
+  HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route: typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route
   CatalogIndexRoute: typeof CatalogIndexRoute
   ContentIndexRoute: typeof ContentIndexRoute
   ObjectCardIndexRoute: typeof ObjectCardIndexRoute
@@ -206,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HdlChar5820Dot500Dot14722SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hdl:20.500.14722/inventory:{$}': {
+      id: '/hdl:20.500.14722/inventory:{$}'
+      path: '/hdl:20.500.14722/inventory:{$}'
+      fullPath: '/hdl:20.500.14722/inventory:{$}'
+      preLoaderRoute: typeof HdlChar5820Dot500Dot14722InventoryChar58Char123Char125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/object-card/': {
       id: '/object-card/'
       path: '/object-card'
@@ -223,6 +244,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContentSlugRoute: ContentSlugRoute,
   ContentBlogRoute: ContentBlogRoute,
   HdlChar5820Dot500Dot14722SplatRoute: HdlChar5820Dot500Dot14722SplatRoute,
+  HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route:
+    HdlChar5820Dot500Dot14722InventoryChar58Char123Char125Route,
   CatalogIndexRoute: CatalogIndexRoute,
   ContentIndexRoute: ContentIndexRoute,
   ObjectCardIndexRoute: ObjectCardIndexRoute,
