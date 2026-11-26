@@ -1,9 +1,15 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useContext, useEffect } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useSearchFacet } from '@knaw-huc/faceted-search-react';
-import { Button, DisclosureGroup, Disclosure, DisclosurePanel } from 'react-aria-components';
+import {
+  Button,
+  DisclosureGroup,
+  Disclosure,
+  DisclosurePanel,
+  DisclosureStateContext,
+} from 'react-aria-components';
 import { DialogTrigger, Popover } from 'react-aria-components/Popover';
-import { Checkbox, IconExpandSection } from '@globalise/design';
+import { Checkbox, ExpandCollapseIcon, IconExpandSection } from '@globalise/design';
 import getQueryExpansionQueryOptions, {
   type QueryExpansion,
   type SourceExpansion,
@@ -64,7 +70,7 @@ function TermSelection({ term, sourceExpansions }: { term: string, sourceExpansi
   return (
     <Disclosure className={classes.selection}>
       <Button slot="trigger" className={classes.header}>
-        <IconExpandSection className={classes.icon}/>
+        <SelectionExpandCollapseIcon/>
         <span className={classes.label}>Term:</span>
 
         <Checkbox name={term} className={classes.checkbox}
@@ -94,7 +100,7 @@ function MethodsSelection({ term, sourceExpansion }: { term: string, sourceExpan
   return (
     <Disclosure className={classes.selection}>
       <Button slot="trigger" className={classes.header}>
-        <IconExpandSection className={classes.icon}/>
+        <SelectionExpandCollapseIcon/>
         <span className={classes.label}>Method:</span>
 
         <Checkbox name={sourceExpansion.source_id} className={classes.checkbox}
@@ -108,6 +114,12 @@ function MethodsSelection({ term, sourceExpansion }: { term: string, sourceExpan
       <ExpansionsSelection term={term} sourceExpansion={sourceExpansion}/>
     </Disclosure>
   );
+}
+
+function SelectionExpandCollapseIcon() {
+  const { isExpanded } = useContext(DisclosureStateContext)!;
+
+  return <ExpandCollapseIcon isExpanded={isExpanded} className={classes.icon}/>;
 }
 
 function ExpansionsSelection({ term, sourceExpansion }: { term: string, sourceExpansion: SourceExpansion }) {

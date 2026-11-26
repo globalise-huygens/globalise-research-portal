@@ -112,13 +112,7 @@
   .entity-menu .expand-icon {
     width: var(--s16);
     height: var(--s16);
-    flex-shrink: 0;
     margin-left: auto;
-    transition: transform 120ms ease-out;
-  }
-
-  .entity-menu .expand[aria-expanded="true"] .expand-icon {
-    transform: rotate(180deg);
   }
 
 }

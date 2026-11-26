@@ -1,6 +1,6 @@
 import { CSSProperties, useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { useIsFetching, useSuspenseQuery } from '@tanstack/react-query';
-import { Checkbox, IconExpandSection } from '@globalise/design';
+import { Checkbox, ExpandCollapseIcon } from '@globalise/design';
 import {
   Hierarchy,
   useHierarchy,
@@ -102,7 +102,7 @@ function HierarchyFacetTreeItem(
           item={item}
           level={level}
           hasChildren={hasChildItems}
-          isOpen={isExpanded}
+          isExpanded={isExpanded}
         />}
       </TreeItemContent>
 
@@ -118,11 +118,11 @@ function HierarchyFacetTreeItem(
   );
 }
 
-function HierarchyFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
+function HierarchyFacetTreeItemContent({ item, level, hasChildren, isExpanded }: {
   item: HierarchyFacetItem,
   level: number,
   hasChildren: boolean,
-  isOpen: boolean,
+  isExpanded: boolean,
 }) {
   const { toggle, isSelected, isPartial } = useHierarchy();
 
@@ -139,8 +139,8 @@ function HierarchyFacetTreeItemContent({ item, level, hasChildren, isOpen }: {
         <ItemContent item={item}/>
       </Checkbox>
 
-      {hasChildren && <Button slot="chevron" className={`${classes.toggle} ${isOpen ? classes.expanded : ''}`}>
-        <IconExpandSection/>
+      {hasChildren && <Button slot="chevron" className={classes.toggle}>
+        <ExpandCollapseIcon isExpanded={isExpanded}/>
       </Button>}
     </div>
   );
