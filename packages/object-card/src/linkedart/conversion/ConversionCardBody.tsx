@@ -37,6 +37,11 @@ type ConversionDimension = {
   commodities: LinkedArtNode[];
 };
 
+type ExchangeDimensions = {
+  from: ConversionDimension[];
+  to: ConversionDimension[];
+};
+
 export function ConversionCardBody({ entity }: { entity: LinkedArtNode }) {
   const exchanges = findByPath(entity, ['intentionally_initiated']);
   const timespan = findTimespan(entity);
@@ -97,12 +102,16 @@ export function ConversionCardBody({ entity }: { entity: LinkedArtNode }) {
         title="Further information" collapsible
       >
         <div className="person-status-list">
-          {!!notes.length && <ObjectCardDisclosure summary="Notes">
+          {!!notes.length && <ObjectCardDisclosure summary={
+            <span className="conversion-evidence-label">Notes</span>
+          }>
             <ObjectCardPropertyList className="person-status-details">
               <ObjectCardProperty label="Notes" value={notes.join('\n\n')} />
             </ObjectCardPropertyList>
           </ObjectCardDisclosure>}
-          {!!sources.length && <ObjectCardDisclosure summary="Sources">
+          {!!sources.length && <ObjectCardDisclosure summary={
+            <span className="conversion-evidence-label">Sources</span>
+          }>
             <ObjectCardPropertyList className="person-status-details">
               <ObjectCardProperty
                 label="Sources" value={<SourceList sources={sources} />}
@@ -123,12 +132,50 @@ export function getConversionTitle(entity: LinkedArtNode): string {
   return [...names, getContent(entity)].find(Boolean) ?? 'Name not recorded';
 }
 
+export function ConversionOverview({ entity }: { entity: LinkedArtNode }) {
+  const exchanges = findByPath(entity, ['intentionally_initiated'])
+    .map(getExchangeDimensions)
+    .filter(({ from, to }) => from.length > 0 || to.length > 0);
+  if (!exchanges.length) {
+    return null;
+  }
+  return <div className="person-overview conversion-overview">
+    {exchanges.map((dimensions, index) => <span
+      className="conversion-overview-fact" key={index}
+    >
+      <ExchangeSummary {...dimensions} />
+    </span>)}
+  </div>;
+}
+
 function ExchangeDisclosure({ exchange }: { exchange: LinkedArtNode }) {
+  const dimensions = getExchangeDimensions(exchange);
+  const { from, to } = dimensions;
+  return <ObjectCardDisclosure
+    className="conversion-summary"
+    summary={<ExchangeSummary {...dimensions} />}
+  >
+    <ObjectCardPropertyList className="person-status-details">
+      {from.map((dimension, index) => <DimensionDetails
+        key={`from-${index}`} dimension={dimension} label="From"
+      />)}
+      {to.map((dimension, index) => <DimensionDetails
+        key={`to-${index}`} dimension={dimension} label="To"
+      />)}
+    </ObjectCardPropertyList>
+  </ObjectCardDisclosure>;
+}
+
+function getExchangeDimensions(exchange: LinkedArtNode): ExchangeDimensions {
   const from = findByPath(exchange, ['has_exchange_value_subject'])
     .map(getDimension);
   const to = findByPath(exchange, ['ascribes_exchange_value_equivalent'])
     .map(getDimension);
-  const summary = <>
+  return { from, to };
+}
+
+function ExchangeSummary({ from, to }: ExchangeDimensions) {
+  return <>
     {from.map((dimension, index) => <SummaryProperty
       key={`from-${index}`} label="From" separator=" "
     >
@@ -142,20 +189,6 @@ function ExchangeDisclosure({ exchange }: { exchange: LinkedArtNode }) {
     </SummaryProperty>)}
     {!from.length && !to.length && 'Exchange value not recorded'}
   </>;
-
-  return <ObjectCardDisclosure
-    className="conversion-summary"
-    summary={summary}
-  >
-    <ObjectCardPropertyList className="person-status-details">
-      {from.map((dimension, index) => <DimensionDetails
-        key={`from-${index}`} dimension={dimension} label="From"
-      />)}
-      {to.map((dimension, index) => <DimensionDetails
-        key={`to-${index}`} dimension={dimension} label="To"
-      />)}
-    </ObjectCardPropertyList>
-  </ObjectCardDisclosure>;
 }
 
 function DimensionDetails({ dimension, label: side }: {

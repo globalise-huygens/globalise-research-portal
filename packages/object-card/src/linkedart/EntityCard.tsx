@@ -38,6 +38,7 @@ import {
 } from './occurrence/OccurrenceCardBody.tsx';
 import {
   ConversionCardBody,
+  ConversionOverview,
   getConversionTitle,
 } from './conversion/ConversionCardBody.tsx';
 import './EntityCard.css';
@@ -91,6 +92,7 @@ export function EntityCard() {
         {entityType === 'person' && <PersonOverview entity={entity}/>}
         {entityType === 'place' && <PlaceOverview entity={entity}/>}
         {entityType === 'occurrence' && <OccurrenceOverview entity={entity}/>}
+        {entityType === 'conversion' && <ConversionOverview entity={entity}/>}
         {showIdentifiers && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>

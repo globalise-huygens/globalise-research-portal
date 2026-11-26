@@ -11,6 +11,7 @@ import {
 } from './occurrence/OccurrenceCardBody.tsx';
 import {
   ConversionCardBody,
+  ConversionOverview,
   getConversionTitle,
 } from './conversion/ConversionCardBody.tsx';
 
@@ -238,6 +239,42 @@ describe('conversion card', () => {
     }));
     expect(html).toContain('>1<');
     expect(html).toContain('>2<');
+  });
+
+  it('shows recorded exchange values and links in the overview', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [{
+          type: 'Dimension',
+          value: '1',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/from' },
+        }],
+        ascribes_exchange_value_equivalent: [{
+          type: 'Dimension',
+          lower_value_limit: '2',
+          upper_value_limit: '3',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/to' },
+        }],
+      }],
+    };
+    const html = renderToStaticMarkup(createElement(ConversionOverview, {
+      entity,
+    }));
+    expect(html).toContain('From');
+    expect(html).toContain('To');
+    expect(html).toContain('>1 ');
+    expect(html).toContain('2–3');
+    expect(html).toContain('href="https://example.org/from"');
+    expect(html).toContain('href="https://example.org/to"');
+  });
+
+  it('omits the overview when no exchange values are recorded', () => {
+    const html = renderToStaticMarkup(createElement(ConversionOverview, {
+      entity: { type: 'FinancialExchange' },
+    }));
+    expect(html).toBe('');
   });
 
   it('keeps additional dates when a nested timespan is present', () => {

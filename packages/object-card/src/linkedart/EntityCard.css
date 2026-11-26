@@ -118,15 +118,33 @@
       align-items: baseline;
     }
 
-    &.conversion-card .conversion-target-value {
-      margin-top: var(--s12);
-    }
+    &.conversion-card {
+      .conversion-target-value {
+        margin-top: var(--s12);
+      }
 
-    &.conversion-card .conversion-summary .disclosure-header .disclosure-summary {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: var(--s8);
+      .conversion-summary .disclosure-header .disclosure-summary {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s8);
+      }
+
+      .conversion-evidence-label {
+        font-family: var(--font-mono);
+      }
+
+      .conversion-overview-fact {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s8);
+      }
+
+      .conversion-overview .person-status-summary-value {
+        color: var(--color-neutral-300);
+        font-style: italic;
+      }
     }
 
     &:is(.person-card, .place-card, .occurrence-card, .conversion-card) {
