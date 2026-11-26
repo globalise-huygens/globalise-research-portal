@@ -50,6 +50,11 @@
 
     .text {
         z-index: 1;
+        isolation: isolate;
+    }
+
+    .text > div {
+        mix-blend-mode: darken;
     }
 
     .blocks .layout-element-shape {

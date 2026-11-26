@@ -1,14 +1,14 @@
 import { useRouter } from '@globalise/router';
 import { IconArrowTopRight } from '@globalise/design';
 import { Link } from 'react-aria-components';
-import type { PageMeta } from '@globalise/content';
+import type { BlogPostMeta } from './blogPost.ts';
 import './BlogCards.css';
 
 export function BlogCards({
   posts,
   heading: Heading = 'h2',
 }: {
-  posts: PageMeta[];
+  posts: BlogPostMeta[];
   heading?: 'h2' | 'h3';
 }) {
   const router = useRouter();

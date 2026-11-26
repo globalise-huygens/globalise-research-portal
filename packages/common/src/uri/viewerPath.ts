@@ -5,6 +5,16 @@ import type { DocumentRef } from './documentId';
 
 export type ViewerRef = InventoryRef | PageRef | DocumentRef;
 
+export function isDocumentRef(ref: ViewerRef): ref is DocumentRef {
+  return 'endPage' in ref;
+}
+export function isPageRef(ref: ViewerRef): ref is PageRef {
+  return 'page' in ref && !isDocumentRef(ref);
+}
+export function isInventoryRef(ref: ViewerRef): ref is InventoryRef {
+  return 'inventory' in ref && !isPageRef(ref) && !isDocumentRef(ref);
+}
+
 export function createViewerPath(
   ref: ViewerRef,
 ): string {

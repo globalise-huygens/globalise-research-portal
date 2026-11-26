@@ -29,8 +29,8 @@ describe(toManifestHref.name, () => {
 
   it('builds the viewer path of the inventory of a manifest', () => {
     const manifest = `${handle}/inventory:1171A.manifest`;
-    const href = toManifestHref(manifest, { manifest });
-    expect(href).toMatch(/^\/hdl:20\.500\.14722\/inventory:1171A\?manifest=/u);
+    const href = toManifestHref(manifest, { q: 'Batavia' });
+    expect(href).toBe('/hdl:20.500.14722/inventory:1171A?q=Batavia');
   });
 
   it('builds nothing for other id types', () => {

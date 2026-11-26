@@ -4,20 +4,20 @@ import {
   getContentPageServer,
 } from '@globalise/content/serve';
 import { blogPostDate, isBlogPost } from './blogPost.ts';
+import type { BlogPostMeta } from './blogPost.ts';
 import type { RouteLoaders } from '@globalise/router';
 
 export type ContentPageLoaderData = {
   page: ContentPage;
-  relatedPosts: PageMeta[];
+  relatedPosts: BlogPostMeta[];
 };
 
 export const routeLoaders: RouteLoaders = {
   '/': async () => {
     const pages = await getContentIndexServer();
-    const featuredPosts = pages.filter((page) =>
+    const featuredPosts = pages.filter(isBlogPost).filter((page) =>
       page.featured &&
-      (page.status === 'approved' || page.status === 'published') &&
-      isBlogPost(page),
+      (page.status === 'approved' || page.status === 'published'),
     );
     return sortBlogPosts(featuredPosts).slice(0, 3);
   },
@@ -33,13 +33,13 @@ export const routeLoaders: RouteLoaders = {
   },
 };
 
-function sortBlogPosts(pages: PageMeta[]): PageMeta[] {
+function sortBlogPosts(pages: BlogPostMeta[]): BlogPostMeta[] {
   return pages.sort((a, b) =>
     (blogPostDate(b) ?? '').localeCompare(blogPostDate(a) ?? ''),
   );
 }
 
-async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
+async function getRelatedBlogPosts(meta: PageMeta): Promise<BlogPostMeta[]> {
   if (!isBlogPost(meta)) {
     return [];
   }
@@ -52,14 +52,14 @@ async function getRelatedBlogPosts(meta: PageMeta): Promise<PageMeta[]> {
 
   const pages = await getContentIndexServer();
   const requestedSlugs = new Set(relatedSlugs);
-  const postsBySlug = new Map<string, PageMeta>();
+  const postsBySlug = new Map<string, BlogPostMeta>();
   for (const page of pages) {
     if (requestedSlugs.has(page.slug) && isBlogPost(page)) {
       postsBySlug.set(page.slug, page);
     }
   }
 
-  const relatedPosts: PageMeta[] = [];
+  const relatedPosts: BlogPostMeta[] = [];
   for (const slug of relatedSlugs) {
     const post = postsBySlug.get(slug);
     if (post) {

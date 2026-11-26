@@ -29,6 +29,8 @@ import {
 import { SourceList } from './SourceList.tsx';
 import { StatusSection } from './StatusSection.tsx';
 import { useEntity } from './EntitySlice.ts';
+import { PlaceCardBody } from './place/PlaceCardBody.tsx';
+import { PlaceOverview } from './place/PlaceOverview.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -44,7 +46,7 @@ export function EntityCard() {
 
   return (
     <ObjectCard
-      className={entityType === 'person' ? 'entity-card person-card' : 'entity-card'}
+      className={entityType === 'person' ? 'entity-card person-card' : entityType === 'place' ? 'entity-card place-card' : 'entity-card'}
     >
       <ObjectCardHeader
         actions={
@@ -59,7 +61,8 @@ export function EntityCard() {
           {entityType === 'person' ? getPersonTitle(entity) : getEntityTitle(entity)}
         </ObjectCardTitle>
         {entityType === 'person' && <PersonOverview entity={entity}/>}
-        {entityType !== 'person' && !!identifiers.length && (
+        {entityType === 'place' && <PlaceOverview entity={entity}/>}
+        {entityType !== 'person' && entityType !== 'place' && !!identifiers.length && (
           <ObjectCardStats>
             <ObjectCardStat>{identifiers.join(', ')}</ObjectCardStat>
           </ObjectCardStats>
@@ -67,6 +70,8 @@ export function EntityCard() {
       </ObjectCardHeader>
       {entityType === 'person' ? (
         <PersonCardBody entity={entity}/>
+      ) : entityType === 'place' ? (
+        <PlaceCardBody entity={entity}/>
       ) : (
         <ObjectCardBody>
           <ObjectCardPanel side="left">

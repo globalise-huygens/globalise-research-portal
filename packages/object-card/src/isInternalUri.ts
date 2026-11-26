@@ -10,7 +10,10 @@ export function isInternalUri(uri?: string): boolean {
     return false;
   }
   try {
-    return new URL(uri).hostname === internalHost;
+    const { hostname, pathname } = new URL(uri);
+    return hostname === internalHost
+      || (hostname === 'id.globalise.nl'
+        && pathname.startsWith('/hdl:20.500.14722/'));
   } catch {
     return false;
   }
