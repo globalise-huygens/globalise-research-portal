@@ -4,6 +4,7 @@ import {
   Checkbox,
   cn,
   IconExpandSection,
+  isInsidePopoverCard,
   Popover,
   ToolButton,
   Tooltip,
@@ -87,12 +88,7 @@ function EntityHighlightMenu({
         return;
       }
 
-      const previewTriggers = menu.querySelectorAll('[data-preview-controls]');
-      const isInsidePreview = Array.from(previewTriggers).some((trigger) => {
-        const id = trigger.getAttribute('data-preview-controls');
-        return id && document.getElementById(id)?.contains(target);
-      });
-      if (!isInsidePreview) {
+      if (!isInsidePopoverCard(target)) {
         setIsOpen(false);
       }
     };
@@ -231,16 +227,13 @@ function EntityHighlightMenu({
                   </>
                 );
 
-
                 function renderLabel(attributes: React.AriaAttributes = {}) {
-                  const previewId = attributes['aria-controls'];
                   if (hasSubcategories) {
                     return (
                       <AriaButton
                         aria-label={`Toggle ${category.label} subcategories`}
                         aria-describedby={category.preview ? previewHintId : undefined}
                         aria-expanded={isExpanded}
-                        data-preview-controls={previewId}
                         className="label expand"
                         onPress={() => toggleExpandedGroup(category.id)}
                       >
@@ -260,7 +253,6 @@ function EntityHighlightMenu({
                     <AriaButton
                       {...attributes}
                       aria-label={`Preview ${category.label}`}
-                      data-preview-controls={previewId}
                       className="label preview-label"
                     >
                       {label}
@@ -274,7 +266,7 @@ function EntityHighlightMenu({
                     <EntityCategoryPreview
                       data={category.preview}
                       label={category.label}
-                      openOnTouch={!hasSubcategories}
+                      opening={hasSubcategories ? 'action' : 'label'}
                     >
                       {renderLabel}
                     </EntityCategoryPreview>
@@ -336,7 +328,6 @@ function EntityHighlightMenu({
                                     <AriaButton
                                       {...attributes}
                                       aria-label={`Preview ${category.label} ${subcategory.label}`}
-                                      data-preview-controls={attributes['aria-controls']}
                                       className="label preview-label"
                                     >
                                       <span className="label-text">{subcategory.label}</span>

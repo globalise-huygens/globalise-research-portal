@@ -2,6 +2,8 @@ export { AttachedPreviewCard } from './AttachedPreviewCard';
 export { WrappingPreviewCard } from './WrappingPreviewCard';
 export { WrappingPopoverCard } from './WrappingPopoverCard';
 export type { WrappingPopoverCardProps } from './WrappingPopoverCard';
+export type { PopoverCardOpening } from './usePopoverTrigger';
+export { isInsidePopoverCard } from './isInsidePopoverCard';
 export { Button, ButtonLink, buttonVariants } from './Button';
 export type { ButtonLinkProps, ButtonProps } from './Button';
 

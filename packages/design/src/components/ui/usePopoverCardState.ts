@@ -10,7 +10,6 @@ export type PopoverCardState = {
   open: boolean;
   visible: boolean;
   hasContent: boolean;
-  closeOnFocusLeave: boolean;
   popupElement: HTMLElement | null;
   setPopupElement: (element: HTMLElement | null) => void;
   setCardHovered: (hovered: boolean) => void;
@@ -33,13 +32,12 @@ export const PopoverCardContext = createContext<PopoverCardParent | undefined>(u
 
 export type PopoverCardStateOptions = {
   hasContent: boolean;
-  closeOnFocusLeave?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 export function usePopoverCardState(
   trigger: Element | null,
-  { hasContent, closeOnFocusLeave = false, onOpenChange }: PopoverCardStateOptions,
+  { hasContent, onOpenChange }: PopoverCardStateOptions,
 ): PopoverCardState {
   const id = useId();
   const parent = useContext(PopoverCardContext);
@@ -101,7 +99,6 @@ export function usePopoverCardState(
     open,
     visible,
     hasContent,
-    closeOnFocusLeave,
     popupElement,
     setPopupElement,
     setCardHovered,

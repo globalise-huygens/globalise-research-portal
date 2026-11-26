@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { isInsidePopoverCard, popoverCardClassName } from './isInsidePopoverCard';
 import { getFocusTarget, isIgnoredKey, moveFocusFromPreview } from './popoverCardFocus';
 import { usePopoverCardPosition, type PopoverCardPlacement } from './usePopoverCardPosition';
 import { PopoverCardContext, type PopoverCardState } from './usePopoverCardState';
@@ -23,6 +24,7 @@ export type PopoverCardProps = {
 
 export type AttachedPopoverCardProps = PopoverCardProps & {
   state: PopoverCardState;
+  closeOnFocusLeave?: boolean;
 };
 
 /**
@@ -35,6 +37,7 @@ export function AttachedPopoverCard(
     content,
     isPending = false,
     placement = 'below',
+    closeOnFocusLeave = false,
   }: AttachedPopoverCardProps,
 ) {
   const {
@@ -43,7 +46,6 @@ export function AttachedPopoverCard(
     parent,
     visible,
     popupElement,
-    closeOnFocusLeave,
     setPopupElement,
     setCardHovered,
     close,
@@ -80,9 +82,7 @@ export function AttachedPopoverCard(
       }
       return;
     }
-    const isInsidePreview = target instanceof Element
-      && target.closest('.popover-card') !== null;
-    if (parent || event.key !== 'Escape' || isInsidePreview) {
+    if (parent || event.key !== 'Escape' || isInsidePopoverCard(target)) {
       return;
     }
     event.preventDefault();
@@ -138,7 +138,7 @@ export function AttachedPopoverCard(
   const card = (
     <div
       ref={setPopupElement}
-      className="gds popover-card"
+      className={`gds ${popoverCardClassName}`}
       style={{ ...position, position: 'fixed' }}
     >
       <div
