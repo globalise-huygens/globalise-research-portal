@@ -2,13 +2,8 @@ import {
   findByPath,
   findTimespan,
   getContent,
-  getRecordedDates,
   getStatusValues,
-  getTimespan,
-  isLinkedArtNode,
   type LinkedArtNode,
-  type RecordedDates,
-  type Timespan,
 } from '@globalise/common';
 import {
   ObjectCardBody,
@@ -22,6 +17,7 @@ import { occurrenceDetailGroups } from '../LabeledKey.ts';
 import { getPersonNameRecords } from '../PersonStatusModel.ts';
 import { RecordedDatesValue } from '../RecordedDatesValue.tsx';
 import { getNotes, isVisibleSource, SourceList } from '../SourceList.tsx';
+import { getAdditionalDates } from '../TimespanFormat.ts';
 import { TimespanValue } from '../TimespanValue.tsx';
 import { PlaceRecord } from '../place/PlaceRecord.tsx';
 import { PlaceValues } from '../place/PlaceValues.tsx';
@@ -121,25 +117,4 @@ export function OccurrenceOverview({ entity }: { entity: LinkedArtNode }) {
   return <div className="person-overview">
     <span className="person-overview-fact">also: {names.join(', ')}</span>
   </div>;
-}
-
-function getAdditionalDates(
-  entity: LinkedArtNode,
-  timespan: Timespan | null,
-): RecordedDates | null {
-  const dates = getRecordedDates(entity);
-  if (!timespan || !dates) {
-    return dates;
-  }
-  const nested = isLinkedArtNode(entity.timespan) ? entity.timespan : null;
-  if (!nested) {
-    return null;
-  }
-  if (!getTimespan(nested)) {
-    return dates;
-  }
-  if (dates.dates.length) {
-    return { starts: [], ends: [], dates: dates.dates };
-  }
-  return null;
 }

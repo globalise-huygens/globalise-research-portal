@@ -53,11 +53,6 @@ export function EntityCard() {
   const identifiers = getEntityIdentifiers(entity);
   const sources = findByPath(entity, ['referred_to_by']);
   const entityType = getLinkedArtEntityType(uri);
-  const hasSpecialCard = ['person', 'place', 'occurrence', 'conversion']
-    .includes(entityType);
-  const cardClass = hasSpecialCard
-    ? `entity-card ${entityType}-card`
-    : 'entity-card';
   let body;
   let title = getEntityTitle(entity);
   if (entityType === 'person') {
@@ -72,8 +67,8 @@ export function EntityCard() {
     body = <ConversionCardBody entity={entity} />;
     title = getConversionTitle(entity);
   }
-  const showIdentifiers = identifiers.length > 0
-    && !['person', 'place', 'occurrence', 'conversion'].includes(entityType);
+  const cardClass = body ? `entity-card ${entityType}-card` : 'entity-card';
+  const showIdentifiers = !body && identifiers.length > 0;
 
   return (
     <ObjectCard className={cardClass}>

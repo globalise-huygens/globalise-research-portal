@@ -1,4 +1,4 @@
-import { formatRecordedDate, type Timespan } from '@globalise/common';
+import { formatRecordedDate, getRecordedDates, getTimespan, isLinkedArtNode, type LinkedArtNode, type RecordedDates, type Timespan } from '@globalise/common';
 
 export function formatTimespan(timespan: Timespan, event = false): string[] {
   if (event) {
@@ -58,4 +58,25 @@ export function formatDateRange(earliest?: string, latest?: string, abbreviateYe
     return year;
   }
   return `between ${start} and ${end}`;
+}
+
+export function getAdditionalDates(
+  entity: LinkedArtNode,
+  timespan: Timespan | null,
+): RecordedDates | null {
+  const dates = getRecordedDates(entity);
+  if (!timespan || !dates) {
+    return dates;
+  }
+  const nested = isLinkedArtNode(entity.timespan) ? entity.timespan : null;
+  if (!nested) {
+    return null;
+  }
+  if (!getTimespan(nested)) {
+    return dates;
+  }
+  if (dates.dates.length) {
+    return { starts: [], ends: [], dates: dates.dates };
+  }
+  return null;
 }

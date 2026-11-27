@@ -2,12 +2,8 @@ import {
   findByPath,
   findTimespan,
   getContent,
-  getRecordedDates,
   getStatusValues,
-  getTimespan,
   getValue,
-  getValues,
-  isLinkedArtNode,
   type LinkedArtNode,
 } from '@globalise/common';
 import {
@@ -18,6 +14,7 @@ import {
   ObjectCardPropertyList,
   ObjectCardSection,
 } from '@globalise/design';
+import { getAdditionalDates } from '../TimespanFormat.ts';
 import { EntityReferencePanel } from '../EntityReferencePanel.tsx';
 import { RecordedDatesValue } from '../RecordedDatesValue.tsx';
 import { RelationLink } from '../RelationLink.tsx';
@@ -45,14 +42,7 @@ type ExchangeDimensions = {
 export function ConversionCardBody({ entity }: { entity: LinkedArtNode }) {
   const exchanges = findByPath(entity, ['intentionally_initiated']);
   const timespan = findTimespan(entity);
-  const recordedDates = getRecordedDates(entity);
-  const nestedTimespan = isLinkedArtNode(entity.timespan)
-    ? entity.timespan : null;
-  const hasAdditionalDates = !!nestedTimespan && (
-    !getTimespan(nestedTimespan)
-    || getValues(entity['crm:P4_has_time-span']).length > 0
-  );
-  const dates = !timespan || hasAdditionalDates ? recordedDates : null;
+  const dates = getAdditionalDates(entity, timespan);
   const locations = findByPath(entity, ['is_event_location_subject_of']);
   const { notes, sources } = getPlaceEvidence(entity);
   const classifications = getStatusValues(entity, ['classified_as']);
@@ -195,7 +185,7 @@ function DimensionDetails({ dimension, label: side }: {
   dimension: ConversionDimension;
   label: 'From' | 'To';
 }) {
-  const originalName = getOriginalDimensionName(dimension);
+  const originalName = getDimensionName(dimension, 'http://vocab.getty.edu/aat/300417204');
   const amount = formatDimensionAmount(dimension);
   return <>
     <ObjectCardProperty
@@ -231,7 +221,7 @@ function getDimension(node: LinkedArtNode): ConversionDimension {
 
 function DimensionSummary({ dimension }: { dimension: ConversionDimension }) {
   const amount = formatDimensionAmount(dimension);
-  const name = getStandardDimensionName(dimension);
+  const name = getDimensionName(dimension, 'http://vocab.getty.edu/aat/300458887');
   const unitContent = dimension.unit ? getContent(dimension.unit) : '';
   const fallback = name || unitContent;
   if (!amount && !dimension.unit?.id && !fallback) {
@@ -245,21 +235,13 @@ function DimensionSummary({ dimension }: { dimension: ConversionDimension }) {
   </>;
 }
 
-function getOriginalDimensionName(
+function getDimensionName(
   dimension: ConversionDimension,
-): string | undefined {
-  const name = dimension.names.find((name) =>
-    findByPath(name, ['classified_as']).some((classification) =>
-      classification.id === 'http://vocab.getty.edu/aat/300417204',
-    ),
-  );
-  return name ? getContent(name) : undefined;
-}
-
-function getStandardDimensionName(dimension: ConversionDimension): string {
+  classificationId: string,
+): string {
   const name = dimension.names.find((item) =>
     findByPath(item, ['classified_as']).some((classification) =>
-      classification.id === 'http://vocab.getty.edu/aat/300458887',
+      classification.id === classificationId,
     ),
   );
   return name ? getContent(name) : '';

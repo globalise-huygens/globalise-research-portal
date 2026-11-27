@@ -314,7 +314,7 @@
   }
 
   @media (max-width: 479px) {
-    .entity-card:is(.person-card, .occurrence-card) .property {
+    .entity-card:is(.person-card, .occurrence-card, .conversion-card) .property {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--s4);
     }
