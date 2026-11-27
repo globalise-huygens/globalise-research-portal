@@ -63,5 +63,8 @@ export function getEntityIdentifiers(entity: LinkedArtNode): string[] {
 
 function toEntityType(name?: string): LinkedArtEntityType | undefined {
   const found = name?.toLowerCase();
+  if (found === 'group') {
+    return 'organization';
+  }
   return linkedArtEntityTypes.find((type) => type === found);
 }

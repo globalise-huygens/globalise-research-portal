@@ -64,3 +64,5 @@ export { default as IconUndo } from './iconUndo.svg?react';
 export { IconViewModeMenu } from './IconViewModeMenu';
 export { IconZoomIn } from './IconZoomIn';
 export { IconZoomOut } from './IconZoomOut';
+
+export { IconEntityPolity } from './IconEntityPolity';
