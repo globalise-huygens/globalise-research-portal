@@ -33,6 +33,10 @@ export function getLinkedArtEntityType(uri?: string): LinkedArtEntityType {
   const named = parts.filter((part) => part.includes(':'));
   const [segment, identifier] = named[named.length - 1]?.split(':') ?? [];
 
+  if (segment === 'reign' || segment === 'dynasty') {
+    return 'rulership';
+  }
+
   return (
     toEntityType(pageType)
     ?? toEntityType(segment)

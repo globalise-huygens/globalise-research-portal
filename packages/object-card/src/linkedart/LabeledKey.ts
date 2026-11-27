@@ -126,3 +126,12 @@ export const shipNameLabels: Record<string, string> = {
   'http://vocab.getty.edu/aat/300264273': 'Alternative name',
   'http://vocab.getty.edu/aat/300417226': 'Alternative name',
 };
+
+export const polityDetailGroups: LabeledKey[] = [
+  { key: 'is_appellative_subject_of', label: 'Name' },
+  { key: 'was_population_of', label: 'Recorded existence' },
+  { key: 'is_classificatory_subject_of', label: 'Classification' },
+  { key: 'is_physical_locative_subject_of', label: 'Recorded location' },
+  { key: 'is_similarity_subject_of', label: 'Similarity' },
+  { key: 'is_successor_status_subject_of', label: 'Succession' },
+];

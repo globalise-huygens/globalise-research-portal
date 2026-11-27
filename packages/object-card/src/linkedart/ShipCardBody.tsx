@@ -1,6 +1,3 @@
-import { useEffect, useRef } from 'react';
-import { useLocation } from '@globalise/router';
-import { createObjectCardSplat } from '@globalise/common/uri';
 import { CardCopyAction } from '../CardCopyAction.tsx';
 import { CardOpenAction } from '../CardOpenAction.tsx';
 import {
@@ -43,12 +40,7 @@ import {
   shipNameLabels,
 } from './LabeledKey.ts';
 import { StatusSection } from './StatusSection.tsx';
-import { useQueries } from '@tanstack/react-query';
-import { entityResourceQueryOptions } from './RelationValueResolver.ts';
-import {
-  buildVoyageHierarchy,
-  type VoyageHierarchyNode,
-} from './ShipVoyageModel';
+import { RecordHierarchy } from './RecordHierarchy.tsx';
 
 export function getShipTitle(entity: LinkedArtNode): string {
   const preferred = findByPath(entity, [
@@ -577,75 +569,13 @@ function ShipEvent({
   );
 }
 
-function ShipVoyageList({
-  voyages,
-  identifiers,
-}: {
+function ShipVoyageList({ voyages, identifiers }: {
   voyages: LinkedArtNode[];
   identifiers: string[];
 }) {
-  const results = useQueries({
-    queries: voyages.map((voyage) =>
-      entityResourceQueryOptions(url(voyage) ?? ''),
-    ),
-  });
-  const list = useRef<HTMLOListElement>(null);
-  const hash = useLocation({ select: (location) => location.hash });
-  const pending = results.some((result) => result.isPending);
-  useEffect(() => {
-    if (!hash || pending) {return;}
-    const anchor = decodeURIComponent(hash.replace(/^#/, ''));
-    const target = document.getElementById(anchor);
-    if (!target || !list.current?.contains(target)) {return;}
-    let ancestor: HTMLElement | null = target;
-    while (ancestor && list.current.contains(ancestor)) {
-      const toggle = ancestor.querySelector<HTMLButtonElement>(
-        ':scope > .disclosure > .disclosure-header .disclosure-toggle[aria-expanded="false"]',
-      );
-      toggle?.click();
-      ancestor = ancestor.parentElement;
-    }
-    const frame = requestAnimationFrame(() =>
-      target.scrollIntoView({ block: 'center' }),
-    );
-    return () => cancelAnimationFrame(frame);
-  }, [hash, pending]);
-  const hierarchy = buildVoyageHierarchy(
-    voyages.map((voyage, index) => results[index].data ?? voyage),
-  );
-  return (
-    <ol ref={list} className="person-status-list ship-voyage-hierarchy">
-      {hierarchy.map((node) => (
-        <ShipVoyageNode key={node.key} node={node} identifiers={identifiers} />
-      ))}
-    </ol>
-  );
-}
-
-function ShipVoyageNode({
-  node,
-  identifiers,
-}: {
-  node: VoyageHierarchyNode;
-  identifiers: string[];
-}) {
-  const anchor = node.voyage.id && createObjectCardSplat(node.voyage.id);
-  return (
-    <li id={anchor ?? undefined}>
-      <ShipVoyage voyage={node.voyage} identifiers={identifiers} />
-      {!!node.children.length && (
-        <ol className="ship-voyage-nested-list">
-          {node.children.map((child) => (
-            <ShipVoyageNode
-              key={child.key}
-              node={child}
-              identifiers={identifiers}
-            />
-          ))}
-        </ol>
-      )}
-    </li>
-  );
+  return <RecordHierarchy records={voyages} renderRecord={(voyage) =>
+    <ShipVoyage voyage={voyage} identifiers={identifiers} />
+  } />;
 }
 
 function ShipVoyage({
@@ -689,7 +619,7 @@ function ShipVoyage({
         <ObjectCardProperty
           label="Voyage ID"
           value={
-            <span className="voyage-identifier">
+            <span className="record-identifier">
               <RelationValue node={voyage} />
               {voyageUri && (
                 <>
