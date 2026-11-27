@@ -32,6 +32,7 @@ import { useEntity } from './EntitySlice.ts';
 import { getShipTitle, ShipCardBody, ShipOverview } from './ShipCardBody.tsx';
 import { PlaceCardBody } from './place/PlaceCardBody.tsx';
 import { PlaceOverview } from './place/PlaceOverview.tsx';
+import { PolityCardBody, getPolityTitle } from './polity/PolityCardBody.tsx';
 import './EntityCard.css';
 
 export function EntityCard() {
@@ -56,6 +57,10 @@ export function EntityCard() {
     cardClass += ' ship-card';
     title = getShipTitle(entity);
     body = <ShipCardBody entity={entity} />;
+  } else if (entityType === 'polity') {
+    cardClass += ' polity-card';
+    title = getPolityTitle(entity);
+    body = <PolityCardBody entity={entity} />;
   } else if (entityType === 'place') {
     cardClass += ' place-card';
     body = <PlaceCardBody entity={entity} />;
