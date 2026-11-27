@@ -49,23 +49,19 @@ export function EntityCard() {
   const sources = findByPath(entity, ['referred_to_by']);
   const entityType = getLinkedArtEntityType(uri);
 
-  let cardClass = 'entity-card';
   let title = getEntityTitle(entity);
   let body;
   if (entityType === 'person') {
-    cardClass += ' person-card';
     title = getPersonTitle(entity);
     body = <PersonCardBody entity={entity} />;
   } else if (entityType === 'place') {
-    cardClass += ' place-card';
     body = <PlaceCardBody entity={entity} />;
   } else if (entityType === 'occurrence') {
-    cardClass += ' occurrence-card';
     title = getOccurrenceTitle(entity);
     body = <OccurrenceCardBody entity={entity} />;
   }
-  const showIdentifiers = identifiers.length > 0
-    && !['person', 'place', 'occurrence'].includes(entityType);
+  const cardClass = body ? `entity-card ${entityType}-card` : 'entity-card';
+  const showIdentifiers = !body && identifiers.length > 0;
 
   return (
     <ObjectCard
