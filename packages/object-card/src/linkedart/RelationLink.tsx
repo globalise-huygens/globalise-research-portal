@@ -38,8 +38,9 @@ export function RelationLink({
   }
 
   const objectCardPath = createObjectCardPath(href);
-  if (objectCardPath && getLinkedArtEntityType(href) === 'voyage') {
-    return <EntityTag type="voyage" href={objectCardPath}>{linkLabel}</EntityTag>;
+  const type = getLinkedArtEntityType(href);
+  if (objectCardPath && (type === 'voyage' || type === 'rulership')) {
+    return <EntityTag type={type} href={objectCardPath}>{linkLabel}</EntityTag>;
   }
 
 

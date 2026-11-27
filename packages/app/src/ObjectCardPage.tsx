@@ -2,6 +2,7 @@ import {
   findByPath,
   getLinkedArtEntityType,
   type LinkedArtNode,
+  type LinkedArtEntityType,
 } from '@globalise/common';
 import { useQueryClient } from '@tanstack/react-query';
 import '@globalise/design/styles.css';
@@ -22,23 +23,33 @@ import {
 
 const route = getRouteApi(`/${handle}/$`);
 
+type RedirectTarget = {
+  property: string;
+  type: LinkedArtEntityType;
+  label: string;
+};
+const redirectTargets: Partial<Record<LinkedArtEntityType, RedirectTarget>> = {
+  voyage: { property: 'moved', type: 'ship', label: 'ship' },
+  rulership: { property: 'had_subject_population', type: 'polity', label: 'polity' },
+};
+
 export function ObjectCardPage() {
   const { uri } = route.useParams();
 
   const navigate = useNavigate();
   const client = useQueryClient();
   const [failure, setFailure] = useState<{ uri: string; error: Error }>();
-  const isVoyage = getLinkedArtEntityType(uri) === 'voyage';
+  const redirectTarget = redirectTargets[getLinkedArtEntityType(uri)];
 
   useEffect(() => {
     let cancelled = false;
     async function openCard() {
-      if (!isVoyage) {
+      if (!redirectTarget) {
         await loadObjectCard(uri);
         return;
       }
-      const voyage = await client.query(entityResourceQueryOptions(uri));
-      const destination = getVoyageDestination(voyage, uri);
+      const record = await client.query(entityResourceQueryOptions(uri));
+      const destination = getRelatedCardDestination(record, uri, redirectTarget);
       if (!cancelled) {
         await navigate({ href: destination, replace: true });
       }
@@ -54,15 +65,15 @@ export function ObjectCardPage() {
     return () => {
       cancelled = true;
     };
-  }, [uri, isVoyage, client, navigate]);
+  }, [uri, redirectTarget, client, navigate]);
 
   if (failure?.uri === uri) {
     throw failure.error;
   }
-  if (isVoyage) {
+  if (redirectTarget) {
     return (
       <main className="object-card-page" aria-busy="true">
-        Opening ship…
+        Opening {redirectTarget.label}…
       </main>
     );
   }
@@ -80,24 +91,25 @@ export function ObjectCardPage() {
   );
 }
 
-function getVoyageDestination(
-  voyage: LinkedArtNode | null,
+function getRelatedCardDestination(
+  record: LinkedArtNode | null,
   uri: string,
+  target: RedirectTarget,
 ): string {
-  if (!voyage) {
-    throw new Error('The voyage record could not be loaded.');
+  if (!record) {
+    throw new Error('The requested record could not be loaded.');
   }
-  const ships = findByPath(voyage, ['moved']).filter(
-    (node) => node.id && getLinkedArtEntityType(node.id) === 'ship',
+  const related = findByPath(record, [target.property]).filter(
+    (node) => node.id && getLinkedArtEntityType(node.id) === target.type,
   );
-  const shipUris = [...new Set(ships.map((ship) => ship.id!))];
-  if (shipUris.length !== 1) {
-    throw new Error('This voyage must reference exactly one ship.');
+  const targetUris = [...new Set(related.map((node) => node.id!))];
+  if (targetUris.length !== 1) {
+    throw new Error(`This record must reference exactly one ${target.label}.`);
   }
-  const path = createObjectCardPath(shipUris[0]);
-  const anchor = createObjectCardSplat(voyage.id ?? uri);
+  const path = createObjectCardPath(targetUris[0]);
+  const anchor = createObjectCardSplat(record.id ?? uri);
   if (!path || !anchor) {
-    throw new Error('The voyage or ship URI could not be opened.');
+    throw new Error(`The record or ${target.label} URI could not be opened.`);
   }
   return `${path}#${encodeURIComponent(anchor)}`;
 }
