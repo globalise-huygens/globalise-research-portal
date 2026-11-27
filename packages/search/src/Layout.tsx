@@ -1,3 +1,4 @@
+import { useId, useState } from 'react';
 import {
   IconClose,
   IconLeftPanelOpen,
@@ -14,18 +15,27 @@ import {
 import Facets from './Facets';
 import Selection from './Selection';
 import SearchField from './SearchField';
+import SearchQueryHelp from './SearchQueryHelp';
 import Results from './Results';
 import ResultsHeader from './ResultsHeader';
 import classes from './Layout.module.css';
 
 export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
   const isMobile = useIsMobile();
+  const [queryHelpOpen, setQueryHelpOpen] = useState(false);
+  const queryHelpId = useId();
 
   return (
     <div className={classes.search}>
       <div className={classes.searchControls}>
         <div className={classes.searchHeader}>
-          <SearchField autoFocus={autoFocus} isMobile={isMobile} />
+          <SearchField
+            autoFocus={autoFocus}
+            isMobile={isMobile}
+            queryHelpId={queryHelpId}
+            queryHelpOpen={queryHelpOpen}
+            onToggleQueryHelp={() => setQueryHelpOpen((open) => !open)}
+          />
           {isMobile && (
             <DialogTrigger>
               <ToolButton size="touch" aria-label="Open filters"
@@ -63,6 +73,7 @@ export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
       {!isMobile && <div className={classes.facets}><Facets /></div>}
 
       <div className={classes.resultList}>
+        <SearchQueryHelp id={queryHelpId} open={queryHelpOpen}/>
         <ResultsHeader/>
         <Results/>
       </div>

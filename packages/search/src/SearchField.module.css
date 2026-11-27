@@ -197,3 +197,14 @@
         height: var(--s16);
     }
 }
+
+.mobile-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--s4);
+}
+
+.search-field button.query-help-toggle[aria-expanded="true"] {
+    background: var(--color-brand-white);
+    color: var(--color-brand-black);
+}
