@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { visit } from 'unist-util-visit';
+import { assetPathSchema } from '../../assetPathSchema.ts';
 import { createWarningIssue } from '../Issue.ts';
 import type { Element, Root } from 'hast';
 import type { VFile } from 'vfile';
@@ -9,6 +10,7 @@ import type { Issue } from '../Issue.ts';
 /**
  * Invalidate:
  * - local links to missing files, as warnings
+ * - local images that are not served as assets, as warnings
  */
 export function validateLocalLinks(tree: Root, source: VFile): Issue[] {
   const issues: Issue[] = [];
@@ -18,6 +20,13 @@ export function validateLocalLinks(tree: Root, source: VFile): Issue[] {
       const reason = `Unresolved link \`${link}\``;
       const place = node.position;
       issues.push(createWarningIssue(reason, 'unresolved-link', place));
+    }
+    const assetError = link && node.tagName === 'img' && assetPathSchema.safeParse(link).error;
+    if (assetError) {
+      const issue = assetError.issues.map(({ message }) => message).join(', ');
+      const message = `Unserved image \`${link}\`: ${issue}`;
+      const place = node.position;
+      issues.push(createWarningIssue(message, 'unserved-image', place));
     }
   });
   return issues;

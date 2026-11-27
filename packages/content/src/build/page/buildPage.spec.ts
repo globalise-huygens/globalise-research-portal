@@ -16,7 +16,7 @@ const frontMatter = [
   'status: bar',
   'authors: [Baz]',
   'featured: false',
-  'hero: { src: foo.jpg, alt: Foo, caption: Bar, credit: Baz, source: Bas, licence: Bass }',
+  'hero: { src: /assets/foo.jpg, alt: Foo, caption: Bar, credit: Baz, source: Bas, licence: Bass }',
 ].join('\n');
 
 describe(buildPage.name, () => {
@@ -49,7 +49,7 @@ describe(buildPage.name, () => {
       status: 'bar',
       authors: ['Baz'],
       featured: false,
-      hero: { src: 'foo.jpg', alt: 'Foo', caption: 'Bar', credit: 'Baz', source: 'Bas', licence: 'Bass' },
+      hero: { src: '/assets/foo.jpg', alt: 'Foo', caption: 'Bar', credit: 'Baz', source: 'Bas', licence: 'Bass' },
     });
   });
 
@@ -59,12 +59,34 @@ describe(buildPage.name, () => {
     expect(page?.meta).toMatchObject({ subtitle: 'Foo', datePublished: '2025-08-01' });
   });
 
-  it('drops invalid optional fields without issues', async () => {
-    const fields = `${frontMatter}\nsubtitle: ""\ndatePublished: foo`;
+  it('leaves out invalid optional fields with a warning', async () => {
+    const fields = `${frontMatter}\ndatePublished: foo`;
     const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
-    expect(page?.meta.subtitle).toBeUndefined();
     expect(page?.meta.datePublished).toBeUndefined();
+    expect(getReasons(issues, 'warning')).toEqual(['`datePublished` not included, `datePublished`: Invalid ISO date']);
+  });
+
+  it('leaves out empty optional fields without issues', async () => {
+    const emptyHero = 'hero: { src: "", alt: "", caption: "", credit: "", source: "", licence: "" }';
+    const fields = frontMatter.replace(/^hero: .*$/m, `${emptyHero}\nsubtitle: ""`);
+    const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page?.meta.hero).toBeUndefined();
+    expect(page?.meta.subtitle).toBeUndefined();
     expect(issues).toEqual([]);
+  });
+
+  it('leaves out a hero image outside the assets with a warning', async () => {
+    const fields = frontMatter.replace('src: /assets/foo.jpg', 'src: foo.jpg');
+    const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page?.meta.hero).toBeUndefined();
+    expect(getReasons(issues, 'warning')).toEqual(['`hero` not included, `hero.src`: outside the assets']);
+  });
+
+  it('leaves out a partly filled hero with a warning', async () => {
+    const fields = frontMatter.replace('src: /assets/foo.jpg', 'src: ""');
+    const { page, issues } = await buildPage(createSource(createMarkdown(fields)));
+    expect(page?.meta.hero).toBeUndefined();
+    expect(getReasons(issues, 'warning')).toEqual(['`hero` not included, `hero.src`: missing']);
   });
 
   it('skips a page without required fields with an error', async () => {
@@ -101,7 +123,7 @@ describe(buildPage.name, () => {
     ]);
   });
 
-  it('keeps safe html and drops comments and scripts', async () => {
+  it('keeps safe html and leaves out comments and scripts', async () => {
     const body = '<sup>1</sup><!-- a --><script>alert(1)</script>';
     const { page } = await buildPage(createSource(createValidMarkdown(body)));
     expect(toHtml(page!.tree)).toBe('<p><sup>1</sup></p>');
