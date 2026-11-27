@@ -118,7 +118,32 @@
       align-items: baseline;
     }
 
-    &:is(.person-card, .place-card) {
+    &.conversion-card {
+      .conversion-target-value {
+        margin-top: var(--s12);
+      }
+
+      .conversion-summary .disclosure-header .disclosure-summary {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s8);
+      }
+
+      .conversion-overview-fact {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--s8);
+      }
+
+      .conversion-overview .person-status-summary-value {
+        color: var(--color-neutral-300);
+        font-style: italic;
+      }
+    }
+
+    &:is(.person-card, .place-card, .occurrence-card, .conversion-card) {
       width: 100%;
       max-width: none;
       height: 100%;
@@ -262,10 +287,16 @@
         overflow-wrap: anywhere;
       }
     }
+
+    &.occurrence-card .panel[data-side="left"] {
+      border: 0;
+    }
   }
 
   @media (max-width: 1023px) {
-    .entity-card.person-card {
+    .entity-card.person-card,
+    .entity-card.occurrence-card,
+    .entity-card.conversion-card {
       height: auto;
       max-height: none;
       overflow: visible;
@@ -283,7 +314,7 @@
   }
 
   @media (max-width: 479px) {
-    .entity-card.person-card .property {
+    .entity-card:is(.person-card, .occurrence-card, .conversion-card) .property {
       grid-template-columns: minmax(0, 1fr);
       row-gap: var(--s4);
     }

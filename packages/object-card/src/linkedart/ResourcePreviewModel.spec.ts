@@ -1,7 +1,37 @@
-import { describe, expect, it } from 'vitest';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it, vi } from 'vitest';
 import { handle, idBase } from '@globalise/common/uri';
 import type { LinkedArtNode } from '@globalise/common';
 import { getResourcePreview } from './ResourcePreviewModel.ts';
+import {
+  getOccurrenceTitle,
+  OccurrenceCardBody,
+  OccurrenceOverview,
+} from './occurrence/OccurrenceCardBody.tsx';
+import {
+  ConversionCardBody,
+  ConversionOverview,
+  getConversionTitle,
+} from './conversion/ConversionCardBody.tsx';
+
+vi.mock('./EntityReferencePanel.tsx', () => ({
+  EntityReferencePanel: () => createElement('div', null, 'References'),
+}));
+vi.mock('./RelationLink.tsx', () => ({
+  RelationLink: ({ node }: { node: LinkedArtNode }) =>
+    createElement('a', { href: node.id }, node.id),
+  RelationValue: ({ node }: { node: LinkedArtNode }) =>
+    createElement('span', null, node.content),
+}));
+
+vi.mock('./place/PlaceRecord.tsx', () => ({
+  PlaceRecord: ({ title }: { title: string }) =>
+    createElement('div', null, `${title} record`),
+}));
+vi.mock('./place/PlaceValues.tsx', () => ({
+  PlaceValues: () => createElement('span', null, 'linked value'),
+}));
 
 describe('getResourcePreview', () => {
   it('previews a person with names and a birth date, linking to the object card', () => {
@@ -42,5 +72,226 @@ describe('getResourcePreview', () => {
       { label: 'Alt label', value: 'Peper' },
       { label: 'Broader', value: '1 relation(s)' },
     ]);
+  });
+});
+
+describe('occurrence card', () => {
+  it('groups records and sources without an identifier or references panel', () => {
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      involved: [{ type: 'HumanMadeObject', id: 'https://example.org/object' }],
+      identified_by: [{ type: 'Identifier', content: 'CO_0001' }],
+      is_appellative_subject_of: [{ type: 'AppellativeStatus' }],
+      referred_to_by: [{ type: 'LinguisticObject', content: 'A source' }],
+    };
+
+    const html = renderToStaticMarkup(
+      createElement(OccurrenceCardBody, { entity }),
+    );
+
+    expect(html).toContain('Occurrence details');
+    expect(html).toContain('Involved');
+    expect(html).toContain('Name record');
+    expect(html).toContain('Further information');
+    expect(html).toContain('Sources');
+    expect(html).toContain('A source');
+    expect(html).not.toContain('CO_0001');
+    expect(html).not.toContain('Identifier');
+    expect(html).not.toContain('data-side="right"');
+  });
+
+  it('does not show an empty details section for an identifier alone', () => {
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      identified_by: [{ type: 'Identifier', content: 'CO_0001' }],
+    };
+
+    const html = renderToStaticMarkup(
+      createElement(OccurrenceCardBody, { entity }),
+    );
+    expect(html).not.toContain('Occurrence details');
+  });
+
+  it('shows distinct alternative names in the overview', () => {
+    const name = {
+      type: 'AppellativeStatus',
+      ascribes_appellation: [{ type: 'Name', content: 'Other name' }],
+    };
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      identified_by: [{ type: 'Name', content: 'Event title' }],
+      is_appellative_subject_of: [name, name],
+    };
+
+    const html = renderToStaticMarkup(
+      createElement(OccurrenceOverview, { entity }),
+    );
+    expect(html).toContain('also: Other name');
+  });
+
+  it('does not use an embedded label as a title', () => {
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      _label: 'Unresolved label',
+    };
+    expect(getOccurrenceTitle(entity)).toBe('Name not recorded');
+  });
+
+  it('keeps additional recorded dates alongside a nested timespan', () => {
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      timespan: {
+        type: 'TimeSpan',
+        begin_of_the_begin: '1764-10-20',
+        end_of_the_end: '1764-10-20',
+      },
+      'crm:P4_has_time-span': ['1765-01-01', '1766-01-01'],
+    };
+
+    const html = renderToStaticMarkup(
+      createElement(OccurrenceCardBody, { entity }),
+    );
+    expect(html).toContain('1764-10-20');
+    expect(html).toContain('1765-01-01');
+    expect(html).toContain('1766-01-01');
+  });
+
+  it('keeps ambiguous nested dates when a direct date supplies a timespan', () => {
+    const entity: LinkedArtNode = {
+      type: 'Event',
+      timespan: {
+        type: 'TimeSpan',
+        begin_of_the_begin: ['1764-01-01', '1765-01-01'],
+      },
+      'crm:P4_has_time-span': ['1766-01-01'],
+    };
+
+    const html = renderToStaticMarkup(
+      createElement(OccurrenceCardBody, { entity }),
+    );
+    expect(html).toContain('1764-01-01');
+    expect(html).toContain('1765-01-01');
+    expect(html).toContain('1766-01-01');
+  });
+});
+
+describe('conversion card', () => {
+  it('does not use an embedded label as a title', () => {
+    expect(getConversionTitle({
+      type: 'FinancialExchange',
+      _label: 'untrusted',
+    })).toBe('Name not recorded');
+  });
+
+  it('displays values, ranges and recorded original names without labels', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [{
+          type: 'Dimension',
+          value: '1.0',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/unit' },
+          identified_by: [{
+            type: 'Name',
+            content: 'Marck',
+            classified_as: [{
+              type: 'Type',
+              id: 'http://vocab.getty.edu/aat/300417204',
+              _label: 'untrusted',
+            }],
+          }],
+        }],
+        ascribes_exchange_value_equivalent: [{
+          type: 'Dimension',
+          lower_value_limit: '71',
+          upper_value_limit: '71.25',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/target' },
+        }],
+      }],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('1.0');
+    expect(html).toContain('71–71.25');
+    expect(html).toContain('Marck');
+    expect(html).toContain('https://example.org/unit');
+    expect(html).not.toContain('untrusted');
+    expect(html).toContain('References');
+  });
+
+  it('keeps all recorded exchange dimensions', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [
+          { type: 'Dimension', value: '1' },
+          { type: 'Dimension', value: '2' },
+        ],
+      }],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('>1<');
+    expect(html).toContain('>2<');
+  });
+
+  it('shows recorded exchange values and links in the overview', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      intentionally_initiated: [{
+        type: 'ExchangeValue',
+        has_exchange_value_subject: [{
+          type: 'Dimension',
+          value: '1',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/from' },
+        }],
+        ascribes_exchange_value_equivalent: [{
+          type: 'Dimension',
+          lower_value_limit: '2',
+          upper_value_limit: '3',
+          unit: { type: 'ExchangeUnit', id: 'https://example.org/to' },
+        }],
+      }],
+    };
+    const html = renderToStaticMarkup(createElement(ConversionOverview, {
+      entity,
+    }));
+    expect(html).toContain('From');
+    expect(html).toContain('To');
+    expect(html).toContain('>1 ');
+    expect(html).toContain('2–3');
+    expect(html).toContain('href="https://example.org/from"');
+    expect(html).toContain('href="https://example.org/to"');
+  });
+
+  it('omits the overview when no exchange values are recorded', () => {
+    const html = renderToStaticMarkup(createElement(ConversionOverview, {
+      entity: { type: 'FinancialExchange' },
+    }));
+    expect(html).toBe('');
+  });
+
+  it('keeps additional dates when a nested timespan is present', () => {
+    const entity: LinkedArtNode = {
+      type: 'FinancialExchange',
+      timespan: {
+        type: 'TimeSpan',
+        begin_of_the_begin: '1691-01-01',
+        end_of_the_end: '1691-12-31',
+      },
+      'crm:P4_has_time-span': ['1692-01-01', '1693-01-01'],
+    };
+
+    const html = renderToStaticMarkup(createElement(ConversionCardBody, {
+      entity,
+    }));
+    expect(html).toContain('1692-01-01');
+    expect(html).toContain('1693-01-01');
   });
 });
