@@ -28,4 +28,14 @@ describe(buildRecordHierarchy.name, () => {
     expect(hierarchy).toHaveLength(1);
     expect(hierarchy[0].children).toHaveLength(1);
   });
+  it('groups a recorded reign under its dynasty', () => {
+    const dynasty = { id: 'dynasty:Dynasty_1', type: 'Sovereignty' };
+    const reign = {
+      id: 'reign:Reign_0045', type: 'Sovereignty', part_of: [dynasty],
+    };
+    const hierarchy = buildRecordHierarchy([reign, dynasty]);
+    expect(hierarchy.map(({ record }) => record.id)).toEqual([dynasty.id]);
+    expect(hierarchy[0].children[0].record.id).toBe(reign.id);
+  });
+
 });

@@ -4,6 +4,7 @@ import {
   IconEntityPerson,
   IconEntityShip,
   IconEntityPlace,
+  IconEntityOrganisation,
 } from '@globalise/design';
 import { LinkedArtEntityType } from '@globalise/common';
 
@@ -36,6 +37,7 @@ export function EntityTypeBadge({ type }: EntityTypeBadgeProps) {
     person: IconEntityPerson,
     ship: IconEntityShip,
     place: IconEntityPlace,
+    polity: IconEntityOrganisation,
   };
   const Icon = icons[type as keyof typeof icons];
   return (
