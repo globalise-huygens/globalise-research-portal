@@ -1,4 +1,5 @@
-import { useId, useState } from 'react';
+import type { SearchFieldRef } from '@knaw-huc/searchfield/react';
+import { useId, useRef, useState } from 'react';
 import {
   IconClose,
   IconLeftPanelOpen,
@@ -24,12 +25,14 @@ export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
   const isMobile = useIsMobile();
   const [queryHelpOpen, setQueryHelpOpen] = useState(false);
   const queryHelpId = useId();
+  const searchFieldRef = useRef<SearchFieldRef>(null);
 
   return (
     <div className={classes.search}>
       <div className={classes.searchControls}>
         <div className={classes.searchHeader}>
           <SearchField
+            editorRef={searchFieldRef}
             autoFocus={autoFocus}
             isMobile={isMobile}
             queryHelpId={queryHelpId}
@@ -73,7 +76,13 @@ export default function Layout({ autoFocus = false }: { autoFocus?: boolean }) {
       {!isMobile && <div className={classes.facets}><Facets /></div>}
 
       <div className={classes.resultList}>
-        <SearchQueryHelp id={queryHelpId} open={queryHelpOpen}/>
+        <SearchQueryHelp
+          id={queryHelpId}
+          open={queryHelpOpen}
+          onInsert={(text, cursorOffset) =>
+            searchFieldRef.current?.insertQuery(text, cursorOffset)
+          }
+        />
         <ResultsHeader/>
         <Results/>
       </div>

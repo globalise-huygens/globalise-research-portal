@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 import { Button, Menu, MenuItem, MenuTrigger, Popover } from 'react-aria-components';
 import { useQueryClient } from '@tanstack/react-query';
 import { getPresentationFamily, getSVGElement } from '@globalise/common';
@@ -27,12 +27,14 @@ const icons: Record<string, string> = {
 };
 
 export default function SearchField({
+  editorRef,
   autoFocus = false,
   isMobile = false,
   queryHelpId,
   queryHelpOpen,
   onToggleQueryHelp,
 }: {
+  editorRef: RefObject<SearchFieldRef | null>;
   autoFocus?: boolean;
   isMobile?: boolean;
   queryHelpId: string;
@@ -41,7 +43,6 @@ export default function SearchField({
 }) {
   const queryClient = useQueryClient();
   const { query, onSearch } = useSearchFacet();
-  const searchFieldRef = useRef<SearchFieldRef>(null);
   const [history, updateHistory] = useState<UpdateState>({ canUndo: false, canRedo: false });
   const actions = [
     { id: 'search', label: 'Search', icon: IconSearch, disabled: false },
@@ -62,17 +63,17 @@ export default function SearchField({
       onToggleQueryHelp();
       return;
     }
-    searchFieldRef.current?.[action]();
+    editorRef.current?.[action]();
   }
 
   useEffect(() => {
     if (autoFocus) {
       // The editor mounts in its own effect. Focus after mounting and route
       // scroll restoration, without adding a second search implementation.
-      const frame = requestAnimationFrame(() => searchFieldRef.current?.focus());
+      const frame = requestAnimationFrame(() => editorRef.current?.focus());
       return () => cancelAnimationFrame(frame);
     }
-  }, [autoFocus]);
+  }, [autoFocus, editorRef]);
 
   const queryHelpButton = {
     className: classes.queryHelpToggle,
@@ -115,7 +116,7 @@ export default function SearchField({
   return (
     <div id="archive-search" className={classes.searchField}>
       <div className={classes.input}>
-        <SF className={classes.inputContainer} ref={searchFieldRef}
+        <SF className={classes.inputContainer} ref={editorRef}
           query={query} onSearch={(query) => onSearch(query.source)}
           onUpdate={({ canUndo, canRedo }) => updateHistory({ canUndo, canRedo })}
           theme={{ dark: darkTheme }} autocomplete={autocomplete}

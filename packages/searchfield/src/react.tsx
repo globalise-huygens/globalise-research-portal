@@ -8,6 +8,7 @@ export type SearchFieldRef = {
   redo: () => void;
   clear: () => void;
   focus: () => void;
+  insertQuery: (text: string, cursorOffset?: number) => void;
 };
 
 export type SearchFieldProps<E extends object> = {
@@ -42,6 +43,7 @@ export default function SearchField<E extends object>({ className, ref, ...confi
     redo: () => instanceRef.current?.redo(),
     clear: () => instanceRef.current?.clear(),
     focus: () => instanceRef.current?.focus(),
+    insertQuery: (text, cursorOffset) => instanceRef.current?.insertQuery(text, cursorOffset),
   }), []);
 
   return (
