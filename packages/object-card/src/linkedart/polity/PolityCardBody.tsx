@@ -19,13 +19,13 @@ import {
 import { CardCopyAction } from '../../CardCopyAction.tsx';
 import { CardOpenAction } from '../../CardOpenAction.tsx';
 import { EntityReferencePanel } from '../EntityReferencePanel.tsx';
-import { getEntityReferenceLinks } from '../EntityReferenceModel.ts';
 import { polityDetailGroups } from '../LabeledKey.ts';
 import { getPersonNameRecords } from '../PersonStatusModel.ts';
 import { RecordHierarchy } from '../RecordHierarchy.tsx';
 import { RecordedDatesValue } from '../RecordedDatesValue.tsx';
 import { RelationValue } from '../RelationLink.tsx';
-import { getNotes, SourceList } from '../SourceList.tsx';
+import { getNotes, isVisibleSource, SourceList } from '../SourceList.tsx';
+import { formatDateRange } from '../TimespanFormat.ts';
 import { TimespanValue } from '../TimespanValue.tsx';
 import { getPlaceEvidence } from '../place/PlaceEvidence.ts';
 import { PlaceRecord } from '../place/PlaceRecord.tsx';
@@ -36,9 +36,15 @@ export function PolityCardBody({ entity }: { entity: LinkedArtNode }) {
   const records = polityDetailGroups.flatMap(({ key, label: title }) =>
     findByPath(entity, [key]).map((record) => ({ record, title })),
   );
-  const sources = findByPath(entity, ['referred_to_by']);
+  const sources = [
+    ...new Map(
+      findByPath(entity, ['referred_to_by'])
+        .filter((source) => isVisibleSource(source, true, true))
+        .map((source) => [JSON.stringify(source), source]),
+    ).values(),
+  ];
   const notes = getNotes(entity);
-  const hasReferences = getEntityReferenceLinks(entity).length > 0;
+  const hasEvidence = notes.length > 0 || sources.length > 0;
   return (
     <ObjectCardBody>
       <ObjectCardPanel side="left">
@@ -63,20 +69,40 @@ export function PolityCardBody({ entity }: { entity: LinkedArtNode }) {
             />
           </ObjectCardSection>
         )}
-        {!!notes.length && (
-          <ObjectCardSection title="Notes" collapsible>
-            {notes.map((note) => (
-              <p key={note}>{note}</p>
-            ))}
-          </ObjectCardSection>
-        )}
-        {!!sources.length && (
-          <ObjectCardSection title="Sources" collapsible>
-            <SourceList sources={sources} includeInternalLabels showNotes />
+        {hasEvidence && (
+          <ObjectCardSection title="Further information" collapsible>
+            <div className="person-status-list">
+              {!!notes.length && (
+                <ObjectCardDisclosure summary="Notes">
+                  <ObjectCardPropertyList className="person-status-details">
+                    <ObjectCardProperty
+                      label="Notes"
+                      value={notes.join('; ')}
+                    />
+                  </ObjectCardPropertyList>
+                </ObjectCardDisclosure>
+              )}
+              {!!sources.length && (
+                <ObjectCardDisclosure summary="Sources">
+                  <ObjectCardPropertyList className="person-status-details">
+                    <ObjectCardProperty
+                      label="Sources"
+                      value={
+                        <SourceList
+                          sources={sources}
+                          includeInternalLabels
+                          showNotes
+                        />
+                      }
+                    />
+                  </ObjectCardPropertyList>
+                </ObjectCardDisclosure>
+              )}
+            </div>
           </ObjectCardSection>
         )}
       </ObjectCardPanel>
-      {hasReferences && <EntityReferencePanel entity={entity} />}
+      <EntityReferencePanel entity={entity} />
     </ObjectCardBody>
   );
 }
@@ -193,6 +219,16 @@ function PolityRecord({
 }) {
   const timespan = isLinkedArtNode(record.timespan) ? record.timespan : null;
   const { notes, sources } = getPlaceEvidence(timespan ?? { type: 'TimeSpan' });
+  if (record.type === 'PopulationExistence') {
+    return (
+      <ExistenceRecord
+        record={record}
+        title={title}
+        notes={notes}
+        sources={sources}
+      />
+    );
+  }
   return (
     <PlaceRecord record={record} title={title}>
       {(notes.length > 0 || sources.length > 0) && (
@@ -209,5 +245,73 @@ function PolityRecord({
         </ObjectCardPropertyList>
       )}
     </PlaceRecord>
+  );
+}
+
+function ExistenceRecord({
+  record,
+  title,
+  notes,
+  sources,
+}: {
+  record: LinkedArtNode;
+  title: string;
+  notes: string[];
+  sources: LinkedArtNode[];
+}) {
+  const timespan = findTimespan(record);
+  const dates = timespan ? null : getRecordedDates(record);
+  const evidence = getPlaceEvidence(record);
+  const periodNotes = [...new Set([...notes, ...evidence.notes])];
+  const periodSources = [...new Map([...sources, ...evidence.sources]
+    .map((source) => [JSON.stringify(source), source])).values()];
+  const start =
+    timespan &&
+    formatDateRange(timespan.beginOfTheBegin, timespan.endOfTheBegin, false);
+  let end = 'No latest end recorded';
+  if (timespan?.endOfTheEnd) {
+    end =
+      formatDateRange(timespan.beginOfTheEnd, timespan.endOfTheEnd, false) ??
+      end;
+  }
+  return (
+    <ObjectCardDisclosure
+      summary={
+        <span className="person-status-summary-content">
+          <span className="person-status-summary-value">{title}</span>
+          {start && (
+            <span className="person-status-summary-date">Start: {start}</span>
+          )}
+          {timespan && (
+            <span className="person-status-summary-date">End: {end}</span>
+          )}
+          {dates && <RecordedDatesValue dates={dates} />}
+        </span>
+      }
+    >
+      <ObjectCardPropertyList className="person-status-details">
+        {timespan && (
+          <ObjectCardProperty
+            label="Recorded date bounds"
+            value={<TimespanValue timespan={timespan} mode="boundaries" />}
+          />
+        )}
+        {dates && (
+          <ObjectCardProperty
+            label="Recorded dates"
+            value={<RecordedDatesValue dates={dates} />}
+          />
+        )}
+        {!!periodNotes.length && (
+          <ObjectCardProperty label="Period notes" value={periodNotes.join('; ')} />
+        )}
+        {!!periodSources.length && (
+          <ObjectCardProperty
+            label="Period sources"
+            value={<SourceList sources={periodSources} showNotes />}
+          />
+        )}
+      </ObjectCardPropertyList>
+    </ObjectCardDisclosure>
   );
 }
